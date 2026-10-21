@@ -1,0 +1,6 @@
+{
+  "failed_attempt_run_id": "ee3fdd1923d5c639",
+  "remaining_processes_with_exact_fixture_id": [],
+  "remaining_containers_with_exact_fixture_id": [],
+  "note": "Read-only check after fixture disposal; no unrelated resources changed."
+}

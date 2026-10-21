@@ -1,0 +1,15 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "--",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+    "tests/Hexalith.Folders.AppHost.Tests/README.md",
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

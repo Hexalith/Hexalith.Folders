@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <RequireContractsFlag>true</RequireContractsFlag>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../Hexalith.McpCli.Core.Tests/InventoryCoverage*.cs" Exclude="../Hexalith.McpCli.Core.Tests/InventoryCoverageTests.cs;../Hexalith.McpCli.Core.Tests/InventoryCoverageContractsAssembly.cs" Link="Inventory/%(Filename)%(Extension)" />
+    <ProjectReference Include="../../src/Hexalith.McpCli/Hexalith.McpCli.csproj" />
+    <PackageReference Include="Hexalith.McpCli.Sample.Contracts" HexalithContracts="true" />
+  </ItemGroup>
+  <Import Project="../../src/Hexalith.McpCli/Build/ModuleAssemblyManifest.targets" />
+</Project>

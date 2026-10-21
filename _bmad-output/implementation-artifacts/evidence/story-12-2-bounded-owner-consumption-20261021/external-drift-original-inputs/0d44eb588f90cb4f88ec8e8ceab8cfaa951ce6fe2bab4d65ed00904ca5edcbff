@@ -1,0 +1,1632 @@
+@using Hexalith.Tenants.Contracts.Enums
+@using Hexalith.Tenants.Contracts.Queries
+@using Hexalith.Tenants.UI.State.TenantCommands
+@using Hexalith.Tenants.UI.State.TenantDetail
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.JSInterop
+@implements IAsyncDisposable
+@inject IStringLocalizer<TenantsResources> Localizer
+@inject IServiceProvider Services
+
+<section class="tenants-config-remove"
+         role="dialog"
+         aria-modal="true"
+         data-testid="tenants-config-remove-flow"
+         aria-labelledby="tenants-config-remove-heading"
+         @onkeydown="HandleKeyDownAsync">
+    <span class="tenants-config-remove__focus-sentinel"
+          tabindex="0"
+          data-testid="tenants-config-remove-focus-start"
+          @onfocus="FocusCancelAsync"></span>
+
+    <header class="tenants-config-remove__header">
+        <div>
+            <h3 id="tenants-config-remove-heading">@Localizer["Tenants.Configuration.Remove.Title"]</h3>
+            <p>@Localizer["Tenants.Configuration.Remove.Description", Context.TenantId]</p>
+        </div>
+    </header>
+
+    <p class="tenants-config-remove__narrow"
+       data-testid="tenants-config-remove-narrow-unavailable">
+        @Localizer["Tenants.Configuration.Remove.Unavailable.Narrow"]
+    </p>
+
+    @if (!string.IsNullOrWhiteSpace(UnavailableReason))
+    {
+        <p class="tenants-config-remove__unavailable"
+           id="tenants-config-remove-unavailable"
+           data-testid="tenants-config-remove-unavailable-reason"
+           role="alert">
+            @UnavailableReason
+        </p>
+    }
+
+    <EditForm Model="@_formModel"
+              FormName="tenants-config-remove-flow"
+              class="tenants-config-remove__form"
+              OnSubmit="SubmitAsync">
+        @if (IsPreviewComplete)
+        {
+            <section class="tenants-config-remove__preview"
+                     data-testid="tenants-config-remove-preview"
+                     aria-labelledby="tenants-config-remove-preview-heading">
+                <h4 id="tenants-config-remove-preview-heading">@Localizer["Tenants.Configuration.Remove.Preview.Title"]</h4>
+                <dl>
+                    @foreach ((string Label, string Value, string TestId) item in PreviewItems)
+                    {
+                        <div data-testid="tenants-config-remove-preview-item">
+                            <dt>@item.Label</dt>
+                            <dd data-testid="@item.TestId">@item.Value</dd>
+                        </div>
+                    }
+                </dl>
+            </section>
+        }
+        else
+        {
+            <p class="tenants-config-remove__preview-blocked"
+               id="tenants-config-remove-preview-blocked"
+               data-testid="tenants-config-remove-preview-blocked"
+               role="status">
+                @PreviewUnavailableReason
+            </p>
+        }
+
+        <div class="tenants-config-remove__confirmation">
+            <FluentTextInput Id="tenants-config-remove-confirmation"
+                             @ref="_confirmationElement"
+                             Label="@Localizer["Tenants.Configuration.Remove.Confirmation.Label"]"
+                             Value="@_confirmationText"
+                             ValueChanged="OnConfirmationInput"
+                             data-testid="tenants-config-remove-confirmation"
+                             aria-describedby="@ConfirmationDescribedBy" />
+            <span id="tenants-config-remove-confirmation-help">@Localizer["Tenants.Configuration.Remove.Confirmation.Help", TargetKey]</span>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(_validationMessage))
+        {
+            <p id="tenants-config-remove-validation"
+               class="tenants-config-remove__validation"
+               data-testid="tenants-config-remove-validation"
+               role="alert">
+                @_validationMessage
+            </p>
+        }
+
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="0.5rem" Wrap="true" Class="tenants-config-remove__actions">
+            <span class="tenants-config-remove__button-focus" tabindex="-1" @ref="_submitElement">
+                <FluentButton Type="ButtonType.Submit"
+                              Appearance="ButtonAppearance.Primary"
+                              data-testid="tenants-config-remove-submit"
+                              Disabled="@IsSubmitDisabled">
+                    @Localizer["Tenants.Configuration.Remove.Submit"]
+                </FluentButton>
+            </span>
+        </FluentStack>
+    </EditForm>
+
+    @* Cancel lives outside the form on purpose. The narrow-width rule hides `.tenants-config-remove__form`
+       entirely, and while the sibling management landmark keeps its per-row Remove launcher rendered below
+       768px, that combination produced an aria-modal dialog with no pointer-reachable dismissal — Escape
+       only, and only when focus was already inside. *@
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="0.5rem" Wrap="true">
+        @* Refresh joins Cancel outside the form for the same reason: inside `.tenants-config-remove__form` it
+           was hidden below 768px, so a pending attempt could be dismissed but never advanced to a terminal
+           outcome from a narrow viewport. *@
+        <FluentButton Appearance="ButtonAppearance.Outline"
+                      data-testid="tenants-config-remove-refresh"
+                      Disabled="@(!CanRefresh)"
+                      OnClick="RefreshStatusAsync">
+            @Localizer["Tenants.Configuration.Remove.Refresh"]
+        </FluentButton>
+        @if (_snapshot.RetainsAttempt)
+        {
+            <FluentButton Appearance="ButtonAppearance.Outline"
+                          data-testid="tenants-config-remove-abandon"
+                          Disabled="@_isSubmitting"
+                          OnClick="AbandonAttemptAsync">
+                @Localizer["Tenants.Configuration.Remove.Abandon"]
+            </FluentButton>
+        }
+        <span class="tenants-config-remove__button-focus" tabindex="-1" @ref="_cancelElement">
+            @* Disabled only for the bounded submit call. Disabling it for Accepted/ProjectionPending made
+               the dialog undismissable for the whole projection-lag window, and permanently when the proof
+               never landed -- see CloseAsync. *@
+            <FluentButton Appearance="ButtonAppearance.Outline"
+                          data-testid="tenants-config-remove-cancel"
+                          Disabled="@(_isSubmitting || _snapshot.RetainsAttempt)"
+                          OnClick="CloseAsync">
+                @Localizer["Tenants.Configuration.Remove.Cancel"]
+            </FluentButton>
+        </span>
+    </FluentStack>
+
+    <section class="tenants-config-remove__lifecycle"
+             @ref="_lifecycleElement"
+             tabindex="-1"
+             id="tenants-config-remove-lifecycle" data-testid="tenants-config-remove-lifecycle"
+             aria-labelledby="tenants-config-remove-state-label">
+        <h4 id="tenants-config-remove-state-label">@Localizer["Tenants.Configuration.Remove.Lifecycle.Title"]</h4>
+        <p class="@StateClass" data-testid="tenants-config-remove-state">
+            <span aria-hidden="true">@StateSymbol</span>
+            <span>@StateText</span>
+        </p>
+        <div data-testid="tenants-config-remove-audit">
+            @if (ShouldRenderAuditEntryPoint)
+            {
+                <AuditAvailabilityState AuditState="@_snapshot.AuditState"
+                                        Source="remove-configuration"
+                                        OwnerRefreshIncludesAuditAuthority="true"
+                                        OnRefresh="@(CanRequeryAudit ? EventCallback.Factory.Create(this, RefreshFromAuditControlAsync) : default(EventCallback))"
+                                        OnContinueReadOnly="@(CanContinueReadOnly ? EventCallback.Factory.Create(this, CloseAsync) : default(EventCallback))"
+                                        InspectAuditAction="@CommandAuditEntryPoint" />
+            }
+        </div>
+        <p data-testid="tenants-config-remove-recovery">@RecoveryText</p>
+        @if (!string.IsNullOrWhiteSpace(DisplaySafeMessage))
+        {
+            <p data-testid="tenants-config-remove-safe-message">@DisplaySafeMessage</p>
+        }
+        <p class="tenants-config-remove__live"
+           data-testid="tenants-config-remove-live-region"
+           aria-live="@LiveRegionMode"
+           aria-atomic="true">
+            @StateText
+        </p>
+    </section>
+
+    <span class="tenants-config-remove__focus-sentinel"
+          tabindex="0"
+          data-testid="tenants-config-remove-focus-end"
+          @onfocus="FocusConfirmationAsync"></span>
+</section>
+
+@code {
+    [CascadingParameter(Name = "AuditReadAvailable")]
+    public bool AuditReadAvailable { get; set; }
+
+    [CascadingParameter(Name = "AuditReadPending")]
+    public bool AuditReadPending { get; set; }
+
+    [CascadingParameter(Name = "AuditReadDenied")]
+    public bool AuditReadDenied { get; set; }
+
+    [CascadingParameter(Name = "AuditReadUnavailableReason")]
+    public string? AuditReadUnavailableReason { get; set; }
+
+    [CascadingParameter(Name = "DetailAuditReturnUrl")]
+    public string? DetailAuditReturnUrl { get; set; }
+
+    internal static readonly TimeSpan MaximumOperationDuration = TimeSpan.FromSeconds(30);
+    private readonly object _formModel = new();
+    private TenantRemoveConfigurationCommandSnapshot _snapshot = TenantRemoveConfigurationCommandSnapshot.Idle();
+    private bool _isRefreshing;
+    private TaskCompletionSource? _refreshCompletion;
+    private string? _confirmationText;
+    private string? _validationMessage;
+    private bool _isSubmitting;
+    private bool _hasRaisedCommandActivity;
+    private bool _adoptAndRefreshPending;
+    private bool _previewRefreshPending;
+    private bool _previewEvidenceUnavailable;
+    private bool _disposed;
+    private long _previewGeneration;
+    private long _attemptGeneration;
+    private long _submitGeneration;
+    private long _activeSubmitGeneration;
+    private string? _contextTenantId;
+    private PreviewInputScope? _previewInputScope;
+    private CancellationTokenSource? _expiryCancellation;
+    private CancellationTokenSource? _submitCancellation;
+    private CancellationTokenSource? _attemptCancellation;
+
+    // Latched by CloseAsync. The component is unmounted on dismissal and a fresh instance is created if the
+    // operator reopens the flow, so this never has to be reset.
+    private bool _dismissed;
+    private bool _focusConfirmationPending;
+    private bool _focusSubmitPending;
+    private bool _focusCancelPending;
+    private bool _focusLifecyclePending;
+    private FluentTextInput _confirmationElement = default!;
+    private ElementReference _submitElement;
+    private ElementReference _cancelElement;
+    private ElementReference _lifecycleElement;
+
+    [Parameter]
+    public TenantConfigurationManagementContext Context { get; set; } = default!;
+
+    [Parameter]
+    public TenantHighImpactActionEvidence? Evidence { get; set; }
+
+    [Parameter]
+    public string TargetKey { get; set; } = string.Empty;
+
+    [Parameter]
+    public TenantDetailSurfaceKind SurfaceKind { get; set; } = TenantDetailSurfaceKind.Unknown;
+
+    [Parameter]
+    public ReadModelFreshnessState Freshness { get; set; } = ReadModelFreshnessState.Unknown;
+
+    [Parameter]
+    public ProjectionLifecycleState Lifecycle { get; set; } = ProjectionLifecycleState.Unknown;
+
+    [Parameter]
+    public bool IsCommandSurfaceAvailable { get; set; } = true;
+
+    [Parameter]
+    public bool IsPreviewSurfaceAvailable { get; set; } = true;
+
+    [Parameter]
+    public EventCallback OnProjectionRefreshRequested { get; set; }
+
+    [Parameter]
+    public EventCallback OnCloseRequested { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnCommandActivityChanged { get; set; }
+
+    /// <summary>
+    /// Gets or sets the aggregate command-activity lease. Returns false when the parent refuses the
+    /// acquisition because another surface holds the tenant aggregate, which must abort the dispatch.
+    /// </summary>
+    [Parameter]
+    public Func<bool, Task<bool>>? CommandActivityLease { get; set; }
+
+    [Parameter]
+    public Func<TenantRemoveConfigurationIntent, Task<TenantRemoveConfigurationPreview>>? PreviewEvidenceProvider { get; set; }
+
+    [Parameter]
+    public Func<TenantRemoveConfigurationIntent, Task<TenantConfigurationProjectionProof>>? ProjectionEvidenceProvider { get; set; }
+
+    internal TenantRemoveConfigurationCommandSnapshot Snapshot => _snapshot;
+
+    private TenantRemoveConfigurationAttemptTracker? AttemptTracker
+        => Services.GetService<TenantRemoveConfigurationAttemptTracker>();
+
+    private string? UnavailableReason
+        => Evidence is not null
+            ? !EntryAvailability.IsEligible
+                ? Localizer[EntryAvailability.SafeMessageKey].Value
+                : !string.Equals(Evidence.TenantId, Context.TenantId, StringComparison.Ordinal)
+                    || Evidence.Action is not TenantHighImpactAction.RemoveConfiguration
+                    || Context?.IsAvailable != true
+                    ? Localizer["Tenants.Configuration.Remove.Unavailable.Scope"].Value
+                    : !HasPreviewCapability
+                        ? Localizer["Tenants.Configuration.Remove.Unavailable.PreviewCapability"].Value
+                    : (!IsCommandSurfaceAvailable && !_snapshot.RetainsAttempt) || CommandGateway is null
+                        ? Localizer["Tenants.Configuration.Remove.Unavailable.CommandSurface"].Value
+                    : string.IsNullOrWhiteSpace(TargetKey) || Context.FindRemovableRow(TargetKey) is null
+                                ? Localizer["Tenants.Configuration.Remove.Unavailable.Target"].Value
+                                : ResolveAuthorizedNamespace(TargetKey) is null
+                                    ? Localizer["Tenants.Configuration.Remove.Unavailable.Scope"].Value
+                                    : null
+            : SurfaceKind is TenantDetailSurfaceKind.Unauthorized
+            ? Localizer["Tenants.Configuration.Remove.Unavailable.Authorization"].Value
+            : Context?.IsAvailable != true
+                ? Localizer["Tenants.Configuration.Remove.Unavailable.Scope"].Value
+            // Decision D-F: strict lifecycle gate retained, evaluated after the surface and freshness
+            // clauses so a failed read reports why it failed instead of pointing at the projection
+            // lifecycle. See SetTenantConfigurationFlow for the full rationale.
+            : SurfaceKind is TenantDetailSurfaceKind.Unavailable or TenantDetailSurfaceKind.Unknown or TenantDetailSurfaceKind.Degraded
+                ? Localizer["Tenants.Configuration.Remove.Unavailable.ProjectionState"].Value
+            : SurfaceKind is TenantDetailSurfaceKind.Stale || Freshness is not ReadModelFreshnessState.Current
+                ? Localizer["Tenants.Configuration.Remove.Unavailable.Freshness"].Value
+            : Lifecycle is not ProjectionLifecycleState.Current
+                ? Localizer["Tenants.Configuration.Remove.Unavailable.ProjectionLifecycle"].Value
+                : Context.TenantStatus is TenantStatus.Disabled or TenantStatus.Unknown
+                    ? Localizer["Tenants.Configuration.Remove.Unavailable.TenantLifecycle"].Value
+                    : !HasPreviewCapability
+                        ? Localizer["Tenants.Configuration.Remove.Unavailable.PreviewCapability"].Value
+                    : (!IsCommandSurfaceAvailable && !_snapshot.RetainsAttempt) || CommandGateway is null
+                        ? Localizer["Tenants.Configuration.Remove.Unavailable.CommandSurface"].Value
+                    : string.IsNullOrWhiteSpace(Context.TenantId)
+                                ? Localizer["Tenants.Configuration.Remove.Unavailable.Identity"].Value
+                                : string.IsNullOrWhiteSpace(TargetKey) || Context.FindRemovableRow(TargetKey) is null
+                                    ? Localizer["Tenants.Configuration.Remove.Unavailable.Target"].Value
+                                    : ResolveAuthorizedNamespace(TargetKey) is null
+                                        ? Localizer["Tenants.Configuration.Remove.Unavailable.Scope"].Value
+                                        : null;
+
+    private bool HasPreviewCapability => IsPreviewSurfaceAvailable;
+
+    private bool IsOwnedCommandInFlight => _snapshot.RetainsAttempt || _isSubmitting;
+
+    private bool IsSubmitDisabled
+        => IsOwnedCommandInFlight
+        || !IsPreviewComplete
+        || !string.IsNullOrWhiteSpace(UnavailableReason)
+        || !string.Equals(_confirmationText, TargetKey, StringComparison.Ordinal)
+        || Evidence is not null && !ConfirmationAvailability(Context).IsEligible;
+
+    private TenantHighImpactActionAvailability EntryAvailability
+        => TenantHighImpactActionAvailabilityEvaluator.Evaluate(Evidence!);
+
+    private TenantHighImpactActionAvailability ConfirmationAvailability(
+        TenantConfigurationManagementContext currentContext)
+    {
+        bool sameTenant = string.Equals(currentContext.TenantId, Context.TenantId, StringComparison.Ordinal)
+            && string.Equals(currentContext.TenantId, Evidence!.TenantId, StringComparison.Ordinal);
+        bool hasAuthority = sameTenant && currentContext.HasMutationAuthority;
+        bool authorized = hasAuthority && currentContext.IsKeyAuthorized(TargetKey);
+        bool targetPresent = authorized && currentContext.FindRemovableRow(TargetKey) is not null;
+        bool targetMissing = authorized && !targetPresent;
+        TenantHighImpactActionEvidence confirmation = Evidence! with
+        {
+            Stage = TenantHighImpactEvaluationStage.Confirmation,
+            Authority = hasAuthority
+                ? TenantHighImpactAuthorityEvidence.Authorized
+                : sameTenant && currentContext.IsAvailable
+                    ? TenantHighImpactAuthorityEvidence.MissingPermission
+                    : TenantHighImpactAuthorityEvidence.Indeterminate,
+            NamespaceScope = authorized
+                ? TenantHighImpactNamespaceScopeEvidence.Authorized
+                : TenantHighImpactNamespaceScopeEvidence.Missing,
+            Preview = targetPresent || targetMissing
+                ? TenantHighImpactPreviewEvidence.Ready
+                : TenantHighImpactPreviewEvidence.Missing,
+            IsInputComplete = string.Equals(_confirmationText, TargetKey, StringComparison.Ordinal),
+            TargetState = targetPresent
+                ? TenantHighImpactTargetState.Present
+                : targetMissing
+                    ? TenantHighImpactTargetState.Missing
+                    : TenantHighImpactTargetState.Unknown,
+        };
+        return TenantHighImpactActionAvailabilityEvaluator.Evaluate(confirmation);
+    }
+
+    // _isRefreshing belongs in the enabled test, not only in the method. The re-entrancy guard returns
+    // before the status read, before ConfirmProjection and before the activity update, so with the button
+    // still enabled a second click was silently discarded — indistinguishable from a dead control.
+    // A retained attempt with no correlation id has nothing to refresh: RefreshStatusAsync skips the status
+    // read, and the proof read and projection nudge below it are gated on Accepted/ProjectionPending, which
+    // an uncorrelated RequestSent has not reached. Offering the control there made it a dead button on a
+    // destructive flow's recovery path -- no read, no message, no state change. Abandon remains available.
+    private bool CanRefresh
+        => !_isRefreshing && _snapshot.RetainsAttempt && _snapshot.CorrelationId is not null;
+
+    private bool IsPreviewComplete
+        => _snapshot.Preview is { IsComplete: true } preview
+            && TryBuildIntent(out TenantRemoveConfigurationIntent? intent, showValidation: false)
+            && Equals(preview.Intent, intent)
+            && Equals(_snapshot.Intent, intent);
+
+    private ITenantCommandGateway? CommandGateway
+        => Services.GetService<ITenantCommandGateway>();
+
+    private ITenantQueryGateway? QueryGateway
+        => Services.GetService<ITenantQueryGateway>();
+
+    private IReadOnlyList<(string Label, string Value, string TestId)> PreviewItems
+    {
+        get
+        {
+            TenantRemoveConfigurationPreview? preview = _snapshot.Preview;
+            if (preview is null || !preview.IsComplete)
+            {
+                return [];
+            }
+
+            return
+            [
+                (Localizer["Tenants.Configuration.Remove.Preview.Tenant"], preview.Intent.TenantId, "tenants-config-remove-tenant-id"),
+                (Localizer["Tenants.Configuration.Remove.Preview.Namespace"], preview.Intent.NamespacePrefix, "tenants-config-remove-preview-namespace"),
+                (Localizer["Tenants.Configuration.Remove.Preview.Key"], preview.Intent.FullKey, "tenants-config-remove-preview-key"),
+                (Localizer["Tenants.Configuration.Remove.Preview.CurrentState"], Localizer[$"Tenants.Configuration.Remove.Preview.CurrentState.{preview.CurrentState}"], "tenants-config-remove-preview-current-state"),
+                (Localizer["Tenants.Configuration.Remove.Preview.IntendedEffect"], Localizer["Tenants.Configuration.Remove.Preview.IntendedEffect.Value"], "tenants-config-remove-preview-effect"),
+                (Localizer["Tenants.Configuration.Remove.Preview.Freshness"], Localizer["Tenants.Configuration.Remove.Preview.FreshnessAndLifecycle.Value", Localizer[$"Tenants.Configuration.Remove.Freshness.{LocalizedFreshness(preview.Freshness)}"], Localizer[$"Tenants.Configuration.Remove.Lifecycle.{LocalizedLifecycle(preview.Lifecycle)}"]], "tenants-config-remove-preview-freshness"),
+                (Localizer["Tenants.Configuration.Remove.Preview.Authorization"], Localizer["Tenants.Configuration.Remove.Preview.Authorization.Value"], "tenants-config-remove-preview-authorization"),
+                (Localizer["Tenants.Configuration.Remove.Preview.KnownConsequences"], Localizer["Tenants.Configuration.Remove.Preview.ConsequencesAndUnknowns.Value"], "tenants-config-remove-preview-consequences"),
+                (Localizer["Tenants.Configuration.Remove.Preview.AuditExpectation"], Localizer["Tenants.Configuration.Remove.Preview.AuditExpectation.Value"], "tenants-config-remove-preview-audit"),
+                (Localizer["Tenants.Configuration.Remove.Preview.RecoveryPath"], Localizer["Tenants.Configuration.Remove.Preview.RecoveryPath.Value"], "tenants-config-remove-preview-recovery"),
+            ];
+        }
+    }
+
+    private string PreviewUnavailableReason
+    {
+        get
+        {
+            return !string.IsNullOrWhiteSpace(UnavailableReason)
+                ? UnavailableReason
+                : _previewEvidenceUnavailable
+                    ? Localizer["Tenants.Configuration.Remove.Unavailable.PreviewEvidence"]
+                    : _validationMessage ?? Localizer["Tenants.Configuration.Remove.Preview.Blocked.Required"];
+        }
+    }
+
+    private string StateClass
+        => $"tenants-config-remove__state tenants-config-remove__state--{_snapshot.State.ToString().ToLowerInvariant()}";
+
+    private string StateSymbol
+        => _snapshot.State switch
+        {
+            TenantCommandLifecycleState.Confirmed => "OK",
+            TenantCommandLifecycleState.Rejected or TenantCommandLifecycleState.Failed or TenantCommandLifecycleState.DuplicatePrevented => "!",
+            TenantCommandLifecycleState.Degraded or TenantCommandLifecycleState.UnableToVerify => "?",
+            _ => ">",
+        };
+
+    private string StateText
+        => Localizer[$"Tenants.Configuration.Remove.State.{_snapshot.State}"];
+
+    // The entry point names the audit state with the shared availability label, never a flow-local duplicate.
+    private string AuditStateLabel
+        => TenantAuditAvailability.StateLabelKeyFor(_snapshot.AuditState) is { } key ? Localizer[key] : string.Empty;
+
+    // Refresh is offered only while the attempt can actually be re-queried; a no-op control would only
+    // exhaust the retry bound behind a misleading limit note.
+    private bool CanRequeryAudit
+        => _snapshot.RetainsAttempt && _snapshot.CorrelationId is not null;
+
+    // Continue read-only dismisses the dialog through the Cancel path, which refuses while an attempt is retained
+    // or a submit is running; the control is offered only while that path actually closes, never as a dead control.
+    private bool CanContinueReadOnly
+        => !_isSubmitting && !_snapshot.RetainsAttempt;
+
+    // No fragment at all when audit read is denied, so the shared control renders no empty Inspect-audit shell.
+    private RenderFragment? CommandAuditEntryPoint
+        => AuditReadDenied ? null : CommandAuditEntryPointTemplate;
+
+    private RenderFragment CommandAuditEntryPointTemplate
+        => @<AuditEvidenceEntryPoint TenantId="@Context.TenantId"
+                                     SourceKind="command-result"
+                                     SourceTestId="tenants-command-audit-entrypoint"
+                                     Label="@Localizer["Tenants.Audit.Availability.Action.InspectAudit"]"
+                                     AccessibleName="@Localizer["Tenants.Audit.EntryPoint.Accessible.Command", AuditStateLabel, Context.TenantId]"
+                                     ReturnUrl="@CommandAuditReturnUrl"
+                                     ReturnFocus="tenants-config-remove-lifecycle"
+                                     AuthorityPending="@AuditReadPending"
+                                     UnavailableReason="@AuditReadUnavailableReason"
+                                     IsAvailable="@AuditReadAvailable" />;
+
+    // The shared control's Refresh can resolve the audit state to NotStarted, which unmounts the control and its
+    // focused Refresh button; focus then moves to the lifecycle section instead of falling back to the document body.
+    private async Task RefreshFromAuditControlAsync()
+    {
+        await RefreshStatusAsync().ConfigureAwait(false);
+        await InvokeAsync(() =>
+        {
+            if (!ShouldRenderAuditEntryPoint)
+            {
+                _focusLifecyclePending = true;
+            }
+        }).ConfigureAwait(false);
+    }
+
+    private bool ShouldRenderAuditEntryPoint
+        => _snapshot.AuditState is not TenantCommandAuditState.NotStarted;
+
+    private string? CommandAuditReturnUrl => DetailAuditReturnUrl;
+
+    private string RecoveryText
+        => Localizer[$"Tenants.Configuration.Remove.Recovery.{_snapshot.State}"];
+
+    private string? DisplaySafeMessage
+        => !string.IsNullOrWhiteSpace(_snapshot.SafeMessageKey)
+            ? Localizer[_snapshot.SafeMessageKey].Value
+            : _snapshot.SafeMessage;
+
+    private string LiveRegionMode
+        => _snapshot.LiveRegionPoliteness is TenantCommandLiveRegionPoliteness.Assertive ? "assertive" : "polite";
+
+    private string ConfirmationDescribedBy
+    {
+        get
+        {
+            List<string> ids = ["tenants-config-remove-confirmation-help"];
+            if (!string.IsNullOrWhiteSpace(UnavailableReason))
+            {
+                ids.Add("tenants-config-remove-unavailable");
+            }
+
+            if (!string.IsNullOrWhiteSpace(_validationMessage))
+            {
+                ids.Add("tenants-config-remove-validation");
+            }
+
+            return string.Join(" ", ids);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        string tenantId = Context?.TenantId ?? string.Empty;
+        PreviewInputScope inputScope = CapturePreviewInputScope();
+        bool tenantChanged = !string.Equals(_contextTenantId, tenantId, StringComparison.Ordinal);
+        bool previewScopeChanged = !Equals(_previewInputScope, inputScope);
+        if (tenantChanged)
+        {
+            _contextTenantId = tenantId;
+            _previewInputScope = inputScope;
+            CancelSubmitOperation();
+            CancelAttemptOperation();
+            InvalidatePendingOperations();
+            CancelExpirySchedule();
+            _snapshot = TenantRemoveConfigurationCommandSnapshot.Idle();
+            _confirmationText = null;
+            _validationMessage = null;
+            _previewEvidenceUnavailable = false;
+            _isRefreshing = false;
+            _isSubmitting = false;
+            _activeSubmitGeneration = 0;
+            _hasRaisedCommandActivity = false;
+            _adoptAndRefreshPending = false;
+            _previewRefreshPending = true;
+        }
+        else if (previewScopeChanged)
+        {
+            _previewInputScope = inputScope;
+            CancelSubmitOperation();
+            _ = Interlocked.Increment(ref _previewGeneration);
+            _ = Interlocked.Increment(ref _submitGeneration);
+            // A parent refresh commonly changes Context/Evidence immediately after causal confirmation.
+            // Preserve the attempted lifecycle whenever it still carries the tracked message; otherwise the
+            // refresh that proves removal resets Confirmed to Idle before the operator can observe it.
+            if (!_snapshot.RetainsAttempt && string.IsNullOrWhiteSpace(_snapshot.MessageId))
+            {
+                _snapshot = TenantRemoveConfigurationCommandSnapshot.Idle();
+                _validationMessage = null;
+                _previewEvidenceUnavailable = false;
+                _previewRefreshPending = true;
+                if (!string.Equals(_confirmationText, TargetKey, StringComparison.Ordinal))
+                {
+                    _confirmationText = null;
+                }
+            }
+        }
+
+        TenantRemoveConfigurationCommandSnapshot? retained = AttemptTracker?.Find(tenantId);
+        if (retained is not null
+            && retained.Intent is not null
+            && !string.Equals(retained.MessageId, _snapshot.MessageId, StringComparison.Ordinal))
+        {
+            InvalidatePendingOperations();
+            _snapshot = retained;
+            _confirmationText = retained.Intent.FullKey;
+            _validationMessage = null;
+            _previewEvidenceUnavailable = false;
+            _adoptAndRefreshPending = true;
+            _previewRefreshPending = false;
+            ScheduleAttemptExpiry();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        bool renderEvidenceUpdate = false;
+        if (_adoptAndRefreshPending)
+        {
+            _adoptAndRefreshPending = false;
+            if (await SetCommandActivityRaisedAsync(true).ConfigureAwait(false))
+            {
+                await RefreshStatusAsync().ConfigureAwait(false);
+                renderEvidenceUpdate = true;
+            }
+        }
+
+        if (_previewRefreshPending)
+        {
+            _previewRefreshPending = false;
+            await RefreshPreviewAsync().ConfigureAwait(false);
+            renderEvidenceUpdate = true;
+        }
+
+        if (renderEvidenceUpdate)
+        {
+            await InvokeAsync(StateHasChanged).ConfigureAwait(false);
+        }
+
+        if (_focusConfirmationPending)
+        {
+            _focusConfirmationPending = false;
+            await FocusSafelyAsync(_confirmationElement.Element).ConfigureAwait(false);
+        }
+
+        if (_focusSubmitPending)
+        {
+            _focusSubmitPending = false;
+            await FocusSafelyAsync(_submitElement).ConfigureAwait(false);
+        }
+
+        if (_focusCancelPending)
+        {
+            _focusCancelPending = false;
+            await FocusSafelyAsync(_cancelElement).ConfigureAwait(false);
+        }
+
+        if (_focusLifecyclePending)
+        {
+            _focusLifecyclePending = false;
+            await FocusSafelyAsync(_lifecycleElement).ConfigureAwait(false);
+        }
+    }
+
+    // The destructive flow was the only one of the three configuration components left calling FocusAsync
+    // bare. A circuit that drops with a focus queued throws JSDisconnectedException and a target that left
+    // the DOM between the queuing render and this callback throws JSException; either escapes the render
+    // lifecycle and tears the circuit down. Both are expected here, and neither is actionable: there is
+    // nothing left to focus.
+    private static async Task FocusSafelyAsync(ElementReference element)
+    {
+        try
+        {
+            await element.FocusAsync().ConfigureAwait(false);
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+        catch (JSException)
+        {
+        }
+    }
+
+    private async Task<bool> SetCommandActivityRaisedAsync(bool isActive)
+    {
+        // Once dismissed, this flow can never raise the lease again. CloseAsync deliberately does not wait
+        // for an in-flight RefreshStatusAsync -- blocking dismissal on _isRefreshing would restore the modal
+        // trap P-2 removed -- so a status read suspended at GetStatusAsync resumed after the parent had
+        // already unmounted this component and called UpdateCommandActivityForSnapshotAsync. With the state
+        // still ProjectionPending, RetainsCommandActivity was true, this latch flipped back, and the parent
+        // and detail page were left believing a command was settling with no owner left to lower it: the
+        // sibling Set flow rendered permanently blocked and tenant lifecycle actions stayed disabled for the
+        // life of the circuit. Lowering the lease stays allowed; only re-raising is refused.
+        if (isActive && _dismissed)
+        {
+            return true;
+        }
+
+        if (_hasRaisedCommandActivity == isActive)
+        {
+            return true;
+        }
+
+        // The lease answer must reach the caller. An EventCallback<bool> cannot return one, so a refused
+        // acquisition used to leave this flow free to dispatch against an aggregate another surface held.
+        if (CommandActivityLease is not null)
+        {
+            bool accepted = await CommandActivityLease(isActive).ConfigureAwait(false);
+            if (isActive && !accepted)
+            {
+                return false;
+            }
+        }
+
+        _hasRaisedCommandActivity = isActive;
+        if (CommandActivityLease is null)
+        {
+            await InvokeAsync(() => OnCommandActivityChanged.InvokeAsync(isActive)).ConfigureAwait(false);
+        }
+
+        return true;
+    }
+
+    private async Task UpdateCommandActivityForSnapshotAsync()
+        => _ = await SetCommandActivityRaisedAsync(_snapshot.RetainsAttempt || _isSubmitting).ConfigureAwait(false);
+
+    private bool SetSnapshot(TenantRemoveConfigurationCommandSnapshot snapshot)
+    {
+        string? previousMessageId = _snapshot.MessageId;
+        string? previousTenantId = _snapshot.Intent?.TenantId;
+        _snapshot = snapshot;
+        if (_snapshot.RetainsAttempt)
+        {
+            if (AttemptTracker?.Remember(_snapshot) is not true)
+            {
+                string? rejectedMessageId = _snapshot.MessageId;
+                string? rejectedTenantId = _snapshot.Intent?.TenantId;
+                _ = Interlocked.Increment(ref _attemptGeneration);
+                CancelAttemptOperation();
+                // The tracker refuses an attempt that outlived its retention window; that is expiry (audit
+                // delayed), not an abandoned or unverifiable dispatch.
+                _snapshot = _snapshot.IsRetentionExpired(DateTimeOffset.UtcNow)
+                    ? _snapshot.ExpireRetention()
+                    : _snapshot.Abandon();
+                if (!string.IsNullOrWhiteSpace(rejectedMessageId)
+                    && !string.IsNullOrWhiteSpace(rejectedTenantId))
+                {
+                    AttemptTracker?.Forget(rejectedTenantId, rejectedMessageId);
+                }
+
+                CancelExpirySchedule();
+                _ = ReleaseCommandActivitySafelyAsync();
+                return false;
+            }
+
+            ScheduleAttemptExpiry();
+        }
+        else
+        {
+            CancelAttemptOperation();
+            CancelExpirySchedule();
+            if (!string.IsNullOrWhiteSpace(previousMessageId) && !string.IsNullOrWhiteSpace(previousTenantId))
+            {
+                AttemptTracker?.Forget(previousTenantId, previousMessageId);
+            }
+        }
+
+        if (_snapshot.LiveRegionPoliteness is TenantCommandLiveRegionPoliteness.Assertive
+            || _snapshot.FocusTarget is TenantCommandFocusTarget.Lifecycle)
+        {
+            _focusLifecyclePending = true;
+        }
+
+        return true;
+    }
+
+    internal async Task ApplySignalRNudgeAsync()
+    {
+        if (!_snapshot.RetainsAttempt)
+        {
+            return;
+        }
+
+        SetSnapshot(_snapshot.SignalRNudge());
+        await RefreshAttemptStatusAsync(waitForRunningRefresh: false).ConfigureAwait(false);
+    }
+
+    private void OnConfirmationInput(string? value)
+        => _confirmationText = value;
+
+    private async Task SubmitAsync()
+    {
+        _validationMessage = null;
+        if (_isSubmitting || _snapshot.RetainsAttempt)
+        {
+            return;
+        }
+
+        _isSubmitting = true;
+        long submitGeneration = Interlocked.Increment(ref _submitGeneration);
+        _activeSubmitGeneration = submitGeneration;
+        long inputGeneration = Interlocked.Increment(ref _previewGeneration);
+        string tenantId = Context.TenantId;
+        CancellationTokenSource submitCancellation = StartSubmitOperation();
+        CancellationToken submitToken = submitCancellation.Token;
+        TenantRemoveConfigurationAttemptTracker? tracker = null;
+        string? messageId = null;
+        bool leaseRequested = false;
+        bool retainedOwnershipEstablished = false;
+        long retainedAttemptGeneration = 0;
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(UnavailableReason)
+                || !TryBuildIntent(out TenantRemoveConfigurationIntent? intent, showValidation: true)
+                || intent is null)
+            {
+                if (!string.IsNullOrWhiteSpace(UnavailableReason))
+                {
+                    SetSnapshot(TenantRemoveConfigurationCommandSnapshot.Blocked(
+                        UnavailableReason,
+                        TenantCommandFocusTarget.Submit));
+                }
+
+                return;
+            }
+
+            if (!string.Equals(_confirmationText, intent.FullKey, StringComparison.Ordinal))
+            {
+                _validationMessage = Localizer["Tenants.Configuration.Remove.Validation.ConfirmationRequired", intent.FullKey];
+                _focusConfirmationPending = true;
+                return;
+            }
+
+            TenantRemoveConfigurationPreview preview;
+            try
+            {
+                preview = (PreviewEvidenceProvider is not null
+                    ? await PreviewEvidenceProvider(intent).WaitAsync(submitToken).ConfigureAwait(false)
+                    : QueryGateway is { } queryGateway
+                        ? await queryGateway.GetRemoveConfigurationPreviewAsync(intent, submitToken)
+                            .WaitAsync(submitToken)
+                            .ConfigureAwait(false)
+                        : TenantRemoveConfigurationPreview.Unavailable(intent))
+                    ?? TenantRemoveConfigurationPreview.Unavailable(intent);
+            }
+            catch (OperationCanceledException)
+            {
+                preview = TenantRemoveConfigurationPreview.Unavailable(intent);
+            }
+            catch (Exception)
+            {
+                preview = TenantRemoveConfigurationPreview.Unavailable(intent);
+            }
+
+            if (!IsSubmitStillEligible(submitGeneration, inputGeneration, tenantId, intent)
+                || !Equals(preview.Intent, intent)
+                || !preview.IsComplete)
+            {
+                if (IsSubmitStillEligible(submitGeneration, inputGeneration, tenantId, intent))
+                {
+                    _previewEvidenceUnavailable = true;
+                    string key = preview.IsAuthoritative
+                        && preview.CurrentState is TenantRemoveConfigurationCurrentState.Absent
+                            ? "Tenants.Configuration.Remove.Unavailable.TargetMissing"
+                            : "Tenants.Configuration.Remove.Unavailable.PreviewEvidence";
+                    SetSnapshot(TenantRemoveConfigurationCommandSnapshot.Blocked(
+                        Localizer[key],
+                        TenantCommandFocusTarget.Submit));
+                }
+
+                return;
+            }
+
+            _previewEvidenceUnavailable = false;
+            SetSnapshot(TenantRemoveConfigurationCommandSnapshot.Idle().Previewed(preview));
+            ITenantCommandGateway? gateway = CommandGateway;
+            tracker = AttemptTracker;
+            if (gateway is null || tracker is null || !gateway.SupportsTrackedRemoveConfigurationDispatch)
+            {
+                SetSnapshot(TenantRemoveConfigurationCommandSnapshot.Blocked(
+                    Localizer["Tenants.Configuration.Remove.Unavailable.TrackedDispatch"].Value,
+                    TenantCommandFocusTarget.Submit));
+                return;
+            }
+
+            DateTimeOffset startedAtUtc;
+            try
+            {
+                (messageId, startedAtUtc) = tracker.BeginDispatch(
+                    intent,
+                    preview.ProjectionVersion!,
+                    DateTimeOffset.UtcNow);
+            }
+            catch (Exception)
+            {
+                SetSnapshot(TenantRemoveConfigurationCommandSnapshot.Blocked(
+                    Localizer["Tenants.Configuration.Remove.UnableToVerify.TrackingMismatch"],
+                    TenantCommandFocusTarget.Submit));
+                return;
+            }
+
+            if (!IsSubmitStillEligible(submitGeneration, inputGeneration, tenantId, intent))
+            {
+                return;
+            }
+
+            leaseRequested = true;
+            if (!await AcquireCommandActivityAsync(submitToken).ConfigureAwait(false))
+            {
+                SetSnapshot(TenantRemoveConfigurationCommandSnapshot.Blocked(
+                    Localizer["Tenants.Commands.Unavailable.AggregateInFlight"],
+                    TenantCommandFocusTarget.Submit));
+                return;
+            }
+
+            if (!IsSubmitStillEligible(submitGeneration, inputGeneration, tenantId, intent))
+            {
+                return;
+            }
+
+            retainedAttemptGeneration = Interlocked.Increment(ref _attemptGeneration);
+            StartAttemptOperation();
+            if (!SetSnapshot(_snapshot.RequestSent(preview, messageId, startedAtUtc)))
+            {
+                return;
+            }
+
+            retainedOwnershipEstablished = true;
+            var request = new RemoveTenantConfiguration(intent.TenantId, intent.FullKey);
+            using CancellationTokenSource dispatchCancellation = CreateBoundedAttemptOperation();
+            TenantCommandSubmissionResult result = await gateway.RemoveTenantConfigurationTrackedAsync(
+                request,
+                messageId,
+                dispatchCancellation.Token).WaitAsync(dispatchCancellation.Token).ConfigureAwait(false);
+            if (!IsCurrentAttempt(retainedAttemptGeneration, tenantId, messageId))
+            {
+                return;
+            }
+
+            if (result.IsAmbiguousFailure)
+            {
+                SetSnapshot(_snapshot.AmbiguousSubmission(
+                    result.SafeMessageKey ?? "Tenants.Configuration.Remove.SubmissionEvidence.Ambiguous"));
+            }
+            else if (result.State is TenantCommandLifecycleState.Accepted)
+            {
+                SetSnapshot(_snapshot.Accepted(result));
+                await RefreshStatusAsync().ConfigureAwait(false);
+            }
+            else
+            {
+                SetSnapshot(_snapshot with
+                {
+                    State = result.State,
+                    SafeMessage = null,
+                    SafeMessageKey = result.SafeMessageKey ?? SubmissionMessageKey(result.State),
+                    RejectionCode = result.RejectionCode,
+                    AuditState = TenantCommandAuditStates.FromSubmission(result),
+                    FocusTarget = TenantCommandFocusTarget.Refresh,
+                    LiveRegionPoliteness = TenantCommandLiveRegionPoliteness.Assertive,
+                });
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            if (retainedOwnershipEstablished
+                && messageId is not null
+                && IsCurrentAttempt(retainedAttemptGeneration, tenantId, messageId))
+            {
+                SetSnapshot(_snapshot.AmbiguousSubmission(
+                    "Tenants.Configuration.Remove.SubmissionEvidence.Ambiguous"));
+            }
+        }
+        catch (Exception)
+        {
+            if (retainedOwnershipEstablished
+                && messageId is not null
+                && IsCurrentAttempt(retainedAttemptGeneration, tenantId, messageId))
+            {
+                SetSnapshot(_snapshot.AmbiguousSubmission(
+                    "Tenants.Configuration.Remove.SubmissionEvidence.Ambiguous"));
+            }
+        }
+        finally
+        {
+            try
+            {
+                if (!retainedOwnershipEstablished && tracker is not null && messageId is not null)
+                {
+                    tracker.Forget(tenantId, messageId);
+                }
+
+                if (leaseRequested && !retainedOwnershipEstablished)
+                {
+                    await ReleaseCommandActivitySafelyAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                CompleteSubmitOperation(submitCancellation);
+                if (_activeSubmitGeneration == submitGeneration)
+                {
+                    _activeSubmitGeneration = 0;
+                    _isSubmitting = false;
+                    try
+                    {
+                        await UpdateCommandActivityForSnapshotAsync().ConfigureAwait(false);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            }
+        }
+    }
+
+    // A user-initiated refresh that arrives while one is running waits for it and then runs a lookup of its own, so
+    // the shared control's bounded Refresh never counts a merged click as an unchanged retry that no lookup served.
+    // SignalR nudges, and anything reachable from inside a running refresh, must pass false: waiting there would
+    // deadlock.
+    private Task RefreshStatusAsync()
+        => RefreshAttemptStatusAsync(waitForRunningRefresh: true);
+
+    private async Task RefreshAttemptStatusAsync(bool waitForRunningRefresh)
+    {
+        if (_isRefreshing)
+        {
+            if (waitForRunningRefresh && _refreshCompletion is { } running)
+            {
+                // The running refresh started before this request, so its lookup cannot serve it: wait for it,
+                // then run a lookup of its own on the renderer dispatcher.
+                await running.Task.ConfigureAwait(false);
+                await InvokeAsync(() => RefreshAttemptStatusAsync(waitForRunningRefresh: true)).ConfigureAwait(false);
+            }
+
+            return;
+        }
+
+        if (!_snapshot.RetainsAttempt || _snapshot.Intent is null)
+        {
+            return;
+        }
+
+        string tenantId = _snapshot.Intent.TenantId;
+        string? messageId = _snapshot.MessageId;
+        long attemptGeneration = _attemptGeneration;
+        if (string.IsNullOrWhiteSpace(messageId))
+        {
+            return;
+        }
+
+        _isRefreshing = true;
+        TaskCompletionSource completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        _refreshCompletion = completion;
+        using CancellationTokenSource operationCancellation = CreateBoundedAttemptOperation();
+        CancellationToken cancellationToken = operationCancellation.Token;
+        try
+        {
+            ITenantCommandGateway? gateway = CommandGateway;
+            try
+            {
+                if (_snapshot.MessageId is not null && _snapshot.CorrelationId is not null)
+                {
+                    TenantCommandStatusResult status = gateway is null
+                        ? TenantCommandStatusResult.RetryableFailure(
+                            Localizer["Tenants.Configuration.Remove.Unavailable.CommandSurface"])
+                        : await gateway.GetStatusAsync(
+                            new TenantCommandTrackingHandle(
+                                _snapshot.MessageId,
+                                _snapshot.CorrelationId,
+                                _snapshot.Intent.TenantId)
+                            {
+                                ExpectedDomain = Hexalith.Tenants.Contracts.Identity.TenantIdentity.Domain,
+                            },
+                            cancellationToken)
+                            .WaitAsync(cancellationToken)
+                            .ConfigureAwait(false);
+                    if (!IsCurrentAttempt(attemptGeneration, tenantId, messageId))
+                    {
+                        return;
+                    }
+
+                    SetSnapshot(_snapshot.ApplyStatus(status));
+                }
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                if (IsCurrentAttempt(attemptGeneration, tenantId, messageId))
+                {
+                    SetSnapshot(_snapshot.AmbiguousSubmission(
+                        "Tenants.Configuration.Remove.UnableToVerify.Status"));
+                }
+
+                return;
+            }
+            catch (Exception)
+            {
+                if (IsCurrentAttempt(attemptGeneration, tenantId, messageId))
+                {
+                    SetSnapshot(_snapshot.AmbiguousSubmission(
+                        "Tenants.Configuration.Remove.UnableToVerify.Status"));
+                }
+
+                return;
+            }
+
+            if (!IsCurrentAttempt(attemptGeneration, tenantId, messageId)
+                || _snapshot.State is not TenantCommandLifecycleState.Accepted
+                    and not TenantCommandLifecycleState.ProjectionPending)
+            {
+                return;
+            }
+
+            if ((ProjectionEvidenceProvider is not null || QueryGateway is not null)
+                && _snapshot.Intent is { } intent
+                && IsCurrentAttempt(attemptGeneration, tenantId, messageId))
+            {
+                try
+                {
+                    TenantConfigurationProjectionProof proof = ProjectionEvidenceProvider is not null
+                        ? await ProjectionEvidenceProvider(intent).WaitAsync(cancellationToken).ConfigureAwait(false)
+                        : await QueryGateway!.GetRemoveConfigurationProjectionProofAsync(intent, cancellationToken)
+                            .WaitAsync(cancellationToken)
+                            .ConfigureAwait(false);
+                    if (IsCurrentAttempt(attemptGeneration, tenantId, messageId))
+                    {
+                        SetSnapshot(_snapshot.ConfirmProjection(proof));
+                    }
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    MarkProjectionVerificationFailure(attemptGeneration, tenantId, messageId);
+                    return;
+                }
+                catch (Exception)
+                {
+                    MarkProjectionVerificationFailure(attemptGeneration, tenantId, messageId);
+                    return;
+                }
+            }
+
+            if (IsAttemptIdentityCurrent(attemptGeneration, tenantId, messageId))
+            {
+                try
+                {
+                    await InvokeAsync(() => OnProjectionRefreshRequested.InvokeAsync())
+                        .WaitAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    MarkProjectionVerificationFailure(attemptGeneration, tenantId, messageId);
+                }
+                catch (Exception)
+                {
+                    MarkProjectionVerificationFailure(attemptGeneration, tenantId, messageId);
+                }
+            }
+        }
+        finally
+        {
+            _isRefreshing = false;
+            try
+            {
+                await UpdateCommandActivityForSnapshotAsync().ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (ReferenceEquals(_refreshCompletion, completion))
+                {
+                    _refreshCompletion = null;
+                }
+
+                completion.TrySetResult();
+            }
+        }
+    }
+
+    private async Task RefreshPreviewAsync()
+    {
+        // The bail-out has to precede every shared mutation. Cancelling and re-arming _submitCancellation
+        // first meant a refresh that immediately declined still cancelled the token an in-flight submit was
+        // awaiting, and clearing _previewEvidenceUnavailable first erased a rendered "evidence could not be
+        // verified" explanation on a refresh that did no reading at all.
+        if (_isSubmitting || _snapshot.RetainsAttempt
+            || !TryBuildIntent(out TenantRemoveConfigurationIntent? intent, showValidation: false)
+            || intent is null)
+        {
+            return;
+        }
+
+        long generation = Interlocked.Increment(ref _previewGeneration);
+        string tenantId = Context.TenantId;
+        PreviewInputScope inputScope = CapturePreviewInputScope();
+        CancellationTokenSource previewCancellation = StartSubmitOperation();
+        CancellationToken cancellationToken = previewCancellation.Token;
+        _previewEvidenceUnavailable = false;
+
+        TenantRemoveConfigurationPreview preview;
+        try
+        {
+            preview = (PreviewEvidenceProvider is not null
+                ? await PreviewEvidenceProvider(intent).WaitAsync(cancellationToken).ConfigureAwait(false)
+                : QueryGateway is { } queryGateway
+                    ? await queryGateway.GetRemoveConfigurationPreviewAsync(intent, cancellationToken)
+                        .WaitAsync(cancellationToken)
+                        .ConfigureAwait(false)
+                    : TenantRemoveConfigurationPreview.Unavailable(intent))
+                ?? TenantRemoveConfigurationPreview.Unavailable(intent);
+        }
+        catch (OperationCanceledException)
+        {
+            preview = TenantRemoveConfigurationPreview.Unavailable(intent);
+        }
+        catch (Exception)
+        {
+            preview = TenantRemoveConfigurationPreview.Unavailable(intent);
+        }
+        finally
+        {
+            CompleteSubmitOperation(previewCancellation);
+        }
+
+        if (generation != _previewGeneration
+            || _isSubmitting
+            || _snapshot.RetainsAttempt
+            || !string.Equals(Context.TenantId, tenantId, StringComparison.Ordinal)
+            || !Equals(_previewInputScope, inputScope)
+            || !Equals(preview.Intent, intent)
+            || !preview.IsComplete)
+        {
+            if (generation == _previewGeneration
+                && !_isSubmitting
+                && !_snapshot.RetainsAttempt
+                && string.Equals(Context.TenantId, tenantId, StringComparison.Ordinal))
+            {
+                _previewEvidenceUnavailable = true;
+                SetSnapshot(TenantRemoveConfigurationCommandSnapshot.Blocked(
+                    Localizer[preview.IsAuthoritative
+                        && preview.CurrentState is TenantRemoveConfigurationCurrentState.Absent
+                            ? "Tenants.Configuration.Remove.Unavailable.TargetMissing"
+                            : "Tenants.Configuration.Remove.Unavailable.PreviewEvidence"],
+                    TenantCommandFocusTarget.Submit));
+            }
+
+            return;
+        }
+
+        SetSnapshot(TenantRemoveConfigurationCommandSnapshot.Idle().Previewed(preview));
+        _focusConfirmationPending = true;
+    }
+
+    private bool TryBuildIntent(out TenantRemoveConfigurationIntent? intent, bool showValidation)
+    {
+        intent = null;
+
+        if (string.IsNullOrWhiteSpace(TargetKey))
+        {
+            SetValidation(showValidation, Localizer["Tenants.Configuration.Remove.Validation.KeyRequired"]);
+            return false;
+        }
+
+        if (Context.FindRemovableRow(TargetKey) is null)
+        {
+            SetValidation(showValidation, Localizer["Tenants.Configuration.Remove.Validation.KeyVisible"]);
+            return false;
+        }
+
+        if (ResolveAuthorizedNamespace(TargetKey) is null)
+        {
+            SetValidation(showValidation, Localizer["Tenants.Configuration.Remove.Validation.NamespaceScope"]);
+            return false;
+        }
+
+        intent = new TenantRemoveConfigurationIntent(
+            Context.TenantId,
+            ResolveAuthorizedNamespace(TargetKey)!,
+            TargetKey);
+        return true;
+    }
+
+    private void SetValidation(bool showValidation, string message)
+    {
+        if (showValidation)
+        {
+            _validationMessage = message;
+            _focusSubmitPending = true;
+        }
+    }
+
+    private async Task CloseAsync()
+    {
+        // Retained attempts cannot be dismissed accidentally. The explicit abandon action first converts
+        // the attempt to support-safe unable-to-verify evidence and releases aggregate ownership; only then
+        // may Cancel or Escape close the dialog.
+        if (_isSubmitting || _snapshot.RetainsAttempt)
+        {
+            return;
+        }
+
+        _validationMessage = null;
+        _focusCancelPending = true;
+
+        // Set before the release, so a status refresh already suspended mid-await cannot re-raise the lease
+        // between these two statements.
+        _dismissed = true;
+
+        // Release the activity lease before unmounting. The parent landmark keeps both flows rendered while
+        // a child owns command activity, so a dismissal that skipped this would leave the landmark and the
+        // detail page believing a command was still settling for the life of the circuit.
+        _ = await SetCommandActivityRaisedAsync(false).ConfigureAwait(false);
+        await InvokeAsync(() => OnCloseRequested.InvokeAsync()).ConfigureAwait(false);
+    }
+
+    private Task AbandonAttemptAsync()
+        => ReleaseAttemptAsync(retentionExpired: false);
+
+    // Operator abandonment and retention expiry release the attempt through the same path; only the audit
+    // dimension differs (unverifiable versus delayed).
+    private async Task ReleaseAttemptAsync(bool retentionExpired)
+    {
+        string? messageId = _snapshot.MessageId;
+        string? tenantId = _snapshot.Intent?.TenantId;
+        CancelSubmitOperation();
+        CancelAttemptOperation();
+        _ = Interlocked.Increment(ref _attemptGeneration);
+        _ = Interlocked.Increment(ref _previewGeneration);
+        _ = Interlocked.Increment(ref _submitGeneration);
+        _activeSubmitGeneration = 0;
+        _isSubmitting = false;
+        CancelExpirySchedule();
+        SetSnapshot(retentionExpired ? _snapshot.ExpireRetention() : _snapshot.Abandon());
+        if (!string.IsNullOrWhiteSpace(messageId) && !string.IsNullOrWhiteSpace(tenantId))
+        {
+            AttemptTracker?.Forget(tenantId, messageId);
+        }
+
+        await ReleaseCommandActivitySafelyAsync().ConfigureAwait(false);
+        if (!_disposed)
+        {
+            await InvokeAsync(StateHasChanged).ConfigureAwait(false);
+        }
+    }
+
+    internal async Task ExpireRetainedAttemptAsync(DateTimeOffset observedAtUtc)
+    {
+        if (_snapshot.RetainsAttempt && _snapshot.IsRetentionExpired(observedAtUtc))
+        {
+            await ReleaseAttemptAsync(retentionExpired: true).ConfigureAwait(false);
+        }
+    }
+
+    private void ScheduleAttemptExpiry()
+    {
+        CancelExpirySchedule();
+        if (_disposed
+            || !_snapshot.RetainsAttempt
+            || _snapshot.AttemptStartedAtUtc is not { } startedAtUtc
+            || _snapshot.Intent is not { } intent
+            || string.IsNullOrWhiteSpace(_snapshot.MessageId))
+        {
+            return;
+        }
+
+        string messageId = _snapshot.MessageId;
+        long attemptGeneration = _attemptGeneration;
+        DateTimeOffset deadline = startedAtUtc + TenantRemoveConfigurationCommandSnapshot.MaximumRetainedAttemptDuration;
+        var cancellation = new CancellationTokenSource();
+        _expiryCancellation = cancellation;
+        _ = ObserveAttemptExpiryAsync(intent.TenantId, messageId, attemptGeneration, deadline, cancellation.Token);
+    }
+
+    private async Task ObserveAttemptExpiryAsync(
+        string tenantId,
+        string messageId,
+        long attemptGeneration,
+        DateTimeOffset deadline,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            TimeSpan remaining = deadline - DateTimeOffset.UtcNow;
+            if (remaining > TimeSpan.Zero)
+            {
+                await Task.Delay(remaining, cancellationToken).ConfigureAwait(false);
+            }
+
+            await InvokeAsync(async () =>
+            {
+                if (IsCurrentAttempt(attemptGeneration, tenantId, messageId))
+                {
+                    await ExpireRetainedAttemptAsync(DateTimeOffset.UtcNow).ConfigureAwait(false);
+                }
+            }).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
+    private void CancelExpirySchedule()
+    {
+        CancellationTokenSource? cancellation = Interlocked.Exchange(ref _expiryCancellation, null);
+        if (cancellation is null)
+        {
+            return;
+        }
+
+        try
+        {
+            cancellation.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+
+        cancellation.Dispose();
+    }
+
+    private bool IsCurrentSubmit(long submitGeneration, long inputGeneration, string tenantId)
+        => !_disposed
+            && _isSubmitting
+            && _activeSubmitGeneration == submitGeneration
+            && _previewGeneration == inputGeneration
+            && string.Equals(_contextTenantId, tenantId, StringComparison.Ordinal)
+            && string.Equals(Context.TenantId, tenantId, StringComparison.Ordinal)
+            && !_snapshot.RetainsAttempt;
+
+    private bool IsSubmitStillEligible(
+        long submitGeneration,
+        long inputGeneration,
+        string tenantId,
+        TenantRemoveConfigurationIntent intent)
+        => IsCurrentSubmit(submitGeneration, inputGeneration, tenantId)
+            && string.IsNullOrWhiteSpace(UnavailableReason)
+            && (Evidence is null || ConfirmationAvailability(Context).IsEligible)
+            && TryBuildIntent(out TenantRemoveConfigurationIntent? currentIntent, showValidation: false)
+            && Equals(currentIntent, intent);
+
+    private bool IsCurrentAttempt(long attemptGeneration, string tenantId, string messageId)
+        => _snapshot.RetainsAttempt
+            && IsAttemptIdentityCurrent(attemptGeneration, tenantId, messageId);
+
+    private bool IsAttemptIdentityCurrent(long attemptGeneration, string tenantId, string messageId)
+        => !_disposed
+            && _attemptGeneration == attemptGeneration
+            && string.Equals(_snapshot.Intent?.TenantId, tenantId, StringComparison.Ordinal)
+            && string.Equals(_snapshot.MessageId, messageId, StringComparison.Ordinal)
+            && string.Equals(Context.TenantId, tenantId, StringComparison.Ordinal);
+
+    private void InvalidatePendingOperations()
+    {
+        _ = Interlocked.Increment(ref _previewGeneration);
+        _ = Interlocked.Increment(ref _attemptGeneration);
+        _ = Interlocked.Increment(ref _submitGeneration);
+    }
+
+    private PreviewInputScope CapturePreviewInputScope()
+        => new(
+            Context,
+            Evidence,
+            TargetKey,
+            SurfaceKind,
+            Freshness,
+            Lifecycle,
+            IsCommandSurfaceAvailable,
+            IsPreviewSurfaceAvailable);
+
+    private CancellationTokenSource StartSubmitOperation()
+    {
+        var source = new CancellationTokenSource(MaximumOperationDuration);
+        CancellationTokenSource? previous = Interlocked.Exchange(ref _submitCancellation, source);
+        CancelAndDispose(previous);
+        return source;
+    }
+
+    private void CompleteSubmitOperation(CancellationTokenSource source)
+    {
+        if (ReferenceEquals(Interlocked.CompareExchange(ref _submitCancellation, null, source), source))
+        {
+            source.Dispose();
+        }
+    }
+
+    private void CancelSubmitOperation()
+        => CancelAndDispose(Interlocked.Exchange(ref _submitCancellation, null));
+
+    private void StartAttemptOperation()
+    {
+        var source = new CancellationTokenSource(
+            TenantRemoveConfigurationCommandSnapshot.MaximumRetainedAttemptDuration);
+        CancellationTokenSource? previous = Interlocked.Exchange(ref _attemptCancellation, source);
+        CancelAndDispose(previous);
+    }
+
+    private CancellationTokenSource CreateBoundedAttemptOperation()
+    {
+        CancellationTokenSource source = _attemptCancellation is { } attempt
+            ? CancellationTokenSource.CreateLinkedTokenSource(attempt.Token)
+            : new CancellationTokenSource();
+        source.CancelAfter(MaximumOperationDuration);
+        return source;
+    }
+
+    private void CancelAttemptOperation()
+        => CancelAndDispose(Interlocked.Exchange(ref _attemptCancellation, null));
+
+    private static void CancelAndDispose(CancellationTokenSource? source)
+    {
+        if (source is null)
+        {
+            return;
+        }
+
+        try
+        {
+            source.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+
+        source.Dispose();
+    }
+
+    private async Task<bool> AcquireCommandActivityAsync(CancellationToken cancellationToken)
+    {
+        Task<bool> acquisition = SetCommandActivityRaisedAsync(true);
+        try
+        {
+            return await acquisition.WaitAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch
+        {
+            _ = ReleaseLateAcquisitionAsync(acquisition);
+            throw;
+        }
+    }
+
+    private async Task ReleaseLateAcquisitionAsync(Task<bool> acquisition)
+    {
+        try
+        {
+            if (await acquisition.ConfigureAwait(false))
+            {
+                await ReleaseCommandActivitySafelyAsync().ConfigureAwait(false);
+            }
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    private async Task ReleaseCommandActivitySafelyAsync()
+    {
+        try
+        {
+            _ = await SetCommandActivityRaisedAsync(false).ConfigureAwait(false);
+        }
+        catch (Exception)
+        {
+            _hasRaisedCommandActivity = false;
+        }
+    }
+
+    private void MarkProjectionVerificationFailure(long attemptGeneration, string tenantId, string messageId)
+    {
+        if (IsCurrentAttempt(attemptGeneration, tenantId, messageId))
+        {
+            SetSnapshot(_snapshot.ProjectionVerificationFailed(
+                "Tenants.Configuration.Remove.UnableToVerify.ProjectionProof"));
+        }
+    }
+
+    private static string LocalizedFreshness(ReadModelFreshnessState freshness)
+        => Enum.IsDefined(freshness) ? freshness.ToString() : nameof(ReadModelFreshnessState.Unknown);
+
+    private static string LocalizedLifecycle(ProjectionLifecycleState lifecycle)
+        => Enum.IsDefined(lifecycle) ? lifecycle.ToString() : nameof(ProjectionLifecycleState.Unknown);
+
+    private static string SubmissionMessageKey(TenantCommandLifecycleState state)
+        => state switch
+        {
+            TenantCommandLifecycleState.Rejected => "Tenants.Configuration.Remove.Submission.Rejected",
+            TenantCommandLifecycleState.Failed => "Tenants.Configuration.Remove.Submission.Failed",
+            _ => "Tenants.Configuration.Remove.UnableToVerify.Status",
+        };
+
+    // A key with no dot is a legitimate authorized key: grant `P` authorizes exact key `P` as well as
+    // `P.*`. Returning empty here made the launch control render for such a row and then open a flow
+    // permanently blocked on Unavailable.Scope.
+    //
+    // The consumer namespace is the longest matching authorized prefix, exactly as the safe composer and
+    // the set flow resolve it — not the first dot segment. Splitting on the first dot made this
+    // destructive-command preview claim scope `app` for a caller granted only `app.feature`, contradicting
+    // both the read grid and the sibling set preview over the same key.
+    private string? ResolveAuthorizedNamespace(string key)
+    {
+        if (Context.IsGlobalAdministrator)
+        {
+            int separator = key.IndexOf('.', StringComparison.Ordinal);
+            return separator > 0 ? key[..separator] : key;
+        }
+
+        return Context.AuthorizedPrefixes
+            .Where(static value => !string.Equals(value, "*", StringComparison.Ordinal))
+            .Where(prefix => TenantConfigurationManagementContext.IsPrefixMatch(prefix, key))
+            .OrderByDescending(static prefix => prefix.Length)
+            .ThenBy(static prefix => prefix, StringComparer.Ordinal)
+            .FirstOrDefault();
+    }
+
+    private async Task HandleKeyDownAsync(KeyboardEventArgs args)
+    {
+        if (string.Equals(args.Key, "Escape", StringComparison.Ordinal))
+        {
+            await CloseAsync().ConfigureAwait(false);
+        }
+    }
+
+    private async Task FocusConfirmationAsync(FocusEventArgs args)
+        => await FocusSafelyAsync(_confirmationElement.Element).ConfigureAwait(false);
+
+    private async Task FocusCancelAsync(FocusEventArgs args)
+        => await FocusSafelyAsync(_cancelElement).ConfigureAwait(false);
+
+    private sealed record PreviewInputScope(
+        TenantConfigurationManagementContext Context,
+        TenantHighImpactActionEvidence? Evidence,
+        string TargetKey,
+        TenantDetailSurfaceKind SurfaceKind,
+        ReadModelFreshnessState Freshness,
+        ProjectionLifecycleState Lifecycle,
+        bool IsCommandSurfaceAvailable,
+        bool IsPreviewSurfaceAvailable);
+
+    /// <inheritdoc />
+    public ValueTask DisposeAsync()
+    {
+        _disposed = true;
+        CancelSubmitOperation();
+        CancelAttemptOperation();
+        InvalidatePendingOperations();
+        CancelExpirySchedule();
+        return ValueTask.CompletedTask;
+    }
+}

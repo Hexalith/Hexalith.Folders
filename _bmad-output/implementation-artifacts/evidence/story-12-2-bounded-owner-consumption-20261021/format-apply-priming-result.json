@@ -1,0 +1,15 @@
+{
+  "command": [
+    "dotnet",
+    "format",
+    "whitespace",
+    "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+    "--no-restore",
+    "--include",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs"
+  ],
+  "exit_code": 0,
+  "seconds": 6.89625358581543
+}

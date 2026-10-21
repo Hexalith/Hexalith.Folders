@@ -1,0 +1,72 @@
+[
+  {
+    "command": [
+      "dotnet",
+      "format",
+      "whitespace",
+      "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+      "--verbosity",
+      "quiet"
+    ],
+    "exit_code": 0,
+    "seconds": 6.236973225000838,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/format-build7-domain-whitespace.log"
+  },
+  {
+    "command": [
+      "dotnet",
+      "format",
+      "analyzers",
+      "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+      "--verbosity",
+      "quiet"
+    ],
+    "exit_code": 0,
+    "seconds": 23.83785727400391,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/format-build7-domain-analyzers.log"
+  },
+  {
+    "command": [
+      "dotnet",
+      "format",
+      "whitespace",
+      "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "--verbosity",
+      "quiet"
+    ],
+    "exit_code": 0,
+    "seconds": 8.516059661997133,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/format-build7-apphost-whitespace.log"
+  },
+  {
+    "command": [
+      "dotnet",
+      "format",
+      "analyzers",
+      "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "--verbosity",
+      "quiet"
+    ],
+    "exit_code": 0,
+    "seconds": 13.540207008001744,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/format-build7-apphost-analyzers.log"
+  }
+]

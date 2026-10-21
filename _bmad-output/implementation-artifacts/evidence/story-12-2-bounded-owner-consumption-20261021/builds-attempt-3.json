@@ -1,0 +1,34 @@
+[
+  {
+    "id": "restore",
+    "command": [
+      "dotnet",
+      "restore",
+      "Hexalith.Folders.slnx",
+      "-p:Configuration=Debug",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false"
+    ],
+    "exit_code": 0,
+    "seconds": 4.331301212310791,
+    "log": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/restore-attempt-3.log"
+  },
+  {
+    "id": "build",
+    "command": [
+      "dotnet",
+      "build",
+      "Hexalith.Folders.slnx",
+      "-c",
+      "Debug",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false",
+      "--no-restore",
+      "-m:1",
+      "-nr:false"
+    ],
+    "exit_code": 0,
+    "seconds": 42.36382579803467,
+    "log": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/build-attempt-3.log"
+  }
+]

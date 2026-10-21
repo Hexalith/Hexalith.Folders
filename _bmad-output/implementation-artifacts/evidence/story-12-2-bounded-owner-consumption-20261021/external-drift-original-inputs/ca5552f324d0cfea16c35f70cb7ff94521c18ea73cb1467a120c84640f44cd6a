@@ -1,0 +1,1203 @@
+using System.Globalization;
+using System.Reflection;
+using System.Text.RegularExpressions;
+
+using Bunit;
+
+using Counter.Domain;
+using Counter.Web;
+using Counter.Web.Components.Pages;
+using Counter.Web.Components.Replacements;
+using Counter.Web.Components.Slots;
+
+using Fluxor;
+
+using Hexalith.FrontComposer.Contracts.Registration;
+using Hexalith.FrontComposer.Contracts.Communication;
+using Hexalith.FrontComposer.Contracts.Lifecycle;
+using Hexalith.FrontComposer.Contracts.Rendering;
+using Hexalith.FrontComposer.Contracts.Storage;
+using Hexalith.FrontComposer.Shell.Extensions;
+using Hexalith.FrontComposer.Shell.Services;
+using Hexalith.FrontComposer.Shell.Services.ProjectionSlots;
+using Hexalith.FrontComposer.Shell.Services.ProjectionTemplates;
+using Hexalith.FrontComposer.Shell.Services.ProjectionViewOverrides;
+using Hexalith.FrontComposer.Shell.State.DataGridNavigation;
+using Hexalith.FrontComposer.Shell.State.ExpandedRow;
+using Hexalith.FrontComposer.Shell.State.PendingCommands;
+using Hexalith.FrontComposer.Shell.State.Navigation;
+using Hexalith.FrontComposer.Shell.Infrastructure.Tenancy;
+using Hexalith.FrontComposer.Shell.Tests.Infrastructure.Tenancy;
+
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Time.Testing;
+using Microsoft.FluentUI.AspNetCore.Components;
+
+using NSubstitute;
+
+using Shouldly;
+
+namespace Hexalith.FrontComposer.Shell.Tests.Generated;
+
+public sealed class CounterStoryVerificationTests : GeneratedComponentTestBase {
+    [Theory]
+    [InlineData("tenant")]
+    [InlineData("user")]
+    [InlineData("generation")]
+    public async Task ReadProofDropsHeldPriorScopeQueryBeforeDispatchAndProofMutation(string changedScope)
+    {
+        TaskCompletionSource<QueryResult<CounterProjection>> held = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        IQueryService query = Substitute.For<IQueryService>();
+        query.QueryAsync<CounterProjection>(Arg.Any<QueryRequest>(), Arg.Any<CancellationToken>())
+            .Returns(_ => held.Task);
+        Services.Replace(ServiceDescriptor.Singleton(query));
+        Services.AddScoped<CounterCommandProjectionCatchUpChannel>();
+        await InitializeStoreAsync();
+        IRenderedComponent<CounterPage> cut = Render<CounterPage>();
+        TestTenantContextAccessor tenant = (TestTenantContextAccessor)Services.GetRequiredService<IFrontComposerTenantContextAccessor>();
+        LoadedPageFeature pages = Services.GetRequiredService<LoadedPageFeature>();
+        IState<LoadedPageState> pageState = Services.GetRequiredService<IState<LoadedPageState>>();
+        long origin = pageState.Value.ScopeGeneration;
+        TenantContextSnapshot captured = tenant.TryGetContext().Context.ShouldNotBeNull();
+        MethodInfo read = typeof(CounterPage).GetMethod("ReadProjectionForProofAsync", BindingFlags.Instance | BindingFlags.NonPublic)
+            .ShouldNotBeNull();
+        ValueTask<Hexalith.FrontComposer.Shell.State.ProjectionConnection.ProjectionFallbackLaneRefreshOutcome> pending = default;
+        await cut.InvokeAsync(() => {
+            pending = (ValueTask<Hexalith.FrontComposer.Shell.State.ProjectionConnection.ProjectionFallbackLaneRefreshOutcome>)
+                read.Invoke(cut.Instance, [25, captured, origin, CancellationToken.None])!;
+        });
+
+        if (changedScope == "tenant")
+        {
+            tenant.TenantId = "tenant-b";
+        }
+        else if (changedScope == "user")
+        {
+            tenant.UserId = "user-b";
+            pageState.Value.ScopeGeneration.ShouldBe(origin);
+        }
+        else
+        {
+            await cut.InvokeAsync(() => pages.RestoreState(pageState.Value with { ScopeGeneration = origin + 1 }));
+        }
+        held.SetResult(new QueryResult<CounterProjection>([new CounterProjection { Id = "old-tenant-row", Count = 7 }], 1, null));
+        (await pending.ConfigureAwait(true)).ShouldBe(Hexalith.FrontComposer.Shell.State.ProjectionConnection.ProjectionFallbackLaneRefreshOutcome.Skipped);
+        pageState.Value.PagesByKey.ShouldBeEmpty();
+        typeof(CounterPage).GetField("_readProofRowId", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .GetValue(cut.Instance).ShouldBeNull();
+        cut.Markup.ShouldNotContain("old-tenant-row");
+    }
+
+    [Fact]
+    public async Task ReadProofCurrentFullScopePublishesMatchingPage()
+    {
+        IQueryService query = Substitute.For<IQueryService>();
+        query.QueryAsync<CounterProjection>(Arg.Any<QueryRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(new QueryResult<CounterProjection>(
+                [new CounterProjection { Id = "current-row", Count = 7 }], 1, null)));
+        Services.Replace(ServiceDescriptor.Singleton(query));
+        Services.AddScoped<CounterCommandProjectionCatchUpChannel>();
+        await InitializeStoreAsync();
+        IRenderedComponent<CounterPage> cut = Render<CounterPage>();
+        TestTenantContextAccessor tenant = (TestTenantContextAccessor)Services.GetRequiredService<IFrontComposerTenantContextAccessor>();
+        IState<LoadedPageState> pageState = Services.GetRequiredService<IState<LoadedPageState>>();
+        TenantContextSnapshot captured = tenant.TryGetContext().Context.ShouldNotBeNull();
+        MethodInfo read = typeof(CounterPage).GetMethod("ReadProjectionForProofAsync", BindingFlags.Instance | BindingFlags.NonPublic)
+            .ShouldNotBeNull();
+
+        var pending = (ValueTask<Hexalith.FrontComposer.Shell.State.ProjectionConnection.ProjectionFallbackLaneRefreshOutcome>)
+            read.Invoke(cut.Instance, [25, captured, pageState.Value.ScopeGeneration, CancellationToken.None])!;
+        var outcome = await pending.ConfigureAwait(true);
+
+        outcome.ShouldBe(Hexalith.FrontComposer.Shell.State.ProjectionConnection.ProjectionFallbackLaneRefreshOutcome.Changed);
+        typeof(CounterPage).GetField("_readProofRowId", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .GetValue(cut.Instance).ShouldBe("current-row");
+    }
+
+    [Fact]
+    public async Task CounterPage_AfterScopeReset_CurrentTenantCanSeedAgain() {
+        Services.AddScoped<CounterCommandProjectionCatchUpChannel>();
+        await InitializeStoreAsync();
+        TestTenantContextAccessor scope = (TestTenantContextAccessor)Services.GetRequiredService<IFrontComposerTenantContextAccessor>();
+        IDispatcher dispatcher = Services.GetRequiredService<IDispatcher>();
+
+        IRenderedComponent<CounterPage> prior = Render<CounterPage>();
+        prior.WaitForAssertion(() => Services.GetRequiredService<IState<CounterProjectionState>>()
+            .Value.Items.ShouldNotBeNull().Single().Id.ShouldBe("counter-1"));
+        const string oldCorrelation = "prior-scope-result";
+        prior.Dispose();
+
+        scope.TenantId = "tenant-b";
+        dispatcher.Dispatch(new ScopeChangedAction());
+        Services.GetRequiredService<IState<CounterProjectionState>>().Value.Items.ShouldBeNull();
+        IRenderedComponent<CounterPage> current = Render<CounterPage>();
+        current.WaitForAssertion(() => Services.GetRequiredService<IState<CounterProjectionState>>()
+            .Value.Items.ShouldNotBeNull().Single().Id.ShouldBe("counter-1"));
+        ActiveLoadCorrelation().ShouldNotBe(oldCorrelation);
+        dispatcher.Dispatch(new CounterProjectionLoadedAction(oldCorrelation, [new CounterProjection { Id = "old-row" }]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+        Services.GetRequiredService<IState<CounterProjectionState>>().Value.Items
+            .ShouldNotBeNull().Single().Id.ShouldBe("counter-1");
+    }
+
+    private string ActiveLoadCorrelation() {
+        CounterProjectionState state = Services.GetRequiredService<IState<CounterProjectionState>>().Value;
+        object? value = typeof(CounterProjectionState)
+            .GetProperty("ActiveCorrelationId", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+            ?.GetValue(state);
+        return value.ShouldBeOfType<string>();
+    }
+
+    [Fact]
+    public async Task CounterCatchUp_DelayedPriorTenantCreate_IsDroppedAfterSwitch() {
+        FakeTimeProvider clock = UseFakeTime(s_fixedNow);
+        Services.AddScoped<CounterCommandProjectionCatchUpChannel>();
+        await InitializeStoreAsync();
+        TestTenantContextAccessor scope = (TestTenantContextAccessor)Services.GetRequiredService<IFrontComposerTenantContextAccessor>();
+        IRenderedComponent<CounterCommandProjectionCatchUp> cut = Render<CounterCommandProjectionCatchUp>();
+        CounterCommandProjectionCatchUpChannel channel = Services.GetRequiredService<CounterCommandProjectionCatchUpChannel>();
+        Action<string?> confirmed = channel.Capture(new CreateCounterCommand {
+            MessageId = "old-message", TenantId = "test-tenant", CounterId = "old-row", InitialValue = 3,
+        }, "test-tenant", "test-user").ShouldNotBeNull();
+
+        await cut.InvokeAsync(() => confirmed("old-correlation"));
+        cut.WaitForAssertion(() => cut.Find("[data-testid='epic-9-catch-up']")
+            .GetAttribute("data-create-started").ShouldBe("1"));
+        scope.TenantId = "tenant-b";
+        Services.GetRequiredService<IDispatcher>().Dispatch(new ScopeChangedAction());
+        clock.Advance(TimeSpan.FromSeconds(5));
+        cut.WaitForAssertion(() => cut.Find("[data-testid='epic-9-catch-up']")
+            .GetAttribute("data-create-completed").ShouldBe("1"));
+
+        IState<CounterProjectionState> state = Services.GetRequiredService<IState<CounterProjectionState>>();
+        state.Value.Items.ShouldBeNull();
+        state.Value.IsLoading.ShouldBeFalse();
+
+        Action<string?> confirmedB = channel.Capture(new CreateCounterCommand {
+            MessageId = "new-message", TenantId = "tenant-b", CounterId = "current-row", InitialValue = 4,
+        }, "tenant-b", "test-user").ShouldNotBeNull();
+        await cut.InvokeAsync(() => confirmedB("new-correlation"));
+        cut.WaitForAssertion(() => cut.Find("[data-testid='epic-9-catch-up']")
+            .GetAttribute("data-create-started").ShouldBe("2"));
+        clock.Advance(TimeSpan.FromSeconds(5));
+        cut.WaitForAssertion(() => cut.Find("[data-testid='epic-9-catch-up']")
+            .GetAttribute("data-create-completed").ShouldBe("2"));
+        state.Value.Items.ShouldNotBeNull().Single().Id.ShouldBe("current-row");
+    }
+
+    [Fact]
+    public async Task CounterProjectionView_ThrowingTenantAccessor_BlocksSeededRows() {
+        IFrontComposerTenantContextAccessor accessor = Substitute.For<IFrontComposerTenantContextAccessor>();
+        accessor.TryGetContext(Arg.Any<string?>(), Arg.Any<string>())
+            .Returns(_ => throw new InvalidOperationException("unavailable"));
+        Services.Replace(ServiceDescriptor.Singleton(accessor));
+        await InitializeStoreAsync();
+        Services.GetRequiredService<IDispatcher>().Dispatch(new CounterProjectionLoadedAction(
+            "seed", [new CounterProjection { Id = "old", Count = 10 }]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+
+        IRenderedComponent<CounterProjectionView> cut = Render<CounterProjectionView>();
+        cut.Find("[data-testid='fc-scope-blocked'] h1").TextContent.ShouldBe("Workspace unavailable");
+        cut.Markup.ShouldNotContain("old");
+    }
+
+    [Theory]
+    [InlineData(null, null, null)]
+    [InlineData("test-tenant", "wrong-user", "user")]
+    [InlineData("wrong-tenant", "test-user", "tenant")]
+    public async Task CounterProjectionView_InvalidOrMismatchedScope_HidesSeededRows(
+        string? renderTenant, string? renderUser, string? mismatch) {
+        await InitializeStoreAsync();
+        Services.GetRequiredService<IDispatcher>().Dispatch(new CounterProjectionLoadedAction(
+            "seed", [new CounterProjection { Id = "prior-scope-row", Count = 10 }]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+        TestTenantContextAccessor scope = (TestTenantContextAccessor)Services.GetRequiredService<IFrontComposerTenantContextAccessor>();
+        if (mismatch is null) {
+            scope.TenantId = null;
+        }
+
+        IRenderedComponent<CounterProjectionView> cut;
+        if (renderTenant is null) {
+            cut = Render<CounterProjectionView>();
+        }
+        else {
+            RenderContext context = new(renderTenant, renderUser!, FcRenderMode.Server, DensityLevel.Comfortable, IsReadOnly: false);
+            cut = Render<CascadingValue<RenderContext>>(parameters => parameters
+                .Add(component => component.Value, context)
+                .Add(component => component.IsFixed, true)
+                .AddChildContent<CounterProjectionView>()).FindComponent<CounterProjectionView>();
+        }
+
+        cut.Find("[data-testid='fc-scope-blocked'] h1").TextContent.ShouldBe("Workspace unavailable");
+        cut.Markup.ShouldNotContain("prior-scope-row");
+    }
+
+    [Fact]
+    public void CounterProjectionReducer_LatePriorScopeResultIsDiscarded() {
+        CounterProjectionState state = new(false, [new CounterProjection { Id = "prior", Count = 1 }], null);
+        CounterProjectionState cleared = CounterProjectionReducers.OnCounterProjectionScopeChanged(state, new ScopeChangedAction());
+        cleared.Items.ShouldBeNull();
+
+        CounterProjectionState late = CounterProjectionReducers.OnCounterProjectionLoaded(
+            cleared, new CounterProjectionLoadedAction("old", [new CounterProjection { Id = "prior", Count = 2 }]));
+        late.ShouldBeSameAs(cleared);
+        CounterProjectionReducers.OnCounterProjectionLoadFailed(cleared,
+            new CounterProjectionLoadFailedAction("old", "prior failure")).ShouldBeSameAs(cleared);
+
+        CounterProjectionState requested = CounterProjectionReducers.OnCounterProjectionLoadRequested(
+            cleared, new CounterProjectionLoadRequestedAction("new") { OriginScopeGeneration = cleared.ScopeGeneration });
+        CounterProjectionReducers.OnCounterProjectionLoadFailed(requested,
+            new CounterProjectionLoadFailedAction("old", "prior failure")).ShouldBeSameAs(requested);
+        CounterProjectionState current = CounterProjectionReducers.OnCounterProjectionLoaded(
+            requested, new CounterProjectionLoadedAction("new", [new CounterProjection { Id = "current", Count = 3 }]) { OriginScopeGeneration = cleared.ScopeGeneration });
+        current.Items.ShouldNotBeNull().Single().Id.ShouldBe("current");
+
+        CounterProjectionState initial = CounterProjectionReducers.OnCounterProjectionLoadRequested(
+            state, new CounterProjectionLoadRequestedAction("initial-request"));
+        CounterProjectionReducers.OnCounterProjectionLoaded(initial,
+            new CounterProjectionLoadedAction("direct-initial-result", [new CounterProjection { Id = "direct" }]))
+            .Items.ShouldNotBeNull().Single().Id.ShouldBe("prior");
+    }
+
+    [Fact]
+    public async Task GeneratedCommandReducer_ScopeChangeClearsAcceptedRejection() {
+        await InitializeStoreAsync();
+        IncrementCommandLifecycleState rejected = new(
+            CommandLifecycleState.Rejected, "old-correlation", "old-message",
+            "old-reason", "old-resolution", "old-code", "old-category", "old-action", "old-docs");
+        Services.GetRequiredService<IncrementCommandLifecycleFeature>().RestoreState(rejected);
+        IState<IncrementCommandLifecycleState> state = Services.GetRequiredService<IState<IncrementCommandLifecycleState>>();
+        state.Value.RejectionReason.ShouldBe("old-reason");
+
+        Services.GetRequiredService<IDispatcher>().Dispatch(new ScopeChangedAction());
+        IncrementCommandLifecycleState current = state.Value;
+
+        current.State.ShouldBe(CommandLifecycleState.Idle);
+        current.CorrelationId.ShouldBeNull();
+        current.MessageId.ShouldBeNull();
+        current.RejectionReason.ShouldBeNull();
+        current.RejectionResolution.ShouldBeNull();
+        current.RejectionErrorCode.ShouldBeNull();
+        current.RejectionReasonCategory.ShouldBeNull();
+        current.RejectionSuggestedAction.ShouldBeNull();
+        current.RejectionDocsCode.ShouldBeNull();
+    }
+
+    // GC-P5 — pin TimeProvider to a deterministic instant well outside the [RelativeTime]
+    // 7-day window relative to LastUpdated = 2026-04-14 so the formatter falls back to absolute
+    // date format ("04/14/2026") regardless of the wall clock when the test runs.
+    private static readonly DateTimeOffset s_fixedNow = new(2026, 5, 15, 0, 0, 0, TimeSpan.Zero);
+    private static readonly DateTimeOffset s_lastUpdated = new(2026, 4, 14, 0, 0, 0, TimeSpan.Zero);
+
+    public CounterStoryVerificationTests()
+        : base(typeof(CounterProjection).Assembly, typeof(StatusProjection).Assembly) {
+    }
+
+    [Fact]
+    public async Task CounterPage_SeedState_RendersUnrelatedRow() {
+        Services.AddScoped<CounterCommandProjectionCatchUpChannel>();
+        Services.AddSingleton(Substitute.For<IEmptyStateCtaResolver>());
+        await InitializeStoreAsync();
+
+        IRenderedComponent<CounterPage> cut = Render<CounterPage>();
+
+        await cut.WaitForAssertionAsync(() => {
+            Services.GetRequiredService<IState<CounterProjectionState>>()
+                .Value.Items.ShouldNotBeNull().Single().Id.ShouldBe("counter-1");
+            cut.Find("[data-fc-datagrid=\"Counter:Counter.Domain.CounterProjection\"]");
+            cut.Markup.ShouldNotContain("No counter data yet.");
+        });
+    }
+
+    [Fact]
+    public void CounterCatchUpChannel_SeparateCircuitScopesAndThrowingSubscriber_LiveDeliveriesContinue() {
+        string program = File.ReadAllText(Path.Combine(
+            Governance.CiGovernanceTests.RepositoryRoot(),
+            "samples/Counter/Counter.Web/Program.cs"));
+        program.ShouldContain("AddScoped<CounterCommandProjectionCatchUpChannel>()");
+        program.ShouldNotContain("AddSingleton<CounterCommandProjectionCatchUpChannel>()");
+
+        ServiceCollection services = [];
+        _ = services.AddScoped<CounterCommandProjectionCatchUpChannel>();
+        using ServiceProvider provider = services.BuildServiceProvider(new ServiceProviderOptions {
+            ValidateScopes = true,
+        });
+        using IServiceScope staleCircuit = provider.CreateScope();
+        using IServiceScope currentCircuit = provider.CreateScope();
+        CounterCommandProjectionCatchUpChannel staleChannel =
+            staleCircuit.ServiceProvider.GetRequiredService<CounterCommandProjectionCatchUpChannel>();
+        CounterCommandProjectionCatchUpChannel currentChannel =
+            currentCircuit.ServiceProvider.GetRequiredService<CounterCommandProjectionCatchUpChannel>();
+
+        staleChannel.ShouldNotBeSameAs(currentChannel);
+        staleChannel.CreateConfirmed += static (_, _, _, _) =>
+            throw new InvalidOperationException("The stale circuit is no longer available.");
+        int laterSameScopeNotifications = 0;
+        staleChannel.CreateConfirmed += (_, _, _, _) => laterSameScopeNotifications++;
+        int currentCircuitNotifications = 0;
+        currentChannel.CreateConfirmed += (_, _, _, _) => currentCircuitNotifications++;
+
+        Action<string?> publishToStaleCircuit = staleChannel.Capture(
+            new CreateCounterCommand {
+                MessageId = "stale-message",
+                TenantId = "test-tenant",
+                CounterId = "stale-counter",
+                InitialValue = 1,
+            },
+            "test-tenant",
+            "test-user").ShouldNotBeNull();
+        Action<string?> publishToCurrentCircuit = currentChannel.Capture(
+            new CreateCounterCommand {
+                MessageId = "current-message",
+                TenantId = "tenant-1",
+                CounterId = "current-counter",
+                InitialValue = 1,
+            },
+            "tenant-1",
+            "user-1").ShouldNotBeNull();
+
+        Should.NotThrow(() => publishToStaleCircuit("stale-correlation"));
+        Should.NotThrow(() => publishToCurrentCircuit("current-correlation"));
+        laterSameScopeNotifications.ShouldBe(1);
+        currentCircuitNotifications.ShouldBe(1);
+        staleChannel.PublishedCount.ShouldBe(1);
+        currentChannel.PublishedCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task CounterCommandProjectionCatchUp_CurrentCircuitCreate_MaterializesCreatedRow() {
+        FakeTimeProvider clock = UseFakeTime(s_fixedNow);
+        Services.AddScoped<CounterCommandProjectionCatchUpChannel>();
+        await InitializeStoreAsync();
+        IRenderedComponent<CounterCommandProjectionCatchUp> cut = Render<CounterCommandProjectionCatchUp>();
+        CounterCommandProjectionCatchUpChannel channel =
+            Services.GetRequiredService<CounterCommandProjectionCatchUpChannel>();
+        IState<CounterProjectionState> state = Services.GetRequiredService<IState<CounterProjectionState>>();
+        TaskCompletionSource created = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        void ObserveCreatedRow(object? _, EventArgs __) {
+            if (state.Value.Items?.Any(row => row.Id == "counter-created" && row.Count == 42) is true) {
+                created.TrySetResult();
+            }
+        }
+        state.StateChanged += ObserveCreatedRow;
+        Action<string?> publishConfirmed = channel.Capture(
+            new CreateCounterCommand {
+                MessageId = "create-message",
+                TenantId = "test-tenant",
+                CounterId = "counter-created",
+                InitialValue = 42,
+            },
+            "test-tenant",
+            "test-user").ShouldNotBeNull();
+
+        try {
+            await cut.InvokeAsync(() => publishConfirmed("create-correlation"));
+            cut.WaitForAssertion(() => cut.Find("[data-testid='epic-9-catch-up']")
+                .GetAttribute("data-create-started").ShouldBe("1"));
+            clock.Advance(TimeSpan.FromSeconds(5));
+            ObserveCreatedRow(null, EventArgs.Empty);
+            await created.Task.WaitAsync(
+                TimeSpan.FromSeconds(10),
+                Xunit.TestContext.Current.CancellationToken);
+            state.Value.Items.ShouldNotBeNull()
+                .Single(row => row.Id == "counter-created")
+                .Count.ShouldBe(42);
+        }
+        finally {
+            state.StateChanged -= ObserveCreatedRow;
+        }
+    }
+
+    [Fact]
+    public async Task CounterCommandProjectionCatchUp_OverlappingCreates_MaterializeBothRows() {
+        FakeTimeProvider clock = UseFakeTime(s_fixedNow);
+        Services.AddScoped<CounterCommandProjectionCatchUpChannel>();
+        await InitializeStoreAsync();
+        IRenderedComponent<CounterCommandProjectionCatchUp> cut = Render<CounterCommandProjectionCatchUp>();
+        CounterCommandProjectionCatchUpChannel channel = Services.GetRequiredService<CounterCommandProjectionCatchUpChannel>();
+        Action<string?> first = channel.Capture(new CreateCounterCommand {
+            MessageId = "first-message", TenantId = "test-tenant", CounterId = "first-row", InitialValue = 1,
+        }, "test-tenant", "test-user").ShouldNotBeNull();
+        Action<string?> second = channel.Capture(new CreateCounterCommand {
+            MessageId = "second-message", TenantId = "test-tenant", CounterId = "second-row", InitialValue = 2,
+        }, "test-tenant", "test-user").ShouldNotBeNull();
+
+        await cut.InvokeAsync(() => {
+            first("first-correlation");
+            second("second-correlation");
+        });
+        cut.WaitForAssertion(() => cut.Find("[data-testid='epic-9-catch-up']")
+            .GetAttribute("data-create-started").ShouldBe("2"));
+        clock.Advance(TimeSpan.FromSeconds(5));
+        cut.WaitForAssertion(() => cut.Find("[data-testid='epic-9-catch-up']")
+            .GetAttribute("data-create-completed").ShouldBe("2"));
+        IReadOnlyList<CounterProjection> rows = Services.GetRequiredService<IState<CounterProjectionState>>()
+            .Value.Items.ShouldNotBeNull();
+        rows.Count.ShouldBe(2);
+        rows.ShouldContain(row => row.Id == "first-row" && row.Count == 1);
+        rows.ShouldContain(row => row.Id == "second-row" && row.Count == 2);
+    }
+
+    [Fact]
+    public async Task CounterProjectionState_LoadActions_UpdateFluxorStateAndRegistryManifest() {
+        ServiceCollection services = [];
+        _ = services.AddFluentUIComponents();
+        services.Replace(ServiceDescriptor.Scoped<IThemeService>(_ => Substitute.For<IThemeService>()));
+        _ = services.AddHexalithFrontComposer(o => o.ScanAssemblies(typeof(CounterProjection).Assembly));
+        _ = services.AddHexalithDomain<CounterDomain>();
+        services.Replace(ServiceDescriptor.Scoped<IStorageService, InMemoryStorageService>());
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+        IStore store = provider.GetRequiredService<IStore>();
+        await store.InitializeAsync();
+
+        IFrontComposerRegistry registry = provider.GetRequiredService<IFrontComposerRegistry>();
+        IState<CounterProjectionState> state = provider.GetRequiredService<IState<CounterProjectionState>>();
+        IDispatcher dispatcher = provider.GetRequiredService<IDispatcher>();
+
+        string correlationId = Guid.NewGuid().ToString();
+        dispatcher.Dispatch(new CounterProjectionLoadRequestedAction(correlationId) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+        SpinWait.SpinUntil(() => state.Value.IsLoading, TimeSpan.FromSeconds(1)).ShouldBeTrue();
+
+        dispatcher.Dispatch(new CounterProjectionLoadedAction(
+            correlationId,
+            [
+                new CounterProjection
+                {
+                    Id = "counter-1",
+                    Count = 2,
+                    LastUpdated = DateTimeOffset.UtcNow,
+                },
+            ]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+
+        SpinWait.SpinUntil(
+            () => !state.Value.IsLoading && state.Value.Items?.Count == 1,
+            TimeSpan.FromSeconds(1)).ShouldBeTrue();
+
+        DomainManifest counterManifest = registry.GetManifests().Single(m => m.BoundedContext == "Counter");
+        counterManifest.Projections.ShouldContain(typeof(CounterProjection).FullName!);
+        registry.GetManifests().Single(m => m.BoundedContext == "Default")
+            .Commands.ShouldContain(typeof(IncrementCommand).FullName!);
+    }
+
+    [Fact]
+    public async Task CounterProjectionView_LoadedState_RendersColumnsAndFormatting() {
+        UseFakeTime(s_fixedNow);
+
+        await InitializeStoreAsync();
+        IDispatcher dispatcher = Services.GetRequiredService<IDispatcher>();
+
+        using CultureScope _ = new(CultureInfo.InvariantCulture);
+
+        dispatcher.Dispatch(new CounterProjectionLoadedAction(
+            "counter-level3-slot",
+            [
+                new CounterProjection
+                {
+                    Id = "counter-1",
+                    Count = 1234,
+                    LastUpdated = s_lastUpdated,
+                },
+            ]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+
+        IRenderedComponent<CounterProjectionView> cut = await RenderVirtualizedAsync<CounterProjectionView, CounterProjection>();
+
+        await cut.WaitForAssertionAsync(() => {
+            string markup = cut.Markup;
+            // Story 4-4 — Story 4.4's new envelope (data-fc-datagrid="...Counter..." attribute) introduces an
+            // earlier "Count" substring inside the host div's data-* attribute. Anchor the column-header search
+            // to the FluentDataGrid col-title-text marker so we keep the original ordering invariant.
+            int idHeader = markup.IndexOf(">Id<", StringComparison.Ordinal);
+            int countHeader = markup.IndexOf(">Count<", StringComparison.Ordinal);
+            int lastUpdatedHeader = markup.IndexOf(">Last changed<", StringComparison.Ordinal);
+            idHeader.ShouldBeGreaterThanOrEqualTo(0);
+            countHeader.ShouldBeGreaterThanOrEqualTo(0);
+            lastUpdatedHeader.ShouldBeGreaterThanOrEqualTo(0);
+            idHeader.ShouldBeLessThan(countHeader);
+            countHeader.ShouldBeLessThan(lastUpdatedHeader);
+            markup.ShouldContain("counter-1");
+            markup.ShouldContain("1,234");
+            markup.ShouldContain("04/14/2026");
+        });
+
+        await Verify(NormalizeGridMarkup(cut.Markup));
+    }
+
+    [Fact]
+    public async Task CounterProjectionView_NewItemIndicator_RerendersAutomaticallyForEveryMutation() {
+        FakeTimeProvider time = UseFakeTime(s_fixedNow);
+
+        await InitializeStoreAsync();
+        IDispatcher dispatcher = Services.GetRequiredService<IDispatcher>();
+        INewItemIndicatorStateService indicators = Services.GetRequiredService<INewItemIndicatorStateService>();
+        const string ViewKey = "Counter:Counter.Domain.CounterProjection";
+        const string IndicatorSelector = "[data-testid=\"fc-new-item-indicator\"]";
+
+        dispatcher.Dispatch(new CounterProjectionLoadedAction(
+            "counter-nip-initial",
+            [
+                new CounterProjection
+                {
+                    Id = "counter-2",
+                    Count = 2,
+                    LastUpdated = s_lastUpdated,
+                },
+            ]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+
+        IRenderedComponent<CounterProjectionView> cut = Render<CounterProjectionView>();
+        await cut.WaitForAssertionAsync(() => cut.FindAll(IndicatorSelector).ShouldBeEmpty());
+
+        indicators.Add(new NewItemIndicatorEntry(
+            ViewKey,
+            "counter-1",
+            MessageId: "message-1",
+            CreatedAt: time.GetUtcNow()));
+
+        await cut.WaitForAssertionAsync(() => {
+            AngleSharp.Dom.IElement indicator = cut.Find(IndicatorSelector);
+            indicator.GetAttribute("role").ShouldBeNull();
+            indicator.GetAttribute("aria-live").ShouldBeNull();
+            indicator.TextContent.Trim().ShouldBe("Updated row: counter-1.");
+        });
+
+        await cut.InvokeAsync(() => dispatcher.Dispatch(new CounterProjectionLoadedAction(
+            "counter-nip-materialized",
+            [
+                new CounterProjection
+                {
+                    Id = "counter-1",
+                    Count = 1,
+                    LastUpdated = s_lastUpdated,
+                },
+                new CounterProjection
+                {
+                    Id = "counter-2",
+                    Count = 2,
+                    LastUpdated = s_lastUpdated,
+                },
+            ]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" }));
+
+        await cut.WaitForAssertionAsync(() => {
+            cut.FindAll(IndicatorSelector).ShouldBeEmpty();
+            indicators.Snapshot(ViewKey).ShouldBeEmpty();
+        });
+
+        indicators.Add(new NewItemIndicatorEntry(
+            ViewKey,
+            "counter-3",
+            MessageId: "message-3",
+            CreatedAt: time.GetUtcNow()));
+        await cut.WaitForAssertionAsync(() => cut.FindAll(IndicatorSelector).Count.ShouldBe(1));
+
+        indicators.DismissForFilterChange(ViewKey);
+        await cut.WaitForAssertionAsync(() => cut.FindAll(IndicatorSelector).ShouldBeEmpty());
+
+        indicators.Add(new NewItemIndicatorEntry(
+            ViewKey,
+            "counter-4",
+            MessageId: "message-4",
+            CreatedAt: time.GetUtcNow()));
+        await cut.WaitForAssertionAsync(() => cut.FindAll(IndicatorSelector).Count.ShouldBe(1));
+
+        time.Advance(TimeSpan.FromSeconds(10));
+        await cut.WaitForAssertionAsync(() => cut.FindAll(IndicatorSelector).ShouldBeEmpty());
+
+        indicators.Add(new NewItemIndicatorEntry(
+            ViewKey,
+            "counter-5",
+            MessageId: "message-5",
+            CreatedAt: time.GetUtcNow()));
+        await cut.WaitForAssertionAsync(() => cut.FindAll(IndicatorSelector).Count.ShouldBe(1));
+
+        indicators.Clear("generated-grid-test");
+        await cut.WaitForAssertionAsync(() => cut.FindAll(IndicatorSelector).ShouldBeEmpty());
+
+        indicators.Add(new NewItemIndicatorEntry(
+            ViewKey,
+            "counter-6",
+            MessageId: "message-6",
+            CreatedAt: time.GetUtcNow()));
+        await cut.WaitForAssertionAsync(() => cut.FindAll(IndicatorSelector).Count.ShouldBe(1));
+
+        IUserContextAccessor userContext = Services.GetRequiredService<IUserContextAccessor>();
+        _ = userContext.UserId.Returns("other-user");
+        indicators.Snapshot(ViewKey).ShouldBeEmpty();
+        await cut.WaitForAssertionAsync(() => cut.FindAll(IndicatorSelector).ShouldBeEmpty());
+
+        cut.Dispose();
+        Should.NotThrow(() => indicators.Add(new NewItemIndicatorEntry(
+            ViewKey,
+            "counter-after-dispose",
+            MessageId: "message-after-dispose",
+            CreatedAt: time.GetUtcNow())));
+    }
+
+    [Fact]
+    public async Task CounterProjectionView_Dispose_UnsubscribesIndicatorHandlerExactlyOnce() {
+        UseFakeTime(s_fixedNow);
+        RecordingNewItemIndicatorStateService indicators = new();
+        Services.Replace(ServiceDescriptor.Scoped<INewItemIndicatorStateService>(_ => indicators));
+        BunitJSModuleInterop scrollModule = JSInterop.SetupModule(
+            "./_content/Hexalith.FrontComposer.Shell/js/fc-datagrid.js");
+        var pendingJsCleanup = scrollModule.SetupVoid("disposeViewKey", _ => true);
+
+        await InitializeStoreAsync();
+        IDispatcher dispatcher = Services.GetRequiredService<IDispatcher>();
+        dispatcher.Dispatch(new CounterProjectionLoadedAction(
+            "counter-nip-disposal",
+            [
+                new CounterProjection
+                {
+                    Id = "counter-1",
+                    Count = 1,
+                    LastUpdated = s_lastUpdated,
+                },
+            ]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+
+        IRenderedComponent<CounterProjectionView> cut = Render<CounterProjectionView>();
+        await cut.WaitForAssertionAsync(() => indicators.SubscribeCount.ShouldBe(1));
+        Action capturedHandler = indicators.ActiveHandler.ShouldNotBeNull();
+        RecordingIndicatorSubscription subscription = indicators.Subscription.ShouldNotBeNull();
+        List<object> cleanupActions = [];
+        dispatcher.ActionDispatched += (_, args) => {
+            if (args.Action is ClearPendingPagesAction or CollapseRowAction) {
+                cleanupActions.Add(args.Action);
+            }
+        };
+
+        CounterProjectionView view = cut.Instance;
+        Task firstDisposal = view.DisposeAsync().AsTask();
+        firstDisposal.IsCompleted.ShouldBeFalse();
+        scrollModule.Invocations.Count(invocation => invocation.Identifier == "disposeViewKey").ShouldBe(1);
+
+        Task overlappingDisposal = view.DisposeAsync().AsTask();
+        Task secondOverlappingDisposal = view.DisposeAsync().AsTask();
+        overlappingDisposal.IsCompletedSuccessfully.ShouldBeTrue();
+        secondOverlappingDisposal.IsCompletedSuccessfully.ShouldBeTrue();
+
+        pendingJsCleanup.SetVoidResult();
+        await Task.WhenAll(firstDisposal, overlappingDisposal, secondOverlappingDisposal);
+        await DisposeComponentsAsync();
+        int renderCountAfterDispose = cut.RenderCount;
+
+        subscription.DisposeCount.ShouldBe(1);
+        cleanupActions.Count(action => action is ClearPendingPagesAction).ShouldBe(1);
+        cleanupActions.Count(action => action is CollapseRowAction).ShouldBe(1);
+        scrollModule.Invocations.Count(invocation => invocation.Identifier == "disposeViewKey").ShouldBe(1);
+        indicators.ActiveHandler.ShouldBeNull();
+        Should.NotThrow(capturedHandler);
+        cut.RenderCount.ShouldBe(renderCountAfterDispose);
+        subscription.DisposeCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task CounterProjectionView_SelectedTemplate_RendersInsideGridEnvelopeAndUsesFieldRenderer() {
+        UseFakeTime(s_fixedNow);
+
+        Services.AddSingleton(new ProjectionTemplateAssemblySource(
+        [
+            new ProjectionTemplateDescriptor(
+                ProjectionType: typeof(CounterProjection),
+                Role: null,
+                TemplateType: typeof(SelectedCounterTemplate),
+                ContractVersion: ProjectionTemplateContractVersion.Current),
+        ]));
+
+        await InitializeStoreAsync();
+        IDispatcher dispatcher = Services.GetRequiredService<IDispatcher>();
+
+        using CultureScope _ = new(CultureInfo.InvariantCulture);
+
+        dispatcher.Dispatch(new CounterProjectionLoadedAction(
+            Guid.NewGuid().ToString(),
+            [
+                new CounterProjection
+                {
+                    Id = "counter-1",
+                    Count = 1234,
+                    LastUpdated = s_lastUpdated,
+                },
+            ]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+
+        IRenderedComponent<CounterProjectionView> cut = await RenderVirtualizedAsync<CounterProjectionView, CounterProjection>();
+
+        await cut.WaitForAssertionAsync(() => {
+            string markup = cut.Markup;
+            markup.ShouldContain("data-fc-datagrid");
+            markup.ShouldContain("fc-selected-template");
+            markup.ShouldContain("sections:3");
+            markup.ShouldContain("1,234");
+            markup.ShouldNotContain("fluent-data-grid");
+        });
+    }
+
+    [Fact]
+    public async Task CounterProjectionView_Level3Slot_ReplacesOneFieldAndLeavesAdjacentFieldsGenerated() {
+        UseFakeTime(s_fixedNow);
+
+        // GC-P4 — typed <TComponent> overload catches component-type mismatches at compile time.
+        Services.AddSlotOverride<CounterProjection, int, CounterCountSlot>(field: x => x.Count);
+
+        await InitializeStoreAsync();
+        IDispatcher dispatcher = Services.GetRequiredService<IDispatcher>();
+
+        using CultureScope _ = new(CultureInfo.InvariantCulture);
+
+        dispatcher.Dispatch(new CounterProjectionLoadedAction(
+            Guid.NewGuid().ToString(),
+            [
+                new CounterProjection
+                {
+                    Id = "counter-1",
+                    Count = 1234,
+                    LastUpdated = s_lastUpdated,
+                },
+            ]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+
+        IRenderedComponent<CounterProjectionView> cut = await RenderVirtualizedAsync<CounterProjectionView, CounterProjection>();
+
+        await cut.WaitForAssertionAsync(() => {
+            string markup = cut.Markup;
+
+            // Slot replaces Count cell content.
+            markup.ShouldContain("counter-count-slot");
+            markup.ShouldContain("aria-labelledby=\"counter-count-slot-count-label counter-count-slot-count-value\"");
+
+            // GC-P3 — DataGrid envelope and adjacent generated rendering preserved.
+            markup.ShouldContain("data-fc-datagrid");
+            markup.ShouldContain("counter-1");
+            markup.ShouldContain("04/14/2026");
+
+            // GC-P3 / GC-P8 — column headers (including the slot's own column) remain
+            // generated. Slot replaces cell content only; header is part of grid metadata.
+            markup.ShouldContain(">Id<");
+            markup.ShouldContain(">Count<");
+            markup.ShouldContain(">Last changed<");
+        });
+
+        // GC-P9 — visible-label invariant from Spec line 328 ("slot replacing a badge-like
+        // field must preserve visible label text and equivalent accessible name"). Use a
+        // DOM-anchored assertion rather than substring matching on the raw markup.
+        AngleSharp.Dom.IElement labelElement = cut.Find(".counter-count-slot__label");
+        labelElement.TextContent.Trim().ShouldBe("Count");
+
+        // GC-P9 — exactly one slot rendered (one row × one slot field).
+        cut.FindAll(".counter-count-slot").Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task CounterProjectionView_Level3Slot_InvalidComponent_LogsHfc1039_AndRendersGeneratedDefault() {
+        // GC-P1 / AC15 — invalid-registration test fixture. Component lacks a Context parameter,
+        // so IsCompatibleComponent rejects it and HFC1039 is logged. Resolve returns null and
+        // FcFieldSlotHost falls back to RenderDefault, so the cell still shows the generated
+        // value "1,234" and no "counter-count-slot" markup appears.
+        UseFakeTime(s_fixedNow);
+
+        ListLogger<ProjectionSlotRegistry> capturedLogger = new();
+        Services.Replace(ServiceDescriptor.Singleton<ILogger<ProjectionSlotRegistry>>(capturedLogger));
+
+        Services.AddSlotOverride<CounterProjection, int>(
+            field: x => x.Count,
+            componentType: typeof(InvalidSlotMissingContext));
+
+        await InitializeStoreAsync();
+        IDispatcher dispatcher = Services.GetRequiredService<IDispatcher>();
+
+        using CultureScope _ = new(CultureInfo.InvariantCulture);
+
+        dispatcher.Dispatch(new CounterProjectionLoadedAction(
+            "counter-invalid-slot",
+            [
+                new CounterProjection
+                {
+                    Id = "counter-1",
+                    Count = 1234,
+                    LastUpdated = s_lastUpdated,
+                },
+            ]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+
+        IRenderedComponent<CounterProjectionView> cut = await RenderVirtualizedAsync<CounterProjectionView, CounterProjection>();
+
+        await cut.WaitForAssertionAsync(() => {
+            string markup = cut.Markup;
+
+            // Slot was REJECTED — no slot markup visible.
+            markup.ShouldNotContain("counter-count-slot");
+            markup.ShouldNotContain("INVALID-SLOT-RENDERED");
+
+            // Generated default still renders the field.
+            markup.ShouldContain("1,234");
+            markup.ShouldContain(">Count<");
+        });
+
+        // HFC1039 fired through the support-safe generated event contract.
+        capturedLogger.Entries.ShouldContain(e =>
+            e.Level == LogLevel.Warning
+            && e.EventId.Id == 5826
+            && e.EventId.Name == "ProjectionSlotInvalidComponent"
+            && e.Message.Contains("HFC1039", StringComparison.Ordinal)
+            && e.Message.Contains("ExpectedProjectionTypeDigest=sha256:", StringComparison.Ordinal)
+            && e.Message.Contains("ComponentTypeDigest=sha256:", StringComparison.Ordinal)
+            && !e.Message.Contains(typeof(CounterProjection).FullName!, StringComparison.Ordinal)
+            && !e.Message.Contains(typeof(InvalidSlotMissingContext).FullName!, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task CounterProjectionView_Level2TemplateAndLevel3Slot_TemplateFieldRendererResolvesSlot() {
+        // GC-P2 / AC10 / T6 spec line 122 — "tests proving a Level 2 template still renders a
+        // Level 3 slot for one field and default generated delegates for adjacent fields".
+        UseFakeTime(s_fixedNow);
+
+        Services.AddSingleton(new ProjectionTemplateAssemblySource(
+        [
+            new ProjectionTemplateDescriptor(
+                ProjectionType: typeof(CounterProjection),
+                Role: null,
+                TemplateType: typeof(SelectedCounterTemplate),
+                ContractVersion: ProjectionTemplateContractVersion.Current),
+        ]));
+
+        Services.AddSlotOverride<CounterProjection, int, CounterCountSlot>(field: x => x.Count);
+
+        await InitializeStoreAsync();
+        IDispatcher dispatcher = Services.GetRequiredService<IDispatcher>();
+
+        using CultureScope _ = new(CultureInfo.InvariantCulture);
+
+        dispatcher.Dispatch(new CounterProjectionLoadedAction(
+            Guid.NewGuid().ToString(),
+            [
+                new CounterProjection
+                {
+                    Id = "counter-1",
+                    Count = 1234,
+                    LastUpdated = s_lastUpdated,
+                },
+            ]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+
+        IRenderedComponent<CounterProjectionView> cut = await RenderVirtualizedAsync<CounterProjectionView, CounterProjection>();
+
+        await cut.WaitForAssertionAsync(() => {
+            string markup = cut.Markup;
+
+            // Level 2 template owns the body — selected-template marker present, no FluentDataGrid.
+            markup.ShouldContain("fc-selected-template");
+            markup.ShouldNotContain("fluent-data-grid");
+
+            // Level 2 template's FieldRenderer invocation for "Count" resolves through the
+            // Level 3 slot per spec line 281 ("the helper checks a Level 3 slot descriptor for
+            // (projection, role, field) and falls back to ... generated default field renderer").
+            markup.ShouldContain("counter-count-slot");
+            markup.ShouldContain("aria-labelledby=\"counter-count-slot-count-label counter-count-slot-count-value\"");
+        });
+    }
+
+    [Fact]
+    public async Task CounterProjectionView_Level4Replacement_WinsWhenLevel2TemplateAlsoRegistered() {
+        UseFakeTime(s_fixedNow);
+
+        Services.AddSingleton(new ProjectionTemplateAssemblySource(
+        [
+            new ProjectionTemplateDescriptor(
+                ProjectionType: typeof(CounterProjection),
+                Role: null,
+                TemplateType: typeof(SelectedCounterTemplate),
+                ContractVersion: ProjectionTemplateContractVersion.Current),
+        ]));
+        Services.AddViewOverride<CounterProjection, CounterFullViewReplacement>();
+
+        await InitializeStoreAsync();
+        IDispatcher dispatcher = Services.GetRequiredService<IDispatcher>();
+
+        using CultureScope _ = new(CultureInfo.InvariantCulture);
+
+        dispatcher.Dispatch(new CounterProjectionLoadedAction(
+            Guid.NewGuid().ToString(),
+            [
+                new CounterProjection
+                {
+                    Id = "counter-1",
+                    Count = 1234,
+                    LastUpdated = s_lastUpdated,
+                },
+            ]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+
+        IRenderedComponent<CounterProjectionView> cut = await RenderVirtualizedAsync<CounterProjectionView, CounterProjection>();
+
+        await cut.WaitForAssertionAsync(() => {
+            string markup = cut.Markup;
+
+            markup.ShouldContain("data-fc-datagrid");
+            markup.ShouldContain("counter-full-view-heading");
+            markup.ShouldNotContain("fc-selected-template");
+            markup.ShouldNotContain("fluent-data-grid");
+            cut.FindAll("[role='status'], [aria-live='polite']").Count.ShouldBe(1);
+        });
+    }
+
+    [Fact]
+    public async Task CounterProjectionView_Level4Replacement_RendersInsideFrameworkEnvelope_AndUsesSafeFieldDelegates() {
+        UseFakeTime(s_fixedNow);
+
+        Services.AddViewOverride<CounterProjection, CounterFullViewReplacement>();
+        Services.AddSlotOverride<CounterProjection, int, CounterCountSlot>(field: x => x.Count);
+
+        await InitializeStoreAsync();
+        IDispatcher dispatcher = Services.GetRequiredService<IDispatcher>();
+
+        using CultureScope _ = new(CultureInfo.InvariantCulture);
+
+        dispatcher.Dispatch(new CounterProjectionLoadedAction(
+            Guid.NewGuid().ToString(),
+            [
+                new CounterProjection
+                {
+                    Id = "counter-1",
+                    Count = 1234,
+                    LastUpdated = s_lastUpdated,
+                },
+            ]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+
+        IRenderedComponent<CounterProjectionView> cut = await RenderVirtualizedAsync<CounterProjectionView, CounterProjection>();
+
+        await cut.WaitForAssertionAsync(() => {
+            string markup = cut.Markup;
+
+            // Framework-owned envelope remains outside the replacement.
+            markup.ShouldContain("data-fc-datagrid");
+            markup.ShouldContain("counter-full-view-heading");
+
+            // Level 4 wins over generated DataGrid body by default.
+            markup.ShouldNotContain("fluent-data-grid");
+
+            // Lower-level rendering appears only through explicit safe delegates used by the
+            // replacement. Count flows through the Level 3 slot; LastUpdated uses generated field rendering.
+            markup.ShouldContain("counter-count-slot");
+            markup.ShouldContain("aria-labelledby=\"counter-count-slot-count-label counter-count-slot-count-value\"");
+            markup.ShouldContain("04/14/2026");
+        });
+    }
+
+    [Fact]
+    public async Task CounterProjectionView_Level4InvalidComponent_LogsHfc1043_AndRendersGeneratedDefault() {
+        UseFakeTime(s_fixedNow);
+
+        ListLogger<ProjectionViewOverrideRegistry> capturedLogger = new();
+        Services.Replace(ServiceDescriptor.Singleton<ILogger<ProjectionViewOverrideRegistry>>(capturedLogger));
+        Services.AddViewOverride<CounterProjection, InvalidViewMissingContext>();
+
+        await InitializeStoreAsync();
+        IDispatcher dispatcher = Services.GetRequiredService<IDispatcher>();
+
+        using CultureScope _ = new(CultureInfo.InvariantCulture);
+
+        dispatcher.Dispatch(new CounterProjectionLoadedAction(
+            Guid.NewGuid().ToString(),
+            [
+                new CounterProjection
+                {
+                    Id = "counter-1",
+                    Count = 1234,
+                    LastUpdated = s_lastUpdated,
+                },
+            ]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+
+        IRenderedComponent<CounterProjectionView> cut = await RenderVirtualizedAsync<CounterProjectionView, CounterProjection>();
+
+        await cut.WaitForAssertionAsync(() => {
+            string markup = cut.Markup;
+            markup.ShouldContain("fluent-data-grid");
+            markup.ShouldContain("1,234");
+            markup.ShouldNotContain("INVALID-VIEW-RENDERED");
+        });
+
+        capturedLogger.Entries.ShouldContain(e =>
+            e.Level == LogLevel.Warning
+            && e.EventId.Id == 5833
+            && e.EventId.Name == "ProjectionViewOverrideInvalidComponent"
+            && e.Message.Contains("HFC1043", StringComparison.Ordinal)
+            && e.Message.Contains("ProjectionTypeDigest=sha256:", StringComparison.Ordinal)
+            && e.Message.Contains("ComponentTypeDigest=sha256:", StringComparison.Ordinal)
+            && !e.Message.Contains(typeof(CounterProjection).FullName!, StringComparison.Ordinal)
+            && !e.Message.Contains(typeof(InvalidViewMissingContext).FullName!, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task StatusProjectionView_NullAndBooleanValues_RenderSnapshot() {
+        await InitializeStoreAsync();
+        IDispatcher dispatcher = Services.GetRequiredService<IDispatcher>();
+
+        // Pin culture so the localized aria-labels in the snapshot are deterministic regardless of
+        // the runner's OS locale (matches the sibling Counter snapshot tests).
+        using CultureScope _ = new(CultureInfo.InvariantCulture);
+
+        dispatcher.Dispatch(new StatusProjectionLoadedAction(
+            "status-null-and-boolean-snapshot",
+            [
+                new StatusProjection { Name = null, IsEnabled = true },
+                new StatusProjection { Name = "Beta", IsEnabled = false },
+                new StatusProjection { Name = "Gamma", IsEnabled = null },
+            ]) { ScopeTenantId = "test-tenant", ScopeUserId = "test-user" });
+
+        IRenderedComponent<StatusProjectionView> cut = await RenderVirtualizedAsync<StatusProjectionView, StatusProjection>();
+
+        await cut.WaitForAssertionAsync(() => {
+            cut.Markup.ShouldContain("Yes");
+            cut.Markup.ShouldContain("No");
+            cut.Markup.ShouldContain("—");
+        });
+
+        await Verify(NormalizeGridMarkup(cut.Markup));
+    }
+
+    private FakeTimeProvider UseFakeTime(DateTimeOffset utcNow) {
+        FakeTimeProvider fake = new(utcNow);
+        Services.Replace(ServiceDescriptor.Singleton<TimeProvider>(fake));
+        return fake;
+    }
+
+    private static string NormalizeGridMarkup(string markup) {
+        string normalized = Regex.Replace(markup, "\\s+id=\"[^\"]+\"", string.Empty);
+        normalized = Regex.Replace(normalized, "\\s+blazor:[^=]+=\"[^\"]*\"", string.Empty);
+        // Story 4-6 review fix: per-instance Guid suffix on _expandPanelId (added to prevent
+        // duplicate DOM ids) makes aria-controls non-deterministic across runs.
+        // P-6 (Pass-3): narrow the scrub to the specific `fc-expand-panel-{viewKey}-{guid32}`
+        // slot so future emitter additions of any 32-hex sequence (e.g., a content hash) are
+        // NOT silently masked.
+        normalized = Regex.Replace(normalized, @"fc-expand-panel-([A-Za-z0-9-]+)-[0-9a-f]{32}", "fc-expand-panel-$1-{guid}");
+        normalized = Regex.Replace(normalized, "data-fc-stale-owner=\"[0-9a-f]{32}\"", "data-fc-stale-owner=\"{owner}\"");
+        normalized = Regex.Replace(normalized, "data-fc-datagrid-instance=\"[0-9a-f]{32}\"", "data-fc-datagrid-instance=\"{instance}\"");
+        // Blazor CSS-isolation scope ids (` b-xxxxxxxxxx`) are an SDK implementation detail: the
+        // hash salt changes across .NET SDK feature-band bumps, so the same unchanged component
+        // emits a different `b-...` token and breaks the snapshot. Scrub the scope token so the
+        // snapshot stays stable across SDK upgrades.
+        normalized = Regex.Replace(normalized, @" b-[0-9a-z]{10}\b", " b-{scope}");
+        // Cataloged Fluent UI v5 builds expose transient provider-refresh state either as an
+        // attribute (rc5) or as a CSS class (rc4). The loading marker is timing state, not grid output.
+        normalized = normalized.Replace(" loading=\"true\"", string.Empty, StringComparison.Ordinal).Replace("fluent-data-grid loading ", "fluent-data-grid ", StringComparison.Ordinal);
+        return normalized.Replace("\r\n", "\n").TrimEnd('\r', '\n') + "\n";
+    }
+
+    private sealed class CultureScope : IDisposable {
+        private readonly CultureInfo _originalCulture;
+        private readonly CultureInfo _originalUICulture;
+
+        public CultureScope(CultureInfo culture) {
+            _originalCulture = CultureInfo.CurrentCulture;
+            _originalUICulture = CultureInfo.CurrentUICulture;
+            CultureInfo.CurrentCulture = culture;
+            CultureInfo.CurrentUICulture = culture;
+        }
+
+        public void Dispose() {
+            CultureInfo.CurrentCulture = _originalCulture;
+            CultureInfo.CurrentUICulture = _originalUICulture;
+        }
+    }
+
+    private sealed class SelectedCounterTemplate : ComponentBase {
+        [Parameter]
+        public ProjectionTemplateContext<CounterProjection> Context { get; set; } = default!;
+
+        protected override void BuildRenderTree(RenderTreeBuilder builder) {
+            CounterProjection row = Context.Items[0];
+            builder.OpenElement(0, "div");
+            builder.AddAttribute(1, "class", "fc-selected-template");
+            builder.AddContent(2, "sections:" + Context.Sections.Count.ToString(CultureInfo.InvariantCulture));
+            builder.AddContent(3, Context.FieldRenderer(row, nameof(CounterProjection.Count)));
+            builder.CloseElement();
+        }
+    }
+
+    // GC-P1 — invalid Level 3 slot fixture: lacks the required [Parameter] Context property.
+    // Triggers IsCompatibleComponent rejection → HFC1039 → fail-soft to default rendering.
+    private sealed class InvalidSlotMissingContext : ComponentBase {
+        protected override void BuildRenderTree(RenderTreeBuilder builder) {
+            builder.OpenElement(0, "span");
+            builder.AddAttribute(1, "class", "invalid-slot-marker");
+            builder.AddContent(2, "INVALID-SLOT-RENDERED");
+            builder.CloseElement();
+        }
+    }
+
+    private sealed class InvalidViewMissingContext : ComponentBase {
+        protected override void BuildRenderTree(RenderTreeBuilder builder) {
+            builder.OpenElement(0, "span");
+            builder.AddContent(1, "INVALID-VIEW-RENDERED");
+            builder.CloseElement();
+        }
+    }
+
+    private sealed class ListLogger<T> : ILogger<T> {
+        public List<(LogLevel Level, EventId EventId, string Message)> Entries { get; } = [];
+
+        public IDisposable BeginScope<TState>(TState state) where TState : notnull => NullScope.Instance;
+
+        public bool IsEnabled(LogLevel logLevel) => true;
+
+        public void Log<TState>(
+            LogLevel logLevel,
+            EventId eventId,
+            TState state,
+            Exception? exception,
+            Func<TState, Exception?, string> formatter)
+            => Entries.Add((logLevel, eventId, formatter(state, exception)));
+
+        private sealed class NullScope : IDisposable {
+            public static readonly NullScope Instance = new();
+
+            public void Dispose() {
+            }
+        }
+    }
+
+    private sealed class RecordingNewItemIndicatorStateService : INewItemIndicatorStateService {
+        public Action? ActiveHandler { get; private set; }
+
+        public RecordingIndicatorSubscription? Subscription { get; private set; }
+
+        public int SubscribeCount { get; private set; }
+
+        public IDisposable Subscribe(string viewKey, Action handler) {
+            ArgumentException.ThrowIfNullOrWhiteSpace(viewKey);
+            ArgumentNullException.ThrowIfNull(handler);
+            SubscribeCount++;
+            ActiveHandler = handler;
+            Subscription = new RecordingIndicatorSubscription(this);
+            return Subscription;
+        }
+
+        public void Add(NewItemIndicatorEntry entry) {
+        }
+
+        public IReadOnlyList<NewItemIndicatorEntry> Snapshot(string viewKey) => [];
+
+        public void DismissForFilterChange(string viewKey) {
+        }
+
+        public void DismissMaterialized(string viewKey, string entityKey) {
+        }
+
+        public void Clear(string reason) {
+        }
+
+        public void Dispose() {
+        }
+
+        public void Release(RecordingIndicatorSubscription subscription) {
+            if (ReferenceEquals(subscription, Subscription)) {
+                ActiveHandler = null;
+            }
+        }
+    }
+
+    private sealed class RecordingIndicatorSubscription(RecordingNewItemIndicatorStateService owner) : IDisposable {
+        public int DisposeCount { get; private set; }
+
+        public void Dispose() {
+            DisposeCount++;
+            owner.Release(this);
+        }
+    }
+}

@@ -1,0 +1,8 @@
+{
+  "failed_attempt_run_id": "a1ea8a98f03ec514",
+  "recorded_launchers_and_managed_pids_checked": 24,
+  "still_present_recorded_pids": [],
+  "remaining_proven_fixture_owned_processes": [],
+  "remaining_containers_with_exact_fixture_id": [],
+  "note": "Only recorded runtime/launcher PIDs inspected; environment used solely for exact fixture ID boolean, never emitted. No unrelated process/container changed."
+}

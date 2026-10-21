@@ -1,0 +1,6 @@
+{
+  "failed_attempt_run_id": "714b194346ffc28d",
+  "remaining_processes_with_exact_fixture_id": [],
+  "remaining_containers_with_exact_fixture_id": [],
+  "note": "Read-only ownership check after completed Abort and fixture disposal; no unrelated resources changed."
+}

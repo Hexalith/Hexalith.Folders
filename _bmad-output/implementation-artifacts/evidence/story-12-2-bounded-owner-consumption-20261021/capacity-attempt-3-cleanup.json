@@ -1,0 +1,6 @@
+{
+  "failed_attempt_run_id": "dae0a4c2641095f9",
+  "remaining_processes_with_exact_fixture_id": [],
+  "remaining_containers_with_exact_fixture_id": [],
+  "note": "Read-only exact fixture ownership check after fixture disposal; no unrelated processes or containers changed."
+}

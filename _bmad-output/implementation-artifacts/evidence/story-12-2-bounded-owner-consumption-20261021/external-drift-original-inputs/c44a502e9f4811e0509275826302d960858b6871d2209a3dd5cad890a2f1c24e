@@ -1,0 +1,298 @@
+// <copyright file="DaprAccessTelemetryCapabilityProbe.cs" company="ITANEO">
+// Copyright (c) ITANEO (https://www.itaneo.com). All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace Hexalith.Memories.AccessTelemetry.Capability;
+
+using System.Text.Json;
+
+using Dapr;
+using Dapr.Client;
+
+using Hexalith.Memories.AccessTelemetry.Contracts;
+using Hexalith.Memories.AccessTelemetry.Lifecycle;
+
+/// <summary>Bounded behavioral probe against the exact configured Dapr lifecycle component.</summary>
+internal sealed partial class DaprAccessTelemetryCapabilityProbe(
+    string capability,
+    DaprClient daprClient,
+    AccessTelemetryRuntimeOptionsProvider optionsProvider,
+    MonotonicRecordIdGenerator ids,
+    TimeProvider timeProvider,
+    ILogger<DaprAccessTelemetryCapabilityProbe> logger) : IAccessTelemetryCapabilityProbe
+{
+    private static readonly StateOptions StrongFirstWrite = new()
+    {
+        Concurrency = ConcurrencyMode.FirstWrite,
+        Consistency = ConsistencyMode.Strong,
+    };
+    private static readonly IReadOnlyDictionary<string, string> PartitionMetadata = new Dictionary<string, string>(StringComparer.Ordinal)
+    {
+        ["partitionKey"] = "access-telemetry",
+    };
+
+    /// <inheritdoc/>
+    public async Task<AccessTelemetryCapabilityProbeResult> ProbeAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            bool passed = capability switch
+            {
+                nameof(AccessTelemetryCapabilityProfile.StrongCrudAndEtags) => await ProbeStrongCrudAsync(cancellationToken).ConfigureAwait(false),
+                nameof(AccessTelemetryCapabilityProfile.MultiKeyTransactionsAndConflicts) => await ProbeTransactionAsync(cancellationToken).ConfigureAwait(false),
+                nameof(AccessTelemetryCapabilityProfile.ActorReactivationFailoverAndReminders) => await ProbeActorMetadataAsync(cancellationToken).ConfigureAwait(false),
+                nameof(AccessTelemetryCapabilityProfile.EffectivePerRecordTtl) => await ProbeTtlAsync(cancellationToken).ConfigureAwait(false),
+                nameof(AccessTelemetryCapabilityProfile.RecordAndRequestBounds) => await ProbeRecordBoundsAsync(cancellationToken).ConfigureAwait(false),
+                nameof(AccessTelemetryCapabilityProfile.TwoWriterThroughputDuringPurge) => await ProbeConcurrentWritersAsync(cancellationToken).ConfigureAwait(false),
+                nameof(AccessTelemetryCapabilityProfile.DeclaredDurabilityAndFailureBehavior) => await ProbeComponentMetadataAsync(cancellationToken).ConfigureAwait(false),
+                nameof(AccessTelemetryCapabilityProfile.TenantIsolationAndEncryption) => ProbeAuthorityBoundary(),
+                nameof(AccessTelemetryCapabilityProfile.PhysicalCapacityEvidence) => IsBoundedEvidence(optionsProvider.Current.CapacityEvidenceId),
+                nameof(AccessTelemetryCapabilityProfile.ReclamationEvidenceHooks) => IsBoundedEvidence(optionsProvider.Current.PhysicalReclamationEvidenceId),
+                _ => false,
+            };
+            if (!passed)
+            {
+                LogProbeFailed(logger, capability);
+            }
+
+            return new AccessTelemetryCapabilityProbeResult(capability, passed);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception exception) when (exception is not OutOfMemoryException and not StackOverflowException)
+        {
+            LogProbeException(logger, capability, exception);
+            return new AccessTelemetryCapabilityProbeResult(capability, false);
+        }
+    }
+
+    private async Task<bool> ProbeStrongCrudAsync(CancellationToken cancellationToken)
+    {
+        string key = ProbeKey("etag");
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            (string? absent, string initialEtag) = await daprClient.GetStateAndETagAsync<string>(
+                optionsProvider.Current.StateStoreName,
+                key,
+                ConsistencyMode.Strong,
+                PartitionMetadata,
+                cancellationToken).ConfigureAwait(false);
+            if (absent is not null)
+            {
+                return false;
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            await daprClient.ExecuteStateTransactionAsync(
+                optionsProvider.Current.StateStoreName,
+                [new StateTransactionRequest(key, JsonSerializer.SerializeToUtf8Bytes("probe"), StateOperationType.Upsert, EmptyToNull(initialEtag), PartitionMetadata, StrongFirstWrite)],
+                PartitionMetadata,
+                cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            (string? stored, string etag) = await daprClient.GetStateAndETagAsync<string>(
+                optionsProvider.Current.StateStoreName,
+                key,
+                ConsistencyMode.Strong,
+                PartitionMetadata,
+                cancellationToken).ConfigureAwait(false);
+            if (stored != "probe" || string.IsNullOrWhiteSpace(etag))
+            {
+                return false;
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            await daprClient.ExecuteStateTransactionAsync(
+                optionsProvider.Current.StateStoreName,
+                [new StateTransactionRequest(key, JsonSerializer.SerializeToUtf8Bytes("updated"), StateOperationType.Upsert, etag, PartitionMetadata, StrongFirstWrite)],
+                PartitionMetadata,
+                cancellationToken).ConfigureAwait(false);
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await daprClient.ExecuteStateTransactionAsync(
+                    optionsProvider.Current.StateStoreName,
+                    [new StateTransactionRequest(key, JsonSerializer.SerializeToUtf8Bytes("conflict"), StateOperationType.Upsert, etag, PartitionMetadata, StrongFirstWrite)],
+                    PartitionMetadata,
+                    cancellationToken).ConfigureAwait(false);
+                return false;
+            }
+            catch (DaprException)
+            {
+                return true;
+            }
+        }
+        finally
+        {
+            await DeleteProbeKeyAsync(key, cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    private async Task<bool> ProbeTransactionAsync(CancellationToken cancellationToken)
+    {
+        string first = ProbeKey("tx-a");
+        string second = ProbeKey("tx-b");
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            await daprClient.ExecuteStateTransactionAsync(
+                optionsProvider.Current.StateStoreName,
+                [
+                    new StateTransactionRequest(first, JsonSerializer.SerializeToUtf8Bytes("a"), StateOperationType.Upsert, null, PartitionMetadata, StrongFirstWrite),
+                    new StateTransactionRequest(second, JsonSerializer.SerializeToUtf8Bytes("b"), StateOperationType.Upsert, null, PartitionMetadata, StrongFirstWrite),
+                ],
+                PartitionMetadata,
+                cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            string? firstValue = await daprClient.GetStateAsync<string>(optionsProvider.Current.StateStoreName, first, ConsistencyMode.Strong, PartitionMetadata, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            string? secondValue = await daprClient.GetStateAsync<string>(optionsProvider.Current.StateStoreName, second, ConsistencyMode.Strong, PartitionMetadata, cancellationToken).ConfigureAwait(false);
+            return firstValue == "a" && secondValue == "b";
+        }
+        finally
+        {
+            await DeleteProbeKeyAsync(first, cancellationToken).ConfigureAwait(false);
+            await DeleteProbeKeyAsync(second, cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    private async Task<bool> ProbeActorMetadataAsync(CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        DaprMetadata metadata = await daprClient.GetMetadataAsync(cancellationToken).ConfigureAwait(false);
+        return metadata.Actors.Any(actor => string.Equals(actor.Type, nameof(AccessTelemetryLifecycleActor), StringComparison.Ordinal));
+    }
+
+    private async Task<bool> ProbeTtlAsync(CancellationToken cancellationToken)
+    {
+        string key = ProbeKey("ttl");
+        IReadOnlyDictionary<string, string> metadata = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["partitionKey"] = "access-telemetry",
+            ["ttlInSeconds"] = "1",
+        };
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            await daprClient.SaveStateAsync(optionsProvider.Current.StateStoreName, key, "ttl", StrongFirstWrite, metadata, cancellationToken).ConfigureAwait(false);
+            await Task.Delay(TimeSpan.FromMilliseconds(1250), timeProvider, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            string? remaining = await daprClient.GetStateAsync<string>(optionsProvider.Current.StateStoreName, key, ConsistencyMode.Strong, PartitionMetadata, cancellationToken).ConfigureAwait(false);
+            return remaining is null;
+        }
+        finally
+        {
+            await DeleteProbeKeyAsync(key, cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    private async Task<bool> ProbeRecordBoundsAsync(CancellationToken cancellationToken)
+    {
+        string key = ProbeKey("bounds");
+        byte[] value = new byte[AccessTelemetryOptions.MaximumRecordBytes];
+        Random.Shared.NextBytes(value);
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            await daprClient.ExecuteStateTransactionAsync(
+                optionsProvider.Current.StateStoreName,
+                [new StateTransactionRequest(key, value, StateOperationType.Upsert, null, PartitionMetadata, StrongFirstWrite)],
+                PartitionMetadata,
+                cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            ReadOnlyMemory<byte> stored = await daprClient.GetByteStateAsync(
+                optionsProvider.Current.StateStoreName,
+                key,
+                ConsistencyMode.Strong,
+                PartitionMetadata,
+                cancellationToken).ConfigureAwait(false);
+            return stored.Length == value.Length;
+        }
+        finally
+        {
+            await DeleteProbeKeyAsync(key, cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    private async Task<bool> ProbeConcurrentWritersAsync(CancellationToken cancellationToken)
+    {
+        string first = ProbeKey("writer-a");
+        string second = ProbeKey("writer-b");
+        try
+        {
+            await Task.WhenAll(WriteProbeAsync(first, cancellationToken), WriteProbeAsync(second, cancellationToken)).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            string? firstValue = await daprClient.GetStateAsync<string>(optionsProvider.Current.StateStoreName, first, ConsistencyMode.Strong, PartitionMetadata, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            return !string.IsNullOrWhiteSpace(firstValue) &&
+                !string.IsNullOrWhiteSpace(await daprClient.GetStateAsync<string>(optionsProvider.Current.StateStoreName, second, ConsistencyMode.Strong, PartitionMetadata, cancellationToken).ConfigureAwait(false));
+        }
+        finally
+        {
+            await DeleteProbeKeyAsync(first, cancellationToken).ConfigureAwait(false);
+            await DeleteProbeKeyAsync(second, cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    private async Task<bool> ProbeComponentMetadataAsync(CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        DaprMetadata metadata = await daprClient.GetMetadataAsync(cancellationToken).ConfigureAwait(false);
+        return metadata.Components.Any(component =>
+            string.Equals(component.Name, optionsProvider.Current.StateStoreName, StringComparison.Ordinal) &&
+            !string.IsNullOrWhiteSpace(component.Type) &&
+            !string.IsNullOrWhiteSpace(component.Version));
+    }
+
+    private bool ProbeAuthorityBoundary()
+        => optionsProvider.Current.StateStoreName == AccessTelemetryOptions.RequiredStateStoreName &&
+            optionsProvider.Current.SecretStoreName == AccessTelemetryOptions.RequiredSecretStoreName &&
+            optionsProvider.Current.ConfigurationStoreName == AccessTelemetryOptions.RequiredConfigurationStoreName;
+
+    private Task WriteProbeAsync(string key, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return daprClient.SaveStateAsync(
+            optionsProvider.Current.StateStoreName,
+            key,
+            "writer",
+            StrongFirstWrite,
+            PartitionMetadata,
+            cancellationToken);
+    }
+
+    private async Task DeleteProbeKeyAsync(string key, CancellationToken cancellationToken)
+    {
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            await daprClient.DeleteStateAsync(
+                optionsProvider.Current.StateStoreName,
+                key,
+                StrongFirstWrite,
+                PartitionMetadata,
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException and not OutOfMemoryException and not StackOverflowException)
+        {
+            // Cleanup failure leaves the gate fail-closed on the next read/probe without exposing the key.
+        }
+    }
+
+    private string ProbeKey(string suffix) => $"capability/{suffix}/{ids.NewId()}";
+
+    private static string? EmptyToNull(string value) => string.IsNullOrEmpty(value) ? null : value;
+
+    private static bool IsBoundedEvidence(string value)
+        => !string.IsNullOrWhiteSpace(value) && value.Length <= 256 && !value.Contains("unconfigured", StringComparison.OrdinalIgnoreCase);
+
+    [LoggerMessage(27101, LogLevel.Warning, "Access telemetry capability probe {Capability} did not pass.")]
+    private static partial void LogProbeFailed(ILogger logger, string capability);
+
+    [LoggerMessage(27102, LogLevel.Warning, "Access telemetry capability probe {Capability} failed with an exception.")]
+    private static partial void LogProbeException(ILogger logger, string capability, Exception exception);
+}

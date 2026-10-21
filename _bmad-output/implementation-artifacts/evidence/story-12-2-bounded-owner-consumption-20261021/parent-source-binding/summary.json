@@ -1,0 +1,31 @@
+{
+  "pdbCount": 271,
+  "ordinaryDocumentCopies": 37784,
+  "generatedDocumentCopies": 3273,
+  "uniqueArchivedGeneratedSources": 456,
+  "currentGeneratedDiskDifferences": [
+    {
+      "pdb": "src/Hexalith.Folders.Client/Generation/bin/Debug/net10.0/Hexalith.Folders.Client.Generation.Shared.pdb",
+      "source": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/Generation/Shared/obj/Debug/net10.0/Hexalith.Folders.Client.Generation.Shared.AssemblyInfo.cs",
+      "expected": "77B88957201A88CEF27989E63D88A1BC3AB645AFA3BDA3C6444A9DAB5271B6E1",
+      "diskSha256": "D19D0FF32F977CD6914A8B5AE2064908A858FEED80CD3C47055168CCF31CC63A",
+      "embeddedMatches": true
+    },
+    {
+      "pdb": "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+      "source": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/obj/Debug/net10.0/Hexalith.Commons.UniqueIds.AssemblyInfo.cs",
+      "expected": "48E51103B860B38F0F8A8793D9FD2ECF2E0E471EA3653C4699B767AEC15383DF",
+      "diskSha256": "CD48F5F4E01C2D1D404C6A1B938327DBBB659E5594F44F8C23BF11A7D0E49914",
+      "embeddedMatches": true
+    },
+    {
+      "pdb": "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+      "source": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/obj/Debug/net10.0/Hexalith.Commons.UniqueIds.AssemblyInfo.cs",
+      "expected": "48E51103B860B38F0F8A8793D9FD2ECF2E0E471EA3653C4699B767AEC15383DF",
+      "diskSha256": "CD48F5F4E01C2D1D404C6A1B938327DBBB659E5594F44F8C23BF11A7D0E49914",
+      "embeddedMatches": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

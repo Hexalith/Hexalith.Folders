@@ -1,0 +1,43 @@
+{
+  "command": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests",
+    "-showLiveOutput",
+    "-result-xml",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/capacity-live-attempt-5.xml",
+    "-preEnumerateTheories",
+    "-displayName",
+    "*count: 10001)"
+  ],
+  "environment": {
+    "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true",
+    "DOTNET_USE_POLLING_FILE_WATCHER": "1"
+  },
+  "exit_code": 1,
+  "seconds": 1358.1267685890198,
+  "log": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/capacity-live-attempt-5.log",
+  "xml": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/capacity-live-attempt-5.xml",
+  "assemblies": [
+    {
+      "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+      "id": "6fbdac3f-e151-45f9-a6b7-1813f3f58421",
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "run-date": "2026-10-21",
+      "run-time": "18:13:35",
+      "start-rtf": "2026-10-21T18:13:35.9326615+00:00",
+      "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+      "target-framework": ".NETCoreApp,Version=v10.0",
+      "errors": "0",
+      "failed": "1",
+      "finish-rtf": "2026-10-21T18:36:13.8330234+00:00",
+      "not-run": "0",
+      "passed": "0",
+      "skipped": "0",
+      "time": "1357.960",
+      "time-rtf": "00:22:37.9600000",
+      "total": "1"
+    }
+  ]
+}

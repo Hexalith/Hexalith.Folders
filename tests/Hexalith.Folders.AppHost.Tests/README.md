@@ -7,11 +7,14 @@ The disposable-provider acceptance temporarily removes its observer's repository
 denial with no prepared source event, restores the repository in `finally`, and resumes the real
 prepare/lock/clean-release workflow. Private provider context stays outside retained events and evidence.
 
-The SDK's captured-owner identity handoff still rejects histories over 10,000 positions. The default
-capacity regression proves ordinary growth to 10,001 and records the production dispatcher failure
-and the specific public coordinator argument rejection; that expected-blocker test is not acceptance
-of rebuild beyond the boundary. Story 12.2 remains open pending the
-[bounded owner-identity prerequisite](../../_bmad-output/implementation-artifacts/proposal-12-2-sdk-bounded-owner-identity.md).
+The separately implemented SDK bounded owner-identity candidate supports the existing Folders handler.
+The default capacity regression now rebuilds complete 10,001- and 32,769-position original owners,
+preserves 98 historical tasks, grows and rebuilds again, and checks inherited generations and original
+identity conflicts. The authenticated capacity lane below qualifies the actual Folders handler and HTTP
+transport separately from the real-provider retained-source scenario. Current commands, results and
+source/binary binding belong to the [Task 36 consumer packet](../../_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/).
+Story 12.2 remains in progress; SDK broad regressions, package/PD10, SM4 and independent whole-story
+review are separate gates.
 
 Tier-3 Aspire integration harness. It boots the full Folders `AppHost` topology through
 `DistributedApplicationTestingBuilder` and proves the cross-process publish/subscribe wiring comes up together:
@@ -20,6 +23,41 @@ Tier-3 Aspire integration harness. It boots the full Folders `AppHost` topology 
   `EventStore:Publisher:TopicOverrides:folders` override).
 - `folders-workers` subscribes `folders.events` on `/folders/events` (semantic indexing) and `memories-events`.
 - `memories` subscribes `memories-events` (the curated search index).
+
+Task 36's additional capacity lane runs after the Debug/source build:
+
+```bash
+HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests -showLiveOutput
+```
+
+This lane supplies synthetic metadata-only histories under separate original owner IDs; it never
+extends or rewrites the real provider scenario's retained actor streams. Its 10,001-position case
+uses authenticated production discovery and `/project/rebuild/shared/v1`, with at most 256
+events per `AccumulatePart`, followed by `AccumulateComplete`. The host binds
+`EventStore:ProjectionDispatch:MaxRebuildEventCount=40000` for this qualification. This admission
+setting is configurable and does not introduce a Folders history cap; recoverable batches retain the
+SDK's 100-operation/one-MiB limits. Large capacity requests have a separate 15-minute phase budget;
+the strict real-provider lane's assertions, deadlines and retry limits stay unchanged.
+The component lane executes the actual Folders dispatcher/handler with this supported bounded protocol
+at both 10,001 and 32,769 positions; the separate SDK buffered-owner Dapr packet covers both sizes and
+true interrupted staging/handoff. No 32,769-position Folders HTTP pass is claimed.
+Capacity requests reacquire real operation-scoped Keycloak workload credentials near expiry;
+token lifetimes and production validation stay unchanged.
+
+The capacity fixture first sends one authenticated ordinary named delivery for a separate tiny owner
+to establish the production writer/epoch. Both large capture-owner checkpoints remain empty before
+staging. This is an initialized-epoch qualification; it does not claim that shared Begin alone can
+bootstrap a tenant with no prior operational delivery. The retained precondition failure remains in
+the new evidence packet.
+
+The new lane proves sealed staging across changed host PIDs, two original owners, inherited selected
+reads, original early/middle/final duplicate and conflict handling, ordinary catch-up and another full
+rebuild after growth. It records immutable input hashes, phase times and final retained value maxima.
+True interrupted staging and partial multi-owner handoff use the separately hash-bound SDK process
+packet, with provenance in the consumer report. The SDK broad regression gate remains failed;
+its passing capability matrix is not newly executed Folders coverage. All readers/writers must support
+paged identity checkpoints before use; rollback after the first paged write requires compatible readers
+or a coordinated complete-state restore with writers drained, as documented in the SDK authoring guide.
 
 Story 10.6 replaced the fail-closed content materializer with
 `MetadataDerivedSemanticIndexingContentMaterializer`. Curated index text is the approved metadata-token

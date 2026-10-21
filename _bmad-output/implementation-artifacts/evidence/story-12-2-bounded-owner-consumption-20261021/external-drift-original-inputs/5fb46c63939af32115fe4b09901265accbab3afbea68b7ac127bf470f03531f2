@@ -1,0 +1,135 @@
+@using Hexalith.FrontComposer.Contracts.Diagnostics
+@using Hexalith.FrontComposer.Shell.Resources
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.Extensions.Localization
+@using Microsoft.FluentUI.AspNetCore.Components
+
+@inject IStringLocalizer<FcShellResources> Localizer
+
+<div @ref="_root"
+     class="fc-customization-diagnostic"
+     role="alert"
+     aria-live="assertive"
+     aria-label="@AriaLabel"
+     tabindex="-1"
+     data-fc-diagnostic="@Diagnostic.Id"
+     data-fc-customization-level="@Diagnostic.Level"
+     data-fc-projection="@(Diagnostic.ProjectionTypeName ?? string.Empty)"
+     data-fc-component="@(Diagnostic.ComponentTypeName ?? string.Empty)"
+     data-fc-role="@(Diagnostic.Role ?? string.Empty)"
+     data-fc-field="@(Diagnostic.FieldName ?? string.Empty)">
+    <FluentMessageBar Intent="MessageBarIntent.Error" AllowDismiss="false">
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="6">
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="8" VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel Typo="Typography.Subject"><strong>@Diagnostic.Id</strong></FluentLabel>
+                <FluentBadge>@Diagnostic.Level</FluentBadge>
+            </FluentStack>
+            <FluentLabel Typo="Typography.Body">@Diagnostic.What</FluentLabel>
+            <dl class="fc-customization-diagnostic__sections">
+                @foreach ((string label, string? value) in MetadataRows()) {
+                    <dt>@label</dt>
+                    <dd>@value</dd>
+                }
+                <dt>@Localizer["CustomizationDiagnosticPanelExpectedLabel"]</dt>
+                <dd>@Diagnostic.Expected</dd>
+                <dt>@Localizer["CustomizationDiagnosticPanelGotLabel"]</dt>
+                <dd>@Diagnostic.Got</dd>
+                <dt>@Localizer["CustomizationDiagnosticPanelFixLabel"]</dt>
+                <dd>@Diagnostic.Fix</dd>
+                @if (!string.IsNullOrWhiteSpace(Diagnostic.Fallback)) {
+                    <dt>@Localizer["CustomizationDiagnosticPanelFallbackLabel"]</dt>
+                    <dd>@Diagnostic.Fallback</dd>
+                }
+            </dl>
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="8" VerticalAlignment="VerticalAlignment.Center">
+                @if (IsSafeDocsLink(Diagnostic.DocsLink)) {
+                    <a href="@Diagnostic.DocsLink" target="_blank" rel="noopener noreferrer">
+                        @Localizer["CustomizationDiagnosticPanelDocsLinkLabel"]
+                    </a>
+                }
+                else {
+                    <FluentLabel Typo="Typography.Body">@Diagnostic.DocsLink</FluentLabel>
+                }
+                @if (CanRetry) {
+                    <FluentButton Appearance="ButtonAppearance.Primary" OnClick="OnRetry">
+                        @Localizer["CustomizationDiagnosticPanelRetryLabel"]
+                    </FluentButton>
+                }
+            </FluentStack>
+        </FluentStack>
+    </FluentMessageBar>
+</div>
+
+@code {
+    private ElementReference _root;
+    private string? _focusedDiagnosticId;
+
+    [Parameter, EditorRequired]
+    public CustomizationDiagnostic Diagnostic { get; set; } = default!;
+
+    [Parameter]
+    public bool CanRetry { get; set; }
+
+    [Parameter]
+    public EventCallback OnRetry { get; set; }
+
+    private string AriaLabel => string.Format(
+        System.Globalization.CultureInfo.CurrentCulture,
+        Localizer["CustomizationDiagnosticPanelAriaLabelTemplate"],
+        Diagnostic.Id);
+
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        // P3 — programmatic focus when the panel first renders for a given diagnostic.
+        // Re-focus when the Diagnostic.Id changes (new fault episode) so screen-reader users
+        // hear the new content. Do NOT re-focus on every render — that would steal focus
+        // from a user mid-interaction.
+        if (_focusedDiagnosticId == Diagnostic.Id) {
+            return;
+        }
+
+        _focusedDiagnosticId = Diagnostic.Id;
+        try {
+            await _root.FocusAsync().ConfigureAwait(true);
+        }
+        catch {
+            // Browser focus calls can fail (NotFoundError, dispose race). Panel remains
+            // visible; the alert role + aria-live still announce the content.
+        }
+    }
+
+    private IEnumerable<(string Label, string? Value)> MetadataRows() {
+        // P4 — visibly render projection / component / role / field / exception-category
+        // metadata required by AC9. Each row is omitted when the underlying value is absent
+        // so the panel stays compact for diagnostics that don't carry the field.
+        if (!string.IsNullOrWhiteSpace(Diagnostic.ProjectionTypeName)) {
+            yield return (Localizer["CustomizationDiagnosticPanelProjectionLabel"], Diagnostic.ProjectionTypeName);
+        }
+
+        if (!string.IsNullOrWhiteSpace(Diagnostic.ComponentTypeName)) {
+            yield return (Localizer["CustomizationDiagnosticPanelComponentLabel"], Diagnostic.ComponentTypeName);
+        }
+
+        if (!string.IsNullOrWhiteSpace(Diagnostic.Role)) {
+            yield return (Localizer["CustomizationDiagnosticPanelRoleLabel"], Diagnostic.Role);
+        }
+
+        if (!string.IsNullOrWhiteSpace(Diagnostic.FieldName)) {
+            yield return (Localizer["CustomizationDiagnosticPanelFieldLabel"], Diagnostic.FieldName);
+        }
+
+        if (Diagnostic.Properties.TryGetValue("category", out string? category)
+            && !string.IsNullOrWhiteSpace(category)) {
+            yield return (Localizer["CustomizationDiagnosticPanelExceptionCategoryLabel"], category);
+        }
+    }
+
+    // P5 — only render an anchor when DocsLink is a well-formed absolute https URL.
+    // Anything else falls back to plain text so a hostile or malformed DocsLink cannot
+    // inject a javascript: URL. The Diagnostic contract requires DocsLink to be non-empty
+    // (RequireSection in CustomizationDiagnostic ctor); absence is unreachable here.
+    private static bool IsSafeDocsLink(string? docsLink)
+        => !string.IsNullOrWhiteSpace(docsLink)
+            && Uri.TryCreate(docsLink, UriKind.Absolute, out Uri? uri)
+            && uri.Scheme == Uri.UriSchemeHttps;
+}

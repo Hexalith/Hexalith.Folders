@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../src/Hexalith.McpCli/Hexalith.McpCli.csproj" />
+    <ProjectReference Include="../../src/Hexalith.McpCli.Core/Hexalith.McpCli.Core.csproj" />
+    <ProjectReference Include="../Hexalith.McpCli.Sample.Contracts/Hexalith.McpCli.Sample.Contracts.csproj" />
+    <ProjectReference Include="../fixtures/Catalog.String.Contracts/Catalog.String.Contracts.csproj" />
+    <ProjectReference Include="../fixtures/Catalog.InvalidProvider.Contracts/Catalog.InvalidProvider.Contracts.csproj" />
+    <ProjectReference Include="../fixtures/Catalog.Explicit.Contracts/Catalog.Explicit.Contracts.csproj" />
+    <ProjectReference Include="../fixtures/Catalog.Routing.Contracts/Catalog.Routing.Contracts.csproj" />
+    <ProjectReference Include="../fixtures/Catalog.Lint.Contracts/Catalog.Lint.Contracts.csproj" />
+    <ProjectReference Include="../fixtures/Catalog.Invalid.Contracts/Catalog.Invalid.Contracts.csproj" />
+    <ProjectReference Include="../fixtures/Manifest.Unmarked.Contracts/Manifest.Unmarked.Contracts.csproj" />
+    <ProjectReference Include="../fixtures/Manifest.MarkedEmpty.Contracts/Manifest.MarkedEmpty.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../../tools/inventory-coverage/v1/*-approved.json" Link="inventory-coverage/v1/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../tools/inventory-coverage/v1/*-accepted-lint.json" Link="inventory-coverage/v1/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

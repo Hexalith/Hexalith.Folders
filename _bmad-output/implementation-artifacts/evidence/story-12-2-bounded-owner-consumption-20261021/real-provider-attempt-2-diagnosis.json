@@ -1,0 +1,40 @@
+{
+  "test": {
+    "id": "9b1991f7-4a2a-4290-9666-eb56464e9081",
+    "name": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures",
+    "result": "Fail",
+    "time": "175.238",
+    "time-rtf": "00:02:55.2380000",
+    "start-rtf": "2026-10-21T18:48:16.7181307+00:00",
+    "finish-rtf": "2026-10-21T18:51:12.0041699+00:00",
+    "type": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+    "method": "RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures",
+    "source-file": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+    "source-line": "33"
+  },
+  "failure_message": "System.InvalidOperationException : Task-owned resource eventstore command stop failed.",
+  "failure_stack": "   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.ResourceCommandAsync(String name, String command) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 450\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.RestartHostsAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 414\n   at Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RequireRealTaskClosureAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs:line 341\n   at Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs:line 44\n--- End of stack trace from previous location ---",
+  "stop_evidence": {
+    "resource": "eventstore",
+    "canonical_command_success": false,
+    "shutdown_start_utc": "2026-10-21T18:50:55Z",
+    "dcp_timeout_utc": "2026-10-21T18:51:07.430Z",
+    "diagnostic": "timed out waiting for process to stop"
+  },
+  "passed_substeps": [
+    "PASS provider binding: retained rejection does not strand later configuration; missing retained view fails closed; complete source rebuild preserves exact binding and retained source",
+    "PASS bound-target denial: absent real repository cannot append preparation success; exact target restored privately",
+    "PASS persisted retention: ordinary writes; selected view TTL=34559998s; configured=34560000s",
+    "PASS persisted retention: ordinary writes; selected view TTL=34559998s; configured=34560000s",
+    "PASS persisted retention: ordinary writes; selected view TTL=34559998s; configured=34560000s",
+    "PASS persisted retention: complete-source rebuild; selected view TTL=34559993s; configured=34560000s",
+    "PASS persisted retention: complete-source rebuild; selected view TTL=34559993s; configured=34560000s",
+    "PASS persisted retention: complete-source rebuild; selected view TTL=34559992s; configured=34560000s",
+    "PASS all six concerns: altered observation timestamps fail full-row integrity; SDK shared empty-checkpoint rebuild restores exact source-folded lifecycle/lock/workspace/cleanup/task/commit metadata",
+    "PASS SDK interrupted generation: sealed private streamed staging survives changed writer PIDs; the same SDK session resumes promotion and authenticated ordinary replay before completion; source hashes unchanged",
+    "PASS ordinary-write processes: proof-a=80102; proof-b=80063",
+    "PASS two concurrent Workers replica processes: overlapping ordered writes from a fresh shared derived-state namespace ACK in both processes and converge exactly without changing retained source"
+  ],
+  "limits": "All original assertions, deadlines, retry limits and product limiter settings unchanged.",
+  "next_step": "Fresh identical serial retry; no definitive shutdown source-cause conclusion."
+}

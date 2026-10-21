@@ -1,0 +1,36 @@
+{
+  "command": [
+    "dotnet",
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+    "-class",
+    "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+    "-showLiveOutput",
+    "-result-xml",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/focused-capacity-attempt-1.xml"
+  ],
+  "exit_code": 0,
+  "seconds": 60.67877960205078,
+  "log": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/focused-capacity-attempt-1.log",
+  "xml": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/focused-capacity-attempt-1.xml",
+  "assemblies": [
+    {
+      "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+      "id": "5766eb6e-d81f-46a3-a633-07765e72b4b5",
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+      "run-date": "2026-10-21",
+      "run-time": "17:24:54",
+      "start-rtf": "2026-10-21T17:24:54.2738683+00:00",
+      "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+      "target-framework": ".NETCoreApp,Version=v10.0",
+      "errors": "0",
+      "failed": "0",
+      "finish-rtf": "2026-10-21T17:25:54.4885986+00:00",
+      "not-run": "0",
+      "passed": "9",
+      "skipped": "0",
+      "time": "60.220",
+      "time-rtf": "00:01:00.2200000",
+      "total": "9"
+    }
+  ]
+}

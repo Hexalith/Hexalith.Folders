@@ -1,0 +1,431 @@
+{
+  "processes": [
+    {
+      "pid": 16104,
+      "name": "fluentui-mcp",
+      "watch_count": 52741
+    },
+    {
+      "pid": 51580,
+      "name": "fluentui-mcp",
+      "watch_count": 52737
+    },
+    {
+      "pid": 47080,
+      "name": "fluentui-mcp",
+      "watch_count": 45830
+    },
+    {
+      "pid": 72399,
+      "name": "fluentui-mcp",
+      "watch_count": 45830
+    },
+    {
+      "pid": 55145,
+      "name": "fluentui-mcp",
+      "watch_count": 39716
+    },
+    {
+      "pid": 39626,
+      "name": "fluentui-mcp",
+      "watch_count": 35852
+    },
+    {
+      "pid": 60728,
+      "name": "fluentui-mcp",
+      "watch_count": 34872
+    },
+    {
+      "pid": 31477,
+      "name": "fluentui-mcp",
+      "watch_count": 33589
+    },
+    {
+      "pid": 14887,
+      "name": "fluentui-mcp",
+      "watch_count": 33565
+    },
+    {
+      "pid": 54086,
+      "name": "fluentui-mcp",
+      "watch_count": 33008
+    },
+    {
+      "pid": 7189,
+      "name": "fluentui-mcp",
+      "watch_count": 31616
+    },
+    {
+      "pid": 53447,
+      "name": "fluentui-mcp",
+      "watch_count": 31261
+    },
+    {
+      "pid": 29361,
+      "name": "fluentui-mcp",
+      "watch_count": 29342
+    },
+    {
+      "pid": 663,
+      "name": "fluentui-mcp",
+      "watch_count": 27186
+    },
+    {
+      "pid": 29407,
+      "name": "fluentui-mcp",
+      "watch_count": 26912
+    },
+    {
+      "pid": 32494,
+      "name": "fluentui-mcp",
+      "watch_count": 26755
+    },
+    {
+      "pid": 73221,
+      "name": "fluentui-mcp",
+      "watch_count": 26755
+    },
+    {
+      "pid": 71336,
+      "name": "fluentui-mcp",
+      "watch_count": 26753
+    },
+    {
+      "pid": 4764,
+      "name": "fluentui-mcp",
+      "watch_count": 26149
+    },
+    {
+      "pid": 19373,
+      "name": "fluentui-mcp",
+      "watch_count": 25286
+    },
+    {
+      "pid": 49692,
+      "name": "fluentui-mcp",
+      "watch_count": 25286
+    },
+    {
+      "pid": 82245,
+      "name": "fluentui-mcp",
+      "watch_count": 25286
+    },
+    {
+      "pid": 83500,
+      "name": "fluentui-mcp",
+      "watch_count": 25286
+    },
+    {
+      "pid": 29047,
+      "name": "fluentui-mcp",
+      "watch_count": 25285
+    },
+    {
+      "pid": 18765,
+      "name": "fluentui-mcp",
+      "watch_count": 25263
+    },
+    {
+      "pid": 29125,
+      "name": "fluentui-mcp",
+      "watch_count": 25262
+    },
+    {
+      "pid": 30321,
+      "name": "fluentui-mcp",
+      "watch_count": 25077
+    },
+    {
+      "pid": 52935,
+      "name": "fluentui-mcp",
+      "watch_count": 23535
+    },
+    {
+      "pid": 97290,
+      "name": "fluentui-mcp",
+      "watch_count": 22368
+    },
+    {
+      "pid": 29400,
+      "name": "fluentui-mcp",
+      "watch_count": 20851
+    },
+    {
+      "pid": 32065,
+      "name": "fluentui-mcp",
+      "watch_count": 20851
+    },
+    {
+      "pid": 60885,
+      "name": "fluentui-mcp",
+      "watch_count": 19600
+    },
+    {
+      "pid": 60402,
+      "name": "fluentui-mcp",
+      "watch_count": 18684
+    },
+    {
+      "pid": 57617,
+      "name": "fluentui-mcp",
+      "watch_count": 18413
+    },
+    {
+      "pid": 85209,
+      "name": "fluentui-mcp",
+      "watch_count": 16771
+    },
+    {
+      "pid": 74172,
+      "name": "fluentui-mcp",
+      "watch_count": 13822
+    },
+    {
+      "pid": 25046,
+      "name": "fluentui-mcp",
+      "watch_count": 4586
+    },
+    {
+      "pid": 50840,
+      "name": "codex",
+      "watch_count": 2783
+    },
+    {
+      "pid": 15338,
+      "name": "fluentui-mcp",
+      "watch_count": 2508
+    },
+    {
+      "pid": 25036,
+      "name": "fluentui-mcp",
+      "watch_count": 537
+    },
+    {
+      "pid": 67730,
+      "name": "Hexalith.Tenant",
+      "watch_count": 192
+    },
+    {
+      "pid": 99576,
+      "name": "Hexalith.Tenant",
+      "watch_count": 109
+    },
+    {
+      "pid": 75690,
+      "name": "Hexalith.Memori",
+      "watch_count": 84
+    },
+    {
+      "pid": 99336,
+      "name": "Hexalith.EventS",
+      "watch_count": 56
+    },
+    {
+      "pid": 99330,
+      "name": "Hexalith.EventS",
+      "watch_count": 35
+    },
+    {
+      "pid": 99369,
+      "name": "Hexalith.Tenant",
+      "watch_count": 26
+    },
+    {
+      "pid": 99454,
+      "name": "Hexalith.EventS",
+      "watch_count": 20
+    },
+    {
+      "pid": 99527,
+      "name": "Hexalith.Tenant",
+      "watch_count": 20
+    },
+    {
+      "pid": 99529,
+      "name": "Hexalith.Tenant",
+      "watch_count": 19
+    },
+    {
+      "pid": 16545,
+      "name": "agy",
+      "watch_count": 8
+    },
+    {
+      "pid": 16415,
+      "name": "agy",
+      "watch_count": 7
+    },
+    {
+      "pid": 14717,
+      "name": "claude",
+      "watch_count": 5
+    },
+    {
+      "pid": 15539,
+      "name": "claude",
+      "watch_count": 5
+    },
+    {
+      "pid": 28630,
+      "name": "claude",
+      "watch_count": 5
+    },
+    {
+      "pid": 47682,
+      "name": "fluentui-mcp",
+      "watch_count": 5
+    },
+    {
+      "pid": 71819,
+      "name": "claude",
+      "watch_count": 5
+    },
+    {
+      "pid": 13682,
+      "name": "dbus-daemon",
+      "watch_count": 4
+    },
+    {
+      "pid": 16489,
+      "name": "claude",
+      "watch_count": 4
+    },
+    {
+      "pid": 52487,
+      "name": "claude",
+      "watch_count": 4
+    },
+    {
+      "pid": 53327,
+      "name": "claude",
+      "watch_count": 4
+    },
+    {
+      "pid": 60366,
+      "name": "claude",
+      "watch_count": 4
+    },
+    {
+      "pid": 81454,
+      "name": "claude",
+      "watch_count": 4
+    },
+    {
+      "pid": 10900,
+      "name": "dbus-daemon",
+      "watch_count": 1
+    },
+    {
+      "pid": 13090,
+      "name": "MainThread",
+      "watch_count": 1
+    },
+    {
+      "pid": 13285,
+      "name": "MainThread",
+      "watch_count": 1
+    },
+    {
+      "pid": 13655,
+      "name": "MainThread",
+      "watch_count": 1
+    },
+    {
+      "pid": 14079,
+      "name": "MainThread",
+      "watch_count": 1
+    },
+    {
+      "pid": 14315,
+      "name": "MainThread",
+      "watch_count": 1
+    },
+    {
+      "pid": 14657,
+      "name": "MainThread",
+      "watch_count": 1
+    },
+    {
+      "pid": 14876,
+      "name": "MainThread",
+      "watch_count": 1
+    },
+    {
+      "pid": 15176,
+      "name": "MainThread",
+      "watch_count": 1
+    },
+    {
+      "pid": 15251,
+      "name": "MainThread",
+      "watch_count": 1
+    },
+    {
+      "pid": 15462,
+      "name": "MainThread",
+      "watch_count": 1
+    },
+    {
+      "pid": 16577,
+      "name": "MainThread",
+      "watch_count": 1
+    },
+    {
+      "pid": 24493,
+      "name": "claude",
+      "watch_count": 1
+    },
+    {
+      "pid": 70628,
+      "name": "Aspire.Dashboar",
+      "watch_count": 1
+    },
+    {
+      "pid": 74668,
+      "name": "daprd",
+      "watch_count": 1
+    },
+    {
+      "pid": 79863,
+      "name": "MainThread",
+      "watch_count": 1
+    },
+    {
+      "pid": 90415,
+      "name": "MainThread",
+      "watch_count": 1
+    },
+    {
+      "pid": 99013,
+      "name": "daprd",
+      "watch_count": 1
+    },
+    {
+      "pid": 99081,
+      "name": "daprd",
+      "watch_count": 1
+    },
+    {
+      "pid": 99216,
+      "name": "daprd",
+      "watch_count": 1
+    },
+    {
+      "pid": 99217,
+      "name": "daprd",
+      "watch_count": 1
+    },
+    {
+      "pid": 99223,
+      "name": "daprd",
+      "watch_count": 1
+    },
+    {
+      "pid": 99285,
+      "name": "daprd",
+      "watch_count": 1
+    }
+  ],
+  "total_visible_watches": 1048457,
+  "note": "Read-only observation; no unrelated process or global limit modified."
+}

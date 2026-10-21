@@ -111,7 +111,7 @@ context:
 - [x] Review-three actual target readiness: Forgejo readiness/provider and workspace preparation seams/tests must observe the exact authorized bound repository metadata/required permission before advertising usable WorkspacePreparation and appending WorkspacePrepared. Reuse existing target resolver/HTTP binding/observation seams where applicable. Generic authenticated-user/version flags alone are insufficient. Deleted/inaccessible/wrong target or denied permission cannot append prepared success; keep private context outside source/projection/evidence and preserve unsupported/create/bind discovery behavior. Cover real target denial in the disposable-provider lane.
 - [x] Review-three direct source corrections: reject null/blank identifiers for every workspace-bearing retained event and invalid acquisition/effective/expiry/lease consistency before persistence; do not change lawful retained identities. Confirmed reconciliation to committed clears superseded failure metadata while preserving earliest source-owned closure. Add red/green durable reader/Worker/named-intake regressions for these demonstrated cases.
 - [x] Review-three verification gaps: source→persisted durable reader→public lifecycle query tests pin repository failed/unknown/reconciliation vocabulary; normal authenticated Worker route tests assert operational checkpoint/views before successful acknowledgement and a retry response on injected operational persistence failure. Keep current real opted-in acceptance strict.
-- [ ] Review-three SDK history prerequisite: qualify the true production named/shared dispatcher after ordinary growth beyond10,000 retained positions (at least10,001 followed by complete rebuild, duplicate identity proof and further growth). Existing SDK captured-event vectors hard-stop at10,000 independently of dispatch options. Do not raise/drop limits or identity checks, invent a local owner-partition protocol, or impose a domain history cap. If no existing public bounded SDK seam handles this, leave acceptance open and report the exact missing generic bounded captured-identity/checkpoint-handoff capability with a concrete safe prerequisite proposal; additional SDK protocol/schema/public-surface work is not authorized by the minimal mapper exception. Finish independently authorized corrections and report the blocker without claiming completion.
+- [ ] Task 36 / approved SDK bounded owner-identity consumption: verify the exact separately implemented EventStore candidate against its source/binary packet before building; replace the obsolete expected-refusal diagnostic with positive qualification through the production named/shared dispatcher and existing Folders handler. Use Debug project references, supported AccumulatePart/AccumulateComplete transport and MaxRebuildEventCount=40000. Prove complete 10,001/32,769-position histories, further growth/repeated rebuild, historical duplicate/conflicting identities, multiple original owners, catch-up, concurrency, inherited generations, interrupted promotion/process replacement. Reuse independently bound SDK coverage explicitly where appropriate. Preserve original histories, identity/continuity/CAS/generation checks and 100-operation/one-MiB limits. Run relevant consumer regressions and authenticated live acceptance; retain exact commands/results, loaded identities, hashes, PIDs and cleanup in a new packet. Keep SDK broad-regression failure, package/PD10, SM4 and independent-review gates distinct; whole story stays in-progress.
 
 - [x] Round-four command path (replace, do not patch): remove the operational branch from legacy `/project` in `FoldersDomainServiceEndpoints.cs` and delete `OperationalStatusRebuild.cs` with its fixture. `/project` returns the legacy response regardless of operational state. Workers live delivery is the only live writer; rebuild and repair run only through the SDK-driven named `/project/rebuild/shared/v1` transport, which owns session Begin/Abort/Verify. Move tests that relied on `/project` repair to that transport.
 - [x] Round-four named rebuild: in `OperationalStatusProjectionHandler.cs`, validate each partition history as a contiguous 1..N prefix bound to the SDK-sealed capture. Never compare it with a live head; appends after capture reach the new generation through SDK catch-up.
@@ -586,3 +586,41 @@ Existing user changes, Stage11 and all prior evidence remain preserved. Only thi
 evidence and note were added. Story12.2 and Task36 remain in-progress/open; package/PD10, SM4
 acknowledgement performance and independent review remain open. No product source, frozen intent,
 sprint status, dependency pin, retained event, public v2 surface or Git state was changed by this run.
+
+
+## Active Task 36 resumption — 2026-10-21
+
+The user explicitly resumed only Folders source-consumption qualification after the separate bounded
+owner-identity implementation. Read the SDK spec and final evidence README under
+`references/Hexalith.EventStore/_bmad-output/implementation-artifacts/`. The supported final SDK packet
+is `evidence/folders-12-2-bounded-owner-identity/run-20261021T152119Z` there. Its 74/74 mandatory
+cases and six passing process scenarios are SDK evidence; its broad regression gate remains failed
+(`qualified: false`). Do not report those as newly executed Folders coverage.
+
+Before any build in this resumption, the parent verified all 3,654 source hashes, 86 binary/PDB hashes
+and 108 packet hashes with zero drift. Exact prebuild results and original inventories are preserved in
+[evidence/story-12-2-bounded-owner-consumption-20261021/sdk-prebuild-audit.json](evidence/story-12-2-bounded-owner-consumption-20261021/sdk-prebuild-audit.json).
+New consumer evidence belongs in that new directory; preserve every historical packet and user change.
+The starting Folders HEAD is `12ed2391955960efe696078bd0c56e79c88edf9e`; SDK HEAD is
+`ae917d3e4dbab20b8982c5222a13611c3e3faf35` plus its captured uncommitted prerequisite.
+The supported full Debug/source graph must remain separate from package/release. No SDK source edits,
+dependency pins, staging, commits, push, publication, deployment or public v2 exposure are authorized.
+Do not rewrite retained source events, split owners, add a Folders persistence protocol or impose a
+history cap. Use the existing Folders production handler. Complete Task 36 qualification and its
+evidence now; preserve other already-qualified behavior and report separately open package/PD10,
+SM4 and independent whole-story review gates. Relevant component and authenticated live acceptance
+checks must execute on current binaries. Existing SDK process coverage may establish generic protocol
+properties with explicit provenance; Folders coverage must establish its actual handler/dispatcher
+and supported transport at the two required sizes.
+
+
+Task 36 coverage composition clarification (2026-10-21): the user explicitly permits reuse of
+SDK evidence. Both required sizes must execute through the real Folders handler and production
+dispatcher with supported bounded transport; the current consumer component tests do this using
+the SDK protocol DTOs and enforced batch implementation. The exact SDK buffered-owner Dapr cases
+independently qualify persistence and true interrupted handoff at both sizes. The unchanged strict
+Folders authenticated real-provider acceptance must also pass. An additional synthetic Folders HTTP
+case at 10,001 is useful consumer integration evidence. A second synthetic HTTP case at 32,769 is
+not a separate required gate; if not executed, report it explicitly and retain the component/SDK
+coverage distinction. This clarifies the nonfrozen execution note; it changes no required size,
+identity, source continuity, CAS, generation, batch, live acceptance or whole-story gate.

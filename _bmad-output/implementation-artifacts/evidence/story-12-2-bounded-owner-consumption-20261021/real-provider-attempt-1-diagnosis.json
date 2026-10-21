@@ -1,0 +1,32 @@
+{
+  "test": {
+    "id": "015f342f-8a77-44cb-89ac-8099bc36ff2b",
+    "name": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures",
+    "result": "Fail",
+    "time": "154.503",
+    "time-rtf": "00:02:34.5029999",
+    "start-rtf": "2026-10-21T18:42:22.2247603+00:00",
+    "finish-rtf": "2026-10-21T18:44:56.7353302+00:00",
+    "type": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+    "method": "RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures",
+    "source-file": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+    "source-line": "33"
+  },
+  "failure_message": "System.Threading.Tasks.TaskCanceledException : A task was canceled.",
+  "failure_stack": "   at Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.WaitForEventAsync[T](String folder) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs:line 589\n   at Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RequireRealTaskClosureAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs:line 330\n   at Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs:line 44\n--- End of stack trace from previous location ---",
+  "observed_cause": {
+    "command": "Hexalith.Folders.Commands.ReleaseWorkspaceLock",
+    "actor": "IdempotencyAdmissionActor",
+    "failed_methods": [
+      "EvaluateAuthorityAsync",
+      "MarkRecoveryAsync"
+    ],
+    "http_status": 429,
+    "reason": "rate-limit-exceeded",
+    "consumer_id": "anonymous",
+    "tenant_id": "unknown"
+  },
+  "limits": "Original90s WaitForEvent deadline and all original limiter/retry settings unchanged.",
+  "next_step": "Identical fresh serial retry; no transient or deterministic product-cause conclusion yet.",
+  "stage": "Before any named rebuild or staged recovery, after provider binding and bound-target denial passes."
+}

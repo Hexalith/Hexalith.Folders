@@ -1,0 +1,21 @@
+{
+  "time": "2026-10-21T17:15:16.315463+00:00",
+  "candidatePacket": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/folders-12-2-bounded-owner-identity/run-20261021T152119Z",
+  "foldersHead": "12ed2391955960efe696078bd0c56e79c88edf9e",
+  "sdkHead": "ae917d3e4dbab20b8982c5222a13611c3e3faf35",
+  "sdkBroadGateQualified": false,
+  "audits": {
+    "sources.json": {
+      "count": 3654,
+      "drift": []
+    },
+    "binaries.json": {
+      "count": 86,
+      "drift": []
+    },
+    "packet-sha256.json": {
+      "count": 108,
+      "drift": []
+    }
+  }
+}

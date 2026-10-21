@@ -1,0 +1,18 @@
+{
+  "observed_at_utc": "2026-10-21T18:42:54.203129+00:00",
+  "audits": {
+    "sdk-sources-original.json": {
+      "count": 3654,
+      "drift": []
+    },
+    "sdk-binaries-original.json": {
+      "count": 86,
+      "drift": []
+    },
+    "sdk-packet-sha256-original.json": {
+      "count": 108,
+      "drift": []
+    }
+  },
+  "scope": "SDK original qualification inventories and packet after consumer build7; fresh Folders runtime deploy copies are independently frozen/bound and may have distinct generated metadata."
+}

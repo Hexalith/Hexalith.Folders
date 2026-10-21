@@ -1,0 +1,30 @@
+[
+  {
+    "command": [
+      "dotnet",
+      "format",
+      "whitespace",
+      "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs"
+    ],
+    "exit_code": 0,
+    "seconds": 7.263896703720093
+  },
+  {
+    "command": [
+      "dotnet",
+      "format",
+      "analyzers",
+      "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs"
+    ],
+    "exit_code": 0,
+    "seconds": 13.604552984237671
+  }
+]

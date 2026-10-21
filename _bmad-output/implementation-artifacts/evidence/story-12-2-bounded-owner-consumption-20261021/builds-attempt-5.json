@@ -1,0 +1,18 @@
+{
+  "command": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "--no-restore",
+    "-m:1",
+    "-nr:false"
+  ],
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/build-attempt-5.log",
+  "msbuild_elapsed_seconds": 12.6,
+  "scope": "Same narrow AppHost Debug/source project build after task-owned managed descendant observer correction; executed exit0 and0 warnings/errors."
+}

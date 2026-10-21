@@ -1,0 +1,6 @@
+{
+  "failed_attempt_run_id": "e1492ff7565c9b6c",
+  "remaining_processes_with_exact_fixture_id": [],
+  "remaining_containers_with_exact_fixture_id": [],
+  "note": "Read-only ownership checks after SIGINT cancellation and fixture disposal. No unrelated process/container changed."
+}

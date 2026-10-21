@@ -1,0 +1,3504 @@
+@page "/tenants/{TenantId}"
+@using Hexalith.Tenants.Contracts.Enums
+@using Hexalith.Tenants.Contracts.Queries
+@using Hexalith.Tenants.UI.Components.Tenants.Configuration
+@using Hexalith.Tenants.UI.Components.Tenants.Lifecycle
+@using Hexalith.Tenants.UI.Components.Tenants.Metadata
+@using Hexalith.Tenants.UI.Components.Tenants.Members
+@using Hexalith.Tenants.UI.State
+@using Hexalith.Tenants.UI.State.GlobalAdministrators
+@using Hexalith.Tenants.UI.State.TenantAudit
+@using Hexalith.Tenants.UI.State.TenantCommands
+@using Hexalith.Tenants.UI.State.TenantUsers
+@using Microsoft.Extensions.Logging
+@using Microsoft.JSInterop
+@inject IStringLocalizer<TenantsResources> Localizer
+@inject ITenantQueryGateway QueryGateway
+@inject ITenantsBffComposition BffComposition
+@inject IServiceProvider Services
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<CascadingValue Value="@(IsCurrentCallerScope(_callerScope) ? _callerScope : null)" Name="CurrentTenantCallerScope">
+<CascadingValue Value="@DetailAuditReadAvailable" Name="AuditReadAvailable">
+<CascadingValue Value="@(!_auditCapabilityResolved)" Name="AuditReadPending">
+<CascadingValue Value="@_auditReadDenied" Name="AuditReadDenied">
+<CascadingValue Value="@DetailAuditUnavailableReason" Name="AuditReadUnavailableReason">
+<CascadingValue Value="@((Func<Task>)RefreshAuditCapabilityAsync)" Name="AuditAuthorityRefresh">
+<CascadingValue Value="@((Func<long>)(() => Volatile.Read(ref _auditRefreshVersion)))" Name="AuditAuthorityRefreshVersion">
+<CascadingValue Value="@DetailReturnUrl" Name="DetailAuditReturnUrl">
+<div data-testid="tenants-detail-audit-origin" data-audit-focus-terminal="@IsAuditFocusTerminal">
+@if (_auditReturnNotice)
+{
+    <p role="status" data-testid="tenants-audit-return-notice">@Localizer["Tenants.Audit.Return.MissingOrigin"]</p>
+}
+@if (_auditStalledNotice)
+{
+    <p role="status" data-testid="tenants-audit-stalled-return">@Localizer["Tenants.Audit.Return.Stalled"]</p>
+}
+@if (_auditPartialReturn)
+{
+    <p role="status" data-testid="tenants-audit-partial-return">@Localizer["Tenants.Audit.Return.Partial"]</p>
+}
+<FcAggregateDetailPage TItem="TenantDetail"
+                       LayoutMode="FcPageLayoutMode.Constrained"
+                       RootTestId="tenants-detail"
+                       RootClass="tenant-detail"
+                       State="DetailState"
+                       BackHref="@BackHref"
+                       BackLinkLabel="@Localizer["Tenants.Detail.Back"]"
+                       BackLinkTestId="tenants-detail-back">
+    <LoadingContent>
+        <section class="tenant-detail__state" role="status" data-testid="tenants-detail-loading">
+            <FcPageHeader PageTitle="@Localizer["Tenants.Detail.Title"]"
+                          Heading="@Localizer["Tenants.Detail.State.Loading.Title"]"
+                          Description="@Localizer["Tenants.Detail.State.Loading.Message"]"
+                          HeadingId="tenants-detail-identity"
+                          HeadingTabIndex="-1"
+                          TestId="tenants-detail-state-header" />
+        </section>
+    </LoadingContent>
+    <UnauthorizedContent>
+        <section class="tenant-detail__state" role="alert" data-testid="tenants-detail-unauthorized">
+            <FcPageHeader PageTitle="@Localizer["Tenants.Detail.Title"]"
+                          Heading="@Localizer["Tenants.Detail.State.Unauthorized.Title"]"
+                          Description="@Localizer["Tenants.Detail.State.Unauthorized.Message"]"
+                          HeadingId="tenants-detail-identity"
+                          HeadingTabIndex="-1"
+                          TestId="tenants-detail-state-header" />
+        </section>
+        @if (_authenticationStateProvider is not null && TenantAuditNavigationSafety.IsSafeTenantId(TenantId))
+        {
+            <FluentButton Appearance="ButtonAppearance.Outline" OnClick="RefreshCallerBoundReadsAsync"
+                          Disabled="@(Volatile.Read(ref _pendingAuditCallerVersion) != 0)"
+                          data-testid="tenants-detail-refresh">
+                @Localizer["Tenants.List.Refresh"]
+            </FluentButton>
+        }
+    </UnauthorizedContent>
+    <NotFoundContent>
+        <section class="tenant-detail__state" role="alert" data-testid="tenants-detail-error">
+            <FcPageHeader PageTitle="@Localizer["Tenants.Detail.Title"]"
+                          Heading="@Localizer["Tenants.Detail.State.NotFound.Title"]"
+                          Description="@Localizer["Tenants.Detail.State.NotFound.Message"]"
+                          HeadingId="tenants-detail-identity"
+                          HeadingTabIndex="-1"
+                          TestId="tenants-detail-state-header" />
+        </section>
+    </NotFoundContent>
+    <UnavailableContent>
+        <section class="tenant-detail__state" role="alert" data-testid="tenants-detail-error">
+            <FcPageHeader PageTitle="@Localizer["Tenants.Detail.Title"]"
+                          Heading="@Localizer["Tenants.Detail.State.Unavailable.Title"]"
+                          Description="@Localizer["Tenants.Detail.State.Unavailable.Message"]"
+                          HeadingId="tenants-detail-identity"
+                          HeadingTabIndex="-1"
+                          TestId="tenants-detail-state-header" />
+        </section>
+        @if (_authenticationStateProvider is not null && TenantAuditNavigationSafety.IsSafeTenantId(TenantId))
+        {
+            <FluentButton Appearance="ButtonAppearance.Outline" OnClick="RefreshCallerBoundReadsAsync"
+                          Disabled="@(Volatile.Read(ref _pendingAuditCallerVersion) != 0)"
+                          data-testid="tenants-detail-refresh">
+                @Localizer["Tenants.List.Refresh"]
+            </FluentButton>
+        }
+    </UnavailableContent>
+    <StaleBanner>
+        <section class="tenant-detail__state" role="status" data-testid="tenants-detail-stale">
+            <h2>@Localizer["Tenants.Detail.State.Stale.Title"]</h2>
+            <p>@Localizer["Tenants.Detail.State.Stale.Message"]</p>
+        </section>
+    </StaleBanner>
+    <DegradedBanner>
+        <section class="tenant-detail__state" role="status" data-testid="tenants-detail-degraded">
+            <h2>@Localizer["Tenants.Detail.State.Degraded.Title"]</h2>
+            <p>@Localizer["Tenants.Detail.State.Degraded.Message"]</p>
+        </section>
+    </DegradedBanner>
+    <ReadyContent>
+        <FluentStack Orientation="Orientation.Vertical"
+                     VerticalGap="16px"
+                     Class="tenant-detail__summary"
+                     aria-label="@Localizer["Tenants.Detail.OverviewLabel"]">
+            <FcPageHeader PageTitle="@Localizer["Tenants.Detail.Title"]"
+                          Heading="@(string.IsNullOrWhiteSpace(Detail.Name) ? Localizer["Tenants.Detail.UnnamedTenant"] : Detail.Name)"
+                          Eyebrow="@Localizer["Tenants.Detail.IdentityLabel"]"
+                          Description="@(string.IsNullOrWhiteSpace(Detail.Description) ? null : Detail.Description)"
+                          HeadingId="tenants-detail-identity"
+                          HeadingTabIndex="-1"
+                          Class="tenant-detail__identity"
+                          TestId="tenants-detail-identity">
+                <Metadata>
+                <div class="tenant-detail__literal-row">
+                    <p class="tenant-detail__literal" aria-label="@Localizer["Tenants.Detail.FullTenantIdLabel", Detail.TenantId]">@Detail.TenantId</p>
+                    <SupportSafeCopyButton Value="@Detail.TenantId"
+                                           ValueKind="SupportSafeCopyValueKind.TenantId"
+                                           IsApproved="true"
+                                           AccessibleName="@Localizer["Tenants.Copy.Label.TenantId", Detail.TenantId]"
+                                           TestId="tenants-detail-copy-reference" />
+                </div>
+                @if (!_auditReadDenied)
+                {
+                <AuditEvidenceEntryPoint TenantId="@Detail.TenantId"
+                                         SourceKind="tenant-detail"
+                                         SourceTestId="tenants-detail-audit-entrypoint"
+                                         Label="@Localizer["Tenants.Audit.EntryPoint.Label"]"
+                                         AccessibleName="@Localizer["Tenants.Detail.AuditAccessibleLabel", Detail.TenantId]"
+                                         ReturnUrl="@DetailReturnUrl"
+                                         ReturnFocus="tenants-detail-identity"
+                                         IsAvailable="@DetailAuditReadAvailable"
+                                         AuthorityPending="@(!_auditCapabilityResolved)"
+                                         UnavailableReason="@DetailAuditUnavailableReason"
+                                         OnRefresh="@RefreshTenantReadsAsync" />
+                }
+                </Metadata>
+            </FcPageHeader>
+
+            <dl class="tenant-detail__facts">
+                <div>
+                    <dt>@Localizer["Tenants.Detail.StatusLabel"]</dt>
+                    <dd>
+                        <FluentBadge Appearance="BadgeAppearance.Tint"
+                                     Color="@StatusBadgeColor(Detail.Status)"
+                                     IconStart="@StatusIcon(Detail.Status)"
+                                     Class="tenant-detail__status"
+                                     aria-label="@Localizer["Tenants.Detail.StatusAccessibleLabel", StatusLabel(Detail.Status)]">
+                            @StatusLabel(Detail.Status)
+                        </FluentBadge>
+                    </dd>
+                </div>
+                <div>
+                    <dt>@Localizer["Tenants.Detail.LifecycleLabel"]</dt>
+                    <dd>@StatusLabel(Detail.Status)</dd>
+                </div>
+                <div>
+                    <dt>@Localizer["Tenants.Detail.FreshnessLabel"]</dt>
+                    <dd><TruthStateBadge Freshness="@_snapshot.Freshness" TestId="tenants-detail-truth-state" /></dd>
+                </div>
+                @* The live region sits inside the dd, not on the dl child. ARIA-in-HTML allows only dt, dd,
+                   generic div, script and template as dl children, so role="status" on the wrapper detached
+                   this dt/dd pair from the definition list. role="alert" (implicitly assertive) replaces the
+                   contradictory aria-live="assertive" on role="status" (implicitly polite). *@
+                <div>
+                    <dt>@Localizer["Tenants.ProjectionLifecycle.Label"]</dt>
+                    <dd>
+                        <span role="@(_snapshot.Lifecycle is ProjectionLifecycleState.Unavailable ? "alert" : "status")"
+                              aria-atomic="true"
+                              data-testid="tenants-detail-projection-lifecycle-status">
+                            <ProjectionLifecycleBadge Lifecycle="@_snapshot.Lifecycle" TestId="tenants-detail-projection-lifecycle" />
+                        </span>
+                    </dd>
+                </div>
+                <div>
+                    <dt>@Localizer["Tenants.Detail.CreatedAtLabel"]</dt>
+                    <dd>@Detail.CreatedAt.ToString("u", System.Globalization.CultureInfo.CurrentCulture)</dd>
+                </div>
+            </dl>
+
+            <FluentAccordion Class="tenant-detail__sections"
+                             ExpandMode="AccordionExpandMode.Multi"
+                             Block="true">
+                <FluentAccordionItem Header="@Localizer["Tenants.EditMetadata.Title"]"
+                                     Expanded="true">
+                    <EditTenantMetadataFlow @key="TenantId"
+                                            Detail="@Detail"
+                                            IsAuthorized="@(MutationAuthorization.Metadata is TenantLifecycleAuthorizationReflectionState.Authorized)"
+                                            AuthorizationReflection="@MutationAuthorization.Metadata"
+                                            AuthorizationVersion="@_mutationAuthorizationGeneration"
+                                            AuthorizationReflectionProvider="@ReauthorizeMetadataAsync"
+                                            SurfaceKind="@_snapshot.Kind"
+                                            Freshness="@_snapshot.Freshness"
+                                            Lifecycle="@_snapshot.Lifecycle"
+                                            ProjectionVersion="@_snapshot.ProjectionVersion"
+                                            ProjectionVersionProvider="@(() => _snapshot.ProjectionVersion)"
+                                            IsCommandSurfaceAvailable="@IsCommandSurfaceAvailable"
+                                            CommandSurfaceUnavailableReason="@CommandSurfaceUnavailableReason"
+                                            OnProjectionRefreshRequested="@RefreshTenantDetailAsync"
+                                            CommandActivityLease="@MetadataCommandActivityLease"
+                                            ProjectionEvidenceProvider="@GetUpdateMetadataProjectionEvidenceAsync"
+                                            AuditEvidenceProvider="@GetUpdateMetadataAuditEvidenceAsync" />
+                </FluentAccordionItem>
+
+                <FluentAccordionItem Header="@Localizer["Tenants.Lifecycle.Title"]"
+                                     Expanded="true">
+                    <TenantLifecycleActionAvailability @ref="_lifecycleActionAvailability"
+                                                        TenantId="@Detail.TenantId"
+                                                        Detail="@Detail"
+                                                        CurrentStatus="@Detail.Status"
+                                                        SurfaceKind="@_snapshot.Kind"
+                                                        Freshness="@_snapshot.Freshness"
+                                                        Lifecycle="@_snapshot.Lifecycle"
+                                                        IsCommandSurfaceConnected="@BffComposition.IsCommandSurfaceConnected"
+                                                        AuthorizationReflection="@_lifecycleAuthorizationReflection"
+                                                        EnableEvidence="@HighImpactEvidence(TenantHighImpactAction.EnableTenant)"
+                                                        DisableEvidence="@HighImpactEvidence(TenantHighImpactAction.DisableTenant)"
+                                                        IsCommandSurfaceAvailable="@IsCommandSurfaceAvailable"
+                                                        ProjectionVersion="@_snapshot.ProjectionVersion"
+                                                        OnProjectionRefreshRequested="@RefreshTenantDetailAsync"
+                                                        CommandActivityLease="@LifecycleCommandActivityLease"
+                                                        ProjectionEvidenceProvider="@GetLifecycleProjectionEvidenceAsync"
+                                                        AuthorizationReflectionProvider="@ReauthorizeLifecycleAsync" />
+                </FluentAccordionItem>
+
+                <FluentAccordionItem Header="@Localizer["Tenants.Detail.Members.Title"]"
+                                     Expanded="true">
+                    <FluentStack Orientation="Orientation.Vertical" VerticalGap="16px" Class="tenant-detail__accordion-body">
+                        <section class="tenant-detail__section" data-testid="tenants-detail-member-summary">
+                            <h2>@Localizer["Tenants.Detail.Members.Title"]</h2>
+                            <p>@MemberSummary</p>
+                        </section>
+
+                        <MemberAccessReview @key="TenantId"
+                                            @ref="_memberAccessReview"
+                                            Detail="@Detail"
+                                            SurfaceKind="@_snapshot.Kind"
+                                            Freshness="@_snapshot.Freshness"
+                                            Lifecycle="@_snapshot.Lifecycle"
+                                            ProjectionVersion="@_snapshot.ProjectionVersion"
+                                            ProjectionVersionProvider="@(() => _snapshot.ProjectionVersion)"
+                                            IsAddMemberAuthorized="@(MutationAuthorization.Membership is TenantLifecycleAuthorizationReflectionState.Authorized)"
+                                            IsChangeRoleAuthorized="@(MutationAuthorization.Membership is TenantLifecycleAuthorizationReflectionState.Authorized)"
+                                            IsRemoveMemberAuthorized="@(MutationAuthorization.Membership is TenantLifecycleAuthorizationReflectionState.Authorized)"
+                                            AuthorizationReflection="@MutationAuthorization.Membership"
+                                            AuthorizationVersion="@_mutationAuthorizationGeneration"
+                                            AuthorizationReflectionProvider="@ReauthorizeMembershipAsync"
+                                            Members="@_tenantUsersSnapshot"
+                                            GlobalAdministrators="@_globalAdministratorsSnapshot"
+                                            AuditProofCapabilityAvailable="@_auditProofCapabilityAvailable"
+                                            AuditReadDenied="@_auditReadDenied"
+                                            DetailAuditReturnUrl="@DetailReturnUrl"
+                                            CanGoPrevious="@(_memberCursorHistory.Count > 0)"
+                                            PagingJumpedToFirstPage="@_memberPagingJumpedToFirstPage"
+                                            OnNextPageRequested="@LoadNextMemberPageAsync"
+                                            OnPreviousPageRequested="@LoadPreviousMemberPageAsync"
+                                            IsCommandSurfaceAvailable="@IsCommandSurfaceAvailable"
+                                            CommandSurfaceUnavailableReason="@CommandSurfaceUnavailableReason"
+                                            CommandActivityLease="@MembershipCommandActivityLease"
+                                            OnProjectionRefreshRequested="@RefreshTenantReadsAsync"
+                                            ProjectionEvidenceProvider="@GetAddMemberProjectionEvidenceAsync"
+                                            ChangeRoleProjectionEvidenceProvider="@GetChangeRoleProjectionEvidenceAsync"
+                                            RemoveMemberProjectionEvidenceProvider="@GetRemoveMemberProjectionEvidenceAsync" />
+                    </FluentStack>
+                </FluentAccordionItem>
+
+                <FluentAccordionItem Header="@Localizer["Tenants.Detail.Configuration.Title"]"
+                                     Expanded="true">
+                    <FluentStack Orientation="Orientation.Vertical" VerticalGap="16px" Class="tenant-detail__accordion-body">
+                        <section class="tenant-detail__section" data-testid="tenants-detail-configuration-summary">
+                            <h2>@Localizer["Tenants.Detail.Configuration.Title"]</h2>
+                            <p>@ConfigurationSummary(_snapshot.Configuration)</p>
+                        </section>
+
+                        <TenantConfigurationView Model="@_snapshot.Configuration"
+                                                 SurfaceKind="@_snapshot.Kind"
+                                                 Freshness="@_snapshot.Freshness"
+                                                 Lifecycle="@_snapshot.Lifecycle" />
+
+                        <TenantConfigurationManagement @ref="_configurationManagement"
+                                                       Context="@_snapshot.ConfigurationManagement"
+                                                       SurfaceKind="@_snapshot.Kind"
+                                                       Freshness="@_snapshot.Freshness"
+                                                       Lifecycle="@_snapshot.Lifecycle"
+                                                       SetEvidence="@HighImpactEvidence(TenantHighImpactAction.SetConfiguration)"
+                                                       RemoveEvidence="@HighImpactEvidence(TenantHighImpactAction.RemoveConfiguration)"
+                                                       IsCommandSurfaceAvailable="@IsCommandSurfaceAvailable"
+                                                       IsSetConfigurationPreviewAvailable="@QueryGateway.SupportsSetConfigurationPreview"
+                                                       IsRemoveConfigurationPreviewAvailable="@QueryGateway.SupportsRemoveConfigurationPreview"
+                                                       OnProjectionRefreshRequested="@RefreshTenantDetailAsync"
+                                                       SetCommandActivityLease="@SetConfigurationCommandActivityLease"
+                                                       RemoveCommandActivityLease="@RemoveConfigurationCommandActivityLease"
+                                                       SetPreviewEvidenceProvider="@GetSetConfigurationPreviewEvidenceAsync"
+                                                       SetProjectionEvidenceProvider="@GetSetConfigurationProjectionEvidenceAsync"
+                                                       RemovePreviewEvidenceProvider="@GetRemoveConfigurationPreviewEvidenceAsync"
+                                                       RemoveProjectionEvidenceProvider="@GetRemoveConfigurationProjectionEvidenceAsync"
+                                                       ReauthorizeProvider="@ReauthorizeConfigurationManagementAsync" />
+                    </FluentStack>
+                </FluentAccordionItem>
+            </FluentAccordion>
+        </FluentStack>
+    </ReadyContent>
+</FcAggregateDetailPage>
+</div>
+</CascadingValue>
+</CascadingValue>
+</CascadingValue>
+</CascadingValue>
+</CascadingValue>
+</CascadingValue>
+</CascadingValue>
+</CascadingValue>
+
+@code {
+    private TenantDetailSnapshot _snapshot = TenantDetailSnapshot.Loading();
+    private TenantUsersSnapshot _tenantUsersSnapshot = TenantUsersSnapshot.Loading();
+    private GlobalAdministratorsSnapshot? _globalAdministratorsSnapshot;
+    private bool _auditProofCapabilityAvailable;
+    private long _auditRefreshVersion;
+    private bool _auditCapabilityResolved;
+    private bool _auditReadDenied;
+    private string? _pendingAuditFocus;
+    private string? _handledAuditFocus;
+    private bool _auditReturnNotice;
+    private bool _auditStalledNotice;
+    private bool _auditPartialReturn;
+    private bool _consumedFocuslessReturn;
+    private string? _callerScope;
+    private string? _loadCallerScope;
+    private string? _metadataProofCallerScope;
+    private string? _lifecycleProofCallerScope;
+    private long _auditCallerVersion;
+    private long _resolvedAuditCallerVersion;
+    private long _pendingAuditCallerVersion;
+    private long _lastAuditProbeGeneration = -1;
+    private long _lastAuditProbeCallerVersion = -1;
+    /// <summary>Upper bound on retained member paging history.</summary>
+    private const int MaximumMemberCursorHistory = CursorHistory.DefaultMaximum;
+    private const int MetadataAuditProofPageSize = 100;
+    private const int MetadataAuditProofMaximumPageCount = 50;
+
+    private readonly Stack<string?> _memberCursorHistory = new();
+
+    // CursorHistory.Trim re-appends the first-page sentinel beneath the newest entries when it drops the
+    // oldest, so one later Previous click walks the operator from mid-sequence straight to page one. The
+    // audit and global-administrator pagers announce that; the member pager discarded Trim's return value and
+    // rendered the jump as an ordinary step back, silently misstating where the operator is.
+    private bool _memberPagingHistoryTruncated;
+    private bool _memberPagingJumpedToFirstPage;
+    private string? _memberCursor;
+    private IAsyncDisposable? _readRefreshLease;
+    private string? _subscriptionTenantId;
+    private CancellationTokenSource? _loadCancellation;
+    private CancellationTokenSource? _globalAdministratorsCancellation;
+    private CancellationTokenSource? _auditCapabilityCancellation;
+    private AuthenticationStateProvider? _authenticationStateProvider;
+    private CancellationTokenSource? _mutationAuthorizationCancellation;
+    private long _mutationAuthorizationGeneration;
+    private TenantDetailSnapshot? _mutationAuthorizationRequest;
+    private TenantDetailSnapshot? _mutationAuthorizationResolved;
+    private TenantMutationAuthorizationReflection _mutationAuthorization = TenantMutationAuthorizationReflection.Indeterminate;
+
+    private TenantMutationAuthorizationReflection MutationAuthorization
+        => ReferenceEquals(_mutationAuthorizationResolved, _snapshot) && IsCurrentCallerScope(_snapshot.CallerScope)
+            ? _mutationAuthorization : TenantMutationAuthorizationReflection.Indeterminate;
+
+    private CancellationTokenSource? _lifecycleAuthorizationCancellation;
+    private long _lifecycleAuthorizationGeneration;
+    private TenantLifecycleAuthorizationReflectionState _lifecycleAuthorizationReflection
+        = TenantLifecycleAuthorizationReflectionState.Indeterminate;
+    // Serialises the active-cancellation swap. A superseded source is cancelled immediately -- which is what
+    // callers observe -- but NOT disposed there: disposing one at the moment it is replaced races the
+    // request still inside SendAsync, where a CancellationToken.Register after Dispose throws
+    // ObjectDisposedException, which is not an OperationCanceledException and so slips past every caller's
+    // cancellation-only handler. Disposal is owned solely by CompleteCancellation, which the owning
+    // PendingOperation calls when its operation finishes. A prior version also tracked superseded sources in
+    // a List; nothing ever read it, so it is removed rather than left to read as a retention mechanism.
+    private readonly Lock _cancellationLock = new();
+    private long _loadGeneration;
+    private readonly Lock _metadataProofLock = new();
+    private readonly HashSet<CancellationTokenSource> _metadataProofCancellations = [];
+    private string? _metadataProofTenantId;
+    private long _metadataProofGeneration;
+    private readonly Lock _lifecycleProofLock = new();
+    private readonly HashSet<CancellationTokenSource> _lifecycleProofCancellations = [];
+    private string? _lifecycleProofTenantId;
+    private long _lifecycleProofGeneration;
+    private bool _disposed;
+
+    /// <summary>Upper bound on optional notification-setup attempts for one route.</summary>
+    private const int MaximumReadRefreshAttempts = 3;
+
+    private string? _readRefreshAttemptTenantId;
+    private int _readRefreshAttempts;
+    private bool _memberPageLoadInFlight;
+    private bool _commandInFlight;
+    private string? _activeAggregateLockKey;
+    private string? _activeAggregateTenantId;
+    private MemberAccessReview? _memberAccessReview;
+    private TenantAggregateCommandAdmissionGate? _aggregateAdmissionGate;
+    private TenantLifecycleAttemptTracker? _lifecycleAttemptTracker;
+    private TenantSetConfigurationAttemptTracker? _setConfigurationAttemptTracker;
+    private TenantRemoveConfigurationAttemptTracker? _removeConfigurationAttemptTracker;
+    private TenantLifecycleActionAvailability? _lifecycleActionAvailability;
+    private TenantConfigurationManagement? _configurationManagement;
+    private TenantHighImpactViewportObservation? _highImpactViewportObservation;
+    private bool _detailRefreshInFlight;
+    private bool _refreshingBaselineWasCurrent;
+    private int _highImpactRefreshGeneration;
+    private readonly object _commandLockOwner = new();
+
+    // The page is a single owner to the circuit-scoped gate, but four command surfaces share it. Each gets a
+    // distinct token so the lease can tell idempotent re-entry by its holder from a second surface trying to
+    // share (and later release) a lock it never acquired.
+    private readonly object _metadataLeaseOwner = new();
+    private readonly object _lifecycleLeaseOwner = new();
+
+    // The configuration landmark hosts two independent command flows. They must not share one token: a shared
+    // token makes ReferenceEquals succeed for the second flow, so the lease goes multi-owner and whichever
+    // flow reports completion first releases the aggregate while the other command is still in flight (AD-12).
+    private readonly object _setConfigurationLeaseOwner = new();
+    private readonly object _removeConfigurationLeaseOwner = new();
+    private readonly object _membershipLeaseOwner = new();
+
+    // Leases are cached per owner so the delegate identity is stable across renders; a fresh lambda every
+    // render would look like a changed parameter to every child command surface.
+    private readonly Dictionary<object, (string TenantId, Func<bool, Task<bool>> Lease)> _commandActivityLeases = [];
+    private object? _aggregateLeaseHolder;
+    private int _readRefreshSubscriptionInFlight;
+    private long _readRefreshRouteVersion;
+    private CancellationTokenSource? _readRefreshSetupCancellation;
+
+    [Parameter]
+    public string TenantId { get; set; } = string.Empty;
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "returnUrl")]
+    public string? ReturnUrl { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "auditFocus")]
+    public string? QueryAuditFocus { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "auditPartialReturn")]
+    public bool QueryAuditPartialReturn { get; set; }
+
+    private string BackHref
+    {
+        get
+        {
+            string? safe = TenantAuditNavigationSafety.SafeListReturnUrl(ReturnUrl, out bool strippedCursor);
+            if (safe is null)
+            {
+                return ReturnUrl is null ? "/tenants" : "/tenants?auditReturnUnavailable=true";
+            }
+
+            if ((QueryAuditPartialReturn || strippedCursor) && !safe.Contains("auditPartialReturn=", StringComparison.Ordinal))
+            {
+                safe += (safe.Contains('?', StringComparison.Ordinal) ? "&" : "?") + "auditPartialReturn=true";
+            }
+
+            return safe;
+        }
+    }
+
+    private bool DetailAuditReadAvailable
+        => IsCurrentCallerScope(_snapshot.CallerScope)
+            && _auditProofCapabilityAvailable
+            && _snapshot.Kind is TenantDetailSurfaceKind.Ready
+            && _snapshot.Freshness is ReadModelFreshnessState.Current
+            && _snapshot.Lifecycle is ProjectionLifecycleState.Current;
+
+    // A resolved capability probe that neither proved access nor denial is indeterminate. A stale tenant
+    // snapshot keeps the entry point's tenant-scope reason, and pending or denied access has its own treatment.
+    private string? DetailAuditUnavailableReason
+        => _auditCapabilityResolved && !_auditProofCapabilityAvailable && !_auditReadDenied
+            ? Localizer["Tenants.Audit.EntryPoint.Unavailable.AccessUnconfirmed"].Value
+            : null;
+
+    private bool IsAuditFocusTerminal
+        => _auditCapabilityResolved
+            && _snapshot.Kind is not TenantDetailSurfaceKind.Loading
+            && _tenantUsersSnapshot.Kind is not TenantUsersSurfaceKind.Loading;
+
+    private string? DetailReturnUrl
+    {
+        get
+        {
+            if (!TenantAuditNavigationSafety.IsSafeTenantId(TenantId))
+            {
+                return null;
+            }
+
+            string detail = $"/tenants/{Uri.EscapeDataString(TenantId)}";
+            string? safeListReturn = TenantAuditNavigationSafety.SafeListReturnUrl(ReturnUrl, out bool strippedCursor);
+            if (ReturnUrl is not null && safeListReturn is null)
+            {
+                return null;
+            }
+            if (safeListReturn is not null)
+            {
+                detail += "?returnUrl=" + Uri.EscapeDataString(safeListReturn);
+            }
+
+            if ((QueryAuditPartialReturn || strippedCursor) && safeListReturn is not null)
+            {
+                detail += "&auditPartialReturn=true";
+            }
+
+            return detail;
+        }
+    }
+
+    private TenantDetail Detail => _snapshot.Detail ?? throw new InvalidOperationException("Detail is only used when a snapshot is available.");
+
+    private bool IsCommandSurfaceAvailable
+        => IsCurrentCallerScope(_snapshot.CallerScope)
+        && !_commandInFlight
+        && !IsCurrentAggregateLocked
+        && AggregateAdmissionGate is not null
+        && BffComposition.IsCommandSurfaceConnected;
+
+    private TenantHighImpactAdmissionEvidence HighImpactAdmission
+        => AggregateAdmissionGate is null
+            ? TenantHighImpactAdmissionEvidence.Unknown
+            : _commandInFlight || IsCurrentAggregateLocked
+                ? TenantHighImpactAdmissionEvidence.Busy
+                : TenantHighImpactAdmissionEvidence.Available;
+
+    private TenantHighImpactActionEvidence HighImpactEvidence(TenantHighImpactAction action)
+    {
+        bool callerBound = IsCurrentCallerScope(_snapshot.CallerScope);
+        TenantHighImpactBffEvidence bffEvidence = BffComposition.ComposeTenantHighImpactEvidence(
+            Detail,
+            _snapshot.ConfigurationManagement,
+            _lifecycleAuthorizationReflection);
+        bool configurationAction = action is TenantHighImpactAction.SetConfiguration
+            or TenantHighImpactAction.RemoveConfiguration;
+        TenantHighImpactTargetState targetState = configurationAction
+            ? TenantHighImpactTargetState.Unknown
+            : TenantHighImpactTargetState.NotApplicable;
+
+        return new(
+            Detail.TenantId,
+            action,
+            TenantHighImpactEvaluationStage.PreviewEntry,
+            Detail.Status,
+            !callerBound ? TenantHighImpactFreshnessState.Unknown : _detailRefreshInFlight
+                ? TenantHighImpactFreshnessState.Refreshing
+                : TenantHighImpactActionEvidence.FromReadModelFreshness(_snapshot.Freshness),
+            callerBound && (_detailRefreshInFlight
+                ? _refreshingBaselineWasCurrent
+                : _snapshot.Freshness is ReadModelFreshnessState.Current),
+            callerBound ? _snapshot.Kind : TenantDetailSurfaceKind.Unavailable,
+            callerBound ? _snapshot.Lifecycle : ProjectionLifecycleState.Unknown,
+            configurationAction ? bffEvidence.ConfigurationAuthority : bffEvidence.LifecycleAuthority,
+            configurationAction
+                ? bffEvidence.ConfigurationScope
+                : TenantHighImpactNamespaceScopeEvidence.NotRequired,
+            BffComposition.IsCommandSurfaceConnected
+                ? TenantHighImpactSupportEvidence.Ready
+                : TenantHighImpactSupportEvidence.Missing,
+            HighImpactAdmission,
+            configurationAction ? bffEvidence.ConfigurationPreview : bffEvidence.LifecyclePreview,
+            TenantHighImpactProofEvidence.NotRequired,
+            _highImpactViewportObservation?.State ?? TenantHighImpactViewportState.Unknown,
+            IsInputComplete: false,
+            targetState,
+            callerBound ? _snapshot.ProjectionVersion : null);
+    }
+
+    private TenantAggregateCommandAdmissionGate? AggregateAdmissionGate
+        => _aggregateAdmissionGate ??= Services.GetService<TenantAggregateCommandAdmissionGate>();
+
+    private TenantLifecycleAttemptTracker? LifecycleAttemptTracker
+        => _lifecycleAttemptTracker ??= Services.GetService<TenantLifecycleAttemptTracker>();
+
+    private TenantSetConfigurationAttemptTracker? SetConfigurationAttemptTracker
+        => _setConfigurationAttemptTracker ??= Services.GetService<TenantSetConfigurationAttemptTracker>();
+
+    private TenantRemoveConfigurationAttemptTracker? RemoveConfigurationAttemptTracker
+    {
+        get
+        {
+            if (_removeConfigurationAttemptTracker is null)
+            {
+                _removeConfigurationAttemptTracker = Services.GetService<TenantRemoveConfigurationAttemptTracker>();
+                if (_removeConfigurationAttemptTracker is not null)
+                {
+                    _removeConfigurationAttemptTracker.OwnershipExpired += OnRemoveConfigurationOwnershipExpired;
+                }
+            }
+
+            return _removeConfigurationAttemptTracker;
+        }
+    }
+
+    private void OnRemoveConfigurationOwnershipExpired(string tenantId)
+    {
+        TenantRemoveConfigurationAttemptTracker? tracker = _removeConfigurationAttemptTracker;
+        if (tracker is null)
+        {
+            return;
+        }
+
+        string aggregateLockKey = TenantCommandAggregateLock.ForTenant(tenantId);
+        AggregateAdmissionGate?.Release(aggregateLockKey, tracker.LeaseOwner);
+
+        // The tenant lock key alone is not proof that the removal surface still holds the page lease. A
+        // lifecycle or set-configuration command can own the same tenant's key while a stale remove
+        // retention expires; clearing the bookkeeping then abandoned that surface's gate entry (Release
+        // above is owner-scoped, so it is a no-op for a different holder) and lowered _commandInFlight
+        // mid-command. TryReclaimExpiredRemoveConfigurationLease already guards on the same identity.
+        if (ReferenceEquals(_aggregateLeaseHolder, _removeConfigurationLeaseOwner)
+            && string.Equals(_activeAggregateLockKey, aggregateLockKey, StringComparison.Ordinal))
+        {
+            _activeAggregateLockKey = null;
+            _activeAggregateTenantId = null;
+            _aggregateLeaseHolder = null;
+            _commandInFlight = false;
+        }
+
+        if (_disposed)
+        {
+            tracker.OwnershipExpired -= OnRemoveConfigurationOwnershipExpired;
+        }
+        else
+        {
+            _ = RenderIfAliveAsync();
+        }
+    }
+
+    private Func<bool, Task<bool>> MembershipCommandActivityLease
+        => CommandActivityLeaseFor(_membershipLeaseOwner);
+
+    private Func<bool, Task<bool>> MetadataCommandActivityLease
+        => CommandActivityLeaseFor(_metadataLeaseOwner);
+
+    private Func<bool, Task<bool>> LifecycleCommandActivityLease
+        => CommandActivityLeaseFor(_lifecycleLeaseOwner);
+
+    private Func<bool, Task<bool>> SetConfigurationCommandActivityLease
+        => CommandActivityLeaseFor(_setConfigurationLeaseOwner);
+
+    private Func<bool, Task<bool>> RemoveConfigurationCommandActivityLease
+        => CommandActivityLeaseFor(_removeConfigurationLeaseOwner);
+
+    // The lease is also lowered from child DisposeAsync during teardown, where the renderer may already be
+    // gone. Every other dispatch on this page guards ObjectDisposedException; the lease path did not, so a
+    // disposal race escaped as an unhandled exception instead of dying quietly with the circuit.
+    private async Task RenderIfAliveAsync()
+    {
+        try
+        {
+            await InvokeAsync(StateHasChanged).ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+            // Renderer torn down between the lease change and the dispatch.
+        }
+    }
+
+    // Every command surface acquires through this seam so a refusal is returned to the caller. An
+    // EventCallback<bool> cannot carry the answer back, which let a refused surface dispatch anyway.
+    private Func<bool, Task<bool>> CommandActivityLeaseFor(object surfaceOwner)
+    {
+        string tenantId = TenantId;
+        if (!_commandActivityLeases.TryGetValue(surfaceOwner, out (string TenantId, Func<bool, Task<bool>> Lease) entry)
+            || !string.Equals(entry.TenantId, tenantId, StringComparison.Ordinal))
+        {
+            entry = (tenantId, isActive => SetCommandActivityLeaseAsync(tenantId, isActive, surfaceOwner));
+            _commandActivityLeases[surfaceOwner] = entry;
+        }
+
+        return entry.Lease;
+    }
+
+    private bool IsCurrentAggregateLocked
+        => !string.IsNullOrWhiteSpace(TenantId)
+            && AggregateAdmissionGate?.IsLocked(TenantCommandAggregateLock.ForTenant(TenantId)) == true;
+
+    private bool IsCurrentAggregateLockedByAnother
+        => !string.IsNullOrWhiteSpace(TenantId)
+            && AggregateAdmissionGate?.IsLockedByAnother(TenantCommandAggregateLock.ForTenant(TenantId), _commandLockOwner) == true;
+
+    private string? CommandSurfaceUnavailableReason
+        => _commandInFlight || IsCurrentAggregateLockedByAnother
+            ? Localizer["Tenants.Members.UnavailableReason.AggregateLocked"].Value
+            : null;
+
+    private bool MemberEvidenceIsVersionConsistent
+        => IsCurrentCallerScope(_snapshot.CallerScope)
+            && IsCurrentCallerScope(_tenantUsersSnapshot.CallerScope)
+            && _snapshot.Kind is TenantDetailSurfaceKind.Ready
+            && _snapshot.Freshness is ReadModelFreshnessState.Current
+            && _snapshot.Lifecycle is ProjectionLifecycleState.Current
+            && _tenantUsersSnapshot.Kind is TenantUsersSurfaceKind.Ready or TenantUsersSurfaceKind.Empty
+            && _tenantUsersSnapshot.Freshness is ReadModelFreshnessState.Current
+            && _tenantUsersSnapshot.Lifecycle is ProjectionLifecycleState.Current
+            && !string.IsNullOrWhiteSpace(_snapshot.ProjectionVersion)
+            && string.Equals(
+                _snapshot.ProjectionVersion,
+                _tenantUsersSnapshot.ProjectionVersion,
+                StringComparison.Ordinal);
+
+    private string MemberSummary
+        => MemberEvidenceIsVersionConsistent
+            ? Localizer[
+                "Tenants.Detail.Members.VisiblePageSummaryWithOwners",
+                _tenantUsersSnapshot.Rows.Count,
+                OwnerCount(Detail)]
+            : Localizer[
+                "Tenants.Detail.Members.VisiblePageSummary",
+                _tenantUsersSnapshot.Rows.Count];
+
+    // Maps the Tenants detail snapshot kind onto the domain-agnostic FC-DTL surface state the wrapper
+    // routes. Kind takes precedence (loading/unauthorized/not-found/unavailable/unknown render their own
+    // state regardless of payload); the ready body (Ready/Stale/Degraded) only renders with a payload, so a
+    // missing payload fails closed to Unavailable instead of an optimistic ready surface.
+    private FcAggregateDetailState DetailState
+        => _snapshot.Kind switch
+        {
+            _ when _snapshot.Detail is not null && !IsCurrentCallerScope(_snapshot.CallerScope) => FcAggregateDetailState.Unavailable,
+            TenantDetailSurfaceKind.Loading => FcAggregateDetailState.Loading,
+            TenantDetailSurfaceKind.Unauthorized => FcAggregateDetailState.Unauthorized,
+            TenantDetailSurfaceKind.NotFound => FcAggregateDetailState.NotFound,
+            TenantDetailSurfaceKind.Unavailable or TenantDetailSurfaceKind.Unknown => FcAggregateDetailState.Unavailable,
+            _ when _snapshot.Detail is null => FcAggregateDetailState.Unavailable,
+            TenantDetailSurfaceKind.Stale => FcAggregateDetailState.Stale,
+            TenantDetailSurfaceKind.Degraded => FcAggregateDetailState.Degraded,
+            _ => FcAggregateDetailState.Ready,
+        };
+
+    protected override void OnInitialized()
+    {
+        if (AggregateAdmissionGate is { } admissionGate)
+        {
+            admissionGate.StateChanged += OnAggregateAdmissionChanged;
+        }
+        _highImpactViewportObservation = Services.GetService<TenantHighImpactViewportObservation>();
+        if (_highImpactViewportObservation is not null)
+        {
+            _highImpactViewportObservation.StateChanged += OnHighImpactViewportStateChanged;
+        }
+
+        _authenticationStateProvider = Services.GetService(typeof(AuthenticationStateProvider)) as AuthenticationStateProvider;
+        if (_authenticationStateProvider is not null)
+        {
+            _authenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+            StartAuditCallerResolution();
+        }
+    }
+
+    private void OnAggregateAdmissionChanged(object? sender, EventArgs args)
+        => _ = SynchronizeAggregateAdmissionAsync();
+
+    private async Task SynchronizeAggregateAdmissionAsync()
+    {
+        try
+        {
+            await InvokeAsync(() =>
+            {
+                if (_disposed)
+                {
+                    return;
+                }
+                if (_activeAggregateLockKey is { } key && AggregateAdmissionGate?.IsLocked(key) is false)
+                {
+                    _commandInFlight = false;
+                    _activeAggregateLockKey = null;
+                    _activeAggregateTenantId = null;
+                    _aggregateLeaseHolder = null;
+                }
+                StateHasChanged();
+            }).ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
+    private void OnHighImpactViewportStateChanged(object? sender, EventArgs args)
+        => _ = RenderIfAliveAsync();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (QueryAuditFocus is null || !TenantAuditNavigationSafety.IsSafeFocus(QueryAuditFocus))
+        {
+            _pendingAuditFocus = null;
+            _handledAuditFocus = null;
+            _auditReturnNotice = false;
+            _auditStalledNotice = false;
+            _auditPartialReturn = QueryAuditPartialReturn;
+            if (!QueryAuditPartialReturn)
+            {
+                _consumedFocuslessReturn = false;
+            }
+        }
+
+        if (QueryAuditFocus is { } focus && TenantAuditNavigationSafety.IsSafeFocus(focus)
+            && !string.Equals(_handledAuditFocus, focus, StringComparison.Ordinal))
+        {
+            _pendingAuditFocus = focus;
+            _handledAuditFocus = focus;
+            _auditReturnNotice = false;
+            _auditStalledNotice = false;
+            _auditPartialReturn = QueryAuditPartialReturn;
+        }
+
+        string tenantId = TenantId;
+        bool tenantRouteChanged = !string.Equals(_lifecycleProofTenantId, tenantId, StringComparison.Ordinal);
+        if (tenantRouteChanged)
+        {
+            _ = Interlocked.Increment(ref _readRefreshRouteVersion);
+            CancelReadRefreshSetup();
+        }
+        using PendingOperation operation = BeginLoad();
+        long generation = operation.Generation;
+        CancellationToken cancellationToken = operation.CancellationToken;
+
+        // Invalidate the prior route before the first await. Unsubscribing the previous tenant can genuinely
+        // suspend, and allowing a render during that suspension retained the old detail (and therefore the old
+        // metadata flow) under the new route parameter. The keyed flow is then constructed only from the
+        // incoming tenant's completed detail, never from the outgoing tenant's intent or confirmed snapshot.
+        ResetMetadataProofScope(tenantId);
+        ResetLifecycleProofScope(tenantId);
+        _snapshot = TenantDetailSnapshot.Loading();
+        _ = Interlocked.Increment(ref _highImpactRefreshGeneration);
+        _detailRefreshInFlight = false;
+        _refreshingBaselineWasCurrent = false;
+        _tenantUsersSnapshot = TenantUsersSnapshot.Loading(tenantId);
+        _globalAdministratorsSnapshot = null;
+        _auditProofCapabilityAvailable = false;
+        _auditReadDenied = false;
+        _memberCursor = null;
+        _memberCursorHistory.Clear();
+        _memberPagingHistoryTruncated = false;
+        _memberPagingJumpedToFirstPage = false;
+
+        if (!TenantAuditNavigationSafety.IsSafeTenantId(tenantId))
+        {
+            CancelAuditCapability();
+            _auditCapabilityResolved = true;
+            _snapshot = TenantDetailSnapshot.Unavailable(Localizer["Tenants.Audit.EntryPoint.Unavailable.InvalidContext"].Value);
+            _tenantUsersSnapshot = TenantUsersSnapshot.Invalid("invalid");
+            IAsyncDisposable? priorLease = _readRefreshLease;
+            _readRefreshLease = null;
+            _subscriptionTenantId = null;
+            if (priorLease is not null)
+            {
+                await DisposeLeaseSupportSafelyAsync(priorLease).ConfigureAwait(false);
+            }
+
+            return;
+        }
+
+        if (!IsCurrentCallerScope(_callerScope))
+        {
+            if (Volatile.Read(ref _pendingAuditCallerVersion) == 0)
+            {
+                _snapshot = TenantDetailSnapshot.Unauthorized(tenantId);
+                _tenantUsersSnapshot = TenantUsersSnapshot.Unauthorized(tenantId);
+                _auditCapabilityResolved = true;
+            }
+            return;
+        }
+
+        string? incomingAggregateLockKey = string.IsNullOrWhiteSpace(tenantId)
+            ? null
+            : TenantCommandAggregateLock.ForTenant(tenantId);
+        if (incomingAggregateLockKey is not null
+            && LifecycleAttemptTracker is { } lifecycleTracker
+            && !lifecycleTracker.HasPendingOwnership(tenantId)
+            && !ReferenceEquals(_aggregateLeaseHolder, _lifecycleLeaseOwner)
+            && AggregateAdmissionGate?.IsOwnedBy(incomingAggregateLockKey, lifecycleTracker.LeaseOwner) is true)
+        {
+            AggregateAdmissionGate.Release(incomingAggregateLockKey, lifecycleTracker.LeaseOwner);
+        }
+
+        if (incomingAggregateLockKey is not null
+            && SetConfigurationAttemptTracker is { } setTracker
+            && !setTracker.HasPendingOwnership(tenantId)
+            && AggregateAdmissionGate?.IsOwnedBy(incomingAggregateLockKey, setTracker.LeaseOwner) is true)
+        {
+            AggregateAdmissionGate.Release(incomingAggregateLockKey, setTracker.LeaseOwner);
+        }
+
+        if (incomingAggregateLockKey is not null
+            && RemoveConfigurationAttemptTracker is { } removeTracker
+            && !removeTracker.HasPendingOwnership(tenantId)
+            && AggregateAdmissionGate?.IsOwnedBy(incomingAggregateLockKey, removeTracker.LeaseOwner) is true)
+        {
+            AggregateAdmissionGate.Release(incomingAggregateLockKey, removeTracker.LeaseOwner);
+        }
+
+        // Route-change scoped companion to the reclamation above, for the case where this page's own
+        // lifecycle surface still holds the key. Same-route expiry is owned by
+        // TenantLifecycleActionAvailability, which observes a retained attempt going from present to absent.
+        // This method is not called from OnAfterRenderAsync: between lease acquire and BeginDispatch the
+        // tracker reports no pending ownership, so a same-route render would release the lease under an
+        // in-flight submit.
+        if (tenantRouteChanged)
+        {
+            _ = TryReclaimExpiredLifecycleLease(incomingAggregateLockKey, tenantId);
+            _ = TryReclaimExpiredSetConfigurationLease(incomingAggregateLockKey, tenantId);
+            _ = TryReclaimExpiredRemoveConfigurationLease(incomingAggregateLockKey, tenantId);
+        }
+
+        if (_activeAggregateLockKey is not null
+            && !string.Equals(_activeAggregateLockKey, incomingAggregateLockKey, StringComparison.Ordinal))
+        {
+            bool lifecycleSurface = ReferenceEquals(_aggregateLeaseHolder, _lifecycleLeaseOwner);
+            bool setConfigurationSurface = ReferenceEquals(_aggregateLeaseHolder, _setConfigurationLeaseOwner);
+            bool removeConfigurationSurface = ReferenceEquals(_aggregateLeaseHolder, _removeConfigurationLeaseOwner);
+            bool retainedLifecycleLease = lifecycleSurface
+                && _activeAggregateTenantId is not null
+                && LifecycleAttemptTracker?.HasPendingOwnership(_activeAggregateTenantId) is true;
+            bool retainedSetConfigurationLease = setConfigurationSurface
+                && _activeAggregateTenantId is not null
+                && SetConfigurationAttemptTracker?.HasPendingOwnership(_activeAggregateTenantId) is true;
+            bool retainedRemoveConfigurationLease = removeConfigurationSurface
+                && _activeAggregateTenantId is not null
+                && RemoveConfigurationAttemptTracker?.HasPendingOwnership(_activeAggregateTenantId) is true;
+            if (!retainedLifecycleLease && !retainedSetConfigurationLease && !retainedRemoveConfigurationLease)
+            {
+                object admissionOwner = lifecycleSurface && LifecycleAttemptTracker is not null
+                    ? LifecycleAttemptTracker.LeaseOwner
+                    : setConfigurationSurface && SetConfigurationAttemptTracker is not null
+                        ? SetConfigurationAttemptTracker.LeaseOwner
+                    : removeConfigurationSurface && RemoveConfigurationAttemptTracker is not null
+                        ? RemoveConfigurationAttemptTracker.LeaseOwner
+                    : _commandLockOwner;
+                AggregateAdmissionGate?.Release(_activeAggregateLockKey, admissionOwner);
+            }
+
+            _activeAggregateLockKey = null;
+            _activeAggregateTenantId = null;
+            _aggregateLeaseHolder = null;
+            _commandInFlight = false;
+        }
+
+        // Every parameter load refreshes projection evidence, including same-tenant audit returns.
+        // Tenant/caller identity alone does not prove that the BFF authority decision is unchanged, so
+        // resolve it again and fail closed while pending. Command admission also reauthorizes separately.
+        StartLifecycleAuthorizationResolution(tenantId);
+        if (!string.Equals(_subscriptionTenantId, tenantId, StringComparison.Ordinal)
+            && _readRefreshLease is not null)
+        {
+            // Support-safe disposal: a throwing unsubscribe on a tenant switch used to escape
+            // OnParametersSetAsync, so the incoming tenant's reads were never issued and the surface stayed on
+            // the previous tenant's state. Lease cleanup must never block fail-closed rendering.
+            IAsyncDisposable previousLease = _readRefreshLease;
+            _readRefreshLease = null;
+            _subscriptionTenantId = null;
+            await DisposeLeaseSupportSafelyAsync(previousLease).ConfigureAwait(false);
+        }
+
+        if (!CanApply(generation, tenantId))
+        {
+            return;
+        }
+
+        Task<TenantDetailSnapshot> detailTask = QueryGateway
+            .GetTenantAsync(new TenantDetailRequest(tenantId), null, cancellationToken);
+        Task<TenantUsersSnapshot> membersTask = QueryGateway
+            .GetTenantUsersAsync(new TenantUsersRequest(tenantId), null, cancellationToken);
+        StartGlobalAdministratorsLoad(tenantId, generation, retained: null);
+        StartAuditCapabilityProbe(tenantId, generation);
+        // Observe each task regardless of which faults first: WhenAll surfaces only one exception, so the
+        // others would go unobserved and their surfaces would keep whatever state they had -- Loading, in practice.
+        TenantDetailSnapshot? detailResult = null;
+        TenantUsersSnapshot? membersResult = null;
+        bool cancelled = false;
+        try
+        {
+            detailResult = await detailTask.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            cancelled = true;
+        }
+        catch
+        {
+            detailResult = null;
+        }
+
+        try
+        {
+            membersResult = await membersTask.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            cancelled = true;
+        }
+        catch
+        {
+            membersResult = null;
+        }
+
+        if (cancelled || !CanApply(generation, tenantId))
+        {
+            return;
+        }
+
+        // Marshalled with a re-check inside the dispatcher callback: CanApply above ran on a thread-pool
+        // continuation, so a newer load can win between that check and this write.
+        await InvokeAsync(() =>
+        {
+            if (!CanApply(generation, tenantId))
+            {
+                return;
+            }
+
+            // A faulted read resolves to its own terminal state rather than leaving the surface on Loading.
+            _snapshot = ForCurrentCaller(detailResult);
+            _tenantUsersSnapshot = MembersForCurrentCaller(membersResult);
+            StateHasChanged();
+        }).ConfigureAwait(false);
+
+        await EnsureReadRefreshLeaseAsync(tenantId).ConfigureAwait(false);
+    }
+
+    private void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask)
+    {
+        long callerVersion = Interlocked.Increment(ref _auditCallerVersion);
+        CancelReadRefreshSetup();
+        Interlocked.Exchange(ref _pendingAuditCallerVersion, callerVersion);
+        bool hadPageLoad = Volatile.Read(ref _loadGeneration) != 0;
+        long invalidatedGeneration = Interlocked.Increment(ref _loadGeneration);
+        _callerScope = null;
+        Task callback = InvokeAsync(() =>
+        {
+            if (_disposed || callerVersion != Volatile.Read(ref _auditCallerVersion))
+            {
+                return;
+            }
+
+            InvalidateCallerState();
+            if (hadPageLoad)
+            {
+                StartLifecycleAuthorizationResolution(TenantId, authenticationStateTask);
+            }
+            _ = ObserveAuditCallerAsync(authenticationStateTask, callerVersion, hadPageLoad, invalidatedGeneration);
+            StateHasChanged();
+        });
+        _ = ObserveLifecycleAuthorizationCallbackAsync(callback);
+    }
+
+    private void InvalidateCallerState()
+    {
+        IAsyncDisposable? lease = _readRefreshLease;
+        _readRefreshLease = null;
+        _subscriptionTenantId = null;
+        if (lease is not null)
+        {
+            _ = DisposeLeaseSupportSafelyAsync(lease);
+        }
+
+        CancelActiveCancellation();
+        CancelSupplementaryReads();
+        ResetMetadataProofScope(tenantId: null);
+        ResetLifecycleProofScope(tenantId: null);
+        _snapshot = TenantDetailSnapshot.Loading();
+        _tenantUsersSnapshot = TenantUsersSnapshot.Loading(TenantId);
+        _globalAdministratorsSnapshot = null;
+        _memberCursor = null;
+        _memberCursorHistory.Clear();
+        _memberPagingHistoryTruncated = false;
+        _memberPagingJumpedToFirstPage = false;
+        _memberPageLoadInFlight = false;
+        _auditProofCapabilityAvailable = false;
+        _auditReadDenied = false;
+        _auditCapabilityResolved = false;
+        _ = Interlocked.Increment(ref _highImpactRefreshGeneration);
+        _detailRefreshInFlight = false;
+        _refreshingBaselineWasCurrent = false;
+    }
+
+    private async Task ObserveAuditCallerAsync(
+        Task<AuthenticationState> callerTask, long callerVersion, bool hadPageLoad, long invalidatedGeneration)
+    {
+        AuthenticationState? state = null;
+        try
+        {
+            state = await callerTask.ConfigureAwait(false);
+        }
+        catch
+        {
+            // A faulted authentication task cannot authorize retained state or proof.
+        }
+
+        if (_disposed || callerVersion != Volatile.Read(ref _auditCallerVersion))
+        {
+            return;
+        }
+
+        await InvokeAsync(async () =>
+        {
+            if (_disposed || callerVersion != Volatile.Read(ref _auditCallerVersion))
+            {
+                return;
+            }
+
+            _callerScope = ResolveCallerScope(state?.User);
+            Interlocked.Exchange(ref _resolvedAuditCallerVersion, state is null ? 0 : callerVersion);
+            Interlocked.CompareExchange(ref _pendingAuditCallerVersion, 0, callerVersion);
+            if (_callerScope is null)
+            {
+                _snapshot = state is null
+                    ? TenantDetailSnapshot.Unavailable("Authenticated caller could not be verified.")
+                    : TenantDetailSnapshot.Unauthorized(TenantId);
+                _tenantUsersSnapshot = TenantUsersSnapshot.Unauthorized(TenantId);
+                _auditCapabilityResolved = true;
+                StateHasChanged();
+                return;
+            }
+
+            ResetMetadataProofScope(TenantId);
+            ResetLifecycleProofScope(TenantId);
+            if (hadPageLoad || Volatile.Read(ref _loadGeneration) > invalidatedGeneration)
+            {
+                if (!hadPageLoad)
+                {
+                    StartLifecycleAuthorizationResolution(TenantId);
+                }
+                await RefreshTenantReadsAsync(TenantId);
+            }
+        }).ConfigureAwait(false);
+    }
+
+    private static string? ResolveCallerScope(System.Security.Claims.ClaimsPrincipal? principal)
+    {
+        var evidence = TenantsGlobalAdministratorClaims.ResolvePrincipalEvidence(
+            principal, corroboratedSubject: null, requireCorroboration: false);
+        return string.IsNullOrWhiteSpace(evidence.Subject)
+            ? null
+            : TenantQueryGateway.AuditCallerScope(evidence.Subject);
+    }
+
+    private bool IsCurrentCallerScope(string? scope)
+    {
+        if (string.IsNullOrWhiteSpace(scope)
+            || Volatile.Read(ref _pendingAuditCallerVersion) != 0
+            || Volatile.Read(ref _resolvedAuditCallerVersion) != Volatile.Read(ref _auditCallerVersion)
+            || !string.Equals(scope, _callerScope, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        try
+        {
+            Task<AuthenticationState>? stateTask = _authenticationStateProvider?.GetAuthenticationStateAsync();
+            return stateTask?.IsCompletedSuccessfully == true
+                && string.Equals(scope, ResolveCallerScope(stateTask.Result.User), StringComparison.Ordinal);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private TenantDetailSnapshot ForCurrentCaller(TenantDetailSnapshot? snapshot)
+        => snapshot is not null && (snapshot.Detail is null && snapshot.ETag is null && snapshot.ProjectionVersion is null
+                && !snapshot.Configuration.IsAvailable || IsCurrentCallerScope(snapshot.CallerScope))
+            ? snapshot
+            : TenantDetailSnapshot.Unavailable("Tenant detail caller could not be verified.");
+
+    private TenantUsersSnapshot MembersForCurrentCaller(TenantUsersSnapshot? snapshot)
+        => snapshot is not null && (snapshot.Kind is TenantUsersSurfaceKind.Unauthorized or TenantUsersSurfaceKind.NotFound
+                or TenantUsersSurfaceKind.Invalid or TenantUsersSurfaceKind.Unavailable or TenantUsersSurfaceKind.Error
+                && snapshot.Rows.Count == 0 && snapshot.ETag is null && snapshot.ProjectionVersion is null
+                || IsCurrentCallerScope(snapshot.CallerScope))
+            ? snapshot
+            : TenantUsersSnapshot.Unavailable(TenantId);
+
+    private void StartLifecycleAuthorizationResolution(
+        string tenantId,
+        Task<AuthenticationState>? authenticationStateTask = null)
+    {
+        long generation = Interlocked.Increment(ref _lifecycleAuthorizationGeneration);
+
+        // Interlocked.Exchange followed by a separate previous?.Cancel() raced the resolution's own finally:
+        // the finally could win the CompareExchange race, dispose the source, and the Cancel() here then threw
+        // ObjectDisposedException straight out of OnParametersSetAsync or DisposeAsync -- tearing down the
+        // circuit. The load path on this page already serialises cancel-vs-dispose under _cancellationLock;
+        // the lifecycle source now uses the same scheme.
+        CancellationTokenSource source = ReplaceLifecycleAuthorizationCancellation();
+        _lifecycleAuthorizationReflection = TenantLifecycleAuthorizationReflectionState.Indeterminate;
+
+        Task resolution = ResolveLifecycleAuthorizationAsync(
+            tenantId,
+            generation,
+            source,
+            authenticationStateTask);
+        _ = ObserveLifecycleAuthorizationCallbackAsync(resolution);
+    }
+
+    private async Task ResolveLifecycleAuthorizationAsync(
+        string tenantId,
+        long generation,
+        CancellationTokenSource source,
+        Task<AuthenticationState>? authenticationStateTask)
+    {
+        TenantLifecycleAuthorizationReflectionState reflection
+            = TenantLifecycleAuthorizationReflectionState.Indeterminate;
+        try
+        {
+            if (authenticationStateTask is not null)
+            {
+                _ = await authenticationStateTask.WaitAsync(source.Token).ConfigureAwait(false);
+            }
+
+            reflection = await BffComposition
+                .ResolveLifecycleAuthorizationAsync(source.Token)
+                .ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (source.IsCancellationRequested)
+        {
+            return;
+        }
+        catch
+        {
+            // Authorization faults fail closed without exposing provider details. Indeterminate is rendered
+            // to the operator as authority "not proven", with refresh-first recovery guidance.
+        }
+        finally
+        {
+            CompleteLifecycleAuthorizationCancellation(source);
+        }
+
+        try
+        {
+            await InvokeAsync(() =>
+            {
+                if (_disposed
+                    || generation != Volatile.Read(ref _lifecycleAuthorizationGeneration)
+                    || !string.Equals(TenantId, tenantId, StringComparison.Ordinal))
+                {
+                    return;
+                }
+
+                _lifecycleAuthorizationReflection = reflection;
+                StateHasChanged();
+            }).ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+            // Disposed between the generation check and renderer dispatch.
+        }
+    }
+
+    private static async Task ObserveLifecycleAuthorizationCallbackAsync(Task callback)
+    {
+        try
+        {
+            await callback.ConfigureAwait(false);
+        }
+        catch
+        {
+            // Authorization callbacks contain faults and leave lifecycle actions failed closed.
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        StartMutationAuthorizationResolution();
+        if (_pendingAuditFocus is { } focus)
+        {
+            _pendingAuditFocus = null;
+            _ = RestoreAuditFocusAsync(focus);
+        }
+
+        if (QueryAuditFocus is null && QueryAuditPartialReturn && !_consumedFocuslessReturn)
+        {
+            _consumedFocuslessReturn = true;
+            try
+            {
+                await using IJSObjectReference module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/tenantsFocus.js");
+                await module.InvokeVoidAsync("consumeReturnMarkers");
+                QueryAuditPartialReturn = false;
+            }
+            catch (JSDisconnectedException)
+            {
+                // The circuit ended before the URL marker could be consumed.
+            }
+            catch (Exception exception) when (exception is JSException or TaskCanceledException)
+            {
+                // Keep the visible partial-return notice when browser cleanup is unavailable.
+            }
+        }
+
+        // Retry optional notification setup after later renders when an earlier attempt was superseded or
+        // returned no lease. The method's in-flight and existing-lease guards keep successful setup
+        // single-instance. Without this, one cancelled or empty setup disabled projection auto-refresh for
+        // the rest of the circuit, because OnParametersSetAsync was its only entry point.
+        //
+        // Bounded, because a failing backend records neither _readRefreshLease nor _subscriptionTenantId, so
+        // every guard passes again on the next render. RefreshTenantReadsAsync calls StateHasChanged, so an
+        // unbounded retry was two remote round trips per render for the life of the circuit against a
+        // subscription endpoint that is down. The counter resets with the route or an explicit projection
+        // refresh, so a new tenant and a same-route operator recovery both get a bounded fresh opportunity.
+        await EnsureReadRefreshLeaseAsync(TenantId).ConfigureAwait(false);
+    }
+
+    private async Task RestoreAuditFocusAsync(string focus)
+    {
+        string tenantId = TenantId;
+        try
+        {
+            await using IJSObjectReference module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/tenantsFocus.js");
+            string? outcome = await module.InvokeAsync<string>("restoreAuditFocus", focus, "tenants-detail-audit-origin", "tenants-detail-identity");
+            if (outcome != "cancelled" && !_disposed && string.Equals(TenantId, tenantId, StringComparison.Ordinal)
+                && string.Equals(_handledAuditFocus, focus, StringComparison.Ordinal))
+            {
+                await module.InvokeVoidAsync("consumeReturnMarkers", focus);
+                QueryAuditFocus = null;
+                QueryAuditPartialReturn = false;
+            }
+            if (outcome is "missing" or "stalled"
+                && !_disposed && string.Equals(TenantId, tenantId, StringComparison.Ordinal)
+                && string.Equals(_handledAuditFocus, focus, StringComparison.Ordinal))
+            {
+                await InvokeAsync(() =>
+                {
+                    _auditReturnNotice = outcome == "missing";
+                    _auditStalledNotice = outcome == "stalled";
+                    StateHasChanged();
+                });
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+            // The browser circuit ended before focus restoration.
+        }
+        catch (Exception exception) when (exception is JSException or TaskCanceledException)
+        {
+            if (!_disposed && string.Equals(TenantId, tenantId, StringComparison.Ordinal)
+                && string.Equals(_handledAuditFocus, focus, StringComparison.Ordinal))
+            {
+                await InvokeAsync(() => { _auditReturnNotice = true; _auditStalledNotice = false; StateHasChanged(); });
+            }
+        }
+    }
+
+    /// <summary>
+    /// Records that optional notification setup failed, using a fixed reason code only.
+    /// </summary>
+    /// <remarks>
+    /// The catch below is deliberately broad, so without this the surface could stop auto-refreshing for the
+    /// whole circuit with no signal anywhere. The logger is resolved optionally and the message carries a
+    /// constant reason code — no tenant id, projection scope, transport detail, or exception is emitted.
+    /// </remarks>
+    private void LogNotificationSetupFailure()
+    {
+        if (Services.GetService(typeof(ILoggerFactory)) is ILoggerFactory loggerFactory)
+        {
+            loggerFactory
+                .CreateLogger<TenantDetailPage>()
+                .LogWarning("Optional projection refresh setup failed. ReasonCode={NotificationReasonCode}", "notification-setup-failed");
+        }
+    }
+
+    private void CancelReadRefreshSetup()
+    {
+        lock (_cancellationLock)
+        {
+            _readRefreshSetupCancellation?.Cancel();
+        }
+    }
+
+    /// <summary>Subscribes this tenant's reads to projection notifications, at most once per tenant.</summary>
+    /// <remarks>
+    /// Deliberately does NOT take the load cancellation token. Binding setup to a load meant any Refresh,
+    /// command-driven re-query or member pager click during setup cancelled <c>SubscribeAsync</c>, the catch
+    /// returned without recording <c>_subscriptionTenantId</c>, and nothing retried for the same tenant --
+    /// silently disabling projection auto-refresh for the rest of the circuit. Setup instead owns a
+    /// separate cancellation source, replaced only by route/caller invalidation or disposal.
+    /// </remarks>
+    private Task EnsureReadRefreshLeaseAsync(string tenantId)
+        => _disposed ? Task.CompletedTask : InvokeAsync(() => EnsureReadRefreshLeaseOnRendererAsync(tenantId));
+
+    private bool IsReadRefreshScopeCurrent(string tenantId, long routeVersion, long callerVersion)
+        => !_disposed
+            && routeVersion == Volatile.Read(ref _readRefreshRouteVersion)
+            && callerVersion == Volatile.Read(ref _auditCallerVersion)
+            && string.Equals(TenantId, tenantId, StringComparison.Ordinal)
+            && IsCurrentCallerScope(_callerScope);
+
+    private async Task EnsureReadRefreshLeaseOnRendererAsync(string tenantId)
+    {
+        // Own setup/adoption/handoff on the renderer, including continuations after backend awaits.
+        // Read generations change on refresh/paging; this epoch changes only with the route.
+        long routeVersion = Volatile.Read(ref _readRefreshRouteVersion);
+        long callerVersion = Volatile.Read(ref _auditCallerVersion);
+        if (!IsReadRefreshScopeCurrent(tenantId, routeVersion, callerVersion))
+        {
+            return;
+        }
+
+        if (!string.Equals(_readRefreshAttemptTenantId, tenantId, StringComparison.Ordinal))
+        {
+            _readRefreshAttemptTenantId = tenantId;
+            _readRefreshAttempts = 0;
+        }
+
+        if (_disposed
+            || !TenantAuditNavigationSafety.IsSafeTenantId(tenantId)
+            || !string.Equals(TenantId, tenantId, StringComparison.Ordinal)
+            || string.Equals(_subscriptionTenantId, tenantId, StringComparison.Ordinal)
+            || _readRefreshLease is not null
+            || _readRefreshAttempts >= MaximumReadRefreshAttempts
+            || Services.GetService(typeof(TenantReadRefreshSubscription)) is not TenantReadRefreshSubscription refreshSubscription)
+        {
+            return;
+        }
+
+        // Atomic test-and-set, matching GlobalAdministratorsPage. OnParametersSetAsync and OnAfterRenderAsync
+        // both enter this method; a plain bool let both pass the guard, both subscribe, and the loser's finally
+        // clear the flag while the winner was still in flight.
+        if (Interlocked.CompareExchange(ref _readRefreshSubscriptionInFlight, 1, 0) != 0)
+        {
+            return;
+        }
+
+        var source = new CancellationTokenSource();
+        lock (_cancellationLock)
+        {
+            _readRefreshSetupCancellation = source;
+        }
+        if (!IsReadRefreshScopeCurrent(tenantId, routeVersion, callerVersion)) source.Cancel();
+        bool acceptsNotifications = true;
+        bool adopted = false;
+        TenantReadRefreshLease? lease = null;
+        try
+        {
+            lease = await refreshSubscription.SubscribeAsync(
+                GetTenantQuery.ProjectionType,
+                tenantId,
+                () => _disposed ? Task.CompletedTask : InvokeAsync(() =>
+                    acceptsNotifications && IsReadRefreshScopeCurrent(tenantId, routeVersion, callerVersion)
+                        ? RefreshTenantReadsAsync(tenantId)
+                        : Task.CompletedTask),
+                source.Token);
+            if (!IsReadRefreshScopeCurrent(tenantId, routeVersion, callerVersion)
+                || _readRefreshLease is not null)
+            {
+                await DisposeLeaseSupportSafelyAsync(lease);
+                return;
+            }
+
+            if (!lease.IsSubscribed)
+            {
+                // Setup registered no callback. Recording it would satisfy the guards above forever and
+                // permanently disable auto-refresh; leaving both fields unset lets the next render retry.
+                _readRefreshAttempts++;
+                await DisposeLeaseSupportSafelyAsync(lease);
+                lease = null;
+                return;
+            }
+
+            _readRefreshLease = lease;
+            adopted = true;
+            _subscriptionTenantId = tenantId;
+            lease = null;
+
+            // Re-checked after the assignment, not only before it. DisposeAsync sets _disposed and then reads
+            // a still-null _readRefreshLease, so a continuation that passed the check above and was preempted
+            // could assign the lease afterwards -- leaving the callback registered for the life of the
+            // circuit and invoking InvokeAsync on a disposed component.
+            if (_disposed)
+            {
+                IAsyncDisposable orphaned = _readRefreshLease;
+                _readRefreshLease = null;
+                _subscriptionTenantId = null;
+                await DisposeLeaseSupportSafelyAsync(orphaned);
+            }
+        }
+        catch
+        {
+            // Optional refresh only; a transport fault must not escape the render lifecycle. The next
+            // render retries. The budget is charged here, not before the attempt.
+            if (IsReadRefreshScopeCurrent(tenantId, routeVersion, callerVersion))
+            {
+                _readRefreshAttempts++;
+            }
+            LogNotificationSetupFailure();
+            if (lease is not null)
+            {
+                await DisposeLeaseSupportSafelyAsync(lease);
+            }
+        }
+        finally
+        {
+            if (!adopted) acceptsNotifications = false;
+            lock (_cancellationLock)
+            {
+                if (ReferenceEquals(_readRefreshSetupCancellation, source))
+                {
+                    _readRefreshSetupCancellation = null;
+                }
+            }
+            source.Dispose();
+            Volatile.Write(ref _readRefreshSubscriptionInFlight, 0);
+            if (!_disposed
+                && (routeVersion != Volatile.Read(ref _readRefreshRouteVersion)
+                    || callerVersion != Volatile.Read(ref _auditCallerVersion)))
+            {
+                // OnAfterRender has no completion render. Release the obsolete owner's gate before
+                // re-evaluating the latest authorized scope; current failures retain their render budget.
+                await EnsureReadRefreshLeaseOnRendererAsync(TenantId);
+            }
+        }
+    }
+
+    private async Task RefreshTenantDetailAsync()
+    {
+        _auditProofCapabilityAvailable = false;
+        // Detail-flow refreshes are explicit same-route recovery points. Reopen the optional notification
+        // setup budget; successful subscriptions are never charged against it.
+        _readRefreshAttempts = 0;
+        string tenantId = TenantId;
+
+        // BeginLoad cancels the shared token and clears member refresh intent. Reissue any outstanding
+        // member read through the combined refresh so a detail-only refresh cannot silently discard it.
+        // Navigation has not committed its requested cursor yet; both navigation and combined refresh
+        // therefore re-read the current, last-confirmed cursor while retaining its rows and paging history.
+        if (_memberPageLoadInFlight || _tenantUsersSnapshot.IsRefreshing)
+        {
+            await RefreshTenantReadsAsync(tenantId).ConfigureAwait(false);
+            return;
+        }
+
+        using PendingOperation operation = BeginLoad();
+        using IDisposable highImpactRefresh = BeginHighImpactRefresh();
+        long generation = operation.Generation;
+        StartAuditCapabilityProbe(tenantId, generation);
+        CancellationToken cancellationToken = operation.CancellationToken;
+        TenantDetailSnapshot previous = _snapshot;
+        await RenderIfAliveAsync().ConfigureAwait(false);
+        TenantDetailSnapshot snapshot;
+        try
+        {
+            snapshot = await QueryGateway
+                .GetTenantAsync(
+                    new TenantDetailRequest(tenantId, previous.ETag),
+                    previous,
+                    cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        // Marshal back before the generation check. Testing and assigning on a thread-pool continuation let a
+        // newer read that completed in between lose to this older one, which is why every sibling load path in
+        // this file re-checks inside InvokeAsync.
+        await InvokeAsync(() =>
+        {
+            if (CanApply(generation, tenantId))
+            {
+                _snapshot = ForCurrentCaller(snapshot);
+            }
+        }).ConfigureAwait(false);
+    }
+
+    private Task RefreshCallerBoundReadsAsync()
+    {
+        if (Volatile.Read(ref _pendingAuditCallerVersion) != 0)
+        {
+            return Task.CompletedTask;
+        }
+
+        if (!IsCurrentCallerScope(_callerScope))
+        {
+            StartAuditCallerResolution();
+            return Task.CompletedTask;
+        }
+
+        return RefreshTenantReadsAsync(TenantId);
+    }
+
+    private Task RefreshTenantReadsAsync()
+    {
+        EnsureCurrentAuditCaller();
+        // Member-flow refreshes are the equivalent recovery path for the combined detail/member read.
+        // Notification callbacks call the tenant-id overload directly and therefore do not reset a failing
+        // backend's budget on every nudge.
+        _readRefreshAttempts = 0;
+        return RefreshTenantReadsAsync(TenantId);
+    }
+
+    private void EnsureCurrentAuditCaller()
+    {
+        if (_authenticationStateProvider is not null
+            && Volatile.Read(ref _pendingAuditCallerVersion) == 0
+            && Volatile.Read(ref _resolvedAuditCallerVersion) != Volatile.Read(ref _auditCallerVersion))
+        {
+            StartAuditCallerResolution();
+        }
+    }
+
+    private void StartAuditCallerResolution()
+    {
+        try
+        {
+            OnAuthenticationStateChanged(_authenticationStateProvider!.GetAuthenticationStateAsync());
+        }
+        catch
+        {
+            Interlocked.Increment(ref _auditCallerVersion);
+            Interlocked.Increment(ref _loadGeneration);
+            _callerScope = null;
+            InvalidateCallerState();
+            _snapshot = TenantDetailSnapshot.Unavailable("Authenticated caller could not be verified.");
+            Interlocked.Exchange(ref _pendingAuditCallerVersion, 0);
+            _auditProofCapabilityAvailable = false;
+            _auditReadDenied = false;
+            _auditCapabilityResolved = true;
+            _ = InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task RefreshTenantReadsAsync(string tenantId)
+    {
+        if (!IsCurrentCallerScope(_callerScope)
+            || !string.Equals(TenantId, tenantId, StringComparison.Ordinal)
+            || !TenantAuditNavigationSafety.IsSafeTenantId(tenantId))
+        {
+            return;
+        }
+
+        using PendingOperation operation = BeginLoad();
+        using IDisposable highImpactRefresh = BeginHighImpactRefresh();
+        long generation = operation.Generation;
+        CancellationToken cancellationToken = operation.CancellationToken;
+        TenantDetailSnapshot retainedDetail = _snapshot;
+        TenantUsersSnapshot retainedMembers = _tenantUsersSnapshot;
+        GlobalAdministratorsSnapshot? retainedGlobalAdministrators = _globalAdministratorsSnapshot;
+        _tenantUsersSnapshot = TenantUsersSnapshot.Refreshing(retainedMembers);
+        _globalAdministratorsSnapshot = ToFailClosedGlobalAdministrators(retainedGlobalAdministrators);
+        _auditProofCapabilityAvailable = false;
+        await InvokeAsync(StateHasChanged).ConfigureAwait(false);
+        Task<TenantDetailSnapshot> detailTask = QueryGateway
+            .GetTenantAsync(
+                new TenantDetailRequest(tenantId, retainedDetail.ETag),
+                retainedDetail,
+                cancellationToken);
+        Task<TenantUsersSnapshot> membersTask = QueryGateway
+            .GetTenantUsersAsync(
+                new TenantUsersRequest(tenantId, _memberCursor, ETag: retainedMembers.ETag),
+                retainedMembers,
+                cancellationToken);
+        StartGlobalAdministratorsLoad(tenantId, generation, retainedGlobalAdministrators);
+        EnsureCurrentAuditCaller();
+        StartAuditCapabilityProbe(tenantId, generation);
+        // Observe detail, members, and global-administrator reads independently. Task.WhenAll rethrew an
+        // operational fault before either result could be applied, leaving the retained member page permanently
+        // marked Refreshing. A failed refresh remains support-safe and fail-closed while still allowing a
+        // successful sibling read to land.
+        TenantDetailSnapshot detail;
+        TenantUsersSnapshot members;
+        bool cancelled = false;
+        try
+        {
+            detail = await detailTask.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            cancelled = true;
+            detail = retainedDetail;
+        }
+        catch
+        {
+            detail = TenantDetailSnapshot.Degraded(
+                retainedDetail.Detail,
+                "Tenant detail query gateway returned a safe degraded state.",
+                retainedDetail.ETag,
+                ProjectionLifecycleState.Unknown,
+                retainedDetail.ProjectionVersion).WithCallerScope(retainedDetail.CallerScope!);
+        }
+
+        try
+        {
+            members = await membersTask.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            cancelled = true;
+            members = retainedMembers;
+        }
+        catch
+        {
+            members = TenantUsersSnapshot.Error(tenantId, retainedMembers);
+        }
+
+        if (cancelled || !CanApply(generation, tenantId))
+        {
+            return;
+        }
+
+        detail = ForCurrentCaller(detail);
+        members = MembersForCurrentCaller(members);
+        bool resetMemberPaging = false;
+        if (members.Reason is TenantUsersReason.InvalidCursor)
+        {
+            TenantUsersSnapshot recovered;
+            bool recoveryFailed = false;
+            try
+            {
+                recovered = await QueryGateway
+                    .GetTenantUsersAsync(new TenantUsersRequest(tenantId), retainedMembers, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+            catch
+            {
+                // A non-cancellation fault on the recovery read must not escape after members were already
+                // painted Refreshing — that left the pager disabled with no degraded/error surface.
+                recoveryFailed = true;
+                recovered = retainedMembers;
+            }
+
+            if (recoveryFailed)
+            {
+                members = TenantUsersSnapshot.Degraded(tenantId, retainedMembers, retainedMembers.Reason);
+            }
+            else if (IsCurrentCallerScope(recovered.CallerScope)
+                        && IsUsableMemberPage(recovered, requestedCursor: null))
+            {
+                members = recovered with
+                {
+                    PagingRecovered = true,
+                    Reason = TenantUsersReason.ListRefreshed,
+                };
+                resetMemberPaging = true;
+            }
+            else if (IsTerminalMemberPage(recovered))
+            {
+                members = recovered;
+                resetMemberPaging = true;
+            }
+            else
+            {
+                members = TenantUsersSnapshot.Degraded(tenantId, retainedMembers, recovered.Reason);
+            }
+        }
+        else if (members.PagingRecovered && IsUsableMemberPage(members, requestedCursor: null))
+        {
+            // The gateway already recovered this read to page one, so the retained cursor and history no
+            // longer describe what is on screen. Without this the refresh kept re-sending the dead cursor.
+            //
+            // The usability clause keeps this branch from preempting the retention branch below. The gateway
+            // now stamps PagingRecovered only on a page that actually arrived, so the two can no longer
+            // disagree -- but when they did, a recovery that mapped to zero-row Error or Degraded matched
+            // here first, discarded the operator's last-confirmed rows and cleared their cursor history on a
+            // read that had failed, while rendering the "restarted at the first page" notice over it.
+            resetMemberPaging = true;
+        }
+        else if (!IsUsableMemberPage(members, _memberCursor) && !IsTerminalMemberPage(members))
+        {
+            // Symmetric with LoadMemberPageAsync. A terminal result (unauthorized, not-found, invalid) must
+            // replace the retained rows so a refresh cannot keep showing membership the caller may no longer
+            // be allowed to see; an operational failure must not blank a surface that was serving confirmed
+            // rows a moment ago. Previously every non-usable result was applied verbatim on this path.
+            members = TenantUsersSnapshot.Degraded(tenantId, retainedMembers, members.Reason);
+        }
+
+        await InvokeAsync(async () =>
+        {
+            if (!CanApply(generation, tenantId))
+            {
+                return;
+            }
+
+            _snapshot = ForCurrentCaller(detail);
+            _tenantUsersSnapshot = MembersForCurrentCaller(members);
+            // The jump announcement describes the immediately preceding Previous action. Once an
+            // authoritative refresh completes it is no longer new recovery evidence and must not remain in
+            // the polite live region indefinitely.
+            _memberPagingJumpedToFirstPage = false;
+            if (resetMemberPaging)
+            {
+                _memberCursor = null;
+                _memberCursorHistory.Clear();
+                _memberPagingHistoryTruncated = false;
+                _memberPagingJumpedToFirstPage = false;
+            }
+
+            // SignalR / coalesced read refresh is a nudge only: forward into in-flight membership flows so
+            // they re-query authoritative evidence without treating the notification as confirmation.
+            // No ConfigureAwait(false) here: this lambda already runs on the renderer's dispatcher, the nudge
+            // awaits an authoritative status/evidence re-query that yields, and resuming off the dispatcher
+            // would make the StateHasChanged() below throw and tear the circuit down.
+            if ((_commandInFlight || IsCurrentAggregateLocked) && _memberAccessReview is not null)
+            {
+                await _memberAccessReview.ApplySignalRNudgeAsync();
+            }
+
+            TenantConfigurationManagement? configurationManagement = _configurationManagement;
+            if (CanApply(generation, tenantId)
+                && (_commandInFlight || IsCurrentAggregateLocked)
+                && configurationManagement is not null)
+            {
+                await configurationManagement.ApplySetConfigurationSignalRNudgeAsync();
+                if (!CanApply(generation, tenantId)
+                    || !ReferenceEquals(_configurationManagement, configurationManagement))
+                {
+                    return;
+                }
+
+                await configurationManagement.ApplyRemoveConfigurationSignalRNudgeAsync();
+                if (!CanApply(generation, tenantId)
+                    || !ReferenceEquals(_configurationManagement, configurationManagement))
+                {
+                    return;
+                }
+            }
+
+            TenantLifecycleActionAvailability? lifecycleActionAvailability = _lifecycleActionAvailability;
+            if (CanApply(generation, tenantId)
+                && (_commandInFlight || IsCurrentAggregateLocked)
+                && lifecycleActionAvailability is not null)
+            {
+                await lifecycleActionAvailability.ApplySignalRNudgeAsync();
+                if (!CanApply(generation, tenantId)
+                    || !ReferenceEquals(_lifecycleActionAvailability, lifecycleActionAvailability))
+                {
+                    return;
+                }
+            }
+
+            if (CanApply(generation, tenantId))
+            {
+                StateHasChanged();
+            }
+        }).ConfigureAwait(false);
+    }
+
+    private async Task LoadNextMemberPageAsync()
+    {
+        if (_memberPageLoadInFlight
+            || !_tenantUsersSnapshot.HasMore
+            || string.IsNullOrWhiteSpace(_tenantUsersSnapshot.NextCursor))
+        {
+            return;
+        }
+
+        await LoadMemberPageAsync(_tenantUsersSnapshot.NextCursor, moveForward: true).ConfigureAwait(false);
+    }
+
+    private async Task LoadPreviousMemberPageAsync()
+    {
+        if (_memberPageLoadInFlight || _memberCursorHistory.Count == 0)
+        {
+            return;
+        }
+
+        await LoadMemberPageAsync(_memberCursorHistory.Peek(), moveForward: false).ConfigureAwait(false);
+    }
+
+    /// <summary>Disposes an optional refresh lease without surfacing transport detail.</summary>
+    private static async Task DisposeLeaseSupportSafelyAsync(IAsyncDisposable lease)
+    {
+        try
+        {
+            await lease.DisposeAsync().ConfigureAwait(false);
+        }
+        catch
+        {
+            // Lease cleanup must never disclose transport details or block fail-closed rendering.
+        }
+    }
+
+    private async Task LoadMemberPageAsync(string? requestedCursor, bool moveForward)
+    {
+        string tenantId = TenantId;
+        string? priorCursor = _memberCursor;
+        using PendingOperation operation = BeginLoad();
+        long generation = operation.Generation;
+        CancellationToken cancellationToken = operation.CancellationToken;
+
+        // BeginLoad supersedes the load generation, which drops an in-flight audit capability probe.
+        // Restart an unresolved probe under the new generation so detail audit links do not stay disabled.
+        if (!_auditCapabilityResolved)
+        {
+            StartAuditCapabilityProbe(tenantId, generation);
+        }
+
+        _memberPageLoadInFlight = true;
+        TenantUsersSnapshot retained = _tenantUsersSnapshot;
+        _tenantUsersSnapshot = TenantUsersSnapshot.Refreshing(retained);
+        try
+        {
+            TenantUsersSnapshot snapshot = await QueryGateway
+                .GetTenantUsersAsync(
+                    // `retained` is passed so the gateway sees the prior page, but note it does NOT reach the
+                    // gateway's conditional-read retention on a paging request: HasMatchingTenantUsers gates
+                    // on MatchesPageScope, which compares the retained page's cursor to the requested one and
+                    // is therefore false by construction whenever the cursor moves. Gateway retention applies
+                    // to same-scope refreshes; the explicit retention below is what covers paging.
+                    new TenantUsersRequest(tenantId, requestedCursor),
+                    retained,
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            if (!CanApply(generation, tenantId))
+            {
+                return;
+            }
+
+            snapshot = MembersForCurrentCaller(snapshot);
+
+            // An explicitly signalled invalid cursor restarts at page one honestly instead of stranding the
+            // table on an Invalid surface with no way back.
+            if (snapshot.Reason is TenantUsersReason.InvalidCursor)
+            {
+                TenantUsersSnapshot recovered;
+                bool recoveryFailed = false;
+                try
+                {
+                    recovered = await QueryGateway
+                        .GetTenantUsersAsync(new TenantUsersRequest(tenantId), retained, cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+                catch
+                {
+                    // A non-cancellation fault on the recovery read must not escape after members were already
+                    // painted Refreshing — that left the pager disabled with no degraded/error surface.
+                    recoveryFailed = true;
+                    recovered = retained;
+                }
+
+                // The recovery read gets the same usability guard as the primary read. Assigning it
+                // unconditionally meant a transient failure on page one emptied the table *after* the history
+                // had already been cleared, leaving neither rows nor a Previous control.
+                await InvokeAsync(() =>
+                {
+                    if (!CanApply(generation, tenantId))
+                    {
+                        return;
+                    }
+
+                    if (recoveryFailed)
+                    {
+                        _tenantUsersSnapshot = TenantUsersSnapshot.Degraded(tenantId, retained, retained.Reason);
+                    }
+                    else if (IsCurrentCallerScope(recovered.CallerScope)
+                        && IsUsableMemberPage(recovered, requestedCursor: null))
+                    {
+                        _memberCursor = null;
+                        _memberCursorHistory.Clear();
+                        _memberPagingHistoryTruncated = false;
+                        _memberPagingJumpedToFirstPage = false;
+                        _tenantUsersSnapshot = recovered with
+                        {
+                            PagingRecovered = true,
+                            Reason = TenantUsersReason.ListRefreshed,
+                        };
+                    }
+                    else if (IsTerminalMemberPage(recovered))
+                    {
+                        _memberCursor = null;
+                        _memberCursorHistory.Clear();
+                        _memberPagingHistoryTruncated = false;
+                        _memberPagingJumpedToFirstPage = false;
+                        _tenantUsersSnapshot = MembersForCurrentCaller(recovered);
+                    }
+                    else
+                    {
+                        _tenantUsersSnapshot = TenantUsersSnapshot.Degraded(tenantId, retained, recovered.Reason);
+                    }
+                }).ConfigureAwait(false);
+
+                return;
+            }
+
+            // Marshalled and re-checked inside InvokeAsync. These writes previously ran on the thread-pool
+            // continuation after a single CanApply check, so a superseded member page could overwrite newer
+            // rows and mutate _memberCursorHistory while the renderer was reading its Count for CanGoPrevious.
+            await InvokeAsync(() =>
+            {
+                if (!CanApply(generation, tenantId))
+                {
+                    return;
+                }
+
+                // Any non-usable page must leave paging state untouched. Advancing the cursor and pushing
+                // history on Unauthorized/NotFound/Invalid built a history out of failed reads, so Previous
+                // then walked back through pages that never rendered.
+                if (IsTerminalMemberPage(snapshot))
+                {
+                    _tenantUsersSnapshot = MembersForCurrentCaller(snapshot);
+                    return;
+                }
+
+                if (!IsUsableMemberPage(snapshot, requestedCursor))
+                {
+                    _tenantUsersSnapshot = TenantUsersSnapshot.Degraded(
+                        tenantId,
+                        retained,
+                        snapshot.Reason);
+                    return;
+                }
+
+                _tenantUsersSnapshot = MembersForCurrentCaller(snapshot);
+
+                // A gateway-side page-one recovery answers page one, not the cursor that was requested, so
+                // the requested cursor must never be committed. Doing so stored an expired cursor as the
+                // current page, pushed a history entry that made Previous available on a page-one view, and
+                // re-sent the dead cursor on every later refresh. The gateway does not surface an
+                // InvalidCursor reason in this case -- it already recovered -- so PagingRecovered is the
+                // only signal, and it is also what renders the recovery notice.
+                if (snapshot.PagingRecovered)
+                {
+                    _memberCursor = null;
+                    _memberCursorHistory.Clear();
+                    _memberPagingHistoryTruncated = false;
+                    _memberPagingJumpedToFirstPage = false;
+                    return;
+                }
+
+                _memberCursor = requestedCursor;
+                if (moveForward)
+                {
+                    _memberCursorHistory.Push(priorCursor);
+
+                    // Bound the history so a long paging session cannot grow it without limit. Trim's return
+                    // value is the signal that the first-page sentinel was re-appended; discarding it left the
+                    // member pager unable to announce the jump its two siblings announce.
+                    _memberPagingHistoryTruncated |= CursorHistory.Trim(_memberCursorHistory, MaximumMemberCursorHistory);
+                    _memberPagingJumpedToFirstPage = false;
+                }
+                else if (_memberCursorHistory.Count > 0)
+                {
+                    _ = _memberCursorHistory.Pop();
+
+                    // A trimmed history re-appends the first-page sentinel under the newest entries, so one
+                    // Previous click walks the operator from the middle of the sequence straight to page one.
+                    _memberPagingJumpedToFirstPage = _memberPagingHistoryTruncated
+                        && _memberCursor is null
+                        && _memberCursorHistory.Count == 0;
+                    if (_memberPagingJumpedToFirstPage)
+                    {
+                        _memberPagingHistoryTruncated = false;
+                    }
+                }
+            }).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // A newer load owns the surface.
+        }
+        finally
+        {
+            if (generation == _loadGeneration)
+            {
+                _memberPageLoadInFlight = false;
+            }
+        }
+    }
+
+    private CancellationTokenSource ReplaceActiveCancellation()
+    {
+        var source = new CancellationTokenSource();
+        lock (_cancellationLock)
+        {
+            RetireCancellationCore(_loadCancellation);
+            _loadCancellation = source;
+        }
+
+        return source;
+    }
+
+    private void CancelActiveCancellation()
+    {
+        lock (_cancellationLock)
+        {
+            RetireCancellationCore(_loadCancellation);
+            _loadCancellation = null;
+        }
+    }
+
+    private void RetireCancellationCore(CancellationTokenSource? source)
+    {
+        if (source is null)
+        {
+            return;
+        }
+
+        source.Cancel();
+    }
+
+    private void CompleteCancellation(CancellationTokenSource source)
+    {
+        lock (_cancellationLock)
+        {
+            if (ReferenceEquals(_loadCancellation, source))
+            {
+                _loadCancellation = null;
+            }
+        }
+
+        source.Dispose();
+    }
+
+    private CancellationTokenSource ReplaceGlobalAdministratorsCancellation()
+    {
+        var source = new CancellationTokenSource();
+        lock (_cancellationLock)
+        {
+            RetireCancellationCore(_globalAdministratorsCancellation);
+            _globalAdministratorsCancellation = source;
+        }
+
+        return source;
+    }
+
+    private void CompleteGlobalAdministratorsCancellation(CancellationTokenSource source)
+    {
+        lock (_cancellationLock)
+        {
+            if (ReferenceEquals(_globalAdministratorsCancellation, source))
+            {
+                _globalAdministratorsCancellation = null;
+            }
+        }
+
+        source.Dispose();
+    }
+
+    private CancellationTokenSource ReplaceAuditCapabilityCancellation()
+    {
+        var source = new CancellationTokenSource();
+        lock (_cancellationLock)
+        {
+            RetireCancellationCore(_auditCapabilityCancellation);
+            _auditCapabilityCancellation = source;
+        }
+
+        return source;
+    }
+
+    private void CancelAuditCapability()
+    {
+        lock (_cancellationLock)
+        {
+            RetireCancellationCore(_auditCapabilityCancellation);
+            _auditCapabilityCancellation = null;
+        }
+    }
+
+    private void CompleteAuditCapabilityCancellation(CancellationTokenSource source)
+    {
+        lock (_cancellationLock)
+        {
+            if (ReferenceEquals(_auditCapabilityCancellation, source))
+            {
+                _auditCapabilityCancellation = null;
+            }
+        }
+
+        source.Dispose();
+    }
+
+    private void CancelSupplementaryReads()
+    {
+        lock (_cancellationLock)
+        {
+            RetireCancellationCore(_globalAdministratorsCancellation);
+            _globalAdministratorsCancellation = null;
+            RetireCancellationCore(_auditCapabilityCancellation);
+            _auditCapabilityCancellation = null;
+        }
+    }
+
+    private CancellationTokenSource ReplaceLifecycleAuthorizationCancellation()
+    {
+        var source = new CancellationTokenSource();
+        lock (_cancellationLock)
+        {
+            RetireCancellationCore(_lifecycleAuthorizationCancellation);
+            _lifecycleAuthorizationCancellation = source;
+        }
+
+        return source;
+    }
+
+    private void CancelLifecycleAuthorizationCancellation()
+    {
+        lock (_cancellationLock)
+        {
+            RetireCancellationCore(_lifecycleAuthorizationCancellation);
+            _lifecycleAuthorizationCancellation = null;
+        }
+    }
+
+    private void CompleteLifecycleAuthorizationCancellation(CancellationTokenSource source)
+    {
+        lock (_cancellationLock)
+        {
+            if (ReferenceEquals(_lifecycleAuthorizationCancellation, source))
+            {
+                _lifecycleAuthorizationCancellation = null;
+            }
+        }
+
+        source.Dispose();
+    }
+
+    /// <summary>A page whose rows and paging state may be applied.</summary>
+    /// <remarks>
+    /// <see cref="TenantUsersSurfaceKind.Unknown"/> is a successful read whose projection freshness could
+    /// not be resolved, not a failure. Omitting it sent every such page down the degraded-retention path,
+    /// which re-presented the previous page's rows and cursor while leaving Next enabled -- so the operator
+    /// could never leave page one and was told the evidence was degraded on a read that succeeded. Every
+    /// sibling predicate (IsRetainableTenantUsers, IsUsableGlobalAdministratorsPage, CanOpenMemberAudit,
+    /// IsAppliedRequestedPage) admits it.
+    /// </remarks>
+    private static bool IsUsableMemberPage(TenantUsersSnapshot snapshot, string? requestedCursor)
+        => (snapshot.Kind is TenantUsersSurfaceKind.Ready
+            or TenantUsersSurfaceKind.Empty
+            or TenantUsersSurfaceKind.Stale
+            or TenantUsersSurfaceKind.Unknown)
+            || (snapshot.Kind is TenantUsersSurfaceKind.Degraded
+                && string.Equals(snapshot.RequestCursor, requestedCursor, StringComparison.Ordinal));
+
+    /// <summary>A terminal response that must replace retained rows to avoid disclosure.</summary>
+    private static bool IsTerminalMemberPage(TenantUsersSnapshot snapshot)
+        => snapshot.Kind is TenantUsersSurfaceKind.Unauthorized
+            or TenantUsersSurfaceKind.NotFound
+            or TenantUsersSurfaceKind.Invalid;
+
+    private void StartGlobalAdministratorsLoad(
+        string tenantId,
+        long generation,
+        GlobalAdministratorsSnapshot? retained)
+    {
+        CancellationTokenSource source = ReplaceGlobalAdministratorsCancellation();
+        _ = LoadGlobalAdministratorsForGenerationAsync(tenantId, generation, retained, source);
+    }
+
+    private async Task LoadGlobalAdministratorsForGenerationAsync(
+        string tenantId,
+        long generation,
+        GlobalAdministratorsSnapshot? retained,
+        CancellationTokenSource source)
+    {
+        GlobalAdministratorsSnapshot snapshot;
+        try
+        {
+            snapshot = await LoadCompleteGlobalAdministratorsAsync(source.Token).ConfigureAwait(false);
+            source.Token.ThrowIfCancellationRequested();
+        }
+        catch (OperationCanceledException) when (source.IsCancellationRequested)
+        {
+            return;
+        }
+        catch
+        {
+            snapshot = ToFailClosedGlobalAdministrators(retained)
+                ?? GlobalAdministratorsSnapshot.Unavailable();
+        }
+        finally
+        {
+            CompleteGlobalAdministratorsCancellation(source);
+        }
+
+        if (!CanApply(generation, tenantId))
+        {
+            return;
+        }
+
+        try
+        {
+            await InvokeAsync(() =>
+            {
+                if (CanApply(generation, tenantId))
+                {
+                    _globalAdministratorsSnapshot = IsCurrentCallerScope(snapshot.CallerScope)
+                        ? snapshot
+                        : GlobalAdministratorsSnapshot.Unavailable();
+                    StateHasChanged();
+                }
+            }).ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+            // Disposed between the generation check and renderer dispatch.
+        }
+    }
+
+    private async Task<GlobalAdministratorsSnapshot> LoadCompleteGlobalAdministratorsAsync(
+        CancellationToken cancellationToken)
+        => await GlobalAdministratorsProjectionLoader
+            .LoadAsync(QueryGateway, cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+    private void StartAuditCapabilityProbe(string tenantId, long generation, bool force = false)
+    {
+        Interlocked.Increment(ref _auditRefreshVersion);
+        long callerVersion = Volatile.Read(ref _auditCallerVersion);
+        if (!force && _lastAuditProbeGeneration == generation && _lastAuditProbeCallerVersion == callerVersion)
+        {
+            return;
+        }
+        _auditCapabilityResolved = false;
+        _auditProofCapabilityAvailable = false;
+        _auditReadDenied = false;
+        if (_authenticationStateProvider is null)
+        {
+            _auditCapabilityResolved = true;
+            CancelAuditCapability();
+            return;
+        }
+        if (!TenantAuditNavigationSafety.IsSafeTenantId(tenantId))
+        {
+            _auditCapabilityResolved = true;
+            CancelAuditCapability();
+            return;
+        }
+        if (!IsCurrentCallerScope(_callerScope))
+        {
+            _auditCapabilityResolved = Volatile.Read(ref _pendingAuditCallerVersion) == 0;
+            CancelAuditCapability();
+            return;
+        }
+
+        _lastAuditProbeGeneration = generation;
+        _lastAuditProbeCallerVersion = callerVersion;
+        CancellationTokenSource source = ReplaceAuditCapabilityCancellation();
+        _ = LoadAuditCapabilityForGenerationAsync(tenantId, generation, callerVersion, source);
+    }
+
+    private Task RefreshAuditCapabilityAsync()
+    {
+        _auditProofCapabilityAvailable = false;
+        _auditReadDenied = false;
+        long callerVersion = Volatile.Read(ref _auditCallerVersion);
+        EnsureCurrentAuditCaller();
+        bool callerReacquired = callerVersion != Volatile.Read(ref _auditCallerVersion);
+        StartAuditCapabilityProbe(TenantId, Volatile.Read(ref _loadGeneration), force: !callerReacquired);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private async Task LoadAuditCapabilityForGenerationAsync(
+        string tenantId,
+        long generation,
+        long callerVersion,
+        CancellationTokenSource source)
+    {
+        bool available = false;
+        bool denied = false;
+        try
+        {
+            if (BffComposition.IsReadSurfaceConnected)
+            {
+                TenantAuditRequest request = new(tenantId, PageSize: 1);
+                TenantAuditSnapshot audit = await QueryGateway
+                    .GetTenantAuditAsync(request, previous: null, source.Token)
+                    .ConfigureAwait(false);
+                source.Token.ThrowIfCancellationRequested();
+                available = IsAuthoritativeAuditCapability(audit, request);
+                denied = audit.Kind is TenantAuditSurfaceKind.Unauthorized;
+            }
+        }
+        catch (OperationCanceledException) when (source.IsCancellationRequested)
+        {
+            return;
+        }
+        catch
+        {
+            available = false;
+        }
+        finally
+        {
+            CompleteAuditCapabilityCancellation(source);
+        }
+
+        if (!CanApply(generation, tenantId)
+            || callerVersion != Volatile.Read(ref _auditCallerVersion)
+            || Volatile.Read(ref _pendingAuditCallerVersion) != 0
+            || Volatile.Read(ref _resolvedAuditCallerVersion) != Volatile.Read(ref _auditCallerVersion))
+        {
+            return;
+        }
+
+        try
+        {
+            await InvokeAsync(() =>
+            {
+                if (CanApply(generation, tenantId)
+                    && callerVersion == Volatile.Read(ref _auditCallerVersion)
+                    && Volatile.Read(ref _pendingAuditCallerVersion) == 0
+                    && Volatile.Read(ref _resolvedAuditCallerVersion) == Volatile.Read(ref _auditCallerVersion))
+                {
+                    _auditProofCapabilityAvailable = available;
+                    _auditReadDenied = denied;
+                    _auditCapabilityResolved = true;
+                    StateHasChanged();
+                }
+            }).ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+            // Disposed between the generation check and renderer dispatch.
+        }
+    }
+
+    private bool IsAuthoritativeAuditCapability(
+        TenantAuditSnapshot audit,
+        TenantAuditRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(audit);
+        ArgumentNullException.ThrowIfNull(request);
+
+        bool authorizedEmpty = audit.Kind is not (TenantAuditSurfaceKind.Empty or TenantAuditSurfaceKind.FilteredEmpty)
+            || audit.IsAuthorizationScopedEmpty;
+        return audit.Kind is TenantAuditSurfaceKind.Ready
+                or TenantAuditSurfaceKind.Empty
+                or TenantAuditSurfaceKind.FilteredEmpty
+                or TenantAuditSurfaceKind.ListRefreshed
+            && IsCurrentCallerScope(audit.CallerScope)
+            && audit.MatchesScope(request, _callerScope!)
+            && audit.Freshness is ReadModelFreshnessState.Current
+            && audit.Lifecycle is ProjectionLifecycleState.Current
+            && !string.IsNullOrWhiteSpace(audit.ProjectionVersion)
+            && authorizedEmpty
+            && audit.Rows.All(static row =>
+                row.Freshness is ReadModelFreshnessState.Current
+                && row.Lifecycle is ProjectionLifecycleState.Current
+                && row.Provenance is QueryResponseProvenance.ProjectionBacked);
+    }
+
+    private static GlobalAdministratorsSnapshot? ToFailClosedGlobalAdministrators(
+        GlobalAdministratorsSnapshot? retained)
+        => retained is null
+            ? null
+            : retained with
+            {
+                Kind = GlobalAdministratorsSurfaceKind.Degraded,
+                NextCursor = null,
+                HasMore = false,
+                Freshness = ReadModelFreshnessState.Unknown,
+                IsAuthorizationScopedEmpty = false,
+                Reason = GlobalAdministratorsReason.GatewayFailure,
+                Lifecycle = ProjectionLifecycleState.Unknown,
+                ProjectionVersion = null,
+                IsCompleteEvidence = false,
+                RequestCursor = null,
+            };
+
+    private PendingOperation BeginLoad()
+    {
+        long generation = Interlocked.Increment(ref _loadGeneration);
+        _loadCallerScope = _callerScope;
+        CancellationTokenSource source = ReplaceActiveCancellation();
+        _memberPageLoadInFlight = false;
+        if (_tenantUsersSnapshot.IsRefreshing)
+        {
+            _tenantUsersSnapshot = _tenantUsersSnapshot with { IsRefreshing = false };
+        }
+
+        return new(generation, source, () => CompleteCancellation(source));
+    }
+
+    // Volatile.Read matches the two sibling pages: this guard is read from thread-pool continuations and is
+    // the sole defence against a superseded completion overwriting newer member rows.
+    private bool CanApply(long generation, string tenantId)
+        => !_disposed
+            && generation == Volatile.Read(ref _loadGeneration)
+            && IsCurrentCallerScope(_loadCallerScope)
+            && string.Equals(TenantId, tenantId, StringComparison.Ordinal);
+
+    private void ResetMetadataProofScope(string? tenantId)
+    {
+        lock (_metadataProofLock)
+        {
+            if (string.Equals(_metadataProofTenantId, tenantId, StringComparison.Ordinal)
+                && string.Equals(_metadataProofCallerScope, _callerScope, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _metadataProofTenantId = tenantId;
+            _metadataProofCallerScope = _callerScope;
+            _ = Interlocked.Increment(ref _metadataProofGeneration);
+            // Each proof operation owns disposal of its source. Route invalidation only cancels it, avoiding
+            // the CancellationToken.Register-after-Dispose race described for the main page-load path. Keep
+            // cancellation under the same lock as completion so a source cannot be disposed between selection
+            // and Cancel.
+            foreach (CancellationTokenSource source in _metadataProofCancellations)
+            {
+                RetireCancellationCore(source);
+            }
+
+            _metadataProofCancellations.Clear();
+        }
+    }
+
+    private PendingOperation? BeginMetadataProof(string tenantId)
+    {
+        lock (_metadataProofLock)
+        {
+            if (_disposed
+                || !IsCurrentCallerScope(_metadataProofCallerScope)
+                || !string.Equals(_metadataProofTenantId, tenantId, StringComparison.Ordinal)
+                || !string.Equals(TenantId, tenantId, StringComparison.Ordinal))
+            {
+                return null;
+            }
+
+            var source = new CancellationTokenSource();
+            _ = _metadataProofCancellations.Add(source);
+            long generation = Volatile.Read(ref _metadataProofGeneration);
+            return new PendingOperation(generation, source, () => CompleteMetadataProof(source));
+        }
+    }
+
+    private bool CanApplyMetadataProof(long generation, string tenantId)
+    {
+        lock (_metadataProofLock)
+        {
+            return CanApplyMetadataProofCore(generation, tenantId);
+        }
+    }
+
+    private bool CanApplyMetadataProofCore(long generation, string tenantId)
+        => !_disposed
+            && generation == Volatile.Read(ref _metadataProofGeneration)
+            && IsCurrentCallerScope(_metadataProofCallerScope)
+            && string.Equals(_metadataProofTenantId, tenantId, StringComparison.Ordinal)
+            && string.Equals(TenantId, tenantId, StringComparison.Ordinal);
+
+    private void CompleteMetadataProof(CancellationTokenSource source)
+    {
+        lock (_metadataProofLock)
+        {
+            _ = _metadataProofCancellations.Remove(source);
+        }
+
+        source.Dispose();
+    }
+
+    private void ResetLifecycleProofScope(string? tenantId)
+    {
+        lock (_lifecycleProofLock)
+        {
+            if (string.Equals(_lifecycleProofTenantId, tenantId, StringComparison.Ordinal)
+                && string.Equals(_lifecycleProofCallerScope, _callerScope, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _lifecycleProofTenantId = tenantId;
+            _lifecycleProofCallerScope = _callerScope;
+            _ = Interlocked.Increment(ref _lifecycleProofGeneration);
+            foreach (CancellationTokenSource source in _lifecycleProofCancellations)
+            {
+                RetireCancellationCore(source);
+            }
+
+            _lifecycleProofCancellations.Clear();
+        }
+    }
+
+    private PendingOperation? BeginLifecycleProof(string tenantId)
+    {
+        lock (_lifecycleProofLock)
+        {
+            if (_disposed
+                || !IsCurrentCallerScope(_lifecycleProofCallerScope)
+                || !string.Equals(_lifecycleProofTenantId, tenantId, StringComparison.Ordinal)
+                || !string.Equals(TenantId, tenantId, StringComparison.Ordinal))
+            {
+                return null;
+            }
+
+            var source = new CancellationTokenSource();
+            _ = _lifecycleProofCancellations.Add(source);
+            long generation = Volatile.Read(ref _lifecycleProofGeneration);
+            return new PendingOperation(generation, source, () => CompleteLifecycleProof(source));
+        }
+    }
+
+    private bool CanApplyLifecycleProof(long generation, string tenantId)
+    {
+        lock (_lifecycleProofLock)
+        {
+            return !_disposed
+                && generation == Volatile.Read(ref _lifecycleProofGeneration)
+                && IsCurrentCallerScope(_lifecycleProofCallerScope)
+                && string.Equals(_lifecycleProofTenantId, tenantId, StringComparison.Ordinal)
+                && string.Equals(TenantId, tenantId, StringComparison.Ordinal);
+        }
+    }
+
+    private void CompleteLifecycleProof(CancellationTokenSource source)
+    {
+        lock (_lifecycleProofLock)
+        {
+            _ = _lifecycleProofCancellations.Remove(source);
+        }
+
+        source.Dispose();
+    }
+
+    private Task<TenantDetailSnapshot?> GetAddMemberProjectionEvidenceAsync(AddUserToTenant request)
+        => GetMemberProjectionEvidenceAsync(request.TenantId);
+
+    private Task<TenantDetailSnapshot?> GetChangeRoleProjectionEvidenceAsync(ChangeUserRole request)
+        => GetMemberProjectionEvidenceAsync(request.TenantId);
+
+    private Task<TenantDetailSnapshot?> GetRemoveMemberProjectionEvidenceAsync(RemoveUserFromTenant request)
+        => GetMemberProjectionEvidenceAsync(request.TenantId);
+
+    private async Task<TenantDetailSnapshot?> GetMemberProjectionEvidenceAsync(string tenantId)
+    {
+        using PendingOperation? operation = BeginLifecycleProof(tenantId);
+        if (operation is null)
+        {
+            return null;
+        }
+
+        TenantDetailSnapshot proof;
+        try
+        {
+            proof = await QueryGateway.GetTenantAsync(new TenantDetailRequest(tenantId),
+                previous: null, operation.CancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (operation.CancellationToken.IsCancellationRequested)
+        {
+            return null;
+        }
+
+        return CanApplyLifecycleProof(operation.Generation, tenantId)
+            && IsCurrentCallerScope(proof.CallerScope)
+            ? proof : null;
+    }
+
+    private async Task<TenantDetailSnapshot?> GetUpdateMetadataProjectionEvidenceAsync(UpdateTenant request)
+    {
+        using PendingOperation? operation = BeginMetadataProof(request.TenantId);
+        if (operation is null)
+        {
+            return null;
+        }
+
+        TenantDetailSnapshot? proof;
+        try
+        {
+            proof = await QueryGateway
+                .GetUpdateMetadataProjectionProofAsync(request, operation.CancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (operation.CancellationToken.IsCancellationRequested)
+        {
+            return null;
+        }
+
+        if (!CanApplyMetadataProof(operation.Generation, request.TenantId))
+        {
+            return null;
+        }
+
+        if (proof is null
+            || !IsCurrentCallerScope(proof.CallerScope)
+            || proof.Kind is not TenantDetailSurfaceKind.Ready
+            || proof.Freshness is not ReadModelFreshnessState.Current
+            || proof.Lifecycle is not ProjectionLifecycleState.Current
+            || string.IsNullOrWhiteSpace(proof.ProjectionVersion)
+            || proof.Detail?.Status is TenantStatus.Disabled or TenantStatus.Unknown
+            || !string.Equals(proof.Detail?.TenantId, request.TenantId, StringComparison.Ordinal))
+        {
+            // Fail closed: payload presence alone is not authoritative. A stale, unknown, or non-current
+            // proof cannot qualify this read; the payload and version are carried together.
+            return null;
+        }
+
+        return CanApplyMetadataProof(operation.Generation, request.TenantId)
+            && IsCurrentCallerScope(proof.CallerScope) ? proof : null;
+    }
+
+    private async Task<TenantAuditRow?> GetUpdateMetadataAuditEvidenceAsync(
+        UpdateTenant request,
+        string? messageId,
+        DateTimeOffset? attemptStartedAtUtc)
+    {
+        if (string.IsNullOrWhiteSpace(messageId) || attemptStartedAtUtc is null)
+        {
+            return null;
+        }
+
+        using PendingOperation? operation = BeginMetadataProof(request.TenantId);
+        if (operation is null)
+        {
+            return null;
+        }
+
+        TenantAuditRequest auditRequest = new(
+            request.TenantId,
+            From: attemptStartedAtUtc,
+            Category: AuditEventCategory.Administrative,
+            PageSize: MetadataAuditProofPageSize);
+        string? projectionVersion = null;
+        var matches = new List<TenantAuditRow>();
+        for (int pageNumber = 0; pageNumber < MetadataAuditProofMaximumPageCount; pageNumber++)
+        {
+            TenantAuditSnapshot audit;
+            try
+            {
+                audit = await QueryGateway
+                    .GetTenantAuditAsync(auditRequest, previous: null, operation.CancellationToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (operation.CancellationToken.IsCancellationRequested)
+            {
+                return null;
+            }
+
+            if (!CanApplyMetadataProof(operation.Generation, request.TenantId))
+            {
+                return null;
+            }
+
+            // Fail closed on the first non-authoritative page: a later page cannot redeem an already-degraded
+            // read, and every page must belong to the same projection snapshot as the first. A page that still
+            // has more rows beyond it is not itself trustworthy evidence -- only a complete, consistent walk of
+            // the whole attempt window (bounded by MetadataAuditProofMaximumPageCount) may confirm.
+            projectionVersion ??= audit.ProjectionVersion;
+            bool authoritativePage = audit.Kind is TenantAuditSurfaceKind.Ready
+                && audit.MatchesScope(auditRequest, _metadataProofCallerScope!)
+                && audit.Freshness is ReadModelFreshnessState.Current
+                && audit.Lifecycle is ProjectionLifecycleState.Current
+                && !string.IsNullOrWhiteSpace(audit.ProjectionVersion)
+                && string.Equals(projectionVersion, audit.ProjectionVersion, StringComparison.Ordinal)
+                && audit.Rows.All(row =>
+                    string.Equals(row.TenantId, request.TenantId, StringComparison.Ordinal)
+                    && row.Freshness is ReadModelFreshnessState.Current
+                    && row.Lifecycle is ProjectionLifecycleState.Current
+                    && row.Provenance is QueryResponseProvenance.ProjectionBacked);
+            if (!authoritativePage)
+            {
+                return null;
+            }
+
+            matches.AddRange(audit.Rows.Where(row => TenantUpdateMetadataCommandSnapshot.IsMatchingUpdateAuditProof(
+                row,
+                request,
+                messageId,
+                attemptStartedAtUtc)));
+            if (matches.Count > 1)
+            {
+                return null;
+            }
+
+            if (!audit.HasMore)
+            {
+                return CanApplyMetadataProof(operation.Generation, request.TenantId)
+                    && IsCurrentCallerScope(audit.CallerScope)
+                    && matches.Count == 1 ? matches[0] : null;
+            }
+
+            if (string.IsNullOrWhiteSpace(audit.NextCursor))
+            {
+                return null;
+            }
+
+            auditRequest = auditRequest with { Cursor = audit.NextCursor, ETag = null };
+        }
+
+        return null;
+    }
+
+    private Task<TenantSetConfigurationPreview> GetSetConfigurationPreviewEvidenceAsync(TenantSetConfigurationIntent intent)
+        => ReadConfigurationEvidenceAsync(intent.TenantId,
+            token => QueryGateway.GetSetConfigurationPreviewAsync(intent, token),
+            () => TenantSetConfigurationPreview.Unavailable(intent));
+
+    private Task<TenantConfigurationProjectionProof> GetSetConfigurationProjectionEvidenceAsync(TenantSetConfigurationIntent intent)
+        => ReadConfigurationEvidenceAsync(intent.TenantId,
+            token => QueryGateway.GetSetConfigurationProjectionProofAsync(intent, token),
+            () => TenantConfigurationProjectionProof.Unavailable(intent.TenantId));
+
+    private Task<TenantRemoveConfigurationPreview> GetRemoveConfigurationPreviewEvidenceAsync(TenantRemoveConfigurationIntent intent)
+        => ReadConfigurationEvidenceAsync(intent.TenantId,
+            token => QueryGateway.GetRemoveConfigurationPreviewAsync(intent, token),
+            () => TenantRemoveConfigurationPreview.Unavailable(intent));
+
+    private Task<TenantConfigurationProjectionProof> GetRemoveConfigurationProjectionEvidenceAsync(TenantRemoveConfigurationIntent intent)
+        => ReadConfigurationEvidenceAsync(intent.TenantId,
+            token => QueryGateway.GetRemoveConfigurationProjectionProofAsync(intent, token),
+            () => TenantConfigurationProjectionProof.Unavailable(intent.TenantId));
+
+    private async Task<T> ReadConfigurationEvidenceAsync<T>(
+        string tenantId, Func<CancellationToken, Task<T>> read, Func<T> unavailable)
+    {
+        using PendingOperation? operation = BeginMetadataProof(tenantId);
+        if (operation is null)
+        {
+            return unavailable();
+        }
+
+        try
+        {
+            T proof = await read(operation.CancellationToken).ConfigureAwait(false);
+            return CanApplyMetadataProof(operation.Generation, tenantId) ? proof : unavailable();
+        }
+        catch (OperationCanceledException) when (operation.CancellationToken.IsCancellationRequested)
+        {
+            return unavailable();
+        }
+    }
+
+    private Task<TenantConfigurationManagementContext> ReauthorizeConfigurationManagementAsync()
+    {
+        TenantDetailSnapshot snapshot = _snapshot;
+        string tenantId = TenantId;
+        return snapshot.Detail is null || !IsCurrentCallerScope(snapshot.CallerScope)
+            ? Task.FromResult(TenantConfigurationManagementContext.Unavailable(tenantId, TenantStatus.Unknown))
+            : ReadConfigurationEvidenceAsync(tenantId,
+                token => BffComposition.ReauthorizeConfigurationManagementAsync(
+                    snapshot.Detail, snapshot.Configuration, token).AsTask(),
+                () => TenantConfigurationManagementContext.Unavailable(tenantId, TenantStatus.Unknown));
+    }
+
+    private async Task<TenantDetailSnapshot?> GetLifecycleProjectionEvidenceAsync(
+        TenantLifecycleCommandRequest request,
+        CancellationToken cancellationToken)
+    {
+        using PendingOperation? operation = BeginLifecycleProof(request.TenantId);
+        if (operation is null)
+        {
+            return null;
+        }
+
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(
+            operation.CancellationToken,
+            cancellationToken);
+        TenantDetailSnapshot proof;
+        try
+        {
+            proof = await QueryGateway
+                .GetLifecycleProjectionProofAsync(request, linked.Token)
+                .ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (linked.IsCancellationRequested)
+        {
+            return null;
+        }
+
+        return !linked.IsCancellationRequested
+            && CanApplyLifecycleProof(operation.Generation, request.TenantId)
+            && IsCurrentCallerScope(proof.CallerScope)
+            ? proof
+            : null;
+    }
+
+    private void StartMutationAuthorizationResolution()
+    {
+        TenantDetailSnapshot snapshot = _snapshot;
+        if (snapshot.Detail is null || !IsCurrentCallerScope(snapshot.CallerScope)
+            || ReferenceEquals(_mutationAuthorizationRequest, snapshot))
+        {
+            return;
+        }
+        _mutationAuthorizationRequest = snapshot;
+        _mutationAuthorizationResolved = null;
+        _mutationAuthorization = TenantMutationAuthorizationReflection.Indeterminate;
+        long generation = Interlocked.Increment(ref _mutationAuthorizationGeneration);
+        var source = new CancellationTokenSource();
+        lock (_cancellationLock)
+        {
+            RetireCancellationCore(_mutationAuthorizationCancellation);
+            _mutationAuthorizationCancellation = source;
+        }
+        _ = ObserveLifecycleAuthorizationCallbackAsync(ResolveMutationAuthorizationAsync(snapshot, generation, source));
+    }
+
+    private async Task ResolveMutationAuthorizationAsync(
+        TenantDetailSnapshot snapshot, long generation, CancellationTokenSource source)
+    {
+        TenantMutationAuthorizationReflection reflection = TenantMutationAuthorizationReflection.Indeterminate;
+        try
+        {
+            reflection = await ReauthorizeMutationAsync(source.Token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (source.IsCancellationRequested)
+        {
+            return;
+        }
+        finally
+        {
+            lock (_cancellationLock)
+            {
+                if (ReferenceEquals(_mutationAuthorizationCancellation, source))
+                {
+                    _mutationAuthorizationCancellation = null;
+                }
+            }
+            source.Dispose();
+        }
+        await InvokeAsync(() =>
+        {
+            if (!_disposed && generation == Volatile.Read(ref _mutationAuthorizationGeneration)
+                && ReferenceEquals(snapshot, _snapshot) && IsCurrentCallerScope(snapshot.CallerScope))
+            {
+                _mutationAuthorization = reflection;
+                _mutationAuthorizationResolved = snapshot;
+                StateHasChanged();
+            }
+        }).ConfigureAwait(false);
+    }
+
+    private async Task<TenantMutationAuthorizationReflection> ReauthorizeMutationAsync(
+        CancellationToken cancellationToken, bool refreshDetail = false)
+    {
+        TenantDetailSnapshot snapshot = _snapshot;
+        string tenantId = TenantId;
+        long callerVersion = Volatile.Read(ref _auditCallerVersion);
+        if (_disposed || snapshot.Detail is null || !IsCurrentCallerScope(snapshot.CallerScope)
+            || !string.Equals(tenantId, snapshot.Detail.TenantId, StringComparison.Ordinal))
+        {
+            return TenantMutationAuthorizationReflection.Indeterminate;
+        }
+        try
+        {
+            TenantDetail authorityDetail = snapshot.Detail;
+            if (refreshDetail)
+            {
+                TenantDetailSnapshot current = await QueryGateway.GetTenantAsync(
+                    new TenantDetailRequest(tenantId), null, cancellationToken).ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+                if (current.Kind is not TenantDetailSurfaceKind.Ready
+                    || current.Freshness is not ReadModelFreshnessState.Current
+                    || current.Lifecycle is not ProjectionLifecycleState.Current
+                    || current.Detail is null || !IsCurrentCallerScope(current.CallerScope)
+                    || !string.Equals(current.Detail.TenantId, tenantId, StringComparison.Ordinal))
+                {
+                    TenantMutationAuthorizationReflection unavailable = current.Kind is TenantDetailSurfaceKind.Unauthorized
+                        ? new(TenantLifecycleAuthorizationReflectionState.MissingPermission,
+                            TenantLifecycleAuthorizationReflectionState.MissingPermission)
+                        : TenantMutationAuthorizationReflection.Indeterminate;
+                    if (current.Kind is TenantDetailSurfaceKind.Unauthorized)
+                    {
+                        await InvalidateChangedMutationEvidenceAsync(snapshot, current, tenantId, callerVersion, cancellationToken).ConfigureAwait(false);
+                        return unavailable;
+                    }
+                    return await ApplySubmissionMutationReflectionAsync(snapshot, tenantId, callerVersion, unavailable, cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                if (!HasSameMutationAdmissionEvidence(snapshot, current))
+                {
+                    await InvalidateChangedMutationEvidenceAsync(snapshot, current, tenantId, callerVersion, cancellationToken).ConfigureAwait(false);
+                    return TenantMutationAuthorizationReflection.Indeterminate;
+                }
+                authorityDetail = current.Detail;
+            }
+            TenantMutationAuthorizationReflection reflection = await BffComposition.ResolveTenantMutationAuthorizationAsync(
+                tenantId, authorityDetail, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            if (refreshDetail)
+            {
+                return await ApplySubmissionMutationReflectionAsync(snapshot, tenantId, callerVersion, reflection, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            return IsCurrentMutationScope(snapshot, tenantId, callerVersion)
+                ? reflection : TenantMutationAuthorizationReflection.Indeterminate;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return refreshDetail
+                ? await ApplySubmissionMutationReflectionAsync(snapshot, tenantId, callerVersion,
+                    TenantMutationAuthorizationReflection.Indeterminate, cancellationToken).ConfigureAwait(false)
+                : TenantMutationAuthorizationReflection.Indeterminate;
+        }
+    }
+
+    private static bool HasSameMutationAdmissionEvidence(TenantDetailSnapshot rendered, TenantDetailSnapshot current)
+        => rendered.Detail is { } previous && current.Detail is { } next
+            && string.Equals(rendered.ProjectionVersion, current.ProjectionVersion, StringComparison.Ordinal)
+            && previous.Status == next.Status
+            && string.Equals(previous.Name, next.Name, StringComparison.Ordinal)
+            && string.Equals(previous.Description, next.Description, StringComparison.Ordinal)
+            && previous.Members.SequenceEqual(next.Members)
+            && previous.Configuration.Count == next.Configuration.Count
+            && previous.Configuration.All(pair => next.Configuration.TryGetValue(pair.Key, out string? value)
+                && string.Equals(pair.Value, value, StringComparison.Ordinal));
+
+    private async Task InvalidateChangedMutationEvidenceAsync(
+        TenantDetailSnapshot rendered, TenantDetailSnapshot current, string tenantId, long callerVersion,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        await InvokeAsync(() =>
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!IsCurrentMutationScope(rendered, tenantId, callerVersion))
+            {
+                return;
+            }
+            // A submission read is newer evidence. Older page reads and previews cannot overwrite it.
+            Interlocked.Increment(ref _loadGeneration);
+            CancelActiveCancellation();
+            CancelSupplementaryReads();
+            Interlocked.Increment(ref _mutationAuthorizationGeneration);
+            lock (_cancellationLock)
+            {
+                RetireCancellationCore(_mutationAuthorizationCancellation);
+                _mutationAuthorizationCancellation = null;
+            }
+            _snapshot = ForCurrentCaller(current);
+            _tenantUsersSnapshot = current.Kind is TenantDetailSurfaceKind.Unauthorized
+                ? TenantUsersSnapshot.Unauthorized(tenantId)
+                : TenantUsersSnapshot.Degraded(tenantId, _tenantUsersSnapshot, TenantUsersReason.ProjectionStale);
+            _memberPageLoadInFlight = false;
+            _mutationAuthorization = current.Kind is TenantDetailSurfaceKind.Unauthorized
+                ? new(TenantLifecycleAuthorizationReflectionState.MissingPermission,
+                    TenantLifecycleAuthorizationReflectionState.MissingPermission)
+                : TenantMutationAuthorizationReflection.Indeterminate;
+            _mutationAuthorizationResolved = _snapshot;
+            StateHasChanged();
+        }).ConfigureAwait(false);
+    }
+
+    private bool IsCurrentMutationScope(TenantDetailSnapshot snapshot, string tenantId, long callerVersion)
+        => !_disposed && callerVersion == Volatile.Read(ref _auditCallerVersion)
+            && ReferenceEquals(snapshot, _snapshot) && string.Equals(TenantId, tenantId, StringComparison.Ordinal)
+            && IsCurrentCallerScope(snapshot.CallerScope);
+
+    private async Task<TenantMutationAuthorizationReflection> ApplySubmissionMutationReflectionAsync(
+        TenantDetailSnapshot snapshot, string tenantId, long callerVersion, TenantMutationAuthorizationReflection reflection,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (!IsCurrentMutationScope(snapshot, tenantId, callerVersion))
+        {
+            return TenantMutationAuthorizationReflection.Indeterminate;
+        }
+        try
+        {
+            await InvokeAsync(() =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (IsCurrentMutationScope(snapshot, tenantId, callerVersion))
+                {
+                    if (_mutationAuthorization != reflection || _mutationAuthorizationResolved is null
+                        || _mutationAuthorizationCancellation is not null)
+                    {
+                        // A fresh admission result supersedes an older render probe on this same snapshot.
+                        Interlocked.Increment(ref _mutationAuthorizationGeneration);
+                        lock (_cancellationLock)
+                        {
+                            RetireCancellationCore(_mutationAuthorizationCancellation);
+                            _mutationAuthorizationCancellation = null;
+                        }
+                    }
+                    _mutationAuthorization = reflection;
+                    _mutationAuthorizationResolved = snapshot;
+                    StateHasChanged();
+                }
+            }).ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+            return TenantMutationAuthorizationReflection.Indeterminate;
+        }
+        return IsCurrentMutationScope(snapshot, tenantId, callerVersion)
+            ? reflection : TenantMutationAuthorizationReflection.Indeterminate;
+    }
+
+    private async Task<TenantLifecycleAuthorizationReflectionState> ReauthorizeMetadataAsync(CancellationToken cancellationToken)
+        => (await ReauthorizeMutationAsync(cancellationToken, refreshDetail: true).ConfigureAwait(false)).Metadata;
+
+    private async Task<TenantLifecycleAuthorizationReflectionState> ReauthorizeMembershipAsync(CancellationToken cancellationToken)
+        => (await ReauthorizeMutationAsync(cancellationToken, refreshDetail: true).ConfigureAwait(false)).Membership;
+
+    private async Task<TenantLifecycleAuthorizationReflectionState> ReauthorizeLifecycleAsync(
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            string? scope = _callerScope;
+            long callerVersion = Volatile.Read(ref _auditCallerVersion);
+            if (!IsCurrentCallerScope(scope))
+            {
+                return TenantLifecycleAuthorizationReflectionState.Indeterminate;
+            }
+
+            TenantLifecycleAuthorizationReflectionState reflection = await BffComposition.ResolveLifecycleAuthorizationAsync(cancellationToken)
+                .ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            return callerVersion == Volatile.Read(ref _auditCallerVersion) && IsCurrentCallerScope(scope)
+                ? reflection : TenantLifecycleAuthorizationReflectionState.Indeterminate;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return TenantLifecycleAuthorizationReflectionState.Indeterminate;
+        }
+    }
+
+    private IDisposable BeginHighImpactRefresh()
+    {
+        int generation = Interlocked.Increment(ref _highImpactRefreshGeneration);
+        _refreshingBaselineWasCurrent = _snapshot.Kind is TenantDetailSurfaceKind.Ready
+            && _snapshot.Freshness is ReadModelFreshnessState.Current
+            && _snapshot.Lifecycle is ProjectionLifecycleState.Current;
+        _detailRefreshInFlight = true;
+        return new HighImpactRefreshObservation(this, generation);
+    }
+
+    private void EndHighImpactRefresh(int generation)
+    {
+        if (generation != Volatile.Read(ref _highImpactRefreshGeneration))
+        {
+            return;
+        }
+
+        _detailRefreshInFlight = false;
+        _refreshingBaselineWasCurrent = false;
+        _ = RenderIfAliveAsync();
+    }
+
+    /// <summary>
+    /// Releases an admission key whose tracker-owned lifecycle attempt has expired on the clock.
+    /// </summary>
+    /// <param name="aggregateLockKey">Aggregate lock key for <paramref name="tenantId"/>, or null when there is no route tenant.</param>
+    /// <param name="tenantId">Literal tenant id whose retained attempt is being checked.</param>
+    /// <returns><see langword="true"/> when a stale lease was reclaimed.</returns>
+    /// <remarks>
+    /// A retained attempt can expire on the clock with no state transition to release its lease: the tracker
+    /// prunes its own maps but holds no reference to the admission gate, so nothing reclaims the key and every
+    /// sibling command surface on this tenant stays disabled for the rest of the circuit. Invoked only on
+    /// tenant or route change. Tracker-owned only, and only once the tracker reports no pending ownership.
+    /// Same-route expiry is owned by TenantLifecycleActionAvailability.
+    /// </remarks>
+    /// <remarks>
+    /// Route-change scoped on purpose. It cannot be hoisted to OnAfterRenderAsync: between a submit acquiring
+    /// the lease and BeginDispatch registering the attempt, the tracker reports no pending ownership, so a
+    /// render in that window would release the lease out from under an in-flight command. Same-route expiry is
+    /// handled by TenantLifecycleActionAvailability, which can tell the two states apart because it observes
+    /// the retained attempt going from present to absent.
+    /// </remarks>
+    private bool TryReclaimExpiredLifecycleLease(string? aggregateLockKey, string tenantId)
+    {
+        if (aggregateLockKey is null
+            || AggregateAdmissionGate is not { } gate
+            || LifecycleAttemptTracker is not { } tracker
+            || !ReferenceEquals(_aggregateLeaseHolder, _lifecycleLeaseOwner)
+            || !string.Equals(_activeAggregateLockKey, aggregateLockKey, StringComparison.Ordinal)
+            || tracker.HasPendingOwnership(tenantId)
+            || !gate.IsOwnedBy(aggregateLockKey, tracker.LeaseOwner))
+        {
+            return false;
+        }
+
+        gate.Release(aggregateLockKey, tracker.LeaseOwner);
+        _activeAggregateLockKey = null;
+        _activeAggregateTenantId = null;
+        _aggregateLeaseHolder = null;
+        _commandInFlight = false;
+        return true;
+    }
+
+    private bool TryReclaimExpiredSetConfigurationLease(string? aggregateLockKey, string tenantId)
+    {
+        if (aggregateLockKey is null
+            || AggregateAdmissionGate is not { } gate
+            || SetConfigurationAttemptTracker is not { } tracker
+            || !ReferenceEquals(_aggregateLeaseHolder, _setConfigurationLeaseOwner)
+            || !string.Equals(_activeAggregateLockKey, aggregateLockKey, StringComparison.Ordinal)
+            || tracker.HasPendingOwnership(tenantId)
+            || !gate.IsOwnedBy(aggregateLockKey, tracker.LeaseOwner))
+        {
+            return false;
+        }
+
+        gate.Release(aggregateLockKey, tracker.LeaseOwner);
+        _activeAggregateLockKey = null;
+        _activeAggregateTenantId = null;
+        _aggregateLeaseHolder = null;
+        _commandInFlight = false;
+        return true;
+    }
+
+    private bool TryReclaimExpiredRemoveConfigurationLease(string? aggregateLockKey, string tenantId)
+    {
+        if (aggregateLockKey is null
+            || AggregateAdmissionGate is not { } gate
+            || RemoveConfigurationAttemptTracker is not { } tracker
+            || !ReferenceEquals(_aggregateLeaseHolder, _removeConfigurationLeaseOwner)
+            || !string.Equals(_activeAggregateLockKey, aggregateLockKey, StringComparison.Ordinal)
+            || tracker.HasPendingOwnership(tenantId)
+            || !gate.IsOwnedBy(aggregateLockKey, tracker.LeaseOwner))
+        {
+            return false;
+        }
+
+        gate.Release(aggregateLockKey, tracker.LeaseOwner);
+        _activeAggregateLockKey = null;
+        _activeAggregateTenantId = null;
+        _aggregateLeaseHolder = null;
+        _commandInFlight = false;
+        return true;
+    }
+
+    private async Task<bool> SetCommandActivityLeaseAsync(string leaseTenantId, bool isActive, object surfaceOwner)
+    {
+        ArgumentNullException.ThrowIfNull(surfaceOwner);
+        bool lifecycleSurface = ReferenceEquals(surfaceOwner, _lifecycleLeaseOwner);
+        bool setConfigurationSurface = ReferenceEquals(surfaceOwner, _setConfigurationLeaseOwner);
+        bool removeConfigurationSurface = ReferenceEquals(surfaceOwner, _removeConfigurationLeaseOwner);
+        object admissionOwner = lifecycleSurface && LifecycleAttemptTracker is not null
+            ? LifecycleAttemptTracker.LeaseOwner
+            : setConfigurationSurface && SetConfigurationAttemptTracker is not null
+                ? SetConfigurationAttemptTracker.LeaseOwner
+            : removeConfigurationSurface && RemoveConfigurationAttemptTracker is not null
+                ? RemoveConfigurationAttemptTracker.LeaseOwner
+            : _commandLockOwner;
+        if (isActive)
+        {
+            if (_disposed)
+            {
+                return false;
+            }
+
+            TenantAggregateCommandAdmissionGate? gate = AggregateAdmissionGate;
+            if (string.IsNullOrWhiteSpace(leaseTenantId)
+                || !string.Equals(leaseTenantId, TenantId, StringComparison.Ordinal)
+                || gate is null)
+            {
+                return false;
+            }
+
+            string aggregateLockKey = TenantCommandAggregateLock.ForTenant(leaseTenantId);
+            if (string.Equals(_activeAggregateLockKey, aggregateLockKey, StringComparison.Ordinal))
+            {
+                // Re-entry is idempotent only for the surface that already holds the lease. A different
+                // surface must be refused: granting it here made the lease multi-owner, and whichever
+                // surface reported completion first released the aggregate while the other command was
+                // still in flight, breaking one-at-a-time exclusivity (AD-12).
+                if (!ReferenceEquals(_aggregateLeaseHolder, surfaceOwner))
+                {
+                    return false;
+                }
+
+                _commandInFlight = true;
+                await RenderIfAliveAsync().ConfigureAwait(false);
+                return true;
+            }
+
+            TenantCommandAttemptTracker? retainedTracker = Services.GetService<TenantCommandAttemptTracker>();
+            bool retainedSurfaceOwnsAdmission = retainedTracker?.HasPendingOwnership(leaseTenantId) is true
+                && (ReferenceEquals(surfaceOwner, _metadataLeaseOwner)
+                    ? retainedTracker.Find<TenantUpdateMetadataCommandSnapshot>(leaseTenantId) is not null
+                    : ReferenceEquals(surfaceOwner, _membershipLeaseOwner)
+                        && (retainedTracker.Find<TenantAddMemberCommandSnapshot>(leaseTenantId) is not null
+                            || retainedTracker.Find<TenantChangeRoleCommandSnapshot>(leaseTenantId) is not null
+                            || retainedTracker.Find<TenantRemoveMemberCommandSnapshot>(leaseTenantId) is not null));
+            if (!retainedSurfaceOwnsAdmission && !gate.TryAcquire(aggregateLockKey, admissionOwner)
+                && !gate.IsOwnedBy(aggregateLockKey, admissionOwner))
+            {
+                _commandInFlight = false;
+                return false;
+            }
+
+            _activeAggregateLockKey = aggregateLockKey;
+            _activeAggregateTenantId = leaseTenantId;
+            _aggregateLeaseHolder = surfaceOwner;
+            _commandInFlight = true;
+        }
+        else
+        {
+            string? aggregateLockKey = string.IsNullOrWhiteSpace(leaseTenantId)
+                ? null
+                : TenantCommandAggregateLock.ForTenant(leaseTenantId);
+            if (aggregateLockKey is not null
+                && string.Equals(_activeAggregateLockKey, aggregateLockKey, StringComparison.Ordinal)
+                && ReferenceEquals(_aggregateLeaseHolder, surfaceOwner)
+                && (!lifecycleSurface
+                    || LifecycleAttemptTracker?.HasPendingOwnership(leaseTenantId) is not true)
+                && (!setConfigurationSurface
+                    || SetConfigurationAttemptTracker?.HasPendingOwnership(leaseTenantId) is not true)
+                && (!removeConfigurationSurface
+                    || RemoveConfigurationAttemptTracker?.HasPendingOwnership(leaseTenantId) is not true))
+            {
+                AggregateAdmissionGate?.Release(aggregateLockKey, admissionOwner);
+                _commandInFlight = false;
+                _activeAggregateLockKey = null;
+                _activeAggregateTenantId = null;
+                _aggregateLeaseHolder = null;
+            }
+            else if (aggregateLockKey is not null
+                && (lifecycleSurface || setConfigurationSurface || removeConfigurationSurface)
+                && (lifecycleSurface
+                    ? LifecycleAttemptTracker is not null
+                        && !LifecycleAttemptTracker.HasPendingOwnership(leaseTenantId)
+                    : setConfigurationSurface
+                        ? SetConfigurationAttemptTracker is not null
+                            && !SetConfigurationAttemptTracker.HasPendingOwnership(leaseTenantId)
+                        : RemoveConfigurationAttemptTracker is not null
+                            && !RemoveConfigurationAttemptTracker.HasPendingOwnership(leaseTenantId)))
+            {
+                // Route change and page disposal deliberately clear page-local bookkeeping while a retained
+                // lifecycle attempt keeps the tracker-owned gate lease. A late terminal callback must still
+                // release that old key, but only after proving the tracker does not contain a newer retained
+                // attempt for the same literal tenant id.
+                AggregateAdmissionGate?.Release(aggregateLockKey, admissionOwner);
+            }
+        }
+
+        // Command surfaces acquire the lease through a Func delegate rather than an EventCallback owned by
+        // this component. Blazor therefore does not schedule a TenantDetailPage render when that child event
+        // completes. Render explicitly so the owner-aware lock reason and disabled sibling surfaces become
+        // visible immediately after acquisition (and disappear immediately after release).
+        await RenderIfAliveAsync().ConfigureAwait(false);
+        return true;
+    }
+
+    private string ConfigurationSummary(TenantConfigurationSafeModel configuration)
+        => !configuration.IsAvailable
+            ? Localizer["Tenants.Detail.Configuration.Unavailable"]
+            : configuration.Rows.Count == 0
+            ? Localizer["Tenants.Detail.Configuration.Empty"]
+            : Localizer[
+                "Tenants.Detail.Configuration.Summary",
+                configuration.Rows.Count,
+                configuration.Rows.Select(static row => row.Namespace).Distinct(StringComparer.Ordinal).Count()];
+
+    private static int OwnerCount(TenantDetail detail)
+        => detail.Members.Count(static member => member.Role == TenantRole.TenantOwner);
+
+    private string StatusLabel(TenantStatus status)
+        => Localizer[$"Tenants.Detail.Status.{status}"];
+
+    private static BadgeColor StatusBadgeColor(TenantStatus status)
+        => status switch
+        {
+            TenantStatus.Active => BadgeColor.Success,
+            TenantStatus.Disabled => BadgeColor.Danger,
+            _ => BadgeColor.Subtle,
+        };
+
+    private static Icon StatusIcon(TenantStatus status)
+        => status switch
+        {
+            TenantStatus.Active => FcFluentIcons.Checkmark16(),
+            TenantStatus.Disabled => FcFluentIcons.SubtractCircle16(),
+            _ => FcFluentIcons.QuestionCircle16(),
+        };
+
+    public async ValueTask DisposeAsync()
+    {
+        _disposed = true;
+        CancelReadRefreshSetup();
+        if (AggregateAdmissionGate is { } admissionGate)
+        {
+            admissionGate.StateChanged -= OnAggregateAdmissionChanged;
+        }
+        _ = Interlocked.Increment(ref _loadGeneration);
+        _ = Interlocked.Increment(ref _lifecycleAuthorizationGeneration);
+        ResetMetadataProofScope(tenantId: null);
+        ResetLifecycleProofScope(tenantId: null);
+        if (_authenticationStateProvider is not null)
+        {
+            _authenticationStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+            _authenticationStateProvider = null;
+        }
+
+        if (_highImpactViewportObservation is not null)
+        {
+            _highImpactViewportObservation.StateChanged -= OnHighImpactViewportStateChanged;
+            _highImpactViewportObservation = null;
+        }
+
+        if (_removeConfigurationAttemptTracker is not null)
+        {
+            // Attached lazily by the RemoveConfigurationAttemptTracker property. The tracker is
+            // circuit-scoped while pages are per-navigation, so leaving the handler attached pinned one
+            // disposed page per visit until some unrelated attempt happened to expire.
+            // The field is deliberately kept: the aggregate-lease release below still reads the tracker
+            // through the property, which would re-subscribe the handler it just detached.
+            _removeConfigurationAttemptTracker.OwnershipExpired -= OnRemoveConfigurationOwnershipExpired;
+        }
+
+        CancelLifecycleAuthorizationCancellation();
+        lock (_cancellationLock)
+        {
+            RetireCancellationCore(_mutationAuthorizationCancellation);
+            _mutationAuthorizationCancellation = null;
+        }
+        Interlocked.Increment(ref _mutationAuthorizationGeneration);
+        CancelActiveCancellation();
+        CancelSupplementaryReads();
+
+        if (_activeAggregateLockKey is not null)
+        {
+            bool lifecycleSurface = ReferenceEquals(_aggregateLeaseHolder, _lifecycleLeaseOwner);
+            bool setConfigurationSurface = ReferenceEquals(_aggregateLeaseHolder, _setConfigurationLeaseOwner);
+            bool removeConfigurationSurface = ReferenceEquals(_aggregateLeaseHolder, _removeConfigurationLeaseOwner);
+            bool retainLifecycleLease = lifecycleSurface
+                && _activeAggregateTenantId is not null
+                && LifecycleAttemptTracker?.HasPendingOwnership(_activeAggregateTenantId) is true;
+            bool retainSetConfigurationLease = setConfigurationSurface
+                && _activeAggregateTenantId is not null
+                && SetConfigurationAttemptTracker?.HasPendingOwnership(_activeAggregateTenantId) is true;
+            bool retainRemoveConfigurationLease = removeConfigurationSurface
+                && _activeAggregateTenantId is not null
+                && RemoveConfigurationAttemptTracker?.HasPendingOwnership(_activeAggregateTenantId) is true;
+            if (!retainLifecycleLease && !retainSetConfigurationLease && !retainRemoveConfigurationLease)
+            {
+                object admissionOwner = lifecycleSurface && LifecycleAttemptTracker is not null
+                    ? LifecycleAttemptTracker.LeaseOwner
+                    : setConfigurationSurface && SetConfigurationAttemptTracker is not null
+                        ? SetConfigurationAttemptTracker.LeaseOwner
+                    : removeConfigurationSurface && RemoveConfigurationAttemptTracker is not null
+                        ? RemoveConfigurationAttemptTracker.LeaseOwner
+                    : _commandLockOwner;
+                AggregateAdmissionGate?.Release(_activeAggregateLockKey, admissionOwner);
+            }
+
+            _activeAggregateLockKey = null;
+            _activeAggregateTenantId = null;
+            _aggregateLeaseHolder = null;
+            _commandInFlight = false;
+        }
+
+        if (_readRefreshLease is not null)
+        {
+            // Teardown must not surface a transport fault either; the sibling page disposes safely here too.
+            IAsyncDisposable lease = _readRefreshLease;
+            _readRefreshLease = null;
+            await DisposeLeaseSupportSafelyAsync(lease).ConfigureAwait(false);
+        }
+
+    }
+
+    private sealed class PendingOperation : IDisposable
+    {
+        private Action? _complete;
+
+        public PendingOperation(
+            long generation,
+            CancellationTokenSource cancellation,
+            Action complete)
+        {
+            Generation = generation;
+            CancellationToken = cancellation.Token;
+            _complete = complete;
+        }
+
+        public long Generation { get; }
+
+        public CancellationToken CancellationToken { get; }
+
+        public void Dispose()
+            => Interlocked.Exchange(ref _complete, null)?.Invoke();
+    }
+
+    private sealed class HighImpactRefreshObservation(
+        TenantDetailPage owner,
+        int generation) : IDisposable
+    {
+        private TenantDetailPage? _owner = owner;
+
+        public void Dispose()
+            => Interlocked.Exchange(ref _owner, null)?.EndHighImpactRefresh(generation);
+    }
+}

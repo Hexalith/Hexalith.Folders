@@ -1,0 +1,294 @@
+using System.Text.RegularExpressions;
+
+using Shouldly;
+
+namespace Hexalith.FrontComposer.SourceTools.Tests.Docs;
+
+/// <summary>
+/// Story 1.5 (FC-DOC) ready-gate pin tests. The PowerShell validator (Gate 2d) is the runtime gate;
+/// the generic <see cref="DocsSiteValidationTests"/> pins front-matter, uid/slug uniqueness, and the
+/// four top-level Diataxis entries across <c>reference/**</c>. Neither pins the <b>FC-DOC-specific</b>
+/// contract — the required section set, the <c>csharp</c>-fence marker rule, the published
+/// <c>HFC1050</c>–<c>HFC1055</c> accessibility cross-links, and the component status-map coverage.
+/// These tests keep that contract visible in the normal .NET suite so a malformed component page is
+/// caught without shelling out to <c>eng/validate-docs.ps1</c>.
+/// </summary>
+/// <remarks>
+/// Source contract: <c>_bmad-output/contracts/fc-doc-component-documentation-2026-06-03.md</c>.
+/// </remarks>
+[Trait("Category", "Governance")]
+public sealed partial class FcDocComponentDocumentationContractTests {
+    /// <summary>The canonical section set every published component reference page MUST contain.</summary>
+    private static readonly string[] RequiredSections =
+    [
+        "## Overview",
+        "## Usage",
+        "## Parameters / slots",
+        "## Layout (FC-LYT)",
+        "## Accessibility (FC-A11Y)",
+        "## Localization (FC-L10N)",
+        "## Related",
+    ];
+
+    /// <summary>The six published accessibility-override diagnostic pages the a11y section links.</summary>
+    private static readonly string[] AccessibilityDiagnostics =
+        ["HFC1050", "HFC1051", "HFC1052", "HFC1053", "HFC1054", "HFC1055"];
+
+    public static TheoryData<string> ComponentPages() {
+        TheoryData<string> data = [];
+        foreach (string file in ComponentPageFiles()) {
+            data.Add(Relative(file));
+        }
+
+        return data;
+    }
+
+    [Fact]
+    public void ComponentsAreaHasAtLeastTheAnchorAndOneMorePage() {
+        string[] pages = ComponentPageFiles().Select(Relative).ToArray();
+
+        pages.ShouldContain(
+            "docs/reference/components/front-composer-shell.md",
+            "The FC-DOC anchor page (FrontComposerShell) must be authored to prove the contract.");
+        pages.Length.ShouldBeGreaterThanOrEqualTo(
+            2,
+            "FC-DOC requires the anchor plus at least one more conforming page (Navigation) to prove repeatability.");
+    }
+
+    [Theory]
+    [MemberData(nameof(ComponentPages))]
+    public void EveryComponentPageContainsAllRequiredSections(string relativePath) {
+        ArgumentNullException.ThrowIfNull(relativePath);
+
+        string page = File.ReadAllText(Absolute(relativePath));
+
+        foreach (string section in RequiredSections) {
+            page.ShouldContain(
+                section,
+                customMessage: $"{relativePath} must contain the FC-DOC required section '{section}'.");
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(ComponentPages))]
+    public void EveryComponentPageUsesReferenceGenreAndAdopterAudience(string relativePath) {
+        ArgumentNullException.ThrowIfNull(relativePath);
+
+        Dictionary<string, string> frontMatter = ReadFrontMatter(Absolute(relativePath));
+
+        frontMatter.GetValueOrDefault("genre").ShouldBe(
+            "reference",
+            $"{relativePath} must declare genre: reference.");
+        frontMatter.GetValueOrDefault("audience").ShouldBe(
+            "adopter",
+            $"{relativePath} must declare audience: adopter.");
+    }
+
+    [Theory]
+    [MemberData(nameof(ComponentPages))]
+    public void EveryCSharpFenceIsMarkedCompileOrNoCompileWithReason(string relativePath) {
+        ArgumentNullException.ThrowIfNull(relativePath);
+
+        string page = File.ReadAllText(Absolute(relativePath));
+
+        foreach (Match fence in CSharpFenceOpener().Matches(page)) {
+            string info = fence.Groups[1].Value.Trim();
+
+            bool isBareCompile = info == "compile";
+            bool isNoCompileWithReason =
+                info.StartsWith("no-compile", StringComparison.Ordinal)
+                && NoCompileReason().IsMatch(info);
+
+            (isBareCompile || isNoCompileWithReason).ShouldBeTrue(
+                $"{relativePath}: a ```csharp fence opened with '```csharp {info}' must be marked " +
+                "`compile` or `no-compile reason=\"…\"` (Gate-2d snippet rule). Adopter usage should " +
+                "use a ```razor fence instead.");
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(ComponentPages))]
+    public void EveryComponentPageIsFreeOfUnsafeText(string relativePath) {
+        ArgumentNullException.ThrowIfNull(relativePath);
+
+        string page = File.ReadAllText(Absolute(relativePath));
+
+        foreach (string privatePath in new[] { "/home/", "C:\\Users\\", "/Users/" }) {
+            page.Contains(privatePath, StringComparison.OrdinalIgnoreCase).ShouldBeFalse(
+                $"{relativePath} must not embed an absolute private path ('{privatePath}').");
+        }
+
+        page.IndexOf('\u001b').ShouldBe(-1, $"{relativePath} must not contain terminal control sequences.");
+        TenantOrSecretLiteral().IsMatch(page).ShouldBeFalse(
+            $"{relativePath} must not embed a tenant-id/secret/api-key/password literal.");
+    }
+
+    [Fact]
+    public void AnchorPageLinksAllPublishedAccessibilityDiagnostics() {
+        string anchor = File.ReadAllText(Absolute("docs/reference/components/front-composer-shell.md"));
+
+        foreach (string id in AccessibilityDiagnostics) {
+            anchor.ShouldContain(
+                $"diagnostics/{id}.md",
+                customMessage: $"The FrontComposerShell Accessibility section must link the published {id} diagnostic page.");
+
+            File.Exists(Absolute($"docs/diagnostics/{id}.md")).ShouldBeTrue(
+                $"{id} must be a published diagnostic page for the anchor page's link to resolve.");
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(ComponentPages))]
+    public void EveryComponentPageLinksAtLeastOnePublishedAccessibilityDiagnostic(string relativePath) {
+        ArgumentNullException.ThrowIfNull(relativePath);
+
+        string page = File.ReadAllText(Absolute(relativePath));
+
+        bool linksADiagnostic = AccessibilityDiagnostics.Any(id => page.Contains($"diagnostics/{id}.md", StringComparison.Ordinal));
+
+        linksADiagnostic.ShouldBeTrue(
+            $"{relativePath}'s Accessibility (FC-A11Y) section must link at least one published " +
+            "HFC1050–HFC1055 diagnostic page (the FC-DOC cross-link convention).");
+    }
+
+    [Fact]
+    public void ComponentsIndexListsEveryAuthoredComponentPage() {
+        string index = File.ReadAllText(Absolute("docs/reference/components/index.md"));
+
+        foreach (string file in ComponentPageFiles()) {
+            string fileName = Path.GetFileName(file);
+            index.ShouldContain(
+                $"({fileName})",
+                customMessage: $"reference/components/index.md must link the authored page '{fileName}'.");
+        }
+    }
+
+    [Fact]
+    public void TocNestsComponentsUnderReferenceWithoutAddingATopLevelEntry() {
+        string[] lines = File.ReadAllLines(Absolute("docs/toc.yml"));
+
+        // Top-level entries are the unindented `- name:` lines; FC-DOC must not add a fifth.
+        string[] topLevel = lines
+            .Select(line => Regex.Match(line, "^- name:\\s*(.+?)\\s*$"))
+            .Where(match => match.Success)
+            .Select(match => match.Groups[1].Value)
+            .ToArray();
+
+        topLevel.ShouldBe(
+            ["Tutorials", "How-to", "Reference", "Concepts"],
+            "FC-DOC must keep exactly four top-level Diataxis entries — Components is a nested item, never a fifth top-level entry.");
+
+        // Components must appear as an indented item pointing at the components index, under Reference.
+        int referenceIndex = Array.FindIndex(lines, line => line.StartsWith("- name: Reference", StringComparison.Ordinal));
+        referenceIndex.ShouldBeGreaterThanOrEqualTo(0, "toc.yml must contain a top-level Reference node.");
+
+        int concptsIndex = Array.FindIndex(lines, line => line.StartsWith("- name: Concepts", StringComparison.Ordinal));
+        int searchEnd = concptsIndex < 0 ? lines.Length : concptsIndex;
+
+        bool componentsNestedUnderReference = lines
+            .Skip(referenceIndex + 1)
+            .Take(searchEnd - referenceIndex - 1)
+            .Any(line => line.TrimStart().StartsWith("- name: Components", StringComparison.Ordinal)
+                && line.StartsWith(' '));
+
+        componentsNestedUnderReference.ShouldBeTrue(
+            "A `Components` group must be nested under the Reference node in docs/toc.yml.");
+
+        lines.Any(line => line.Contains("reference/components/index.md", StringComparison.Ordinal)).ShouldBeTrue(
+            "The Components TOC group must point at reference/components/index.md.");
+    }
+
+    [Fact]
+    public void ComponentStatusMapCoversTheReadOnlyMvpSetAsAPageOrTrackedGapWithOwner() {
+        string contract = File.ReadAllText(Absolute("_bmad-output/contracts/fc-doc-component-documentation-2026-06-03.md"));
+
+        // The read-only-MVP set per AC2 — every area must resolve to an authored page OR a tracked gap with an owner.
+        foreach (string area in new[] { "Layout & frame", "Navigation", "DataGrid surface", "Settings" }) {
+            string row = ContractTableRow(contract, area);
+            row.ShouldNotBeNullOrWhiteSpace($"FC-DOC component status map must include a row for '{area}'.");
+
+            string[] cells = row.Split('|', StringSplitOptions.TrimEntries);
+
+            // Row shape: | area | anchor component(s) | doc page | status | owner |
+            string docPage = cells.Length > 3 ? cells[3] : string.Empty;
+            string status = cells.Length > 4 ? cells[4] : string.Empty;
+            string owner = cells.Length > 5 ? cells[5] : string.Empty;
+
+            owner.ShouldNotBeNullOrWhiteSpace($"'{area}' must record a named owner in the status map.");
+
+            bool isAuthored = status.Contains("authored", StringComparison.OrdinalIgnoreCase);
+            bool isTrackedGap = status.Contains("tracked gap", StringComparison.OrdinalIgnoreCase);
+
+            (isAuthored || isTrackedGap).ShouldBeTrue(
+                $"'{area}' must be either authored or a tracked gap (AC2). Status was: '{status}'.");
+
+            if (isAuthored) {
+                Match pagePath = Regex.Match(docPage, "`(docs/reference/components/[^`]+\\.md)`");
+                pagePath.Success.ShouldBeTrue($"'{area}' is marked authored but its status-map row names no doc page.");
+                File.Exists(Absolute(pagePath.Groups[1].Value)).ShouldBeTrue(
+                    $"'{area}' is marked authored but {pagePath.Groups[1].Value} does not exist.");
+            }
+        }
+    }
+
+    private static string ContractTableRow(string contract, string area) {
+        foreach (string line in contract.Split('\n')) {
+            string trimmed = line.TrimStart();
+            if (trimmed.StartsWith($"| {area} ", StringComparison.Ordinal)) {
+                return line;
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private static IEnumerable<string> ComponentPageFiles() {
+        string componentsDir = Path.Combine(ProjectRoot(), "docs", "reference", "components");
+        return Directory
+            .EnumerateFiles(componentsDir, "*.md", SearchOption.TopDirectoryOnly)
+            .Where(file => !string.Equals(Path.GetFileName(file), "index.md", StringComparison.Ordinal))
+            .OrderBy(file => file, StringComparer.Ordinal);
+    }
+
+    private static Dictionary<string, string> ReadFrontMatter(string file) {
+        string text = File.ReadAllText(file);
+        Match match = Regex.Match(text, "\\A---\\r?\\n(.*?)\\r?\\n---", RegexOptions.Singleline);
+        match.Success.ShouldBeTrue($"{Relative(file)} must start with YAML front matter.");
+
+        Dictionary<string, string> values = new(StringComparer.Ordinal);
+        foreach (string line in match.Groups[1].Value.Split('\n')) {
+            Match pair = Regex.Match(line.TrimEnd('\r'), "^([A-Za-z][A-Za-z0-9_-]*)\\s*:\\s*(.*?)\\s*$");
+            if (!pair.Success) {
+                continue;
+            }
+
+            values[pair.Groups[1].Value] = pair.Groups[2].Value.Trim().Trim('"');
+        }
+
+        return values;
+    }
+
+    private static string Relative(string path)
+        => Path.GetRelativePath(ProjectRoot(), path).Replace('\\', '/');
+
+    private static string Absolute(string relative)
+        => Path.Combine(ProjectRoot(), relative.Replace('/', Path.DirectorySeparatorChar));
+
+    private static string ProjectRoot() {
+        DirectoryInfo directory = new(AppContext.BaseDirectory);
+        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "Hexalith.FrontComposer.slnx"))) {
+            directory = directory.Parent!;
+        }
+
+        return directory?.FullName ?? throw new InvalidOperationException("Could not locate project root.");
+    }
+
+    [GeneratedRegex("(?m)^```csharp(.*)$")]
+    private static partial Regex CSharpFenceOpener();
+
+    [GeneratedRegex("reason=\"[^\"]+\"")]
+    private static partial Regex NoCompileReason();
+
+    [GeneratedRegex("(?i)(tenant-id|api-key|client-secret|password)\\s*[:=]\\s*\\S")]
+    private static partial Regex TenantOrSecretLiteral();
+}

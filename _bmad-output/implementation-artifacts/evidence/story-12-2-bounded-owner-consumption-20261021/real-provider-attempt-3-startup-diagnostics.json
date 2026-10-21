@@ -1,0 +1,78 @@
+{
+  "fixture_ids": [],
+  "startup_diagnostics": [
+    {
+      "resource": "folders-workers-proof-a-dapr-cli",
+      "line": "      13: 2026-10-21T18:53:40.0880000Z time=\"2026-10-21T20:53:40.087987191+02:00\" level=fatal msg=\"Fatal error from runtime: failed to create watcher: failed to add target /tmp/folders-durability-kjonbbl2.w5s/ordinary-proof: no space left on device\" app_id=folders-workers-proof-a-baa801708db44212 instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+    },
+    {
+      "resource": "folders-workers-replica-dapr-cli",
+      "line": "      27: 2026-10-21T18:53:40.0830000Z time=\"2026-10-21T20:53:40.082797733+02:00\" level=fatal msg=\"Fatal error from runtime: failed to create watcher: failed to add target /tmp/folders-durability-kjonbbl2.w5s: no space left on device\" app_id=folders-workers-baa801708db44212 instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+    },
+    {
+      "resource": "folders-workers-proof-b-dapr-cli",
+      "line": "      13: 2026-10-21T18:53:40.0850000Z time=\"2026-10-21T20:53:40.085112482+02:00\" level=fatal msg=\"Fatal error from runtime: failed to create watcher: failed to add target /tmp/folders-durability-kjonbbl2.w5s/ordinary-proof: no space left on device\" app_id=folders-workers-proof-b-baa801708db44212 instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+    },
+    {
+      "resource": "memories-dapr-cli",
+      "line": "      45: 2026-10-21T18:53:43.4840000Z time=\"2026-10-21T20:53:43.484954258+02:00\" level=fatal msg=\"Fatal error from runtime: failed to create watcher: failed to add target /tmp/folders-durability-kjonbbl2.w5s: no space left on device\" app_id=memories-baa801708db44212 instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+    },
+    {
+      "resource": "folders-workers-replica-dapr-cli",
+      "line": "      29: 2026-10-21T18:53:54.9300000Z \u26a0  Could not update sidecar metadata for cliPID: PUT http://127.0.0.1:13154/v1.0/metadata/cliPID giving up after 5 attempt(s): Put \"http://127.0.0.1:13154/v1.0/metadata/cliPID\": dial tcp 127.0.0.1:13154: connect: connection refused"
+    },
+    {
+      "resource": "folders-workers-proof-a-dapr-cli",
+      "line": "      15: 2026-10-21T18:53:54.9300000Z \u26a0  Could not update sidecar metadata for cliPID: PUT http://127.0.0.1:13151/v1.0/metadata/cliPID giving up after 5 attempt(s): Put \"http://127.0.0.1:13151/v1.0/metadata/cliPID\": dial tcp 127.0.0.1:13151: connect: connection refused"
+    },
+    {
+      "resource": "folders-workers-proof-b-dapr-cli",
+      "line": "      16: 2026-10-21T18:53:54.9950000Z \u26a0  Could not update sidecar metadata for cliPID: PUT http://127.0.0.1:13148/v1.0/metadata/cliPID giving up after 5 attempt(s): Put \"http://127.0.0.1:13148/v1.0/metadata/cliPID\": dial tcp 127.0.0.1:13148: connect: connection refused"
+    },
+    {
+      "resource": "memories-dapr-cli",
+      "line": "      47: 2026-10-21T18:53:58.4170000Z \u26a0  Could not update sidecar metadata for cliPID: PUT http://127.0.0.1:13157/v1.0/metadata/cliPID giving up after 5 attempt(s): Put \"http://127.0.0.1:13157/v1.0/metadata/cliPID\": dial tcp 127.0.0.1:13157: connect: connection refused"
+    },
+    {
+      "resource": "eventstore-dapr-cli",
+      "line": "      31: 2026-10-21T18:54:19.0570000Z time=\"2026-10-21T20:54:19.057904742+02:00\" level=fatal msg=\"Fatal error from runtime: failed to create watcher: failed to add target /tmp/folders-durability-kjonbbl2.w5s: no space left on device\" app_id=eventstore-baa801708db44212 instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+    },
+    {
+      "resource": "tenants-dapr-cli",
+      "line": "      34: 2026-10-21T18:54:19.2730000Z time=\"2026-10-21T20:54:19.273040532+02:00\" level=fatal msg=\"Fatal error from runtime: failed to create watcher: failed to add target /tmp/folders-durability-kjonbbl2.w5s: no space left on device\" app_id=tenants-baa801708db44212 instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+    },
+    {
+      "resource": "folders-ui-dapr-cli",
+      "line": "      34: 2026-10-21T18:54:19.3430000Z time=\"2026-10-21T20:54:19.343431995+02:00\" level=fatal msg=\"Fatal error from runtime: failed to create watcher: failed to add target /tmp/folders-durability-kjonbbl2.w5s: no space left on device\" app_id=folders-ui-baa801708db44212 instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+    },
+    {
+      "resource": "folders-dapr-cli",
+      "line": "      37: 2026-10-21T18:54:19.2700000Z time=\"2026-10-21T20:54:19.270811884+02:00\" level=fatal msg=\"Fatal error from runtime: failed to create watcher: failed to add target /tmp/folders-durability-kjonbbl2.w5s: no space left on device\" app_id=folders-baa801708db44212 instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+    },
+    {
+      "resource": "folders-workers-dapr-cli",
+      "line": "      37: 2026-10-21T18:54:19.3450000Z time=\"2026-10-21T20:54:19.345577522+02:00\" level=fatal msg=\"Fatal error from runtime: failed to create watcher: failed to add target /tmp/folders-durability-kjonbbl2.w5s: no space left on device\" app_id=folders-workers-baa801708db44212 instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+    },
+    {
+      "resource": "eventstore-dapr-cli",
+      "line": "      33: 2026-10-21T18:54:33.9610000Z \u26a0  Could not update sidecar metadata for cliPID: PUT http://127.0.0.1:13172/v1.0/metadata/cliPID giving up after 5 attempt(s): Put \"http://127.0.0.1:13172/v1.0/metadata/cliPID\": dial tcp 127.0.0.1:13172: connect: connection refused"
+    },
+    {
+      "resource": "folders-ui-dapr-cli",
+      "line": "      36: 2026-10-21T18:54:34.1900000Z \u26a0  Could not update sidecar metadata for cliPID: PUT http://127.0.0.1:13160/v1.0/metadata/cliPID giving up after 5 attempt(s): Put \"http://127.0.0.1:13160/v1.0/metadata/cliPID\": dial tcp 127.0.0.1:13160: connect: connection refused"
+    },
+    {
+      "resource": "tenants-dapr-cli",
+      "line": "      37: 2026-10-21T18:54:34.1320000Z \u26a0  Could not update sidecar metadata for cliPID: PUT http://127.0.0.1:13169/v1.0/metadata/cliPID giving up after 5 attempt(s): Put \"http://127.0.0.1:13169/v1.0/metadata/cliPID\": dial tcp 127.0.0.1:13169: connect: connection refused"
+    },
+    {
+      "resource": "folders-workers-dapr-cli",
+      "line": "      39: 2026-10-21T18:54:34.2740000Z \u26a0  Could not update sidecar metadata for cliPID: PUT http://127.0.0.1:13163/v1.0/metadata/cliPID giving up after 5 attempt(s): Put \"http://127.0.0.1:13163/v1.0/metadata/cliPID\": dial tcp 127.0.0.1:13163: connect: connection refused"
+    },
+    {
+      "resource": "folders-dapr-cli",
+      "line": "      39: 2026-10-21T18:54:34.1390000Z \u26a0  Could not update sidecar metadata for cliPID: PUT http://127.0.0.1:13166/v1.0/metadata/cliPID giving up after 5 attempt(s): Put \"http://127.0.0.1:13166/v1.0/metadata/cliPID\": dial tcp 127.0.0.1:13166: connect: connection refused"
+    }
+  ],
+  "log_bytes": 533801
+}

@@ -1,0 +1,3328 @@
+{
+  "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": {
+    "sha256": "6cb4313e3f9e86fcafc849950744ebd1e9f891f0a7da5f2c8daa251f9c4af285",
+    "bytes": 67825,
+    "archive": "final-build6-byte-archive/6cb4313e3f9e86fcafc849950744ebd1e9f891f0a7da5f2c8daa251f9c4af285",
+    "kind": "files_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttp.cs": {
+    "sha256": "dfe64e45e8ef6b9b980ae87548302390a5060043ccf056e99d2de141c1718167",
+    "bytes": 6106,
+    "archive": "final-build6-byte-archive/dfe64e45e8ef6b9b980ae87548302390a5060043ccf056e99d2de141c1718167",
+    "kind": "files_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs": {
+    "sha256": "dad1ff997b95fa176f58e6db7ad7e6d34f698f2a72150946325606536f3a4ec7",
+    "bytes": 4771,
+    "archive": "final-build6-byte-archive/dad1ff997b95fa176f58e6db7ad7e6d34f698f2a72150946325606536f3a4ec7",
+    "kind": "files_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySharedRebuild.cs": {
+    "sha256": "80b7f436c6cb9377a332c0ed603ad74a3937b1f34a2c293efcbe98b3811eb915",
+    "bytes": 2865,
+    "archive": "final-build6-byte-archive/80b7f436c6cb9377a332c0ed603ad74a3937b1f34a2c293efcbe98b3811eb915",
+    "kind": "files_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs": {
+    "sha256": "49f7719d793ee2f8797dc3f4f153f07d759bfa73aa26553e4bfe24d8629a5cd8",
+    "bytes": 10994,
+    "archive": "final-build6-byte-archive/49f7719d793ee2f8797dc3f4f153f07d759bfa73aa26553e4bfe24d8629a5cd8",
+    "kind": "files_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/README.md": {
+    "sha256": "08c737a0db5585b8f7db7ce7e4714e0d8eccf9eaa53a2f45e0c5a7b11abae709",
+    "bytes": 29932,
+    "archive": "final-build6-byte-archive/08c737a0db5585b8f7db7ce7e4714e0d8eccf9eaa53a2f45e0c5a7b11abae709",
+    "kind": "files_sha256"
+  },
+  "src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll": {
+    "sha256": "d46bac4175e11d1bdc9364eb18b66fb82fed33eae10a78ec3d73c0c806938e01",
+    "bytes": 71168,
+    "archive": "final-build6-byte-archive/d46bac4175e11d1bdc9364eb18b66fb82fed33eae10a78ec3d73c0c806938e01",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Aspire.pdb": {
+    "sha256": "ea91993d4292341d37f85d8680e9d28920dd4f45e7992ab32fb7f42d5f15125e",
+    "bytes": 37776,
+    "archive": "final-build6-byte-archive/ea91993d4292341d37f85d8680e9d28920dd4f45e7992ab32fb7f42d5f15125e",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Folders.AppHost.dll": {
+    "sha256": "bd17d69d23d13b8825f8b136cc91884b1a644fc25bf932640d30cde72d6eabff",
+    "bytes": 14336,
+    "archive": "final-build6-byte-archive/bd17d69d23d13b8825f8b136cc91884b1a644fc25bf932640d30cde72d6eabff",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Folders.AppHost.pdb": {
+    "sha256": "dfb615e93c05706ccb69d750909ee8274a91df0c25320d835ca0e243cbae9200",
+    "bytes": 30496,
+    "archive": "final-build6-byte-archive/dfb615e93c05706ccb69d750909ee8274a91df0c25320d835ca0e243cbae9200",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll": {
+    "sha256": "0ad8e87cdd1dac1964b39599931b06b38c758381ff67d960869da3f3fce56d34",
+    "bytes": 12800,
+    "archive": "final-build6-byte-archive/0ad8e87cdd1dac1964b39599931b06b38c758381ff67d960869da3f3fce56d34",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Folders.Aspire.pdb": {
+    "sha256": "37c4219b64ce289cbb1e218dc6a6ae2480acdf78e70f52a0a58ce75b1c618c68",
+    "bytes": 25260,
+    "archive": "final-build6-byte-archive/37c4219b64ce289cbb1e218dc6a6ae2480acdf78e70f52a0a58ce75b1c618c68",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Memories.Aspire.dll": {
+    "sha256": "9b98471d4f73c2f439bc568b85e5ed1b21ad0428c8bb210a9c831d5697282e8d",
+    "bytes": 20480,
+    "archive": "final-build6-byte-archive/9b98471d4f73c2f439bc568b85e5ed1b21ad0428c8bb210a9c831d5697282e8d",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Memories.Aspire.pdb": {
+    "sha256": "891acfb0b6b0fed40dfaa262cbf45b20de0854e929c57ee22ff56a4c5530023f",
+    "bytes": 26352,
+    "archive": "final-build6-byte-archive/891acfb0b6b0fed40dfaa262cbf45b20de0854e929c57ee22ff56a4c5530023f",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Tenants.Aspire.dll": {
+    "sha256": "cef27509f1ef0ec731792eb7fd27103069c7ccc0216a59e4e590b84706d51857",
+    "bytes": 6656,
+    "archive": "final-build6-byte-archive/cef27509f1ef0ec731792eb7fd27103069c7ccc0216a59e4e590b84706d51857",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Tenants.Aspire.pdb": {
+    "sha256": "47b66b85ddabebf29bb8b46ffc10099d9597a21695a4303c0fd04e0f40bdd467",
+    "bytes": 24168,
+    "archive": "final-build6-byte-archive/47b66b85ddabebf29bb8b46ffc10099d9597a21695a4303c0fd04e0f40bdd467",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Aspire/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll": {
+    "sha256": "0ad8e87cdd1dac1964b39599931b06b38c758381ff67d960869da3f3fce56d34",
+    "bytes": 12800,
+    "archive": "final-build6-byte-archive/0ad8e87cdd1dac1964b39599931b06b38c758381ff67d960869da3f3fce56d34",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Aspire/bin/Debug/net10.0/Hexalith.Folders.Aspire.pdb": {
+    "sha256": "37c4219b64ce289cbb1e218dc6a6ae2480acdf78e70f52a0a58ce75b1c618c68",
+    "bytes": 25260,
+    "archive": "final-build6-byte-archive/37c4219b64ce289cbb1e218dc6a6ae2480acdf78e70f52a0a58ce75b1c618c68",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Cli/bin/Debug/net10.0/Hexalith.Folders.Cli.dll": {
+    "sha256": "cdc524e58dff228641bf58ef07131fb4151a2481894de566f459cfc7484818a8",
+    "bytes": 83456,
+    "archive": "final-build6-byte-archive/cdc524e58dff228641bf58ef07131fb4151a2481894de566f459cfc7484818a8",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Cli/bin/Debug/net10.0/Hexalith.Folders.Cli.pdb": {
+    "sha256": "eb9c37df5c948eb93f683614187da90df87082d85983f8e1cd2cd78164db4b14",
+    "bytes": 38348,
+    "archive": "final-build6-byte-archive/eb9c37df5c948eb93f683614187da90df87082d85983f8e1cd2cd78164db4b14",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Cli/bin/Debug/net10.0/Hexalith.Folders.Client.dll": {
+    "sha256": "a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "bytes": 931328,
+    "archive": "final-build6-byte-archive/a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Cli/bin/Debug/net10.0/Hexalith.Folders.Client.pdb": {
+    "sha256": "bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "bytes": 194472,
+    "archive": "final-build6-byte-archive/bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Cli/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Cli/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Client/Generation/Shared/bin/Debug/net10.0/Hexalith.Folders.Client.Generation.Shared.dll": {
+    "sha256": "ec34ed67d4efec61daa106d08669f02cf3bb78910da4c8f9da4798346cd08c35",
+    "bytes": 10752,
+    "archive": "final-build6-byte-archive/ec34ed67d4efec61daa106d08669f02cf3bb78910da4c8f9da4798346cd08c35",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Client/Generation/Shared/bin/Debug/net10.0/Hexalith.Folders.Client.Generation.Shared.pdb": {
+    "sha256": "0c28e0dda2d5d2958fa83b53b0be2434752407e96a15817f9f662ab21b415119",
+    "bytes": 14328,
+    "archive": "final-build6-byte-archive/0c28e0dda2d5d2958fa83b53b0be2434752407e96a15817f9f662ab21b415119",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Client/Generation/bin/Debug/net10.0/Hexalith.Folders.Client.Generation.Shared.dll": {
+    "sha256": "6d925f500ff3e3309515aadb76579360796defe9f19169afa5a1e9c54834330e",
+    "bytes": 10752,
+    "archive": "final-build6-byte-archive/6d925f500ff3e3309515aadb76579360796defe9f19169afa5a1e9c54834330e",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Client/Generation/bin/Debug/net10.0/Hexalith.Folders.Client.Generation.Shared.pdb": {
+    "sha256": "53f860d7fcf11d4acd324366381437142f33e6c39f7f1a9e7f15c5862b40ddf3",
+    "bytes": 14328,
+    "archive": "final-build6-byte-archive/53f860d7fcf11d4acd324366381437142f33e6c39f7f1a9e7f15c5862b40ddf3",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Client/Generation/bin/Debug/net10.0/Hexalith.Folders.Client.Generation.dll": {
+    "sha256": "c409d0ef1626f107ef4e91d18cbfe9d33ac105fe1baf1e17649fbf3d4c1d996f",
+    "bytes": 110080,
+    "archive": "final-build6-byte-archive/c409d0ef1626f107ef4e91d18cbfe9d33ac105fe1baf1e17649fbf3d4c1d996f",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Client/Generation/bin/Debug/net10.0/Hexalith.Folders.Client.Generation.pdb": {
+    "sha256": "8f8e049a1ab9af7fe3a8194e3a89c3dc477f6ac918cfd44cfe6903e1a31de490",
+    "bytes": 32348,
+    "archive": "final-build6-byte-archive/8f8e049a1ab9af7fe3a8194e3a89c3dc477f6ac918cfd44cfe6903e1a31de490",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Client/bin/Debug/net10.0/Hexalith.Folders.Client.dll": {
+    "sha256": "a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "bytes": 931328,
+    "archive": "final-build6-byte-archive/a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Client/bin/Debug/net10.0/Hexalith.Folders.Client.pdb": {
+    "sha256": "bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "bytes": 194472,
+    "archive": "final-build6-byte-archive/bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Client/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Client/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Contracts/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Contracts/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4b65276a1b36a500d989cbe3a6f9d5fab3f33e7d78d60c1f51f650b717d2bb7b",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4b65276a1b36a500d989cbe3a6f9d5fab3f33e7d78d60c1f51f650b717d2bb7b",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "3fe314117c3f5104f5f5390633a630a9f6aec7a7658c7382f3a97f74436c3e80",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/3fe314117c3f5104f5f5390633a630a9f6aec7a7658c7382f3a97f74436c3e80",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll": {
+    "sha256": "23c35fe34c6930151b133098645b9c53b1557a094514f1f794a9936dfff1d239",
+    "bytes": 239104,
+    "archive": "final-build6-byte-archive/23c35fe34c6930151b133098645b9c53b1557a094514f1f794a9936dfff1d239",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.pdb": {
+    "sha256": "1c5a37078151088d62b61111efcb6bbc63005b2a997f3a561d501f8cbeab0a8a",
+    "bytes": 56340,
+    "archive": "final-build6-byte-archive/1c5a37078151088d62b61111efcb6bbc63005b2a997f3a561d501f8cbeab0a8a",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "9350a426bfed90e1d4e0a0c96f6724bf216225f34948272fb2110f08e29bfa4a",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/9350a426bfed90e1d4e0a0c96f6724bf216225f34948272fb2110f08e29bfa4a",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "2d91f27fb1b99946232fecb9dff4277b7a93f05d22ea22097a28b5c2fef5ed4c",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/2d91f27fb1b99946232fecb9dff4277b7a93f05d22ea22097a28b5c2fef5ed4c",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "d1301533f46b34394a5067de21e4b06b4fd1ef80858add0134fe24fe123c1b28",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/d1301533f46b34394a5067de21e4b06b4fd1ef80858add0134fe24fe123c1b28",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "15ad95577f0e33e7cc878fb1ca19bcce52c97c778b43ee36d57aae43e172828c",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/15ad95577f0e33e7cc878fb1ca19bcce52c97c778b43ee36d57aae43e172828c",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll": {
+    "sha256": "b310d6a44492a7ce8f76775df75077a6d3397f5b06fadd6cced22592189ec87c",
+    "bytes": 1149952,
+    "archive": "final-build6-byte-archive/b310d6a44492a7ce8f76775df75077a6d3397f5b06fadd6cced22592189ec87c",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb": {
+    "sha256": "6553274dddd6cb1e4386097d3bd33c783a792a806ca47223d5a34dbab2657fe5",
+    "bytes": 270180,
+    "archive": "final-build6-byte-archive/6553274dddd6cb1e4386097d3bd33c783a792a806ca47223d5a34dbab2657fe5",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll": {
+    "sha256": "6c6aab6428ea3d91a3da61f89109fe61a88596378aa0a6846592493fec81f422",
+    "bytes": 887808,
+    "archive": "final-build6-byte-archive/6c6aab6428ea3d91a3da61f89109fe61a88596378aa0a6846592493fec81f422",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb": {
+    "sha256": "a1956f7c2429dc1e0b3808b59e0e49d41251d7ae517b64dfadd674336240f963",
+    "bytes": 237776,
+    "archive": "final-build6-byte-archive/a1956f7c2429dc1e0b3808b59e0e49d41251d7ae517b64dfadd674336240f963",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll": {
+    "sha256": "c1e5c49222f61502a0dde31dbe6686e76c8f05b17e9161eba860778da727c3d1",
+    "bytes": 3478016,
+    "archive": "final-build6-byte-archive/c1e5c49222f61502a0dde31dbe6686e76c8f05b17e9161eba860778da727c3d1",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb": {
+    "sha256": "e3e36f5900b7ad14aa242f95a7463814b850473df5de0aec3d96f55e6e33d71e",
+    "bytes": 804872,
+    "archive": "final-build6-byte-archive/e3e36f5900b7ad14aa242f95a7463814b850473df5de0aec3d96f55e6e33d71e",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll": {
+    "sha256": "4901a3fc6b388d2e024e03a2a1cf50d01c2eace0a5aacacf753ab2853f10722d",
+    "bytes": 166912,
+    "archive": "final-build6-byte-archive/4901a3fc6b388d2e024e03a2a1cf50d01c2eace0a5aacacf753ab2853f10722d",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb": {
+    "sha256": "310c08af989d7cd432cf153e4a2ae17a1125e8fdbd6561158b8bc3afc14df032",
+    "bytes": 59248,
+    "archive": "final-build6-byte-archive/310c08af989d7cd432cf153e4a2ae17a1125e8fdbd6561158b8bc3afc14df032",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll": {
+    "sha256": "97e7a07cba7d8978abbb2d933a0290bbfec3e612c48deeb455830749d0c6f8d3",
+    "bytes": 2042880,
+    "archive": "final-build6-byte-archive/97e7a07cba7d8978abbb2d933a0290bbfec3e612c48deeb455830749d0c6f8d3",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.pdb": {
+    "sha256": "2120904af5cc5a176aff733ca0be149cb432368c602c8c92b0f0e9971c034c00",
+    "bytes": 263272,
+    "archive": "final-build6-byte-archive/2120904af5cc5a176aff733ca0be149cb432368c602c8c92b0f0e9971c034c00",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Mcp/bin/Debug/net10.0/Hexalith.Folders.Client.dll": {
+    "sha256": "a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "bytes": 931328,
+    "archive": "final-build6-byte-archive/a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Mcp/bin/Debug/net10.0/Hexalith.Folders.Client.pdb": {
+    "sha256": "bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "bytes": 194472,
+    "archive": "final-build6-byte-archive/bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Mcp/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Mcp/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Mcp/bin/Debug/net10.0/Hexalith.Folders.Mcp.dll": {
+    "sha256": "6c2cf2515f33df84151f65d38ea15e87cd3022937d0ed94017d7d48e6b3b61d5",
+    "bytes": 77312,
+    "archive": "final-build6-byte-archive/6c2cf2515f33df84151f65d38ea15e87cd3022937d0ed94017d7d48e6b3b61d5",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Mcp/bin/Debug/net10.0/Hexalith.Folders.Mcp.pdb": {
+    "sha256": "8151be7b6721e49ed2a0c094ff63ed28d170fd9f815c452eca1bb138e48a37eb",
+    "bytes": 34872,
+    "archive": "final-build6-byte-archive/8151be7b6721e49ed2a0c094ff63ed28d170fd9f815c452eca1bb138e48a37eb",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll": {
+    "sha256": "b310d6a44492a7ce8f76775df75077a6d3397f5b06fadd6cced22592189ec87c",
+    "bytes": 1149952,
+    "archive": "final-build6-byte-archive/b310d6a44492a7ce8f76775df75077a6d3397f5b06fadd6cced22592189ec87c",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb": {
+    "sha256": "6553274dddd6cb1e4386097d3bd33c783a792a806ca47223d5a34dbab2657fe5",
+    "bytes": 270180,
+    "archive": "final-build6-byte-archive/6553274dddd6cb1e4386097d3bd33c783a792a806ca47223d5a34dbab2657fe5",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll": {
+    "sha256": "4901a3fc6b388d2e024e03a2a1cf50d01c2eace0a5aacacf753ab2853f10722d",
+    "bytes": 166912,
+    "archive": "final-build6-byte-archive/4901a3fc6b388d2e024e03a2a1cf50d01c2eace0a5aacacf753ab2853f10722d",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb": {
+    "sha256": "310c08af989d7cd432cf153e4a2ae17a1125e8fdbd6561158b8bc3afc14df032",
+    "bytes": 59248,
+    "archive": "final-build6-byte-archive/310c08af989d7cd432cf153e4a2ae17a1125e8fdbd6561158b8bc3afc14df032",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll": {
+    "sha256": "eb0b7a5609bec0c2f28c8f1b376dc915770dc214f2dab883dee1000c24ab7d47",
+    "bytes": 786432,
+    "archive": "final-build6-byte-archive/eb0b7a5609bec0c2f28c8f1b376dc915770dc214f2dab883dee1000c24ab7d47",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.pdb": {
+    "sha256": "a6b3885adfdd631c13ad8771b6a08d70496f0eea19f44336db963afa3d5e22ab",
+    "bytes": 188580,
+    "archive": "final-build6-byte-archive/a6b3885adfdd631c13ad8771b6a08d70496f0eea19f44336db963afa3d5e22ab",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll": {
+    "sha256": "57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "bytes": 20992,
+    "archive": "final-build6-byte-archive/57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb": {
+    "sha256": "9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "bytes": 26196,
+    "archive": "final-build6-byte-archive/9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll": {
+    "sha256": "2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "bytes": 10752,
+    "archive": "final-build6-byte-archive/2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb": {
+    "sha256": "1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "bytes": 14364,
+    "archive": "final-build6-byte-archive/1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll": {
+    "sha256": "f06597f0c313a99884b87d3899727dac9c9e47dc8345e5932d688cf9e16e9c9e",
+    "bytes": 91648,
+    "archive": "final-build6-byte-archive/f06597f0c313a99884b87d3899727dac9c9e47dc8345e5932d688cf9e16e9c9e",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb": {
+    "sha256": "28cf03617b6552f76e5afa75b1e20008c8e6cb77c5b55c9b1a57e2902457cff1",
+    "bytes": 29452,
+    "archive": "final-build6-byte-archive/28cf03617b6552f76e5afa75b1e20008c8e6cb77c5b55c9b1a57e2902457cff1",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll": {
+    "sha256": "a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "bytes": 1316864,
+    "archive": "final-build6-byte-archive/a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb": {
+    "sha256": "9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "bytes": 634416,
+    "archive": "final-build6-byte-archive/9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.dll": {
+    "sha256": "efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "bytes": 22016,
+    "archive": "final-build6-byte-archive/efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb": {
+    "sha256": "291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "bytes": 26464,
+    "archive": "final-build6-byte-archive/291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll": {
+    "sha256": "f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "bytes": 98816,
+    "archive": "final-build6-byte-archive/f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb": {
+    "sha256": "fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "bytes": 32912,
+    "archive": "final-build6-byte-archive/fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.ServiceDefaults/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll": {
+    "sha256": "57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "bytes": 20992,
+    "archive": "final-build6-byte-archive/57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.ServiceDefaults/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb": {
+    "sha256": "9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "bytes": 26196,
+    "archive": "final-build6-byte-archive/9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.Folders.Testing.dll": {
+    "sha256": "f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "bytes": 48128,
+    "archive": "final-build6-byte-archive/f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb": {
+    "sha256": "2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "bytes": 31316,
+    "archive": "final-build6-byte-archive/2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.Client.dll": {
+    "sha256": "a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "bytes": 931328,
+    "archive": "final-build6-byte-archive/a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.Client.pdb": {
+    "sha256": "bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "bytes": 194472,
+    "archive": "final-build6-byte-archive/bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.UI.dll": {
+    "sha256": "db67651cdcda8b56d143b4b8305c34be6224b6af782ee9a573962cb33a6db432",
+    "bytes": 246272,
+    "archive": "final-build6-byte-archive/db67651cdcda8b56d143b4b8305c34be6224b6af782ee9a573962cb33a6db432",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.UI.pdb": {
+    "sha256": "fe7bdd09b744856e1f68b2fcf815202d9d0df2f0501021ea0acccc26f7778a98",
+    "bytes": 156880,
+    "archive": "final-build6-byte-archive/fe7bdd09b744856e1f68b2fcf815202d9d0df2f0501021ea0acccc26f7778a98",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.dll": {
+    "sha256": "66644725a7ead0b398fc949aecbabbe9f997582f0e7c282539de8e0326d1d3c8",
+    "bytes": 25088,
+    "archive": "final-build6-byte-archive/66644725a7ead0b398fc949aecbabbe9f997582f0e7c282539de8e0326d1d3c8",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.pdb": {
+    "sha256": "d6bd88474ec583fa074d7f43fe645699e07e920a545edc650bcf75ecbe913665",
+    "bytes": 27100,
+    "archive": "final-build6-byte-archive/d6bd88474ec583fa074d7f43fe645699e07e920a545edc650bcf75ecbe913665",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.dll": {
+    "sha256": "c039dd9b0e35669028a0d0efa42ce0b894f24a3c3147a6842e71d57ce4fb40d6",
+    "bytes": 232960,
+    "archive": "final-build6-byte-archive/c039dd9b0e35669028a0d0efa42ce0b894f24a3c3147a6842e71d57ce4fb40d6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.pdb": {
+    "sha256": "c90c62ab5e58d8d0dc97fa07151202d50ce151c556e05e54ff06da390a02fb65",
+    "bytes": 82748,
+    "archive": "final-build6-byte-archive/c90c62ab5e58d8d0dc97fa07151202d50ce151c556e05e54ff06da390a02fb65",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.dll": {
+    "sha256": "9275a79035aaef32b0dbc84a7afb2bf44804ca6c9ad956623338cb5d3cc8e2bd",
+    "bytes": 2007552,
+    "archive": "final-build6-byte-archive/9275a79035aaef32b0dbc84a7afb2bf44804ca6c9ad956623338cb5d3cc8e2bd",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb": {
+    "sha256": "19fadde070367af8977ab884c97c6e1cecb9bfceed57ac8e3df4d14b496adfcf",
+    "bytes": 742808,
+    "archive": "final-build6-byte-archive/19fadde070367af8977ab884c97c6e1cecb9bfceed57ac8e3df4d14b496adfcf",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.UI/bin/Debug/net10.0/fr/Hexalith.FrontComposer.Shell.resources.dll": {
+    "sha256": "dd751571663589189d211472131c77da90b2536e353ce6a29695c5d711650844",
+    "bytes": 30208,
+    "archive": "final-build6-byte-archive/dd751571663589189d211472131c77da90b2536e353ce6a29695c5d711650844",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll": {
+    "sha256": "b310d6a44492a7ce8f76775df75077a6d3397f5b06fadd6cced22592189ec87c",
+    "bytes": 1149952,
+    "archive": "final-build6-byte-archive/b310d6a44492a7ce8f76775df75077a6d3397f5b06fadd6cced22592189ec87c",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb": {
+    "sha256": "6553274dddd6cb1e4386097d3bd33c783a792a806ca47223d5a34dbab2657fe5",
+    "bytes": 270180,
+    "archive": "final-build6-byte-archive/6553274dddd6cb1e4386097d3bd33c783a792a806ca47223d5a34dbab2657fe5",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll": {
+    "sha256": "4901a3fc6b388d2e024e03a2a1cf50d01c2eace0a5aacacf753ab2853f10722d",
+    "bytes": 166912,
+    "archive": "final-build6-byte-archive/4901a3fc6b388d2e024e03a2a1cf50d01c2eace0a5aacacf753ab2853f10722d",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb": {
+    "sha256": "310c08af989d7cd432cf153e4a2ae17a1125e8fdbd6561158b8bc3afc14df032",
+    "bytes": 59248,
+    "archive": "final-build6-byte-archive/310c08af989d7cd432cf153e4a2ae17a1125e8fdbd6561158b8bc3afc14df032",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll": {
+    "sha256": "57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "bytes": 20992,
+    "archive": "final-build6-byte-archive/57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb": {
+    "sha256": "9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "bytes": 26196,
+    "archive": "final-build6-byte-archive/9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll": {
+    "sha256": "3fdaa68efa5ee730fc328c004f38e1122b738a17a7e0990816ed2018f9ab07a8",
+    "bytes": 144384,
+    "archive": "final-build6-byte-archive/3fdaa68efa5ee730fc328c004f38e1122b738a17a7e0990816ed2018f9ab07a8",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.pdb": {
+    "sha256": "e7f43729e0bb7668cf94240ac92f18c8877e233a720dae310a8837dd1c8a0ee8",
+    "bytes": 56440,
+    "archive": "final-build6-byte-archive/e7f43729e0bb7668cf94240ac92f18c8877e233a720dae310a8837dd1c8a0ee8",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll": {
+    "sha256": "2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "bytes": 10752,
+    "archive": "final-build6-byte-archive/2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb": {
+    "sha256": "1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "bytes": 14364,
+    "archive": "final-build6-byte-archive/1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll": {
+    "sha256": "a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "bytes": 1316864,
+    "archive": "final-build6-byte-archive/a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb": {
+    "sha256": "9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "bytes": 634416,
+    "archive": "final-build6-byte-archive/9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll": {
+    "sha256": "efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "bytes": 22016,
+    "archive": "final-build6-byte-archive/efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb": {
+    "sha256": "291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "bytes": 26464,
+    "archive": "final-build6-byte-archive/291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll": {
+    "sha256": "f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "bytes": 98816,
+    "archive": "final-build6-byte-archive/f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb": {
+    "sha256": "fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "bytes": 32912,
+    "archive": "final-build6-byte-archive/fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4b65276a1b36a500d989cbe3a6f9d5fab3f33e7d78d60c1f51f650b717d2bb7b",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4b65276a1b36a500d989cbe3a6f9d5fab3f33e7d78d60c1f51f650b717d2bb7b",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "3fe314117c3f5104f5f5390633a630a9f6aec7a7658c7382f3a97f74436c3e80",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/3fe314117c3f5104f5f5390633a630a9f6aec7a7658c7382f3a97f74436c3e80",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "9350a426bfed90e1d4e0a0c96f6724bf216225f34948272fb2110f08e29bfa4a",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/9350a426bfed90e1d4e0a0c96f6724bf216225f34948272fb2110f08e29bfa4a",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "2d91f27fb1b99946232fecb9dff4277b7a93f05d22ea22097a28b5c2fef5ed4c",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/2d91f27fb1b99946232fecb9dff4277b7a93f05d22ea22097a28b5c2fef5ed4c",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "d1301533f46b34394a5067de21e4b06b4fd1ef80858add0134fe24fe123c1b28",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/d1301533f46b34394a5067de21e4b06b4fd1ef80858add0134fe24fe123c1b28",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "15ad95577f0e33e7cc878fb1ca19bcce52c97c778b43ee36d57aae43e172828c",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/15ad95577f0e33e7cc878fb1ca19bcce52c97c778b43ee36d57aae43e172828c",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll": {
+    "sha256": "d46bac4175e11d1bdc9364eb18b66fb82fed33eae10a78ec3d73c0c806938e01",
+    "bytes": 71168,
+    "archive": "final-build6-byte-archive/d46bac4175e11d1bdc9364eb18b66fb82fed33eae10a78ec3d73c0c806938e01",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.pdb": {
+    "sha256": "ea91993d4292341d37f85d8680e9d28920dd4f45e7992ab32fb7f42d5f15125e",
+    "bytes": 37776,
+    "archive": "final-build6-byte-archive/ea91993d4292341d37f85d8680e9d28920dd4f45e7992ab32fb7f42d5f15125e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll": {
+    "sha256": "b310d6a44492a7ce8f76775df75077a6d3397f5b06fadd6cced22592189ec87c",
+    "bytes": 1149952,
+    "archive": "final-build6-byte-archive/b310d6a44492a7ce8f76775df75077a6d3397f5b06fadd6cced22592189ec87c",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb": {
+    "sha256": "6553274dddd6cb1e4386097d3bd33c783a792a806ca47223d5a34dbab2657fe5",
+    "bytes": 270180,
+    "archive": "final-build6-byte-archive/6553274dddd6cb1e4386097d3bd33c783a792a806ca47223d5a34dbab2657fe5",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll": {
+    "sha256": "4901a3fc6b388d2e024e03a2a1cf50d01c2eace0a5aacacf753ab2853f10722d",
+    "bytes": 166912,
+    "archive": "final-build6-byte-archive/4901a3fc6b388d2e024e03a2a1cf50d01c2eace0a5aacacf753ab2853f10722d",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb": {
+    "sha256": "310c08af989d7cd432cf153e4a2ae17a1125e8fdbd6561158b8bc3afc14df032",
+    "bytes": 59248,
+    "archive": "final-build6-byte-archive/310c08af989d7cd432cf153e4a2ae17a1125e8fdbd6561158b8bc3afc14df032",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll": {
+    "sha256": "8c0c642e8b2a9e2875997a41789284e4482260c63cdd6b0ca5de9d20add917e9",
+    "bytes": 395264,
+    "archive": "final-build6-byte-archive/8c0c642e8b2a9e2875997a41789284e4482260c63cdd6b0ca5de9d20add917e9",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.pdb": {
+    "sha256": "6188fe361346dfa07e4f0b34a400065903e495720c6b416e9af8751f02f9ece4",
+    "bytes": 97260,
+    "archive": "final-build6-byte-archive/6188fe361346dfa07e4f0b34a400065903e495720c6b416e9af8751f02f9ece4",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.dll": {
+    "sha256": "bd17d69d23d13b8825f8b136cc91884b1a644fc25bf932640d30cde72d6eabff",
+    "bytes": 14336,
+    "archive": "final-build6-byte-archive/bd17d69d23d13b8825f8b136cc91884b1a644fc25bf932640d30cde72d6eabff",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.pdb": {
+    "sha256": "dfb615e93c05706ccb69d750909ee8274a91df0c25320d835ca0e243cbae9200",
+    "bytes": 30496,
+    "archive": "final-build6-byte-archive/dfb615e93c05706ccb69d750909ee8274a91df0c25320d835ca0e243cbae9200",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll": {
+    "sha256": "0ad8e87cdd1dac1964b39599931b06b38c758381ff67d960869da3f3fce56d34",
+    "bytes": 12800,
+    "archive": "final-build6-byte-archive/0ad8e87cdd1dac1964b39599931b06b38c758381ff67d960869da3f3fce56d34",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Aspire.pdb": {
+    "sha256": "37c4219b64ce289cbb1e218dc6a6ae2480acdf78e70f52a0a58ce75b1c618c68",
+    "bytes": 25260,
+    "archive": "final-build6-byte-archive/37c4219b64ce289cbb1e218dc6a6ae2480acdf78e70f52a0a58ce75b1c618c68",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll": {
+    "sha256": "57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "bytes": 20992,
+    "archive": "final-build6-byte-archive/57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb": {
+    "sha256": "9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "bytes": 26196,
+    "archive": "final-build6-byte-archive/9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.dll": {
+    "sha256": "3fdaa68efa5ee730fc328c004f38e1122b738a17a7e0990816ed2018f9ab07a8",
+    "bytes": 144384,
+    "archive": "final-build6-byte-archive/3fdaa68efa5ee730fc328c004f38e1122b738a17a7e0990816ed2018f9ab07a8",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.pdb": {
+    "sha256": "e7f43729e0bb7668cf94240ac92f18c8877e233a720dae310a8837dd1c8a0ee8",
+    "bytes": 56440,
+    "archive": "final-build6-byte-archive/e7f43729e0bb7668cf94240ac92f18c8877e233a720dae310a8837dd1c8a0ee8",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll": {
+    "sha256": "2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "bytes": 10752,
+    "archive": "final-build6-byte-archive/2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb": {
+    "sha256": "1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "bytes": 14364,
+    "archive": "final-build6-byte-archive/1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Memories.Aspire.dll": {
+    "sha256": "9b98471d4f73c2f439bc568b85e5ed1b21ad0428c8bb210a9c831d5697282e8d",
+    "bytes": 20480,
+    "archive": "final-build6-byte-archive/9b98471d4f73c2f439bc568b85e5ed1b21ad0428c8bb210a9c831d5697282e8d",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Memories.Aspire.pdb": {
+    "sha256": "891acfb0b6b0fed40dfaa262cbf45b20de0854e929c57ee22ff56a4c5530023f",
+    "bytes": 26352,
+    "archive": "final-build6-byte-archive/891acfb0b6b0fed40dfaa262cbf45b20de0854e929c57ee22ff56a4c5530023f",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll": {
+    "sha256": "a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "bytes": 1316864,
+    "archive": "final-build6-byte-archive/a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb": {
+    "sha256": "9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "bytes": 634416,
+    "archive": "final-build6-byte-archive/9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Aspire.dll": {
+    "sha256": "cef27509f1ef0ec731792eb7fd27103069c7ccc0216a59e4e590b84706d51857",
+    "bytes": 6656,
+    "archive": "final-build6-byte-archive/cef27509f1ef0ec731792eb7fd27103069c7ccc0216a59e4e590b84706d51857",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Aspire.pdb": {
+    "sha256": "47b66b85ddabebf29bb8b46ffc10099d9597a21695a4303c0fd04e0f40bdd467",
+    "bytes": 24168,
+    "archive": "final-build6-byte-archive/47b66b85ddabebf29bb8b46ffc10099d9597a21695a4303c0fd04e0f40bdd467",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.dll": {
+    "sha256": "efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "bytes": 22016,
+    "archive": "final-build6-byte-archive/efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb": {
+    "sha256": "291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "bytes": 26464,
+    "archive": "final-build6-byte-archive/291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll": {
+    "sha256": "f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "bytes": 98816,
+    "archive": "final-build6-byte-archive/f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb": {
+    "sha256": "fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "bytes": 32912,
+    "archive": "final-build6-byte-archive/fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.Cli.Tests.dll": {
+    "sha256": "ae9b34968bbdb5fe7da48737d864fbaae913d867e9bf5137c7acab595e87c2c5",
+    "bytes": 153600,
+    "archive": "final-build6-byte-archive/ae9b34968bbdb5fe7da48737d864fbaae913d867e9bf5137c7acab595e87c2c5",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.Cli.Tests.pdb": {
+    "sha256": "05376b2b2fe32594ba0333f242a5939134f8639c10b89d74ff1d25b4b9aefe48",
+    "bytes": 52820,
+    "archive": "final-build6-byte-archive/05376b2b2fe32594ba0333f242a5939134f8639c10b89d74ff1d25b4b9aefe48",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.Cli.dll": {
+    "sha256": "cdc524e58dff228641bf58ef07131fb4151a2481894de566f459cfc7484818a8",
+    "bytes": 83456,
+    "archive": "final-build6-byte-archive/cdc524e58dff228641bf58ef07131fb4151a2481894de566f459cfc7484818a8",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.Cli.pdb": {
+    "sha256": "eb9c37df5c948eb93f683614187da90df87082d85983f8e1cd2cd78164db4b14",
+    "bytes": 38348,
+    "archive": "final-build6-byte-archive/eb9c37df5c948eb93f683614187da90df87082d85983f8e1cd2cd78164db4b14",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.dll": {
+    "sha256": "a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "bytes": 931328,
+    "archive": "final-build6-byte-archive/a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.pdb": {
+    "sha256": "bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "bytes": 194472,
+    "archive": "final-build6-byte-archive/bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll": {
+    "sha256": "f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "bytes": 48128,
+    "archive": "final-build6-byte-archive/f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb": {
+    "sha256": "2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "bytes": 31316,
+    "archive": "final-build6-byte-archive/2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.Generation.Shared.dll": {
+    "sha256": "ec34ed67d4efec61daa106d08669f02cf3bb78910da4c8f9da4798346cd08c35",
+    "bytes": 10752,
+    "archive": "final-build6-byte-archive/ec34ed67d4efec61daa106d08669f02cf3bb78910da4c8f9da4798346cd08c35",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.Generation.Shared.pdb": {
+    "sha256": "0c28e0dda2d5d2958fa83b53b0be2434752407e96a15817f9f662ab21b415119",
+    "bytes": 14328,
+    "archive": "final-build6-byte-archive/0c28e0dda2d5d2958fa83b53b0be2434752407e96a15817f9f662ab21b415119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.Tests.dll": {
+    "sha256": "748686335d9f0c39fcf21b0ee27b09159d4189363add18243cd0ba0336bbbf72",
+    "bytes": 241152,
+    "archive": "final-build6-byte-archive/748686335d9f0c39fcf21b0ee27b09159d4189363add18243cd0ba0336bbbf72",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.Tests.pdb": {
+    "sha256": "520a8f6d92391b1624588408f0fc80930bcc14f4f6f99408a4a2d147baf0cf7b",
+    "bytes": 72572,
+    "archive": "final-build6-byte-archive/520a8f6d92391b1624588408f0fc80930bcc14f4f6f99408a4a2d147baf0cf7b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.dll": {
+    "sha256": "a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "bytes": 931328,
+    "archive": "final-build6-byte-archive/a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.pdb": {
+    "sha256": "bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "bytes": 194472,
+    "archive": "final-build6-byte-archive/bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll": {
+    "sha256": "f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "bytes": 48128,
+    "archive": "final-build6-byte-archive/f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb": {
+    "sha256": "2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "bytes": 31316,
+    "archive": "final-build6-byte-archive/2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll": {
+    "sha256": "0ad8e87cdd1dac1964b39599931b06b38c758381ff67d960869da3f3fce56d34",
+    "bytes": 12800,
+    "archive": "final-build6-byte-archive/0ad8e87cdd1dac1964b39599931b06b38c758381ff67d960869da3f3fce56d34",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Aspire.pdb": {
+    "sha256": "37c4219b64ce289cbb1e218dc6a6ae2480acdf78e70f52a0a58ce75b1c618c68",
+    "bytes": 25260,
+    "archive": "final-build6-byte-archive/37c4219b64ce289cbb1e218dc6a6ae2480acdf78e70f52a0a58ce75b1c618c68",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll": {
+    "sha256": "1ff35e3c1e583eb5baa7c4aca88999012bccf7115fd0ca50a39f126bc2c77ddb",
+    "bytes": 1219584,
+    "archive": "final-build6-byte-archive/1ff35e3c1e583eb5baa7c4aca88999012bccf7115fd0ca50a39f126bc2c77ddb",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.pdb": {
+    "sha256": "9e63cbf2522e94e2f70652d06bbc3df967b488b4f0796b7f0830e1d73ff492e9",
+    "bytes": 421324,
+    "archive": "final-build6-byte-archive/9e63cbf2522e94e2f70652d06bbc3df967b488b4f0796b7f0830e1d73ff492e9",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll": {
+    "sha256": "0a84761c2076e209260dbb3ec69fd2c241aeba6bcc39d547c74a68d5410ca10e",
+    "bytes": 239104,
+    "archive": "final-build6-byte-archive/0a84761c2076e209260dbb3ec69fd2c241aeba6bcc39d547c74a68d5410ca10e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.pdb": {
+    "sha256": "8c118b881c49dd5ea589b9e6bbb623f3ea00d8dcbd219fdbb749c6974d0e813b",
+    "bytes": 56340,
+    "archive": "final-build6-byte-archive/8c118b881c49dd5ea589b9e6bbb623f3ea00d8dcbd219fdbb749c6974d0e813b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll": {
+    "sha256": "b008a51fa5cf1bb5792fa8c1e352b28fec884bce8b8c0d9440f0148910208f11",
+    "bytes": 1149952,
+    "archive": "final-build6-byte-archive/b008a51fa5cf1bb5792fa8c1e352b28fec884bce8b8c0d9440f0148910208f11",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb": {
+    "sha256": "0b3ed215c27bbd10dfb84e3cd9429c66a0e2b233ec2cc5c9c57543a60315fda3",
+    "bytes": 270180,
+    "archive": "final-build6-byte-archive/0b3ed215c27bbd10dfb84e3cd9429c66a0e2b233ec2cc5c9c57543a60315fda3",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll": {
+    "sha256": "da756123cbb48c075a679105237574c573ba9bc53d1f4c30ca1ce2b8f8062a77",
+    "bytes": 887808,
+    "archive": "final-build6-byte-archive/da756123cbb48c075a679105237574c573ba9bc53d1f4c30ca1ce2b8f8062a77",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb": {
+    "sha256": "6d6c2617475e7e28a35e986098bc07b055e40c09590d7a1bd51ee1b0421ba6e1",
+    "bytes": 237868,
+    "archive": "final-build6-byte-archive/6d6c2617475e7e28a35e986098bc07b055e40c09590d7a1bd51ee1b0421ba6e1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll": {
+    "sha256": "11db6984f0a89ab7f7e98173f1cd840dde2aef29ba001da8c5a78fb0d6641700",
+    "bytes": 3478016,
+    "archive": "final-build6-byte-archive/11db6984f0a89ab7f7e98173f1cd840dde2aef29ba001da8c5a78fb0d6641700",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb": {
+    "sha256": "7cc0ec07b5e4196602388263e793269d7490cdfe8890f744b58245e27a9717ba",
+    "bytes": 804748,
+    "archive": "final-build6-byte-archive/7cc0ec07b5e4196602388263e793269d7490cdfe8890f744b58245e27a9717ba",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll": {
+    "sha256": "7814a773242f2b844784a378aaf73a0764d524bfa95a5f7cc9b27688d1d2c39c",
+    "bytes": 166912,
+    "archive": "final-build6-byte-archive/7814a773242f2b844784a378aaf73a0764d524bfa95a5f7cc9b27688d1d2c39c",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb": {
+    "sha256": "7720756b55fc5df05b9dee2ea4ba137f25416ee364ae82f1da611674d7b48683",
+    "bytes": 59248,
+    "archive": "final-build6-byte-archive/7720756b55fc5df05b9dee2ea4ba137f25416ee364ae82f1da611674d7b48683",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll": {
+    "sha256": "73818942fe18e652821073ad4b1e1138ba6faf9805547e7bb93039e731409a1c",
+    "bytes": 79360,
+    "archive": "final-build6-byte-archive/73818942fe18e652821073ad4b1e1138ba6faf9805547e7bb93039e731409a1c",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.pdb": {
+    "sha256": "8b0ff6cd1df9ed209cfc7ca9c73e0de1e309a211dda7c6233d08b4d1cefca9d1",
+    "bytes": 49416,
+    "archive": "final-build6-byte-archive/8b0ff6cd1df9ed209cfc7ca9c73e0de1e309a211dda7c6233d08b4d1cefca9d1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll": {
+    "sha256": "97e7a07cba7d8978abbb2d933a0290bbfec3e612c48deeb455830749d0c6f8d3",
+    "bytes": 2042880,
+    "archive": "final-build6-byte-archive/97e7a07cba7d8978abbb2d933a0290bbfec3e612c48deeb455830749d0c6f8d3",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.pdb": {
+    "sha256": "2120904af5cc5a176aff733ca0be149cb432368c602c8c92b0f0e9971c034c00",
+    "bytes": 263272,
+    "archive": "final-build6-byte-archive/2120904af5cc5a176aff733ca0be149cb432368c602c8c92b0f0e9971c034c00",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.dll": {
+    "sha256": "eb0b7a5609bec0c2f28c8f1b376dc915770dc214f2dab883dee1000c24ab7d47",
+    "bytes": 786432,
+    "archive": "final-build6-byte-archive/eb0b7a5609bec0c2f28c8f1b376dc915770dc214f2dab883dee1000c24ab7d47",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb": {
+    "sha256": "a6b3885adfdd631c13ad8771b6a08d70496f0eea19f44336db963afa3d5e22ab",
+    "bytes": 188580,
+    "archive": "final-build6-byte-archive/a6b3885adfdd631c13ad8771b6a08d70496f0eea19f44336db963afa3d5e22ab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll": {
+    "sha256": "57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "bytes": 20992,
+    "archive": "final-build6-byte-archive/57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb": {
+    "sha256": "9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "bytes": 26196,
+    "archive": "final-build6-byte-archive/9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll": {
+    "sha256": "2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "bytes": 10752,
+    "archive": "final-build6-byte-archive/2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb": {
+    "sha256": "1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "bytes": 14364,
+    "archive": "final-build6-byte-archive/1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll": {
+    "sha256": "f06597f0c313a99884b87d3899727dac9c9e47dc8345e5932d688cf9e16e9c9e",
+    "bytes": 91648,
+    "archive": "final-build6-byte-archive/f06597f0c313a99884b87d3899727dac9c9e47dc8345e5932d688cf9e16e9c9e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb": {
+    "sha256": "28cf03617b6552f76e5afa75b1e20008c8e6cb77c5b55c9b1a57e2902457cff1",
+    "bytes": 29452,
+    "archive": "final-build6-byte-archive/28cf03617b6552f76e5afa75b1e20008c8e6cb77c5b55c9b1a57e2902457cff1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll": {
+    "sha256": "a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "bytes": 1316864,
+    "archive": "final-build6-byte-archive/a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb": {
+    "sha256": "9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "bytes": 634416,
+    "archive": "final-build6-byte-archive/9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.dll": {
+    "sha256": "efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "bytes": 22016,
+    "archive": "final-build6-byte-archive/efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb": {
+    "sha256": "291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "bytes": 26464,
+    "archive": "final-build6-byte-archive/291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll": {
+    "sha256": "f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "bytes": 98816,
+    "archive": "final-build6-byte-archive/f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb": {
+    "sha256": "fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "bytes": 32912,
+    "archive": "final-build6-byte-archive/fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll": {
+    "sha256": "d46bac4175e11d1bdc9364eb18b66fb82fed33eae10a78ec3d73c0c806938e01",
+    "bytes": 71168,
+    "archive": "final-build6-byte-archive/d46bac4175e11d1bdc9364eb18b66fb82fed33eae10a78ec3d73c0c806938e01",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.pdb": {
+    "sha256": "ea91993d4292341d37f85d8680e9d28920dd4f45e7992ab32fb7f42d5f15125e",
+    "bytes": 37776,
+    "archive": "final-build6-byte-archive/ea91993d4292341d37f85d8680e9d28920dd4f45e7992ab32fb7f42d5f15125e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll": {
+    "sha256": "b008a51fa5cf1bb5792fa8c1e352b28fec884bce8b8c0d9440f0148910208f11",
+    "bytes": 1149952,
+    "archive": "final-build6-byte-archive/b008a51fa5cf1bb5792fa8c1e352b28fec884bce8b8c0d9440f0148910208f11",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb": {
+    "sha256": "0b3ed215c27bbd10dfb84e3cd9429c66a0e2b233ec2cc5c9c57543a60315fda3",
+    "bytes": 270180,
+    "archive": "final-build6-byte-archive/0b3ed215c27bbd10dfb84e3cd9429c66a0e2b233ec2cc5c9c57543a60315fda3",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll": {
+    "sha256": "7814a773242f2b844784a378aaf73a0764d524bfa95a5f7cc9b27688d1d2c39c",
+    "bytes": 166912,
+    "archive": "final-build6-byte-archive/7814a773242f2b844784a378aaf73a0764d524bfa95a5f7cc9b27688d1d2c39c",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb": {
+    "sha256": "7720756b55fc5df05b9dee2ea4ba137f25416ee364ae82f1da611674d7b48683",
+    "bytes": 59248,
+    "archive": "final-build6-byte-archive/7720756b55fc5df05b9dee2ea4ba137f25416ee364ae82f1da611674d7b48683",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll": {
+    "sha256": "0ad8e87cdd1dac1964b39599931b06b38c758381ff67d960869da3f3fce56d34",
+    "bytes": 12800,
+    "archive": "final-build6-byte-archive/0ad8e87cdd1dac1964b39599931b06b38c758381ff67d960869da3f3fce56d34",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Aspire.pdb": {
+    "sha256": "37c4219b64ce289cbb1e218dc6a6ae2480acdf78e70f52a0a58ce75b1c618c68",
+    "bytes": 25260,
+    "archive": "final-build6-byte-archive/37c4219b64ce289cbb1e218dc6a6ae2480acdf78e70f52a0a58ce75b1c618c68",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Cli.dll": {
+    "sha256": "cdc524e58dff228641bf58ef07131fb4151a2481894de566f459cfc7484818a8",
+    "bytes": 83456,
+    "archive": "final-build6-byte-archive/cdc524e58dff228641bf58ef07131fb4151a2481894de566f459cfc7484818a8",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Cli.pdb": {
+    "sha256": "eb9c37df5c948eb93f683614187da90df87082d85983f8e1cd2cd78164db4b14",
+    "bytes": 38348,
+    "archive": "final-build6-byte-archive/eb9c37df5c948eb93f683614187da90df87082d85983f8e1cd2cd78164db4b14",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Client.dll": {
+    "sha256": "a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "bytes": 931328,
+    "archive": "final-build6-byte-archive/a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Client.pdb": {
+    "sha256": "bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "bytes": 194472,
+    "archive": "final-build6-byte-archive/bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll": {
+    "sha256": "e8e6f188c75095219e7e8a677123fe4cd3eea11467ad54d94110192e22260265",
+    "bytes": 689152,
+    "archive": "final-build6-byte-archive/e8e6f188c75095219e7e8a677123fe4cd3eea11467ad54d94110192e22260265",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.pdb": {
+    "sha256": "4c9ab83271ad6c992f5ddf76f0865569700b825a4567aa87c1e92f0e15de89ff",
+    "bytes": 151180,
+    "archive": "final-build6-byte-archive/4c9ab83271ad6c992f5ddf76f0865569700b825a4567aa87c1e92f0e15de89ff",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Mcp.dll": {
+    "sha256": "6c2cf2515f33df84151f65d38ea15e87cd3022937d0ed94017d7d48e6b3b61d5",
+    "bytes": 77312,
+    "archive": "final-build6-byte-archive/6c2cf2515f33df84151f65d38ea15e87cd3022937d0ed94017d7d48e6b3b61d5",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Mcp.pdb": {
+    "sha256": "8151be7b6721e49ed2a0c094ff63ed28d170fd9f815c452eca1bb138e48a37eb",
+    "bytes": 34872,
+    "archive": "final-build6-byte-archive/8151be7b6721e49ed2a0c094ff63ed28d170fd9f815c452eca1bb138e48a37eb",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Server.dll": {
+    "sha256": "eb0b7a5609bec0c2f28c8f1b376dc915770dc214f2dab883dee1000c24ab7d47",
+    "bytes": 786432,
+    "archive": "final-build6-byte-archive/eb0b7a5609bec0c2f28c8f1b376dc915770dc214f2dab883dee1000c24ab7d47",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb": {
+    "sha256": "a6b3885adfdd631c13ad8771b6a08d70496f0eea19f44336db963afa3d5e22ab",
+    "bytes": 188580,
+    "archive": "final-build6-byte-archive/a6b3885adfdd631c13ad8771b6a08d70496f0eea19f44336db963afa3d5e22ab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll": {
+    "sha256": "57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "bytes": 20992,
+    "archive": "final-build6-byte-archive/57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb": {
+    "sha256": "9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "bytes": 26196,
+    "archive": "final-build6-byte-archive/9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll": {
+    "sha256": "f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "bytes": 48128,
+    "archive": "final-build6-byte-archive/f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb": {
+    "sha256": "2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "bytes": 31316,
+    "archive": "final-build6-byte-archive/2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll": {
+    "sha256": "2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "bytes": 10752,
+    "archive": "final-build6-byte-archive/2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb": {
+    "sha256": "1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "bytes": 14364,
+    "archive": "final-build6-byte-archive/1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Memories.Aspire.dll": {
+    "sha256": "9b98471d4f73c2f439bc568b85e5ed1b21ad0428c8bb210a9c831d5697282e8d",
+    "bytes": 20480,
+    "archive": "final-build6-byte-archive/9b98471d4f73c2f439bc568b85e5ed1b21ad0428c8bb210a9c831d5697282e8d",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Memories.Aspire.pdb": {
+    "sha256": "891acfb0b6b0fed40dfaa262cbf45b20de0854e929c57ee22ff56a4c5530023f",
+    "bytes": 26352,
+    "archive": "final-build6-byte-archive/891acfb0b6b0fed40dfaa262cbf45b20de0854e929c57ee22ff56a4c5530023f",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll": {
+    "sha256": "f06597f0c313a99884b87d3899727dac9c9e47dc8345e5932d688cf9e16e9c9e",
+    "bytes": 91648,
+    "archive": "final-build6-byte-archive/f06597f0c313a99884b87d3899727dac9c9e47dc8345e5932d688cf9e16e9c9e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb": {
+    "sha256": "28cf03617b6552f76e5afa75b1e20008c8e6cb77c5b55c9b1a57e2902457cff1",
+    "bytes": 29452,
+    "archive": "final-build6-byte-archive/28cf03617b6552f76e5afa75b1e20008c8e6cb77c5b55c9b1a57e2902457cff1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll": {
+    "sha256": "a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "bytes": 1316864,
+    "archive": "final-build6-byte-archive/a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb": {
+    "sha256": "9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "bytes": 634416,
+    "archive": "final-build6-byte-archive/9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Tenants.Client.dll": {
+    "sha256": "efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "bytes": 22016,
+    "archive": "final-build6-byte-archive/efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb": {
+    "sha256": "291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "bytes": 26464,
+    "archive": "final-build6-byte-archive/291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll": {
+    "sha256": "f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "bytes": 98816,
+    "archive": "final-build6-byte-archive/f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb": {
+    "sha256": "fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "bytes": 32912,
+    "archive": "final-build6-byte-archive/fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Folders.LoadTests.Tests.dll": {
+    "sha256": "dc79757da9d680b5f103f0899c8d183573166f2aaa215f638c402270b06de729",
+    "bytes": 36352,
+    "archive": "final-build6-byte-archive/dc79757da9d680b5f103f0899c8d183573166f2aaa215f638c402270b06de729",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Folders.LoadTests.Tests.pdb": {
+    "sha256": "45c1557dcc0e6c3ac27433d1b5645a30d2819c37d680e15fe12e8120bc6b12ce",
+    "bytes": 32780,
+    "archive": "final-build6-byte-archive/45c1557dcc0e6c3ac27433d1b5645a30d2819c37d680e15fe12e8120bc6b12ce",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Folders.LoadTests.dll": {
+    "sha256": "68d72256b93ead995ef404569ba50d83478795146f089fcb59fbf157c4b934b0",
+    "bytes": 102912,
+    "archive": "final-build6-byte-archive/68d72256b93ead995ef404569ba50d83478795146f089fcb59fbf157c4b934b0",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Folders.LoadTests.pdb": {
+    "sha256": "887fd2821243d3f4ea8d22e46a54f1ac030fa894b1c2b6c386ba594ba8fe4ec1",
+    "bytes": 45344,
+    "archive": "final-build6-byte-archive/887fd2821243d3f4ea8d22e46a54f1ac030fa894b1c2b6c386ba594ba8fe4ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll": {
+    "sha256": "f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "bytes": 48128,
+    "archive": "final-build6-byte-archive/f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb": {
+    "sha256": "2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "bytes": 31316,
+    "archive": "final-build6-byte-archive/2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.dll": {
+    "sha256": "a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "bytes": 931328,
+    "archive": "final-build6-byte-archive/a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.pdb": {
+    "sha256": "bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "bytes": 194472,
+    "archive": "final-build6-byte-archive/bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.Mcp.Tests.dll": {
+    "sha256": "7e098a1480982a721493cbb6e65641a10e9b443f1b4fa2106d0197375336dc04",
+    "bytes": 147456,
+    "archive": "final-build6-byte-archive/7e098a1480982a721493cbb6e65641a10e9b443f1b4fa2106d0197375336dc04",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.Mcp.Tests.pdb": {
+    "sha256": "d099a1fdd83c7ba4a3c147bb02b0717a5dbd3f5ff211269d638fe2b952949bb3",
+    "bytes": 53636,
+    "archive": "final-build6-byte-archive/d099a1fdd83c7ba4a3c147bb02b0717a5dbd3f5ff211269d638fe2b952949bb3",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.Mcp.dll": {
+    "sha256": "6c2cf2515f33df84151f65d38ea15e87cd3022937d0ed94017d7d48e6b3b61d5",
+    "bytes": 77312,
+    "archive": "final-build6-byte-archive/6c2cf2515f33df84151f65d38ea15e87cd3022937d0ed94017d7d48e6b3b61d5",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.Mcp.pdb": {
+    "sha256": "8151be7b6721e49ed2a0c094ff63ed28d170fd9f815c452eca1bb138e48a37eb",
+    "bytes": 34872,
+    "archive": "final-build6-byte-archive/8151be7b6721e49ed2a0c094ff63ed28d170fd9f815c452eca1bb138e48a37eb",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll": {
+    "sha256": "f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "bytes": 48128,
+    "archive": "final-build6-byte-archive/f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb": {
+    "sha256": "2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "bytes": 31316,
+    "archive": "final-build6-byte-archive/2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll": {
+    "sha256": "b008a51fa5cf1bb5792fa8c1e352b28fec884bce8b8c0d9440f0148910208f11",
+    "bytes": 1149952,
+    "archive": "final-build6-byte-archive/b008a51fa5cf1bb5792fa8c1e352b28fec884bce8b8c0d9440f0148910208f11",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb": {
+    "sha256": "0b3ed215c27bbd10dfb84e3cd9429c66a0e2b233ec2cc5c9c57543a60315fda3",
+    "bytes": 270180,
+    "archive": "final-build6-byte-archive/0b3ed215c27bbd10dfb84e3cd9429c66a0e2b233ec2cc5c9c57543a60315fda3",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll": {
+    "sha256": "11db6984f0a89ab7f7e98173f1cd840dde2aef29ba001da8c5a78fb0d6641700",
+    "bytes": 3478016,
+    "archive": "final-build6-byte-archive/11db6984f0a89ab7f7e98173f1cd840dde2aef29ba001da8c5a78fb0d6641700",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb": {
+    "sha256": "7cc0ec07b5e4196602388263e793269d7490cdfe8890f744b58245e27a9717ba",
+    "bytes": 804748,
+    "archive": "final-build6-byte-archive/7cc0ec07b5e4196602388263e793269d7490cdfe8890f744b58245e27a9717ba",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll": {
+    "sha256": "7814a773242f2b844784a378aaf73a0764d524bfa95a5f7cc9b27688d1d2c39c",
+    "bytes": 166912,
+    "archive": "final-build6-byte-archive/7814a773242f2b844784a378aaf73a0764d524bfa95a5f7cc9b27688d1d2c39c",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb": {
+    "sha256": "7720756b55fc5df05b9dee2ea4ba137f25416ee364ae82f1da611674d7b48683",
+    "bytes": 59248,
+    "archive": "final-build6-byte-archive/7720756b55fc5df05b9dee2ea4ba137f25416ee364ae82f1da611674d7b48683",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.dll": {
+    "sha256": "eeb83cf822df739fb81d54def1832ef07386e8f7c2f99370d76a42f23f8ec241",
+    "bytes": 128000,
+    "archive": "final-build6-byte-archive/eeb83cf822df739fb81d54def1832ef07386e8f7c2f99370d76a42f23f8ec241",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.pdb": {
+    "sha256": "52b3162e917a0535c882e7d25eedd8347273aab9699e9005818dfc8b7188f293",
+    "bytes": 61924,
+    "archive": "final-build6-byte-archive/52b3162e917a0535c882e7d25eedd8347273aab9699e9005818dfc8b7188f293",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll": {
+    "sha256": "495391de92d0528a05f3000163ae4171b170951d4e97b426c4b459e42a4705aa",
+    "bytes": 1594368,
+    "archive": "final-build6-byte-archive/495391de92d0528a05f3000163ae4171b170951d4e97b426c4b459e42a4705aa",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.pdb": {
+    "sha256": "30e57490ab3b5a12d57b0a143de556d637e390de71d18e04e3a92273b07cf083",
+    "bytes": 314932,
+    "archive": "final-build6-byte-archive/30e57490ab3b5a12d57b0a143de556d637e390de71d18e04e3a92273b07cf083",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.dll": {
+    "sha256": "eb0b7a5609bec0c2f28c8f1b376dc915770dc214f2dab883dee1000c24ab7d47",
+    "bytes": 786432,
+    "archive": "final-build6-byte-archive/eb0b7a5609bec0c2f28c8f1b376dc915770dc214f2dab883dee1000c24ab7d47",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb": {
+    "sha256": "a6b3885adfdd631c13ad8771b6a08d70496f0eea19f44336db963afa3d5e22ab",
+    "bytes": 188580,
+    "archive": "final-build6-byte-archive/a6b3885adfdd631c13ad8771b6a08d70496f0eea19f44336db963afa3d5e22ab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll": {
+    "sha256": "57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "bytes": 20992,
+    "archive": "final-build6-byte-archive/57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb": {
+    "sha256": "9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "bytes": 26196,
+    "archive": "final-build6-byte-archive/9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll": {
+    "sha256": "f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "bytes": 48128,
+    "archive": "final-build6-byte-archive/f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb": {
+    "sha256": "2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "bytes": 31316,
+    "archive": "final-build6-byte-archive/2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll": {
+    "sha256": "2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "bytes": 10752,
+    "archive": "final-build6-byte-archive/2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb": {
+    "sha256": "1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "bytes": 14364,
+    "archive": "final-build6-byte-archive/1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll": {
+    "sha256": "f06597f0c313a99884b87d3899727dac9c9e47dc8345e5932d688cf9e16e9c9e",
+    "bytes": 91648,
+    "archive": "final-build6-byte-archive/f06597f0c313a99884b87d3899727dac9c9e47dc8345e5932d688cf9e16e9c9e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb": {
+    "sha256": "28cf03617b6552f76e5afa75b1e20008c8e6cb77c5b55c9b1a57e2902457cff1",
+    "bytes": 29452,
+    "archive": "final-build6-byte-archive/28cf03617b6552f76e5afa75b1e20008c8e6cb77c5b55c9b1a57e2902457cff1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll": {
+    "sha256": "a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "bytes": 1316864,
+    "archive": "final-build6-byte-archive/a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb": {
+    "sha256": "9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "bytes": 634416,
+    "archive": "final-build6-byte-archive/9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.dll": {
+    "sha256": "efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "bytes": 22016,
+    "archive": "final-build6-byte-archive/efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb": {
+    "sha256": "291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "bytes": 26464,
+    "archive": "final-build6-byte-archive/291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll": {
+    "sha256": "f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "bytes": 98816,
+    "archive": "final-build6-byte-archive/f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb": {
+    "sha256": "fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "bytes": 32912,
+    "archive": "final-build6-byte-archive/fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.Tests.dll": {
+    "sha256": "1b1f11890f6235a73a580b30a99079f1f6275ff49d4d31c3d0c09859804b934f",
+    "bytes": 166912,
+    "archive": "final-build6-byte-archive/1b1f11890f6235a73a580b30a99079f1f6275ff49d4d31c3d0c09859804b934f",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.Tests.pdb": {
+    "sha256": "8d456ee4a474b1d92c3bb6047b37f5024104bafd9014dafa8c1bfe7db40d27cc",
+    "bytes": 57492,
+    "archive": "final-build6-byte-archive/8d456ee4a474b1d92c3bb6047b37f5024104bafd9014dafa8c1bfe7db40d27cc",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll": {
+    "sha256": "f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "bytes": 48128,
+    "archive": "final-build6-byte-archive/f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb": {
+    "sha256": "2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "bytes": 31316,
+    "archive": "final-build6-byte-archive/2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll": {
+    "sha256": "b008a51fa5cf1bb5792fa8c1e352b28fec884bce8b8c0d9440f0148910208f11",
+    "bytes": 1149952,
+    "archive": "final-build6-byte-archive/b008a51fa5cf1bb5792fa8c1e352b28fec884bce8b8c0d9440f0148910208f11",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb": {
+    "sha256": "0b3ed215c27bbd10dfb84e3cd9429c66a0e2b233ec2cc5c9c57543a60315fda3",
+    "bytes": 270180,
+    "archive": "final-build6-byte-archive/0b3ed215c27bbd10dfb84e3cd9429c66a0e2b233ec2cc5c9c57543a60315fda3",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll": {
+    "sha256": "11db6984f0a89ab7f7e98173f1cd840dde2aef29ba001da8c5a78fb0d6641700",
+    "bytes": 3478016,
+    "archive": "final-build6-byte-archive/11db6984f0a89ab7f7e98173f1cd840dde2aef29ba001da8c5a78fb0d6641700",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb": {
+    "sha256": "7cc0ec07b5e4196602388263e793269d7490cdfe8890f744b58245e27a9717ba",
+    "bytes": 804748,
+    "archive": "final-build6-byte-archive/7cc0ec07b5e4196602388263e793269d7490cdfe8890f744b58245e27a9717ba",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll": {
+    "sha256": "7814a773242f2b844784a378aaf73a0764d524bfa95a5f7cc9b27688d1d2c39c",
+    "bytes": 166912,
+    "archive": "final-build6-byte-archive/7814a773242f2b844784a378aaf73a0764d524bfa95a5f7cc9b27688d1d2c39c",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb": {
+    "sha256": "7720756b55fc5df05b9dee2ea4ba137f25416ee364ae82f1da611674d7b48683",
+    "bytes": 59248,
+    "archive": "final-build6-byte-archive/7720756b55fc5df05b9dee2ea4ba137f25416ee364ae82f1da611674d7b48683",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.dll": {
+    "sha256": "eeb83cf822df739fb81d54def1832ef07386e8f7c2f99370d76a42f23f8ec241",
+    "bytes": 128000,
+    "archive": "final-build6-byte-archive/eeb83cf822df739fb81d54def1832ef07386e8f7c2f99370d76a42f23f8ec241",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.pdb": {
+    "sha256": "52b3162e917a0535c882e7d25eedd8347273aab9699e9005818dfc8b7188f293",
+    "bytes": 61924,
+    "archive": "final-build6-byte-archive/52b3162e917a0535c882e7d25eedd8347273aab9699e9005818dfc8b7188f293",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.dll": {
+    "sha256": "a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "bytes": 931328,
+    "archive": "final-build6-byte-archive/a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.pdb": {
+    "sha256": "bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "bytes": 194472,
+    "archive": "final-build6-byte-archive/bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.dll": {
+    "sha256": "eb0b7a5609bec0c2f28c8f1b376dc915770dc214f2dab883dee1000c24ab7d47",
+    "bytes": 786432,
+    "archive": "final-build6-byte-archive/eb0b7a5609bec0c2f28c8f1b376dc915770dc214f2dab883dee1000c24ab7d47",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb": {
+    "sha256": "a6b3885adfdd631c13ad8771b6a08d70496f0eea19f44336db963afa3d5e22ab",
+    "bytes": 188580,
+    "archive": "final-build6-byte-archive/a6b3885adfdd631c13ad8771b6a08d70496f0eea19f44336db963afa3d5e22ab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll": {
+    "sha256": "57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "bytes": 20992,
+    "archive": "final-build6-byte-archive/57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb": {
+    "sha256": "9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "bytes": 26196,
+    "archive": "final-build6-byte-archive/9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll": {
+    "sha256": "f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "bytes": 48128,
+    "archive": "final-build6-byte-archive/f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb": {
+    "sha256": "2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "bytes": 31316,
+    "archive": "final-build6-byte-archive/2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll": {
+    "sha256": "cbe6e7bf5a1f09f08215f5af6c8ee49ee8fb534d12c80ef38b5cb7f6b6c6b3a0",
+    "bytes": 2357248,
+    "archive": "final-build6-byte-archive/cbe6e7bf5a1f09f08215f5af6c8ee49ee8fb534d12c80ef38b5cb7f6b6c6b3a0",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.pdb": {
+    "sha256": "c2c2e0c05aeb3ec6f81da12ea846a347e2a334c0025451859da86f9bce848806",
+    "bytes": 450976,
+    "archive": "final-build6-byte-archive/c2c2e0c05aeb3ec6f81da12ea846a347e2a334c0025451859da86f9bce848806",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.dll": {
+    "sha256": "db67651cdcda8b56d143b4b8305c34be6224b6af782ee9a573962cb33a6db432",
+    "bytes": 246272,
+    "archive": "final-build6-byte-archive/db67651cdcda8b56d143b4b8305c34be6224b6af782ee9a573962cb33a6db432",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.pdb": {
+    "sha256": "fe7bdd09b744856e1f68b2fcf815202d9d0df2f0501021ea0acccc26f7778a98",
+    "bytes": 156880,
+    "archive": "final-build6-byte-archive/fe7bdd09b744856e1f68b2fcf815202d9d0df2f0501021ea0acccc26f7778a98",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.dll": {
+    "sha256": "66644725a7ead0b398fc949aecbabbe9f997582f0e7c282539de8e0326d1d3c8",
+    "bytes": 25088,
+    "archive": "final-build6-byte-archive/66644725a7ead0b398fc949aecbabbe9f997582f0e7c282539de8e0326d1d3c8",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.pdb": {
+    "sha256": "d6bd88474ec583fa074d7f43fe645699e07e920a545edc650bcf75ecbe913665",
+    "bytes": 27100,
+    "archive": "final-build6-byte-archive/d6bd88474ec583fa074d7f43fe645699e07e920a545edc650bcf75ecbe913665",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.dll": {
+    "sha256": "c039dd9b0e35669028a0d0efa42ce0b894f24a3c3147a6842e71d57ce4fb40d6",
+    "bytes": 232960,
+    "archive": "final-build6-byte-archive/c039dd9b0e35669028a0d0efa42ce0b894f24a3c3147a6842e71d57ce4fb40d6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.pdb": {
+    "sha256": "c90c62ab5e58d8d0dc97fa07151202d50ce151c556e05e54ff06da390a02fb65",
+    "bytes": 82748,
+    "archive": "final-build6-byte-archive/c90c62ab5e58d8d0dc97fa07151202d50ce151c556e05e54ff06da390a02fb65",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.dll": {
+    "sha256": "9275a79035aaef32b0dbc84a7afb2bf44804ca6c9ad956623338cb5d3cc8e2bd",
+    "bytes": 2007552,
+    "archive": "final-build6-byte-archive/9275a79035aaef32b0dbc84a7afb2bf44804ca6c9ad956623338cb5d3cc8e2bd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb": {
+    "sha256": "19fadde070367af8977ab884c97c6e1cecb9bfceed57ac8e3df4d14b496adfcf",
+    "bytes": 742808,
+    "archive": "final-build6-byte-archive/19fadde070367af8977ab884c97c6e1cecb9bfceed57ac8e3df4d14b496adfcf",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll": {
+    "sha256": "2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "bytes": 10752,
+    "archive": "final-build6-byte-archive/2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb": {
+    "sha256": "1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "bytes": 14364,
+    "archive": "final-build6-byte-archive/1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll": {
+    "sha256": "f06597f0c313a99884b87d3899727dac9c9e47dc8345e5932d688cf9e16e9c9e",
+    "bytes": 91648,
+    "archive": "final-build6-byte-archive/f06597f0c313a99884b87d3899727dac9c9e47dc8345e5932d688cf9e16e9c9e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb": {
+    "sha256": "28cf03617b6552f76e5afa75b1e20008c8e6cb77c5b55c9b1a57e2902457cff1",
+    "bytes": 29452,
+    "archive": "final-build6-byte-archive/28cf03617b6552f76e5afa75b1e20008c8e6cb77c5b55c9b1a57e2902457cff1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll": {
+    "sha256": "a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "bytes": 1316864,
+    "archive": "final-build6-byte-archive/a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb": {
+    "sha256": "9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "bytes": 634416,
+    "archive": "final-build6-byte-archive/9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.dll": {
+    "sha256": "efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "bytes": 22016,
+    "archive": "final-build6-byte-archive/efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb": {
+    "sha256": "291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "bytes": 26464,
+    "archive": "final-build6-byte-archive/291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll": {
+    "sha256": "f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "bytes": 98816,
+    "archive": "final-build6-byte-archive/f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb": {
+    "sha256": "fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "bytes": 32912,
+    "archive": "final-build6-byte-archive/fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/fr/Hexalith.FrontComposer.Shell.resources.dll": {
+    "sha256": "dd751571663589189d211472131c77da90b2536e353ce6a29695c5d711650844",
+    "bytes": 30208,
+    "archive": "final-build6-byte-archive/dd751571663589189d211472131c77da90b2536e353ce6a29695c5d711650844",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.dll": {
+    "sha256": "a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "bytes": 931328,
+    "archive": "final-build6-byte-archive/a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.pdb": {
+    "sha256": "bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "bytes": 194472,
+    "archive": "final-build6-byte-archive/bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll": {
+    "sha256": "f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "bytes": 48128,
+    "archive": "final-build6-byte-archive/f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb": {
+    "sha256": "2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "bytes": 31316,
+    "archive": "final-build6-byte-archive/2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.E2E.Tests.dll": {
+    "sha256": "9a80a0b340f55609bd73e8e3988514fde719ffd553dd4d36520fb3da3016ee0e",
+    "bytes": 117248,
+    "archive": "final-build6-byte-archive/9a80a0b340f55609bd73e8e3988514fde719ffd553dd4d36520fb3da3016ee0e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.E2E.Tests.pdb": {
+    "sha256": "1648011ea00f3d5cd53c1c18ebe9430f17d35389fbbd8bd6c25e0f0ee6cf5332",
+    "bytes": 46732,
+    "archive": "final-build6-byte-archive/1648011ea00f3d5cd53c1c18ebe9430f17d35389fbbd8bd6c25e0f0ee6cf5332",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.dll": {
+    "sha256": "db67651cdcda8b56d143b4b8305c34be6224b6af782ee9a573962cb33a6db432",
+    "bytes": 246272,
+    "archive": "final-build6-byte-archive/db67651cdcda8b56d143b4b8305c34be6224b6af782ee9a573962cb33a6db432",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.pdb": {
+    "sha256": "fe7bdd09b744856e1f68b2fcf815202d9d0df2f0501021ea0acccc26f7778a98",
+    "bytes": 156880,
+    "archive": "final-build6-byte-archive/fe7bdd09b744856e1f68b2fcf815202d9d0df2f0501021ea0acccc26f7778a98",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.dll": {
+    "sha256": "66644725a7ead0b398fc949aecbabbe9f997582f0e7c282539de8e0326d1d3c8",
+    "bytes": 25088,
+    "archive": "final-build6-byte-archive/66644725a7ead0b398fc949aecbabbe9f997582f0e7c282539de8e0326d1d3c8",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.pdb": {
+    "sha256": "d6bd88474ec583fa074d7f43fe645699e07e920a545edc650bcf75ecbe913665",
+    "bytes": 27100,
+    "archive": "final-build6-byte-archive/d6bd88474ec583fa074d7f43fe645699e07e920a545edc650bcf75ecbe913665",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.dll": {
+    "sha256": "c039dd9b0e35669028a0d0efa42ce0b894f24a3c3147a6842e71d57ce4fb40d6",
+    "bytes": 232960,
+    "archive": "final-build6-byte-archive/c039dd9b0e35669028a0d0efa42ce0b894f24a3c3147a6842e71d57ce4fb40d6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.pdb": {
+    "sha256": "c90c62ab5e58d8d0dc97fa07151202d50ce151c556e05e54ff06da390a02fb65",
+    "bytes": 82748,
+    "archive": "final-build6-byte-archive/c90c62ab5e58d8d0dc97fa07151202d50ce151c556e05e54ff06da390a02fb65",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.dll": {
+    "sha256": "9275a79035aaef32b0dbc84a7afb2bf44804ca6c9ad956623338cb5d3cc8e2bd",
+    "bytes": 2007552,
+    "archive": "final-build6-byte-archive/9275a79035aaef32b0dbc84a7afb2bf44804ca6c9ad956623338cb5d3cc8e2bd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb": {
+    "sha256": "19fadde070367af8977ab884c97c6e1cecb9bfceed57ac8e3df4d14b496adfcf",
+    "bytes": 742808,
+    "archive": "final-build6-byte-archive/19fadde070367af8977ab884c97c6e1cecb9bfceed57ac8e3df4d14b496adfcf",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/fr/Hexalith.FrontComposer.Shell.resources.dll": {
+    "sha256": "dd751571663589189d211472131c77da90b2536e353ce6a29695c5d711650844",
+    "bytes": 30208,
+    "archive": "final-build6-byte-archive/dd751571663589189d211472131c77da90b2536e353ce6a29695c5d711650844",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.dll": {
+    "sha256": "a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "bytes": 931328,
+    "archive": "final-build6-byte-archive/a196c9382c6966d29fc4f050b6e5c17a1095433c1a8c611d956cd96caaa835a6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.pdb": {
+    "sha256": "bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "bytes": 194472,
+    "archive": "final-build6-byte-archive/bc748fa36966e312735cbf58754b70e0a8b64a7e4892510c1e37adf64f462c6a",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll": {
+    "sha256": "f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "bytes": 48128,
+    "archive": "final-build6-byte-archive/f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb": {
+    "sha256": "2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "bytes": 31316,
+    "archive": "final-build6-byte-archive/2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.Tests.dll": {
+    "sha256": "d5b967feab55912c302982df869fe18dc27675de9b2230bec3b2ae6dee17f9d6",
+    "bytes": 303104,
+    "archive": "final-build6-byte-archive/d5b967feab55912c302982df869fe18dc27675de9b2230bec3b2ae6dee17f9d6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.Tests.pdb": {
+    "sha256": "2a9370a03ba00f2d3b8bbedb1571f2aab61b52eae3ba8a9d8a673e45e71504d0",
+    "bytes": 102876,
+    "archive": "final-build6-byte-archive/2a9370a03ba00f2d3b8bbedb1571f2aab61b52eae3ba8a9d8a673e45e71504d0",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.dll": {
+    "sha256": "db67651cdcda8b56d143b4b8305c34be6224b6af782ee9a573962cb33a6db432",
+    "bytes": 246272,
+    "archive": "final-build6-byte-archive/db67651cdcda8b56d143b4b8305c34be6224b6af782ee9a573962cb33a6db432",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.pdb": {
+    "sha256": "fe7bdd09b744856e1f68b2fcf815202d9d0df2f0501021ea0acccc26f7778a98",
+    "bytes": 156880,
+    "archive": "final-build6-byte-archive/fe7bdd09b744856e1f68b2fcf815202d9d0df2f0501021ea0acccc26f7778a98",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.dll": {
+    "sha256": "66644725a7ead0b398fc949aecbabbe9f997582f0e7c282539de8e0326d1d3c8",
+    "bytes": 25088,
+    "archive": "final-build6-byte-archive/66644725a7ead0b398fc949aecbabbe9f997582f0e7c282539de8e0326d1d3c8",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.pdb": {
+    "sha256": "d6bd88474ec583fa074d7f43fe645699e07e920a545edc650bcf75ecbe913665",
+    "bytes": 27100,
+    "archive": "final-build6-byte-archive/d6bd88474ec583fa074d7f43fe645699e07e920a545edc650bcf75ecbe913665",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.dll": {
+    "sha256": "c039dd9b0e35669028a0d0efa42ce0b894f24a3c3147a6842e71d57ce4fb40d6",
+    "bytes": 232960,
+    "archive": "final-build6-byte-archive/c039dd9b0e35669028a0d0efa42ce0b894f24a3c3147a6842e71d57ce4fb40d6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.pdb": {
+    "sha256": "c90c62ab5e58d8d0dc97fa07151202d50ce151c556e05e54ff06da390a02fb65",
+    "bytes": 82748,
+    "archive": "final-build6-byte-archive/c90c62ab5e58d8d0dc97fa07151202d50ce151c556e05e54ff06da390a02fb65",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.dll": {
+    "sha256": "9275a79035aaef32b0dbc84a7afb2bf44804ca6c9ad956623338cb5d3cc8e2bd",
+    "bytes": 2007552,
+    "archive": "final-build6-byte-archive/9275a79035aaef32b0dbc84a7afb2bf44804ca6c9ad956623338cb5d3cc8e2bd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb": {
+    "sha256": "19fadde070367af8977ab884c97c6e1cecb9bfceed57ac8e3df4d14b496adfcf",
+    "bytes": 742808,
+    "archive": "final-build6-byte-archive/19fadde070367af8977ab884c97c6e1cecb9bfceed57ac8e3df4d14b496adfcf",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Testing.dll": {
+    "sha256": "1f138cf798865e0915efbd1fb9587e835439ebb134cf97b7a76c77739e7b2b7d",
+    "bytes": 162304,
+    "archive": "final-build6-byte-archive/1f138cf798865e0915efbd1fb9587e835439ebb134cf97b7a76c77739e7b2b7d",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Testing.pdb": {
+    "sha256": "459d95e06bdb9cbac2d42f205762a597c22e8899afd54400f3e5a0fba9a28c6f",
+    "bytes": 61020,
+    "archive": "final-build6-byte-archive/459d95e06bdb9cbac2d42f205762a597c22e8899afd54400f3e5a0fba9a28c6f",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/fr/Hexalith.FrontComposer.Shell.resources.dll": {
+    "sha256": "dd751571663589189d211472131c77da90b2536e353ce6a29695c5d711650844",
+    "bytes": 30208,
+    "archive": "final-build6-byte-archive/dd751571663589189d211472131c77da90b2536e353ce6a29695c5d711650844",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll": {
+    "sha256": "b008a51fa5cf1bb5792fa8c1e352b28fec884bce8b8c0d9440f0148910208f11",
+    "bytes": 1149952,
+    "archive": "final-build6-byte-archive/b008a51fa5cf1bb5792fa8c1e352b28fec884bce8b8c0d9440f0148910208f11",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb": {
+    "sha256": "0b3ed215c27bbd10dfb84e3cd9429c66a0e2b233ec2cc5c9c57543a60315fda3",
+    "bytes": 270180,
+    "archive": "final-build6-byte-archive/0b3ed215c27bbd10dfb84e3cd9429c66a0e2b233ec2cc5c9c57543a60315fda3",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll": {
+    "sha256": "11db6984f0a89ab7f7e98173f1cd840dde2aef29ba001da8c5a78fb0d6641700",
+    "bytes": 3478016,
+    "archive": "final-build6-byte-archive/11db6984f0a89ab7f7e98173f1cd840dde2aef29ba001da8c5a78fb0d6641700",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb": {
+    "sha256": "7cc0ec07b5e4196602388263e793269d7490cdfe8890f744b58245e27a9717ba",
+    "bytes": 804748,
+    "archive": "final-build6-byte-archive/7cc0ec07b5e4196602388263e793269d7490cdfe8890f744b58245e27a9717ba",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll": {
+    "sha256": "7814a773242f2b844784a378aaf73a0764d524bfa95a5f7cc9b27688d1d2c39c",
+    "bytes": 166912,
+    "archive": "final-build6-byte-archive/7814a773242f2b844784a378aaf73a0764d524bfa95a5f7cc9b27688d1d2c39c",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb": {
+    "sha256": "7720756b55fc5df05b9dee2ea4ba137f25416ee364ae82f1da611674d7b48683",
+    "bytes": 59248,
+    "archive": "final-build6-byte-archive/7720756b55fc5df05b9dee2ea4ba137f25416ee364ae82f1da611674d7b48683",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.dll": {
+    "sha256": "eeb83cf822df739fb81d54def1832ef07386e8f7c2f99370d76a42f23f8ec241",
+    "bytes": 128000,
+    "archive": "final-build6-byte-archive/eeb83cf822df739fb81d54def1832ef07386e8f7c2f99370d76a42f23f8ec241",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.pdb": {
+    "sha256": "52b3162e917a0535c882e7d25eedd8347273aab9699e9005818dfc8b7188f293",
+    "bytes": 61924,
+    "archive": "final-build6-byte-archive/52b3162e917a0535c882e7d25eedd8347273aab9699e9005818dfc8b7188f293",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.dll": {
+    "sha256": "eb0b7a5609bec0c2f28c8f1b376dc915770dc214f2dab883dee1000c24ab7d47",
+    "bytes": 786432,
+    "archive": "final-build6-byte-archive/eb0b7a5609bec0c2f28c8f1b376dc915770dc214f2dab883dee1000c24ab7d47",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb": {
+    "sha256": "a6b3885adfdd631c13ad8771b6a08d70496f0eea19f44336db963afa3d5e22ab",
+    "bytes": 188580,
+    "archive": "final-build6-byte-archive/a6b3885adfdd631c13ad8771b6a08d70496f0eea19f44336db963afa3d5e22ab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll": {
+    "sha256": "57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "bytes": 20992,
+    "archive": "final-build6-byte-archive/57fbd2f61414233045569f1521869f9a786fe4d4e4eeda4641819bec57ddf115",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb": {
+    "sha256": "9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "bytes": 26196,
+    "archive": "final-build6-byte-archive/9847d6ab9f8489338022ef4e9bf2749882c91b36d3baf69551e8bd4a867ee620",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll": {
+    "sha256": "f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "bytes": 48128,
+    "archive": "final-build6-byte-archive/f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb": {
+    "sha256": "2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "bytes": 31316,
+    "archive": "final-build6-byte-archive/2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll": {
+    "sha256": "b5fa455dd4340c463b8e576469519e69a4eb44b99855eec7bbb3c2554c9c064f",
+    "bytes": 352768,
+    "archive": "final-build6-byte-archive/b5fa455dd4340c463b8e576469519e69a4eb44b99855eec7bbb3c2554c9c064f",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.pdb": {
+    "sha256": "5721f51f58d52669ca91c891eb15d6623a17310c8dbd850e7313d46536d33766",
+    "bytes": 95324,
+    "archive": "final-build6-byte-archive/5721f51f58d52669ca91c891eb15d6623a17310c8dbd850e7313d46536d33766",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.dll": {
+    "sha256": "3fdaa68efa5ee730fc328c004f38e1122b738a17a7e0990816ed2018f9ab07a8",
+    "bytes": 144384,
+    "archive": "final-build6-byte-archive/3fdaa68efa5ee730fc328c004f38e1122b738a17a7e0990816ed2018f9ab07a8",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.pdb": {
+    "sha256": "e7f43729e0bb7668cf94240ac92f18c8877e233a720dae310a8837dd1c8a0ee8",
+    "bytes": 56440,
+    "archive": "final-build6-byte-archive/e7f43729e0bb7668cf94240ac92f18c8877e233a720dae310a8837dd1c8a0ee8",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll": {
+    "sha256": "2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "bytes": 10752,
+    "archive": "final-build6-byte-archive/2eaf5d04358d82b35cf1791994367049222729b03240213b31c81ac535e86229",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb": {
+    "sha256": "1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "bytes": 14364,
+    "archive": "final-build6-byte-archive/1436405409728785057e0283f7675d526c014866a73101d31092a835cb331afd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll": {
+    "sha256": "f06597f0c313a99884b87d3899727dac9c9e47dc8345e5932d688cf9e16e9c9e",
+    "bytes": 91648,
+    "archive": "final-build6-byte-archive/f06597f0c313a99884b87d3899727dac9c9e47dc8345e5932d688cf9e16e9c9e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb": {
+    "sha256": "28cf03617b6552f76e5afa75b1e20008c8e6cb77c5b55c9b1a57e2902457cff1",
+    "bytes": 29452,
+    "archive": "final-build6-byte-archive/28cf03617b6552f76e5afa75b1e20008c8e6cb77c5b55c9b1a57e2902457cff1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll": {
+    "sha256": "a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "bytes": 1316864,
+    "archive": "final-build6-byte-archive/a5fe0319805114db65e78cc5c55d524eae9aea94651f814a0038891c3f235c98",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb": {
+    "sha256": "9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "bytes": 634416,
+    "archive": "final-build6-byte-archive/9efe90645664571e79cd688ccc221b204a70b5c7165a17e7ebaf9d283aaeb6db",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.dll": {
+    "sha256": "efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "bytes": 22016,
+    "archive": "final-build6-byte-archive/efedd6cd52695f28376dfea9d7b96f1ad00b3f7fc14c91bb1652c094cff0abf7",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb": {
+    "sha256": "291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "bytes": 26464,
+    "archive": "final-build6-byte-archive/291d6bfaf9c8352d13d5b594518a954dd3247a5db880a77f09402af5f46a3f9e",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll": {
+    "sha256": "f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "bytes": 98816,
+    "archive": "final-build6-byte-archive/f9102c088b8b5409cb801f0fe0e54ba7276c0f7dfc927f1686d53ea09b8a3148",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb": {
+    "sha256": "fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "bytes": 32912,
+    "archive": "final-build6-byte-archive/fca8bff72f19ec05327ea911f1d6a8a3cf9b17a76fae0e173a99bca5c3a1c107",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll": {
+    "sha256": "4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "bytes": 9728,
+    "archive": "final-build6-byte-archive/4ccb647d9411da1c4f86d8c65a50f87672eb0af9e3f13fc19a58b8ee655ec119",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb": {
+    "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "bytes": 15760,
+    "archive": "final-build6-byte-archive/2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": {
+    "sha256": "30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "bytes": 1212928,
+    "archive": "final-build6-byte-archive/30061d2beaf32821c2f2ffb7cb50a2835f3b6b5af16021941cda7a0407b9b553",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb": {
+    "sha256": "b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "bytes": 300824,
+    "archive": "final-build6-byte-archive/b306471013045163bba5a1e3d35773a6d07632ebe5f7b11d399d988b388b1d86",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": {
+    "sha256": "51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "bytes": 723968,
+    "archive": "final-build6-byte-archive/51f11c0ce06b7c0cf99f950174bf7d84a80d76924827f50c7a78e30c28b34ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb": {
+    "sha256": "b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "bytes": 180172,
+    "archive": "final-build6-byte-archive/b470073614c2c66b9b5ed72297caf2c81ca944cb7251e349968fbeacfab71209",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll": {
+    "sha256": "0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "bytes": 47104,
+    "archive": "final-build6-byte-archive/0eed12af2b180191462c6f4d6a34852e7d9a3b6fa8bbc5bdfcdb13b03003044b",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb": {
+    "sha256": "702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "bytes": 20636,
+    "archive": "final-build6-byte-archive/702ebf1202cfb3bd48b7cfdc178d5290729a192caeabca60bbdccd700a1d1ac6",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.Folders.LoadTests.dll": {
+    "sha256": "68d72256b93ead995ef404569ba50d83478795146f089fcb59fbf157c4b934b0",
+    "bytes": 102912,
+    "archive": "final-build6-byte-archive/68d72256b93ead995ef404569ba50d83478795146f089fcb59fbf157c4b934b0",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.Folders.LoadTests.pdb": {
+    "sha256": "887fd2821243d3f4ea8d22e46a54f1ac030fa894b1c2b6c386ba594ba8fe4ec1",
+    "bytes": 45344,
+    "archive": "final-build6-byte-archive/887fd2821243d3f4ea8d22e46a54f1ac030fa894b1c2b6c386ba594ba8fe4ec1",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.Folders.Testing.dll": {
+    "sha256": "f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "bytes": 48128,
+    "archive": "final-build6-byte-archive/f0e38b26b189c9514567e98fa8bc93a5c2494bc685c336716b04f5762531c8fe",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb": {
+    "sha256": "2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "bytes": 31316,
+    "archive": "final-build6-byte-archive/2df3b0776471e02e5095ba55ff290ba5384a645e835a75a19851ea73ed933ffd",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.Folders.dll": {
+    "sha256": "beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "bytes": 2358784,
+    "archive": "final-build6-byte-archive/beb618e62310f846d28aafbcbf46b3e18a3a47ec303278cdd58db1d661aa3fab",
+    "kind": "assemblies_sha256"
+  },
+  "tests/load/bin/Debug/net10.0/Hexalith.Folders.pdb": {
+    "sha256": "9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "bytes": 560880,
+    "archive": "final-build6-byte-archive/9f790da674f48a74fe2c530736b5f013fc67953cb13f6ffccd36f00f3cf9db02",
+    "kind": "assemblies_sha256"
+  },
+  "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs": {
+    "sha256": "9a724e14b885f09b29e40f77f26643487a579c41667fb7c40d7c1a69a532b8d1",
+    "bytes": 19293,
+    "archive": "final-build6-byte-archive/9a724e14b885f09b29e40f77f26643487a579c41667fb7c40d7c1a69a532b8d1",
+    "kind": "files_sha256",
+    "archival_note": "Exact prior bytes recovered by removing only the just-added XML comments; SHA256 matches the before-edit frozen inventory."
+  },
+  "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs": {
+    "sha256": "60abbc0c58827cb5c27c27a7597d8b7daa7c4787b4ce7e1ab856e5aac88c994c",
+    "bytes": 7695,
+    "archive": "final-build6-byte-archive/60abbc0c58827cb5c27c27a7597d8b7daa7c4787b4ce7e1ab856e5aac88c994c",
+    "kind": "files_sha256",
+    "archival_note": "Exact prior bytes recovered by removing only the just-added XML comments; SHA256 matches the before-edit frozen inventory."
+  }
+}

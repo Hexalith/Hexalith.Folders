@@ -1,0 +1,7 @@
+[
+  {
+    "pid": 82091,
+    "signal": "SIGINT",
+    "reason": "Cancel exact task-owned fixture invocation after retained retrying Begin exposed missing epoch setup; preserve cleanup and failure."
+  }
+]

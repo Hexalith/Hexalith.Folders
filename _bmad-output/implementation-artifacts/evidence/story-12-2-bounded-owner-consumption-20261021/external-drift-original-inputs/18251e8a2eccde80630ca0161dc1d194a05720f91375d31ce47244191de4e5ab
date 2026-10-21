@@ -1,0 +1,1253 @@
+@using Hexalith.Tenants.Contracts.Commands
+@using Hexalith.Tenants.Contracts.Enums
+@using Hexalith.Tenants.UI.State.TenantCommands
+@using Hexalith.Tenants.UI.State.TenantDetail
+@using System.Globalization
+@using System.Text
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.JSInterop
+@implements IAsyncDisposable
+@inject IStringLocalizer<TenantsResources> Localizer
+@inject IServiceProvider Services
+
+<section class="tenants-config-set" data-testid="tenants-config-set-flow"
+         aria-labelledby="tenants-config-set-heading" @onkeydown="HandleKeyDownAsync">
+    <header class="tenants-config-set__header">
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="0.25rem">
+            <h3 id="tenants-config-set-heading">@Localizer["Tenants.Configuration.Set.Title"]</h3>
+            <p>@Localizer["Tenants.Configuration.Set.Description", Context.TenantId]</p>
+        </FluentStack>
+        @if (CanOpen)
+        {
+            <span class="tenants-config-set__open-focus" tabindex="-1" @ref="_openElement">
+                <FluentButton Appearance="ButtonAppearance.Primary" data-testid="tenants-config-set-open"
+                              aria-controls="tenants-config-set-editor" aria-describedby="@LauncherDescribedBy"
+                              OnClick="OpenEditorAsync">
+                    @Localizer["Tenants.Configuration.Set.Open"]
+                </FluentButton>
+            </span>
+        }
+    </header>
+
+    <p class="tenants-config-set__narrow" data-testid="tenants-config-set-narrow-unavailable">
+        @Localizer["Tenants.Configuration.Set.Unavailable.Narrow"]
+    </p>
+
+    @if (!string.IsNullOrWhiteSpace(UnavailableReason))
+    {
+        <p class="tenants-config-set__unavailable" id="tenants-config-set-unavailable"
+           data-testid="tenants-config-set-unavailable-reason" role="alert">@UnavailableReason</p>
+    }
+
+    @if (_isOpen)
+    {
+        <EditForm Model="@_formModel" FormName="tenants-config-set-editor" id="tenants-config-set-editor"
+                  class="tenants-config-set__form" OnSubmit="SubmitAsync">
+            <div class="tenants-config-set__field" tabindex="-1" @ref="_namespaceElement">
+                @if (Context.IsGlobalAdministrator)
+                {
+                    <FluentTextInput Id="tenants-config-set-namespace" name="configuration-namespace"
+                                     Label="@Localizer["Tenants.Configuration.Set.Namespace.Label"]"
+                                     Value="@_namespacePrefix" ValueChanged="OnNamespaceInputAsync"
+                                     Disabled="@InputsDisabled"
+                                     data-testid="tenants-config-set-namespace"
+                                     aria-describedby="@NamespaceDescribedBy" />
+                }
+                else
+                {
+                    <FluentSelect TOption="string" TValue="string" Id="tenants-config-set-namespace"
+                                  name="configuration-namespace"
+                                  Label="@Localizer["Tenants.Configuration.Set.Namespace.Label"]"
+                                  Value="@_namespacePrefix" ValueChanged="OnNamespaceInputAsync"
+                                  Disabled="@InputsDisabled"
+                                  data-testid="tenants-config-set-namespace"
+                                  aria-describedby="@NamespaceDescribedBy">
+                        @foreach (string prefix in AuthorizedNamespaces)
+                        {
+                            <FluentOption TValue="string" Value="@prefix">@prefix</FluentOption>
+                        }
+                    </FluentSelect>
+                }
+                <span id="tenants-config-set-namespace-help">@Localizer["Tenants.Configuration.Set.Namespace.Help"]</span>
+            </div>
+
+            <div class="tenants-config-set__field">
+                <FluentTextInput Id="tenants-config-set-key-suffix" @ref="_keyElement"
+                                 name="configuration-key-suffix"
+                                 Label="@Localizer["Tenants.Configuration.Set.KeySuffix.Label"]"
+                                 Value="@_keySuffix" ValueChanged="OnKeySuffixInputAsync"
+                                 Disabled="@InputsDisabled"
+                                 data-testid="tenants-config-set-key-suffix" aria-describedby="@KeyDescribedBy" />
+                <span id="tenants-config-set-key-help">@Localizer["Tenants.Configuration.Set.KeySuffix.Help"]</span>
+            </div>
+
+            <div class="tenants-config-set__field">
+                <FluentTextArea Id="tenants-config-set-value" @ref="_valueElement" name="configuration-value"
+                                Label="@Localizer["Tenants.Configuration.Set.Value.Label"]"
+                                Value="@_value" ValueChanged="OnValueInputAsync"
+                                Disabled="@InputsDisabled"
+                                data-testid="tenants-config-set-value" aria-describedby="@ValueDescribedBy" />
+                <span id="tenants-config-set-value-help">@Localizer["Tenants.Configuration.Set.Value.Help"]</span>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(_validationMessage))
+            {
+                <p id="tenants-config-set-validation" class="tenants-config-set__validation"
+                   data-testid="tenants-config-set-validation" role="alert">@_validationMessage</p>
+            }
+
+            @if (ShouldRenderPreview)
+            {
+                <section class="tenants-config-set__preview" data-testid="tenants-config-set-preview"
+                         aria-labelledby="tenants-config-set-preview-heading">
+                    <h4 id="tenants-config-set-preview-heading">@Localizer["Tenants.Configuration.Set.Preview.Title"]</h4>
+                    <dl>
+                        @foreach ((string Label, string Value, string TestId) item in PreviewItems)
+                        {
+                            <div data-testid="tenants-config-set-preview-item">
+                                <dt>@item.Label</dt><dd data-testid="@item.TestId">@item.Value</dd>
+                            </div>
+                        }
+                    </dl>
+                </section>
+            }
+            else
+            {
+                <p class="tenants-config-set__preview-blocked" id="tenants-config-set-preview-blocked"
+                   data-testid="tenants-config-set-preview-blocked" role="status">@PreviewUnavailableReason</p>
+            }
+
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="0.5rem" Wrap="true"
+                         Class="tenants-config-set__actions">
+                <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary"
+                              data-testid="tenants-config-set-submit" Disabled="@IsSubmitDisabled">
+                    @Localizer["Tenants.Configuration.Set.Submit"]
+                </FluentButton>
+            </FluentStack>
+        </EditForm>
+
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="0.5rem" Wrap="true">
+            <FluentButton Appearance="ButtonAppearance.Outline" data-testid="tenants-config-set-refresh"
+                          Disabled="@(!CanRefresh)" OnClick="RefreshStatusAsync">
+                @Localizer["Tenants.Configuration.Set.Refresh"]
+            </FluentButton>
+            @if (_snapshot.RetainsAttempt)
+            {
+                <FluentButton Appearance="ButtonAppearance.Outline" data-testid="tenants-config-set-abandon"
+                              Disabled="@_isSubmitting"
+                              OnClick="AbandonAttemptAsync">@Localizer["Tenants.Configuration.Set.Abandon"]</FluentButton>
+            }
+            <FluentButton Appearance="ButtonAppearance.Outline" data-testid="tenants-config-set-cancel"
+                          Disabled="@_snapshot.RetainsAttempt" OnClick="CloseEditorAsync">
+                @Localizer["Tenants.Configuration.Set.Cancel"]
+            </FluentButton>
+        </FluentStack>
+    }
+
+    @if (CanRefreshPreviewEvidence)
+    {
+        <FluentButton Appearance="ButtonAppearance.Outline" data-testid="tenants-config-set-preview-refresh"
+                      Disabled="@_isRefreshing" OnClick="RefreshPreviewEvidenceAsync">
+            @Localizer["Tenants.Configuration.Set.RefreshPreview"]
+        </FluentButton>
+    }
+
+    <section class="tenants-config-set__lifecycle" @ref="_lifecycleElement" tabindex="-1"
+             id="tenants-config-set-lifecycle" data-testid="tenants-config-set-lifecycle" aria-labelledby="tenants-config-set-state-label">
+        <h4 id="tenants-config-set-state-label">@Localizer["Tenants.Configuration.Set.Lifecycle.Title"]</h4>
+        <p class="@StateClass" data-testid="tenants-config-set-state">
+            <span aria-hidden="true">@StateSymbol</span><span>@StateText</span>
+        </p>
+        <div data-testid="tenants-config-set-audit">
+            @if (ShouldRenderAuditEntryPoint)
+            {
+                <AuditAvailabilityState AuditState="@_snapshot.AuditState"
+                                        Source="set-configuration" OnRefresh="@(CanRequeryAudit ? EventCallback.Factory.Create(this, RefreshFromAuditControlAsync) : default(EventCallback))" OwnerRefreshIncludesAuditAuthority="true"
+                                        OnContinueReadOnly="@(CanContinueReadOnly ? EventCallback.Factory.Create(this, CloseEditorAsync) : default(EventCallback))"
+                                        InspectAuditAction="@CommandAuditEntryPoint" />
+            }
+        </div>
+        <p data-testid="tenants-config-set-recovery">@RecoveryText</p>
+        @if (!string.IsNullOrWhiteSpace(DisplaySafeMessage))
+        {
+            <p data-testid="tenants-config-set-safe-message">@DisplaySafeMessage</p>
+        }
+        <p class="tenants-config-set__live" data-testid="tenants-config-set-live-region"
+           aria-live="@LiveRegionMode" aria-atomic="true">@StateText</p>
+    </section>
+</section>
+
+@code {
+    [CascadingParameter(Name = "AuditReadAvailable")]
+    public bool AuditReadAvailable { get; set; }
+
+    [CascadingParameter(Name = "AuditReadPending")]
+    public bool AuditReadPending { get; set; }
+
+    [CascadingParameter(Name = "AuditReadDenied")]
+    public bool AuditReadDenied { get; set; }
+
+    [CascadingParameter(Name = "AuditReadUnavailableReason")]
+    public string? AuditReadUnavailableReason { get; set; }
+
+    [CascadingParameter(Name = "DetailAuditReturnUrl")]
+    public string? DetailAuditReturnUrl { get; set; }
+
+    private const int MaxConfigurationKeyLength = 256;
+    private const int MaxConfigurationValueLength = 1024;
+    private readonly object _formModel = new();
+    private TenantSetConfigurationCommandSnapshot _snapshot = TenantSetConfigurationCommandSnapshot.Idle();
+    private string? _namespacePrefix;
+    private string? _keySuffix;
+    private string? _value;
+    private string? _validationMessage;
+    private bool _isOpen;
+    private bool _isSubmitting;
+    private bool _isRefreshing;
+    private TaskCompletionSource? _refreshCompletion;
+    private bool _hasRaisedCommandActivity;
+    private bool _adoptAndRefreshPending;
+    private bool _previewEvidenceUnavailable;
+    private bool _disposed;
+    private long _previewGeneration;
+    private long _attemptGeneration;
+    private long _submitGeneration;
+    private long _activeSubmitGeneration;
+    private string? _contextTenantId;
+    private CancellationTokenSource? _expiryCancellation;
+    private ElementReference _openElement;
+    private ElementReference _namespaceElement;
+    private FluentTextInput _keyElement = default!;
+    private FluentTextArea _valueElement = default!;
+    private ElementReference _lifecycleElement;
+    private bool _focusOpenPending;
+    private bool _focusNamespacePending;
+    private bool _focusKeyPending;
+    private bool _focusValuePending;
+    private bool _focusLifecyclePending;
+
+    [Parameter] public TenantConfigurationManagementContext Context { get; set; } = default!;
+    [Parameter] public TenantHighImpactActionEvidence? Evidence { get; set; }
+    [Parameter] public string? LauncherDescribedBy { get; set; }
+    [Parameter] public TenantDetailSurfaceKind SurfaceKind { get; set; } = TenantDetailSurfaceKind.Unknown;
+    [Parameter] public ReadModelFreshnessState Freshness { get; set; } = ReadModelFreshnessState.Unknown;
+    [Parameter] public ProjectionLifecycleState Lifecycle { get; set; } = ProjectionLifecycleState.Unknown;
+    [Parameter] public bool IsCommandSurfaceAvailable { get; set; } = true;
+    [Parameter] public bool IsPreviewSurfaceAvailable { get; set; } = true;
+    [Parameter] public EventCallback OnProjectionRefreshRequested { get; set; }
+    [Parameter] public EventCallback OnCloseRequested { get; set; }
+    [Parameter] public EventCallback<bool> OnCommandActivityChanged { get; set; }
+    [Parameter] public Func<bool, Task<bool>>? CommandActivityLease { get; set; }
+    [Parameter] public Func<TenantSetConfigurationIntent, Task<TenantSetConfigurationPreview>>? PreviewEvidenceProvider { get; set; }
+    [Parameter] public Func<TenantSetConfigurationIntent, Task<TenantConfigurationProjectionProof>>? ProjectionEvidenceProvider { get; set; }
+
+    internal TenantSetConfigurationCommandSnapshot Snapshot => _snapshot;
+    private TenantSetConfigurationAttemptTracker? AttemptTracker => Services.GetService<TenantSetConfigurationAttemptTracker>();
+    private ITenantCommandGateway? CommandGateway => Services.GetService<ITenantCommandGateway>();
+    private IReadOnlyList<string> AuthorizedNamespaces => Context.AuthorizedPrefixes
+        .Where(static value => !string.Equals(value, "*", StringComparison.Ordinal))
+        .Distinct(StringComparer.Ordinal).OrderBy(static value => value, StringComparer.Ordinal).ToArray();
+
+    private string? UnavailableReason
+    {
+        get
+        {
+            if (Evidence is not null)
+            {
+                TenantHighImpactActionAvailability availability = TenantHighImpactActionAvailabilityEvaluator.Evaluate(Evidence);
+                if (!availability.IsEligible)
+                {
+                    return Localizer[availability.SafeMessageKey].Value;
+                }
+
+                if (Context?.IsAvailable != true
+                    || Evidence.Action is not TenantHighImpactAction.SetConfiguration
+                    || !string.Equals(Evidence.TenantId, Context.TenantId, StringComparison.Ordinal))
+                {
+                    return Localizer["Tenants.Configuration.Set.Unavailable.Scope"].Value;
+                }
+
+                return !HasPreviewCapability
+                    ? Localizer["Tenants.Configuration.Set.Unavailable.PreviewCapability"].Value
+                    : (!IsCommandSurfaceAvailable && !_snapshot.RetainsAttempt) || CommandGateway is null
+                    ? Localizer["Tenants.Configuration.Set.Unavailable.CommandSurface"].Value
+                    : null;
+            }
+
+            return Context?.IsAvailable != true ? Localizer["Tenants.Configuration.Set.Unavailable.Scope"].Value
+                : SurfaceKind is TenantDetailSurfaceKind.Unauthorized ? Localizer["Tenants.Configuration.Set.Unavailable.Authorization"].Value
+                : SurfaceKind is TenantDetailSurfaceKind.Unavailable or TenantDetailSurfaceKind.Unknown or TenantDetailSurfaceKind.Degraded
+                    ? Localizer["Tenants.Configuration.Set.Unavailable.ProjectionState"].Value
+                : SurfaceKind is TenantDetailSurfaceKind.Stale || Freshness is not ReadModelFreshnessState.Current
+                    ? Localizer["Tenants.Configuration.Set.Unavailable.Freshness"].Value
+                : Lifecycle is not ProjectionLifecycleState.Current ? Localizer["Tenants.Configuration.Set.Unavailable.ProjectionLifecycle"].Value
+                : Context.TenantStatus is not TenantStatus.Active ? Localizer["Tenants.Configuration.Set.Unavailable.TenantLifecycle"].Value
+                : string.IsNullOrWhiteSpace(Context.TenantId) ? Localizer["Tenants.Configuration.Set.Unavailable.Identity"].Value
+                : !Context.IsGlobalAdministrator && AuthorizedNamespaces.Count == 0
+                    ? Localizer["Tenants.Configuration.Set.Unavailable.Scope"].Value
+                : !HasPreviewCapability
+                    ? Localizer["Tenants.Configuration.Set.Unavailable.PreviewCapability"].Value
+                : (!IsCommandSurfaceAvailable && !_snapshot.RetainsAttempt) || CommandGateway is null
+                    ? Localizer["Tenants.Configuration.Set.Unavailable.CommandSurface"].Value
+                    : null;
+        }
+    }
+
+    private bool HasPreviewCapability
+        => IsPreviewSurfaceAvailable;
+    private bool CanOpen => !_isOpen && string.IsNullOrWhiteSpace(UnavailableReason);
+    private bool IsPreviewComplete => _snapshot.Preview is { IsComplete: true } preview
+        && _snapshot.Intent is not null
+        && TryBuildIntent(_value, out TenantSetConfigurationIntent? currentIntent, showValidation: false)
+        && Equals(currentIntent, _snapshot.Intent)
+        && Equals(preview.Intent, currentIntent);
+    private bool ShouldRenderPreview => _snapshot.Preview is { IsComplete: true }
+        && (_snapshot.RetainsAttempt
+            || _snapshot.State is TenantCommandLifecycleState.AlreadyApplied
+                or TenantCommandLifecycleState.Confirmed
+                or TenantCommandLifecycleState.Rejected
+                or TenantCommandLifecycleState.Failed
+            || IsPreviewComplete);
+    private bool IsSubmitDisabled => _isSubmitting || _snapshot.RetainsAttempt || !IsPreviewComplete
+        || !string.IsNullOrWhiteSpace(UnavailableReason);
+    private bool CanRefresh => !_isRefreshing && _snapshot.RetainsAttempt;
+    private bool CanRefreshPreviewEvidence
+        => !_snapshot.RetainsAttempt
+            && (!HasPreviewCapability || _previewEvidenceUnavailable);
+    private bool InputsDisabled => _isSubmitting || _snapshot.RetainsAttempt;
+    private string PreviewUnavailableReason => !string.IsNullOrWhiteSpace(UnavailableReason)
+        ? UnavailableReason : _validationMessage ?? Localizer["Tenants.Configuration.Set.Preview.Blocked.Required"];
+
+    private IReadOnlyList<(string Label, string Value, string TestId)> PreviewItems
+    {
+        get
+        {
+            TenantSetConfigurationPreview? preview = _snapshot.Preview;
+            if (preview is null || !preview.IsComplete) return [];
+            return
+            [
+                (Localizer["Tenants.Configuration.Set.Preview.Tenant"], preview.Intent.TenantId, "tenants-config-set-tenant-id"),
+                (Localizer["Tenants.Configuration.Set.Preview.Namespace"], preview.Intent.NamespacePrefix, "tenants-config-set-preview-namespace"),
+                (Localizer["Tenants.Configuration.Set.Preview.Key"], preview.Intent.FullKey, "tenants-config-set-preview-key"),
+                (Localizer["Tenants.Configuration.Set.Preview.CurrentState"], Localizer[$"Tenants.Configuration.Set.Preview.CurrentState.{preview.CurrentState}"], "tenants-config-set-preview-current-state"),
+                (Localizer["Tenants.Configuration.Set.Preview.IntendedEffect"], Localizer["Tenants.Configuration.Set.Preview.IntendedEffect.Value"], "tenants-config-set-preview-effect"),
+                (Localizer["Tenants.Configuration.Set.Preview.Freshness"], Localizer["Tenants.Configuration.Set.Preview.FreshnessAndLifecycle.Value", Localizer[$"Tenants.Configuration.Set.Freshness.{LocalizedFreshness(preview.Freshness)}"], Localizer[$"Tenants.Configuration.Set.Lifecycle.{LocalizedLifecycle(preview.Lifecycle)}"]], "tenants-config-set-preview-freshness"),
+                (Localizer["Tenants.Configuration.Set.Preview.Authorization"], Localizer["Tenants.Configuration.Set.Preview.Authorization.Value"], "tenants-config-set-preview-authorization"),
+                (Localizer["Tenants.Configuration.Set.Preview.KnownConsequences"], Localizer["Tenants.Configuration.Set.Preview.ConsequencesAndUnknowns.Value"], "tenants-config-set-preview-consequences"),
+                (Localizer["Tenants.Configuration.Set.Preview.AuditExpectation"], Localizer["Tenants.Configuration.Set.Preview.AuditExpectation.Value"], "tenants-config-set-preview-audit"),
+                (Localizer["Tenants.Configuration.Set.Preview.RecoveryPath"], Localizer["Tenants.Configuration.Set.Preview.RecoveryPath.Value"], "tenants-config-set-preview-recovery"),
+            ];
+        }
+    }
+
+    private string StateClass => $"tenants-config-set__state tenants-config-set__state--{_snapshot.State.ToString().ToLowerInvariant()}";
+    private string StateSymbol => _snapshot.State switch
+    {
+        TenantCommandLifecycleState.Confirmed or TenantCommandLifecycleState.AlreadyApplied => "OK",
+        TenantCommandLifecycleState.Rejected or TenantCommandLifecycleState.Failed => "!",
+        TenantCommandLifecycleState.Degraded or TenantCommandLifecycleState.UnableToVerify => "?",
+        _ => ">",
+    };
+    private string StateText => Localizer[$"Tenants.Configuration.Set.State.{LocalizedCommandState(_snapshot.State)}"];
+    // The entry point names the audit state with the shared availability label, never a flow-local duplicate.
+    private string AuditStateLabel
+        => TenantAuditAvailability.StateLabelKeyFor(_snapshot.AuditState) is { } key ? Localizer[key] : string.Empty;
+
+    // Refresh is offered only while the attempt can actually be re-queried; a no-op control would only
+    // exhaust the retry bound behind a misleading limit note.
+    private bool CanRequeryAudit
+        => _snapshot.RetainsAttempt;
+
+    // Continue read-only closes the editor through the Cancel path, which refuses while an attempt is retained;
+    // the control is offered only while the editor is open and that path actually closes, never as a dead control.
+    private bool CanContinueReadOnly
+        => _isOpen && !_snapshot.RetainsAttempt;
+
+    // No fragment at all when audit read is denied, so the shared control renders no empty Inspect-audit shell.
+    private RenderFragment? CommandAuditEntryPoint
+        => AuditReadDenied ? null : CommandAuditEntryPointTemplate;
+
+    private RenderFragment CommandAuditEntryPointTemplate
+        => @<AuditEvidenceEntryPoint TenantId="@Context.TenantId" SourceKind="command-result"
+                                     SourceTestId="tenants-command-audit-entrypoint"
+                                     Label="@Localizer["Tenants.Audit.Availability.Action.InspectAudit"]"
+                                     AccessibleName="@Localizer["Tenants.Audit.EntryPoint.Accessible.Command", AuditStateLabel, Context.TenantId]"
+                                     ReturnUrl="@CommandAuditReturnUrl" ReturnFocus="tenants-config-set-lifecycle"
+                                     AuthorityPending="@AuditReadPending"
+                                     UnavailableReason="@AuditReadUnavailableReason"
+                                     IsAvailable="@AuditReadAvailable" />;
+    // The shared control's Refresh can resolve the audit state to NotStarted, which unmounts the control and its
+    // focused Refresh button; focus then moves to the lifecycle section instead of falling back to the document body.
+    private async Task RefreshFromAuditControlAsync()
+    {
+        await RefreshStatusAsync().ConfigureAwait(false);
+        await InvokeAsync(() =>
+        {
+            if (!ShouldRenderAuditEntryPoint)
+            {
+                _focusLifecyclePending = true;
+            }
+        }).ConfigureAwait(false);
+    }
+
+    private bool ShouldRenderAuditEntryPoint => _snapshot.AuditState is not TenantCommandAuditState.NotStarted;
+    private string? CommandAuditReturnUrl => DetailAuditReturnUrl;
+    private string RecoveryText => Localizer[$"Tenants.Configuration.Set.Recovery.{LocalizedCommandState(_snapshot.State)}"];
+    private string LiveRegionMode => _snapshot.LiveRegionPoliteness is TenantCommandLiveRegionPoliteness.Assertive ? "assertive" : "polite";
+    private string KeyDescribedBy => DescribedBy("tenants-config-set-key-help");
+    private string NamespaceDescribedBy => DescribedBy("tenants-config-set-namespace-help");
+    private string ValueDescribedBy => DescribedBy("tenants-config-set-value-help");
+    private string? DisplaySafeMessage => !string.IsNullOrWhiteSpace(_snapshot.SafeMessageKey)
+        ? Localizer[_snapshot.SafeMessageKey].Value : _snapshot.SafeMessage;
+
+    protected override void OnParametersSet()
+    {
+        string tenantId = Context?.TenantId ?? string.Empty;
+        if (!string.Equals(_contextTenantId, tenantId, StringComparison.Ordinal))
+        {
+            _contextTenantId = tenantId;
+            InvalidatePendingOperations();
+            CancelExpirySchedule();
+            _namespacePrefix = null;
+            _keySuffix = null;
+            _value = null;
+            _validationMessage = null;
+            _previewEvidenceUnavailable = false;
+            _snapshot = TenantSetConfigurationCommandSnapshot.Idle();
+            _isOpen = false;
+            _isRefreshing = false;
+            _isSubmitting = false;
+            _activeSubmitGeneration = 0;
+            _hasRaisedCommandActivity = false;
+            _adoptAndRefreshPending = false;
+        }
+
+        TenantSetConfigurationCommandSnapshot? retained = AttemptTracker?.Find(tenantId);
+        if (retained is null || retained.Intent is null
+            || string.Equals(retained.MessageId, _snapshot.MessageId, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        InvalidatePendingOperations();
+        _snapshot = retained;
+        _namespacePrefix = retained.Intent.NamespacePrefix;
+        _keySuffix = retained.Intent.KeySuffix;
+        _value = null;
+        _validationMessage = null;
+        _previewEvidenceUnavailable = false;
+        _isOpen = true;
+        _adoptAndRefreshPending = true;
+        ScheduleAttemptExpiry();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_adoptAndRefreshPending)
+        {
+            _adoptAndRefreshPending = false;
+            if (await SetCommandActivityRaisedAsync(true).ConfigureAwait(false))
+                await RefreshStatusAsync().ConfigureAwait(false);
+        }
+        if (_focusOpenPending)
+        {
+            _focusOpenPending = false;
+            await FocusSafelyAsync(CanOpen ? _openElement : _lifecycleElement).ConfigureAwait(false);
+        }
+        if (_focusNamespacePending)
+        {
+            _focusNamespacePending = false;
+            if (_isOpen)
+            {
+                await FocusNamespaceAsync().ConfigureAwait(false);
+            }
+        }
+        if (_focusKeyPending) { _focusKeyPending = false; if (_isOpen) await FocusSafelyAsync(_keyElement.Element).ConfigureAwait(false); }
+        if (_focusValuePending) { _focusValuePending = false; if (_isOpen) await FocusSafelyAsync(_valueElement.Element).ConfigureAwait(false); }
+        if (_focusLifecyclePending) { _focusLifecyclePending = false; await FocusSafelyAsync(_lifecycleElement).ConfigureAwait(false); }
+    }
+
+    internal async Task ApplySignalRNudgeAsync()
+    {
+        if (!_snapshot.RetainsAttempt) return;
+        SetSnapshot(_snapshot.SignalRNudge());
+        await RefreshAttemptStatusAsync(waitForRunningRefresh: false).ConfigureAwait(false);
+    }
+    internal void ApplySignalRNudge() => SetSnapshot(_snapshot.SignalRNudge());
+    internal void ApplyProjectionEvidence(TenantConfigurationProjectionProof? proof) => SetSnapshot(_snapshot.ConfirmProjection(proof));
+
+    private Task OpenEditorAsync()
+    {
+        InvalidatePendingOperations();
+        _validationMessage = null;
+        _namespacePrefix = Context.IsGlobalAdministrator ? null : AuthorizedNamespaces.FirstOrDefault();
+        _keySuffix = null;
+        _value = null;
+        _snapshot = TenantSetConfigurationCommandSnapshot.Idle();
+        _previewEvidenceUnavailable = false;
+        _isOpen = true;
+        _focusNamespacePending = Context.IsGlobalAdministrator;
+        _focusKeyPending = !Context.IsGlobalAdministrator;
+        return Task.CompletedTask;
+    }
+
+    private async Task CloseEditorAsync()
+    {
+        if (_snapshot.RetainsAttempt) return;
+        _isOpen = false;
+        _validationMessage = null;
+        _value = null;
+        _focusOpenPending = true;
+        await InvokeAsync(() => OnCloseRequested.InvokeAsync()).ConfigureAwait(false);
+    }
+
+    private async Task OnNamespaceInputAsync(string? value)
+    {
+        if (InputsDisabled) return;
+        _namespacePrefix = value;
+        await RefreshPreviewAsync().ConfigureAwait(false);
+    }
+
+    private async Task OnKeySuffixInputAsync(string? value)
+    {
+        if (InputsDisabled) return;
+        _keySuffix = value;
+        await RefreshPreviewAsync().ConfigureAwait(false);
+    }
+
+    private async Task OnValueInputAsync(string? value)
+    {
+        if (InputsDisabled) return;
+        _value = value;
+        await RefreshPreviewAsync().ConfigureAwait(false);
+    }
+
+    private async Task RefreshPreviewAsync()
+    {
+        long generation = Interlocked.Increment(ref _previewGeneration);
+        string tenantId = Context.TenantId;
+        _validationMessage = null;
+        _previewEvidenceUnavailable = false;
+        if (_isSubmitting || _snapshot.RetainsAttempt
+            || !TryBuildIntent(_value, out TenantSetConfigurationIntent? intent, false)
+            || intent is null)
+        {
+            if (!_isSubmitting && !_snapshot.RetainsAttempt) _snapshot = TenantSetConfigurationCommandSnapshot.Idle();
+            return;
+        }
+        TenantSetConfigurationPreview preview;
+        try
+        {
+            preview = PreviewEvidenceProvider is null ? TenantSetConfigurationPreview.Unavailable(intent)
+                : await PreviewEvidenceProvider(intent).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) { preview = TenantSetConfigurationPreview.Unavailable(intent); }
+        catch (Exception) { preview = TenantSetConfigurationPreview.Unavailable(intent); }
+        if (generation != _previewGeneration
+            || _isSubmitting
+            || _snapshot.RetainsAttempt
+            || !string.Equals(Context.TenantId, tenantId, StringComparison.Ordinal)
+            || !Equals(preview.Intent, intent)
+            || !preview.IsComplete)
+        {
+            if (generation == _previewGeneration
+                && !_isSubmitting
+                && !_snapshot.RetainsAttempt
+                && string.Equals(Context.TenantId, tenantId, StringComparison.Ordinal))
+            {
+                _previewEvidenceUnavailable = true;
+                _snapshot = TenantSetConfigurationCommandSnapshot.Blocked(
+                    Localizer["Tenants.Configuration.Set.Unavailable.PreviewEvidence"], TenantCommandFocusTarget.Submit);
+            }
+            return;
+        }
+        _previewEvidenceUnavailable = false;
+        SetSnapshot(TenantSetConfigurationCommandSnapshot.Idle().Previewed(preview));
+    }
+
+    private async Task SubmitAsync()
+    {
+        _validationMessage = null;
+        if (_isSubmitting || _snapshot.RetainsAttempt) return;
+        _isSubmitting = true;
+        long submitGeneration = Interlocked.Increment(ref _submitGeneration);
+        _activeSubmitGeneration = submitGeneration;
+        long inputGeneration = Interlocked.Increment(ref _previewGeneration);
+        string tenantId = Context.TenantId;
+        string? rawValue = _value;
+        TenantSetConfigurationAttemptTracker? tracker = null;
+        string? messageId = null;
+        bool leaseRequested = false;
+        bool retainedOwnershipEstablished = false;
+        long retainedAttemptGeneration = 0;
+        Func<bool, Task<bool>>? capturedLease = CommandActivityLease;
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(UnavailableReason))
+            {
+                SetSnapshot(TenantSetConfigurationCommandSnapshot.Blocked(UnavailableReason, TenantCommandFocusTarget.Submit));
+                return;
+            }
+            if (!TryBuildIntent(rawValue, out TenantSetConfigurationIntent? intent, true)
+                || intent is null
+                || rawValue is null)
+            {
+                return;
+            }
+
+            TenantSetConfigurationPreview preview;
+            try
+            {
+                preview = PreviewEvidenceProvider is null ? TenantSetConfigurationPreview.Unavailable(intent)
+                    : await PreviewEvidenceProvider(intent).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) { preview = TenantSetConfigurationPreview.Unavailable(intent); }
+            catch (Exception) { preview = TenantSetConfigurationPreview.Unavailable(intent); }
+            if (!IsCurrentSubmit(submitGeneration, inputGeneration, tenantId)
+                || !preview.IsComplete
+                || !Equals(preview.Intent, intent))
+            {
+                if (IsCurrentSubmit(submitGeneration, inputGeneration, tenantId))
+                {
+                    _previewEvidenceUnavailable = true;
+                    SetSnapshot(TenantSetConfigurationCommandSnapshot.Blocked(
+                        Localizer["Tenants.Configuration.Set.Unavailable.PreviewEvidence"], TenantCommandFocusTarget.Submit));
+                }
+                return;
+            }
+            if (!string.IsNullOrWhiteSpace(UnavailableReason))
+            {
+                SetSnapshot(TenantSetConfigurationCommandSnapshot.Blocked(
+                    UnavailableReason,
+                    TenantCommandFocusTarget.Submit));
+                return;
+            }
+
+            _previewEvidenceUnavailable = false;
+            SetSnapshot(TenantSetConfigurationCommandSnapshot.Idle().Previewed(preview));
+            if (preview.IsAlreadyApplied)
+            {
+                SetSnapshot(_snapshot.AlreadyApplied(preview, Localizer["Tenants.Configuration.Set.AlreadyApplied.BeforeSubmit"]));
+                _value = null;
+                return;
+            }
+
+            ITenantCommandGateway? gateway = CommandGateway;
+            tracker = AttemptTracker;
+            if (gateway is null || tracker is null || !gateway.SupportsTrackedSetConfigurationDispatch)
+            {
+                SetSnapshot(TenantSetConfigurationCommandSnapshot.Blocked(
+                    Localizer["Tenants.Configuration.Set.Unavailable.CommandSurface"], TenantCommandFocusTarget.Submit));
+                return;
+            }
+
+            DateTimeOffset startedAtUtc;
+            try
+            {
+                (messageId, startedAtUtc) = tracker.BeginDispatch(
+                    intent,
+                    preview.ProjectionVersion!,
+                    DateTimeOffset.UtcNow);
+            }
+            catch (Exception)
+            {
+                SetSnapshot(TenantSetConfigurationCommandSnapshot.Blocked(
+                    Localizer["Tenants.Configuration.Set.UnableToVerify.TrackingMismatch"], TenantCommandFocusTarget.Submit));
+                return;
+            }
+
+            if (!IsCurrentSubmit(submitGeneration, inputGeneration, tenantId))
+            {
+                return;
+            }
+
+            leaseRequested = true;
+            if (!await SetCommandActivityRaisedAsync(true, capturedLease).ConfigureAwait(false))
+            {
+                SetSnapshot(TenantSetConfigurationCommandSnapshot.Blocked(
+                    Localizer["Tenants.Commands.Unavailable.AggregateInFlight"], TenantCommandFocusTarget.Submit));
+                return;
+            }
+            if (!IsCurrentSubmit(submitGeneration, inputGeneration, tenantId))
+            {
+                return;
+            }
+
+            retainedAttemptGeneration = Interlocked.Increment(ref _attemptGeneration);
+            SetSnapshot(_snapshot.RequestSent(preview, messageId, startedAtUtc));
+            retainedOwnershipEstablished = true;
+            var request = new SetTenantConfiguration(intent.TenantId, intent.FullKey, rawValue);
+            TenantCommandSubmissionResult result = await gateway.SetTenantConfigurationTrackedAsync(
+                request, messageId, CancellationToken.None).ConfigureAwait(false);
+            if (!IsCurrentAttempt(retainedAttemptGeneration, tenantId, messageId))
+            {
+                return;
+            }
+            _value = null;
+            if (result.IsAmbiguousFailure)
+                SetSnapshot(_snapshot.AmbiguousSubmission(
+                    result.SafeMessageKey ?? "Tenants.Configuration.Set.SubmissionEvidence.Ambiguous"));
+            else if (result.State is TenantCommandLifecycleState.Accepted)
+            {
+                SetSnapshot(_snapshot.Accepted(result));
+                await RefreshStatusAsync().ConfigureAwait(false);
+            }
+            else
+                SetSnapshot(_snapshot with
+                {
+                    State = result.State,
+                    SafeMessage = null,
+                    SafeMessageKey = result.SafeMessageKey ?? SubmissionMessageKey(result.State),
+                    RejectionCode = result.RejectionCode,
+                    AuditState = TenantCommandAuditStates.FromSubmission(result),
+                    FocusTarget = TenantCommandFocusTarget.Refresh,
+                    LiveRegionPoliteness = TenantCommandLiveRegionPoliteness.Assertive,
+                });
+        }
+        catch (OperationCanceledException)
+        {
+            if (retainedOwnershipEstablished
+                && messageId is not null
+                && IsCurrentAttempt(retainedAttemptGeneration, tenantId, messageId))
+            {
+                _value = null;
+                SetSnapshot(_snapshot.AmbiguousSubmission("Tenants.Configuration.Set.SubmissionEvidence.Ambiguous"));
+            }
+        }
+        catch (Exception)
+        {
+            if (retainedOwnershipEstablished
+                && messageId is not null
+                && IsCurrentAttempt(retainedAttemptGeneration, tenantId, messageId))
+            {
+                _value = null;
+                SetSnapshot(_snapshot.AmbiguousSubmission("Tenants.Configuration.Set.SubmissionEvidence.Ambiguous"));
+            }
+            else if (IsCurrentSubmit(submitGeneration, inputGeneration, tenantId))
+            {
+                SetSnapshot(TenantSetConfigurationCommandSnapshot.Blocked(
+                    Localizer["Tenants.Configuration.Set.Unavailable.CommandSurface"], TenantCommandFocusTarget.Submit));
+            }
+        }
+        finally
+        {
+            if (!retainedOwnershipEstablished && tracker is not null && messageId is not null)
+            {
+                tracker.Forget(tenantId, messageId);
+            }
+            if (leaseRequested && !retainedOwnershipEstablished)
+            {
+                await ReleaseCommandActivityAsync(capturedLease).ConfigureAwait(false);
+            }
+            if (_activeSubmitGeneration == submitGeneration)
+            {
+                _activeSubmitGeneration = 0;
+                _isSubmitting = false;
+                if (_snapshot.RetainsAttempt && _snapshot.IsRetentionExpired(DateTimeOffset.UtcNow))
+                {
+                    await ExpireRetainedAttemptAsync(DateTimeOffset.UtcNow).ConfigureAwait(false);
+                }
+                else
+                {
+                    await UpdateCommandActivityForSnapshotAsync().ConfigureAwait(false);
+                }
+            }
+        }
+    }
+
+    // A user-initiated refresh that arrives while one is running waits for it and then runs a lookup of its own, so
+    // the shared control's bounded Refresh never counts a merged click as an unchanged retry that no lookup served.
+    // SignalR nudges, and anything reachable from inside a running refresh, must pass false: waiting there would
+    // deadlock.
+    private Task RefreshStatusAsync()
+        => RefreshAttemptStatusAsync(waitForRunningRefresh: true);
+
+    private async Task RefreshAttemptStatusAsync(bool waitForRunningRefresh)
+    {
+        if (_isRefreshing)
+        {
+            if (waitForRunningRefresh && _refreshCompletion is { } running)
+            {
+                // The running refresh started before this request, so its lookup cannot serve it: wait for it,
+                // then run a lookup of its own on the renderer dispatcher.
+                await running.Task.ConfigureAwait(false);
+                await InvokeAsync(() => RefreshAttemptStatusAsync(waitForRunningRefresh: true)).ConfigureAwait(false);
+            }
+
+            return;
+        }
+
+        if (!_snapshot.RetainsAttempt || _snapshot.Intent is null) return;
+        string tenantId = _snapshot.Intent.TenantId;
+        string? messageId = _snapshot.MessageId;
+        long attemptGeneration = _attemptGeneration;
+        if (string.IsNullOrWhiteSpace(messageId)) return;
+        _isRefreshing = true;
+        TaskCompletionSource completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        _refreshCompletion = completion;
+        try
+        {
+            if (_snapshot.IsRetentionExpired(DateTimeOffset.UtcNow))
+            {
+                await ExpireRetainedAttemptAsync(DateTimeOffset.UtcNow).ConfigureAwait(false);
+                return;
+            }
+            ITenantCommandGateway? gateway = CommandGateway;
+            if (gateway is not null && _snapshot.MessageId is not null && _snapshot.CorrelationId is not null)
+            {
+                TenantCommandStatusResult status = await gateway.GetStatusAsync(
+                    new(_snapshot.MessageId, _snapshot.CorrelationId, _snapshot.Intent.TenantId)
+                    {
+                        ExpectedDomain = Hexalith.Tenants.Contracts.Identity.TenantIdentity.Domain,
+                    }, CancellationToken.None)
+                    .ConfigureAwait(false);
+                if (!IsCurrentAttempt(attemptGeneration, tenantId, messageId)) return;
+                SetSnapshot(_snapshot.ApplyStatus(status));
+            }
+
+            if (!IsCurrentAttempt(attemptGeneration, tenantId, messageId)
+                || _snapshot.State is not TenantCommandLifecycleState.Accepted
+                    and not TenantCommandLifecycleState.ProjectionPending)
+            {
+                return;
+            }
+
+            try
+            {
+                await InvokeAsync(() => OnProjectionRefreshRequested.InvokeAsync()).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) { throw; }
+            catch (Exception)
+            {
+                if (IsCurrentAttempt(attemptGeneration, tenantId, messageId)
+                    && _snapshot.State is (TenantCommandLifecycleState.Accepted
+                        or TenantCommandLifecycleState.ProjectionPending))
+                {
+                    SetSnapshot(ProjectionRefreshFailed());
+                }
+                return;
+            }
+
+            if (ProjectionEvidenceProvider is not null
+                && _snapshot.Intent is { } intent
+                && IsCurrentAttempt(attemptGeneration, tenantId, messageId))
+            {
+                TenantConfigurationProjectionProof proof;
+                try
+                {
+                    proof = await ProjectionEvidenceProvider(intent).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    if (IsCurrentAttempt(attemptGeneration, tenantId, messageId)
+                        && _snapshot.State is (TenantCommandLifecycleState.Accepted
+                            or TenantCommandLifecycleState.ProjectionPending))
+                    {
+                        SetSnapshot(ProjectionRefreshFailed());
+                    }
+                    return;
+                }
+                catch (Exception)
+                {
+                    if (IsCurrentAttempt(attemptGeneration, tenantId, messageId)
+                        && _snapshot.State is (TenantCommandLifecycleState.Accepted
+                            or TenantCommandLifecycleState.ProjectionPending))
+                    {
+                        SetSnapshot(ProjectionRefreshFailed());
+                    }
+                    return;
+                }
+
+                if (IsCurrentAttempt(attemptGeneration, tenantId, messageId))
+                {
+                    SetSnapshot(_snapshot.ConfirmProjection(proof));
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            if (IsCurrentAttempt(attemptGeneration, tenantId, messageId))
+            {
+                SetSnapshot(_snapshot.AmbiguousSubmission("Tenants.Configuration.Set.UnableToVerify.Status"));
+            }
+        }
+        catch (Exception)
+        {
+            if (IsCurrentAttempt(attemptGeneration, tenantId, messageId))
+            {
+                SetSnapshot(_snapshot.AmbiguousSubmission("Tenants.Configuration.Set.UnableToVerify.Status"));
+            }
+        }
+        finally
+        {
+            _isRefreshing = false;
+            try
+            {
+                if (string.Equals(Context.TenantId, tenantId, StringComparison.Ordinal))
+                {
+                    await UpdateCommandActivityForSnapshotAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (ReferenceEquals(_refreshCompletion, completion)) _refreshCompletion = null;
+                completion.TrySetResult();
+            }
+        }
+    }
+
+    // A failed projection read is projection truth only: the command stays unverified, but the audit
+    // dimension keeps what command status established (as RemoveConfiguration's ProjectionVerificationFailed).
+    private TenantSetConfigurationCommandSnapshot ProjectionRefreshFailed()
+        => _snapshot.AmbiguousSubmission("Tenants.Configuration.Set.UnableToVerify.ProjectionRefresh") with
+        {
+            AuditState = _snapshot.AuditState,
+        };
+
+    private Task AbandonAttemptAsync()
+        => ReleaseAttemptAsync(retentionExpired: false);
+
+    // Operator abandonment and retention expiry release the attempt through the same path; only the audit
+    // dimension differs (unverifiable versus delayed).
+    private async Task ReleaseAttemptAsync(bool retentionExpired)
+    {
+        if (_isSubmitting)
+        {
+            return;
+        }
+
+        string? messageId = _snapshot.MessageId;
+        string? tenantId = _snapshot.Intent?.TenantId;
+        _ = Interlocked.Increment(ref _attemptGeneration);
+        _ = Interlocked.Increment(ref _previewGeneration);
+        CancelExpirySchedule();
+        SetSnapshot(retentionExpired ? _snapshot.ExpireRetention() : _snapshot.Abandon());
+        if (!string.IsNullOrWhiteSpace(messageId) && !string.IsNullOrWhiteSpace(tenantId))
+            AttemptTracker?.Forget(tenantId, messageId);
+        await SetCommandActivityRaisedAsync(false).ConfigureAwait(false);
+
+        // Retention expiry arrives from a timer, not a UI event, so the released state is rendered explicitly
+        // (as the remove flow does); otherwise the delayed audit dimension would wait for an unrelated render.
+        if (!_disposed)
+        {
+            await InvokeAsync(StateHasChanged).ConfigureAwait(false);
+        }
+    }
+
+    private bool TryBuildIntent(
+        string? rawValue,
+        out TenantSetConfigurationIntent? intent,
+        bool showValidation)
+    {
+        intent = null;
+        string prefix = _namespacePrefix ?? string.Empty;
+        string suffix = _keySuffix ?? string.Empty;
+        if (prefix.Length == 0 || !Context.IsGlobalAdministrator && !AuthorizedNamespaces.Contains(prefix, StringComparer.Ordinal))
+        {
+            SetValidation(showValidation, Localizer["Tenants.Configuration.Set.Validation.NamespaceScope"], TenantCommandFocusTarget.Namespace);
+            return false;
+        }
+        if (suffix.Length == 0)
+        {
+            SetValidation(showValidation, Localizer["Tenants.Configuration.Set.Validation.KeyRequired"], TenantCommandFocusTarget.Key);
+            return false;
+        }
+        string fullKey = string.Concat(prefix, ".", suffix);
+        if (HasForbiddenKeyShape(prefix) || HasForbiddenKeyShape(suffix) || HasForbiddenKeyShape(fullKey))
+        {
+            SetValidation(showValidation, Localizer["Tenants.Configuration.Set.Validation.KeyLiteral"],
+                HasForbiddenKeyShape(prefix) ? TenantCommandFocusTarget.Namespace : TenantCommandFocusTarget.Key);
+            return false;
+        }
+        if (fullKey.Length > MaxConfigurationKeyLength)
+        {
+            SetValidation(showValidation, Localizer["Tenants.Configuration.Set.Validation.KeyLength", MaxConfigurationKeyLength], TenantCommandFocusTarget.Key);
+            return false;
+        }
+        if (rawValue is null || rawValue.Length == 0)
+        {
+            SetValidation(showValidation, Localizer["Tenants.Configuration.Set.Validation.ValueRequired"], TenantCommandFocusTarget.Value);
+            return false;
+        }
+        if (rawValue.Length > MaxConfigurationValueLength)
+        {
+            SetValidation(showValidation, Localizer["Tenants.Configuration.Set.Validation.ValueLength", MaxConfigurationValueLength], TenantCommandFocusTarget.Value);
+            return false;
+        }
+        string fingerprint;
+        try
+        {
+            fingerprint = TenantSetConfigurationValueFingerprint.Create(rawValue);
+        }
+        catch (EncoderFallbackException)
+        {
+            SetValidation(showValidation, Localizer["Tenants.Configuration.Set.Validation.ValueLiteral"], TenantCommandFocusTarget.Value);
+            return false;
+        }
+
+        intent = new(Context.TenantId, prefix, suffix, fullKey, fingerprint);
+        return true;
+    }
+
+    private void SetValidation(bool showValidation, string message, TenantCommandFocusTarget focusTarget)
+    {
+        if (!showValidation) return;
+        _validationMessage = message;
+        _focusNamespacePending = focusTarget is TenantCommandFocusTarget.Namespace;
+        _focusKeyPending = focusTarget is TenantCommandFocusTarget.Key;
+        _focusValuePending = focusTarget is TenantCommandFocusTarget.Value;
+    }
+
+    private string DescribedBy(string helpId)
+    {
+        List<string> ids = [helpId];
+        if (!IsPreviewComplete) ids.Add("tenants-config-set-preview-blocked");
+        if (!string.IsNullOrWhiteSpace(UnavailableReason)) ids.Add("tenants-config-set-unavailable");
+        if (!string.IsNullOrWhiteSpace(_validationMessage)) ids.Add("tenants-config-set-validation");
+        return string.Join(" ", ids.Distinct(StringComparer.Ordinal));
+    }
+
+    private void SetSnapshot(TenantSetConfigurationCommandSnapshot snapshot)
+    {
+        string? previousMessageId = _snapshot.MessageId;
+        string? previousTenantId = _snapshot.Intent?.TenantId;
+        _snapshot = snapshot;
+        if (_snapshot.RetainsAttempt) _ = AttemptTracker?.Remember(_snapshot);
+        else if (!string.IsNullOrWhiteSpace(previousMessageId) && !string.IsNullOrWhiteSpace(previousTenantId))
+            AttemptTracker?.Forget(previousTenantId, previousMessageId);
+        if (_snapshot.RetainsAttempt)
+        {
+            ScheduleAttemptExpiry();
+        }
+        else
+        {
+            CancelExpirySchedule();
+        }
+        if (_snapshot.LiveRegionPoliteness is TenantCommandLiveRegionPoliteness.Assertive
+            || _snapshot.FocusTarget is TenantCommandFocusTarget.Lifecycle) _focusLifecyclePending = true;
+    }
+
+    private async Task<bool> SetCommandActivityRaisedAsync(
+        bool isActive,
+        Func<bool, Task<bool>>? capturedLease = null)
+    {
+        if (_hasRaisedCommandActivity == isActive) return true;
+        Func<bool, Task<bool>>? lease = capturedLease ?? CommandActivityLease;
+        if (lease is not null)
+        {
+            bool accepted = await lease(isActive).ConfigureAwait(false);
+            if (isActive && !accepted) return false;
+        }
+        _hasRaisedCommandActivity = isActive;
+        if (CommandActivityLease is null)
+            await InvokeAsync(() => OnCommandActivityChanged.InvokeAsync(isActive)).ConfigureAwait(false);
+        return true;
+    }
+
+    private async Task ReleaseCommandActivityAsync(Func<bool, Task<bool>>? capturedLease)
+    {
+        if (capturedLease is not null)
+        {
+            _ = await capturedLease(false).ConfigureAwait(false);
+        }
+        else
+        {
+            bool isActive = false;
+            await InvokeAsync(() => OnCommandActivityChanged.InvokeAsync(isActive)).ConfigureAwait(false);
+        }
+
+        _hasRaisedCommandActivity = false;
+    }
+
+    private async Task UpdateCommandActivityForSnapshotAsync()
+        => _ = await SetCommandActivityRaisedAsync(_snapshot.RetainsAttempt || _isSubmitting).ConfigureAwait(false);
+
+    private async Task HandleKeyDownAsync(KeyboardEventArgs args)
+    {
+        if (string.Equals(args.Key, "Escape", StringComparison.Ordinal) && _isOpen && !_snapshot.RetainsAttempt)
+            await CloseEditorAsync().ConfigureAwait(false);
+    }
+
+    private async Task RefreshPreviewEvidenceAsync()
+    {
+        if (_isRefreshing || _snapshot.RetainsAttempt) return;
+        _isRefreshing = true;
+        try
+        {
+            await InvokeAsync(() => OnProjectionRefreshRequested.InvokeAsync()).ConfigureAwait(false);
+            if (_isOpen && HasPreviewCapability)
+            {
+                await RefreshPreviewAsync().ConfigureAwait(false);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            _previewEvidenceUnavailable = true;
+        }
+        catch (Exception)
+        {
+            _previewEvidenceUnavailable = true;
+        }
+        finally
+        {
+            _isRefreshing = false;
+        }
+    }
+
+    internal async Task ExpireRetainedAttemptAsync(DateTimeOffset observedAtUtc)
+    {
+        if (!_isSubmitting && _snapshot.RetainsAttempt && _snapshot.IsRetentionExpired(observedAtUtc))
+        {
+            await ReleaseAttemptAsync(retentionExpired: true).ConfigureAwait(false);
+        }
+    }
+
+    private void ScheduleAttemptExpiry()
+    {
+        CancelExpirySchedule();
+        if (_disposed
+            || !_snapshot.RetainsAttempt
+            || _snapshot.AttemptStartedAtUtc is not { } startedAtUtc
+            || _snapshot.Intent is not { } intent
+            || string.IsNullOrWhiteSpace(_snapshot.MessageId))
+        {
+            return;
+        }
+
+        string messageId = _snapshot.MessageId;
+        long attemptGeneration = _attemptGeneration;
+        DateTimeOffset deadline = startedAtUtc + TenantSetConfigurationCommandSnapshot.MaximumRetainedAttemptDuration;
+        var cancellation = new CancellationTokenSource();
+        _expiryCancellation = cancellation;
+        _ = ObserveAttemptExpiryAsync(intent.TenantId, messageId, attemptGeneration, deadline, cancellation.Token);
+    }
+
+    private async Task ObserveAttemptExpiryAsync(
+        string tenantId,
+        string messageId,
+        long attemptGeneration,
+        DateTimeOffset deadline,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            TimeSpan remaining = deadline - DateTimeOffset.UtcNow;
+            if (remaining > TimeSpan.Zero)
+            {
+                await Task.Delay(remaining, cancellationToken).ConfigureAwait(false);
+            }
+
+            await InvokeAsync(async () =>
+            {
+                if (IsCurrentAttempt(attemptGeneration, tenantId, messageId))
+                {
+                    await ExpireRetainedAttemptAsync(DateTimeOffset.UtcNow).ConfigureAwait(false);
+                }
+            }).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
+    private void CancelExpirySchedule()
+    {
+        CancellationTokenSource? cancellation = Interlocked.Exchange(ref _expiryCancellation, null);
+        if (cancellation is null) return;
+        try { cancellation.Cancel(); }
+        catch (ObjectDisposedException) { }
+        cancellation.Dispose();
+    }
+
+    private bool IsCurrentSubmit(long submitGeneration, long inputGeneration, string tenantId)
+        => !_disposed
+            && _isSubmitting
+            && _activeSubmitGeneration == submitGeneration
+            && _previewGeneration == inputGeneration
+            && string.Equals(_contextTenantId, tenantId, StringComparison.Ordinal)
+            && string.Equals(Context.TenantId, tenantId, StringComparison.Ordinal)
+            && !_snapshot.RetainsAttempt;
+
+    private bool IsCurrentAttempt(long attemptGeneration, string tenantId, string messageId)
+        => !_disposed
+            && _attemptGeneration == attemptGeneration
+            && _snapshot.RetainsAttempt
+            && string.Equals(_snapshot.Intent?.TenantId, tenantId, StringComparison.Ordinal)
+            && string.Equals(_snapshot.MessageId, messageId, StringComparison.Ordinal)
+            && string.Equals(Context.TenantId, tenantId, StringComparison.Ordinal);
+
+    private void InvalidatePendingOperations()
+    {
+        _ = Interlocked.Increment(ref _previewGeneration);
+        _ = Interlocked.Increment(ref _attemptGeneration);
+        _ = Interlocked.Increment(ref _submitGeneration);
+    }
+
+    private static bool HasForbiddenKeyShape(string value)
+    {
+        if (value.Length == 0
+            || char.IsWhiteSpace(value[0])
+            || char.IsWhiteSpace(value[^1]))
+        {
+            return true;
+        }
+
+        for (int index = 0; index < value.Length; index++)
+        {
+            UnicodeCategory category = char.GetUnicodeCategory(value, index);
+            if (category is UnicodeCategory.Control
+                or UnicodeCategory.Format
+                or UnicodeCategory.LineSeparator
+                or UnicodeCategory.ParagraphSeparator
+                or UnicodeCategory.Surrogate
+                || category is UnicodeCategory.SpaceSeparator && value[index] != ' ')
+            {
+                return true;
+            }
+
+            if (char.IsHighSurrogate(value[index])) index++;
+        }
+
+        return false;
+    }
+
+    private Task FocusNamespaceAsync()
+        => FocusSafelyAsync(_namespaceElement);
+
+    private static string LocalizedFreshness(ReadModelFreshnessState freshness)
+        => Enum.IsDefined(freshness) ? freshness.ToString() : nameof(ReadModelFreshnessState.Unknown);
+
+    private static string LocalizedLifecycle(ProjectionLifecycleState lifecycle)
+        => Enum.IsDefined(lifecycle) ? lifecycle.ToString() : nameof(ProjectionLifecycleState.Unknown);
+
+    private static string LocalizedCommandState(TenantCommandLifecycleState state)
+        => Enum.IsDefined(state) ? state.ToString() : nameof(TenantCommandLifecycleState.UnableToVerify);
+
+    private static string SubmissionMessageKey(TenantCommandLifecycleState state)
+        => state switch
+        {
+            TenantCommandLifecycleState.Rejected => "Tenants.Configuration.Set.Submission.Rejected",
+            TenantCommandLifecycleState.Failed => "Tenants.Configuration.Set.Submission.Failed",
+            _ => "Tenants.Configuration.Set.UnableToVerify.Status",
+        };
+
+    private static async Task FocusSafelyAsync(ElementReference element)
+    {
+        try { await element.FocusAsync().ConfigureAwait(false); }
+        catch (JSDisconnectedException) { }
+        catch (JSException) { }
+    }
+
+    /// <inheritdoc />
+    public ValueTask DisposeAsync()
+    {
+        _disposed = true;
+        InvalidatePendingOperations();
+        CancelExpirySchedule();
+        _value = null;
+        return ValueTask.CompletedTask;
+    }
+}

@@ -1,0 +1,29 @@
+{
+  "observed_at_utc": "2026-10-21T18:16:59.368449+00:00",
+  "command": [
+    "docker",
+    "exec",
+    "folders-durability-714b194346ffc28d",
+    "redis-cli",
+    "--raw",
+    "EVAL",
+    "local c='0'; local n=0; local h=0; local b=0; local g={identity=0,checkpoint=0,generation=0,epoch=0,other=0}; repeat local r=redis.call('SCAN',c,'COUNT',1000); c=r[1]; for _,k in ipairs(r[2]) do n=n+1; local t=redis.call('TYPE',k).ok; if t=='hash' then h=h+1; b=math.max(b,redis.call('HSTRLEN',k,'data')) end; if string.find(k,'shared-identity-v1:',1,true)==1 then g.identity=g.identity+1 elseif string.find(k,'shared-checkpoint:',1,true)==1 then g.checkpoint=g.checkpoint+1 elseif string.find(k,'shared-generation:',1,true)==1 then g.generation=g.generation+1 elseif string.find(k,'shared-epoch:',1,true)==1 then g.epoch=g.epoch+1 else g.other=g.other+1 end end until c=='0'; return cjson.encode({total_keys=n,hash_values=h,maximum_hash_data_bytes=b,groups=g})",
+    "0"
+  ],
+  "exit_code": 0,
+  "redis": {
+    "groups": {
+      "other": 11497,
+      "checkpoint": 1,
+      "epoch": 2,
+      "identity": 3195,
+      "generation": 5
+    },
+    "maximum_hash_data_bytes": 138255,
+    "total_keys": 14700,
+    "hash_values": 14697
+  },
+  "sdk_completed_batch_log_rows": 1381,
+  "latest_resource_log_timestamp": "2026-10-21T18:16:58.9289544Z",
+  "note": "Read-only final-state counts/byte sizes; no key names, payloads, protocol changes or limit changes."
+}

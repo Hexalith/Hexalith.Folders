@@ -1,0 +1,1009 @@
+using System.Diagnostics;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Xml.Linq;
+
+namespace Hexalith.McpCli.Manifest.Tests;
+
+/// <summary>Proves the production graph boundary and the separate test-only allowances.</summary>
+public sealed class DependencyPolicyTests
+{
+    private static readonly string TestRoot = Path.Combine(Path.GetTempPath(), "mcpcli-policy-unit");
+    private static readonly string ToolProject = Path.Combine(TestRoot, "src", "Hexalith.McpCli", "Hexalith.McpCli.csproj");
+
+    /// <summary>Checks the fresh repository restore without modifying its reviewed policy.</summary>
+    [Fact]
+    public void ProductionContractsStayWithinPinnedDependencyClosure()
+    {
+        string root = FindRepositoryRoot();
+        string policyPath = Path.Combine(root, "tools", "dependency-policy.json");
+        byte[] before = File.ReadAllBytes(policyPath);
+        DependencyPolicy policy = DependencyPolicy.Load(policyPath);
+        RestoredDependencyGraph graph = LoadProductionGraph(root);
+        Dictionary<string, XDocument> projects = ReadProjects(Path.Combine(root, "src"));
+
+        Assert.Equal(Array.Empty<string>(), DependencyPolicyGate.CheckProduction(policy, graph, projects, root));
+        Assert.Equal(before, File.ReadAllBytes(policyPath));
+    }
+
+    /// <summary>Checks every test project, including the conformance host outside the solution and injected test roots.</summary>
+    [Fact]
+    public void RepositoryTestProjectsUseOnlyApprovedDependencies()
+    {
+        string root = FindRepositoryRoot();
+        DependencyPolicy policy = DependencyPolicy.Load(Path.Combine(root, "tools", "dependency-policy.json"));
+        Assert.Equal(Array.Empty<string>(), CheckTestProjectDirectory(policy, Path.Combine(root, "tests"), root));
+    }
+
+    /// <summary>Rejects the real 55-package Projects closure and names both root and transitive framework edges.</summary>
+    [Fact]
+    public void ProjectsCandidateFailsOfflineWithDependencyPaths()
+    {
+        (DependencyPolicy policy, RestoredDependencyGraph graph, Dictionary<string, XDocument> projects, string root) = RealCandidate("Projects", "1.0.0");
+        string[] failures = DependencyPolicyGate.CheckProduction(policy, graph, projects, root);
+
+        using JsonDocument fixture = LoadFixture("Projects", "1.0.0");
+        Assert.Equal(55, fixture.RootElement.GetProperty("targets").EnumerateObject().Count());
+        Assert.Contains("Package Hexalith.Projects.Contracts/1.0.0 adds framework reference Microsoft.AspNetCore.App: Hexalith.McpCli > Hexalith.Projects.Contracts/1.0.0", failures);
+        Assert.Contains("Package Hexalith.FrontComposer.Contracts.UI/4.5.0 adds framework reference Microsoft.AspNetCore.App: Hexalith.McpCli > Hexalith.Projects.Contracts/1.0.0 > Hexalith.FrontComposer.Shell/4.5.0 > Hexalith.FrontComposer.Contracts.UI/4.5.0", failures);
+        Assert.Contains("Package Hexalith.FrontComposer.Shell/4.5.0 adds framework reference Microsoft.AspNetCore.App: Hexalith.McpCli > Hexalith.Projects.Contracts/1.0.0 > Hexalith.FrontComposer.Shell/4.5.0", failures);
+        Assert.Contains("Package Microsoft.AspNetCore.Authentication.OpenIdConnect/10.0.12 adds framework reference Microsoft.AspNetCore.App: Hexalith.McpCli > Hexalith.Projects.Contracts/1.0.0 > Microsoft.AspNetCore.Authentication.OpenIdConnect/10.0.12", failures);
+        Assert.Contains("Module Hexalith.Projects.Contracts adds unapproved package Fluxor.Blazor.Web/6.11.0: Hexalith.McpCli > Hexalith.Projects.Contracts/1.0.0 > Fluxor.Blazor.Web/6.11.0", failures);
+        Assert.Contains("Module Hexalith.Projects.Contracts adds unapproved package Hexalith.Conversations.Contracts/1.0.0: Hexalith.McpCli > Hexalith.Projects.Contracts/1.0.0 > Hexalith.Conversations.Contracts/1.0.0", failures);
+        Assert.Contains("Module Hexalith.Projects.Contracts adds unapproved package Hexalith.FrontComposer.Shell/4.5.0: Hexalith.McpCli > Hexalith.Projects.Contracts/1.0.0 > Hexalith.FrontComposer.Shell/4.5.0", failures);
+        Assert.Contains("Module Hexalith.Projects.Contracts adds unapproved package NUlid/1.7.3: Hexalith.McpCli > Hexalith.Projects.Contracts/1.0.0 > NUlid/1.7.3", failures);
+        Assert.Contains("Module Hexalith.Projects.Contracts adds unapproved package Microsoft.FluentUI.AspNetCore.Components/5.0.0-rc.5-26219.1: Hexalith.McpCli > Hexalith.Projects.Contracts/1.0.0 > Microsoft.FluentUI.AspNetCore.Components/5.0.0-rc.5-26219.1", failures);
+    }
+
+    /// <summary>A module cannot launder its extra closure through widened baseline pins.</summary>
+    [Fact]
+    public void WideningBaselineCannotAdmitProjects()
+    {
+        (DependencyPolicy policy, RestoredDependencyGraph graph, Dictionary<string, XDocument> projects, string root) = RealCandidate("Projects", "1.0.0");
+        var added = new List<string>();
+        using JsonDocument fixture = LoadFixture("Projects", "1.0.0");
+        foreach (JsonProperty package in fixture.RootElement.GetProperty("targets").EnumerateObject())
+        {
+            string id = package.Name[..package.Name.LastIndexOf('/')];
+            if (!policy.BaselinePackages.ContainsKey(id) && !policy.Modules.ContainsKey(id))
+            {
+                policy.BaselinePackages.Add(id, graph.Nodes[id].Version);
+                added.Add(id);
+            }
+        }
+
+        string[] failures = DependencyPolicyGate.CheckProduction(policy, graph, projects, root);
+        Dictionary<string, string> paths = graph.PathsFrom("Hexalith.Projects.Contracts", policy.DecorationPackage.Key);
+        Assert.NotEmpty(added);
+        foreach (string id in added)
+        {
+            Assert.Contains($"Baseline entry {graph.Nodes[id].Identity} is outside the non-module stack closure: {paths[id]}", failures);
+        }
+    }
+
+    /// <summary>Compliant decorated closures work with either packaged or project-resolved decoration.</summary>
+    [Theory]
+    [InlineData("Tenants", "5.8.0", false)]
+    [InlineData("Tenants", "5.8.0", true)]
+    [InlineData("Parties", "1.4.0", false)]
+    [InlineData("Parties", "1.4.0", true)]
+    public void DecoratedCandidatePassesOffline(string module, string version, bool packagedDecoration)
+    {
+        (DependencyPolicy policy, RestoredDependencyGraph graph, Dictionary<string, XDocument> projects, string root) = RealCandidate(module, version);
+        if (packagedDecoration)
+        {
+            graph = Replace(graph, graph.Nodes[policy.DecorationPackage.Key] with { Type = "package", ProjectPath = null });
+        }
+
+        Assert.Equal(Array.Empty<string>(), DependencyPolicyGate.CheckProduction(policy, graph, projects, root));
+    }
+
+    /// <summary>Candidate injection preserves central pins instead of downgrading the existing restored stack.</summary>
+    [Fact]
+    public void CandidateInjectionKeepsExistingNodesAndVersions()
+    {
+        string root = FindRepositoryRoot();
+        RestoredDependencyGraph graph = LoadProductionGraph(root);
+        using JsonDocument fixture = LoadFixture("Tenants", "5.8.0");
+        RestoredDependencyGraph candidate = graph.WithCandidate(fixture.RootElement);
+
+        Assert.Same(graph.Nodes["ByteAether.Ulid"], candidate.Nodes["ByteAether.Ulid"]);
+        Assert.Equal(graph.Nodes["ByteAether.Ulid"].Version, candidate.Nodes["ByteAether.Ulid"].Version);
+        Assert.NotEqual("1.4.1", candidate.Nodes["ByteAether.Ulid"].Version);
+        Assert.Same(graph.Nodes["Hexalith.EventStore.Contracts"], candidate.Nodes["Hexalith.EventStore.Contracts"]);
+        Assert.Equal(graph.Nodes["Hexalith.EventStore.Contracts"].Version, candidate.Nodes["Hexalith.EventStore.Contracts"].Version);
+        Assert.NotEqual("3.117.1", candidate.Nodes["Hexalith.EventStore.Contracts"].Version);
+        Assert.Same(graph.Nodes["Hexalith.McpCli.Abstractions"], candidate.Nodes["Hexalith.McpCli.Abstractions"]);
+    }
+
+    /// <summary>Framework checks cover stack packages and non-root module dependencies.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void EveryPackageRejectsWebFrameworkReferences(bool viaModule)
+    {
+        var (policy, graph, projects) = Minimal();
+        if (viaModule)
+        {
+            graph = AddModule(policy, graph, projects, "Module.Contracts", new() { ["Stack.Leaf"] = "2.0.0" });
+        }
+
+        graph = Replace(graph, graph.Nodes["Stack.Leaf"] with { FrameworkReferences = ["Microsoft.AspNetCore.App"] });
+        Assert.Equal([$"Package Stack.Leaf/2.0.0 adds framework reference Microsoft.AspNetCore.App: Hexalith.McpCli > {(viaModule ? "Module.Contracts" : "Stack.Root")}/1.0.0 > Stack.Leaf/2.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>The entry project's restored framework references are also checked.</summary>
+    [Fact]
+    public void RootRestoreRejectsWebFrameworkReferences()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = Replace(graph, graph.Nodes[graph.RootId] with { FrameworkReferences = ["Microsoft.AspNetCore.App"] });
+        Assert.Equal(["Project Hexalith.McpCli adds framework reference Microsoft.AspNetCore.App: Hexalith.McpCli"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Modules cannot import one another even when both are globally enrolled.</summary>
+    [Fact]
+    public void ModuleClosureCannotImportAnotherModule()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = AddModule(policy, graph, projects, "Other.Contracts", new());
+        graph = AddModule(policy, graph, projects, "First.Contracts", new() { ["Other.Contracts"] = "1.0.0" });
+        Assert.Equal(["Module First.Contracts adds unapproved package Other.Contracts/1.0.0: Hexalith.McpCli > First.Contracts/1.0.0 > Other.Contracts/1.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Missing module dependencies preserve their requested identity and full path.</summary>
+    [Fact]
+    public void UnresolvedModuleDependencyFails()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = AddModule(policy, graph, projects, "Module.Contracts", new() { ["Missing.Package"] = "3.0.0" });
+        Assert.Equal(["Module Module.Contracts has an unresolved dependency Missing.Package: Hexalith.McpCli > Module.Contracts/1.0.0 > Missing.Package/3.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Stack edges cannot silently disappear from the restore.</summary>
+    [Fact]
+    public void UnresolvedStackDependencyFails()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = Replace(graph, graph.Nodes["Stack.Leaf"] with { Dependencies = new Dictionary<string, string> { ["Missing.Package"] = "3.0.0" } });
+        Assert.Equal(["Restore has an unresolved dependency Missing.Package: Hexalith.McpCli > Stack.Root/1.0.0 > Stack.Leaf/2.0.0 > Missing.Package/3.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>A stack package requires its exact reviewed baseline pin.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void BaselinePinsCannotBeMissingOrChanged(bool changed)
+    {
+        var (policy, graph, projects) = Minimal();
+        if (changed)
+        {
+            policy.BaselinePackages["Stack.Leaf"] = "9.0.0";
+            Assert.Equal(["Restored package Stack.Leaf/2.0.0 differs from pin Stack.Leaf/9.0.0: Hexalith.McpCli > Stack.Root/1.0.0 > Stack.Leaf/2.0.0"], Check(policy, graph, projects));
+        }
+        else
+        {
+            policy.BaselinePackages.Remove("Stack.Leaf");
+            Assert.Equal(
+            [
+                "Restored package Stack.Leaf/2.0.0 is outside the exact dependency policy: Hexalith.McpCli > Stack.Root/1.0.0 > Stack.Leaf/2.0.0",
+                "Stack package Stack.Leaf/2.0.0 is missing its baseline pin: Hexalith.McpCli > Stack.Root/1.0.0 > Stack.Leaf/2.0.0",
+            ], Check(policy, graph, projects));
+        }
+    }
+
+    /// <summary>A stale baseline entry is rejected even when it no longer resolves.</summary>
+    [Fact]
+    public void MissingBaselinePackageFails()
+    {
+        var (policy, graph, projects) = Minimal();
+        policy.BaselinePackages.Add("Missing.Pin", "9.0.0");
+        Assert.Equal(["Pinned baseline package Missing.Pin/9.0.0 is missing from restore: Hexalith.McpCli > Missing.Pin/9.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>An unused approved direct root cannot silently widen the policy.</summary>
+    [Fact]
+    public void StaleDirectEntryFails()
+    {
+        var (policy, graph, projects) = Minimal();
+        policy.DirectPackages.Add("Unused.Root");
+        Assert.Equal(["Direct package Unused.Root/unresolved has no production reference: Hexalith.McpCli > Unused.Root/unresolved"], Check(policy, graph, projects));
+    }
+
+    /// <summary>An inactive source declaration does not promote a baseline transitive package to a restored root.</summary>
+    [Fact]
+    public void InactiveDeclarationCannotSatisfyDirectEntry()
+    {
+        var (policy, graph, projects) = Minimal();
+        policy.DirectPackages.Add("Stack.Leaf");
+        AddReference(projects, ToolProject, "<PackageReference Include=\"Stack.Leaf\" Condition=\"'false' == 'true'\" />");
+        Assert.Equal(["Direct package Stack.Leaf/2.0.0 has no production reference: Hexalith.McpCli > Stack.Root/1.0.0 > Stack.Leaf/2.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Even orphan restored packages must belong to the exact policy.</summary>
+    [Fact]
+    public void UnapprovedRestoredPackageFails()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = Replace(graph, Package("Extra.Package", "4.0.0"));
+        Assert.Equal(["Restored package Extra.Package/4.0.0 is outside the exact dependency policy: Hexalith.McpCli > Extra.Package/4.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Both module and decoration package pins are exact.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ModuleAndDecorationPinsCannotDrift(bool decoration)
+    {
+        var (policy, graph, projects) = Minimal();
+        if (decoration)
+        {
+            graph = Replace(graph, Package(policy.DecorationPackage.Key, "9.0.0"));
+            Assert.Equal(["Restored package Hexalith.McpCli.Abstractions/9.0.0 differs from pin Hexalith.McpCli.Abstractions/1.0.0: Hexalith.McpCli > Hexalith.McpCli.Abstractions/9.0.0"], Check(policy, graph, projects));
+        }
+        else
+        {
+            graph = AddModule(policy, graph, projects, "Module.Contracts", new());
+            graph = Replace(graph, graph.Nodes["Module.Contracts"] with { Version = "9.0.0" });
+            Assert.Equal(["Restored package Module.Contracts/9.0.0 differs from pin Module.Contracts/1.0.0: Hexalith.McpCli > Module.Contracts/9.0.0"], Check(policy, graph, projects));
+        }
+    }
+
+    /// <summary>An enrolled module must actually resolve as a package.</summary>
+    [Fact]
+    public void MissingModulePinFails()
+    {
+        var (policy, graph, projects) = Minimal();
+        policy.Modules.Add("Module.Contracts", "1.0.0");
+        AddReference(projects, ToolProject, "<PackageReference Include=\"Module.Contracts\" HexalithContracts=\"true\" />");
+        Assert.Equal(["Pinned module Module.Contracts/1.0.0 is missing from restore: Hexalith.McpCli > Module.Contracts/1.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>A policy pin needs an explicit flagged tool reference.</summary>
+    [Fact]
+    public void ModuleWithoutFlaggedReferenceFails()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = AddModule(policy, graph, projects, "Module.Contracts", new());
+        projects[ToolProject].Descendants("PackageReference").Last().Remove();
+        Assert.Equal(["Approved module Module.Contracts/1.0.0 has no flagged direct reference in the tool: Hexalith.McpCli > Module.Contracts/1.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>The module enrollment flag can be expressed as MSBuild child metadata.</summary>
+    [Fact]
+    public void ContractsEnrollmentAcceptsChildElementFlag()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = AddModule(policy, graph, projects, "Module.Contracts", new());
+        XElement reference = projects[ToolProject].Descendants("PackageReference").Last();
+        reference.Attribute("HexalithContracts")!.Remove();
+        reference.Add(new XElement("HexalithContracts", "true"));
+        Assert.Equal(Array.Empty<string>(), Check(policy, graph, projects));
+    }
+
+    /// <summary>A source project may reference the Decoration Package as a package instead of a project.</summary>
+    [Fact]
+    public void PackagedDecorationIsAnApprovedSourceReference()
+    {
+        var (policy, graph, projects) = Minimal();
+        AddReference(projects, ToolProject, $"<PackageReference Include=\"{policy.DecorationPackage.Key}\" />");
+        graph = Replace(graph, Package(policy.DecorationPackage.Key, "1.0.0"));
+        Assert.Equal(Array.Empty<string>(), Check(policy, graph, projects));
+    }
+
+    /// <summary>Contracts roots must be flagged, approved, and placed on the tool itself.</summary>
+    [Theory]
+    [InlineData("unflagged")]
+    [InlineData("unapproved")]
+    [InlineData("library")]
+    [InlineData("not-contracts")]
+    public void InvalidContractsEnrollmentFails(string scenario)
+    {
+        var (policy, graph, projects) = Minimal();
+        string id = scenario == "not-contracts" ? "Module.Runtime" : "Module.Contracts";
+        string project = scenario == "library" ? Path.Combine(TestRoot, "src", "Hexalith.McpCli.Core", "Hexalith.McpCli.Core.csproj") : ToolProject;
+        AddReference(projects, project, $"<PackageReference Include=\"{id}\" HexalithContracts=\"{(scenario == "unflagged" ? "false" : "true")}\" />");
+        if (scenario != "unapproved")
+        {
+            policy.Modules[id] = "1.0.0";
+        }
+
+        var expected = new List<string>();
+        if (scenario != "unapproved")
+        {
+            expected.Add($"Approved module {id}/1.0.0 has no flagged direct reference in the tool: Hexalith.McpCli > {id}/1.0.0");
+            expected.Add($"Pinned module {id}/1.0.0 is missing from restore: Hexalith.McpCli > {id}/1.0.0");
+        }
+
+        expected.Add($"Project {Path.GetFileNameWithoutExtension(project)} has an unapproved Contracts root {id}/{(scenario == "unapproved" ? "unresolved" : "1.0.0")}: Hexalith.McpCli{(scenario == "library" ? " > Hexalith.McpCli.Core" : "")} > {id}/{(scenario == "unapproved" ? "unresolved" : "1.0.0")}");
+        Assert.Equal(expected, Check(policy, graph, projects));
+    }
+
+    /// <summary>Test packages and the sample are forbidden even when deliberately listed in production policy.</summary>
+    [Theory]
+    [InlineData("Test.Helper", "direct")]
+    [InlineData("Test.Helper", "baseline")]
+    [InlineData("Test.Helper", "module")]
+    [InlineData("Hexalith.McpCli.Sample.Contracts", "direct")]
+    [InlineData("Hexalith.McpCli.Sample.Contracts", "baseline")]
+    [InlineData("Hexalith.McpCli.Sample.Contracts", "module")]
+    public void TestOnlyPackagesCannotBeAllowlistedIntoProduction(string id, string list)
+    {
+        var (policy, graph, projects) = Minimal();
+        policy.TestPackages.Add("Test.Helper");
+        if (list == "direct")
+        {
+            policy.DirectPackages.Add(id);
+            policy.BaselinePackages.Add(id, "1.0.0");
+        }
+        else if (list == "baseline")
+        {
+            policy.BaselinePackages.Add(id, "1.0.0");
+        }
+        else
+        {
+            policy.Modules.Add(id, "1.0.0");
+        }
+
+        graph = Replace(graph, Package(id, "1.0.0"));
+        graph = Replace(graph, graph.Nodes[graph.RootId] with { Dependencies = new Dictionary<string, string>(graph.Nodes[graph.RootId].Dependencies) { [id] = "1.0.0" } });
+        AddReference(projects, ToolProject, $"<PackageReference Include=\"{id}\" HexalithContracts=\"true\" />");
+        var expected = new List<string>
+        {
+            $"Policy lists test-only package {id}/1.0.0 in production: Hexalith.McpCli > {id}/1.0.0",
+            $"Production project Hexalith.McpCli references test-only package {id}/1.0.0: Hexalith.McpCli > {id}/1.0.0",
+            $"Production restore contains test-only package {id}/1.0.0: Hexalith.McpCli > {id}/1.0.0",
+        };
+        if (list == "module")
+        {
+            expected.Add($"Approved module {id}/1.0.0 has no flagged direct reference in the tool: Hexalith.McpCli > {id}/1.0.0");
+        }
+        else
+        {
+            expected.Add($"Baseline entry {id}/1.0.0 is outside the non-module stack closure: Hexalith.McpCli > {id}/1.0.0");
+            if (list == "direct")
+            {
+                expected.Add($"Direct package {id}/1.0.0 has no production reference: Hexalith.McpCli > {id}/1.0.0");
+            }
+            else
+            {
+                expected.Add($"Restored project Hexalith.McpCli has an unapproved direct package {id}/1.0.0: Hexalith.McpCli > {id}/1.0.0");
+            }
+        }
+
+        Assert.Equal(expected.Order(StringComparer.Ordinal), Check(policy, graph, projects));
+    }
+
+    /// <summary>Test-only transitive packages are rejected even behind an approved stack root.</summary>
+    [Fact]
+    public void TransitiveTestPackageFails()
+    {
+        var (policy, graph, projects) = Minimal();
+        policy.TestPackages.Add("Stack.Leaf");
+        Assert.Equal(
+        [
+            "Policy lists test-only package Stack.Leaf/2.0.0 in production: Hexalith.McpCli > Stack.Leaf/2.0.0",
+            "Production restore contains test-only package Stack.Leaf/2.0.0: Hexalith.McpCli > Stack.Root/1.0.0 > Stack.Leaf/2.0.0",
+        ], Check(policy, graph, projects));
+    }
+
+    /// <summary>Direct package roots require explicit approval.</summary>
+    [Fact]
+    public void UnapprovedDirectPackageFails()
+    {
+        var (policy, graph, projects) = Minimal();
+        AddReference(projects, ToolProject, "<PackageReference Include=\"Unexpected.Package\" />");
+        Assert.Equal(["Project Hexalith.McpCli has an unapproved direct package Unexpected.Package/unresolved: Hexalith.McpCli > Unexpected.Package/unresolved"], Check(policy, graph, projects));
+    }
+
+    /// <summary>A source package failure follows its declaring library even when the package has a shorter stack path.</summary>
+    [Fact]
+    public void SourcePackageDiagnosticsIncludeDeclaringLibrary()
+    {
+        var (policy, graph, projects) = Minimal();
+        const string id = "Hexalith.McpCli.Core";
+        string project = Path.Combine(TestRoot, "src", id, id + ".csproj");
+        graph = Replace(graph, new(id, "1.0.0", "project", new Dictionary<string, string> { ["Stack.Root"] = "1.0.0" }, [], project));
+        graph = Replace(graph, graph.Nodes[graph.RootId] with { Dependencies = new Dictionary<string, string>(graph.Nodes[graph.RootId].Dependencies) { [id] = "1.0.0" } });
+        AddReference(projects, project, "<PackageReference Include=\"Stack.Root\" Version=\"1.0.0\" />");
+        Assert.Equal(["Project Hexalith.McpCli.Core pins Stack.Root inline instead of centrally: Hexalith.McpCli > Hexalith.McpCli.Core > Stack.Root/1.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Imported or stale restored direct roots must still be approved, even when already in the baseline.</summary>
+    [Fact]
+    public void RestoredDirectRootsCannotUseBaselineAsAnAllowlist()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = Replace(graph, graph.Nodes[graph.RootId] with
+        {
+            Dependencies = new Dictionary<string, string>(graph.Nodes[graph.RootId].Dependencies) { ["Stack.Leaf"] = "2.0.0" },
+        });
+        Assert.Equal(["Restored project Hexalith.McpCli has an unapproved direct package Stack.Leaf/2.0.0: Hexalith.McpCli > Stack.Leaf/2.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Production source projects must use the repository's McpCli project layout.</summary>
+    [Fact]
+    public void SourceProjectsCannotEscapeProductionNames()
+    {
+        var (policy, graph, projects) = Minimal();
+        projects.Add(Path.Combine(TestRoot, "src", "External", "External.csproj"), XDocument.Parse("<Project />"));
+        Assert.Equal(["Production source contains non-McpCli project External: Hexalith.McpCli > External"], Check(policy, graph, projects));
+    }
+
+    /// <summary>The analyzer build tool is excluded from the production runtime root policy.</summary>
+    [Fact]
+    public void AnalyzerSourceIsExcludedFromRuntimeRoots()
+    {
+        var (policy, graph, projects) = Minimal();
+        AddReference(projects, Path.Combine(TestRoot, "src", "Hexalith.McpCli.Analyzers", "Hexalith.McpCli.Analyzers.csproj"),
+            "<PackageReference Include=\"Microsoft.CodeAnalysis.CSharp\" />");
+        Assert.Equal(Array.Empty<string>(), Check(policy, graph, projects));
+    }
+
+    /// <summary>An analyzer filename elsewhere does not bypass source, version, project, or framework checks.</summary>
+    [Fact]
+    public void AnalyzerNameOutsideItsSourceDirectoryDoesNotExemptProject()
+    {
+        var (policy, graph, projects) = Minimal();
+        string project = Path.Combine(TestRoot, "src", "Rogue", "Hexalith.McpCli.Analyzers.csproj");
+        AddReference(projects, project, "<PackageReference Include=\"Stack.Root\" Version=\"1.0.0\" />");
+        AddReference(projects, project, "<ProjectReference Include=\"../../references/External/External.csproj\" />");
+        AddReference(projects, project, "<FrameworkReference Include=\"Microsoft.AspNetCore.App\" />");
+        Assert.Equal(
+        [
+            "Production source contains non-McpCli project Hexalith.McpCli.Analyzers: Hexalith.McpCli > Hexalith.McpCli.Analyzers",
+            "Project Hexalith.McpCli.Analyzers introduces framework reference Microsoft.AspNetCore.App: Hexalith.McpCli > Hexalith.McpCli.Analyzers",
+            "Project Hexalith.McpCli.Analyzers pins Stack.Root inline instead of centrally: Hexalith.McpCli > Hexalith.McpCli.Analyzers > Stack.Root/1.0.0",
+            "Project Hexalith.McpCli.Analyzers references a non-McpCli project ../../references/External/External.csproj: Hexalith.McpCli > Hexalith.McpCli.Analyzers > External",
+        ], Check(policy, graph, projects));
+    }
+
+    /// <summary>Source project checks retain framework, expression, and inline-version guards.</summary>
+    [Theory]
+    [InlineData("<FrameworkReference Include=\"Microsoft.AspNetCore.App\" />", "Project Hexalith.McpCli introduces framework reference Microsoft.AspNetCore.App: Hexalith.McpCli")]
+    [InlineData("<ProjectReference Include=\"$(ExternalProject)\" />", "Project Hexalith.McpCli has an unresolved project reference $(ExternalProject): Hexalith.McpCli")]
+    [InlineData("<PackageReference Include=\"$(ExternalPackage)\" />", "Project Hexalith.McpCli has an unresolved package reference $(ExternalPackage): Hexalith.McpCli")]
+    [InlineData("<PackageReference Include=\"Stack.Root\" Version=\"1.0.0\" />", "Project Hexalith.McpCli pins Stack.Root inline instead of centrally: Hexalith.McpCli > Stack.Root/1.0.0")]
+    [InlineData("<PackageReference Include=\"Stack.Root\"><Version>1.0.0</Version></PackageReference>", "Project Hexalith.McpCli pins Stack.Root inline instead of centrally: Hexalith.McpCli > Stack.Root/1.0.0")]
+    [InlineData("<PackageReference Include=\"Stack.Root\" VersionOverride=\"1.0.0\" />", "Project Hexalith.McpCli pins Stack.Root inline instead of centrally: Hexalith.McpCli > Stack.Root/1.0.0")]
+    [InlineData("<PackageReference Include=\"Stack.Root\"><VersionOverride>1.0.0</VersionOverride></PackageReference>", "Project Hexalith.McpCli pins Stack.Root inline instead of centrally: Hexalith.McpCli > Stack.Root/1.0.0")]
+    [InlineData("<PackageReference Include=\"Stack.Root\" version=\"1.0.0\" />", "Project Hexalith.McpCli pins Stack.Root inline instead of centrally: Hexalith.McpCli > Stack.Root/1.0.0")]
+    [InlineData("<PackageReference Include=\"Stack.Root\"><version>1.0.0</version></PackageReference>", "Project Hexalith.McpCli pins Stack.Root inline instead of centrally: Hexalith.McpCli > Stack.Root/1.0.0")]
+    [InlineData("<PackageReference Include=\"Stack.Root\" versionoverride=\"1.0.0\" />", "Project Hexalith.McpCli pins Stack.Root inline instead of centrally: Hexalith.McpCli > Stack.Root/1.0.0")]
+    [InlineData("<PackageReference Include=\"Stack.Root\"><versionoverride>1.0.0</versionoverride></PackageReference>", "Project Hexalith.McpCli pins Stack.Root inline instead of centrally: Hexalith.McpCli > Stack.Root/1.0.0")]
+    public void SourceProjectGuardsFailWithExactDiagnostics(string reference, string expected)
+    {
+        var (policy, graph, projects) = Minimal();
+        AddReference(projects, ToolProject, reference);
+        Assert.Equal([expected], Check(policy, graph, projects));
+    }
+
+    /// <summary>MSBuild metadata updates and removals are not additional dependency declarations.</summary>
+    [Theory]
+    [InlineData("<PackageReference Update=\"Unapproved.Package\" PrivateAssets=\"all\" />")]
+    [InlineData("<PackageReference Remove=\"Unapproved.Package\" />")]
+    [InlineData("<ProjectReference Update=\"../../references/Hexalith.McpCli.Core/Hexalith.McpCli.Core.csproj\" PrivateAssets=\"all\" />")]
+    [InlineData("<ProjectReference Remove=\"../../references/Hexalith.McpCli.Core/Hexalith.McpCli.Core.csproj\" />")]
+    [InlineData("<FrameworkReference Update=\"Microsoft.AspNetCore.App\" PrivateAssets=\"all\" />")]
+    [InlineData("<FrameworkReference Remove=\"Microsoft.AspNetCore.App\" />")]
+    public void MetadataOperationsDoNotDeclareRoots(string reference)
+    {
+        var (policy, graph, projects) = Minimal();
+        AddReference(projects, ToolProject, reference);
+        Assert.Equal(Array.Empty<string>(), Check(policy, graph, projects));
+        Assert.Equal(Array.Empty<string>(), DependencyPolicyGate.CheckTestProjects(policy, projects, TestRoot));
+    }
+
+    /// <summary>Metadata updates cannot bypass centrally managed package versions.</summary>
+    [Theory]
+    [InlineData("<PackageReference Update=\"Stack.Root\" Version=\"1.0.0\" />")]
+    [InlineData("<PackageReference Update=\"Stack.Root\" VersionOverride=\"1.0.0\" />")]
+    [InlineData("<PackageReference Update=\"Stack.Root\"><Version>1.0.0</Version></PackageReference>")]
+    [InlineData("<PackageReference Update=\"Stack.Root\"><VersionOverride>1.0.0</VersionOverride></PackageReference>")]
+    public void InlineVersionsOnMetadataUpdatesFail(string reference)
+    {
+        var (policy, graph, projects) = Minimal();
+        AddReference(projects, ToolProject, reference);
+        Assert.Equal(["Project Hexalith.McpCli pins Stack.Root inline instead of centrally: Hexalith.McpCli > Stack.Root/1.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Production project references cannot escape src or import test fixtures.</summary>
+    [Theory]
+    [InlineData("../../tests/Hexalith.McpCli.Sample.Contracts/Hexalith.McpCli.Sample.Contracts.csproj", "Production project Hexalith.McpCli references test-only project ../../tests/Hexalith.McpCli.Sample.Contracts/Hexalith.McpCli.Sample.Contracts.csproj: Hexalith.McpCli > Hexalith.McpCli.Sample.Contracts")]
+    [InlineData("../../references/External/External.csproj", "Project Hexalith.McpCli references a non-McpCli project ../../references/External/External.csproj: Hexalith.McpCli > External")]
+    [InlineData("../../references/Hexalith.McpCli.Core/Hexalith.McpCli.Core.csproj", "Project Hexalith.McpCli references a non-McpCli project ../../references/Hexalith.McpCli.Core/Hexalith.McpCli.Core.csproj: Hexalith.McpCli > Hexalith.McpCli.Core")]
+    [InlineData("../External/External.csproj", "Project Hexalith.McpCli references a non-McpCli project ../External/External.csproj: Hexalith.McpCli > External")]
+    public void ProductionProjectReferenceGuardFails(string include, string expected)
+    {
+        var (policy, graph, projects) = Minimal();
+        AddReference(projects, ToolProject, $"<ProjectReference Include=\"{include}\" />");
+        Assert.Equal([expected], Check(policy, graph, projects));
+    }
+
+    /// <summary>Restored project nodes are checked independently of source XML.</summary>
+    [Theory]
+    [InlineData("sample")]
+    [InlineData("test")]
+    [InlineData("external")]
+    public void RestoredExternalAndTestProjectsFail(string kind)
+    {
+        var (policy, graph, projects) = Minimal();
+        string id = kind == "sample" ? policy.SampleContracts : "External";
+        string path = kind != "external" ? Path.Combine(TestRoot, "tests", id, id + ".csproj") : Path.Combine(TestRoot, "references", "External", "External.csproj");
+        graph = Replace(graph, new(id, "1.0.0", "project", new Dictionary<string, string>(), [], path));
+        var expected = new List<string> { $"Production restore contains non-McpCli project {id}: Hexalith.McpCli > {id}" };
+        if (kind != "external")
+        {
+            expected.Add($"Production restore contains test-only project {id}: Hexalith.McpCli > {id}");
+        }
+
+        Assert.Equal(expected, Check(policy, graph, projects));
+    }
+
+    /// <summary>A restored project with no source path fails the production origin check.</summary>
+    [Fact]
+    public void RestoredProjectWithoutPathFails()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = Replace(graph, new("External", "1.0.0", "project", new Dictionary<string, string>(), []));
+        graph = Replace(graph, graph.Nodes[graph.RootId] with { Dependencies = new Dictionary<string, string>(graph.Nodes[graph.RootId].Dependencies) { ["External"] = "1.0.0" } });
+        Assert.Equal(["Production restore contains non-McpCli project External: Hexalith.McpCli > External"], Check(policy, graph, projects));
+    }
+
+    /// <summary>A valid McpCli identity does not exempt a restored project from the source-path boundary.</summary>
+    [Fact]
+    public void RestoredMcpCliProjectUnderReferencesFails()
+    {
+        var (policy, graph, projects) = Minimal();
+        const string id = "Hexalith.McpCli.Core";
+        graph = Replace(graph, new(id, "1.0.0", "project", new Dictionary<string, string>(), [],
+            Path.Combine(TestRoot, "references", id, id + ".csproj")));
+        graph = Replace(graph, graph.Nodes[graph.RootId] with { Dependencies = new Dictionary<string, string>(graph.Nodes[graph.RootId].Dependencies) { [id] = "1.0.0" } });
+        Assert.Equal(["Production restore contains non-McpCli project Hexalith.McpCli.Core: Hexalith.McpCli > Hexalith.McpCli.Core"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Decoration project nodes must come from the same production source boundary.</summary>
+    [Fact]
+    public void ExternalDecorationProjectFails()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = Replace(graph, graph.Nodes[policy.DecorationPackage.Key] with
+        {
+            ProjectPath = Path.Combine(TestRoot, "references", policy.DecorationPackage.Key, policy.DecorationPackage.Key + ".csproj"),
+        });
+        Assert.Equal(["Production restore contains non-McpCli project Hexalith.McpCli.Abstractions: Hexalith.McpCli > Hexalith.McpCli.Abstractions"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Decoration projects cannot use a baseline-only package as an unapproved direct root.</summary>
+    [Fact]
+    public void DecorationProjectCannotIntroduceBaselineOnlyDirectPackage()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = Replace(graph, graph.Nodes[policy.DecorationPackage.Key] with
+        {
+            Dependencies = new Dictionary<string, string> { ["Stack.Leaf"] = "2.0.0" },
+        });
+        Assert.Equal(["Restored project Hexalith.McpCli.Abstractions has an unapproved direct package Stack.Leaf/2.0.0: Hexalith.McpCli > Hexalith.McpCli.Abstractions > Stack.Leaf/2.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Only the tool may introduce an enrolled module as a restored project package edge.</summary>
+    [Fact]
+    public void RestoredLibraryProjectCannotImportEnrolledModule()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = AddModule(policy, graph, projects, "Module.Contracts", new());
+        const string id = "Hexalith.McpCli.Core";
+        graph = Replace(graph, new(id, "1.0.0", "project", new Dictionary<string, string> { ["Module.Contracts"] = "1.0.0" }, [],
+            Path.Combine(TestRoot, "src", id, id + ".csproj")));
+        graph = Replace(graph, graph.Nodes[graph.RootId] with { Dependencies = new Dictionary<string, string>(graph.Nodes[graph.RootId].Dependencies) { [id] = "1.0.0" } });
+        Assert.Equal(["Restored project Hexalith.McpCli.Core has an unapproved direct package Module.Contracts/1.0.0: Hexalith.McpCli > Hexalith.McpCli.Core > Module.Contracts/1.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Production lists cannot overlap module pins.</summary>
+    [Theory]
+    [InlineData("direct")]
+    [InlineData("baseline")]
+    [InlineData("decoration")]
+    public void ModuleListsCannotOverlapStack(string list)
+    {
+        var (policy, graph, projects) = Minimal();
+        string id = list == "decoration" ? policy.DecorationPackage.Key : "Stack.Root";
+        if (list == "baseline")
+        {
+            id = "Stack.Leaf";
+        }
+
+        policy.Modules.Add(id, "1.0.0");
+        var expected = new List<string>
+        {
+            $"Approved module {id}/1.0.0 has no flagged direct reference in the tool: Hexalith.McpCli > {id}/1.0.0",
+            $"Policy module {id}/1.0.0 overlaps the non-module production lists: Hexalith.McpCli > {id}/1.0.0",
+        };
+        if (list == "decoration")
+        {
+            expected.Add("Pinned module Hexalith.McpCli.Abstractions/1.0.0 is missing from restore: Hexalith.McpCli > Hexalith.McpCli.Abstractions/1.0.0");
+        }
+        else if (list == "baseline")
+        {
+            expected.Add("Restored package Stack.Leaf/2.0.0 differs from pin Stack.Leaf/1.0.0: Hexalith.McpCli > Stack.Root/1.0.0 > Stack.Leaf/2.0.0");
+        }
+        else
+        {
+            expected.AddRange(
+            [
+                "Baseline entry Stack.Leaf/2.0.0 is outside the non-module stack closure: Hexalith.McpCli > Stack.Root/1.0.0 > Stack.Leaf/2.0.0",
+                "Baseline entry Stack.Root/1.0.0 is outside the non-module stack closure: Hexalith.McpCli > Stack.Root/1.0.0",
+                "Direct package Stack.Root/1.0.0 has no production reference: Hexalith.McpCli > Stack.Root/1.0.0",
+                "Module Stack.Root adds unapproved package Stack.Leaf/2.0.0: Hexalith.McpCli > Stack.Root/1.0.0 > Stack.Leaf/2.0.0",
+                "Project Hexalith.McpCli has an unapproved Contracts root Stack.Root/1.0.0: Hexalith.McpCli > Stack.Root/1.0.0",
+            ]);
+        }
+
+        Assert.Equal(expected.Order(StringComparer.Ordinal), Check(policy, graph, projects));
+    }
+
+    /// <summary>Unknown schema versions fail closed.</summary>
+    [Fact]
+    public void UnsupportedPolicySchemaFails()
+    {
+        var (policy, graph, projects) = Minimal();
+        Assert.Equal(["Dependency policy schemaVersion 2 is unsupported; expected 1"], Check(policy with { SchemaVersion = 2 }, graph, projects));
+    }
+
+    /// <summary>The decoration node is accepted without traversing its dependencies.</summary>
+    [Fact]
+    public void DecorationIsNotTraversed()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = Replace(graph, graph.Nodes[policy.DecorationPackage.Key] with { Dependencies = new Dictionary<string, string> { ["Not.Traversed"] = "1.0.0" } });
+        graph = AddModule(policy, graph, projects, "Module.Contracts", new() { [policy.DecorationPackage.Key] = "1.0.0" });
+        Assert.Equal(Array.Empty<string>(), Check(policy, graph, projects));
+    }
+
+    /// <summary>Diagnostics retain the real path behind decoration while closure validation stops there.</summary>
+    [Fact]
+    public void RejectedPackageBehindDecorationHasItsCompletePath()
+    {
+        var (policy, graph, projects) = Minimal();
+        graph = Replace(graph, Package("Behind.Decoration", "3.0.0"));
+        graph = Replace(graph, Package(policy.DecorationPackage.Key, "1.0.0", new() { ["Behind.Decoration"] = "3.0.0" }));
+        Assert.Equal(["Restored package Behind.Decoration/3.0.0 is outside the exact dependency policy: Hexalith.McpCli > Hexalith.McpCli.Abstractions/1.0.0 > Behind.Decoration/3.0.0"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Loading assets preserves root project-reference edges and omits versions from their paths.</summary>
+    [Fact]
+    public void AssetsLoadedRootProjectReferenceHasItsPath()
+    {
+        RestoredDependencyGraph graph = LoadSyntheticAssets();
+        Assert.Equal("Hexalith.McpCli > Hexalith.McpCli.Core", graph.PathsFrom(graph.RootId, "Hexalith.McpCli.Abstractions")["Hexalith.McpCli.Core"]);
+        Assert.Equal(Path.Combine(TestRoot, "src", "Hexalith.McpCli.Core", "Hexalith.McpCli.Core.csproj"), graph.Nodes["Hexalith.McpCli.Core"].ProjectPath);
+    }
+
+    /// <summary>Framework references from the root assets object are enforced after loading.</summary>
+    [Fact]
+    public void AssetsLoadedRootWebFrameworkFails()
+    {
+        var (policy, _, projects) = Minimal();
+        RestoredDependencyGraph graph = LoadSyntheticAssets("Microsoft.AspNetCore.App");
+        Assert.Equal(["Project Hexalith.McpCli adds framework reference Microsoft.AspNetCore.App: Hexalith.McpCli"], Check(policy, graph, projects));
+    }
+
+    /// <summary>Path selection is stable for shared dependencies, insertion order, and cycles.</summary>
+    [Fact]
+    public void PathsAreDeterministicAndProjectsHaveNoVersion()
+    {
+        var (_, graph, _) = Minimal();
+        graph = Replace(graph, Package("A", "1.0.0", new() { ["Shared"] = "1.0.0" }));
+        graph = Replace(graph, Package("Z", "1.0.0", new() { ["Shared"] = "1.0.0" }));
+        graph = Replace(graph, Package("Shared", "1.0.0", new() { ["A"] = "1.0.0" }));
+        graph = Replace(graph, graph.Nodes[graph.RootId] with { Dependencies = new Dictionary<string, string> { ["Z"] = "1.0.0", ["A"] = "1.0.0" } });
+        Assert.Equal("Hexalith.McpCli > A/1.0.0 > Shared/1.0.0", graph.PathsFrom(graph.RootId, "Decoration")["Shared"]);
+        Assert.Equal("Hexalith.McpCli", graph.PathsFrom(graph.RootId, "Decoration")[graph.RootId]);
+    }
+
+    /// <summary>Duplicate restored versions are retained as gate failures.</summary>
+    [Fact]
+    public void MultipleResolvedVersionsFail()
+    {
+        var (policy, graph, projects) = Minimal();
+        using JsonDocument fixture = JsonDocument.Parse("""{"rootId":"Duplicate.Contracts","rootVersion":"1.0.0","targets":{"Duplicate.Contracts/1.0.0":{"type":"package"},"Duplicate.Contracts/2.0.0":{"type":"package"}}}""");
+        graph = graph.WithCandidate(fixture.RootElement);
+        Assert.Equal(
+        [
+            "Restore resolves multiple versions of Duplicate.Contracts: Hexalith.McpCli > Duplicate.Contracts/2.0.0",
+            "Restored package Duplicate.Contracts/1.0.0 is outside the exact dependency policy: Hexalith.McpCli > Duplicate.Contracts/1.0.0",
+            "Restored project Hexalith.McpCli has an unapproved direct package Duplicate.Contracts/1.0.0: Hexalith.McpCli > Duplicate.Contracts/1.0.0",
+        ], Check(policy, graph, projects));
+    }
+
+    /// <summary>Every named test allowance and the sample are accepted in tests.</summary>
+    [Fact]
+    public void NamedTestRootsAndSampleAreAllowedOnlyInTests()
+    {
+        DependencyPolicy policy = DependencyPolicy.Load(Path.Combine(FindRepositoryRoot(), "tools", "dependency-policy.json"));
+        string project = Path.Combine(TestRoot, "tests", "Topology.Tests", "Topology.Tests.csproj");
+        var projects = new Dictionary<string, XDocument> { [project] = XDocument.Parse("<Project><ItemGroup /></Project>") };
+        string[] approved =
+        [
+            "Microsoft.NET.Test.Sdk", "xunit.v3", "Shouldly", "NSubstitute", "Verify.XunitV3",
+            "Microsoft.CodeAnalysis.CSharp", "Aspire.Hosting.Testing", "CommunityToolkit.Aspire.Hosting.Dapr",
+            "Hexalith.EventStore.Testing", "Hexalith.EventStore.Testing.Integration", "Hexalith.EventStore.Aspire",
+            "Hexalith.Tenants.Aspire", "Hexalith.McpCli.Sample.Contracts", "Hexalith.McpCli.Abstractions",
+        ];
+        foreach (string id in approved)
+        {
+            AddReference(projects, project, $"<PackageReference Include=\"{id}\" />");
+        }
+
+        AddReference(projects, project, "<ProjectReference Include=\"../Hexalith.McpCli.Sample.Contracts/Hexalith.McpCli.Sample.Contracts.csproj\" />");
+        AddReference(projects, project, "<ProjectReference Include=\"../../src/Hexalith.McpCli/Hexalith.McpCli.csproj\" />");
+        Assert.Equal(Array.Empty<string>(), DependencyPolicyGate.CheckTestProjects(policy, projects, TestRoot));
+    }
+
+    /// <summary>Enrolled Contracts are also valid direct dependencies of test projects.</summary>
+    [Fact]
+    public void EnrolledModuleIsAllowedInTests()
+    {
+        var (policy, _, _) = Minimal();
+        policy.Modules.Add("Module.Contracts", "1.0.0");
+        string project = Path.Combine(TestRoot, "tests", "Topology.Tests", "Topology.Tests.csproj");
+        var projects = new Dictionary<string, XDocument>();
+        AddReference(projects, project, "<PackageReference Include=\"Module.Contracts\" />");
+        Assert.Equal(Array.Empty<string>(), DependencyPolicyGate.CheckTestProjects(policy, projects, TestRoot));
+    }
+
+    /// <summary>Evaluation catches Debug and Release imports without restore and reports shared dependencies only once.</summary>
+    [Theory]
+    [InlineData("Debug")]
+    [InlineData("Release")]
+    public void ImportedTestPropsCannotBypassTheBoundary(string configuration)
+    {
+        string root = Path.Combine(Path.GetTempPath(), "mcpcli-policy-import-" + Guid.NewGuid().ToString("N"));
+        string directory = Path.Combine(root, "tests", "Topology.Tests");
+        Directory.CreateDirectory(directory);
+        try
+        {
+            string project = Path.Combine(directory, "Topology.Tests.csproj");
+            File.WriteAllText(Path.Combine(root, "NuGet.Config"), "<configuration><packageSources><clear /></packageSources></configuration>");
+            File.WriteAllText(project, "<Project><Import Project=\"Imported.props\" /></Project>");
+            File.WriteAllText(Path.Combine(directory, "Imported.props"), $$"""
+                <Project>
+                  <PropertyGroup><ImportedPackage>Unexpected.Package</ImportedPackage></PropertyGroup>
+                  <ItemGroup><PackageReference Include="Common.Package" /></ItemGroup>
+                  <ItemGroup Condition="'$(Configuration)' == '{{configuration}}'">
+                    <PackageReference Include="$(ImportedPackage)" />
+                    <ProjectReference Include="../../references/Hexalith.McpCli.Core/Hexalith.McpCli.Core.csproj" />
+                    <PackageReference Include="Inactive.Package" Condition="'false' == 'true'" />
+                  </ItemGroup>
+                </Project>
+                """);
+            var (policy, _, _) = Minimal();
+            Assert.Equal(
+            [
+                "Test project tests/Topology.Tests/Topology.Tests.csproj has an unapproved package Common.Package",
+                "Test project tests/Topology.Tests/Topology.Tests.csproj has an unapproved package Unexpected.Package",
+                "Test project tests/Topology.Tests/Topology.Tests.csproj references an unapproved project ../../references/Hexalith.McpCli.Core/Hexalith.McpCli.Core.csproj",
+            ], CheckTestProjectDirectory(policy, Path.Combine(root, "tests"), root));
+            Assert.False(Directory.Exists(Path.Combine(directory, "obj")));
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    /// <summary>Items the project file gates behind a property neither configuration sets are still checked, once each.</summary>
+    [Fact]
+    public void ConditionedTestItemsCannotBypassTheBoundary()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "mcpcli-policy-condition-" + Guid.NewGuid().ToString("N"));
+        string directory = Path.Combine(root, "tests", "Topology.Tests");
+        Directory.CreateDirectory(directory);
+        try
+        {
+            File.WriteAllText(Path.Combine(root, "NuGet.Config"), "<configuration><packageSources><clear /></packageSources></configuration>");
+            File.WriteAllText(Path.Combine(directory, "Topology.Tests.csproj"), """
+                <Project>
+                  <ItemGroup><PackageReference Include="Common.Package" /></ItemGroup>
+                  <ItemGroup Condition="'$(UseHexalithProjectReferences)' == 'true'">
+                    <ProjectReference Include="../../references/Hexalith.EventStore/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj" />
+                    <PackageReference Include="Hexalith.Parties.Aspire" />
+                  </ItemGroup>
+                </Project>
+                """);
+            var (policy, _, _) = Minimal();
+            Assert.Equal(
+            [
+                "Test project tests/Topology.Tests/Topology.Tests.csproj has an unapproved package Common.Package",
+                "Test project tests/Topology.Tests/Topology.Tests.csproj has an unapproved package Hexalith.Parties.Aspire",
+                "Test project tests/Topology.Tests/Topology.Tests.csproj references an unapproved project ../../references/Hexalith.EventStore/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj",
+            ], CheckTestProjectDirectory(policy, Path.Combine(root, "tests"), root));
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    /// <summary>Tests reject unapproved roots, including unpublished Parties helpers, and sibling source projects.</summary>
+    [Theory]
+    [InlineData("<PackageReference Include=\"Unexpected.Package\" />", "Test project tests/Topology.Tests/Topology.Tests.csproj has an unapproved package Unexpected.Package")]
+    [InlineData("<PackageReference Include=\"Hexalith.Parties.Aspire\" />", "Test project tests/Topology.Tests/Topology.Tests.csproj has an unapproved package Hexalith.Parties.Aspire")]
+    [InlineData("<ProjectReference Include=\"../../references/External/External.csproj\" />", "Test project tests/Topology.Tests/Topology.Tests.csproj references an unapproved project ../../references/External/External.csproj")]
+    [InlineData("<ProjectReference Include=\"../../references/Hexalith.McpCli.Core/Hexalith.McpCli.Core.csproj\" />", "Test project tests/Topology.Tests/Topology.Tests.csproj references an unapproved project ../../references/Hexalith.McpCli.Core/Hexalith.McpCli.Core.csproj")]
+    [InlineData("<ProjectReference Include=\"$(ExternalProject)\" />", "Test project tests/Topology.Tests/Topology.Tests.csproj has an unresolved project reference $(ExternalProject)")]
+    public void TestProjectBoundaryRejectsUnapprovedItems(string reference, string expected)
+    {
+        DependencyPolicy policy = DependencyPolicy.Load(Path.Combine(FindRepositoryRoot(), "tools", "dependency-policy.json"));
+        string project = Path.Combine(TestRoot, "tests", "Topology.Tests", "Topology.Tests.csproj");
+        var projects = new Dictionary<string, XDocument>();
+        AddReference(projects, project, reference);
+        Assert.Equal([expected], DependencyPolicyGate.CheckTestProjects(policy, projects, TestRoot));
+    }
+
+    private static (DependencyPolicy Policy, RestoredDependencyGraph Graph, Dictionary<string, XDocument> Projects) Minimal()
+    {
+        var policy = new DependencyPolicy
+        {
+            DirectPackages = new(StringComparer.OrdinalIgnoreCase) { "Stack.Root" },
+            BaselinePackages = new(StringComparer.OrdinalIgnoreCase) { ["Stack.Root"] = "1.0.0", ["Stack.Leaf"] = "2.0.0" },
+        };
+        var nodes = new Dictionary<string, RestoredDependencyNode>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Hexalith.McpCli"] = new("Hexalith.McpCli", "", "project", new Dictionary<string, string> { ["Stack.Root"] = "1.0.0", [policy.DecorationPackage.Key] = "1.0.0" }, ["Microsoft.NETCore.App"], ToolProject),
+            ["Stack.Root"] = Package("Stack.Root", "1.0.0", new() { ["Stack.Leaf"] = "2.0.0" }),
+            ["Stack.Leaf"] = Package("Stack.Leaf", "2.0.0"),
+            [policy.DecorationPackage.Key] = new(policy.DecorationPackage.Key, "1.0.0", "project", new Dictionary<string, string>(), [], Path.Combine(TestRoot, "src", policy.DecorationPackage.Key, policy.DecorationPackage.Key + ".csproj")),
+        };
+        var projects = new Dictionary<string, XDocument>();
+        AddReference(projects, ToolProject, "<PackageReference Include=\"Stack.Root\" />");
+        return (policy, new("Hexalith.McpCli", nodes, []), projects);
+    }
+
+    private static RestoredDependencyNode Package(string id, string version, Dictionary<string, string>? dependencies = null)
+        => new(id, version, "package", dependencies ?? new(), []);
+
+    private static RestoredDependencyGraph LoadSyntheticAssets(string framework = "Microsoft.NETCore.App")
+    {
+        JsonObject assets = JsonNode.Parse("""
+            {"targets":{"net10.0":{
+              "Stack.Root/1.0.0":{"type":"package","dependencies":{"Stack.Leaf":"2.0.0"}},
+              "Stack.Leaf/2.0.0":{"type":"package"},
+              "Hexalith.McpCli.Core/1.0.0":{"type":"project"}
+            }},"libraries":{"Hexalith.McpCli.Core/1.0.0":{"path":"../Hexalith.McpCli.Core/Hexalith.McpCli.Core.csproj"}},
+            "project":{"frameworks":{"net10.0":{"dependencies":{"Stack.Root":{"version":"[1.0.0, )"}},"frameworkReferences":{}}},
+              "restore":{"frameworks":{"net10.0":{"projectReferences":{}}}}}}
+            """)!.AsObject();
+        string core = Path.Combine(TestRoot, "src", "Hexalith.McpCli.Core", "Hexalith.McpCli.Core.csproj");
+        assets["project"]!["frameworks"]!["net10.0"]!["frameworkReferences"]![framework] = new JsonObject();
+        assets["project"]!["restore"]!["frameworks"]!["net10.0"]!["projectReferences"]![core] = new JsonObject { ["projectPath"] = core };
+        using JsonDocument document = JsonDocument.Parse(assets.ToJsonString());
+        return RestoredDependencyGraph.Load(document.RootElement, ToolProject);
+    }
+
+    private static string[] CheckTestProjectDirectory(DependencyPolicy policy, string directory, string root)
+    {
+        Dictionary<string, XDocument> projects = Directory.EnumerateFiles(directory, "*.csproj", SearchOption.AllDirectories)
+            .ToDictionary(path => path, EvaluateReferences);
+        return DependencyPolicyGate.CheckTestProjects(policy, projects, root);
+    }
+
+    private static XDocument EvaluateReferences(string project)
+    {
+        // Literal declarations ignore conditions, so a property toggle in the project file cannot hide an item.
+        IEnumerable<XElement> declared = XDocument.Load(project).Descendants()
+            .Where(item => item.Name.LocalName is "PackageReference" or "ProjectReference" && item.Attribute("Include") is not null)
+            .Select(item => new XElement(item.Name.LocalName, new XAttribute("Include", (string)item.Attribute("Include")!)));
+        IEnumerable<XElement> items = new[] { "Debug", "Release" }
+            .SelectMany(configuration => EvaluateReferences(project, configuration).Descendants("ItemGroup").Elements())
+            .Concat(declared)
+            .DistinctBy(item => (item.Name, (string?)item.Attribute("Include")));
+        return new XDocument(new XElement("Project", new XElement("ItemGroup", items)));
+    }
+
+    private static XDocument EvaluateReferences(string project, string configuration)
+    {
+        using var process = new Process
+        {
+            StartInfo = new ProcessStartInfo("dotnet")
+            {
+                WorkingDirectory = FindRepositoryRoot(),
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+            },
+        };
+        foreach (string argument in new[] { "msbuild", project, "-getItem:PackageReference,ProjectReference", $"-p:Configuration={configuration}", "-nologo" })
+        {
+            process.StartInfo.ArgumentList.Add(argument);
+        }
+
+        process.Start();
+        Task<string> stdout = process.StandardOutput.ReadToEndAsync();
+        Task<string> stderr = process.StandardError.ReadToEndAsync();
+        if (!process.WaitForExit(60_000))
+        {
+            process.Kill(entireProcessTree: true);
+            process.WaitForExit();
+            throw new TimeoutException($"Dependency item evaluation timed out: dotnet msbuild {project} -getItem:PackageReference,ProjectReference -p:Configuration={configuration}");
+        }
+
+        string output = stdout.GetAwaiter().GetResult();
+        string error = stderr.GetAwaiter().GetResult();
+        Assert.True(process.ExitCode == 0, $"Dependency item evaluation failed for {project} ({configuration}): {output}{error}");
+        using JsonDocument result = JsonDocument.Parse(output);
+        var items = new XElement("ItemGroup");
+        foreach (string name in new[] { "PackageReference", "ProjectReference" })
+        {
+            foreach (JsonElement item in result.RootElement.GetProperty("Items").GetProperty(name).EnumerateArray())
+            {
+                items.Add(new XElement(name, new XAttribute("Include", item.GetProperty("Identity").GetString()!)));
+            }
+        }
+
+        return new XDocument(new XElement("Project", items));
+    }
+
+    private static RestoredDependencyGraph Replace(RestoredDependencyGraph graph, RestoredDependencyNode node)
+        => graph with { Nodes = new Dictionary<string, RestoredDependencyNode>(graph.Nodes, StringComparer.OrdinalIgnoreCase) { [node.Id] = node } };
+
+    private static RestoredDependencyGraph AddModule(DependencyPolicy policy, RestoredDependencyGraph graph,
+        Dictionary<string, XDocument> projects, string id, Dictionary<string, string> dependencies)
+    {
+        policy.Modules.Add(id, "1.0.0");
+        AddReference(projects, ToolProject, $"<PackageReference Include=\"{id}\" HexalithContracts=\"true\" />");
+        graph = Replace(graph, Package(id, "1.0.0", dependencies));
+        return Replace(graph, graph.Nodes[graph.RootId] with { Dependencies = new Dictionary<string, string>(graph.Nodes[graph.RootId].Dependencies) { [id] = "1.0.0" } });
+    }
+
+    private static void AddReference(Dictionary<string, XDocument> projects, string path, string reference)
+    {
+        if (!projects.TryGetValue(path, out XDocument? document))
+        {
+            projects.Add(path, document = XDocument.Parse("<Project><ItemGroup /></Project>"));
+        }
+
+        document.Root!.Element("ItemGroup")!.Add(XElement.Parse(reference));
+    }
+
+    private static string[] Check(DependencyPolicy policy, RestoredDependencyGraph graph, Dictionary<string, XDocument> projects)
+        => DependencyPolicyGate.CheckProduction(policy, graph, projects, TestRoot);
+
+    private static (DependencyPolicy Policy, RestoredDependencyGraph Graph, Dictionary<string, XDocument> Projects, string Root) RealCandidate(string module, string version)
+    {
+        string root = FindRepositoryRoot();
+        DependencyPolicy policy = DependencyPolicy.Load(Path.Combine(root, "tools", "dependency-policy.json"));
+        RestoredDependencyGraph graph = LoadProductionGraph(root);
+        Dictionary<string, XDocument> projects = ReadProjects(Path.Combine(root, "src"));
+        if (policy.Modules.TryAdd($"Hexalith.{module}.Contracts", version))
+        {
+            AddReference(projects, Path.Combine(root, "src", "Hexalith.McpCli", "Hexalith.McpCli.csproj"), $"<PackageReference Include=\"Hexalith.{module}.Contracts\" HexalithContracts=\"true\" />");
+        }
+        using JsonDocument fixture = LoadFixture(module, version);
+        return (policy, graph.WithCandidate(fixture.RootElement), projects, root);
+    }
+
+    private static JsonDocument LoadFixture(string module, string version)
+        => JsonDocument.Parse(File.ReadAllText(Path.Combine(FindRepositoryRoot(), "tests", "Hexalith.McpCli.Manifest.Tests", "Fixtures", $"Hexalith.{module}.Contracts.{version}.closure.json")));
+
+    private static RestoredDependencyGraph LoadProductionGraph(string root)
+    {
+        string project = Path.Combine(root, "src", "Hexalith.McpCli", "Hexalith.McpCli.csproj");
+        using JsonDocument assets = JsonDocument.Parse(File.ReadAllText(Path.Combine(Path.GetDirectoryName(project)!, "obj", "project.assets.json")));
+        return RestoredDependencyGraph.Load(assets.RootElement, project);
+    }
+
+    private static Dictionary<string, XDocument> ReadProjects(string directory)
+        => Directory.EnumerateFiles(directory, "*.csproj", SearchOption.AllDirectories).ToDictionary(path => path, XDocument.Load);
+
+    private static string FindRepositoryRoot()
+    {
+        DirectoryInfo? current = new(AppContext.BaseDirectory);
+        while (current is not null && !File.Exists(Path.Combine(current.FullName, "Hexalith.McpCli.slnx")))
+        {
+            current = current.Parent;
+        }
+
+        return current?.FullName ?? throw new InvalidOperationException("McpCli repository root was not found.");
+    }
+}

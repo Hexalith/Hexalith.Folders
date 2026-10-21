@@ -1,0 +1,192 @@
+[
+  {
+    "name": "domain",
+    "command": [
+      "dotnet",
+      "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+      "-result-xml",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-domain.xml"
+    ],
+    "exit_code": 0,
+    "seconds": 66.35572791099548,
+    "log": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-domain.log",
+    "xml": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-domain.xml",
+    "assemblies": [
+      {
+        "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "d2edc537-389d-471d-bf1d-a844f9c16cf3",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+        "run-date": "2026-10-21",
+        "run-time": "17:32:33",
+        "start-rtf": "2026-10-21T17:32:33.3038868+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-10-21T17:33:39.2543005+00:00",
+        "not-run": "0",
+        "passed": "2188",
+        "skipped": "2",
+        "time": "65.954",
+        "time-rtf": "00:01:05.9539999",
+        "total": "2190"
+      }
+    ]
+  },
+  {
+    "name": "server",
+    "command": [
+      "dotnet",
+      "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "-result-xml",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-server.xml"
+    ],
+    "exit_code": 0,
+    "seconds": 40.93364953994751,
+    "log": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-server.log",
+    "xml": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-server.xml",
+    "assemblies": [
+      {
+        "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "ed910ab0-9986-4d6b-b6c0-81dd11f5a812",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "run-date": "2026-10-21",
+        "run-time": "17:33:39",
+        "start-rtf": "2026-10-21T17:33:39.6442918+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-10-21T17:34:20.3107152+00:00",
+        "not-run": "0",
+        "passed": "1056",
+        "skipped": "0",
+        "time": "40.668",
+        "time-rtf": "00:00:40.6680000",
+        "total": "1056"
+      }
+    ]
+  },
+  {
+    "name": "workers",
+    "command": [
+      "dotnet",
+      "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+      "-result-xml",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-workers.xml"
+    ],
+    "exit_code": 0,
+    "seconds": 11.157588481903076,
+    "log": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-workers.log",
+    "xml": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-workers.xml",
+    "assemblies": [
+      {
+        "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "e48f9df4-088a-4aa4-8264-5f8fd95d2576",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+        "run-date": "2026-10-21",
+        "run-time": "17:34:20",
+        "start-rtf": "2026-10-21T17:34:20.5514127+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-10-21T17:34:31.5014442+00:00",
+        "not-run": "0",
+        "passed": "161",
+        "skipped": "0",
+        "time": "10.952",
+        "time-rtf": "00:00:10.9520000",
+        "total": "161"
+      }
+    ]
+  },
+  {
+    "name": "apphost-helpers",
+    "command": [
+      "dotnet",
+      "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "-class",
+      "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "-class",
+      "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+      "-result-xml",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-apphost-helpers.xml"
+    ],
+    "exit_code": 0,
+    "seconds": 1.2923235893249512,
+    "log": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-apphost-helpers.log",
+    "xml": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-apphost-helpers.xml",
+    "assemblies": [
+      {
+        "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "cf8b3132-c430-4c91-a668-1494240fe587",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "run-date": "2026-10-21",
+        "run-time": "17:34:31",
+        "start-rtf": "2026-10-21T17:34:31.7265587+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-10-21T17:34:32.8123025+00:00",
+        "not-run": "0",
+        "passed": "22",
+        "skipped": "0",
+        "time": "1.087",
+        "time-rtf": "00:00:01.0870000",
+        "total": "22"
+      }
+    ]
+  },
+  {
+    "name": "docs",
+    "command": [
+      "dotnet",
+      "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.Deployment.ProviderErrorDocsConformanceTests",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests",
+      "-result-xml",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-docs.xml"
+    ],
+    "exit_code": 0,
+    "seconds": 0.41562938690185547,
+    "log": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-docs.log",
+    "xml": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/final-docs.xml",
+    "assemblies": [
+      {
+        "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "0d284831-dec3-4864-a84b-ce9375b5cee2",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "run-date": "2026-10-21",
+        "run-time": "17:34:33",
+        "start-rtf": "2026-10-21T17:34:33.0145185+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-10-21T17:34:33.2276838+00:00",
+        "not-run": "0",
+        "passed": "28",
+        "skipped": "0",
+        "time": "0.213",
+        "time-rtf": "00:00:00.2130000",
+        "total": "28"
+      }
+    ]
+  },
+  {
+    "name": "integration",
+    "command": [
+      "dotnet",
+      "test",
+      "--project",
+      "tests/Hexalith.Folders.IntegrationTests",
+      "--no-build"
+    ],
+    "exit_code": 0,
+    "log": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/components-final/integration.log"
+  }
+]

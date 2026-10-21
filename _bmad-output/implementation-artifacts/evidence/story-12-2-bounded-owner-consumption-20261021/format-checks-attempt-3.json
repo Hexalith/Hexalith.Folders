@@ -1,0 +1,38 @@
+[
+  {
+    "command": [
+      "dotnet",
+      "format",
+      "whitespace",
+      "Hexalith.Folders.slnx",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs"
+    ],
+    "exit_code": 0,
+    "seconds": 10.652451038360596
+  },
+  {
+    "command": [
+      "dotnet",
+      "format",
+      "analyzers",
+      "Hexalith.Folders.slnx",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs"
+    ],
+    "exit_code": 0,
+    "seconds": 26.19053864479065
+  }
+]

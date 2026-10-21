@@ -1,0 +1,2095 @@
+@page "/"
+@page "/tenants"
+@page "/tenants/tenants"
+@page "/tenants/workspace-users"
+@implements IDisposable
+@using Hexalith.Tenants.Contracts.Enums
+@using Hexalith.Tenants.UI.Components.Users
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.JSInterop
+@inject IStringLocalizer<TenantsResources> Localizer
+@inject ITenantQueryGateway QueryGateway
+@inject NavigationManager Navigation
+@inject IServiceProvider Services
+@inject IJSRuntime JS
+
+<CascadingValue Value="@AuditReadAvailable" Name="AuditReadAvailable">
+<CascadingValue Value="@(!_auditAuthorityResolved)" Name="AuditReadPending">
+<CascadingValue Value="@AuditReadDenied" Name="AuditReadDenied">
+<CascadingValue Value="@AuditUnavailableReason" Name="AuditReadUnavailableReason">
+<CascadingValue Value="@((Func<Task>)RefreshAuditAuthorityAsync)" Name="AuditAuthorityRefresh">
+<CascadingValue Value="@((Func<long>)(() => Volatile.Read(ref _auditRefreshVersion)))" Name="AuditAuthorityRefreshVersion">
+<span hidden data-audit-focus-page-terminal="@(_auditAuthorityResolved && (IsUsersTab || _snapshot.Kind is not TenantListSurfaceKind.Loading))"
+      data-audit-focus-heading="tenants-list-heading"
+      data-audit-focus-active-origin="@ActiveAuditOrigin"></span>
+<FcAggregateListPage TItem="TenantListRow"
+                     @ref="_listPage"
+                     LayoutMode="FcPageLayoutMode.FullWidth"
+                     RootTestId="tenants-workspace"
+                     RootClass="tenants-workspace"
+                     PageTitle="@Localizer["Tenants.Workspace.Title"]"
+                     Heading="@Localizer["Tenants.Workspace.Title"]"
+                     HeadingId="tenants-list-heading"
+                     HeadingTabIndex="-1"
+                     Eyebrow="@Localizer["Tenants.Workspace.Eyebrow"]"
+                     HeaderTestId="tenants-list-page-header">
+    <Toolbar>
+        @if (CanReviewGlobalAdministrators)
+        {
+            <FluentAnchorButton Href="@GlobalAdministratorsHref"
+                                Appearance="ButtonAppearance.Outline"
+                                data-testid="tenants-global-administrators-entry">
+                @Localizer["Tenants.Navigation.GlobalAdministrators"]
+            </FluentAnchorButton>
+        }
+    </Toolbar>
+    <Body>
+        @if (_auditReturnNotice)
+        {
+            <p role="status" data-testid="tenants-audit-return-notice">@Localizer["Tenants.Audit.Return.MissingOrigin"]</p>
+        }
+        @if (_auditStalledNotice)
+        {
+            <p role="status" data-testid="tenants-audit-stalled-return">@Localizer["Tenants.Audit.Return.Stalled"]</p>
+        }
+        @if (_auditPartialReturn)
+        {
+            <p role="status" data-testid="tenants-audit-partial-return">@Localizer["Tenants.Audit.Return.Partial"]</p>
+        }
+        @* FcPageTabs owns tab semantics, selection, roving focus, and the association to its
+           Fluent-generated "${Id}-panel" tab panel. Each FcPageTab.ChildContent is the real panel
+           content: FcPageTab retains it (via DeferredLoading) after first activation, so switching
+           tabs preserves the panel component instance, local state, and in-flight work without
+           Tenants hand-rolling its own hidden/aria-hidden panel wrapper. *@
+        <FcPageTabs ActiveTabId="@(IsUsersTab ? "workspace-users" : TenantWorkspaceState.TenantsTab)"
+                    ModuleRoute="/tenants"
+                    DefaultTabId="@TenantWorkspaceState.TenantsTab"
+                    ActiveTabIdChanged="OnActiveTabChanged"
+                    AriaLabel="@Localizer["Tenants.Workspace.Tabs.Label"]"
+                    TestId="tenants-workspace-tabs">
+            <FcPageTab Id="@TenantWorkspaceState.TenantsTab"
+                       Header="@Localizer["Tenants.Workspace.Tabs.Tenants"]"
+                       DeferredLoading="true">
+                <div data-testid="tenants-workspace-tenants-panel">
+                <FluentStack Orientation="Orientation.Vertical"
+                             VerticalGap="24px"
+                             Width="100%"
+                             data-testid="tenants-workspace-tenants-panel-content"
+                             data-audit-focus-terminal="@(_auditAuthorityResolved && _snapshot.Kind is not TenantListSurfaceKind.Loading)">
+                    <FluentStack Orientation="Orientation.Horizontal"
+                                 HorizontalGap="12px"
+                                 VerticalGap="12px"
+                                 VerticalAlignment="VerticalAlignment.Bottom"
+                                 Wrap="true"
+                                 Width="100%">
+                        <FluentSelect TOption="string" TValue="string"
+                                      Value="@_tenantScope"
+                                      ValueChanged="OnTenantScopeChanged"
+                                      Label="@Localizer["Tenants.Workspace.Scope.Label"]"
+                                      data-testid="tenants-workspace-scope"
+                                      aria-label="@Localizer["Tenants.Workspace.Scope.Label"]">
+                            <FluentOption TValue="string" Value="@TenantWorkspaceState.AllScope">@Localizer["Tenants.Workspace.Scope.All"]</FluentOption>
+                            <FluentOption TValue="string" Value="@TenantWorkspaceState.MyScope">@Localizer["Tenants.Workspace.Scope.Mine"]</FluentOption>
+                        </FluentSelect>
+
+                        @if (IsRetainedTenantListView)
+                        {
+                            @* Maxlength stops the interactive path reaching the rejection at all: without it a
+                               pasted over-length term was accepted by the input, dropped by normalization, and
+                               the operator watched their own text disappear. A URL-supplied term still bypasses
+                               the input, which is why the rejection also raises a localized notice. *@
+                            <FluentTextInput TextInputType="TextInputType.Search"
+                                             Value="@_search"
+                                             ValueChanged="OnSearchChanged"
+                                             MaxLength="TenantWorkspaceState.MaximumSearchLength"
+                                             Immediate="true"
+                                             ImmediateDelay="350"
+                                             Label="@Localizer["Tenants.List.SearchLabel"]"
+                                             Placeholder="@Localizer["Tenants.List.SearchPlaceholder"]"
+                                             data-testid="tenants-list-search"
+                                             aria-label="@Localizer["Tenants.List.SearchLabel"]" />
+                            <FluentSelect TOption="string" TValue="string"
+                                          Value="@_statusFilter"
+                                          ValueChanged="OnStatusFilterChanged"
+                                          Label="@Localizer[StatusFilterLabelKey]"
+                                          data-testid="tenants-list-status-filter"
+                                          aria-label="@Localizer[StatusFilterLabelKey]">
+                                <FluentOption TValue="string" Value="@string.Empty">@Localizer["Tenants.List.StatusFilter.All"]</FluentOption>
+                                <FluentOption TValue="string" Value="@TenantStatus.Active.ToString()">@Localizer["Tenants.List.StatusFilter.Active"]</FluentOption>
+                                <FluentOption TValue="string" Value="@TenantStatus.Disabled.ToString()">@Localizer["Tenants.List.StatusFilter.Disabled"]</FluentOption>
+                                <FluentOption TValue="string" Value="@TenantStatus.Unknown.ToString()">@Localizer["Tenants.List.StatusFilter.Unknown"]</FluentOption>
+                            </FluentSelect>
+                            <FluentSelect TOption="int" TValue="int"
+                                          Value="@_pageSize"
+                                          ValueChanged="OnPageSizeChanged"
+                                          Label="@Localizer["Tenants.List.PageSizeLabel"]"
+                                          data-testid="tenants-list-page-size"
+                                          aria-label="@Localizer["Tenants.List.PageSizeLabel"]">
+                                @foreach (int pageSize in _pageSizes)
+                                {
+                                    <FluentOption TValue="int" Value="@pageSize">
+                                        @Localizer["Tenants.List.PageSizeOption", pageSize]
+                                    </FluentOption>
+                                }
+                            </FluentSelect>
+                            <FluentButton Appearance="ButtonAppearance.Primary" data-testid="tenants-list-refresh" OnClick="RefreshAsync">
+                                @Localizer["Tenants.List.Refresh"]
+                            </FluentButton>
+                            <FluentButton Appearance="ButtonAppearance.Outline" data-testid="tenants-list-reset" OnClick="ResetFiltersAsync">
+                                @Localizer["Tenants.List.Reset"]
+                            </FluentButton>
+                        }
+                    </FluentStack>
+                    @if (IsRetainedTenantListView)
+                    {
+                        <FluentText As="TextTag.Paragraph"
+                                    Size="TextSize.Size200"
+                                    Color="Color.Lightweight"
+                                    data-testid="tenants-list-page-local-semantics">
+                            @Localizer[_snapshot.IsAuthoritativeSearch
+                                ? "Tenants.List.AuthoritativeSearchSemantics"
+                                : "Tenants.List.PageLocalSemantics"]
+                        </FluentText>
+                    }
+                    @if (IsRetainedTenantListView && !string.IsNullOrWhiteSpace(_selectedTenantId))
+                    {
+                        <FluentText As="TextTag.Paragraph"
+                                    Size="TextSize.Size300"
+                                    Color="Color.Lightweight"
+                                    data-testid="tenants-list-return-context">
+                            @Localizer["Tenants.List.ReturnContext", _selectedTenantId]
+                        </FluentText>
+                    }
+                    @if (IsRetainedMyTenantsView && !string.IsNullOrWhiteSpace(_selectedTenantId))
+                    {
+                        <FluentText As="TextTag.Paragraph"
+                                    Size="TextSize.Size300"
+                                    Color="Color.Lightweight"
+                                    data-testid="tenants-my-return-context">
+                            @Localizer["Tenants.MyTenants.ReturnContext", _selectedTenantId]
+                        </FluentText>
+                    }
+                    @if (IsRetainedTenantListView)
+                    {
+                        <FluentAccordion ExpandMode="AccordionExpandMode.Multi">
+                            <FluentAccordionItem Header="@Localizer["Tenants.Create.Title"]"
+                                                 Expanded="@_createAccordionExpanded"
+                                                 ExpandedChanged="@((bool expanded) => _createAccordionExpanded = expanded)"
+                                                 data-testid="tenants-create-accordion">
+                                <CascadingValue Value="@CreateAuditReturnUrl" Name="WorkspaceAuditReturnUrl">
+                                <CreateTenantFlow IsAuthorized="@(CreateAuthorization is TenantLifecycleAuthorizationReflectionState.Authorized)"
+                                                  AuthorizationReflection="@CreateAuthorization"
+                                                  AuthorizationVersion="@_authorizationVersion"
+                                                  AuthorizationReflectionProvider="@ReauthorizeCreateAsync"
+                                                  IsFresh="@IsCreateFresh"
+                                                  IsCommandSurfaceAvailable="@IsCommandSurfaceConnected"
+                                                  BaselineProjectionVersion="@_snapshot.ProjectionVersion"
+                                                  BaselineTenantAbsent="@IsAuthoritativeFirstTenantEmpty"
+                                                  IsFirstTenantBootstrap="@IsFirstTenantBootstrap"
+                                                  ShowHeading="false"
+                                                  RestoreAuditReturn="@IsCreateAuditReturn"
+                                                  OnProjectionRefreshRequested="RefreshAsync"
+                                                  ProjectionEvidenceProvider="FindTenantProjectionEvidenceAsync" />
+                                </CascadingValue>
+                            </FluentAccordionItem>
+                        </FluentAccordion>
+                    }
+                    @* Both notices share exactly one polite live region. Two sibling live regions announcing together
+                       are routinely coalesced or dropped by screen readers, so the region wraps the bars instead. The
+                       region itself renders unconditionally -- including across a workspace tab round trip, which must
+                       not re-insert it together with an already-populated notice -- because a live region inserted in
+                       the same render that first populates it is routinely not announced. Only the bars inside are
+                       conditional. *@
+                    @* Lifecycle evidence owns its own live region. Nesting the badge inside the notices stack
+                       re-announced paging/info bars on every lifecycle change and kept Unavailable polite. *@
+                    @if (IsRetainedTenantListView)
+                    {
+                        <ProjectionLifecycleStatus Lifecycle="@_snapshot.Lifecycle"
+                                                   TestId="tenants-list-projection-lifecycle-status"
+                                                   BadgeTestId="tenants-list-projection-lifecycle-status-badge" />
+                    }
+                    <FluentStack Orientation="Orientation.Vertical"
+                                 VerticalGap="8px"
+                                 Width="100%"
+                                 role="status"
+                                 aria-live="polite"
+                                 aria-atomic="true"
+                                 data-testid="tenants-list-notices">
+                        @if (HasPrimaryNotice)
+                        {
+                            <FluentMessageBar Intent="MessageBarIntent.Info"
+                                              Title="@NoticeMessage"
+                                              data-testid="@NoticeTestId" />
+                        }
+                        @if (HasSecondaryNotice)
+                        {
+                            <FluentMessageBar Intent="MessageBarIntent.Info"
+                                              Title="@PagingNoticeMessage"
+                                              data-testid="@PagingNoticeTestId" />
+                        }
+                    </FluentStack>
+                    @if (IsRetainedTenantListView && _snapshot.Kind is TenantListSurfaceKind.Loading)
+                    {
+                        <ListSurfaceStates Kind="TenantListSurfaceKind.Loading" />
+                        @if (_refreshingListKind is TenantListSurfaceKind.Stale or TenantListSurfaceKind.Degraded)
+                        {
+                            <ListSurfaceStates Kind="@_refreshingListKind.Value"
+                                               Reason="@(_refreshingListKind is TenantListSurfaceKind.Degraded ? _snapshot.Reason : TenantListReason.None)"
+                                               OnRefresh="RefreshAsync" />
+                        }
+                    }
+                    else if (IsRetainedTenantListView && _visibleRows.Count == 0 && HasPageLocalFilter && _snapshot.Kind is not (TenantListSurfaceKind.Degraded or TenantListSurfaceKind.Stale))
+                    {
+                        <ListSurfaceStates Kind="TenantListSurfaceKind.FilteredEmpty" OnReset="ResetFiltersAsync" />
+                    }
+                    else if (IsRetainedTenantListView && _snapshot.Kind is TenantListSurfaceKind.FilteredEmpty)
+                    {
+                        <ListSurfaceStates Kind="TenantListSurfaceKind.FilteredEmpty" OnReset="ResetFiltersAsync" />
+                    }
+                    else if (IsRetainedTenantListView && _snapshot.Kind is TenantListSurfaceKind.SearchPageEmpty)
+                    {
+                        @* This surface offers the same way out as the filtered-empty verdict, because the operator who
+                           simply mistyped the term would otherwise reach a dead end. Reason is deliberately NOT passed:
+                           ListSurfaceStates prefers a reason string over the state message, so a window emptied with a
+                           dropped record attached would render different copy than a genuine no-match and re-disclose
+                           that candidates existed -- the exact difference this surface exists to erase. *@
+                        <ListSurfaceStates Kind="TenantListSurfaceKind.SearchPageEmpty"
+                                           HasMore="@_snapshot.HasMore"
+                                           OnReset="ResetFiltersAsync" />
+                    }
+                    else if (IsRetainedTenantListView && _snapshot.Kind is TenantListSurfaceKind.Empty)
+                    {
+                        <ListSurfaceStates Kind="TenantListSurfaceKind.Empty" />
+                    }
+                    else if (IsRetainedTenantListView && _snapshot.Kind is TenantListSurfaceKind.Error)
+                    {
+                        <ListSurfaceStates Kind="TenantListSurfaceKind.Error" Reason="@_snapshot.Reason" />
+                    }
+                    else if (IsRetainedTenantListView && _snapshot.Kind is TenantListSurfaceKind.Unauthorized)
+                    {
+                        <ListSurfaceStates Kind="TenantListSurfaceKind.Unauthorized" />
+                    }
+                    else if (IsRetainedTenantListView && _snapshot.Kind is TenantListSurfaceKind.Stale)
+                    {
+                        <ListSurfaceStates Kind="TenantListSurfaceKind.Stale" OnRefresh="RefreshAsync" />
+                    }
+                    else if (IsRetainedTenantListView && _snapshot.Kind is TenantListSurfaceKind.Degraded)
+                    {
+                        <ListSurfaceStates Kind="TenantListSurfaceKind.Degraded" Reason="@_snapshot.Reason" />
+                    }
+                    @if (IsRetainedTenantListView && ShowList)
+                    {
+                        <TenantDataGrid Rows="@_visibleRows"
+                                        AuditReadAvailable="@(AuditReadAvailable && _snapshot.Kind is TenantListSurfaceKind.Ready
+                                            && _snapshot.Freshness is ReadModelFreshnessState.Current
+                                            && _snapshot.Lifecycle is ProjectionLifecycleState.Current)"
+                                        AuditReadDenied="@AuditReadDenied"
+                                        AuditReadPending="@(!_auditAuthorityResolved)"
+                                        AuditUnavailableReason="@AuditUnavailableReason"
+                                        OnAuditRefresh="@RefreshAsync"
+                                        DetailHref="CreateDetailHref"
+                                        AuditHref="CreateAuditHref"
+                                        SortColumn="@_sortColumn"
+                                        SortDescending="@_sortDescending"
+                                        PreserveRowOrder="@_snapshot.IsAuthoritativeSearch"
+                                        SortChanged="OnTenantSortChanged" />
+                    }
+                    else if (IsRetainedMyTenantsView)
+                    {
+                        <MyTenantsPanel InitialCursor="@_tenantWorkspaceState.Cursor" UseWorkspaceRoute="true" AuditReadAvailable="@AuditReadAvailable" AuditReadDenied="@AuditReadDenied" AuditReadResolved="@_auditAuthorityResolved" OnAuditRefresh="@RefreshAuditAuthorityAsync" />
+                    }
+                    @if (ShowPager)
+                    {
+                        <nav aria-label="@Localizer["Tenants.List.PaginationLabel"]">
+                            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End" HorizontalGap="12px" Wrap="true">
+                                <FluentButton Appearance="ButtonAppearance.Outline" data-testid="tenants-list-previous" Disabled="@(!HasPreviousPage)" OnClick="PreviousPageAsync">
+                                    @Localizer["Tenants.List.Previous"]
+                                </FluentButton>
+                                <FluentButton Appearance="ButtonAppearance.Outline" data-testid="tenants-list-next" Disabled="@(!HasNextPage)" OnClick="NextPageAsync">
+                                    @Localizer["Tenants.List.Next"]
+                                </FluentButton>
+                            </FluentStack>
+                        </nav>
+                    }
+                </FluentStack>
+                </div>
+            </FcPageTab>
+            <FcPageTab Id="workspace-users"
+                       Header="@Localizer["Tenants.Workspace.Tabs.Users"]"
+                       DeferredLoading="true">
+                <div data-testid="tenants-workspace-users-panel">
+                    <UserMembershipLookupPanel InitialUserId="@_usersWorkspaceState.UserId"
+                                               InitialSort="@_usersWorkspaceState.Sort"
+                                               InitialCursor="@_usersWorkspaceState.Cursor"
+                                               AuditFocus="@QueryAuditFocus"
+                                               AuditPartialReturn="@QueryAuditPartialReturn"
+                                               AuditReturnUnavailable="@QueryAuditReturnUnavailable"
+                                               AuditReadAvailable="@AuditReadAvailable"
+                                               AuditReadDenied="@AuditReadDenied"
+                                               AuditReadResolved="@_auditAuthorityResolved"
+                                               OnAuditRefresh="@RefreshAuditAuthorityAsync"
+                                               UseWorkspaceRoute="true"
+                                               ShowBackLink="false" />
+                </div>
+            </FcPageTab>
+        </FcPageTabs>
+    </Body>
+</FcAggregateListPage>
+</CascadingValue>
+</CascadingValue>
+</CascadingValue>
+</CascadingValue>
+</CascadingValue>
+</CascadingValue>
+
+@code {
+    private static readonly int[] _pageSizes = [20, 50, 100];
+    private TenantListSnapshot _snapshot = TenantListSnapshot.Loading();
+    private TenantListSurfaceKind? _refreshingListKind;
+    private string? _renderedStatusFilterLabel;
+    private long _auditRefreshVersion;
+    private TenantListSnapshot? _lastConfirmedSnapshot;
+    private TenantWorkspaceState _workspaceState = TenantWorkspaceState.FromQuery(
+        tab: null,
+        scope: null,
+        userId: null,
+        search: null,
+        status: null,
+        sort: null,
+        sortDescending: null,
+        cursor: null,
+        selectedTenantId: null,
+        anchor: null);
+    private TenantWorkspaceState _tenantWorkspaceState = TenantWorkspaceState.FromQuery(
+        tab: null,
+        scope: null,
+        userId: null,
+        search: null,
+        status: null,
+        sort: null,
+        sortDescending: null,
+        cursor: null,
+        selectedTenantId: null,
+        anchor: null);
+    private TenantWorkspaceState _usersWorkspaceState = TenantWorkspaceState.FromQuery(
+        tab: TenantWorkspaceState.UsersTab,
+        scope: null,
+        userId: null,
+        search: null,
+        status: null,
+        sort: null,
+        sortDescending: null,
+        cursor: null,
+        selectedTenantId: null,
+        anchor: null);
+    private IReadOnlyList<TenantListRow> _visibleRows = [];
+    private readonly Stack<string?> _cursorHistory = new();
+    private string? _currentCursor;
+    private int _pageSize = 20;
+    private string? _search;
+    private string? _statusFilter;
+    private string _sortColumn = TenantListSortColumns.TenantId;
+    private bool _sortDescending;
+    private string? _selectedTenantId;
+    private string? _returnAnchor;
+    private string _activeTabId = TenantWorkspaceState.TenantsTab;
+    private string _tenantScope = TenantWorkspaceState.AllScope;
+    private FcAggregateListPage<TenantListRow> _listPage = default!;
+    private bool _focusHeadingPending;
+    private string? _pendingAuditFocus;
+    private string? _handledAuditFocus;
+    private string? _pendingDetailFocus;
+    private string? _handledDetailFocus;
+    private bool _auditReturnNotice;
+    private bool _auditStalledNotice;
+    private bool _auditPartialReturn;
+    private bool _consumedFocuslessReturn;
+    private bool _createAccordionExpanded;
+    private bool _handledMissingAuditReturn;
+    private bool _initialized;
+    private bool _disposed;
+    private bool _restoreSearchPagingContextPending = true;
+    private TenantLifecycleAuthorizationReflectionState _createAuthorization = TenantLifecycleAuthorizationReflectionState.Indeterminate;
+    private string? _createAuthorityUserId;
+    private bool HasCurrentCallerAuthority
+        => !_disposed && _auditAuthorityResolved && Volatile.Read(ref _pendingAuditCallerVersion) == 0
+            && Volatile.Read(ref _resolvedAuditCallerVersion) == Volatile.Read(ref _auditCallerVersion)
+            && !string.IsNullOrWhiteSpace(_createAuthorityUserId)
+            && string.Equals(_createAuthorityUserId, AuthenticatedUserId, StringComparison.Ordinal);
+
+    private bool CanReviewGlobalAdministrators
+        => HasCurrentCallerAuthority && _canReviewGlobalAdministrators;
+
+    private bool AuditReadDenied
+        => HasCurrentCallerAuthority && _auditReadDenied;
+
+    private TenantLifecycleAuthorizationReflectionState CreateAuthorization
+        => IsTenantListView && HasCurrentCallerAuthority
+            ? _createAuthorization : TenantLifecycleAuthorizationReflectionState.Indeterminate;
+
+    private bool _canReviewGlobalAdministrators;
+    private bool _auditAuthorityResolved;
+    private bool _auditReadDenied;
+    private long _auditCallerVersion;
+    private long _resolvedAuditCallerVersion;
+    private long _pendingAuditCallerVersion;
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "auditFocus")]
+    public string? QueryAuditFocus { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "auditPartialReturn")]
+    public bool QueryAuditPartialReturn { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "auditReturnUnavailable")]
+    public bool QueryAuditReturnUnavailable { get; set; }
+    private AuthenticationStateProvider? _authenticationStateProvider;
+    private long _authorizationVersion;
+    private CancellationTokenSource? _entryAuthorizationCancellation;
+    private CancellationTokenSource? _authenticationStateCancellation;
+    private CancellationTokenSource? _createAuthorizationCancellation;
+    private long _workspaceVersion;
+
+    // Blazor Server does not serialise async event handlers, and a pager button stays live until the
+    // render batch that disables it is acknowledged. Without this guard a second click landed while
+    // _snapshot was the transient Loading() value and mutated the cursor stack of the wrong paging mode.
+    private bool _pagingInFlight;
+
+    private long _loadVersion;
+    private CancellationTokenSource? _loadCancellation;
+    private readonly Lock _loadCancellationLock = new();
+    private TenantSearchPagingState? _searchPaging;
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "tab")]
+    public string? QueryTab { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "scope")]
+    public string? QueryScope { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "search")]
+    public string? QuerySearch { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "status")]
+    public string? QueryStatus { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "sort")]
+    public string? QuerySort { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "desc")]
+    public string? QuerySortDescending { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "cursor")]
+    public string? QueryCursor { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "selected")]
+    public string? QuerySelectedTenantId { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "anchor")]
+    public string? QueryAnchor { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "userId")]
+    public string? QueryUserId { get; set; }
+
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    private string? RouteTabFromLocation
+    {
+        get
+        {
+            string path = Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0].Trim('/');
+            return path.Equals("tenants/workspace-users", StringComparison.OrdinalIgnoreCase)
+                ? TenantWorkspaceState.UsersTab
+                : path.Equals("tenants/tenants", StringComparison.OrdinalIgnoreCase)
+                    ? TenantWorkspaceState.TenantsTab
+                    : null;
+        }
+    }
+
+    private bool IsTenantsTab
+        => string.Equals(_activeTabId, TenantWorkspaceState.TenantsTab, StringComparison.Ordinal);
+
+    private bool IsCreateAuditReturn
+        => string.Equals(QueryAuditFocus, "tenants-create-lifecycle", StringComparison.Ordinal);
+
+    private string ActiveAuditOrigin
+        => IsUsersTab ? "tenants-user-lookup"
+            : IsMyTenantsView ? "tenants-my-page"
+            : "tenants-workspace-tenants-panel-content";
+
+    private bool IsUsersTab
+        => string.Equals(_activeTabId, TenantWorkspaceState.UsersTab, StringComparison.Ordinal);
+
+    private bool IsTenantListView
+        => IsTenantsTab && string.Equals(_tenantScope, TenantWorkspaceState.AllScope, StringComparison.Ordinal);
+
+    private bool IsMyTenantsView
+        => IsTenantsTab && string.Equals(_tenantScope, TenantWorkspaceState.MyScope, StringComparison.Ordinal);
+
+    private bool IsRetainedTenantListView
+        => string.Equals(_tenantWorkspaceState.Scope, TenantWorkspaceState.AllScope, StringComparison.Ordinal);
+
+    private bool IsRetainedMyTenantsView
+        => string.Equals(_tenantWorkspaceState.Scope, TenantWorkspaceState.MyScope, StringComparison.Ordinal);
+
+    private bool HasPageLocalFilter
+        => !_snapshot.IsAuthoritativeSearch && !string.IsNullOrWhiteSpace(_statusFilter);
+
+    private bool HasActiveSearch
+        => !string.IsNullOrWhiteSpace(_search);
+
+    // The first-tenant exception is only for a list that is authoritatively empty for the whole
+    // authorization scope. A page past the end of a non-empty list also reports Empty, and a projection
+    // that is Rebuilding, Degraded, Stale, Unavailable, or LocalOnly is ambiguous rather than "no first
+    // write yet", so both must fail closed instead of opening create.
+    private bool IsAuthoritativeFirstTenantEmpty
+        => _snapshot.Kind is TenantListSurfaceKind.Empty
+            && _snapshot.IsAuthorizationScopedEmpty
+            && _snapshot.Rows.Count == 0
+            && string.IsNullOrWhiteSpace(_snapshot.RequestCursor)
+            && _snapshot.Lifecycle is ProjectionLifecycleState.Unknown or ProjectionLifecycleState.Current;
+
+    private bool IsCreateFresh
+        => _snapshot.Freshness is ReadModelFreshnessState.Current
+            || (_snapshot.Freshness is ReadModelFreshnessState.Unknown && IsAuthoritativeFirstTenantEmpty);
+
+    private bool IsFirstTenantBootstrap
+        => _snapshot.Freshness is ReadModelFreshnessState.Unknown && IsAuthoritativeFirstTenantEmpty;
+
+    private bool IsCommandSurfaceConnected
+        => Services.GetService(typeof(ITenantsBffComposition)) is ITenantsBffComposition bffComposition
+            && bffComposition.IsCommandSurfaceConnected;
+
+    // The scoped paging service resolved on a non-interactive (static SSR / prerender) render pass belongs
+    // to that request's scope, not to the interactive circuit, so retained protected paging must neither be
+    // restored nor reported from it. The cascading HttpContext cannot carry this signal: it does not cross
+    // render-mode boundaries and is null on both passes of an InteractiveServer component.
+    private bool IsInteractiveCircuit
+        => RendererInfo.IsInteractive;
+
+    private bool HasValidatedTenantDetailReturnContext
+        => !string.IsNullOrWhiteSpace(_selectedTenantId)
+            && string.Equals(QuerySelectedTenantId, _selectedTenantId, StringComparison.Ordinal)
+            && string.Equals(QueryAnchor, _returnAnchor, StringComparison.Ordinal)
+            && string.Equals(_returnAnchor, TenantDomIdentity.ElementId("tenant-row-", _selectedTenantId), StringComparison.Ordinal);
+
+    private bool HasPreviousPage
+        => _snapshot.Kind is not TenantListSurfaceKind.Loading && HasPreviousListPage;
+
+    private bool HasPreviousListPage
+        => HasActiveSearch
+            ? IsInteractiveCircuit && SearchPaging.HasPrevious(ActivePagingModeAuthoritative)
+            : _cursorHistory.Count > 0;
+
+    // Next is offered only when the click can actually advance. Enablement read _snapshot.HasMore while both
+    // branches of NextPageAsync require a non-null cursor, and the ordinary list path passes the server's
+    // HasMore and Cursor through independently with no consistency check -- so HasMore = true beside a null
+    // cursor produced a live button whose every click did nothing: no load, no re-render, no notice. The
+    // Loading explicitly disables Next even when a soft refresh retains the previous page's cursor.
+    private bool HasNextPage
+        => _snapshot.Kind is not TenantListSurfaceKind.Loading
+            && _snapshot.HasMore && PagingSnapshot.NextCursor is not null;
+
+    // Resolved as a required service so a dropped registration fails loudly instead of silently degrading
+    // to per-component paging that cannot survive tenant-detail navigation.
+    private TenantSearchPagingState SearchPaging
+        => _searchPaging ??= Services.GetRequiredService<TenantSearchPagingState>();
+
+    private string? AuthenticatedUserId
+        => (Services.GetService(typeof(IUserContextAccessor)) as IUserContextAccessor)?.UserId;
+
+    private string GlobalAdministratorsHref
+    {
+        get
+        {
+            TenantWorkspaceState safeReturnState = CurrentWorkspaceState() with { Cursor = null };
+            return $"/global-administrators?returnUrl={Uri.EscapeDataString(safeReturnState.ToCanonicalUrl(routeBacked: true))}";
+        }
+    }
+
+    private string StatusFilterLabelKey
+        => _snapshot.IsAuthoritativeSearch
+            ? "Tenants.List.StatusFilterLabel.Authoritative"
+            : "Tenants.List.StatusFilterLabel";
+
+    // The list/grid surface (the former else branch): everything that is not a blocking/empty list state.
+    // The Stale/Degraded list-surface banners still render in the States slot above this body.
+    private bool ShowList
+        => (_snapshot.Kind is not TenantListSurfaceKind.Loading || _snapshot.Rows.Count > 0)
+            && !(_visibleRows.Count == 0 && HasPageLocalFilter
+                && (_refreshingListKind ?? _snapshot.Kind) is not (TenantListSurfaceKind.Degraded or TenantListSurfaceKind.Stale))
+            && _snapshot.Kind is not (TenantListSurfaceKind.FilteredEmpty
+                or TenantListSurfaceKind.SearchPageEmpty
+                or TenantListSurfaceKind.Empty
+                or TenantListSurfaceKind.Error
+                or TenantListSurfaceKind.Unauthorized);
+
+    private bool ShowPager
+        => IsRetainedTenantListView
+            && (_snapshot.Kind is not TenantListSurfaceKind.Loading || _snapshot.Rows.Count > 0)
+            && _snapshot.Kind is not (TenantListSurfaceKind.Error
+                or TenantListSurfaceKind.Unauthorized)
+            && (ShowList || HasPreviousListPage || _snapshot.HasMore);
+
+    private string NoticeMessage
+        => NoticeMessageFor(_snapshot.Notice);
+
+    private string PagingNoticeMessage
+        => NoticeMessageFor(_snapshot.PagingNotice);
+
+    private string NoticeTestId
+        => NoticeTestIdFor(_snapshot.Notice);
+
+    private string PagingNoticeTestId
+        => NoticeTestIdFor(_snapshot.PagingNotice);
+
+    // Neither notice bar may render without a mapped localized message and a stable non-empty test id, so
+    // no reason can produce a blank titled message bar or an unaddressable selector.
+    private bool HasPrimaryNotice
+        => IsRetainedTenantListView
+            && _snapshot.Notice is not TenantListReason.None
+            && !string.IsNullOrEmpty(NoticeMessage)
+            && !string.IsNullOrEmpty(NoticeTestId);
+
+    private bool HasSecondaryNotice
+        => IsRetainedTenantListView
+            && _snapshot.PagingNotice is not TenantListReason.None
+            && _snapshot.PagingNotice != _snapshot.Notice
+            && !string.IsNullOrEmpty(PagingNoticeMessage)
+            && !string.IsNullOrEmpty(PagingNoticeTestId);
+
+    private string NoticeMessageFor(TenantListReason reason)
+        => reason switch
+        {
+            TenantListReason.ListRefreshed => Localizer["Tenants.List.Notice.ListRefreshed"],
+            TenantListReason.SearchRefreshed => Localizer["Tenants.List.Notice.SearchRefreshed"],
+            TenantListReason.SearchUnavailable => Localizer["Tenants.List.Notice.SearchUnavailable"],
+            TenantListReason.SearchAndListUnavailable => Localizer["Tenants.List.Notice.SearchAndListUnavailable"],
+            TenantListReason.SearchTermTooLong => Localizer["Tenants.List.Notice.SearchTermTooLong"],
+            TenantListReason.SearchPagingRestarted => Localizer["Tenants.List.Notice.SearchPagingRestarted"],
+            _ => string.Empty,
+        };
+
+    private static string NoticeTestIdFor(TenantListReason reason)
+        => reason switch
+        {
+            TenantListReason.ListRefreshed => "tenants-list-refreshed-notice",
+            TenantListReason.SearchRefreshed => "tenants-list-search-refreshed-notice",
+            TenantListReason.SearchUnavailable => "tenants-list-search-unavailable-notice",
+            TenantListReason.SearchAndListUnavailable => "tenants-list-search-and-list-unavailable-notice",
+            TenantListReason.SearchTermTooLong => "tenants-list-search-term-too-long-notice",
+            TenantListReason.SearchPagingRestarted => "tenants-list-search-paging-restarted-notice",
+            _ => string.Empty,
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        Navigation.LocationChanged += OnWorkspaceLocationChanged;
+        _authenticationStateProvider = Services.GetService(typeof(AuthenticationStateProvider)) as AuthenticationStateProvider;
+        if (_authenticationStateProvider is not null)
+        {
+            _authenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+        }
+
+        if (_authenticationStateProvider is not null)
+        {
+            StartAuditCallerResolution();
+        }
+        else
+        {
+            _auditAuthorityResolved = true;
+        }
+        bool querySearchTermTooLong = TenantWorkspaceState.IsSearchTooLong(QuerySearch);
+        RestoreContextFromQuery();
+        CaptureAuditReturn();
+        NavigateToCanonicalWorkspaceIfNeeded(_workspaceState);
+        _initialized = true;
+
+        // When returning from a tenant detail surface the launching row may no longer be visible
+        // after the list reloads, so move keyboard focus to the list heading and let the visible
+        // return-context message explain that filters/sort/cursor/selection were restored.
+        _focusHeadingPending = _pendingAuditFocus is null && _pendingDetailFocus is null
+            && (QueryAuditReturnUnavailable || !string.IsNullOrWhiteSpace(_selectedTenantId));
+
+        if (IsTenantListView)
+        {
+            await LoadAsync(reuseETag: false, searchTermTooLong: querySearchTermTooLong);
+        }
+    }
+
+    private void StartGlobalAdministratorsEntryResolution()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        Interlocked.Increment(ref _auditRefreshVersion);
+        if (_authenticationStateProvider is null)
+        {
+            _canReviewGlobalAdministrators = false;
+            _auditReadDenied = false;
+            _auditAuthorityResolved = true;
+            _ = InvokeAsync(StateHasChanged);
+            return;
+        }
+
+        if (Volatile.Read(ref _pendingAuditCallerVersion) != 0)
+        {
+            // Explicit recovery replaces the pending wait with the provider's current evidence.
+            // A still-pending or faulty provider remains closed under the same shared bound.
+            StartAuditCallerResolution();
+            return;
+        }
+
+        if (Volatile.Read(ref _resolvedAuditCallerVersion) != Volatile.Read(ref _auditCallerVersion))
+        {
+            StartAuditCallerResolution();
+            return;
+        }
+
+        long version = Interlocked.Increment(ref _authorizationVersion);
+        CancelAuthorizationWait(ref _entryAuthorizationCancellation);
+        _canReviewGlobalAdministrators = false;
+        _auditReadDenied = false;
+        _auditAuthorityResolved = false;
+        Task callback = InvokeAsync(() => ResolveGlobalAdministratorsEntryAsync(version));
+        _ = ObserveAuthorizationCallbackAsync(callback);
+    }
+
+    private async Task ResolveGlobalAdministratorsEntryAsync(long version)
+    {
+        if (_disposed || version != Volatile.Read(ref _authorizationVersion))
+        {
+            return;
+        }
+        string? caller = AuthenticatedUserId;
+        _createAuthorization = TenantLifecycleAuthorizationReflectionState.Indeterminate;
+        _createAuthorityUserId = null;
+        if (Services.GetService(typeof(ITenantsBffComposition)) is not ITenantsBffComposition bffComposition)
+        {
+            await InvokeAsync(() =>
+            {
+                if (!_disposed && version == Volatile.Read(ref _authorizationVersion))
+                {
+                    _canReviewGlobalAdministrators = false;
+                    _auditAuthorityResolved = true;
+                    StateHasChanged();
+                }
+            });
+            return;
+        }
+
+        TenantLifecycleAuthorizationReflectionState reflection;
+        CancellationTokenSource source = ReplaceAuthorizationWait(ref _entryAuthorizationCancellation);
+        try
+        {
+            reflection = await TenantUiOperationPolicy.FromServices(Services).RunAsync(
+                token => bffComposition.ResolveGlobalAdministratorsAuthorizationAsync(token).AsTask(), source.Token);
+        }
+        catch
+        {
+            await InvokeAsync(() =>
+            {
+                if (!_disposed && version == Volatile.Read(ref _authorizationVersion))
+                {
+                    _auditAuthorityResolved = true;
+                    StateHasChanged();
+                }
+            });
+            return;
+        }
+        finally
+        {
+            CompleteAuthorizationWait(ref _entryAuthorizationCancellation, source);
+        }
+
+        await InvokeAsync(() =>
+        {
+            if (_disposed || version != Volatile.Read(ref _authorizationVersion)
+                || string.IsNullOrWhiteSpace(caller)
+                || !string.Equals(caller, AuthenticatedUserId, StringComparison.Ordinal)
+                || Volatile.Read(ref _pendingAuditCallerVersion) != 0)
+            {
+                return;
+            }
+
+            _createAuthorization = reflection;
+            _createAuthorityUserId = caller;
+            _canReviewGlobalAdministrators = reflection == TenantLifecycleAuthorizationReflectionState.Authorized;
+            _auditReadDenied = reflection == TenantLifecycleAuthorizationReflectionState.MissingPermission;
+            _auditAuthorityResolved = true;
+            StateHasChanged();
+        });
+    }
+
+    private async Task<TenantLifecycleAuthorizationReflectionState> ReauthorizeCreateAsync(CancellationToken cancellationToken)
+    {
+        long version = Volatile.Read(ref _authorizationVersion);
+        long callerVersion = Volatile.Read(ref _auditCallerVersion);
+        long workspaceVersion = Volatile.Read(ref _workspaceVersion);
+        string? caller = AuthenticatedUserId;
+        TenantListSnapshot snapshot = _snapshot;
+        if (!IsTenantListView || !HasCurrentCallerAuthority || string.IsNullOrWhiteSpace(caller)
+            || Volatile.Read(ref _pendingAuditCallerVersion) != 0
+            || Services.GetService<ITenantsBffComposition>() is not { } bffComposition)
+        {
+            return TenantLifecycleAuthorizationReflectionState.Indeterminate;
+        }
+        CancellationTokenSource source = ReplaceAuthorizationWait(ref _createAuthorizationCancellation);
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(source.Token, cancellationToken);
+        try
+        {
+            TenantLifecycleAuthorizationReflectionState reflection = await TenantUiOperationPolicy.FromServices(Services).RunAsync(
+                token => bffComposition.ResolveGlobalAdministratorsAuthorizationAsync(token).AsTask(), linked.Token).ConfigureAwait(false);
+            linked.Token.ThrowIfCancellationRequested();
+            return !_disposed && IsTenantListView && version == Volatile.Read(ref _authorizationVersion)
+                && workspaceVersion == Volatile.Read(ref _workspaceVersion)
+                && callerVersion == Volatile.Read(ref _auditCallerVersion)
+                && Volatile.Read(ref _pendingAuditCallerVersion) == 0
+                && string.Equals(caller, AuthenticatedUserId, StringComparison.Ordinal)
+                && ReferenceEquals(snapshot, _snapshot)
+                ? reflection : TenantLifecycleAuthorizationReflectionState.Indeterminate;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return TenantLifecycleAuthorizationReflectionState.Indeterminate;
+        }
+        finally
+        {
+            CompleteAuthorizationWait(ref _createAuthorizationCancellation, source);
+        }
+    }
+
+    private void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        long callerVersion = Interlocked.Increment(ref _auditCallerVersion);
+        Interlocked.Exchange(ref _pendingAuditCallerVersion, callerVersion);
+        long version = Interlocked.Increment(ref _authorizationVersion);
+        CancelAuthorizationWait(ref _entryAuthorizationCancellation);
+        CancelAuthorizationWait(ref _authenticationStateCancellation);
+        CancelAuthorizationWait(ref _createAuthorizationCancellation);
+        Task callback = InvokeAsync(() => ApplyAuthenticationStateChangedAsync(authenticationStateTask, version, callerVersion));
+        _ = ObserveAuthorizationCallbackAsync(callback);
+    }
+
+    private void StartAuditCallerResolution()
+    {
+        try
+        {
+            OnAuthenticationStateChanged(_authenticationStateProvider!.GetAuthenticationStateAsync());
+        }
+        catch
+        {
+            Interlocked.Increment(ref _auditCallerVersion);
+            Interlocked.Exchange(ref _pendingAuditCallerVersion, 0);
+            Interlocked.Increment(ref _authorizationVersion);
+            CancelAuthorizationWait(ref _entryAuthorizationCancellation);
+            CancelAuthorizationWait(ref _authenticationStateCancellation);
+            CancelAuthorizationWait(ref _createAuthorizationCancellation);
+            _canReviewGlobalAdministrators = false;
+            _auditReadDenied = false;
+            _auditAuthorityResolved = true;
+            _ = InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task ApplyAuthenticationStateChangedAsync(
+        Task<AuthenticationState> authenticationStateTask,
+        long version,
+        long callerVersion)
+    {
+        if (_disposed || version != Volatile.Read(ref _authorizationVersion))
+        {
+            return;
+        }
+
+        _canReviewGlobalAdministrators = false;
+        _auditReadDenied = false;
+        _auditAuthorityResolved = false;
+        // An authentication transition invalidates the authority scope of retained loading evidence,
+        // including while the replacement caller is still unresolved.
+        if (_snapshot.Kind is TenantListSurfaceKind.Loading && _snapshot.Rows.Count > 0)
+        {
+            _snapshot = TenantListSnapshot.Loading();
+            _refreshingListKind = null;
+            ApplyVisibleRows();
+        }
+        StateHasChanged();
+
+        CancellationTokenSource source = ReplaceAuthorizationWait(ref _authenticationStateCancellation);
+        try
+        {
+            await TenantUiOperationPolicy.FromServices(Services).RunAsync(_ => authenticationStateTask, source.Token);
+        }
+        catch
+        {
+            if (_disposed || callerVersion != Volatile.Read(ref _auditCallerVersion))
+            {
+                return;
+            }
+
+            Interlocked.CompareExchange(ref _pendingAuditCallerVersion, 0, callerVersion);
+            _auditAuthorityResolved = true;
+            StateHasChanged();
+            return;
+        }
+        finally
+        {
+            CompleteAuthorizationWait(ref _authenticationStateCancellation, source);
+        }
+
+        if (_disposed || callerVersion != Volatile.Read(ref _auditCallerVersion))
+        {
+            return;
+        }
+
+        Interlocked.Exchange(ref _resolvedAuditCallerVersion, callerVersion);
+        Interlocked.CompareExchange(ref _pendingAuditCallerVersion, 0, callerVersion);
+        if (version == Volatile.Read(ref _authorizationVersion))
+        {
+            await ResolveGlobalAdministratorsEntryAsync(version);
+        }
+    }
+
+    private static async Task ObserveAuthorizationCallbackAsync(Task callback)
+    {
+        try
+        {
+            await callback;
+        }
+        catch
+        {
+            // Authentication transitions fail closed in the component callback.
+        }
+    }
+
+    private void OnWorkspaceLocationChanged(object? sender, LocationChangedEventArgs args)
+    {
+        if (_disposed || !_initialized)
+        {
+            return;
+        }
+
+        string destination = args.Location;
+        Task callback = InvokeAsync(async () =>
+        {
+            if (_disposed || !string.Equals(destination, Navigation.Uri, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            string path = Navigation.ToBaseRelativePath(destination).Split('?', '#')[0].Trim('/').ToLowerInvariant();
+            if (path is not ("" or "tenants" or "tenants/tenants" or "tenants/workspace-users"))
+            {
+                return;
+            }
+
+            // RouteView can skip parameter delivery between literal aliases of this same component.
+            // The tabs still follow the URI, so reconcile their active view from that exact URI too.
+            // Query-only changes retain their existing parameter lifecycle and paging ownership.
+            var query = QueryHelpers.ParseQuery(new Uri(destination).Query);
+            string? Value(string key) => query.TryGetValue(key, out var value) ? value.ToString() : null;
+            TenantWorkspaceState incoming = TenantWorkspaceState.FromQuery(
+                RouteTabFromLocation ?? Value("tab"), Value("scope"), Value("userId"),
+                Value("search"), Value("status"), Value("sort"), Value("desc"),
+                Value("cursor"), Value("selected"), Value("anchor"));
+            if (incoming.Tab == _workspaceState.Tab)
+            {
+                return;
+            }
+
+            ApplyWorkspaceState(incoming, clearCursorHistory: true);
+            if (IsTenantListView)
+            {
+                await LoadAsync(reuseETag: false, searchTermTooLong: TenantWorkspaceState.IsSearchTooLong(Value("search")));
+            }
+            if (!_disposed && string.Equals(destination, Navigation.Uri, StringComparison.Ordinal))
+            {
+                StateHasChanged();
+            }
+        });
+        _ = ObserveAuthorizationCallbackAsync(callback);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!_initialized || _disposed)
+        {
+            return;
+        }
+
+        CaptureAuditReturn();
+
+        bool incomingSearchTermTooLong = TenantWorkspaceState.IsSearchTooLong(QuerySearch);
+        TenantWorkspaceState incoming = WorkspaceStateFromQuery();
+        if (incoming == _workspaceState)
+        {
+            NavigateToCanonicalWorkspaceIfNeeded(incoming);
+            if (incomingSearchTermTooLong && IsTenantListView)
+            {
+                await LoadAsync(reuseETag: false, searchTermTooLong: true);
+            }
+
+            return;
+        }
+
+        ApplyWorkspaceState(incoming, clearCursorHistory: true);
+        NavigateToCanonicalWorkspaceIfNeeded(incoming);
+        if (IsTenantListView)
+        {
+            await LoadAsync(reuseETag: false, searchTermTooLong: incomingSearchTermTooLong);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (IsRetainedTenantListView)
+        {
+            string label = Localizer[StatusFilterLabelKey];
+            if (!string.Equals(_renderedStatusFilterLabel, label, StringComparison.Ordinal))
+            {
+                try
+                {
+                    await using IJSObjectReference module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/tenantsStatusFilter.js");
+                    if (await module.InvokeAsync<bool>("syncStatusFilterLabel"))
+                    {
+                        _renderedStatusFilterLabel = label;
+                    }
+                }
+                catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException)
+                {
+                    // The interactive circuit ended before its native label could be synchronized.
+                }
+            }
+        }
+        else
+        {
+            _renderedStatusFilterLabel = null;
+        }
+
+        if (_pendingDetailFocus is { } detailFocus)
+        {
+            _pendingDetailFocus = null;
+            _ = RestoreDetailFocusAsync(detailFocus);
+        }
+
+        if (_pendingAuditFocus is { } focus
+            && (!string.Equals(focus, "tenants-create-lifecycle", StringComparison.Ordinal)
+                || CreateAuthorization is not TenantLifecycleAuthorizationReflectionState.Indeterminate))
+        {
+            // Let the child restore retained create evidence before consuming its one-shot return marker.
+            _pendingAuditFocus = null;
+            _ = RestoreAuditFocusAsync(focus);
+        }
+
+        if (_focusHeadingPending)
+        {
+            _focusHeadingPending = false;
+            await _listPage.FocusHeadingAsync();
+        }
+
+        if (_pendingAuditFocus is null && QueryAuditFocus is null
+            && (QueryAuditPartialReturn || QueryAuditReturnUnavailable) && !_consumedFocuslessReturn)
+        {
+            _consumedFocuslessReturn = true;
+            try
+            {
+                await using IJSObjectReference module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/tenantsFocus.js");
+                await module.InvokeVoidAsync("consumeReturnMarkers");
+                QueryAuditPartialReturn = false;
+                QueryAuditReturnUnavailable = false;
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (JSDisconnectedException)
+            {
+                // The circuit ended before the URL markers could be consumed.
+            }
+            catch (Exception exception) when (exception is JSException or TaskCanceledException)
+            {
+                // Keep the visible return notices when browser cleanup is unavailable.
+            }
+        }
+    }
+
+    private void CaptureAuditReturn()
+    {
+        if (QueryAnchor is { } detailFocus
+            && detailFocus.StartsWith("tenants-my-detail-", StringComparison.Ordinal)
+            && TenantAuditNavigationSafety.IsSafeFocus(detailFocus)
+            && !string.Equals(_handledDetailFocus, detailFocus, StringComparison.Ordinal))
+        {
+            _handledDetailFocus = detailFocus;
+            _pendingDetailFocus = detailFocus;
+            _focusHeadingPending = false;
+        }
+        else if (QueryAnchor is null)
+        {
+            _handledDetailFocus = null;
+            _pendingDetailFocus = null;
+        }
+
+        if (QueryAuditFocus is null || !TenantAuditNavigationSafety.IsSafeFocus(QueryAuditFocus))
+        {
+            _handledAuditFocus = null;
+            _pendingAuditFocus = null;
+            _auditPartialReturn = QueryAuditPartialReturn;
+            if (!QueryAuditPartialReturn && !QueryAuditReturnUnavailable)
+            {
+                _consumedFocuslessReturn = false;
+            }
+            _auditStalledNotice = false;
+            if (QueryAuditReturnUnavailable)
+            {
+                _auditReturnNotice = true;
+                if (!_handledMissingAuditReturn)
+                {
+                    _focusHeadingPending = true;
+                }
+
+                _handledMissingAuditReturn = true;
+            }
+            else
+            {
+                _auditReturnNotice = false;
+                _handledMissingAuditReturn = false;
+            }
+
+            return;
+        }
+
+        _handledMissingAuditReturn = false;
+
+        if (QueryAuditFocus is { } focus && TenantAuditNavigationSafety.IsSafeFocus(focus)
+            && !string.Equals(_handledAuditFocus, focus, StringComparison.Ordinal))
+        {
+            _handledAuditFocus = focus;
+            // Latch the create accordion open: the one-shot marker is cleared after focus is restored,
+            // and binding Expanded to it collapsed the flow around the restored launcher.
+            _createAccordionExpanded |= IsCreateAuditReturn;
+            _pendingAuditFocus = focus;
+            _focusHeadingPending = false;
+            _auditReturnNotice = false;
+            _auditStalledNotice = false;
+            _auditPartialReturn = QueryAuditPartialReturn;
+        }
+    }
+
+    private async Task RestoreDetailFocusAsync(string focus)
+    {
+        try
+        {
+            await using IJSObjectReference module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/tenantsFocus.js");
+            string? outcome = await module.InvokeAsync<string>("restoreDetailFocus", focus, "tenants-my-page", "tenants-list-heading");
+            if (outcome != "cancelled" && string.Equals(QueryAnchor, focus, StringComparison.Ordinal))
+            {
+                await module.InvokeVoidAsync("consumeReturnMarkers", focus, null, true);
+                QueryAnchor = null;
+            }
+            if (outcome is "missing" or "stalled" && !_disposed && string.Equals(_handledDetailFocus, focus, StringComparison.Ordinal))
+            {
+                await InvokeAsync(() => { _auditReturnNotice = outcome == "missing"; _auditStalledNotice = outcome == "stalled"; StateHasChanged(); });
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+            // Navigation ended before focus restoration.
+        }
+        catch (Exception exception) when (exception is JSException or TaskCanceledException)
+        {
+            if (!_disposed && string.Equals(QueryAnchor, focus, StringComparison.Ordinal))
+            {
+                await InvokeAsync(() => { _auditReturnNotice = true; _auditStalledNotice = false; StateHasChanged(); });
+            }
+        }
+    }
+
+    private async Task RestoreAuditFocusAsync(string focus)
+    {
+        string origin = focus.StartsWith("tenants-user-row-", StringComparison.Ordinal)
+            ? "tenants-user-lookup"
+            : focus.StartsWith("tenants-my-row-", StringComparison.Ordinal)
+                ? "tenants-my-page"
+                : "tenants-workspace-tenants-panel-content";
+        string? targetUserId = origin == "tenants-user-lookup" ? _usersWorkspaceState.UserId : null;
+        try
+        {
+            await using IJSObjectReference module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/tenantsFocus.js");
+            string? outcome = await module.InvokeAsync<string>("restoreAuditFocus", focus, origin,
+                "tenants-list-heading", targetUserId);
+            if (outcome != "cancelled"
+                && (origin != "tenants-user-lookup" || string.Equals(_usersWorkspaceState.UserId, targetUserId, StringComparison.Ordinal)))
+            {
+                await module.InvokeVoidAsync("consumeReturnMarkers", focus, targetUserId);
+                if (string.Equals(QueryAuditFocus, focus, StringComparison.Ordinal))
+                {
+                    QueryAuditFocus = null;
+                    QueryAuditPartialReturn = false;
+
+                    // Re-render so child panels stop carrying the consumed markers into later URLs.
+                    if (!_disposed)
+                    {
+                        await InvokeAsync(StateHasChanged);
+                    }
+                }
+            }
+            if (outcome is "missing" or "stalled"
+                && !_disposed && string.Equals(_handledAuditFocus, focus, StringComparison.Ordinal)
+                && (origin != "tenants-user-lookup" || string.Equals(_usersWorkspaceState.UserId, targetUserId, StringComparison.Ordinal)))
+            {
+                await InvokeAsync(() =>
+                {
+                    _auditReturnNotice = outcome == "missing";
+                    _auditStalledNotice = outcome == "stalled";
+                    StateHasChanged();
+                });
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+            // The browser circuit ended before focus restoration.
+        }
+        catch (Exception exception) when (exception is JSException or TaskCanceledException)
+        {
+            if (!_disposed && string.Equals(QueryAuditFocus, focus, StringComparison.Ordinal)
+                && (origin != "tenants-user-lookup" || string.Equals(_usersWorkspaceState.UserId, targetUserId, StringComparison.Ordinal)))
+            {
+                await InvokeAsync(() => { _auditReturnNotice = true; _auditStalledNotice = false; StateHasChanged(); });
+            }
+        }
+    }
+
+    private async Task LoadAsync(bool reuseETag, bool searchTermTooLong = false)
+    {
+        // A disposed component must never issue another load: it would keep consuming and mutating the
+        // circuit-scoped paging state it no longer renders, so its outcome could retire a paging mode or
+        // clear protected history behind a surface that no operator can see.
+        if (_disposed)
+        {
+            return;
+        }
+
+        using PendingLoadOperation operation = BeginLoad();
+        long loadVersion = System.Threading.Interlocked.Increment(ref _loadVersion);
+        CancellationToken cancellationToken = operation.CancellationToken;
+        TenantListSnapshot previous = _lastConfirmedSnapshot ?? _snapshot;
+        string? authenticatedUserId = AuthenticatedUserId;
+        // Retain only this displayed page for the same caller, never an older confirmed page after a
+        // hard load or refusal. Loading/Unknown keeps create, audit and paging closed while rows remain.
+        bool retainDisplayedPage = reuseETag
+            && _snapshot.Rows.Count > 0
+            && _snapshot.Kind is (TenantListSurfaceKind.Ready or TenantListSurfaceKind.Stale
+                or TenantListSurfaceKind.Degraded or TenantListSurfaceKind.Loading)
+            && !string.IsNullOrWhiteSpace(authenticatedUserId)
+            && string.Equals(_snapshot.CallerScope, TenantQueryGateway.AuditCallerScope(authenticatedUserId), StringComparison.Ordinal);
+        _refreshingListKind = retainDisplayedPage ? _refreshingListKind ?? _snapshot.Kind : null;
+        _snapshot = retainDisplayedPage
+            ? _snapshot with { Kind = TenantListSurfaceKind.Loading, Freshness = ReadModelFreshnessState.Unknown }
+            : TenantListSnapshot.Loading();
+        ApplyVisibleRows();
+
+        TenantStatus? status = Enum.TryParse(_statusFilter, out TenantStatus parsedStatus) ? parsedStatus : null;
+        bool interactiveCircuit = IsInteractiveCircuit;
+        bool restoreSearchPagingContext = interactiveCircuit && _restoreSearchPagingContextPending;
+        bool eligibleDetailReturn = HasValidatedTenantDetailReturnContext
+            && HasActiveSearch
+            && !string.IsNullOrWhiteSpace(authenticatedUserId);
+        bool retainedPagingMatched = false;
+        bool discardedRetainedPosition = false;
+        bool discardedAuthoritativePosition = false;
+        if (restoreSearchPagingContext)
+        {
+            if (eligibleDetailReturn)
+            {
+                // The retained page size is server-held, so the exact retained scope is identified by
+                // probing the supported page sizes instead of trusting anything from the URL.
+                foreach (int retainedPageSize in _pageSizes)
+                {
+                    string retainedScope = TenantSearchCursorScopes.Create(
+                        authenticatedUserId!,
+                        _search!,
+                        status?.ToString(),
+                        _sortColumn,
+                        _sortDescending,
+                        retainedPageSize);
+                    if (!SearchPaging.MatchesScope(retainedScope))
+                    {
+                        continue;
+                    }
+
+                    _pageSize = retainedPageSize;
+                    retainedPagingMatched = true;
+                    break;
+                }
+            }
+
+            if (!eligibleDetailReturn)
+            {
+                // Returning by browser Back lands on /tenants?search=... with no selected/anchor, so the
+                // return context cannot be validated and retained paging is discarded. That is correct, but
+                // it was silent: the operator who was on search page 4 arrived at page 1 with no bar
+                // explaining why. Only an actual retained position is worth a notice -- a first visit with
+                // nothing retained has restarted nothing.
+                // Which mode's position was discarded decides the copy: explaining an ordinary-list discard
+                // as protected search paging restarting asserts a protected search page that never existed.
+                discardedAuthoritativePosition = SearchPaging.SearchCursor is not null
+                    || SearchPaging.HasPrevious(authoritative: true);
+                discardedRetainedPosition = discardedAuthoritativePosition
+                    || SearchPaging.FallbackCursor is not null
+                    || SearchPaging.HasPrevious(authoritative: false);
+
+                SearchPaging.Reset();
+            }
+
+            _restoreSearchPagingContextPending = false;
+        }
+
+        string? searchScope = HasActiveSearch && !string.IsNullOrWhiteSpace(authenticatedUserId)
+            ? TenantSearchCursorScopes.Create(
+                authenticatedUserId!,
+                _search!,
+                status?.ToString(),
+                _sortColumn,
+                _sortDescending,
+                _pageSize)
+            : null;
+        if (interactiveCircuit)
+        {
+            SearchPaging.EnsureScope(searchScope);
+
+            // Armed strictly after EnsureScope: that call resets positions when the scope changes, and a
+            // pending scope set before it would be wiped by the very reset it is meant to explain.
+            if (discardedRetainedPosition && searchScope is not null)
+            {
+                SearchPaging.SetPendingRecoveryScope(searchScope, discardedAuthoritativePosition);
+            }
+        }
+
+        if (restoreSearchPagingContext
+            && eligibleDetailReturn
+            && searchScope is not null
+            && !retainedPagingMatched)
+        {
+            // Retained protected paging could not be validated. The honest page-one recovery notice stays
+            // pending until a load for this exact scope actually resolves, so a superseding load cannot
+            // silently discard it. The decision lives in the circuit-scoped paging service beside the
+            // cursors it governs, never in a component field.
+            SearchPaging.SetPendingRecoveryScope(searchScope);
+        }
+
+        string? recoveryScopeForLoad = interactiveCircuit ? SearchPaging.PendingRecoveryScope : null;
+
+        // The authoritative/fallback crossing is resolved before the outgoing request is built: only the
+        // currently active paging mode may contribute a retained cursor. If this load crosses the boundary,
+        // the mode it enters therefore starts at its own first page instead of resuming the stale cursor it
+        // left behind, which is what makes the "paging restarted from the first page" notice honest about
+        // the very load that carried it. A null mode means no load has resolved yet, so nothing is retained.
+        bool? activeMode = interactiveCircuit ? SearchPaging.ActiveModeAuthoritative : null;
+        TenantListRequest request = new(
+            Cursor: HasActiveSearch
+                ? activeMode is false ? SearchPaging.FallbackCursor : null
+                : _currentCursor,
+            PageSize: _pageSize,
+            Search: _search,
+            Status: status,
+            SortColumn: _sortColumn,
+            SortDescending: _sortDescending,
+            ETag: reuseETag ? previous.ETag : null,
+            SearchCursor: HasActiveSearch && interactiveCircuit && activeMode is not false
+                ? SearchPaging.SearchCursor
+                : null);
+
+        TenantListSnapshot snapshot;
+        try
+        {
+            snapshot = await QueryGateway.ListTenantsAsync(request, previous, cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        await InvokeAsync(() =>
+        {
+            // The disposal guard covers the post-await apply block as well as the load entry: a load that
+            // returns after disposal must mutate no paging state, or it could retire a paging mode and
+            // clear protected history behind a surface no operator can see.
+            if (_disposed || loadVersion != _loadVersion)
+            {
+                return;
+            }
+
+            // The pending decision is consumed only when the notice is actually applied. A transient error
+            // on the detail-return load must not silently swallow it: the next same-scope load reports it.
+            if (recoveryScopeForLoad is not null
+                && snapshot.Kind is not (TenantListSurfaceKind.Error or TenantListSurfaceKind.Unauthorized)
+                && string.Equals(searchScope, recoveryScopeForLoad, StringComparison.Ordinal)
+                && string.Equals(SearchPaging.PendingRecoveryScope, recoveryScopeForLoad, StringComparison.Ordinal))
+            {
+                // Read the owed mode before clearing it: an ordinary-list discard gets the source-changed
+                // copy, because the protected-search copy would assert a protected search page that never
+                // existed in fallback mode.
+                bool owedAuthoritative = SearchPaging.PendingRecoveryAuthoritative ?? true;
+                SearchPaging.ClearPendingRecoveryScope();
+                snapshot = snapshot with
+                {
+                    PagingRecovered = true,
+                    PagingNotice = snapshot.PagingNotice is TenantListReason.None
+                        ? owedAuthoritative
+                            ? TenantListReason.SearchRefreshed
+                            : TenantListReason.SearchPagingRestarted
+                        : snapshot.PagingNotice,
+                };
+            }
+
+            if (interactiveCircuit)
+            {
+                snapshot = ReconcileSearchPaging(snapshot);
+            }
+
+            // A term rejected for length is explained on the very load it caused, and only when nothing more
+            // specific is already reported. Without this the operator watched their term vanish from the
+            // input and the unfiltered list load, with no statement that a search had been refused at all.
+            if (searchTermTooLong
+                && snapshot.Kind is not (TenantListSurfaceKind.Error or TenantListSurfaceKind.Unauthorized)
+                && snapshot.Notice is TenantListReason.None)
+            {
+                snapshot = snapshot with { Notice = TenantListReason.SearchTermTooLong };
+            }
+
+            _snapshot = snapshot;
+            _refreshingListKind = null;
+            if (snapshot.Kind is TenantListSurfaceKind.Ready
+                or TenantListSurfaceKind.Empty
+                or TenantListSurfaceKind.FilteredEmpty
+                or TenantListSurfaceKind.SearchPageEmpty
+                or TenantListSurfaceKind.Stale
+                or TenantListSurfaceKind.Degraded)
+            {
+                _lastConfirmedSnapshot = snapshot;
+            }
+
+            if (snapshot.Notice == TenantListReason.ListRefreshed)
+            {
+                TenantWorkspaceState recovered = CurrentWorkspaceState() with { Cursor = null };
+                ApplyWorkspaceState(recovered, clearCursorHistory: true);
+                NavigateToCanonicalWorkspaceIfNeeded(recovered);
+            }
+
+            ApplyVisibleRows();
+        });
+    }
+
+    private async Task RefreshAsync()
+    {
+        StartGlobalAdministratorsEntryResolution();
+        await LoadAsync(reuseETag: true);
+    }
+
+    private Task RefreshAuditAuthorityAsync()
+    {
+        StartGlobalAdministratorsEntryResolution();
+        return Task.CompletedTask;
+    }
+
+    private bool AuditReadAvailable
+        => CanReviewGlobalAdministrators
+            && Services.GetService(typeof(ITenantsBffComposition)) is ITenantsBffComposition { IsReadSurfaceConnected: true };
+
+    // Resolved authority that is neither authorized nor proven denied is indeterminate: say so rather than
+    // blaming tenant scope. Pending authority and disconnection have their own entry-point copy.
+    private string? AuditUnavailableReason
+        => _auditAuthorityResolved && !AuditReadAvailable && !AuditReadDenied
+            ? Localizer["Tenants.Audit.EntryPoint.Unavailable.AccessUnconfirmed"].Value
+            : null;
+
+    // Reconciles the two search paging modes. Crossing the authoritative/fallback boundary retires the
+    // mode that is no longer active, so its Previous affordance cannot offer unreachable pages and a
+    // retained protected cursor can never silently reactivate on a later recovery. Retiring a mode is
+    // never silent: in both directions the operator gets a mapped, localized paging notice explaining why
+    // paging jumped back to the first page, and the crossing notice yields its slot only to copy that
+    // already explains a search restart. The mode itself lives in the circuit-scoped paging service, so
+    // the crossing is still detected after a tenant-detail return recreates this component.
+    private TenantListSnapshot ReconcileSearchPaging(TenantListSnapshot snapshot)
+    {
+        if (!HasActiveSearch)
+        {
+            SearchPaging.ClearActiveMode();
+            return snapshot;
+        }
+
+        bool renderable = snapshot.Kind is not (TenantListSurfaceKind.Error or TenantListSurfaceKind.Unauthorized);
+        if (renderable)
+        {
+            bool authoritative = snapshot.IsAuthoritativeSearch;
+            if (SearchPaging.ActiveModeAuthoritative is bool previousMode && previousMode != authoritative)
+            {
+                if (authoritative)
+                {
+                    SearchPaging.RecoverFallback();
+                }
+                else
+                {
+                    SearchPaging.RecoverSearch();
+                }
+
+                if (!ExplainsSearchRestart(snapshot.PagingNotice))
+                {
+                    snapshot = snapshot with { PagingNotice = TenantListReason.SearchPagingRestarted };
+                }
+            }
+
+            SearchPaging.SetActiveMode(authoritative);
+        }
+
+        // Protected paging history is cleared on the very load that reports the invalidation, terminal
+        // surfaces included: both bars render from the notice reasons alone and never consult Kind, so an
+        // Error/Unauthorized surface still carries the copy that explains the clearing. No deferred or
+        // pending mechanism exists, and none may be reintroduced -- a decision that outlives a load would
+        // have to live in the circuit-scoped paging service, never in a component field a tenant-detail
+        // return discards.
+        if (snapshot.PagingRecovered || snapshot.Notice == TenantListReason.SearchRefreshed)
+        {
+            SearchPaging.RecoverSearch();
+            if (!ExplainsSearchRestart(snapshot.Notice) && !ExplainsSearchRestart(snapshot.PagingNotice))
+            {
+                snapshot = snapshot with { PagingNotice = TenantListReason.SearchRefreshed };
+            }
+        }
+
+        if (snapshot.FallbackPagingRecovered)
+        {
+            SearchPaging.RecoverFallback();
+        }
+
+        return snapshot;
+    }
+
+    // Copy that tells the operator protected search paging restarted from the first page. A load that
+    // clears protected search history must always render one of these, in whichever slot carries it.
+    private static bool ExplainsSearchRestart(TenantListReason reason)
+        => reason is TenantListReason.SearchRefreshed or TenantListReason.SearchPagingRestarted;
+
+    private async Task<TenantListSnapshot?> FindTenantProjectionEvidenceAsync(string tenantId)
+    {
+        string? caller = AuthenticatedUserId;
+        if (string.IsNullOrWhiteSpace(caller))
+        {
+            return null;
+        }
+
+        // Proof always comes from this refresh, including its failure state, never retained matching rows.
+        await LoadAsync(reuseETag: false);
+        TenantListSnapshot proof = _snapshot;
+        return !_disposed && string.Equals(caller, AuthenticatedUserId, StringComparison.Ordinal)
+            && string.Equals(proof.CallerScope, TenantQueryGateway.AuditCallerScope(caller), StringComparison.Ordinal)
+            ? proof : null;
+    }
+
+    private async Task ResetFiltersAsync()
+    {
+        // Clearing the search term must reload the full cursor list from the server, not re-filter the
+        // (now stale) search snapshot still held in _snapshot.
+        ApplyWorkspaceState(TenantWorkspaceState.FromQuery(
+            tab: TenantWorkspaceState.TenantsTab,
+            scope: TenantWorkspaceState.AllScope,
+            userId: null,
+            search: null,
+            status: null,
+            sort: null,
+            sortDescending: null,
+            cursor: null,
+            selectedTenantId: null,
+            anchor: null), clearCursorHistory: true);
+        NavigateToCanonicalWorkspace();
+        await LoadAsync(reuseETag: false);
+    }
+
+    /// <summary>
+    /// The confirmed snapshot paging decisions may be read from. The rendering snapshot is transient
+    /// while loading, and only same-scope soft refreshes retain its search mode and cursor fields.
+    /// </summary>
+    private TenantListSnapshot PagingSnapshot => _lastConfirmedSnapshot ?? _snapshot;
+
+    /// <summary>
+    /// The active paging mode, taken from the circuit-scoped service that owns the cursors it describes and
+    /// survives the component recreation a tenant-detail return causes.
+    /// </summary>
+    private bool ActivePagingModeAuthoritative
+        => SearchPaging.ActiveModeAuthoritative ?? PagingSnapshot.IsAuthoritativeSearch;
+
+    private async Task NextPageAsync()
+    {
+        if (_pagingInFlight || _snapshot.Kind is TenantListSurfaceKind.Loading)
+        {
+            return;
+        }
+
+        _pagingInFlight = true;
+        try
+        {
+            TenantListSnapshot paging = PagingSnapshot;
+            if (HasActiveSearch)
+            {
+                // Refused when there is no next cursor, so Next can never record a back-step it cannot
+                // honour and then enable a Previous that lands on the same page.
+                if (SearchPaging.MoveNext(ActivePagingModeAuthoritative, paging.NextCursor))
+                {
+                    await LoadAsync(reuseETag: false);
+                }
+
+                return;
+            }
+
+            if (paging.NextCursor is null)
+            {
+                return;
+            }
+
+            _cursorHistory.Push(_currentCursor);
+            ApplyWorkspaceState(CurrentWorkspaceState() with { Cursor = paging.NextCursor });
+            NavigateToCanonicalWorkspace();
+            await LoadAsync(reuseETag: false);
+        }
+        finally
+        {
+            _pagingInFlight = false;
+        }
+    }
+
+    private async Task PreviousPageAsync()
+    {
+        if (_pagingInFlight || _snapshot.Kind is TenantListSurfaceKind.Loading)
+        {
+            return;
+        }
+
+        _pagingInFlight = true;
+        try
+        {
+            if (HasActiveSearch)
+            {
+                if (SearchPaging.TryMovePrevious(ActivePagingModeAuthoritative))
+                {
+                    await LoadAsync(reuseETag: false);
+                }
+
+                return;
+            }
+
+            if (_cursorHistory.Count > 0)
+            {
+                ApplyWorkspaceState(CurrentWorkspaceState() with { Cursor = _cursorHistory.Pop() });
+                NavigateToCanonicalWorkspace();
+                await LoadAsync(reuseETag: false);
+            }
+        }
+        finally
+        {
+            _pagingInFlight = false;
+        }
+    }
+
+    private async Task OnSearchChanged(string? value)
+    {
+        bool searchTermTooLong = TenantWorkspaceState.IsSearchTooLong(value);
+        ApplyWorkspaceState(CurrentWorkspaceState().WithSearch(value), clearCursorHistory: true);
+        NavigateToCanonicalWorkspace();
+        await LoadAsync(reuseETag: false, searchTermTooLong: searchTermTooLong);
+    }
+
+    private async Task OnStatusFilterChanged(string? value)
+    {
+        // The current backend has no status field, so this is an explicitly page-local presentation filter.
+        // Reload page one first so the filter never silently retains an older cursor page.
+        ApplyWorkspaceState(CurrentWorkspaceState().WithStatus(value), clearCursorHistory: true);
+        NavigateToCanonicalWorkspace();
+        await LoadAsync(reuseETag: false);
+    }
+
+    private async Task OnPageSizeChanged(int value)
+    {
+        int normalized = _pageSizes.Contains(value) ? value : 20;
+        if (normalized == _pageSize)
+        {
+            return;
+        }
+
+        _pageSize = normalized;
+        ApplyWorkspaceState(CurrentWorkspaceState() with { Cursor = null }, clearCursorHistory: true);
+        NavigateToCanonicalWorkspace();
+        await LoadAsync(reuseETag: false);
+    }
+
+    private void ApplyVisibleRows()
+    {
+        IEnumerable<TenantListRow> rows = _snapshot.Rows;
+
+        if (_snapshot.IsAuthoritativeSearch)
+        {
+            _visibleRows = _snapshot.Rows;
+            return;
+        }
+
+        // Ordinary-list fallback retains the existing page-local status and sorting semantics.
+        if (Enum.TryParse(_statusFilter, out TenantStatus status))
+        {
+            rows = rows.Where(r => r.Status == status);
+        }
+
+        rows = _sortColumn switch
+        {
+            TenantListSortColumns.Name => _sortDescending
+                ? rows.OrderByDescending(r => r.Name, StringComparer.OrdinalIgnoreCase)
+                : rows.OrderBy(r => r.Name, StringComparer.OrdinalIgnoreCase),
+            TenantListSortColumns.Status => _sortDescending
+                ? rows.OrderByDescending(r => r.Status)
+                : rows.OrderBy(r => r.Status),
+            _ => _sortDescending
+                ? rows.OrderByDescending(r => r.TenantId, StringComparer.Ordinal)
+                : rows.OrderBy(r => r.TenantId, StringComparer.Ordinal),
+        };
+
+        _visibleRows = rows.ToArray();
+    }
+
+    private string CreateDetailHref(TenantListRow row)
+        => CurrentNavigationContext().ToDetailUrl(row);
+
+    private string CreateAuditHref(TenantListRow row)
+        => CurrentNavigationContext().ToAuditUrl(row);
+
+    // The create flow's audit Back returns to the current list view. Selection and anchor belong to row
+    // launchers, so they are dropped; the entry point strips a protected cursor and marks the partial return.
+    private string CreateAuditReturnUrl
+        => (CurrentWorkspaceState() with { SelectedTenantId = null, Anchor = null }).ToCanonicalUrl();
+
+    private TenantListNavigationContext CurrentNavigationContext()
+        => new(CurrentWorkspaceState());
+
+    private void RestoreContextFromQuery()
+    {
+        ApplyWorkspaceState(WorkspaceStateFromQuery(), clearCursorHistory: true);
+    }
+
+    private TenantWorkspaceState WorkspaceStateFromQuery()
+        => TenantWorkspaceState.FromQuery(
+            RouteTabFromLocation ?? QueryTab,
+            QueryScope,
+            QueryUserId,
+            QuerySearch,
+            QueryStatus,
+            QuerySort,
+            QuerySortDescending,
+            QueryCursor,
+            QuerySelectedTenantId,
+            QueryAnchor);
+
+    private async Task OnActiveTabChanged(string? activeTabId)
+    {
+        if (!IsInteractiveCircuit || _disposed || string.IsNullOrWhiteSpace(activeTabId))
+        {
+            return;
+        }
+
+        string previousTab = _activeTabId;
+
+        // Preserve the complete state owned by the panel being left. Each retained panel stays mounted, and
+        // its parameters must remain that panel's last normalized state while the other tab owns the URL.
+        if (string.Equals(previousTab, TenantWorkspaceState.UsersTab, StringComparison.Ordinal))
+        {
+            _usersWorkspaceState = _workspaceState;
+        }
+
+        if (string.Equals(NormalizeTab(activeTabId), TenantWorkspaceState.UsersTab, StringComparison.Ordinal))
+        {
+            TenantWorkspaceState usersState = _usersWorkspaceState;
+            ApplyWorkspaceState(usersState, clearCursorHistory: true);
+            NavigateToCanonicalWorkspaceIfNeeded(usersState);
+            return;
+        }
+
+        TenantWorkspaceState tenantsState = _tenantWorkspaceState;
+        ApplyWorkspaceState(tenantsState, clearCursorHistory: true);
+        NavigateToCanonicalWorkspace();
+        if (IsTenantListView)
+        {
+            await LoadAsync(reuseETag: false);
+        }
+    }
+
+    private async Task OnTenantScopeChanged(string? scope)
+    {
+        ApplyWorkspaceState(CurrentWorkspaceState().WithScope(scope), clearCursorHistory: true);
+        NavigateToCanonicalWorkspace();
+
+        if (IsTenantListView)
+        {
+            await LoadAsync(reuseETag: false);
+        }
+    }
+
+    private static string NormalizeTab(string? value)
+        => string.Equals(value, "workspace-users", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(value, TenantWorkspaceState.UsersTab, StringComparison.OrdinalIgnoreCase)
+            ? TenantWorkspaceState.UsersTab
+            : TenantWorkspaceState.TenantsTab;
+
+    private async Task OnTenantSortChanged(DataGridSortEventArgs<TenantListRow> args)
+    {
+        string? primaryColumnId = args.SortColumns.Count > 0 ? args.SortColumns[0].Column.ColumnId : null;
+        string sortColumn = primaryColumnId switch
+        {
+            "tenant-id" => TenantListSortColumns.Name,
+            "tenant-status" => TenantListSortColumns.Status,
+            _ => TenantListSortColumns.TenantId,
+        };
+        ApplyWorkspaceState(
+            CurrentWorkspaceState().WithSort(sortColumn, descending: args.SortColumns.Count > 0 && !args.SortColumns[0].Ascending),
+            clearCursorHistory: true);
+        NavigateToCanonicalWorkspace();
+        await LoadAsync(reuseETag: false);
+    }
+
+    private TenantWorkspaceState CurrentWorkspaceState()
+        => IsUsersTab
+            ? _workspaceState
+            : TenantWorkspaceState.FromQuery(
+                _activeTabId,
+                _tenantScope,
+                userId: null,
+                _search,
+                _statusFilter,
+                _sortColumn,
+                _sortDescending ? bool.TrueString : null,
+                _currentCursor,
+                _selectedTenantId,
+                _returnAnchor);
+
+    private void ApplyWorkspaceState(TenantWorkspaceState state, bool clearCursorHistory = false)
+    {
+        if (_workspaceState != state)
+        {
+            // Only undispatched admission follows the active view. Retained command tracking and
+            // optional workspace entry resolution keep their independent lifetimes.
+            Interlocked.Increment(ref _workspaceVersion);
+            CancelAuthorizationWait(ref _createAuthorizationCancellation);
+        }
+
+        _workspaceState = state;
+        _activeTabId = state.Tab;
+        if (clearCursorHistory)
+        {
+            // No pending-recovery clear here. It was unreachable on the path that mattered -- this runs from
+            // RestoreContextFromQuery before SearchPaging is ever resolved, so the null-conditional made it a
+            // guaranteed no-op on a fresh instance -- and it is redundant everywhere else: EnsureScope resets
+            // PendingRecoveryScope whenever the search scope actually changes. Clearing it on a transition
+            // that keeps the same scope would destroy copy the operator is still owed.
+            _cursorHistory.Clear();
+            if (state.Tab == TenantWorkspaceState.TenantsTab && !string.IsNullOrWhiteSpace(state.Cursor))
+            {
+                _cursorHistory.Push(null);
+            }
+        }
+
+        if (state.Tab == TenantWorkspaceState.UsersTab)
+        {
+            _usersWorkspaceState = state;
+            return;
+        }
+
+        _tenantWorkspaceState = state;
+        _tenantScope = state.Scope;
+        _search = state.Search;
+        _statusFilter = state.Status;
+        _sortColumn = state.Sort;
+        _sortDescending = state.SortDescending;
+        _currentCursor = state.Cursor;
+        _selectedTenantId = state.SelectedTenantId;
+        _returnAnchor = state.Anchor;
+    }
+
+    private void NavigateToCanonicalWorkspace()
+    {
+        _workspaceState = CurrentWorkspaceState();
+        if (_workspaceState.Tab == TenantWorkspaceState.TenantsTab)
+        {
+            _tenantWorkspaceState = _workspaceState;
+        }
+
+        NavigateToCanonicalWorkspaceIfNeeded(_workspaceState);
+    }
+
+    private bool NavigateToCanonicalWorkspaceIfNeeded(TenantWorkspaceState state)
+    {
+        string canonicalUrl = state.ToCanonicalUrl(routeBacked: true);
+        if (TenantAuditNavigationSafety.IsSafeFocus(QueryAuditFocus))
+        {
+            canonicalUrl += (canonicalUrl.Contains('?', StringComparison.Ordinal) ? "&" : "?")
+                + "auditFocus=" + Uri.EscapeDataString(QueryAuditFocus!);
+            if (QueryAuditPartialReturn)
+            {
+                canonicalUrl += "&auditPartialReturn=true";
+            }
+        }
+        else if (QueryAuditReturnUnavailable)
+        {
+            canonicalUrl += (canonicalUrl.Contains('?', StringComparison.Ordinal) ? "&" : "?")
+                + "auditReturnUnavailable=true";
+        }
+        if (QueryAuditPartialReturn && !canonicalUrl.Contains("auditPartialReturn=", StringComparison.Ordinal))
+        {
+            canonicalUrl += (canonicalUrl.Contains('?', StringComparison.Ordinal) ? "&" : "?")
+                + "auditPartialReturn=true";
+        }
+        string currentUrl = HttpContext is null
+            ? Navigation.ToBaseRelativePath(Navigation.Uri)
+            : $"{HttpContext.Request.Path}{HttpContext.Request.QueryString}";
+        int fragmentIndex = currentUrl.IndexOf('#', StringComparison.Ordinal);
+        if (fragmentIndex >= 0)
+        {
+            currentUrl = currentUrl[..fragmentIndex];
+        }
+
+        currentUrl = $"/{currentUrl.TrimStart('/')}";
+        if (string.Equals(currentUrl, canonicalUrl, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        Navigation.NavigateTo(canonicalUrl, replace: true);
+        return true;
+    }
+
+    private PendingLoadOperation BeginLoad()
+    {
+        var source = new CancellationTokenSource();
+        lock (_loadCancellationLock)
+        {
+            _loadCancellation?.Cancel();
+            _loadCancellation = source;
+        }
+
+        return new(source, () => CompleteLoad(source));
+    }
+
+    private void CompleteLoad(CancellationTokenSource source)
+    {
+        lock (_loadCancellationLock)
+        {
+            if (ReferenceEquals(_loadCancellation, source))
+            {
+                _loadCancellation = null;
+            }
+        }
+
+        source.Dispose();
+    }
+
+    private void CancelActiveLoad()
+    {
+        lock (_loadCancellationLock)
+        {
+            _loadCancellation?.Cancel();
+            _loadCancellation = null;
+        }
+    }
+
+    private CancellationTokenSource ReplaceAuthorizationWait(ref CancellationTokenSource? active)
+    {
+        var source = new CancellationTokenSource();
+        lock (_loadCancellationLock)
+        {
+            if (_disposed)
+            {
+                source.Cancel();
+            }
+            else
+            {
+                active?.Cancel();
+                active = source;
+            }
+        }
+        return source;
+    }
+
+    private void CancelAuthorizationWait(ref CancellationTokenSource? active)
+    {
+        lock (_loadCancellationLock)
+        {
+            active?.Cancel();
+            active = null;
+        }
+    }
+
+    private void CompleteAuthorizationWait(ref CancellationTokenSource? active, CancellationTokenSource source)
+    {
+        lock (_loadCancellationLock)
+        {
+            if (ReferenceEquals(active, source))
+            {
+                active = null;
+            }
+        }
+        source.Dispose();
+    }
+
+    public void Dispose()
+    {
+        // The pending recovery scope is deliberately NOT cleared here. It is owed copy explaining that
+        // protected paging restarted at page one, it is bound to the exact search scope that owes it, and
+        // it lives in the circuit-scoped service precisely so it survives the component disposal a
+        // tenant-detail navigation causes. Clearing it here destroyed it on the way out and the operator
+        // came back to a silently restarted search with no notice -- the invariant ExplainsSearchRestart
+        // exists to prevent. A later load for a different scope discards it through EnsureScope.
+        _disposed = true;
+        Navigation.LocationChanged -= OnWorkspaceLocationChanged;
+        CancelAuthorizationWait(ref _entryAuthorizationCancellation);
+        CancelAuthorizationWait(ref _authenticationStateCancellation);
+        CancelAuthorizationWait(ref _createAuthorizationCancellation);
+        Interlocked.Increment(ref _authorizationVersion);
+        if (_authenticationStateProvider is not null)
+        {
+            _authenticationStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+            _authenticationStateProvider = null;
+        }
+        CancelActiveLoad();
+    }
+
+    private sealed class PendingLoadOperation : IDisposable
+    {
+        private Action? _complete;
+
+        public PendingLoadOperation(CancellationTokenSource source, Action complete)
+        {
+            CancellationToken = source.Token;
+            _complete = complete;
+        }
+
+        public CancellationToken CancellationToken { get; }
+
+        public void Dispose()
+            => Interlocked.Exchange(ref _complete, null)?.Invoke();
+    }
+}

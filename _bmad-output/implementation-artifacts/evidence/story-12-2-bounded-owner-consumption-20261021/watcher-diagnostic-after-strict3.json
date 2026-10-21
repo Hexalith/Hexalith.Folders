@@ -1,0 +1,163 @@
+{
+  "observed_at_utc": "2026-10-21T18:57:33.040865+00:00",
+  "uid": 1000,
+  "limits": {
+    "max_user_watches": 1048576,
+    "max_user_instances": 8192
+  },
+  "visible_same_uid_watch_total": 1048028,
+  "visible_same_uid_instances": 101,
+  "largest_observed_consumers": [
+    {
+      "pid": 16104,
+      "command": "fluentui-mcp",
+      "inotify_watches": 52712,
+      "instances": 1
+    },
+    {
+      "pid": 54086,
+      "command": "fluentui-mcp",
+      "inotify_watches": 41901,
+      "instances": 1
+    },
+    {
+      "pid": 663,
+      "command": "fluentui-mcp",
+      "inotify_watches": 34634,
+      "instances": 1
+    },
+    {
+      "pid": 39626,
+      "command": "fluentui-mcp",
+      "inotify_watches": 34229,
+      "instances": 1
+    },
+    {
+      "pid": 54149,
+      "command": "fluentui-mcp",
+      "inotify_watches": 34097,
+      "instances": 1
+    },
+    {
+      "pid": 29407,
+      "command": "fluentui-mcp",
+      "inotify_watches": 33244,
+      "instances": 1
+    },
+    {
+      "pid": 71336,
+      "command": "fluentui-mcp",
+      "inotify_watches": 32649,
+      "instances": 1
+    },
+    {
+      "pid": 14887,
+      "command": "fluentui-mcp",
+      "inotify_watches": 32114,
+      "instances": 1
+    },
+    {
+      "pid": 25046,
+      "command": "fluentui-mcp",
+      "inotify_watches": 32080,
+      "instances": 1
+    },
+    {
+      "pid": 47080,
+      "command": "fluentui-mcp",
+      "inotify_watches": 32080,
+      "instances": 1
+    },
+    {
+      "pid": 72399,
+      "command": "fluentui-mcp",
+      "inotify_watches": 32080,
+      "instances": 1
+    },
+    {
+      "pid": 31477,
+      "command": "fluentui-mcp",
+      "inotify_watches": 31451,
+      "instances": 1
+    },
+    {
+      "pid": 53447,
+      "command": "fluentui-mcp",
+      "inotify_watches": 31451,
+      "instances": 1
+    },
+    {
+      "pid": 60728,
+      "command": "fluentui-mcp",
+      "inotify_watches": 31451,
+      "instances": 1
+    },
+    {
+      "pid": 29361,
+      "command": "fluentui-mcp",
+      "inotify_watches": 31403,
+      "instances": 1
+    },
+    {
+      "pid": 73221,
+      "command": "fluentui-mcp",
+      "inotify_watches": 31025,
+      "instances": 1
+    },
+    {
+      "pid": 32494,
+      "command": "fluentui-mcp",
+      "inotify_watches": 31015,
+      "instances": 1
+    },
+    {
+      "pid": 7189,
+      "command": "fluentui-mcp",
+      "inotify_watches": 30435,
+      "instances": 1
+    },
+    {
+      "pid": 55145,
+      "command": "fluentui-mcp",
+      "inotify_watches": 28305,
+      "instances": 1
+    },
+    {
+      "pid": 57617,
+      "command": "fluentui-mcp",
+      "inotify_watches": 26776,
+      "instances": 1
+    },
+    {
+      "pid": 88435,
+      "command": "fluentui-mcp",
+      "inotify_watches": 26694,
+      "instances": 1
+    },
+    {
+      "pid": 30321,
+      "command": "fluentui-mcp",
+      "inotify_watches": 25318,
+      "instances": 1
+    },
+    {
+      "pid": 82245,
+      "command": "fluentui-mcp",
+      "inotify_watches": 25318,
+      "instances": 1
+    },
+    {
+      "pid": 18765,
+      "command": "fluentui-mcp",
+      "inotify_watches": 25317,
+      "instances": 1
+    },
+    {
+      "pid": 97290,
+      "command": "fluentui-mcp",
+      "inotify_watches": 23937,
+      "instances": 1
+    }
+  ],
+  "note": "Read-only resource metadata; no process arguments/environment values, quota changes or unrelated process mutations."
+}

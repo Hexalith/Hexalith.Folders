@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-21T17:53:20.612936+00:00",
+  "command": [
+    "dotnet",
+    "/tmp/folders-task36-parent-source-verifier/bin/Debug/net10.0/Verifier.dll",
+    "/home/administrator/projects/hexalith/folders",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/source-freeze.json",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/parent-source-binding-build5"
+  ],
+  "exitCode": 0,
+  "seconds": 1.7901489734649658,
+  "log": "parent-source-binding-build5.log",
+  "verifierSource": "parent-tools/Program.cs"
+}

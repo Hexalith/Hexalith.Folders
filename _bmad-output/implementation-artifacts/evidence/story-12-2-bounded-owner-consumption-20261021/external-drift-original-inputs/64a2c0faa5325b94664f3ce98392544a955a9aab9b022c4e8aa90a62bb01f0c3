@@ -1,0 +1,67 @@
+// <copyright file="AccessTelemetryRecord.cs" company="ITANEO">
+// Copyright (c) ITANEO (https://www.itaneo.com). All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace Hexalith.Memories.AccessTelemetry.Contracts;
+
+/// <summary>Internal canonical V1 lifecycle persistence record.</summary>
+public sealed record AccessTelemetryRecord
+{
+    /// <summary>Gets the accepted timestamp.</summary>
+    public required string AcceptedAtUtc { get; init; }
+
+    /// <summary>Gets the opaque case marker.</summary>
+    public string? CaseMarker { get; init; }
+
+    /// <summary>Gets elapsed operation duration in milliseconds.</summary>
+    public required long DurationMs { get; init; }
+
+    /// <summary>Gets the source emission timestamp.</summary>
+    public required string EmittedAtUtc { get; init; }
+
+    /// <summary>Gets the lowercase SHA-256 of the immutable envelope.</summary>
+    public required string EnvelopeHash { get; init; }
+
+    /// <summary>Gets the bounded error code.</summary>
+    public string? ErrorCode { get; init; }
+
+    /// <summary>Gets the source logger event ID.</summary>
+    public required int EventId { get; init; }
+
+    /// <summary>Gets the immutable absolute expiry timestamp.</summary>
+    public required string ExpiresAtUtc { get; init; }
+
+    /// <summary>Gets the marker-key generation.</summary>
+    public required string MarkerKeyId { get; init; }
+
+    /// <summary>Gets the bounded operation type.</summary>
+    public required string OperationType { get; init; }
+
+    /// <summary>Gets the bounded outcome.</summary>
+    public required string Outcome { get; init; }
+
+    /// <summary>Gets the bounded operation parameters.</summary>
+    public IReadOnlyDictionary<string, object?> QueryParams { get; init; } = new Dictionary<string, object?>(0, StringComparer.Ordinal);
+
+    /// <summary>Gets the monotonic ULID record identifier.</summary>
+    public required string RecordId { get; init; }
+
+    /// <summary>Gets the bounded result count.</summary>
+    public int? ResultCount { get; init; }
+
+    /// <summary>Gets the exact schema version.</summary>
+    public required int SchemaVersion { get; init; }
+
+    /// <summary>Gets the W3C span ID.</summary>
+    public string? SpanId { get; init; }
+
+    /// <summary>Gets the opaque tenant marker or rejected sentinel.</summary>
+    public required string TenantMarker { get; init; }
+
+    /// <summary>Gets the W3C trace ID.</summary>
+    public string? TraceId { get; init; }
+
+    /// <summary>Gets the opaque user marker.</summary>
+    public string? UserMarker { get; init; }
+}

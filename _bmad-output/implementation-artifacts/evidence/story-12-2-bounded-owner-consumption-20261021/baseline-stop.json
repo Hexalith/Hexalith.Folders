@@ -1,0 +1,12 @@
+{
+  "command": [
+    "aspire",
+    "stop",
+    "--non-interactive",
+    "--apphost",
+    "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+  ],
+  "exit_code": 0,
+  "seconds": 0.639641284942627,
+  "output": "Scanning for running AppHosts...\n\ud83d\udce6 Found running AppHost: src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj\n\ud83d\uded1 Sending stop signal to src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj...\nStopping src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj...\n\n\u2705 src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj stopped successfully."
+}

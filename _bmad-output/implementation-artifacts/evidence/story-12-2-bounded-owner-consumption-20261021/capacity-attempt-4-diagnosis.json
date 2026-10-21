@@ -1,0 +1,59 @@
+{
+  "tests": [
+    {
+      "test": {
+        "id": "4892bf22-5b9e-4ee0-977f-38965b4adfae",
+        "name": "Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests.OriginalOwnersRebuildGrowAndRetainIdentityThroughAuthenticatedTransport(count: 10001)",
+        "result": "Fail",
+        "time": "849.483",
+        "time-rtf": "00:14:09.4829999",
+        "start-rtf": "2026-10-21T17:53:01.8789712+00:00",
+        "finish-rtf": "2026-10-21T18:07:11.3343549+00:00",
+        "type": "Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests",
+        "method": "OriginalOwnersRebuildGrowAndRetainIdentityThroughAuthenticatedTransport",
+        "source-file": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+        "source-line": "24"
+      },
+      "failure_message": "System.InvalidOperationException : The task-owned launcher has no descendant mapping the expected host assembly.",
+      "failure_stack": "   at Hexalith.Folders.AppHost.Tests.FolderDurabilityRuntimeBinding.Record(String resource, Int32 processId, Action`1 observe) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs:line 56\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.RestartHostsAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 409\n   at Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests.OriginalOwnersRebuildGrowAndRetainIdentityThroughAuthenticatedTransport(Int32 count) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs:line 60\n--- End of stack trace from previous location ---",
+      "completed_capacity_phases": [
+        "CAPACITY phase=AccumulateComplete ownerOrdinal=0 part= events=0 elapsedMs=300351.357 status=Completed",
+        "CAPACITY phase=AccumulatePart ownerOrdinal=1 part=0 events=1 elapsedMs=147.668 status=Completed",
+        "CAPACITY phase=AccumulateComplete ownerOrdinal=1 part= events=0 elapsedMs=446.180 status=Completed",
+        "CAPACITY phase=Finalize ownerOrdinal= part= events=0 elapsedMs=1329.279 status=Completed",
+        "CAPACITY phase=Stage ownerOrdinal= part= events=0 elapsedMs=533473.915 status=Completed"
+      ]
+    },
+    {
+      "test": {
+        "id": "6fe8d0b8-9743-44ea-9b71-62957930ec50",
+        "name": "Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests.OriginalOwnersRebuildGrowAndRetainIdentityThroughAuthenticatedTransport(count: 32769)",
+        "result": "Fail",
+        "time": "3.484",
+        "time-rtf": "00:00:03.4840000",
+        "start-rtf": "2026-10-21T18:07:11.3369174+00:00",
+        "finish-rtf": "2026-10-21T18:07:14.8226650+00:00",
+        "type": "Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests",
+        "method": "OriginalOwnersRebuildGrowAndRetainIdentityThroughAuthenticatedTransport",
+        "source-file": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+        "source-line": "24"
+      },
+      "failure_message": "System.InvalidOperationException : SDK named capacity delivery: expected 200, observed 401; code=unavailable.",
+      "failure_stack": "   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.RequireStatusAsync(HttpResponseMessage response, HttpStatusCode expected, String operation) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 504\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.NamedDeliveryAsync(String aggregateId, ProjectionEventDto source) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 354\n   at Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests.OriginalOwnersRebuildGrowAndRetainIdentityThroughAuthenticatedTransport(Int32 count) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs:line 51\n--- End of stack trace from previous location ---",
+      "completed_capacity_phases": []
+    }
+  ],
+  "credential_evidence": {
+    "original_workload_client_lifetime_seconds": 300,
+    "source": "src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json client access.token.lifespan",
+    "retained_log_reason": "assertion-expired",
+    "valid_to_utc": "2026-10-21T17:58:01Z",
+    "rejected_request_time_utc": "2026-10-21T18:07:14Z",
+    "path": "/project/v2"
+  },
+  "harness_corrections": [
+    "Wait for actual expected managed-host mapping using the same existing60s resource lifecycle deadline.",
+    "Reacquire unchanged real operation-scoped Keycloak workload credentials before capacity actions when near expiry; strict provider behavior/lifetimes remain unchanged."
+  ],
+  "coverage_disposition": "Neither case passed.10001 completed AccumulateComplete and sealed Stage, but post-start observer failed before recovery acceptance.32769 only attempted its tiny primer and was denied with expired credentials; no large32769 HTTP input ran."
+}

@@ -1,0 +1,40 @@
+[
+  {
+    "command": [
+      "dotnet",
+      "format",
+      "whitespace",
+      "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+      "--verbosity",
+      "quiet"
+    ],
+    "exit_code": 0,
+    "seconds": 7.799927590000152,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/format-build6-whitespace.log"
+  },
+  {
+    "command": [
+      "dotnet",
+      "format",
+      "analyzers",
+      "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+      "--verbosity",
+      "quiet"
+    ],
+    "exit_code": 0,
+    "seconds": 12.723459128996183,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/format-build6-analyzers.log"
+  }
+]

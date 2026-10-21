@@ -1,0 +1,104 @@
+using Hexalith.FrontComposer.Contracts.DevMode;
+using Hexalith.FrontComposer.Contracts.Diagnostics;
+using Hexalith.FrontComposer.Contracts.Rendering;
+using Hexalith.FrontComposer.Shell.Components.Diagnostics;
+using Hexalith.FrontComposer.Shell.Infrastructure.Telemetry;
+using Hexalith.FrontComposer.Shell.Services;
+using Hexalith.FrontComposer.Shell.Services.Diagnostics;
+
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+namespace Hexalith.FrontComposer.Shell.Components.Rendering;
+
+/// <summary>
+/// Hosts a Level 2 projection template inside a narrow customization error boundary.
+/// </summary>
+/// <typeparam name="TProjection">Projection type being rendered.</typeparam>
+public sealed class FcProjectionTemplateHost<TProjection> : ComponentBase {
+    private ErrorBoundary? _boundary;
+    private bool _publishedFault;
+
+    [Parameter, EditorRequired]
+    public ProjectionTemplateDescriptor Descriptor { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public ProjectionTemplateContext<TProjection> Context { get; set; } = default!;
+
+    [Inject]
+    public ILogger<FcProjectionTemplateHost<TProjection>> Logger { get; set; } = default!;
+
+    [Inject]
+    public IServiceProvider Services { get; set; } = default!;
+
+    protected override void BuildRenderTree(RenderTreeBuilder builder) {
+        ArgumentNullException.ThrowIfNull(builder);
+
+        if (Descriptor is null || Context is null) {
+            return;
+        }
+
+        builder.OpenComponent<ErrorBoundary>(0);
+        builder.AddAttribute(1, "ChildContent", (RenderFragment)RenderTemplate);
+        builder.AddAttribute(2, "ErrorContent", (RenderFragment<Exception>)RenderFailure);
+        builder.AddComponentReferenceCapture(3, component => _boundary = (ErrorBoundary)component);
+        builder.CloseComponent();
+    }
+
+    private void RenderTemplate(RenderTreeBuilder builder) {
+        builder.OpenComponent(0, Descriptor.TemplateType);
+        builder.AddAttribute(1, "Context", Context);
+        builder.CloseComponent();
+    }
+
+    private RenderFragment RenderFailure(Exception exception)
+        => builder => {
+            CustomizationDiagnostic diagnostic = CreateDiagnostic(exception);
+            if (!_publishedFault) {
+                FrontComposerWarningLog.ProjectionTemplateRenderFailed(
+                    Logger,
+                    diagnostic.Id,
+                    typeof(TProjection),
+                    Descriptor.TemplateType,
+                    Context.Role,
+                    exception);
+                CustomizationDiagnosticPublisher.Publish(Services?.GetService<IDiagnosticSink>(), diagnostic);
+                _publishedFault = true;
+            }
+
+            builder.OpenComponent<FcCustomizationDiagnosticPanel>(0);
+            builder.AddAttribute(1, "Diagnostic", diagnostic);
+            builder.AddAttribute(2, "CanRetry", true);
+            builder.AddAttribute(3, "OnRetry", EventCallback.Factory.Create(this, Recover));
+            builder.CloseComponent();
+        };
+
+    private void Recover() {
+        _publishedFault = false;
+        _boundary?.Recover();
+    }
+
+    private CustomizationDiagnostic CreateDiagnostic(Exception exception)
+        => CustomizationDiagnostic.Create(
+            id: FcDiagnosticIds.HFC2115_CustomizationOverrideRenderFault,
+            severity: CustomizationDiagnosticSeverity.Warning,
+            phase: CustomizationDiagnosticPhase.Runtime,
+            level: CustomizationLevel.Level2,
+            projectionTypeName: typeof(TProjection).FullName,
+            componentTypeName: Descriptor.TemplateType.FullName,
+            role: Context.Role?.ToString(),
+            fieldName: null,
+            what: "A Level 2 projection template threw while rendering.",
+            expected: "The template renders without taking down the generated shell or sibling surfaces.",
+            got: exception.GetType().Name,
+            fix: "Fix the template markup or companion code, then retry the affected template.",
+            fallback: "The generated lower-level projection body remains the safe fallback path.",
+            docsLink: "https://hexalith.github.io/FrontComposer/diagnostics/HFC2115",
+            properties: new Dictionary<string, string> {
+                ["exceptionType"] = exception.GetType().Name,
+                ["category"] = "RenderFault",
+            });
+}

@@ -12,10 +12,13 @@ using Microsoft.Extensions.Options;
 
 namespace Hexalith.Folders.Tests.Projections.OperationalStatus;
 
+/// <summary>Exercises the supported SDK named/shared protocol with the production Folders handler.</summary>
 internal static class NamedOperationalStatusRebuildFixture
 {
+    /// <summary>Rebuilds complete original owner histories through bounded transport parts and the SDK generation lifecycle.</summary>
     public static async Task<ReadModelBatchResult> RebuildAsync(OperationalStatusTestStore store, string tenantId,
-        string folderId, string operationId, IReadOnlyList<OperationalStatusEvent> events, long sourceHead, CancellationToken token, Action? afterBegin = null, bool retryPartial = true, IUtcClock? clock = null)
+        string folderId, string operationId, IReadOnlyList<OperationalStatusEvent> events, long sourceHead, CancellationToken token, Action? afterBegin = null, bool retryPartial = true, IUtcClock? clock = null,
+        IReadOnlyList<(string FolderId, IReadOnlyList<OperationalStatusEvent> Events)>? additionalOwners = null)
     {
         ServiceCollection services = new();
         services.AddSingleton<IReadModelStore>(store);
@@ -27,7 +30,7 @@ internal static class NamedOperationalStatusRebuildFixture
         services.AddSingleton<IOrganizationStreamSequenceReader>(new OperationalStatusSequenceReader { Head = sourceHead });
         services.AddSingleton<OperationalStatusProjectionWriter>();
         services.AddSingleton<IAsyncDomainProjectionHandler, OperationalStatusProjectionHandler>();
-        services.AddSingleton(Options.Create(new ProjectionDispatchOptions { MaxRebuildEventCount = 20_000 }));
+        services.AddSingleton(Options.Create(new ProjectionDispatchOptions { MaxRebuildEventCount = 40_000 }));
         services.AddSingleton(Options.Create(new DomainProjectionIdentityOptions { AppId = "folders", ServiceVersion = "test" }));
         using var provider = services.BuildServiceProvider();
         var options = provider.GetRequiredService<IOptions<ProjectionDispatchOptions>>().Value;
@@ -36,9 +39,15 @@ internal static class NamedOperationalStatusRebuildFixture
             [new("folders", OperationalStatusKeys.ProjectionType)], [new("folders", OperationalStatusKeys.ProjectionType)]);
         DomainSharedProjectionRebuildIdentity identity = new(tenantId, "folders", OperationalStatusKeys.ProjectionType,
             operationId, catalog);
-        var source = events.Select(static item => item.Source!).ToArray();
-        string capture = DomainSharedProjectionRebuildFingerprint.AppendInventory(DomainSharedProjectionRebuildFingerprint.EmptyInventory,
-            0, DomainSharedProjectionRebuildFingerprint.ComputeHistory(folderId, false, source));
+        List<(string FolderId, ProjectionEventDto[] Events)> owners = [(folderId, events.Select(static item => item.Source!).ToArray())];
+        if (additionalOwners is not null)
+            owners.AddRange(additionalOwners.Select(static owner => (owner.FolderId, owner.Events.Select(static item => item.Source!).ToArray())));
+        string capture = DomainSharedProjectionRebuildFingerprint.EmptyInventory;
+        for (int ordinal = 0; ordinal < owners.Count; ordinal++)
+            capture = DomainSharedProjectionRebuildFingerprint.AppendInventory(capture, ordinal,
+                DomainSharedProjectionRebuildFingerprint.ComputeHistory(owners[ordinal].FolderId, false, owners[ordinal].Events));
+        Dictionary<string, long> watermarks = owners.ToDictionary(static owner => owner.FolderId, static owner => owner.Events[^1].GlobalPosition);
+        watermarks[folderId] = sourceHead;
         var coordinator = provider.GetRequiredService<SharedProjectionEpochCoordinator>();
         await coordinator.RegisterWriterAsync(OperationalStatusGeneration.Scope(tenantId),
             OperationalStatusGeneration.WriterId, token).ConfigureAwait(false);
@@ -46,13 +55,24 @@ internal static class NamedOperationalStatusRebuildFixture
         {
             await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version, DomainSharedProjectionRebuildAction.Begin,
                 identity, CaptureInventoryFingerprint: capture,
-                SourceHighWatermarks: new Dictionary<string, long> { [folderId] = sourceHead })).ConfigureAwait(false);
+                SourceHighWatermarks: watermarks)).ConfigureAwait(false);
             afterBegin?.Invoke();
-            var accumulated = await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version,
-                DomainSharedProjectionRebuildAction.Accumulate, identity, AggregateOrdinal: 0,
-                AggregateId: folderId, Events: source)).ConfigureAwait(false);
+            DomainSharedProjectionRebuildResponse? accumulated = null;
+            for (int ordinal = 0; ordinal < owners.Count; ordinal++)
+            {
+                var owner = owners[ordinal];
+                int part = 0;
+                foreach (ProjectionEventDto[] page in owner.Events.Chunk(256))
+                    await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version,
+                        DomainSharedProjectionRebuildAction.AccumulatePart, identity, AggregateOrdinal: ordinal,
+                        AggregateId: owner.FolderId, Events: page, PartOrdinal: part++)).ConfigureAwait(false);
+                accumulated = await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version,
+                    DomainSharedProjectionRebuildAction.AccumulateComplete, identity, AggregateOrdinal: ordinal,
+                    AggregateId: owner.FolderId, PartCount: part,
+                    ExpectedHistoryFingerprint: DomainSharedProjectionRebuildFingerprint.ComputeHistory(owner.FolderId, false, owner.Events))).ConfigureAwait(false);
+            }
             await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version, DomainSharedProjectionRebuildAction.Finalize,
-                identity, ExpectedAggregateCount: 1, ExpectedInventoryFingerprint: accumulated.InventoryFingerprint)).ConfigureAwait(false);
+                identity, ExpectedAggregateCount: owners.Count, ExpectedInventoryFingerprint: accumulated!.InventoryFingerprint)).ConfigureAwait(false);
             await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version, DomainSharedProjectionRebuildAction.Stage, identity)).ConfigureAwait(false);
             var committed = await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version,
                 DomainSharedProjectionRebuildAction.Commit, identity)).ConfigureAwait(false);

@@ -1,0 +1,197 @@
+using Hexalith.FrontComposer.Contracts.Attributes;
+using Hexalith.FrontComposer.Contracts.DevMode;
+using Hexalith.FrontComposer.Contracts.Diagnostics;
+using Hexalith.FrontComposer.Contracts.Rendering;
+using Hexalith.FrontComposer.Shell.Components.Diagnostics;
+using Hexalith.FrontComposer.Shell.Infrastructure.Telemetry;
+using Hexalith.FrontComposer.Shell.Services;
+using Hexalith.FrontComposer.Shell.Services.Diagnostics;
+
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+namespace Hexalith.FrontComposer.Shell.Components.Rendering;
+
+/// <summary>
+/// Hosts a Level 3 field-slot component for one generated projection field.
+/// </summary>
+/// <typeparam name="TProjection">Projection type owning the field.</typeparam>
+/// <typeparam name="TField">Selected field type.</typeparam>
+public sealed class FcFieldSlotHost<TProjection, TField> : ComponentBase {
+    private ErrorBoundary? _boundary;
+    private bool _publishedFault;
+
+    /// <summary>Gets or sets the registry used to resolve slot descriptors.</summary>
+    [Inject]
+    public IProjectionSlotRegistry SlotRegistry { get; set; } = default!;
+
+    /// <summary>Gets or sets the logger used for runtime diagnostics (HFC2120 / HFC1039).</summary>
+    [Inject]
+    public ILogger<FcFieldSlotHost<TProjection, TField>> Logger { get; set; } = default!;
+
+    /// <summary>Gets or sets the diagnostic sink used by dev-mode overlays and panels.</summary>
+    [Inject]
+    public IServiceProvider Services { get; set; } = default!;
+
+    /// <summary>Gets or sets the parent projection row.</summary>
+    [Parameter, EditorRequired]
+    public TProjection Parent { get; set; } = default!;
+
+    /// <summary>Gets or sets the selected field value.</summary>
+    [Parameter]
+    public TField? Value { get; set; }
+
+    /// <summary>Gets or sets generated field metadata.</summary>
+    [Parameter, EditorRequired]
+    public FieldDescriptor Field { get; set; } = default!;
+
+    /// <summary>Gets or sets the current render context.</summary>
+    [Parameter, EditorRequired]
+    public RenderContext RenderContext { get; set; } = default!;
+
+    /// <summary>Gets or sets the projection role.</summary>
+    [Parameter]
+    public ProjectionRole? ProjectionRole { get; set; }
+
+    /// <summary>Gets or sets the default generated field renderer. This bypasses slot lookup.</summary>
+    [Parameter]
+    public RenderFragment<FieldSlotContext<TProjection, TField>>? RenderDefault { get; set; }
+
+    /// <summary>Gets or sets the optional render-tree key used to anchor the slot host across
+    /// virtualized row reuse (Story 6-3 D17). Generated emitters supply
+    /// <c>(rowKey, fieldName)</c> so a re-rendered row does not leak slot component state to a
+    /// neighbour row.</summary>
+    [Parameter]
+    public object? Key { get; set; }
+
+    /// <inheritdoc />
+    protected override void BuildRenderTree(RenderTreeBuilder builder) {
+        ArgumentNullException.ThrowIfNull(builder);
+
+        // GB-P1 — surface generator/adopter wiring bugs that leave required parameters null instead
+        // of silently rendering an empty cell. We cannot construct a FieldSlotContext without these
+        // values so RenderDefault cannot be invoked either; the only safe fallback is to log and
+        // render nothing.
+        if (Parent is null || Field is null || RenderContext is null) {
+            FrontComposerWarningLog.FieldSlotMissingParameters(
+                Logger,
+                FcDiagnosticIds.HFC2120_ProjectionSlotHostMissingParameter,
+                typeof(TProjection),
+                typeof(TField),
+                Parent is null,
+                Field is null,
+                RenderContext is null);
+            return;
+        }
+
+        FieldSlotContext<TProjection, TField> context = new(
+            value: Value,
+            parent: Parent,
+            field: Field,
+            renderContext: RenderContext,
+            projectionRole: ProjectionRole,
+            densityLevel: RenderContext.DensityLevel,
+            isReadOnly: RenderContext.IsReadOnly || Field.IsReadOnly,
+            isDevMode: RenderContext.IsDevMode,
+            renderDefault: RenderDefault);
+
+        ProjectionSlotDescriptor? descriptor = SlotRegistry.Resolve(
+            typeof(TProjection),
+            ProjectionRole,
+            Field.Name);
+
+        // GB-P14 — guard against descriptor type-arity drift (hand-built descriptor whose FieldType
+        // is not the host's TField). Without this check the Blazor parameter cast would throw
+        // InvalidCastException at OpenComponent time and abort the row render.
+        if (descriptor is not null && descriptor.FieldType != typeof(TField)) {
+            FrontComposerWarningLog.FieldSlotTypeMismatch(
+                Logger,
+                FcDiagnosticIds.HFC1039_ProjectionSlotComponentInvalid,
+                typeof(TProjection),
+                Field.Name,
+                descriptor.FieldType,
+                typeof(TField));
+            descriptor = null;
+        }
+
+        if (descriptor is null) {
+            RenderDefault?.Invoke(context)(builder);
+            return;
+        }
+
+        builder.OpenComponent<ErrorBoundary>(0);
+        builder.AddAttribute(1, "ChildContent", (RenderFragment)(slotBuilder => RenderSlot(slotBuilder, descriptor, context)));
+        builder.AddAttribute(2, "ErrorContent", (RenderFragment<Exception>)(exception => RenderFailure(exception, descriptor)));
+        builder.AddComponentReferenceCapture(3, component => _boundary = (ErrorBoundary)component);
+        builder.CloseComponent();
+    }
+
+    private void RenderSlot(
+        RenderTreeBuilder builder,
+        ProjectionSlotDescriptor descriptor,
+        FieldSlotContext<TProjection, TField> context) {
+        builder.OpenComponent(0, descriptor.ComponentType);
+        if (Key is not null) {
+            builder.SetKey(Key);
+        }
+
+        builder.AddAttribute(1, "Context", context);
+        builder.CloseComponent();
+    }
+
+    private RenderFragment RenderFailure(
+        Exception exception,
+        ProjectionSlotDescriptor descriptor)
+        => builder => {
+            CustomizationDiagnostic diagnostic = CreateDiagnostic(exception, descriptor);
+            if (!_publishedFault) {
+                // P15 — defensive null-conditional: the RenderFailure lambda is captured by
+                // ErrorBoundary and may be invoked after parameter teardown clears Field.
+                FrontComposerWarningLog.FieldSlotRenderFailed(
+                    Logger,
+                    diagnostic.Id,
+                    typeof(TProjection),
+                    descriptor.ComponentType,
+                    ProjectionRole,
+                    Field?.Name,
+                    exception);
+                CustomizationDiagnosticPublisher.Publish(Services?.GetService<IDiagnosticSink>(), diagnostic);
+                _publishedFault = true;
+            }
+
+            builder.OpenComponent<FcCustomizationDiagnosticPanel>(0);
+            builder.AddAttribute(1, "Diagnostic", diagnostic);
+            builder.AddAttribute(2, "CanRetry", true);
+            builder.AddAttribute(3, "OnRetry", EventCallback.Factory.Create(this, Recover));
+            builder.CloseComponent();
+        };
+
+    private void Recover() {
+        _publishedFault = false;
+        _boundary?.Recover();
+    }
+
+    private CustomizationDiagnostic CreateDiagnostic(Exception exception, ProjectionSlotDescriptor descriptor)
+        => CustomizationDiagnostic.Create(
+            id: FcDiagnosticIds.HFC2115_CustomizationOverrideRenderFault,
+            severity: CustomizationDiagnosticSeverity.Warning,
+            phase: CustomizationDiagnosticPhase.Runtime,
+            level: CustomizationLevel.Level3,
+            projectionTypeName: typeof(TProjection).FullName,
+            componentTypeName: descriptor.ComponentType.FullName,
+            role: ProjectionRole?.ToString(),
+            fieldName: Field?.Name,
+            what: "A Level 3 field-slot override threw while rendering.",
+            expected: "The slot renders without taking down the row, shell, or sibling fields.",
+            got: exception.GetType().Name,
+            fix: "Fix the slot component markup or companion code, then retry the affected field.",
+            fallback: "Generated field rendering remains available through the lower-level path.",
+            docsLink: "https://hexalith.github.io/FrontComposer/diagnostics/HFC2115",
+            properties: new Dictionary<string, string> {
+                ["exceptionType"] = exception.GetType().Name,
+                ["category"] = "RenderFault",
+            });
+}

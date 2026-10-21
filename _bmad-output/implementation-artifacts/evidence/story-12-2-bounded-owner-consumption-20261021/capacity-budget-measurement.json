@@ -1,0 +1,55 @@
+{
+  "observed_at_utc": "2026-10-21T18:03:42.492430+00:00",
+  "folders_observation": {
+    "count": 10001,
+    "phase": "AccumulateComplete",
+    "elapsed_seconds": 300.351357,
+    "linear_32769_seconds": 984.1229494583541
+  },
+  "sdk_cases": [
+    {
+      "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionBoundedIdentityLiveTests.ProductionDispatcherResumesStagingAndPromotedHandoffAcrossDistinctProcesses(count: 10001, bufferedOwner: False)",
+      "time": "335.416",
+      "result": "Pass"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionBoundedIdentityLiveTests.ProductionDispatcherResumesStagingAndPromotedHandoffAcrossDistinctProcesses(count: 32769, bufferedOwner: False)",
+      "time": "1069.673",
+      "result": "Pass"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionBoundedIdentityLiveTests.ProductionDispatcherResumesStagingAndPromotedHandoffAcrossDistinctProcesses(count: 10001, bufferedOwner: True)",
+      "time": "320.094",
+      "result": "Pass"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionBoundedIdentityLiveTests.ProductionDispatcherResumesStagingAndPromotedHandoffAcrossDistinctProcesses(count: 32769, bufferedOwner: True)",
+      "time": "1081.566",
+      "result": "Pass"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionBoundedIdentityLiveTests.FocusedProcessReplacementExercisesPartialStageAndOwnerHandoff(bufferedOwner: False)",
+      "time": "15.863",
+      "result": "Pass"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionBoundedIdentityLiveTests.FocusedProcessReplacementExercisesPartialStageAndOwnerHandoff(bufferedOwner: True)",
+      "time": "15.647",
+      "result": "Pass"
+    }
+  ],
+  "sdk_timing_limit": "SDK XML reports entire scenarios, not per-action phase timings. Existing packet is unchanged reused evidence.",
+  "capacity_budget_decision": {
+    "old_phase_seconds": 900,
+    "next_phase_seconds": 1800,
+    "justification": "984.1s linear Folders projection exceeds 900s; 1800s gives about1.83x this measured estimate. Capacity harness only; no real-provider deadlines, SDK/product sources or storage/admission limits change.",
+    "status": "Not applied. Redundant32769 synthetic HTTP run is not required by clarified compositional scope;10001 phase remains15minutes."
+  },
+  "later_measurement": {
+    "count": 10001,
+    "phase": "Stage",
+    "elapsed_seconds": 533.473915,
+    "linear_32769_seconds": 1747.9658754759525,
+    "outcome": "Stage Completed; subsequent immediate post-restart runtime observer failed; no recovery completion claim."
+  }
+}

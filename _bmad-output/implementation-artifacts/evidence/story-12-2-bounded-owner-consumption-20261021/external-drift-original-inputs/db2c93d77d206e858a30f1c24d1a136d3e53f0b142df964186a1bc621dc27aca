@@ -1,0 +1,1004 @@
+@using Hexalith.Tenants.UI.State.TenantList
+@using Hexalith.Tenants.Contracts.Identity
+@using Hexalith.Tenants.UI.State.TenantCommands
+@using Hexalith.Tenants.UI.State.TenantDetail
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<TenantsResources> Localizer
+@inject IServiceProvider Services
+@implements IDisposable
+
+<section class="tenants-create-flow" data-testid="tenants-create-flow"
+         aria-labelledby="@(ShowHeading ? "tenants-create-heading" : null)"
+         aria-label="@(ShowHeading ? null : Localizer["Tenants.Create.Title"].Value)">
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="0.25rem" Class="tenants-create-flow__heading">
+        @if (ShowHeading)
+        {
+            <h2 id="tenants-create-heading">@Localizer["Tenants.Create.Title"]</h2>
+        }
+        <p>@Localizer["Tenants.Create.Description"]</p>
+    </FluentStack>
+
+    @if (!string.IsNullOrWhiteSpace(UnavailableReason))
+    {
+        <p class="tenants-create-flow__unavailable"
+           data-testid="tenants-create-unavailable-reason"
+           role="alert">
+            @UnavailableReason
+        </p>
+    }
+    else if (IsFirstTenantBootstrap)
+    {
+        <p class="tenants-create-flow__availability"
+           data-testid="tenants-create-availability-note">
+            @Localizer["Tenants.Create.Availability.FirstTenantUnknown"]
+        </p>
+    }
+
+    <EditForm Model="@_formModel"
+              FormName="tenants-create-flow"
+              class="tenants-create-flow__form"
+              OnSubmit="SubmitAsync">
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="0.25rem" Class="tenants-create-flow__field">
+            <FluentTextInput Id="tenants-create-tenant-id"
+                             @ref="_tenantIdElement"
+                             Name="tenant-id"
+                             Label="@Localizer["Tenants.Create.TenantId.Label"]"
+                             Value="@_tenantId"
+                             ValueChanged="OnTenantIdInput"
+                             data-testid="tenants-create-tenant-id"
+                             aria-describedby="@TenantIdDescribedBy" />
+            <span id="tenants-create-tenant-id-help" class="tenants-create-flow__hint">@Localizer["Tenants.Create.TenantId.Help"]</span>
+        </FluentStack>
+
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="0.25rem" Class="tenants-create-flow__field">
+            <FluentTextInput Id="tenants-create-name"
+                             @ref="_nameElement"
+                             Name="tenant-name"
+                             Label="@Localizer["Tenants.Create.Name.Label"]"
+                             Value="@_name"
+                             ValueChanged="OnNameInput"
+                             data-testid="tenants-create-name"
+                             aria-describedby="@ValidationDescribedBy" />
+        </FluentStack>
+
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="0.25rem" Class="tenants-create-flow__field tenants-create-flow__field--wide">
+            <FluentTextArea Id="tenants-create-description"
+                            Name="tenant-description"
+                            Label="@Localizer["Tenants.Create.Description.Label"]"
+                            Value="@_description"
+                            ValueChanged="OnDescriptionInput"
+                            data-testid="tenants-create-description" />
+        </FluentStack>
+
+        @if (!string.IsNullOrWhiteSpace(_validationMessage))
+        {
+            <p id="tenants-create-validation"
+               class="tenants-create-flow__validation"
+               data-testid="tenants-create-validation"
+               role="alert">
+                @_validationMessage
+            </p>
+        }
+
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="0.75rem" Wrap="true" VerticalAlignment="VerticalAlignment.Bottom" Class="tenants-create-flow__actions">
+            <FluentButton Type="ButtonType.Submit"
+                          Appearance="ButtonAppearance.Primary"
+                          data-testid="tenants-create-submit"
+                          Disabled="@IsSubmitDisabled">
+                @Localizer["Tenants.Create.Submit"]
+            </FluentButton>
+            <FluentButton Appearance="ButtonAppearance.Outline"
+                          data-testid="tenants-create-refresh"
+                          Disabled="@(!CanRefresh)"
+                          OnClick="RefreshStatusAsync">
+                @Localizer["Tenants.Create.Refresh"]
+            </FluentButton>
+        </FluentStack>
+    </EditForm>
+
+    <section class="tenants-create-flow__lifecycle"
+             @ref="_lifecycleElement"
+             tabindex="-1"
+             id="tenants-create-lifecycle" data-testid="tenants-create-lifecycle"
+             aria-labelledby="tenants-create-state-label">
+        <h3 id="tenants-create-state-label">@Localizer["Tenants.Create.Lifecycle.Title"]</h3>
+        <p class="@StateClass" data-testid="tenants-create-state">
+            <span aria-hidden="true">@StateSymbol</span>
+            <span>@StateText</span>
+        </p>
+        <div data-testid="tenants-create-audit">
+            @if (ShouldRenderAuditEntryPoint)
+            {
+                <AuditAvailabilityState AuditState="@_snapshot.AuditState"
+                                        Source="create-tenant"
+                                        OwnerRefreshIncludesAuditAuthority="true"
+                                        OnRefresh="@(CanRequeryAudit ? EventCallback.Factory.Create(this, RefreshFromAuditControlAsync) : default(EventCallback))"
+                                        OnContinueReadOnly="@(CanContinueReadOnly ? EventCallback.Factory.Create(this, ContinueReadOnly) : default(EventCallback))"
+                                        InspectAuditAction="@CommandAuditEntryPoint" />
+            }
+        </div>
+        @* The reason lives inside the live region: announcing the state alone left a screen-reader
+           user with "Unable to verify" and no explanation of why. *@
+        <section class="tenants-create-flow__live"
+                 data-testid="tenants-create-live-region"
+                 aria-live="@LiveRegionMode"
+                 aria-atomic="true">
+            <p>@StateText</p>
+            @if (!string.IsNullOrWhiteSpace(SafeMessageText))
+            {
+                <p data-testid="tenants-create-safe-message">@SafeMessageText</p>
+            }
+        </section>
+    </section>
+</section>
+
+@code {
+    [CascadingParameter(Name = "CurrentTenantCallerScope")]
+    public string? CurrentCallerScope { get; set; }
+
+    [CascadingParameter(Name = "AuditReadAvailable")]
+    public bool AuditReadAvailable { get; set; }
+
+    [CascadingParameter(Name = "AuditReadPending")]
+    public bool AuditReadPending { get; set; }
+
+    [CascadingParameter(Name = "AuditReadDenied")]
+    public bool AuditReadDenied { get; set; }
+
+    [CascadingParameter(Name = "AuditReadUnavailableReason")]
+    public string? AuditReadUnavailableReason { get; set; }
+
+    [CascadingParameter(Name = "WorkspaceAuditReturnUrl")]
+    public string? WorkspaceAuditReturnUrl { get; set; }
+
+    private readonly object _formModel = new();
+    private TenantRetainedCommandAttempt? _retainedAttempt;
+    private int _attemptGeneration;
+    private bool _disposed;
+    private TenantCreateCommandSnapshot _snapshot = TenantCreateCommandSnapshot.Idle();
+    private bool _returnStateConsumed;
+    private string? _tenantId;
+    private string? _name;
+    private string? _description;
+    private string? _validationMessage;
+    private bool _isSubmitting;
+    private FluentTextInput _tenantIdElement = default!;
+    private FluentTextInput _nameElement = default!;
+    private ElementReference _lifecycleElement;
+    private bool _focusTenantIdPending;
+    private bool _focusNamePending;
+    private bool _focusLifecyclePending;
+
+    [Parameter]
+    public bool ShowHeading { get; set; } = true;
+
+    [Parameter]
+    public bool IsAuthorized { get; set; }
+
+    /// <summary>Gets or sets the current live authority reflection.</summary>
+    [Parameter]
+    public TenantLifecycleAuthorizationReflectionState AuthorizationReflection { get; set; }
+        = TenantLifecycleAuthorizationReflectionState.Indeterminate;
+
+    /// <summary>Gets or sets the current authority and evidence revision.</summary>
+    [Parameter]
+    public long AuthorizationVersion { get; set; }
+
+    /// <summary>Gets or sets the fresh current-caller authority resolver used before dispatch and retry.</summary>
+    [Parameter]
+    public Func<CancellationToken, Task<TenantLifecycleAuthorizationReflectionState>>? AuthorizationReflectionProvider { get; set; }
+
+    [Parameter]
+    public bool RestoreAuditReturn { get; set; }
+
+    [Parameter]
+    public bool IsFresh { get; set; } = true;
+
+    [Parameter]
+    public bool IsCommandSurfaceAvailable { get; set; } = true;
+
+    [Parameter]
+    public string? BaselineProjectionVersion { get; set; }
+
+    [Parameter]
+    public bool BaselineTenantAbsent { get; set; }
+
+    [Parameter]
+    public bool IsFirstTenantBootstrap { get; set; }
+
+    [Parameter]
+    public EventCallback OnProjectionRefreshRequested { get; set; }
+
+    [Parameter]
+    public Func<string, Task<TenantListSnapshot?>>? ProjectionEvidenceProvider { get; set; }
+
+
+    private long _admissionGeneration;
+    private bool _authorityResolutionInProgress;
+    private readonly Lock _authorityCancellationLock = new();
+    private CancellationTokenSource? _authorityCancellation;
+    private object? _admissionParameters;
+    private TenantLifecycleAuthorizationReflectionState? _submissionAuthority;
+
+    private string AuthorizationUnavailableReason
+        => Localizer[_submissionAuthority is TenantLifecycleAuthorizationReflectionState.MissingPermission
+            || AuthorizationReflection is TenantLifecycleAuthorizationReflectionState.MissingPermission
+                ? "Tenants.Create.Unavailable.Authorization"
+                : "Tenants.Mutation.Unavailable.AuthorityIndeterminate"].Value;
+
+    private void ObserveAdmissionParameters()
+    {
+        object current = (CurrentCallerScope, IsAuthorized, AuthorizationReflection, AuthorizationVersion, IsFresh, IsCommandSurfaceAvailable, BaselineProjectionVersion, AuthorizationReflectionProvider);
+        if (!Equals(current, _admissionParameters))
+        {
+            _admissionParameters = current;
+            InvalidateAdmission();
+            _submissionAuthority = null;
+        }
+    }
+
+    private void InvalidateAdmission()
+    {
+        Interlocked.Increment(ref _admissionGeneration);
+        lock (_authorityCancellationLock)
+        {
+            _authorityCancellation?.Cancel();
+        }
+    }
+
+    private async Task<bool> ReauthorizeInitialAdmissionAsync(long generation)
+    {
+        _authorityResolutionInProgress = true;
+        try
+        {
+            return await ReauthorizeAdmissionAsync(generation).ConfigureAwait(false);
+        }
+        finally
+        {
+            _authorityResolutionInProgress = false;
+        }
+    }
+
+    private async Task<bool> ReauthorizeAdmissionAsync(long generation)
+    {
+        TenantLifecycleAuthorizationReflectionState authority = TenantLifecycleAuthorizationReflectionState.Indeterminate;
+        // Bound admission independently of provider cooperation; cancellation never cancels dispatched work.
+        using var source = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        lock (_authorityCancellationLock)
+        {
+            _authorityCancellation?.Cancel();
+            _authorityCancellation = source;
+        }
+        try
+        {
+            if (AuthorizationReflectionProvider is { } provider)
+            {
+                authority = await provider(source.Token).WaitAsync(source.Token).ConfigureAwait(false);
+                source.Token.ThrowIfCancellationRequested();
+            }
+        }
+        catch (Exception)
+        {
+            // Missing, cancelled or faulted current authority never permits a dispatch.
+            authority = TenantLifecycleAuthorizationReflectionState.Indeterminate;
+        }
+        finally
+        {
+            lock (_authorityCancellationLock)
+            {
+                if (ReferenceEquals(_authorityCancellation, source))
+                {
+                    _authorityCancellation = null;
+                }
+            }
+        }
+
+        if (_disposed || generation != Volatile.Read(ref _admissionGeneration))
+        {
+            return false;
+        }
+        _submissionAuthority = authority;
+        return !_disposed && generation == _admissionGeneration && IsAuthorized && IsFresh && IsCommandSurfaceAvailable
+            && AuthorizationReflection is TenantLifecycleAuthorizationReflectionState.Authorized
+            && authority is TenantLifecycleAuthorizationReflectionState.Authorized;
+    }
+
+    private void RefuseAuthorityAdmission()
+        => SetSnapshot(_snapshot with
+        {
+            SafeMessage = UnavailableReason ?? AuthorizationUnavailableReason,
+            SafeMessageKey = null,
+            FocusTarget = TenantCommandFocusTarget.Submit,
+            LiveRegionPoliteness = TenantCommandLiveRegionPoliteness.Assertive,
+        });
+
+    internal TenantCreateCommandSnapshot Snapshot => _snapshot;
+
+    private void SynchronizeRetainedAttempt()
+    {
+        if (_retainedAttempt is { } attempt
+            && Attempts.TryRead<TenantCreateCommandSnapshot>(attempt, this, out TenantCreateCommandSnapshot? latest) && latest is not null)
+        {
+            _snapshot = latest;
+        }
+    }
+
+    private void OnRetainedAttemptChanged(object? sender, EventArgs args)
+    {
+        if (_disposed || _retainedAttempt is null)
+        {
+            return;
+        }
+        _ = RenderRetainedAttemptAsync();
+    }
+
+    private async Task RenderRetainedAttemptAsync()
+    {
+        try
+        {
+            await InvokeAsync(() =>
+            {
+                if (!_disposed)
+                {
+                    SynchronizeRetainedAttempt();
+                    StateHasChanged();
+                }
+            }).ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
+
+    protected override void OnInitialized()
+    {
+        TenantCommandAttemptTracker? attempts = AttemptTracker?.Attempts;
+        if (attempts is not null)
+        {
+            attempts.StateChanged += OnRetainedAttemptChanged;
+        }
+
+    }
+
+    private void RestoreAuditReturnAttempt()
+    {
+        if (_returnStateConsumed)
+        {
+            return;
+        }
+        TenantCreateAuditReturnState? returnState = Services.GetService<TenantCreateAuditReturnState>();
+        if (!RestoreAuditReturn || AuthorizationReflection is TenantLifecycleAuthorizationReflectionState.MissingPermission)
+        {
+            returnState?.Clear();
+            return;
+        }
+
+        if (!IsAuthorized || AuthorizationReflection is not TenantLifecycleAuthorizationReflectionState.Authorized)
+        {
+            return;
+        }
+        if (returnState?.Take() is { } retained)
+        {
+            _returnStateConsumed = true;
+            _snapshot = retained.Snapshot;
+            _tenantId = retained.TenantId;
+            _name = retained.Name;
+            _description = retained.Description;
+            if (retained.Snapshot.Intent is { } intent && AttemptTracker is not null)
+            {
+                if (Attempts.Find<TenantCreateCommandSnapshot>(intent.TenantId) is null)
+                {
+                    AttemptTracker.Remember(retained.Snapshot);
+                }
+                if (Attempts.TryAdopt<TenantCreateCommandSnapshot>(intent.TenantId, this, out TenantRetainedCommandAttempt? attempt, out TenantCreateCommandSnapshot? snapshot)
+                    && snapshot is not null)
+                {
+                    _retainedAttempt = attempt;
+                    _snapshot = snapshot;
+                    _attemptGeneration++;
+                }
+            }
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        ObserveAdmissionParameters();
+        RestoreAuditReturnAttempt();
+        // The host clears its one-shot create return marker once focus is restored. Re-arm retention
+        // then, so a second audit trip from the restored flow keeps the latest command state.
+        if (!RestoreAuditReturn)
+        {
+            _returnStateConsumed = false;
+        }
+    }
+
+    private string? UnavailableReason
+        => !IsAuthorized || AuthorizationReflection is not TenantLifecycleAuthorizationReflectionState.Authorized
+            || _submissionAuthority is TenantLifecycleAuthorizationReflectionState.MissingPermission or TenantLifecycleAuthorizationReflectionState.Indeterminate
+            ? AuthorizationUnavailableReason
+            : !IsFresh
+                ? Localizer["Tenants.Create.Availability.Stale"].Value
+                : !IsCommandSurfaceAvailable || CommandGateway is null || AttemptTracker is null
+                    ? Localizer["Tenants.Create.Unavailable.CommandSurface"].Value
+                    : _isSubmitting
+                        ? Localizer["Tenants.Create.Unavailable.InFlight"].Value
+                        : null;
+
+    private bool IsSubmitDisabled => _authorityResolutionInProgress || !string.IsNullOrWhiteSpace(UnavailableReason);
+
+    private bool CanRefresh
+        => _snapshot.CorrelationId is not null
+        && _snapshot.State is TenantCommandLifecycleState.Accepted
+            or TenantCommandLifecycleState.ProjectionPending
+            or TenantCommandLifecycleState.UnableToVerify
+            or TenantCommandLifecycleState.Degraded;
+
+    private ITenantCommandGateway? CommandGateway
+        => Services.GetService<ITenantCommandGateway>();
+
+    private string StateClass
+        => $"tenants-create-flow__state tenants-create-flow__state--{_snapshot.State.ToString().ToLowerInvariant()}";
+
+    private string StateSymbol
+        => _snapshot.State switch
+        {
+            TenantCommandLifecycleState.Confirmed => "✓",
+            TenantCommandLifecycleState.Rejected or TenantCommandLifecycleState.Failed => "!",
+            TenantCommandLifecycleState.Degraded or TenantCommandLifecycleState.UnableToVerify => "?",
+            _ => "•",
+        };
+
+    private string StateText
+        => Localizer[$"Tenants.Create.State.{_snapshot.State}"];
+
+    // The entry point names the audit state with the shared availability label, never a flow-local duplicate.
+    private string AuditStateLabel
+        => TenantAuditAvailability.StateLabelKeyFor(_snapshot.AuditState) is { } key ? Localizer[key] : string.Empty;
+
+    // Refresh is offered only while the attempt can actually be re-queried; a no-op control would only
+    // exhaust the retry bound behind a misleading limit note.
+    private bool CanRequeryAudit
+        => !string.IsNullOrWhiteSpace(_snapshot.MessageId) && !string.IsNullOrWhiteSpace(_snapshot.CorrelationId);
+
+    // Continue read-only resets the attempt panel and focuses the lifecycle section; it does not navigate. It is
+    // never offered mid-dispatch, where it would race the submission it dismisses.
+    private bool CanContinueReadOnly
+        => !_isSubmitting;
+
+    // No fragment at all when audit read is denied, so the shared control renders no empty Inspect-audit shell.
+    private RenderFragment? CommandAuditEntryPoint
+        => AuditReadDenied ? null : CommandAuditEntryPointTemplate;
+
+    private RenderFragment CommandAuditEntryPointTemplate
+        => @<AuditEvidenceEntryPoint TenantId="@(_snapshot.Intent?.TenantId ?? _tenantId)"
+                                     SourceKind="command-result"
+                                     SourceTestId="tenants-command-audit-entrypoint"
+                                     Label="@Localizer["Tenants.Audit.Availability.Action.InspectAudit"]"
+                                     AccessibleName="@Localizer["Tenants.Audit.EntryPoint.Accessible.Command", AuditStateLabel, _snapshot.Intent?.TenantId ?? _tenantId ?? string.Empty]"
+                                     ReturnUrl="@(WorkspaceAuditReturnUrl ?? "/tenants")"
+                                     ReturnFocus="tenants-create-lifecycle"
+                                     AuthorityPending="@AuditReadPending"
+                                     UnavailableReason="@AuditReadUnavailableReason"
+                                     IsAvailable="@AuditReadAvailable" />;
+
+    private string? SafeMessageText
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(_snapshot.SafeMessageKey))
+            {
+                return _snapshot.SafeMessage;
+            }
+
+            // A missing or renamed resource makes IStringLocalizer hand back the key itself, which
+            // would print an internal identifier onto a support-safe surface.
+            LocalizedString localized = Localizer[_snapshot.SafeMessageKey];
+            return localized.ResourceNotFound ? null : localized.Value;
+        }
+    }
+
+    // The shared control's Refresh can resolve the audit state to NotStarted, which unmounts the control and its
+    // focused Refresh button; focus then moves to the lifecycle section instead of falling back to the document body.
+    private async Task RefreshFromAuditControlAsync()
+    {
+        await RefreshStatusAsync().ConfigureAwait(false);
+        await InvokeAsync(() =>
+        {
+            if (!ShouldRenderAuditEntryPoint)
+            {
+                _focusLifecyclePending = true;
+            }
+        }).ConfigureAwait(false);
+    }
+
+    private bool ShouldRenderAuditEntryPoint
+        => _snapshot.AuditState is not TenantCommandAuditState.NotStarted;
+
+    private string LiveRegionMode
+        => _snapshot.LiveRegionPoliteness is TenantCommandLiveRegionPoliteness.Assertive ? "assertive" : "polite";
+
+    private string TenantIdDescribedBy
+        => string.IsNullOrWhiteSpace(_validationMessage)
+            ? "tenants-create-tenant-id-help"
+            : "tenants-create-tenant-id-help tenants-create-validation";
+
+    private string? ValidationDescribedBy
+        => string.IsNullOrWhiteSpace(_validationMessage) ? null : "tenants-create-validation";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Keep the state before navigation. A native anchor can leave a Blazor Server circuit before
+        // its click callback reaches the server, so click-time retention is too late. The gate follows the
+        // attempt the entry point links to, not the live input, which the operator may already have edited.
+        TenantCreateAuditReturnState? returnState = Services.GetService<TenantCreateAuditReturnState>();
+        if (!_returnStateConsumed && IsAuthorized && AuditReadAvailable && ShouldRenderAuditEntryPoint
+            && TenantAuditNavigationSafety.IsSafeIdentifier(_snapshot.Intent?.TenantId ?? _tenantId))
+        {
+            returnState?.Remember(_snapshot, _tenantId, _name, _description);
+        }
+        else if (!(RestoreAuditReturn && !_returnStateConsumed
+            && AuthorizationReflection is TenantLifecycleAuthorizationReflectionState.Indeterminate))
+        {
+            returnState?.Clear();
+        }
+
+        if (_focusTenantIdPending)
+        {
+            _focusTenantIdPending = false;
+            await _tenantIdElement.Element.FocusAsync().ConfigureAwait(false);
+        }
+
+        if (_focusNamePending)
+        {
+            _focusNamePending = false;
+            await _nameElement.Element.FocusAsync().ConfigureAwait(false);
+        }
+
+        if (_focusLifecyclePending)
+        {
+            _focusLifecyclePending = false;
+            await _lifecycleElement.FocusAsync().ConfigureAwait(false);
+        }
+    }
+
+    // Honours the lifecycle FocusTarget for fail-closed/non-success transitions: when the command
+    // surface becomes blocked, rejected, failed, degraded, or unable-to-verify, the submit button
+    // may disable, so focus is moved to the lifecycle region to keep it recoverable (AC6). Routine
+    // polite progress (request sent, accepted, projection pending, confirmed) never steals focus.
+    private void SetSnapshot(TenantCreateCommandSnapshot snapshot)
+    {
+        if (_retainedAttempt is { } attempt && !Attempts.TryUpdate(attempt, _snapshot, snapshot))
+        {
+            return;
+        }
+
+        _snapshot = snapshot;
+        if (_snapshot.LiveRegionPoliteness is TenantCommandLiveRegionPoliteness.Assertive)
+        {
+            _focusLifecyclePending = true;
+        }
+    }
+
+    private TenantCreateAttemptTracker? AttemptTracker
+        => Services.GetService<TenantAggregateCommandAdmissionGate>() is null ? null : Services.GetService<TenantCreateAttemptTracker>();
+
+    private TenantCommandAttemptTracker Attempts => AttemptTracker!.Attempts;
+
+    internal void ApplySignalRNudge()
+        => SetSnapshot(_snapshot.SignalRNudge());
+
+    internal void ApplyProjectionEvidence(TenantListSnapshot? proof)
+        => SetSnapshot(_snapshot.ConfirmProjection(proof, null));
+
+    private void OnTenantIdInput(string? value)
+    {
+        InvalidateAdmission();
+        _tenantId = value;
+    }
+
+    private void OnNameInput(string? value)
+    {
+        InvalidateAdmission();
+        _name = value;
+    }
+
+    private void OnDescriptionInput(string? value)
+    {
+        InvalidateAdmission();
+        _description = value;
+    }
+
+    private bool CanRetryDelivery
+        => !_isSubmitting && _snapshot.State is TenantCommandLifecycleState.RequestSent
+            && _snapshot.MessageId is not null && _snapshot.CorrelationId is null
+            && _retainedAttempt?.DeliveryInFlight is not true;
+
+    private bool PublishResult(TenantRetainedCommandAttempt? attempt, int generation,
+        TenantCreateCommandSnapshot expected, TenantCreateCommandSnapshot result, bool delivery = false)
+    {
+        bool retained = attempt is null || (delivery
+            ? Attempts.TryCompleteDelivery(attempt, expected, result)
+            : Attempts.TryUpdate(attempt, expected, result));
+        if (!retained || _disposed || generation != _attemptGeneration
+            || !ReferenceEquals(_retainedAttempt, attempt)
+            || attempt is not null && !Attempts.IsAttached(attempt, this)
+            || !delivery && !TenantCommandAttemptTracker.HasSameEvidence(_snapshot, expected) && !ReferenceEquals(_snapshot, result))
+        {
+            return false;
+        }
+
+        _snapshot = result;
+        if (result.LiveRegionPoliteness is TenantCommandLiveRegionPoliteness.Assertive)
+        {
+            _focusLifecyclePending = true;
+        }
+
+        return true;
+    }
+
+    private async Task SubmitAsync()
+    {
+        SynchronizeRetainedAttempt();
+        if (_disposed || _isSubmitting || _authorityResolutionInProgress)
+        {
+            return;
+        }
+
+        TenantCreateCommandSnapshot initialEvidence = _snapshot;
+        TenantRetainedCommandAttempt? initialAttempt = _retainedAttempt;
+        int initialAttemptGeneration = _attemptGeneration;
+        long admissionGeneration = _admissionGeneration;
+        if (!await ReauthorizeInitialAdmissionAsync(admissionGeneration).ConfigureAwait(false))
+        {
+            if (!_disposed && admissionGeneration == Volatile.Read(ref _admissionGeneration)
+                && initialAttemptGeneration == _attemptGeneration && ReferenceEquals(initialAttempt, _retainedAttempt)
+                && TenantCommandAttemptTracker.HasSameEvidence(initialEvidence, _snapshot))
+            {
+                RefuseAuthorityAdmission();
+            }
+            return;
+        }
+        if (_disposed || initialAttemptGeneration != _attemptGeneration
+            || !ReferenceEquals(initialAttempt, _retainedAttempt)
+            || !TenantCommandAttemptTracker.HasSameEvidence(initialEvidence, _snapshot))
+        {
+            return;
+        }
+
+        _validationMessage = null;
+        if (!string.IsNullOrWhiteSpace(UnavailableReason))
+        {
+            if (_retainedAttempt is null)
+            {
+                SetSnapshot(TenantCreateCommandSnapshot.Blocked(UnavailableReason, TenantCommandFocusTarget.Submit));
+            }
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_tenantId))
+        {
+            _validationMessage = Localizer["Tenants.Create.Validation.TenantIdRequired"];
+            _focusTenantIdPending = true;
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(_name))
+        {
+            _validationMessage = Localizer["Tenants.Create.Validation.NameRequired"];
+            _focusNamePending = true;
+            return;
+        }
+
+        var request = new CreateTenant(_tenantId, _name, _description);
+        if (_retainedAttempt is not null && !_snapshot.IsTerminal)
+        {
+            if (_snapshot.Intent != request)
+            {
+                SetSnapshot(_snapshot.BlockedWithTracking(Localizer["Tenants.Create.Unavailable.Tracking"].Value));
+                return;
+            }
+            if (_snapshot.CorrelationId is not null)
+            {
+                await RefreshStatusAsync().ConfigureAwait(false);
+                return;
+            }
+            if (!CanRetryDelivery)
+            {
+                return;
+            }
+            await DispatchAttemptAsync().ConfigureAwait(false);
+            return;
+        }
+
+        if (Attempts.TryAdopt<TenantCreateCommandSnapshot>(request.TenantId, this, out TenantRetainedCommandAttempt? adopted,
+            out TenantCreateCommandSnapshot? retained) && retained is not null && !retained.IsTerminal)
+        {
+            _retainedAttempt = adopted;
+            _attemptGeneration++;
+            _snapshot = retained;
+            if (retained.Intent != request)
+            {
+                SetSnapshot(retained.BlockedWithTracking(Localizer["Tenants.Create.Unavailable.Tracking"].Value));
+            }
+            else if (retained.CorrelationId is not null)
+            {
+                await RefreshStatusAsync().ConfigureAwait(false);
+            }
+            else if (CanRetryDelivery)
+            {
+                await DispatchAttemptAsync().ConfigureAwait(false);
+            }
+            return;
+        }
+
+        // An old handle without its intent and baseline cannot prove a create. Keep it fail closed.
+        if (AttemptTracker?.Find(request.TenantId) is not null || Attempts.HasPendingOwnership(request.TenantId))
+        {
+            SetSnapshot(TenantCreateCommandSnapshot.Blocked(Localizer["Tenants.Create.Unavailable.Tracking"].Value,
+                TenantCommandFocusTarget.Refresh));
+            return;
+        }
+
+        Attempts.Detach(_retainedAttempt, this);
+        _retainedAttempt = null;
+        _returnStateConsumed = false;
+        _snapshot = TenantCreateCommandSnapshot.Idle().RequestSent(request, BaselineProjectionVersion, BaselineTenantAbsent);
+        if (!Attempts.TryBegin(request.TenantId, this, _snapshot, out _retainedAttempt))
+        {
+            SetSnapshot(TenantCreateCommandSnapshot.Blocked(Localizer["Tenants.Commands.Unavailable.AggregateInFlight"].Value,
+                TenantCommandFocusTarget.Submit));
+            return;
+        }
+
+        int generation = ++_attemptGeneration;
+        _isSubmitting = true;
+        try
+        {
+            CreateAttemptBaseline? baseline = await CaptureBaselineAsync(request.TenantId).ConfigureAwait(false);
+            if (_disposed || generation != _attemptGeneration)
+            {
+                return;
+            }
+            if (admissionGeneration != _admissionGeneration || !IsAuthorized || !IsFresh || !IsCommandSurfaceAvailable || CommandGateway is null || AttemptTracker is null)
+            {
+                Attempts.Detach(_retainedAttempt, this);
+                _retainedAttempt = null;
+                SetSnapshot(TenantCreateCommandSnapshot.Blocked(
+                    !IsAuthorized ? AuthorizationUnavailableReason
+                        : !IsFresh ? Localizer["Tenants.Create.Availability.Stale"].Value
+                        : Localizer["Tenants.Create.Unavailable.CommandSurface"].Value,
+                    TenantCommandFocusTarget.Submit));
+                return;
+            }
+            if (baseline is null)
+            {
+                Attempts.Detach(_retainedAttempt, this);
+                _retainedAttempt = null;
+                SetSnapshot(TenantCreateCommandSnapshot.Blocked(Localizer["Tenants.Create.Unavailable.Freshness"].Value,
+                    TenantCommandFocusTarget.Refresh));
+                return;
+            }
+
+            SetSnapshot(_snapshot with
+            {
+                BaselineTenantAbsent = baseline.Value.TenantAbsent,
+                BaselineDetailProjectionVersion = baseline.Value.DetailProjectionVersion,
+                MessageId = Services.GetService<Hexalith.FrontComposer.Contracts.Lifecycle.IUlidFactory>()?.NewUlid()
+                    ?? NUlid.Ulid.NewUlid().ToString(),
+            });
+        }
+        finally
+        {
+            if (generation == _attemptGeneration)
+            {
+                _isSubmitting = false;
+            }
+        }
+        await DispatchAttemptAsync().ConfigureAwait(false);
+    }
+
+    private async Task DispatchAttemptAsync()
+    {
+        if (_disposed || _authorityResolutionInProgress)
+        {
+            return;
+        }
+        TenantRetainedCommandAttempt? attempt = _retainedAttempt;
+        TenantCreateCommandSnapshot expected = _snapshot;
+        int generation = _attemptGeneration;
+        long admissionGeneration = _admissionGeneration;
+        if (!await ReauthorizeInitialAdmissionAsync(admissionGeneration).ConfigureAwait(false))
+        {
+            if (!_disposed && generation == _attemptGeneration && ReferenceEquals(attempt, _retainedAttempt)
+                && TenantCommandAttemptTracker.HasSameEvidence(expected, _snapshot))
+            {
+                if (attempt is not null && !attempt.Lease.IsDispatchMarked)
+                {
+                    Attempts.Detach(attempt, this);
+                    _retainedAttempt = null;
+                    SetSnapshot(TenantCreateCommandSnapshot.Blocked(
+                        UnavailableReason ?? AuthorizationUnavailableReason, TenantCommandFocusTarget.Submit));
+                }
+                else if (admissionGeneration == Volatile.Read(ref _admissionGeneration))
+                {
+                    RefuseAuthorityAdmission();
+                }
+            }
+            return;
+        }
+        ITenantCommandGateway? gateway = CommandGateway;
+        if (_disposed || generation != _attemptGeneration || !ReferenceEquals(attempt, _retainedAttempt)
+            || !TenantCommandAttemptTracker.HasSameEvidence(expected, _snapshot)
+            || attempt is null || expected.Intent is null || gateway is null
+            || !Attempts.IsAttached(attempt, this) || !Attempts.TryStartDelivery(attempt, this))
+        {
+            return;
+        }
+
+        _isSubmitting = true;
+        try
+        {
+            TenantCommandSubmissionResult result;
+            try
+            {
+                result = await gateway.CreateTenantAsync(expected.Intent, expected.MessageId, CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                result = TenantCommandSubmissionResult.Failed(Localizer["Tenants.Create.Unavailable.CommandSurface"].Value)
+                    with { MessageId = expected.MessageId, IsAmbiguousFailure = true };
+            }
+            TenantCreateCommandSnapshot completion = result.State is TenantCommandLifecycleState.Accepted
+                ? expected.Accepted(result)
+                : expected with
+                {
+                    State = result.IsAmbiguousFailure ? TenantCommandLifecycleState.RequestSent : result.State,
+                    MessageId = result.MessageId ?? expected.MessageId,
+                    CorrelationId = result.CorrelationId ?? expected.CorrelationId,
+                    SafeMessage = result.SafeMessage,
+                    SafeMessageKey = result.SafeMessageKey,
+                    RejectionCode = result.RejectionCode,
+                    AuditState = TenantCommandAuditStates.FromSubmission(result),
+                    FocusTarget = result.CorrelationId is not null ? TenantCommandFocusTarget.Refresh : TenantCommandFocusTarget.Submit,
+                    LiveRegionPoliteness = TenantCommandLiveRegionPoliteness.Assertive,
+                };
+            if (PublishResult(attempt, generation, expected, completion, delivery: true)
+                && completion.CorrelationId is not null && !completion.IsTerminal)
+            {
+                await RefreshStatusAsync().ConfigureAwait(false);
+            }
+        }
+        finally
+        {
+            if (generation == _attemptGeneration)
+            {
+                _isSubmitting = false;
+            }
+        }
+    }
+
+    private async Task RefreshStatusAsync()
+    {
+        SynchronizeRetainedAttempt();
+        TenantCreateCommandSnapshot expected = _snapshot;
+        TenantRetainedCommandAttempt? attempt = _retainedAttempt;
+        int generation = _attemptGeneration;
+        if (_disposed || expected.IsTerminal || expected.MessageId is null || expected.CorrelationId is null)
+        {
+            return;
+        }
+
+        ITenantCommandGateway? gateway = CommandGateway;
+        TenantCommandStatusResult status = gateway is null
+            ? TenantCommandStatusResult.Unknown(Localizer["Tenants.Create.Unavailable.CommandSurface"].Value)
+            : await gateway.GetStatusAsync(new TenantCommandTrackingHandle(expected.MessageId, expected.CorrelationId, expected.Intent?.TenantId)
+                { ExpectedDomain = TenantIdentity.Domain }, CancellationToken.None).ConfigureAwait(false);
+        if (!PublishResult(attempt, generation, expected, expected.ApplyStatus(status)))
+        {
+            return;
+        }
+
+        expected = _snapshot;
+        await InvokeAsync(() => OnProjectionRefreshRequested.InvokeAsync()).ConfigureAwait(false);
+        if (_disposed || generation != _attemptGeneration || !TenantCommandAttemptTracker.HasSameEvidence(_snapshot, expected)
+            || expected.Intent is null || expected.State is not TenantCommandLifecycleState.ProjectionPending)
+        {
+            return;
+        }
+
+        try
+        {
+            TenantListSnapshot? list = ProjectionEvidenceProvider is null ? null
+                : await ProjectionEvidenceProvider(expected.Intent.TenantId).ConfigureAwait(false);
+            if (_disposed || generation != _attemptGeneration || !TenantCommandAttemptTracker.HasSameEvidence(_snapshot, expected))
+            {
+                return;
+            }
+            TenantDetailSnapshot? detail = Services.GetService<ITenantQueryGateway>() is ITenantQueryGateway query
+                ? await query.GetTenantAsync(new(expected.Intent.TenantId), previous: null, CancellationToken.None).ConfigureAwait(false)
+                : null;
+            _ = PublishResult(attempt, generation, expected, expected.ConfirmProjection(list, detail));
+        }
+        catch (Exception)
+        {
+            _ = PublishResult(attempt, generation, expected, expected with
+            {
+                State = TenantCommandLifecycleState.UnableToVerify,
+                SafeMessage = null,
+                SafeMessageKey = "Tenants.Create.Confirm.UnableToVerify.MissingProvenance",
+                FocusTarget = TenantCommandFocusTarget.Refresh,
+                LiveRegionPoliteness = TenantCommandLiveRegionPoliteness.Assertive,
+            });
+        }
+    }
+
+    private void ContinueReadOnly()
+    {
+        if (!CanContinueReadOnly || _disposed)
+        {
+            return;
+        }
+        Attempts.Detach(_retainedAttempt, this);
+        _retainedAttempt = null;
+        _attemptGeneration++;
+        _snapshot = TenantCreateCommandSnapshot.Idle();
+        _focusLifecyclePending = true;
+    }
+
+    public void Dispose()
+    {
+        _disposed = true;
+        InvalidateAdmission();
+        TenantCommandAttemptTracker? attempts = AttemptTracker?.Attempts;
+        if (attempts is not null)
+        {
+            attempts.StateChanged -= OnRetainedAttemptChanged;
+        }
+        _attemptGeneration++;
+        AttemptTracker?.Attempts.Detach(_retainedAttempt, this);
+    }
+
+    // Returns null when baseline absence can be neither proved nor disproved, so the caller fails closed
+    // before dispatch. Recording an indeterminate read as "tenant was present" would dispatch a write that
+    // could then never be confirmed.
+    private async Task<CreateAttemptBaseline?> CaptureBaselineAsync(string tenantId)
+    {
+        if (BaselineTenantAbsent)
+        {
+            return new CreateAttemptBaseline(true, null);
+        }
+
+        if (Services.GetService<ITenantQueryGateway>() is not ITenantQueryGateway queryGateway)
+        {
+            return null;
+        }
+
+        try
+        {
+            TenantDetailSnapshot detail = await queryGateway
+                .GetTenantAsync(
+                    new TenantDetailRequest(tenantId),
+                    previous: null,
+                    cancellationToken: CancellationToken.None)
+                .ConfigureAwait(false);
+            return detail.Kind switch
+            {
+                TenantDetailSurfaceKind.NotFound => new CreateAttemptBaseline(true, detail.ProjectionVersion),
+                // Present at baseline: dispatching is still correct because the backend answers with the
+                // safe TenantAlreadyExists rejection, but confirmation can never claim this create.
+                TenantDetailSurfaceKind.Ready => new CreateAttemptBaseline(false, detail.ProjectionVersion),
+                // Loading, Stale, Degraded, Unknown, Unavailable, and Unauthorized prove nothing either
+                // way, so they must block before dispatch rather than be recorded as "present".
+                _ => null,
+            };
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
+    private readonly record struct CreateAttemptBaseline(bool TenantAbsent, string? DetailProjectionVersion);
+}

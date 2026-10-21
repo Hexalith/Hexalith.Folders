@@ -1,0 +1,138 @@
+[
+  {
+    "command": [
+      "aspire",
+      "wait",
+      "folders",
+      "--apphost",
+      "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+      "--non-interactive"
+    ],
+    "exit_code": 0,
+    "seconds": 2.1561553478240967
+  },
+  {
+    "command": [
+      "aspire",
+      "describe",
+      "--apphost",
+      "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+      "--format",
+      "Json"
+    ],
+    "exit_code": 0,
+    "seconds": 0.4006650447845459,
+    "resources": [
+      {
+        "name": "eventstore-dapr-cli-mrevuemm",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "eventstore-phfkjbau",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "eventstore-workload-client-secret",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "folders-app-api-token",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "folders-dapr-cli-qeevxthv",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "folders-human-authority-receipt-key",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "folders-idempotency-digest-key",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "folders-jgtayxsr",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "folders-ui-dapr-cli-hewdhwdn",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "folders-ui-wjeepxgt",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "folders-workers-app-api-token",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "folders-workers-dapr-cli-khbqpasp",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "folders-workers-jbuhymak",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "memories-dapr-cli-hjambcsm",
+        "state": "Finished",
+        "health": null
+      },
+      {
+        "name": "memories-fnvjhcup",
+        "state": "Finished",
+        "health": null
+      },
+      {
+        "name": "memories-graphs-kcdddptz",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "memories-vectors-hjsmnfpr",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "security-eventstore-client-password",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "security-eventstore-client-username",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "security-hekfwkqe",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "tenants-crnjebvw",
+        "state": "Running",
+        "health": null
+      },
+      {
+        "name": "tenants-dapr-cli-dwpwbafz",
+        "state": "Running",
+        "health": null
+      }
+    ]
+  }
+]

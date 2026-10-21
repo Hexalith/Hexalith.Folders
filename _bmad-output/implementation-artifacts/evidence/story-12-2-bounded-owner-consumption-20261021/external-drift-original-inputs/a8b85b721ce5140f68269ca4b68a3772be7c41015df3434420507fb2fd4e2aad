@@ -1,0 +1,28 @@
+// <copyright file="AccessTelemetryWriteBatchRequest.cs" company="ITANEO">
+// Copyright (c) ITANEO (https://www.itaneo.com). All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace Hexalith.Memories.AccessTelemetry.Contracts;
+
+/// <summary>Dapr invocation request containing one bounded record batch.</summary>
+public sealed record AccessTelemetryWriteBatchRequest
+{
+    /// <summary>Gets the configuration epoch.</summary>
+    public required string ConfigurationEpoch { get; init; }
+
+    /// <summary>Gets the component-profile hash.</summary>
+    public required string ComponentProfileHash { get; init; }
+
+    /// <summary>Gets signed trusted-clock evidence.</summary>
+    public required SignedClockAttestation ClockAttestation { get; init; }
+
+    /// <summary>Gets the authenticated writer process epoch expected in the attestation.</summary>
+    public required string RequestingProcessEpoch { get; init; }
+
+    /// <summary>Gets the authenticated writer service-instance identity expected in the attestation.</summary>
+    public required string RequestingServiceInstanceId { get; init; }
+
+    /// <summary>Gets at most 256 canonical records.</summary>
+    public required IReadOnlyList<AccessTelemetryRecord> Records { get; init; }
+}

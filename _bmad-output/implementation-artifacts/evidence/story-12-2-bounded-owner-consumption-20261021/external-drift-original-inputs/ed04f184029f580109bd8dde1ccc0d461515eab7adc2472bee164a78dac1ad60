@@ -1,0 +1,35 @@
+using Hexalith.McpCli.Core.Catalog;
+using Shouldly;
+
+namespace Hexalith.McpCli.Core.Tests;
+
+/// <summary>Protects exact approved lint without allowing new findings or broad code suppression.</summary>
+public sealed class DescriptionLintGateTests
+{
+    private const string Accepted = """[{"operation":"tenants.list-tenants","code":"payload_paging_member","property":"/properties/PageSize","approvalReference":"test-only recorded approval"}]""";
+
+    /// <summary>Only the recorded operation/property exception passes.</summary>
+    [Fact]
+    public void ExactApprovalPassesButOtherOperationsPropertiesAndCodesFail()
+    {
+        DescriptionLintGate.Check([("tenants.list-tenants", new LintFinding("payload_paging_member", "warning", "message", "/properties/PageSize"))], Accepted).ShouldBeEmpty();
+        foreach (var finding in new[] {
+            ("tenants.other", new LintFinding("payload_paging_member", "warning", "message", "/properties/PageSize")),
+            ("tenants.list-tenants", new LintFinding("payload_paging_member", "warning", "message", "/properties/Cursor")),
+            ("tenants.list-tenants", new LintFinding("missing_description", "warning", "message", "/properties/PageSize")) })
+        {
+            DescriptionLintGate.Check([finding], Accepted).Count.ShouldBe(2);
+        }
+    }
+
+    /// <summary>Unrecorded findings, stale exceptions and absent approval references fail.</summary>
+    [Fact]
+    public void MissingApprovalAndStaleExceptionsFail()
+    {
+        DescriptionLintGate.Check([], Accepted).ShouldHaveSingleItem().ShouldStartWith("stale accepted lint");
+        DescriptionLintGate.Check([("parties.list-parties", new LintFinding("payload_paging_member", "warning", "message", "/properties/PageSize"))], null)
+            .ShouldHaveSingleItem().ShouldStartWith("unapproved lint");
+        DescriptionLintGate.Check([], Accepted.Replace("test-only recorded approval", "")).ShouldHaveSingleItem()
+            .ShouldContain("nonempty approvalReference");
+    }
+}

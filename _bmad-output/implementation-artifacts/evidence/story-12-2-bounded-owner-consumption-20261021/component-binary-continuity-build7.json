@@ -1,0 +1,22 @@
+[
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "binary_and_pdb_files": 36,
+    "changes": []
+  },
+  {
+    "project": "Hexalith.Folders.Workers.Tests",
+    "binary_and_pdb_files": 38,
+    "changes": []
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "binary_and_pdb_files": 44,
+    "changes": []
+  },
+  {
+    "project": "Hexalith.Folders.Contracts.Tests",
+    "binary_and_pdb_files": 6,
+    "changes": []
+  }
+]

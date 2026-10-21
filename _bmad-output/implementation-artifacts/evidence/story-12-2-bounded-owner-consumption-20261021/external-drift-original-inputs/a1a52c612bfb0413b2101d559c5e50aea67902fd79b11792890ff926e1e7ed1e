@@ -1,0 +1,19 @@
+# Declaration snapshots and provenance are SHA-256 bound; preserve owner blob bytes.
+src/Hexalith.Platform.Composition/Declarations/*.json -text
+eng/timesheets-deployment/history/*.json -text
+
+# Preserve exact qualification evidence bytes across checkouts.
+docs/implementation/story-1-17-admission-preparation-2026-10-16.json -text
+
+# Preserve the additive Story 1.17 local readiness receipt and command bytes.
+docs/implementation/story-1-17-readiness-qualification-2026-10-17.json -text
+docs/implementation/story-1-17-readiness-qualification-2026-10-17/** -text
+
+# Preserve the exact public ordinary-Raft negative-control evidence bytes.
+docs/implementation/ext-secrets-1-option-a-feasibility-2026-10-18/** -text
+
+# Preserve pinned F1 protocol/research/counterexample bytes across checkouts.
+docs/implementation/ext-secrets-1-f1-2026-10-20/** -text
+
+# Retain the exact pinned owner validator bytes used only by F1 conformance tests.
+tests/Hexalith.Platform.Secrets.Runtime.Tests/OwnerConformance/** -text

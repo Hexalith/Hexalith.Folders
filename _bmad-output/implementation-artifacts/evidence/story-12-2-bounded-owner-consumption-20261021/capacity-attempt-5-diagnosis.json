@@ -1,0 +1,34 @@
+{
+  "test": {
+    "id": "237a99de-63bf-4193-875e-557951c123b8",
+    "name": "Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests.OriginalOwnersRebuildGrowAndRetainIdentityThroughAuthenticatedTransport(count: 10001)",
+    "result": "Fail",
+    "time": "1289.896",
+    "time-rtf": "00:21:29.8960000",
+    "start-rtf": "2026-10-21T18:14:37.6292697+00:00",
+    "finish-rtf": "2026-10-21T18:36:07.4815740+00:00",
+    "type": "Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests",
+    "method": "OriginalOwnersRebuildGrowAndRetainIdentityThroughAuthenticatedTransport",
+    "source-file": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+    "source-line": "24"
+  },
+  "failure_message": "System.InvalidOperationException : SDK shared AccumulatePart did not complete: delivery_identity_conflict",
+  "failure_stack": "   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.<>c__DisplayClass62_1.<<NamedProjectAsync>g__StepAsync|0>d.MoveNext() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 292\n--- End of stack trace from previous location ---\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.NamedProjectAsync(String aggregateId, ProjectionEventDto[] events, String dispatchId, Boolean stopAfterStage, IReadOnlyList`1 additionalOwners, Nullable`1 retryBudget, Action`1 observe) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 305\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.NamedProjectAsync(String aggregateId, ProjectionEventDto[] events, String dispatchId, Boolean stopAfterStage, IReadOnlyList`1 additionalOwners, Nullable`1 retryBudget, Action`1 observe) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 323\n   at Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests.OriginalOwnersRebuildGrowAndRetainIdentityThroughAuthenticatedTransport(Int32 count) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs:line 66\n--- End of stack trace from previous location ---",
+  "phase_evidence": [
+    "CAPACITY input=synthetic-original-owner count=10001 owner=capacity-10001-01m5ftr7aa49mvd669geq19hv2 sourceSha256=931FDBF61F43C5A8FA88E5A5F230A4D12E65FA34BE242C9E5F9FB4CCF54B4305 otherSha256=736BC5EEF117E99B2F84EDDB0C23A10DA76ADEA563D9C852A562541E0CEF0797",
+    "CAPACITY phase=Begin ownerOrdinal= part= events=0 elapsedMs=54.938 status=Completed",
+    "CAPACITY phase=AccumulateComplete ownerOrdinal=0 part= events=0 elapsedMs=268718.007 status=Completed",
+    "CAPACITY phase=AccumulateComplete ownerOrdinal=1 part= events=0 elapsedMs=406.164 status=Completed",
+    "CAPACITY phase=Finalize ownerOrdinal= part= events=0 elapsedMs=1140.621 status=Completed",
+    "CAPACITY phase=Stage ownerOrdinal= part= events=0 elapsedMs=499334.105 status=Completed",
+    "CAPACITY process-replacement count=10001 resource=folders before=65345 after=28706",
+    "CAPACITY process-replacement count=10001 resource=folders-workers before=65333 after=29074",
+    "CAPACITY process-replacement count=10001 resource=folders-workers-replica before=55040 after=30641",
+    "CAPACITY process-replacement count=10001 resource=eventstore before=65205 after=32037",
+    "CAPACITY phase=Begin ownerOrdinal= part= events=0 elapsedMs=132.393 status=AlreadyCompleted",
+    "CAPACITY phase=AccumulatePart ownerOrdinal=0 part=0 events=256 elapsedMs=15.618 status=Failed",
+    "CAPACITY phase=Abort ownerOrdinal= part= events=0 elapsedMs=496642.181 status=Completed"
+  ],
+  "diagnosis": "Harness replayed AccumulatePart after Begin returned the durable Prepared phase. SDK correctly requires Accumulating and failed closed with DeliveryIdentityConflict. All four hosts were replaced and authenticated Abort subsequently Completed.",
+  "qualification": "Not a passing capacity case. Runtime and cleanup progress retained as diagnostic only."
+}

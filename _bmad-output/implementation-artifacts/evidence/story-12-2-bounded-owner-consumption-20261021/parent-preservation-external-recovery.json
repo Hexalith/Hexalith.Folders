@@ -1,0 +1,1708 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/parent-tools/audit-preservation.py",
+    "external-recovery"
+  ],
+  "observed_at_utc": "2026-10-21T18:57:28.195148+00:00",
+  "count": 112,
+  "compiled_paths": 5,
+  "pdb_document_copies": 20,
+  "snapshots": [
+    {
+      "path": "references/Hexalith.Builds/.gitattributes",
+      "command": [
+        "git",
+        "show",
+        "17d0c6ffec5fb3c8d8058e67cb85644460cb5256:.gitattributes"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/fb1b822f654b39a9f214918125682fbbbbbd49247d22a9f9498383fd5d706e2f",
+      "sha256": "fb1b822f654b39a9f214918125682fbbbbbd49247d22a9f9498383fd5d706e2f",
+      "currentSha256": "33280333a28d74c49660f25f7425094079e2bf2f2b323be3563075c70cf6df2c",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Builds/Props/Directory.Packages.props",
+      "command": [
+        "git",
+        "show",
+        "17d0c6ffec5fb3c8d8058e67cb85644460cb5256:Props/Directory.Packages.props"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/806922385b3209e0f396ccb8478870bfca59a60ac9432fd6c97c63a22b34f337",
+      "sha256": "806922385b3209e0f396ccb8478870bfca59a60ac9432fd6c97c63a22b34f337",
+      "currentSha256": "d6d1a24c53dd309588abadc6e2a8cb8d9e8a206861f0907cb5794d1afc497531",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Manifest/PlatformAdoptionSourceAudit.cs",
+      "command": [
+        "git",
+        "show",
+        "17d0c6ffec5fb3c8d8058e67cb85644460cb5256:src/libraries/Hexalith.Builds.Tooling/Manifest/PlatformAdoptionSourceAudit.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/48e3c5646df9bb8ecab2a314d8d151efefbb0b902adab2bcee050a7e7d4b1a6c",
+      "sha256": "48e3c5646df9bb8ecab2a314d8d151efefbb0b902adab2bcee050a7e7d4b1a6c",
+      "currentSha256": "9327041cad915b275300d4127a0c8aec2a13baeb999a2978dad7618d854e876e",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Manifest/PlatformAdoptionValidator.cs",
+      "command": [
+        "git",
+        "show",
+        "17d0c6ffec5fb3c8d8058e67cb85644460cb5256:src/libraries/Hexalith.Builds.Tooling/Manifest/PlatformAdoptionValidator.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/cedbdda20cfaa088ba6f009932d72e3cfbea64cc1abdc165b8ac898c5cb6a420",
+      "sha256": "cedbdda20cfaa088ba6f009932d72e3cfbea64cc1abdc165b8ac898c5cb6a420",
+      "currentSha256": "2a59c43cd5eec8015bd1c0a22a4595a1d5fd4147a30b7cb25f5f7dbfde4e5e9f",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Manifest/PlatformHostingInventory.cs",
+      "command": [
+        "git",
+        "show",
+        "17d0c6ffec5fb3c8d8058e67cb85644460cb5256:src/libraries/Hexalith.Builds.Tooling/Manifest/PlatformHostingInventory.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/89db91f4c212cc48c44b5ef4122dc60280cc2edb2e8150534a45cb3625aeb655",
+      "sha256": "89db91f4c212cc48c44b5ef4122dc60280cc2edb2e8150534a45cb3625aeb655",
+      "currentSha256": "7f82e3188ca663f49ec913f401966e27e80339178c1ffdd37227ac4865da2618",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/PlatformAdoptionValidationTests.cs",
+      "command": [
+        "git",
+        "show",
+        "17d0c6ffec5fb3c8d8058e67cb85644460cb5256:test/Hexalith.Builds.Module.Tests/PlatformAdoptionValidationTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/d54f0b46fccd702c8df7110b39006f7419f2d7764c50be6fde535f51218a710a",
+      "sha256": "d54f0b46fccd702c8df7110b39006f7419f2d7764c50be6fde535f51218a710a",
+      "currentSha256": "ab496d4aa0cc94f969c2d02261a82bb7bde2a20a1ca0ec7c45b0ff9e3e177645",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/PlatformManifestCommandTests.cs",
+      "command": [
+        "git",
+        "show",
+        "17d0c6ffec5fb3c8d8058e67cb85644460cb5256:test/Hexalith.Builds.Module.Tests/PlatformManifestCommandTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/3646e0b91938d01d06d7bb1acd3be2d09945e045a9a05ff3158d6272fe5c7691",
+      "sha256": "3646e0b91938d01d06d7bb1acd3be2d09945e045a9a05ff3158d6272fe5c7691",
+      "currentSha256": "b33a75bd7897a2ed8979914522d282b56d935ba4cd55778b590010de34287533",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/eng/tests/test_validate_story_artifacts.py",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:eng/tests/test_validate_story_artifacts.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/2568b0cbf4b9c5efc60907250c9ba3ded11e702ef25ecaa03d035f99e5e8a9bb",
+      "sha256": "2568b0cbf4b9c5efc60907250c9ba3ded11e702ef25ecaa03d035f99e5e8a9bb",
+      "currentSha256": "11222a4e0647567a8c05201ba9cf81c6212d95896a05e085a057d9a5ecc7232e",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/eng/validate-docs.ps1",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:eng/validate-docs.ps1"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/9a254bc715d5a0444468f7c672eedd0415c3a099f790024990131e23ff6c1bbb",
+      "sha256": "9a254bc715d5a0444468f7c672eedd0415c3a099f790024990131e23ff6c1bbb",
+      "currentSha256": "a21c52d2d5ee37abe65e0eab05f7f3b5a217868ffe7c5be48c79071781cb63a4",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/eng/validate-story-artifacts.py",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:eng/validate-story-artifacts.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/9ea63e6950ed3183c0eaa15ce70c963459a3b5a67e9bbd3535716f96416bd386",
+      "sha256": "9ea63e6950ed3183c0eaa15ce70c963459a3b5a67e9bbd3535716f96416bd386",
+      "currentSha256": "17a8b5988247687f4f7e3e016bd7b42d4a8e6aa17e8d1bc1159f989c9fb548a8",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Components/Diagnostics/FcCustomizationDiagnosticPanel.razor",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:src/Hexalith.FrontComposer.Shell/Components/Diagnostics/FcCustomizationDiagnosticPanel.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/5fb46c63939af32115fe4b09901265accbab3afbea68b7ac127bf470f03531f2",
+      "sha256": "5fb46c63939af32115fe4b09901265accbab3afbea68b7ac127bf470f03531f2",
+      "currentSha256": "bbd8d11655855d5471c68677405791427b2ee1e93c5ac6a3152022dc42418d6a",
+      "pdbBindings": [
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "5FB46C63939AF32115FE4B09901265ACCBAB3AFBEA68B7AC127BF470F03531F2",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "5FB46C63939AF32115FE4B09901265ACCBAB3AFBEA68B7AC127BF470F03531F2",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "5FB46C63939AF32115FE4B09901265ACCBAB3AFBEA68B7AC127BF470F03531F2",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "5FB46C63939AF32115FE4B09901265ACCBAB3AFBEA68B7AC127BF470F03531F2",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        }
+      ]
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Components/Rendering/FcFieldSlotHost.cs",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:src/Hexalith.FrontComposer.Shell/Components/Rendering/FcFieldSlotHost.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/f2bb023145e4f6624292a131a71095d3d33f0aca776f3826f4621fa63da237f4",
+      "sha256": "f2bb023145e4f6624292a131a71095d3d33f0aca776f3826f4621fa63da237f4",
+      "currentSha256": "45c33327278c29fa8dd6618d566dcd98c39c448d494ecf6c097dbd8fa5796549",
+      "pdbBindings": [
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "F2BB023145E4F6624292A131A71095D3D33F0ACA776F3826F4621FA63DA237F4",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "F2BB023145E4F6624292A131A71095D3D33F0ACA776F3826F4621FA63DA237F4",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "F2BB023145E4F6624292A131A71095D3D33F0ACA776F3826F4621FA63DA237F4",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "F2BB023145E4F6624292A131A71095D3D33F0ACA776F3826F4621FA63DA237F4",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        }
+      ]
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Components/Rendering/FcProjectionTemplateHost.cs",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:src/Hexalith.FrontComposer.Shell/Components/Rendering/FcProjectionTemplateHost.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/c4bb59ee83fbf0e5e50d9b8c9f15bb266f75b078b296fc466d807c518a2bd47c",
+      "sha256": "c4bb59ee83fbf0e5e50d9b8c9f15bb266f75b078b296fc466d807c518a2bd47c",
+      "currentSha256": "c98d9493a3258769c67eee83d4756ada8e3a8b7e291ad342d633e0a466ea6337",
+      "pdbBindings": [
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "C4BB59EE83FBF0E5E50D9B8C9F15BB266F75B078B296FC466D807C518A2BD47C",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "C4BB59EE83FBF0E5E50D9B8C9F15BB266F75B078B296FC466D807C518A2BD47C",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "C4BB59EE83FBF0E5E50D9B8C9F15BB266F75B078B296FC466D807C518A2BD47C",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "C4BB59EE83FBF0E5E50D9B8C9F15BB266F75B078B296FC466D807C518A2BD47C",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        }
+      ]
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Components/Rendering/FcProjectionViewOverrideHost.cs",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:src/Hexalith.FrontComposer.Shell/Components/Rendering/FcProjectionViewOverrideHost.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/2e77ef88ca91ed86d142cfc98242ac339dd6b4117dabe9204197b1fc31a8fd63",
+      "sha256": "2e77ef88ca91ed86d142cfc98242ac339dd6b4117dabe9204197b1fc31a8fd63",
+      "currentSha256": "9605d7d197e550fc04aaaf79c409358d6a61e759abe17fb680dd9b2a0b864557",
+      "pdbBindings": [
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "2E77EF88CA91ED86D142CFC98242AC339DD6B4117DABE9204197B1FC31A8FD63",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "2E77EF88CA91ED86D142CFC98242AC339DD6B4117DABE9204197B1FC31A8FD63",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "2E77EF88CA91ED86D142CFC98242AC339DD6B4117DABE9204197B1FC31A8FD63",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "2E77EF88CA91ED86D142CFC98242AC339DD6B4117DABE9204197B1FC31A8FD63",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        }
+      ]
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Services/Diagnostics/CustomizationDiagnosticPublisher.cs",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:src/Hexalith.FrontComposer.Shell/Services/Diagnostics/CustomizationDiagnosticPublisher.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/a7961570a20e9f2dc24c99de56be21509de770f4d8b6d0820fe3ca3dc4860d51",
+      "sha256": "a7961570a20e9f2dc24c99de56be21509de770f4d8b6d0820fe3ca3dc4860d51",
+      "currentSha256": "96970c63982b15df5042164a4e283368695330b78c5a77940a7ec66cac111ae9",
+      "pdbBindings": [
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "A7961570A20E9F2DC24C99DE56BE21509DE770F4D8B6D0820FE3CA3DC4860D51",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "A7961570A20E9F2DC24C99DE56BE21509DE770F4D8B6D0820FE3CA3DC4860D51",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "A7961570A20E9F2DC24C99DE56BE21509DE770F4D8B6D0820FE3CA3DC4860D51",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        },
+        {
+          "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+          "expected": "A7961570A20E9F2DC24C99DE56BE21509DE770F4D8B6D0820FE3CA3DC4860D51",
+          "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+          "matchesSnapshot": true
+        }
+      ]
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/tests/Hexalith.FrontComposer.Shell.Tests/Components/Layout/FrontComposerShellTests.cs",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:tests/Hexalith.FrontComposer.Shell.Tests/Components/Layout/FrontComposerShellTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/61f231c3cf4e5c4f2249a780cb612d4b9356fa9f3153c21466a3023c76678e42",
+      "sha256": "61f231c3cf4e5c4f2249a780cb612d4b9356fa9f3153c21466a3023c76678e42",
+      "currentSha256": "11c4bacc1f89414fea7cbc6f44470f892f4c5d956cdcf54fc7fd74fe49c2885f",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/tests/Hexalith.FrontComposer.Shell.Tests/Components/Rendering/FcFieldSlotHostTests.cs",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:tests/Hexalith.FrontComposer.Shell.Tests/Components/Rendering/FcFieldSlotHostTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/ba5c2f4bddc086b52b8a1348c337d289f7384d8aab48db2f7e2be01fabdbc6e5",
+      "sha256": "ba5c2f4bddc086b52b8a1348c337d289f7384d8aab48db2f7e2be01fabdbc6e5",
+      "currentSha256": "6c66804a147d022756bd9fb4d63f3d75382f934952555700bd813afe0d62eb93",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/tests/Hexalith.FrontComposer.Shell.Tests/Components/Rendering/FcProjectionTemplateHostTests.cs",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:tests/Hexalith.FrontComposer.Shell.Tests/Components/Rendering/FcProjectionTemplateHostTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/e78eb083305ad87d1ccb5fbf2ab5d4f7998036276ecbb85788c7cca5bab2e3b7",
+      "sha256": "e78eb083305ad87d1ccb5fbf2ab5d4f7998036276ecbb85788c7cca5bab2e3b7",
+      "currentSha256": "196b92df43e24e4520a7b3b6160483bb622a340e3dad7e2c7d0836de2492b23f",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/tests/Hexalith.FrontComposer.Shell.Tests/Components/Rendering/FcProjectionViewOverrideHostTests.cs",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:tests/Hexalith.FrontComposer.Shell.Tests/Components/Rendering/FcProjectionViewOverrideHostTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/7009bae3838ba96af378188e77cc59d00ef6e4f4ade7f76c58472f98cb877db8",
+      "sha256": "7009bae3838ba96af378188e77cc59d00ef6e4f4ade7f76c58472f98cb877db8",
+      "currentSha256": "63450ece1a5c8a4313a0119e71c5cb7bfc325ae632e8ba599352287371df47b8",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/tests/Hexalith.FrontComposer.Shell.Tests/Generated/CounterStoryVerificationTests.cs",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:tests/Hexalith.FrontComposer.Shell.Tests/Generated/CounterStoryVerificationTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/ca5552f324d0cfea16c35f70cb7ff94521c18ea73cb1467a120c84640f44cd6a",
+      "sha256": "ca5552f324d0cfea16c35f70cb7ff94521c18ea73cb1467a120c84640f44cd6a",
+      "currentSha256": "f7c7331d6b883306723039e50d08317af31fc75752bfc345a5edc99d5dc654a5",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/tests/Hexalith.FrontComposer.Shell.Tests/Governance/CiGovernanceTests.cs",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:tests/Hexalith.FrontComposer.Shell.Tests/Governance/CiGovernanceTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/83d33312fbc53ff2867754ff5e7a83de2a2ed1f01dd9e2bb35440516bd472d38",
+      "sha256": "83d33312fbc53ff2867754ff5e7a83de2a2ed1f01dd9e2bb35440516bd472d38",
+      "currentSha256": "79b09350b9929aa2ac419bec6bc530837500e01889d18778888d6c43a2de6285",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.FrontComposer/tests/Hexalith.FrontComposer.SourceTools.Tests/Docs/FcDocComponentDocumentationContractTests.cs",
+      "command": [
+        "git",
+        "show",
+        "247410b8b35050abf3f06ec72d6bcf3f1552b150:tests/Hexalith.FrontComposer.SourceTools.Tests/Docs/FcDocComponentDocumentationContractTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/060a60c13384b0657c2991894e422234b7fe7d359cc321167b82f756d7be2990",
+      "sha256": "060a60c13384b0657c2991894e422234b7fe7d359cc321167b82f756d7be2990",
+      "currentSha256": "0684f6e3d3415c3ce26b51e684d8d3bc243080a138405bacc288c0efb9276c66",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.McpCli/.gitattributes",
+      "command": [
+        "git",
+        "show",
+        "39f75e8c8e2bec0824e8f0b93f72bd94c9a73789:.gitattributes"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/32d61727e0e0695652b8cc8f2b260597a5324c2a2533b09ad5324b1eae7aae28",
+      "sha256": "32d61727e0e0695652b8cc8f2b260597a5324c2a2533b09ad5324b1eae7aae28",
+      "currentSha256": "4b014c6655b3105d4fd48d1bf04dcfde6117fb8f5374b984b5d044eb45ed9ced",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.McpCli/src/Hexalith.McpCli/Hexalith.McpCli.csproj",
+      "command": [
+        "git",
+        "show",
+        "39f75e8c8e2bec0824e8f0b93f72bd94c9a73789:src/Hexalith.McpCli/Hexalith.McpCli.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/03f25fb3d5ef10a251a4597baf7f96a25ab83cb550b9021abac285e9e4219576",
+      "sha256": "03f25fb3d5ef10a251a4597baf7f96a25ab83cb550b9021abac285e9e4219576",
+      "currentSha256": "ae33ae173645038fd70e0c10fc5f01677e9d0bd5ab77a19ca8f2db23e3b3a92e",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.McpCli/tests/Hexalith.McpCli.ConformanceHost/Hexalith.McpCli.ConformanceHost.csproj",
+      "command": [
+        "git",
+        "show",
+        "39f75e8c8e2bec0824e8f0b93f72bd94c9a73789:tests/Hexalith.McpCli.ConformanceHost/Hexalith.McpCli.ConformanceHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/356ce9bd5241dfeb381a1d9752c1fd4839516967b074c11398059cace254aa10",
+      "sha256": "356ce9bd5241dfeb381a1d9752c1fd4839516967b074c11398059cace254aa10",
+      "currentSha256": "7242623f053e38f9bf213352e7cac336d4619b172807177b92e9525d6cde4782",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.McpCli/tests/Hexalith.McpCli.ConformanceHost/Program.cs",
+      "command": [
+        "git",
+        "show",
+        "39f75e8c8e2bec0824e8f0b93f72bd94c9a73789:tests/Hexalith.McpCli.ConformanceHost/Program.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/774b3c0eaa6466256bb77876e146e0ed7ec3126ef86d4d608612a4cc821aa701",
+      "sha256": "774b3c0eaa6466256bb77876e146e0ed7ec3126ef86d4d608612a4cc821aa701",
+      "currentSha256": "cd6e892de219adf93dc5dfc6b0e0ca895ca0fc6238206c805124a8250f981377",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.McpCli/tests/Hexalith.McpCli.Core.Tests/DescriptionLintGateTests.cs",
+      "command": [
+        "git",
+        "show",
+        "39f75e8c8e2bec0824e8f0b93f72bd94c9a73789:tests/Hexalith.McpCli.Core.Tests/DescriptionLintGateTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/ed04f184029f580109bd8dde1ccc0d461515eab7adc2472bee164a78dac1ad60",
+      "sha256": "ed04f184029f580109bd8dde1ccc0d461515eab7adc2472bee164a78dac1ad60",
+      "currentSha256": "bf8bc7dfa2a0b77c576477bc025607e006512decc5021392e4e9844deef0287a",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.McpCli/tests/Hexalith.McpCli.Core.Tests/EnrolledModuleCoverageTests.cs",
+      "command": [
+        "git",
+        "show",
+        "39f75e8c8e2bec0824e8f0b93f72bd94c9a73789:tests/Hexalith.McpCli.Core.Tests/EnrolledModuleCoverageTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/31830fe645e98647ff7f13ea732c411498393fb3bb5d59048b1df931aa69f03c",
+      "sha256": "31830fe645e98647ff7f13ea732c411498393fb3bb5d59048b1df931aa69f03c",
+      "currentSha256": "20aa4f0b0e8bec67342ff39da1530143d0282ff36beea45f6e3ac14a7a3da4f3",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.McpCli/tests/Hexalith.McpCli.Core.Tests/Hexalith.McpCli.Core.Tests.csproj",
+      "command": [
+        "git",
+        "show",
+        "39f75e8c8e2bec0824e8f0b93f72bd94c9a73789:tests/Hexalith.McpCli.Core.Tests/Hexalith.McpCli.Core.Tests.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/2a7bea91a146addf44a67ffc1c4615182b1d947dbbb511bc5e6c38fdd27aec68",
+      "sha256": "2a7bea91a146addf44a67ffc1c4615182b1d947dbbb511bc5e6c38fdd27aec68",
+      "currentSha256": "fb656b89807e6b0d625f82e013105906d162b17fa28af321f85e4d5a29696353",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.McpCli/tests/Hexalith.McpCli.Manifest.Tests/DependencyPolicyTests.cs",
+      "command": [
+        "git",
+        "show",
+        "39f75e8c8e2bec0824e8f0b93f72bd94c9a73789:tests/Hexalith.McpCli.Manifest.Tests/DependencyPolicyTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/18fc9d66dc6ed24a0f220678e299d061e361c9c0114ec3b4fdd52bf2c7ce6410",
+      "sha256": "18fc9d66dc6ed24a0f220678e299d061e361c9c0114ec3b4fdd52bf2c7ce6410",
+      "currentSha256": "b2868aabc531cb48c3772b7731f84fd230ae2b4d7d8ab0fde9848242b2cd8bfb",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.McpCli/tests/Hexalith.McpCli.Manifest.Tests/RestoredDependencyGraph.cs",
+      "command": [
+        "git",
+        "show",
+        "39f75e8c8e2bec0824e8f0b93f72bd94c9a73789:tests/Hexalith.McpCli.Manifest.Tests/RestoredDependencyGraph.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/8ae32665d050a29eec5a79da83de08a1791a7919bb67342c3956a6070a967f82",
+      "sha256": "8ae32665d050a29eec5a79da83de08a1791a7919bb67342c3956a6070a967f82",
+      "currentSha256": "f70de6f519aaedd7f53482d8df6eaaa40c362282b55aedc8af02c5a6813d5653",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Memories/src/Hexalith.Memories.AccessTelemetry.Contracts/AccessTelemetryCanonicalizer.cs",
+      "command": [
+        "git",
+        "show",
+        "7d1e21f91ac58e427e1440ba34d1c8c141d7e98c:src/Hexalith.Memories.AccessTelemetry.Contracts/AccessTelemetryCanonicalizer.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/4dcdded05e17cda0474750e6b3455dc927954d5b68fe6ef0a47e56f85e8c615a",
+      "sha256": "4dcdded05e17cda0474750e6b3455dc927954d5b68fe6ef0a47e56f85e8c615a",
+      "currentSha256": "73e57d8324fa61eafb1aed16137b1e3bc53517f4d6537da937a2a038ea052869",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Memories/src/Hexalith.Memories.AccessTelemetry.Contracts/AccessTelemetryRecord.cs",
+      "command": [
+        "git",
+        "show",
+        "7d1e21f91ac58e427e1440ba34d1c8c141d7e98c:src/Hexalith.Memories.AccessTelemetry.Contracts/AccessTelemetryRecord.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/64a2c0faa5325b94664f3ce98392544a955a9aab9b022c4e8aa90a62bb01f0c3",
+      "sha256": "64a2c0faa5325b94664f3ce98392544a955a9aab9b022c4e8aa90a62bb01f0c3",
+      "currentSha256": "9041fb8be6c7671ff0360b58ae8b18f3c8dd2731932cb26488c3a6183d764ab8",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Memories/src/Hexalith.Memories.AccessTelemetry.Contracts/AccessTelemetryWriteBatchRequest.cs",
+      "command": [
+        "git",
+        "show",
+        "7d1e21f91ac58e427e1440ba34d1c8c141d7e98c:src/Hexalith.Memories.AccessTelemetry.Contracts/AccessTelemetryWriteBatchRequest.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/a8b85b721ce5140f68269ca4b68a3772be7c41015df3434420507fb2fd4e2aad",
+      "sha256": "a8b85b721ce5140f68269ca4b68a3772be7c41015df3434420507fb2fd4e2aad",
+      "currentSha256": "7e40b934d456d138aed93afa23667f3ef0fc7d43880c44ed8caad5b9ac67df48",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Memories/src/Hexalith.Memories.AccessTelemetry/Capability/DaprAccessTelemetryCapabilityProbe.cs",
+      "command": [
+        "git",
+        "show",
+        "7d1e21f91ac58e427e1440ba34d1c8c141d7e98c:src/Hexalith.Memories.AccessTelemetry/Capability/DaprAccessTelemetryCapabilityProbe.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/c44a502e9f4811e0509275826302d960858b6871d2209a3dd5cad890a2f1c24e",
+      "sha256": "c44a502e9f4811e0509275826302d960858b6871d2209a3dd5cad890a2f1c24e",
+      "currentSha256": "d596fe651bb9754a9086e4f83b6223ad3b0553c45c794ea2b7bb5e780b749b8e",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Memories/src/Hexalith.Memories.Server/Telemetry/AccessTelemetryLifecycle/AccessTelemetryDaprHttpClientFactory.cs",
+      "command": [
+        "git",
+        "show",
+        "7d1e21f91ac58e427e1440ba34d1c8c141d7e98c:src/Hexalith.Memories.Server/Telemetry/AccessTelemetryLifecycle/AccessTelemetryDaprHttpClientFactory.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/a6800c9277b2ac05cdc9bb70ec26a1292c09dfc8968c837f5a8f9ea1aa30f34a",
+      "sha256": "a6800c9277b2ac05cdc9bb70ec26a1292c09dfc8968c837f5a8f9ea1aa30f34a",
+      "currentSha256": "c1104b8cbb4ac43f66f5207466583cbe2104c0bceb19f53902ee2ba50c24287c",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Memories/tests/Hexalith.Memories.AccessTelemetry.Tests/Capability/CapabilityAndObservabilityCheckpointTests.cs",
+      "command": [
+        "git",
+        "show",
+        "7d1e21f91ac58e427e1440ba34d1c8c141d7e98c:tests/Hexalith.Memories.AccessTelemetry.Tests/Capability/CapabilityAndObservabilityCheckpointTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+      "recoveryMode": "CRLF worktree",
+      "archive": "external-drift-original-inputs/886ed68c89e734bcb6642c71f2cde39dede08faffef6dbf86838570ee994b2f0",
+      "sha256": "886ed68c89e734bcb6642c71f2cde39dede08faffef6dbf86838570ee994b2f0",
+      "currentSha256": "fd223d04d1ebdd7ffc4fa05f7a531f6568a5b9a6dd7bb1747cdf7a6a206434ab",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Memories/tests/tooling/access_telemetry_functional_retention/test_selected_active_sequence.py",
+      "command": [
+        "git",
+        "show",
+        "7d1e21f91ac58e427e1440ba34d1c8c141d7e98c:tests/tooling/access_telemetry_functional_retention/test_selected_active_sequence.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/ec9161d47a7e9b62fc9cc504e0297b6170ec84cc9b85a08aa6424c36bbe94d2c",
+      "sha256": "ec9161d47a7e9b62fc9cc504e0297b6170ec84cc9b85a08aa6424c36bbe94d2c",
+      "currentSha256": "15c3015408320f81294b01a76913cdbe5b138b8a73aea70f6c3d504c6182be7e",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Memories/tests/tooling/access_telemetry_functional_retention/test_selected_platform_consumer.py",
+      "command": [
+        "git",
+        "show",
+        "7d1e21f91ac58e427e1440ba34d1c8c141d7e98c:tests/tooling/access_telemetry_functional_retention/test_selected_platform_consumer.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/4dcdc7e780d0e0e7116086b0f7a14096f66b419c86bb969d52881284be61664e",
+      "sha256": "4dcdc7e780d0e0e7116086b0f7a14096f66b419c86bb969d52881284be61664e",
+      "currentSha256": "da846fe34eb1b6d9aaf361110791e0657d7116fdaeb0393bf807fa5e760b6e4d",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/.gitattributes",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:.gitattributes"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/a1a52c612bfb0413b2101d559c5e50aea67902fd79b11792890ff926e1e7ed1e",
+      "sha256": "a1a52c612bfb0413b2101d559c5e50aea67902fd79b11792890ff926e1e7ed1e",
+      "currentSha256": "8a2d15747b6d421b54e2cc4cc3e4db7179c912e5a23d1b835acfeebc6f8897c9",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/eng/ext-host-1/test_verify_full.py",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:eng/ext-host-1/test_verify_full.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/377cbdc51a821fbe08fa62c22802ee9e5eb72ebe19b32c8c72c1240619e507e2",
+      "sha256": "377cbdc51a821fbe08fa62c22802ee9e5eb72ebe19b32c8c72c1240619e507e2",
+      "currentSha256": "25affbd355cedf99d3e6c4a75e968dd7602ad518e979404bca210b8e8cf45fec",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/eng/ext-host-1/verify_full.py",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:eng/ext-host-1/verify_full.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/af2e1f035fb2c33608704480cd5b12ccb4826b392d35b77200fdb4f3ca8c3e40",
+      "sha256": "af2e1f035fb2c33608704480cd5b12ccb4826b392d35b77200fdb4f3ca8c3e40",
+      "currentSha256": "24f098f9b893d711aa95bb67d1ac659f1e1380b6bc61183ca91910c7877ce201",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/eng/test_verify_works_host.py",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:eng/test_verify_works_host.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/2bbde5c574d438849ae94b2cb2dadc0c7929cefdc4b453fe607e08f4d692a46b",
+      "sha256": "2bbde5c574d438849ae94b2cb2dadc0c7929cefdc4b453fe607e08f4d692a46b",
+      "currentSha256": "327eb9ce5b75d9e29f69122ed91739c952a91ef45da96585e4d0d9f4e57c524e",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/eng/test_works_host_snapshot.py",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:eng/test_works_host_snapshot.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/c28c9ff9644a017a4877bca74f2fe619adca9875cf57a044eda6be0a5b621b04",
+      "sha256": "c28c9ff9644a017a4877bca74f2fe619adca9875cf57a044eda6be0a5b621b04",
+      "currentSha256": "3728c7242df3ed201885b381ca7ec405c926601cb29c776f73ca8d23e4b2fa85",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/eng/verify-agents-host.sh",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:eng/verify-agents-host.sh"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/c4bda508c6bb358afd99423f1197fd6492208dc61b0fa600a5f143564d78e11b",
+      "sha256": "c4bda508c6bb358afd99423f1197fd6492208dc61b0fa600a5f143564d78e11b",
+      "currentSha256": "64355c776175336239ad20e35eadf9090828addc7b4c6cb246623e75146cc15b",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/eng/verify_works_host.py",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:eng/verify_works_host.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/868e52623f1d779207521727314b8259a8cb5b7d46903f0ffb12d2359d219afd",
+      "sha256": "868e52623f1d779207521727314b8259a8cb5b7d46903f0ffb12d2359d219afd",
+      "currentSha256": "329c31f7080a4a177a4d418ee0d989a94bce4e33da15608a377326fdf838e595",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/eng/works_host_snapshot.py",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:eng/works_host_snapshot.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/3ac3a9cfc36e8b2c5027925ba5d31a6d3d61710e53df9d2c6bd53999db8b1b0c",
+      "sha256": "3ac3a9cfc36e8b2c5027925ba5d31a6d3d61710e53df9d2c6bd53999db8b1b0c",
+      "currentSha256": "b51827f919144a6ad612d49073356269c155bc83d20fbfe1b1d0e7aad4d7460e",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformAppModel.cs",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:src/Hexalith.Platform.Composition/PlatformAppModel.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/e0df77f23402de73a118523b42cb1fef5c58fac2477d8a4e050d2acf5b4b6895",
+      "sha256": "e0df77f23402de73a118523b42cb1fef5c58fac2477d8a4e050d2acf5b4b6895",
+      "currentSha256": "f67a245a6c857b763d7f026a3d0cfbe2e6afa638e6396261c9c2b70a0fb87d0b",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformDaprEndpointSubscriber.cs",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:src/Hexalith.Platform.Composition/PlatformDaprEndpointSubscriber.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/1dd8b69e5e35384dca294570274641efe9c38a62c71530681162d0af5ae93e3e",
+      "sha256": "1dd8b69e5e35384dca294570274641efe9c38a62c71530681162d0af5ae93e3e",
+      "currentSha256": "63de31b5e7ea96f7b09f97ddccb2c2ee611579cc1ef5b9378ef09c516991383a",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/src/Hexalith.Platform.Custody/Hexalith.Platform.Custody.csproj",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:src/Hexalith.Platform.Custody/Hexalith.Platform.Custody.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/189663101a2dad0a20240c69c08e374cf2e47b0cbaa274132b1229d58a0f3aa3",
+      "sha256": "189663101a2dad0a20240c69c08e374cf2e47b0cbaa274132b1229d58a0f3aa3",
+      "currentSha256": "1a75f9d0a3731f296b5234936f3c7f8437ff9f286e5bdf3d32bcf6609d8694b6",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/Hexalith.Platform.Secrets.Runtime.csproj",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:src/Hexalith.Platform.Secrets.Runtime/Hexalith.Platform.Secrets.Runtime.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/522d89d598919619ba4e2dd6df5512a996fc6012eebf1767570dd0b436ed3a0c",
+      "sha256": "522d89d598919619ba4e2dd6df5512a996fc6012eebf1767570dd0b436ed3a0c",
+      "currentSha256": "4884882b0771178a627510fc9c9e52af7c831e97677ba8a2854db84831dffb0d",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/DomainEnrollmentKitTests.cs",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:tests/Hexalith.Platform.Composition.Tests/DomainEnrollmentKitTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/856b9f76345f74045a2a7764e6e2b83b6673b34adda42b26a2e1e39dbe761f42",
+      "sha256": "856b9f76345f74045a2a7764e6e2b83b6673b34adda42b26a2e1e39dbe761f42",
+      "currentSha256": "5525b9a20cfd65a1e9fedfe061ee0d04e49e18da1e5be1bc1be97dfa35cc6f93",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformAppModelTests.cs",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:tests/Hexalith.Platform.Composition.Tests/PlatformAppModelTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/345cb4b2e2a292351e93c7003e7912069a2652c24c8fc11d19fcdea7ec773062",
+      "sha256": "345cb4b2e2a292351e93c7003e7912069a2652c24c8fc11d19fcdea7ec773062",
+      "currentSha256": "f1e1cc8c03746279999c248a5e4a8181d27a2b4aa2e64c5799bbc5a5117546ae",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformRetentionProfileTests.cs",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:tests/Hexalith.Platform.Composition.Tests/PlatformRetentionProfileTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/9bd8a804b8aa43686f6126832d903f9de90377d453f507d78eceaf60dbfb53b3",
+      "sha256": "9bd8a804b8aa43686f6126832d903f9de90377d453f507d78eceaf60dbfb53b3",
+      "currentSha256": "229d6792537112404fd8340adf69919824fad2a213c62c3de8077391bf556669",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Platform/tests/Hexalith.Platform.Secrets.Runtime.Tests/Hexalith.Platform.Secrets.Runtime.Tests.csproj",
+      "command": [
+        "git",
+        "show",
+        "7b5548f0d308d27af9d5fda5b68c6b959c053185:tests/Hexalith.Platform.Secrets.Runtime.Tests/Hexalith.Platform.Secrets.Runtime.Tests.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/3d860bd68d32e80ee294713fd9cc87419edfe2cd943f2bbaf388306d112519dc",
+      "sha256": "3d860bd68d32e80ee294713fd9cc87419edfe2cd943f2bbaf388306d112519dc",
+      "currentSha256": "1eda51c9daa2f5b6d03e35d7071fd51fabecde48acb4c516565eab2634c57bf4",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Projects/src/Hexalith.Projects.Server/Authorization/ProjectAuthorizationGate.cs",
+      "command": [
+        "git",
+        "show",
+        "0683fa162582b8d63adb8bc593ce50d39b8c3cf4:src/Hexalith.Projects.Server/Authorization/ProjectAuthorizationGate.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/8562e54acae527797ba71f71aebbce5afafda4463fba629c8e2be2f51df195e9",
+      "sha256": "8562e54acae527797ba71f71aebbce5afafda4463fba629c8e2be2f51df195e9",
+      "currentSha256": "d08493706525a4e59a2bed6e51ab6c9e986bc18e1a36c40e1da1b6d0445a342b",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Projects/src/Hexalith.Projects.Server/ProjectsServerModule.cs",
+      "command": [
+        "git",
+        "show",
+        "0683fa162582b8d63adb8bc593ce50d39b8c3cf4:src/Hexalith.Projects.Server/ProjectsServerModule.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/bb098ec9f9255dc9bdc6ba8212cb66ad7639233b9cd10c9857ad5c39feaeebcc",
+      "sha256": "bb098ec9f9255dc9bdc6ba8212cb66ad7639233b9cd10c9857ad5c39feaeebcc",
+      "currentSha256": "40a2e3547bb26f86af5ec2fab8416926180fd7684b99f956e8f66e2c272c3137",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Projects/src/Hexalith.Projects.Server/ProjectsServerServiceCollectionExtensions.cs",
+      "command": [
+        "git",
+        "show",
+        "0683fa162582b8d63adb8bc593ce50d39b8c3cf4:src/Hexalith.Projects.Server/ProjectsServerServiceCollectionExtensions.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/48b753af1b419bbe552312d59da3bece4332af0dede62b797fc0df18d5e524c3",
+      "sha256": "48b753af1b419bbe552312d59da3bece4332af0dede62b797fc0df18d5e524c3",
+      "currentSha256": "f9c7f30b12087ccaf15dd762695564efd5095a810af93d418d7c22df335c7c66",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Projects/src/Hexalith.Projects/Aggregates/Project/ProjectPersistedDetailValidator.cs",
+      "command": [
+        "git",
+        "show",
+        "0683fa162582b8d63adb8bc593ce50d39b8c3cf4:src/Hexalith.Projects/Aggregates/Project/ProjectPersistedDetailValidator.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/b96ef345e24957ad858c8850885e9dd8b7a9644702d39245781c2c4751b18d58",
+      "sha256": "b96ef345e24957ad858c8850885e9dd8b7a9644702d39245781c2c4751b18d58",
+      "currentSha256": "e86edd6b65265b6879e0926a54ec48beb33b43119dad9aa5902d4d01714816d2",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj",
+      "command": [
+        "git",
+        "show",
+        "0683fa162582b8d63adb8bc593ce50d39b8c3cf4:tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/046370300e8154fa0dedc46982c7ecd0090eb7801bab6c7b11320440d23050d5",
+      "sha256": "046370300e8154fa0dedc46982c7ecd0090eb7801bab6c7b11320440d23050d5",
+      "currentSha256": "c901c952d7dc51d5874ed6c5dd355c38a46fd2aa4772a6681b73a04979de6d4b",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/Queries/ProjectReadTestAuthorization.cs",
+      "command": [
+        "git",
+        "show",
+        "0683fa162582b8d63adb8bc593ce50d39b8c3cf4:tests/Hexalith.Projects.Server.Tests/Queries/ProjectReadTestAuthorization.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/912f93694e31797e1c84a18750c59f5ab1b02269d27f979f83aaf2adaa697053",
+      "sha256": "912f93694e31797e1c84a18750c59f5ab1b02269d27f979f83aaf2adaa697053",
+      "currentSha256": "9c8ceb69f71e0b777e39434766f15f01fb9715625ab98cad8912ded3b174378c",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/Queries/SupportedProjectGatewayHttpTests.cs",
+      "command": [
+        "git",
+        "show",
+        "0683fa162582b8d63adb8bc593ce50d39b8c3cf4:tests/Hexalith.Projects.Server.Tests/Queries/SupportedProjectGatewayHttpTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/17c91079dc8c686e9ca28ab5495025e8ccd80d2969cb7453198dba3adfa437b4",
+      "sha256": "17c91079dc8c686e9ca28ab5495025e8ccd80d2969cb7453198dba3adfa437b4",
+      "currentSha256": "288d7fb8e37059b9e5e5fa6a04eefb710f868896b1ae528933ac86c022a8ce32",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/Queries/SupportedProjectReadFixture.cs",
+      "command": [
+        "git",
+        "show",
+        "0683fa162582b8d63adb8bc593ce50d39b8c3cf4:tests/Hexalith.Projects.Server.Tests/Queries/SupportedProjectReadFixture.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/aadd772ca0628da740e1659c5ab20efc933e241d66aa1f0988e952f867e79c81",
+      "sha256": "aadd772ca0628da740e1659c5ab20efc933e241d66aa1f0988e952f867e79c81",
+      "currentSha256": "f9d563d62302f64a9de4b85e0e7021cf4f95f53782980ee1be5e4145b6c5c3ab",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Projects/tests/tools/test_production_authority_guard.py",
+      "command": [
+        "git",
+        "show",
+        "0683fa162582b8d63adb8bc593ce50d39b8c3cf4:tests/tools/test_production_authority_guard.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/782d332987e0bf625432fd27ac466719532ea1722c5d3950fdd915260fbf0536",
+      "sha256": "782d332987e0bf625432fd27ac466719532ea1722c5d3950fdd915260fbf0536",
+      "currentSha256": "2d34728134a7395890f0badf97c895a623e67ddfcfa2e2ce28d76ef5f4276873",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/.gitattributes",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:.gitattributes"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/f0878cf9ac6bd1feeb356da732d74523c242c8b3bdb6a1262788a72c50c3524a",
+      "sha256": "f0878cf9ac6bd1feeb356da732d74523c242c8b3bdb6a1262788a72c50c3524a",
+      "currentSha256": "181c53348fa08c7809cd41a5740822e2a6cbcf630d1cf54db34d750b275c5373",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.AppHost/Hexalith.Tenants.AppHost.csproj",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.AppHost/Hexalith.Tenants.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/735b236c28b0e47a975ff924d2a5677dd1e6451d6376df63de9212309e4acb57",
+      "sha256": "735b236c28b0e47a975ff924d2a5677dd1e6451d6376df63de9212309e4acb57",
+      "currentSha256": "6647a3a3130502632cd1200b1451873b4194d7e1edae60ab997f976a000901c8",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Pages/GlobalAdministratorsPage.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Pages/GlobalAdministratorsPage.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/e590cee3bba29095ff3347b60a68ba581196339d633815b70f5a86d67a3f330e",
+      "sha256": "e590cee3bba29095ff3347b60a68ba581196339d633815b70f5a86d67a3f330e",
+      "currentSha256": "93a95acf65a948428e417e66cdec666941e2f62bfc84be6161a8f360ced513a4",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Pages/TenantAuditPage.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Pages/TenantAuditPage.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/39cdb7b50bca436cd2082c8d6db30b5e60bd0e702ace711e66e406a25e1d73b1",
+      "sha256": "39cdb7b50bca436cd2082c8d6db30b5e60bd0e702ace711e66e406a25e1d73b1",
+      "currentSha256": "e831bfe2d48678bdcd9d64b453558cd7f27fe6d3daf061039cba5878ef188d6e",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Pages/TenantDetailPage.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Pages/TenantDetailPage.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/e5e7d155f9d5c9781a3ca3416887cf5425710ee862ca8b7e964e0a8c151aaa35",
+      "sha256": "e5e7d155f9d5c9781a3ca3416887cf5425710ee862ca8b7e964e0a8c151aaa35",
+      "currentSha256": "425f38a23ab9cf3531c6131f6493b7009d675d747361b268b531b8b275d66829",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Pages/TenantsWorkspace.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Pages/TenantsWorkspace.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/d43d889738578b01d339c54a4c71ce64806012d6bb097bb5bcf78d1fef3e58b3",
+      "sha256": "d43d889738578b01d339c54a4c71ce64806012d6bb097bb5bcf78d1fef3e58b3",
+      "currentSha256": "9e3b3648b4d0427ac8e6330cc637d7a2799f185fa0f92fefdcab73fa947cd0f0",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Tenants/Audit/GlobalAdministratorCorrectionPanel.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Tenants/Audit/GlobalAdministratorCorrectionPanel.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/ed1a5e480f11418cd790f6975b0ea6c507a19424ef23b6e66ba36445531483ba",
+      "sha256": "ed1a5e480f11418cd790f6975b0ea6c507a19424ef23b6e66ba36445531483ba",
+      "currentSha256": "7b2507346c63229ae3fea12e9b76997616303b3b1a121f797c64995e68ffc697",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Tenants/Configuration/RemoveTenantConfigurationFlow.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Tenants/Configuration/RemoveTenantConfigurationFlow.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/0d44eb588f90cb4f88ec8e8ceab8cfaa951ce6fe2bab4d65ed00904ca5edcbff",
+      "sha256": "0d44eb588f90cb4f88ec8e8ceab8cfaa951ce6fe2bab4d65ed00904ca5edcbff",
+      "currentSha256": "806c3165fb48e1237e13bb5073b376efba3d30cb49998e52c49ea7af39dc69e4",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Tenants/Configuration/SetTenantConfigurationFlow.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Tenants/Configuration/SetTenantConfigurationFlow.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/18251e8a2eccde80630ca0161dc1d194a05720f91375d31ce47244191de4e5ab",
+      "sha256": "18251e8a2eccde80630ca0161dc1d194a05720f91375d31ce47244191de4e5ab",
+      "currentSha256": "1f6583c364a22fabe1519dc16512abbe2df6dd71a4606d95f9353c5861423715",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Tenants/CreateTenantFlow.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Tenants/CreateTenantFlow.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/db2c93d77d206e858a30f1c24d1a136d3e53f0b142df964186a1bc621dc27aca",
+      "sha256": "db2c93d77d206e858a30f1c24d1a136d3e53f0b142df964186a1bc621dc27aca",
+      "currentSha256": "5cf67b07229dae58c5d549b778515c53a398ba5be1e7134720f43399a6416e67",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Tenants/Lifecycle/TenantLifecycleActionAvailability.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Tenants/Lifecycle/TenantLifecycleActionAvailability.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/6985f622c5b4429d2b4049ecf3eb32381187c3a90f644113427361d57fd37047",
+      "sha256": "6985f622c5b4429d2b4049ecf3eb32381187c3a90f644113427361d57fd37047",
+      "currentSha256": "e47d2cd32bcfe9fff2619311e7d8242369eac70f4438088afda37d10c6776730",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Tenants/Lifecycle/TenantLifecycleCommandFlow.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Tenants/Lifecycle/TenantLifecycleCommandFlow.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/3a0328464f5ca056d37d0baee44cb8cd74dcbcae739986b1836d46bbbe419be1",
+      "sha256": "3a0328464f5ca056d37d0baee44cb8cd74dcbcae739986b1836d46bbbe419be1",
+      "currentSha256": "5150519be724339161db4605692e30914434907b14cb219206c088a7efa515b8",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Tenants/Members/AddTenantMemberFlow.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Tenants/Members/AddTenantMemberFlow.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/e83e7df5172356e798a6da3ffe1b50b244d1b6c2a1b5c5c8ccf2ec0aa6eeb97c",
+      "sha256": "e83e7df5172356e798a6da3ffe1b50b244d1b6c2a1b5c5c8ccf2ec0aa6eeb97c",
+      "currentSha256": "8f9a2fb6cced6831ba7263cc32047d11a6b30d3a61a0aec38646e7c05a87a30f",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Tenants/Members/ChangeTenantMemberRoleFlow.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Tenants/Members/ChangeTenantMemberRoleFlow.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/d1e547e5fbc94daf3d2a41ebcd379c1e54acc744663abb793447d5b4fe4d4803",
+      "sha256": "d1e547e5fbc94daf3d2a41ebcd379c1e54acc744663abb793447d5b4fe4d4803",
+      "currentSha256": "4e47cbb3da976946fb984496efacd5d91cad11aad40eb167957bf9bd7753afd5",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Tenants/Members/MemberAccessReview.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Tenants/Members/MemberAccessReview.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/aa86f326ed6b539aa026d7c4c1eb8a6b2cee067adbe946824873c995bd1bf9a8",
+      "sha256": "aa86f326ed6b539aa026d7c4c1eb8a6b2cee067adbe946824873c995bd1bf9a8",
+      "currentSha256": "496bb52152070d1162009c192f6a79a9b676f4e542519c7830037627573fc45f",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Tenants/Members/RemoveTenantMemberFlow.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Tenants/Members/RemoveTenantMemberFlow.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/518244f8e4d9cb926683834d7694848c8c72173d9cc9ee1a67817e95bae4cbc5",
+      "sha256": "518244f8e4d9cb926683834d7694848c8c72173d9cc9ee1a67817e95bae4cbc5",
+      "currentSha256": "6cfc9f6ef9cbc0ccc3a028da11bb8e29db067b4228d8a70dcb8ff7cc4c1d09fb",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Components/Tenants/Metadata/EditTenantMetadataFlow.razor",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Components/Tenants/Metadata/EditTenantMetadataFlow.razor"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/5c80d686feef4a78561188155d52edc90882d8a91c13bf5d0ea2788c01bbbff2",
+      "sha256": "5c80d686feef4a78561188155d52edc90882d8a91c13bf5d0ea2788c01bbbff2",
+      "currentSha256": "43622b1dc4bf76a8058faf8e91f4a25438f671adefcd9086e068f91b6bd0780a",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Resources/TenantsResources.fr.resx",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Resources/TenantsResources.fr.resx"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/684bd1fa59f55b974c20bf8c6c46ae5e781d6efd0259f289e51893df7f9a04f6",
+      "sha256": "684bd1fa59f55b974c20bf8c6c46ae5e781d6efd0259f289e51893df7f9a04f6",
+      "currentSha256": "3f62849fe554ae4f7a5b0f4d2e2eb664d33986e63f9eaeda67859466f63d43e7",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Resources/TenantsResources.resx",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Resources/TenantsResources.resx"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/b33adac89741e5dd19388a14888d57151be9922c4efff22479eabdce71480531",
+      "sha256": "b33adac89741e5dd19388a14888d57151be9922c4efff22479eabdce71480531",
+      "currentSha256": "3024e3b07a8a2ce87fbc69444faf17e86adf90804ae8321ac4ccdec7ca744afb",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Services/Gateways/ITenantsBffComposition.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Services/Gateways/ITenantsBffComposition.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/152cb60cfb55fc0407ab1cd784437332043f3d3f25a14a61da63afda734733fb",
+      "sha256": "152cb60cfb55fc0407ab1cd784437332043f3d3f25a14a61da63afda734733fb",
+      "currentSha256": "7aa438c20b30d948c16967a2c35334a01320f1a5bb5aeab9e480f5d03de5adbb",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Services/Gateways/TenantCommandGateway.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Services/Gateways/TenantCommandGateway.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/82f3ac20620427639b75e5b18de4328418dc3cf4d182bf5afad1d920332d163d",
+      "sha256": "82f3ac20620427639b75e5b18de4328418dc3cf4d182bf5afad1d920332d163d",
+      "currentSha256": "514ff345ad61a2a1fbe20ab8a4e6c5ab3abfa95c8ea1b36cf28cecf4798346f7",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/Services/Gateways/TenantsBffComposition.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/Services/Gateways/TenantsBffComposition.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/e5e60fbede1df35179c2f6c05f102307fff7e66ae7697c140e40a7d3a6f60bb3",
+      "sha256": "e5e60fbede1df35179c2f6c05f102307fff7e66ae7697c140e40a7d3a6f60bb3",
+      "currentSha256": "c57c30e014d1771ba06ab9911b5d1a788609dd71778bb99d50bdde349da1f820",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/State/TenantAudit/TenantAuditNarrative.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/State/TenantAudit/TenantAuditNarrative.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/21e5a831e351283ad7b35248f018d034133ec4507881cd82f6d8015f513c8549",
+      "sha256": "21e5a831e351283ad7b35248f018d034133ec4507881cd82f6d8015f513c8549",
+      "currentSha256": "9d017b1adb323ea6c0ea38879cf809caade4c939ddd2d331fe7ec3745173a804",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/State/TenantCommands/TenantLifecycleCommandSnapshot.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/State/TenantCommands/TenantLifecycleCommandSnapshot.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/e53176119879ef39913f1a129f983ded43debc91409543172ad8dc9eafe7fe43",
+      "sha256": "e53176119879ef39913f1a129f983ded43debc91409543172ad8dc9eafe7fe43",
+      "currentSha256": "f3a46c54fcd916896e8f99e52c563c1c3e82010e63014d284c2199ca14a498a7",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/State/TenantDetail/TenantLifecycleAvailability.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/State/TenantDetail/TenantLifecycleAvailability.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/6f1ff1baabbae657b915064293a73c97d6b11db792afcad3f77a985419c30a03",
+      "sha256": "6f1ff1baabbae657b915064293a73c97d6b11db792afcad3f77a985419c30a03",
+      "currentSha256": "6631d0aab420d1eba9692183fee06de2e3e262b72b3e78fe1d5277afe5a3ae28",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.UI/State/TenantDetail/TenantLifecycleUnavailableReasonCategory.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:src/Hexalith.Tenants.UI/State/TenantDetail/TenantLifecycleUnavailableReasonCategory.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/b1ff28f211a4abe60ee50b79672aa446b975c70fc8a0f1d3b443478ea0f42bed",
+      "sha256": "b1ff28f211a4abe60ee50b79672aa446b975c70fc8a0f1d3b443478ea0f42bed",
+      "currentSha256": "f26060efa0f3ece5625954dbba4487c1f756e700c788e28ef7fcf5adebc9a209",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.Contracts.Tests/Hexalith.Tenants.Contracts.Tests.csproj",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.Contracts.Tests/Hexalith.Tenants.Contracts.Tests.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/3c8521df229da2fb99a9cc237ac482803f99a4c6ae4928de55469c5167246599",
+      "sha256": "3c8521df229da2fb99a9cc237ac482803f99a4c6ae4928de55469c5167246599",
+      "currentSha256": "c27281bae494c12c33c12713f777ee41261aeda4d7369a10e8518c40da94bdba",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.Contracts.Tests/PackageGovernanceTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.Contracts.Tests/PackageGovernanceTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/eb5244518235483d92e429fbc2407066451d991018a15f427bf60f5dd87ad13c",
+      "sha256": "eb5244518235483d92e429fbc2407066451d991018a15f427bf60f5dd87ad13c",
+      "currentSha256": "1d895aabef826b03bdcc03a15275efd0c392ae6f95efe06cd4c3638f105ac6ee",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.IntegrationTests/MemoriesSecretStoreResourceGraphTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.IntegrationTests/MemoriesSecretStoreResourceGraphTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/5a9b3d11d56815e155270e3673741d63032f292df88e4c5a717ea4903938d260",
+      "sha256": "5a9b3d11d56815e155270e3673741d63032f292df88e4c5a717ea4903938d260",
+      "currentSha256": null,
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Components/EditTenantMetadataFlowTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Components/EditTenantMetadataFlowTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/670617fae3f9da936146066b71debe5822c63efcf3a8bbe3499d7b4470c35bb4",
+      "sha256": "670617fae3f9da936146066b71debe5822c63efcf3a8bbe3499d7b4470c35bb4",
+      "currentSha256": "ca037c31beb30e4ad1b06867e66f837ae82e59e5e53e6efaebc689163e430391",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Components/GlobalAdministratorCorrectionPanelTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Components/GlobalAdministratorCorrectionPanelTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/807a9b5087efd96b7fe7fd1183a87f7afb93ece1324e9c8df656643d0d7fa229",
+      "sha256": "807a9b5087efd96b7fe7fd1183a87f7afb93ece1324e9c8df656643d0d7fa229",
+      "currentSha256": "042573532d29136e7680980d63cb7924ec0b7bc7746b53920eb0aa6a44a9ef20",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Components/GlobalAdministratorsPageTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Components/GlobalAdministratorsPageTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/9b432146735752b802db698b5b3465f49d22bc8f9ef7addcb53670ff80cc1dc9",
+      "sha256": "9b432146735752b802db698b5b3465f49d22bc8f9ef7addcb53670ff80cc1dc9",
+      "currentSha256": "6383a077fb9c7eb0fffc32e17c00e78743467f62078faa1c9a2f57a029ea0f4b",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Components/RemoveTenantConfigurationFlowTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Components/RemoveTenantConfigurationFlowTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/149cadb523345101f812fbe37face537f63a741def0fc22ab4cc11714a55ec7c",
+      "sha256": "149cadb523345101f812fbe37face537f63a741def0fc22ab4cc11714a55ec7c",
+      "currentSha256": "46b84bbe27a23b1e1efe0b3959e24ddffdb9b3cc34073b115bbe93ed6caef696",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Components/RemoveTenantMemberFlowTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Components/RemoveTenantMemberFlowTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/9b6ab0b085f530935bf1a453d1bfccc6f69d365d8dc92744fe010ea346fdca52",
+      "sha256": "9b6ab0b085f530935bf1a453d1bfccc6f69d365d8dc92744fe010ea346fdca52",
+      "currentSha256": "60aaedf7423e8c91f87d455ee770f7628ccf255e3f74e94d2040e3acb27e2303",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Components/SetTenantConfigurationFlowTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Components/SetTenantConfigurationFlowTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/d4e95e01c4de3f77a4bfa6fd46925218d5b64b2d1c4b3c799c84ec97754a6447",
+      "sha256": "d4e95e01c4de3f77a4bfa6fd46925218d5b64b2d1c4b3c799c84ec97754a6447",
+      "currentSha256": "810909dd92f7bd561e3696cf200808430bae558431abb27f424f0752fca15946",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Components/TenantAuditPageTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Components/TenantAuditPageTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/b3d4d8ba1bad5ca0cd122cbffa9d9981e588cc18bdca2a3fe028f1384b86cab5",
+      "sha256": "b3d4d8ba1bad5ca0cd122cbffa9d9981e588cc18bdca2a3fe028f1384b86cab5",
+      "currentSha256": "7e5aa9bef9d698242f5dc3d632419a585bdb4d7a1cce0a05a7d75a44f1d22783",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Components/TenantDetailSurfaceTests.CancellationLifetime.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Components/TenantDetailSurfaceTests.CancellationLifetime.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/bf77ce41a6ecdfe4942de6cbb1c3957079030f0ba5940e95a0dd1f39d1c9c896",
+      "sha256": "bf77ce41a6ecdfe4942de6cbb1c3957079030f0ba5940e95a0dd1f39d1c9c896",
+      "currentSha256": "b8ff5fe3ded377694da3b164087cb855d179904eeab48518187a5eabbfe3b07e",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Components/TenantDetailSurfaceTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Components/TenantDetailSurfaceTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/611b23f89f467af6772db8db979cb7f82d5d908abf0a93bd0985eb4a16ed18e4",
+      "sha256": "611b23f89f467af6772db8db979cb7f82d5d908abf0a93bd0985eb4a16ed18e4",
+      "currentSha256": "fe2aeb5e8f8edf32f29cbe219d46a016612198e0a5c6b23a1ae24a7ac0be01c4",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Components/TenantLifecycleActionAvailabilityTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Components/TenantLifecycleActionAvailabilityTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/1fbdac0a96c556f903938b9fd1091d29878fa1af31b2414540ca26fcdc007f2e",
+      "sha256": "1fbdac0a96c556f903938b9fd1091d29878fa1af31b2414540ca26fcdc007f2e",
+      "currentSha256": "eb9d20d8f28e9ae0d925e42e09ff3ffcf15a2b71519d3e47701db29ea4260fed",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Components/TenantRetainedCommandFlowTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Components/TenantRetainedCommandFlowTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/2fd6ffbcb0c70c92787303002e43d165d98474b24dbc8c51c25ef193f755869c",
+      "sha256": "2fd6ffbcb0c70c92787303002e43d165d98474b24dbc8c51c25ef193f755869c",
+      "currentSha256": "5c6dfbdf2b9b2100166a788cafb7953f86f459171f3c066f8724035e8eff8f99",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Services/Gateways/TenantCommandGatewayTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Services/Gateways/TenantCommandGatewayTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/b2c23e810aafaadd17c323028aa4c839fb31b1644b2feab49b68343fe9e9a695",
+      "sha256": "b2c23e810aafaadd17c323028aa4c839fb31b1644b2feab49b68343fe9e9a695",
+      "currentSha256": "124e7f825d64c2b1e42e71095a697879681730caba8f80a55ec37b3116efeed3",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Services/Gateways/TenantQueryGatewayTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Services/Gateways/TenantQueryGatewayTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/809252e39ac800d21be92b2a11099b07bdea889ba8b82ed21be7bacd33e13f07",
+      "sha256": "809252e39ac800d21be92b2a11099b07bdea889ba8b82ed21be7bacd33e13f07",
+      "currentSha256": "e9fd0bba65f8c6f405201f4de55e990e7aa322311ae5441bfcda39668b54f8c2",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/Services/Gateways/TenantsBffCompositionTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/Services/Gateways/TenantsBffCompositionTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/71c9e3122dfe418221139f000bec409ac2000a0a0de523a770595a57fa227d79",
+      "sha256": "71c9e3122dfe418221139f000bec409ac2000a0a0de523a770595a57fa227d79",
+      "currentSha256": "339b10bc68ccc3765d571fc703be9c625fd2e2c230d2a9d45b4f726960aacec2",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/State/TenantCommandAuditStatesTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/State/TenantCommandAuditStatesTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/b22a105503680340aeddd80e8e39313a427ebf2a0864e75dd33dfee0a4468297",
+      "sha256": "b22a105503680340aeddd80e8e39313a427ebf2a0864e75dd33dfee0a4468297",
+      "currentSha256": "4b88d9d5b303d6f7aaa08c52928393b3b3367b572e9446de6859b4d3b4c2e5e6",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/State/TenantLifecycleAvailabilityTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/State/TenantLifecycleAvailabilityTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/3041ec9f92b7d89345c3932ef49265762a3c4d0a65b88f5696ce2a8287167f9c",
+      "sha256": "3041ec9f92b7d89345c3932ef49265762a3c4d0a65b88f5696ce2a8287167f9c",
+      "currentSha256": "8964f044e6a4a9c2e6b924898a0721c70cb04dd2187fbc23cc596042e62b4f7e",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/State/TenantLifecycleCommandSnapshotTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/State/TenantLifecycleCommandSnapshotTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/a497e2d58c2a2878f8b8cb6e30774cf22335382f88d56851e75b35bc4cfb0b89",
+      "sha256": "a497e2d58c2a2878f8b8cb6e30774cf22335382f88d56851e75b35bc4cfb0b89",
+      "currentSha256": "9627845446307a9cf5590df4d76bff35070b84fa40a81cc9b37358d6f7f7b9a1",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/TenantsUiCompositionTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/TenantsUiCompositionTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/3c7fa4196888f85a95b66aa52f01de469d37d1017f32f58b048ac9f1894fcdf9",
+      "sha256": "3c7fa4196888f85a95b66aa52f01de469d37d1017f32f58b048ac9f1894fcdf9",
+      "currentSha256": "8be2169f9417547013e3c2db6c5e81ca0fa01762244efcff1edcad98a8b57670",
+      "pdbBindings": []
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.UI.Tests/TenantsWorkspaceTests.cs",
+      "command": [
+        "git",
+        "show",
+        "ec10b2575c836d650a68ffcbe14a16ccc9257528:tests/Hexalith.Tenants.UI.Tests/TenantsWorkspaceTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "recoveryMode": "Git blob",
+      "archive": "external-drift-original-inputs/ed17967acefebbe9a3d035d42900cff4fd80bb48a037d976fe54583a6d3ec7e5",
+      "sha256": "ed17967acefebbe9a3d035d42900cff4fd80bb48a037d976fe54583a6d3ec7e5",
+      "currentSha256": "3d4c849d8781ee28a9ff017844c409e4bb2fce729e1af0a7501930521065a4f1",
+      "pdbBindings": []
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

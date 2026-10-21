@@ -1,0 +1,141 @@
+using System.Text.Json;
+
+namespace Hexalith.McpCli.Manifest.Tests;
+
+/// <summary>A restored graph that supports deterministic paths and offline candidate injection.</summary>
+/// <param name="RootId">The entry project identity.</param>
+/// <param name="Nodes">The resolved nodes indexed without regard to identity casing.</param>
+/// <param name="LoadFailures">Failures found while reading the restored graph.</param>
+internal sealed record RestoredDependencyGraph(
+    string RootId,
+    IReadOnlyDictionary<string, RestoredDependencyNode> Nodes,
+    IReadOnlyList<string> LoadFailures)
+{
+    /// <summary>Loads the .NET 10 target, including project roots and framework references.</summary>
+    public static RestoredDependencyGraph Load(JsonElement assets, string projectPath)
+    {
+        string rootId = Path.GetFileNameWithoutExtension(projectPath);
+        var failures = new List<string>();
+        Dictionary<string, RestoredDependencyNode> nodes = ReadNodes(assets.GetProperty("targets").GetProperty("net10.0"),
+            assets.GetProperty("libraries"), Path.GetDirectoryName(projectPath)!, rootId, failures);
+        JsonElement framework = assets.GetProperty("project").GetProperty("frameworks").GetProperty("net10.0");
+        var dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (framework.TryGetProperty("dependencies", out JsonElement packages))
+        {
+            foreach (JsonProperty package in packages.EnumerateObject())
+            {
+                dependencies.Add(package.Name, package.Value.GetProperty("version").GetString()!);
+            }
+        }
+
+        JsonElement restoreFramework = assets.GetProperty("project").GetProperty("restore")
+            .GetProperty("frameworks").GetProperty("net10.0");
+        if (restoreFramework.TryGetProperty("projectReferences", out JsonElement projects))
+        {
+            foreach (JsonProperty project in projects.EnumerateObject())
+            {
+                string path = Path.GetFullPath(project.Name);
+                RestoredDependencyNode? node = nodes.Values.FirstOrDefault(item => item.ProjectPath == path);
+                dependencies.TryAdd(node?.Id ?? Path.GetFileNameWithoutExtension(path), node?.Version ?? "unresolved");
+            }
+        }
+
+        nodes[rootId] = new(rootId, "", "project", dependencies, ReadFrameworks(framework), Path.GetFullPath(projectPath));
+        return new(rootId, nodes, failures);
+    }
+
+    /// <summary>Adds an offline candidate closure while retaining every already-restored version.</summary>
+    public RestoredDependencyGraph WithCandidate(JsonElement fixture)
+    {
+        var failures = LoadFailures.ToList();
+        Dictionary<string, RestoredDependencyNode> candidates = ReadNodes(fixture.GetProperty("targets"), default, "", RootId, failures);
+        var nodes = new Dictionary<string, RestoredDependencyNode>(Nodes, StringComparer.OrdinalIgnoreCase);
+        foreach ((string id, RestoredDependencyNode node) in candidates)
+        {
+            nodes.TryAdd(id, node);
+        }
+
+        string candidate = fixture.GetProperty("rootId").GetString()!;
+        var dependencies = new Dictionary<string, string>(nodes[RootId].Dependencies, StringComparer.OrdinalIgnoreCase)
+        {
+            [candidate] = fixture.GetProperty("rootVersion").GetString()!,
+        };
+        nodes[RootId] = nodes[RootId] with { Dependencies = dependencies };
+        return new(RootId, nodes, failures);
+    }
+
+    /// <summary>Finds the first breadth-first path, optionally stopping closure traversal at decoration.</summary>
+    public Dictionary<string, string> PathsFrom(string startId, string decorationId, bool stopAtDecoration = true)
+    {
+        var paths = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var pending = new Queue<(string Id, string Path)>();
+        pending.Enqueue((startId, startId == RootId ? RootId : $"{RootId} > {Identity(startId)}"));
+        while (pending.TryDequeue(out (string Id, string Path) entry))
+        {
+            if (!paths.TryAdd(entry.Id, entry.Path) || stopAtDecoration && entry.Id.Equals(decorationId, StringComparison.OrdinalIgnoreCase)
+                || !Nodes.TryGetValue(entry.Id, out RestoredDependencyNode? node))
+            {
+                continue;
+            }
+
+            foreach ((string id, string version) in node.Dependencies.OrderBy(item => item.Key, StringComparer.Ordinal))
+            {
+                pending.Enqueue((id, $"{entry.Path} > {Identity(id, version)}"));
+            }
+        }
+
+        return paths;
+    }
+
+    /// <summary>Formats a resolved identity, or preserves the requested version of a missing node.</summary>
+    public string Identity(string id, string version = "unresolved")
+        => Nodes.TryGetValue(id, out RestoredDependencyNode? node) ? node.Identity : $"{id}/{version}";
+
+    private static Dictionary<string, RestoredDependencyNode> ReadNodes(JsonElement targets, JsonElement libraries,
+        string directory, string rootId, List<string> failures)
+    {
+        var nodes = new Dictionary<string, RestoredDependencyNode>(StringComparer.OrdinalIgnoreCase);
+        foreach (JsonProperty target in targets.EnumerateObject().OrderBy(item => item.Name, StringComparer.Ordinal))
+        {
+            int separator = target.Name.LastIndexOf('/');
+            string id = target.Name[..separator];
+            string version = target.Name[(separator + 1)..];
+            string type = target.Value.GetProperty("type").GetString()!;
+            var dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            if (target.Value.TryGetProperty("dependencies", out JsonElement edges))
+            {
+                foreach (JsonProperty edge in edges.EnumerateObject())
+                {
+                    dependencies.Add(edge.Name, edge.Value.GetString()!);
+                }
+            }
+
+            string? path = null;
+            if (type == "project" && libraries.ValueKind == JsonValueKind.Object
+                && libraries.TryGetProperty(target.Name, out JsonElement library))
+            {
+                path = Path.GetFullPath(Path.Combine(directory, library.GetProperty("path").GetString()!
+                    .Replace('\\', Path.DirectorySeparatorChar)));
+            }
+
+            if (!nodes.TryAdd(id, new(id, version, type, dependencies, ReadFrameworks(target.Value), path)))
+            {
+                failures.Add($"Restore resolves multiple versions of {id}: {rootId} > {id}/{version}");
+            }
+        }
+
+        return nodes;
+    }
+
+    private static string[] ReadFrameworks(JsonElement details)
+    {
+        if (!details.TryGetProperty("frameworkReferences", out JsonElement frameworks))
+        {
+            return [];
+        }
+
+        return frameworks.ValueKind == JsonValueKind.Array
+            ? frameworks.EnumerateArray().Select(item => item.GetString()!).ToArray()
+            : frameworks.EnumerateObject().Select(item => item.Name).ToArray();
+    }
+}

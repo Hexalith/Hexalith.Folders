@@ -1,0 +1,2722 @@
+@page "/tenants/{TenantId}/audit"
+@using Hexalith.Tenants.Contracts.Enums
+@using Hexalith.Tenants.Contracts.Queries
+@using Hexalith.Tenants.UI.State
+@using Hexalith.Tenants.UI.State.TenantDetail
+@using Hexalith.EventStore.Client.Gateway
+@using Microsoft.JSInterop
+@using System.Globalization
+@using System.Text.Json
+@implements IAsyncDisposable
+@inject IStringLocalizer<TenantsResources> Localizer
+@inject ITenantQueryGateway QueryGateway
+@inject ITenantsBffComposition BffComposition
+@inject IJSRuntime JS
+@inject IServiceProvider Services
+
+<FcPageLayout Mode="FcPageLayoutMode.FullWidth">
+    <FluentStack Orientation="Orientation.Vertical"
+                 VerticalGap="16px"
+                 Class="tenant-audit"
+                 data-testid="tenants-audit-surface"
+                 aria-labelledby="tenant-audit-heading">
+    <FcPageHeader PageTitle="@Localizer["Tenants.Audit.Title", TenantDisplayName]"
+                  Heading="@Localizer["Tenants.Audit.Title", TenantDisplayName]"
+                  HeadingId="tenant-audit-heading"
+                  HeadingTabIndex="-1"
+                  Eyebrow="@Localizer["Tenants.Audit.Eyebrow"]"
+                  Description="@Localizer["Tenants.Audit.Description"]"
+                  TestId="tenants-audit-page-header">
+        <Metadata>
+        @if (HasContext)
+        {
+            <p class="tenant-audit__context"
+               data-testid="tenants-audit-context"
+               aria-live="@ContextLiveRegion">
+                @ContextText
+            </p>
+        }
+        @if (SafeBackReturnUrl is not null)
+        {
+            <p class="tenant-audit__return-context" data-testid="tenants-audit-return-context">
+                @Localizer[HasBackLauncherFocus ? "Tenants.Audit.ReturnContext" : "Tenants.Audit.ReturnContext.NoFocus", BackOriginLabel]
+            </p>
+        }
+        </Metadata>
+        <Actions>
+            <a class="tenant-audit__back" href="@BackHref" data-testid="tenants-audit-back">@Localizer["Tenants.Audit.BackTo", BackOriginLabel]</a>
+        </Actions>
+    </FcPageHeader>
+
+    <FluentAccordion Class="tenant-audit__support"
+                     ExpandMode="AccordionExpandMode.Multi"
+                     Block="true">
+        <FluentAccordionItem Header="@Localizer["Tenants.Audit.ControlsLabel"]"
+                             Expanded="true">
+            <section class="tenant-audit__controls" aria-label="@Localizer["Tenants.Audit.ControlsLabel"]">
+                <FluentGrid Spacing="3" Class="tenant-audit__controls-layout">
+                    <FluentGridItem Xs="12" Md="6" Lg="3">
+                        @* Fluent v5's TextInputType enum has no datetime-local member, so the native datetime-local
+                           picker is requested with a splatted type attribute on the FluentTextInput. The bound value
+                           stays a string and is interpreted as UTC by ParseDate, preserving the existing range logic. *@
+                        <FluentTextInput Value="@_fromText"
+                                         ValueChanged="OnFromChanged"
+                                         Label="@Localizer["Tenants.Audit.Filter.FromUtc"]"
+                                         type="datetime-local"
+                                         data-testid="tenants-audit-filter-from"
+                                         aria-label="@Localizer["Tenants.Audit.Filter.FromUtc"]"
+                                         aria-invalid="@(_fromValidationKey is null ? "false" : "true")"
+                                         aria-describedby="@(_fromValidationKey is null ? null : "tenants-audit-filter-from-error")" />
+                        @if (_fromValidationKey is not null)
+                        {
+                            <p id="tenants-audit-filter-from-error" role="alert" data-testid="tenants-audit-filter-from-error">
+                                @Localizer[_fromValidationKey]
+                            </p>
+                        }
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Md="6" Lg="3">
+                        <FluentTextInput Value="@_toText"
+                                         ValueChanged="OnToChanged"
+                                         Label="@Localizer["Tenants.Audit.Filter.ToUtc"]"
+                                         type="datetime-local"
+                                         data-testid="tenants-audit-filter-to"
+                                         aria-label="@Localizer["Tenants.Audit.Filter.ToUtc"]"
+                                         aria-invalid="@(_toValidationKey is null ? "false" : "true")"
+                                         aria-describedby="@(_toValidationKey is null ? null : "tenants-audit-filter-to-error")" />
+                        @if (_toValidationKey is not null)
+                        {
+                            <p id="tenants-audit-filter-to-error" role="alert" data-testid="tenants-audit-filter-to-error">
+                                @Localizer[_toValidationKey]
+                            </p>
+                        }
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Md="6" Lg="3">
+                        <FluentSelect TOption="string" TValue="string"
+                                      Value="@_categoryText"
+                                      ValueChanged="OnCategoryChanged"
+                                      Label="@Localizer["Tenants.Audit.Filter.Category"]"
+                                      data-testid="tenants-audit-filter-category"
+                                      aria-label="@Localizer["Tenants.Audit.Filter.Category"]"
+                                      aria-invalid="@(_categoryValidationKey is null ? "false" : "true")"
+                                      aria-describedby="@(_categoryValidationKey is null ? null : "tenants-audit-filter-category-error")">
+                            <FluentOption TValue="string" Value="@string.Empty">@Localizer["Tenants.Audit.Filter.Category.All"]</FluentOption>
+                            <FluentOption TValue="string" Value="@AuditEventCategory.Access.ToString()">@Localizer["Tenants.Audit.Category.Access"]</FluentOption>
+                            <FluentOption TValue="string" Value="@AuditEventCategory.Administrative.ToString()">@Localizer["Tenants.Audit.Category.Administrative"]</FluentOption>
+                        </FluentSelect>
+                        @if (_categoryValidationKey is not null)
+                        {
+                            <p id="tenants-audit-filter-category-error" role="alert" data-testid="tenants-audit-filter-category-error">
+                                @Localizer[_categoryValidationKey]
+                            </p>
+                        }
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Md="6" Lg="3">
+                        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="12px" VerticalGap="12px" Wrap="true">
+                            <FluentButton Appearance="ButtonAppearance.Primary" data-testid="tenants-audit-apply" OnClick="ApplyFiltersAsync">
+                                @Localizer["Tenants.Audit.Apply"]
+                            </FluentButton>
+                            <FluentButton Appearance="ButtonAppearance.Primary" data-testid="tenants-audit-refresh" OnClick="RefreshAsync">
+                                @Localizer["Tenants.Audit.Refresh"]
+                            </FluentButton>
+                            <FluentButton Appearance="ButtonAppearance.Outline" data-testid="tenants-audit-reset" OnClick="ResetFiltersAsync">
+                                @Localizer["Tenants.Audit.Reset"]
+                            </FluentButton>
+                        </FluentStack>
+                    </FluentGridItem>
+                </FluentGrid>
+                @if (_filtersDirty)
+                {
+                    <p data-testid="tenants-audit-filter-pending">@Localizer["Tenants.Audit.Filter.Pending"]</p>
+                }
+            </section>
+        </FluentAccordionItem>
+
+        <FluentAccordionItem Header="@Localizer[$"Tenants.Audit.State.{ResourceState}.Title"]"
+                             Expanded="true">
+            <section class="tenant-audit__state tenant-audit__state--@ResourceState.ToLowerInvariant()"
+                     role="@StatusRole"
+                     aria-live="@StatusLive"
+                     tabindex="0"
+                     data-testid="@StateTestId">
+                <span class="tenant-audit__state-icon" aria-hidden="true">@StateIcon</span>
+                <div class="tenant-audit__state-copy">
+                    <h2>@Localizer[$"Tenants.Audit.State.{ResourceState}.Title"]</h2>
+                    <p data-testid="tenants-audit-live-region">@Localizer[$"Tenants.Audit.State.{ResourceState}.Message"]</p>
+                </div>
+            </section>
+            @* Lifecycle evidence is a sibling of the state section, not a child. StatusRole/StatusLive
+               resolve to alert/assertive for non-Ready states; nesting the badge re-announced the whole
+               state block. The wrapper owns polite/alert escalation for Unavailable. *@
+            <ProjectionLifecycleStatus Lifecycle="@_snapshot.Lifecycle"
+                                       TestId="tenants-audit-projection-lifecycle-status"
+                                       BadgeTestId="tenants-audit-projection-lifecycle-status-badge" />
+            @if (HasStateRecovery)
+            {
+                <FluentStack Orientation="Orientation.Vertical"
+                             VerticalGap="0.5rem"
+                             data-testid="tenants-audit-recovery">
+                    <p data-testid="tenants-audit-recovery-description">
+                        @Localizer[$"Tenants.Audit.Recovery.{ResourceState}"]
+                    </p>
+                    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="0.5rem" Wrap="true">
+                        @if (CanResetForState)
+                        {
+                            <FluentButton Appearance="ButtonAppearance.Outline"
+                                          data-testid="tenants-audit-recovery-reset"
+                                          OnClick="ResetFiltersAsync">
+                                @Localizer["Tenants.Audit.Recovery.Action.Reset"]
+                            </FluentButton>
+                        }
+                        @if (CanRefreshForState)
+                        {
+                            <FluentButton Appearance="ButtonAppearance.Outline"
+                                          data-testid="tenants-audit-recovery-refresh"
+                                          OnClick="RefreshAsync">
+                                @Localizer["Tenants.Audit.Recovery.Action.Refresh"]
+                            </FluentButton>
+                        }
+                        @if (CanContinueReadOnlyForState)
+                        {
+                            <a href="#tenant-audit-grid-heading" data-testid="tenants-audit-recovery-continue">
+                                @Localizer["Tenants.Audit.Recovery.Action.ContinueReadOnly"]
+                            </a>
+                        }
+                        @if (_snapshot.Kind is TenantAuditSurfaceKind.Unauthorized && PermissionRecoveryHref is { } permissionHref)
+                        {
+                            <a href="@permissionHref" data-testid="tenants-audit-recovery-permission">
+                                @Localizer["Tenants.Audit.Recovery.Action.RequestPermission"]
+                            </a>
+                        }
+                        @if (EscalatesFailedRead)
+                        {
+                            <a href="@EscalationRecoveryHref" data-testid="tenants-audit-recovery-escalate">
+                                @Localizer["Tenants.Audit.Recovery.Action.Escalate"]
+                            </a>
+                        }
+                    </FluentStack>
+                </FluentStack>
+            }
+            @* Rendered as a sibling of the state section, not a child. StatusRole/StatusLive resolve to
+               alert/assertive for the non-Ready states, and inserting or removing a child mutates that
+               region's own subtree -- so every projection nudge re-announced the whole state block
+               assertively and interrupted the screen-reader user. The nudge is a polite, non-authoritative
+               signal and must own its live region. *@
+            @if (_isNotificationRefreshing)
+            {
+                <p class="tenant-audit__nudge" role="status" aria-live="polite" data-testid="tenants-audit-notification-refreshing">
+                    @Localizer["Tenants.Audit.Freshness.Refreshing"]
+                </p>
+            }
+        </FluentAccordionItem>
+    </FluentAccordion>
+
+    @if (ShouldRenderRows)
+    {
+        <section class="tenant-audit__grid-shell" aria-labelledby="tenant-audit-grid-heading"
+                 data-audit-response-count="@_snapshot.Rows.Count"
+                 data-audit-page-size="@PageSize"
+                 data-audit-next-cursor-present="@(!string.IsNullOrWhiteSpace(_snapshot.NextCursor) ? "true" : "false")">
+            <h2 id="tenant-audit-grid-heading">@Localizer["Tenants.Audit.GridTitle"]</h2>
+            <AuditDataGrid Rows="@_snapshot.Rows"
+                           HasViewportMeasurement="@(_viewportObservation?.HasMeasurement == true)"
+                           IsCorrectionViewportSafe="@HasMeasuredSafeViewport"
+                           OnOpenReceipt="OpenReceiptAsync"
+                           CorrectionIntentProvider="CreateCorrectionIntent"
+                           OnRoleSelected="SelectCorrectionRoleAsync"
+                           OnStartCorrection="OpenGridCorrectionAsync" />
+            @if (_activeCorrectionIntent is not null)
+            {
+                <TenantCorrectionStartPanel Intent="@_activeCorrectionIntent"
+                                            OnHandoff="HandoffCorrectionAsync"
+                                            OnClose="CloseCorrectionAsync" />
+            }
+            @if (_pagingJumpedToFirstPage)
+            {
+                <p role="status" aria-live="polite" data-testid="tenants-audit-history-truncated">
+                    @Localizer["Tenants.Audit.Recovery.HistoryTruncated"]
+                </p>
+            }
+            <nav class="tenant-audit__pager" aria-label="@Localizer["Tenants.Audit.PaginationLabel"]">
+                <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="8px" Wrap="true">
+                    <FluentButton Appearance="ButtonAppearance.Outline" data-testid="tenants-audit-previous" Disabled="@(_filtersDirty || _pageLoadInFlight || _cursorHistory.Count == 0)" OnClick="PreviousPageAsync">
+                        @Localizer["Tenants.Audit.Previous"]
+                    </FluentButton>
+                    <FluentButton Appearance="ButtonAppearance.Outline" data-testid="tenants-audit-next" Disabled="@(_filtersDirty || _pageLoadInFlight || !_snapshot.HasMore || string.IsNullOrWhiteSpace(_snapshot.NextCursor))" OnClick="NextPageAsync">
+                        @Localizer["Tenants.Audit.Next"]
+                    </FluentButton>
+                </FluentStack>
+            </nav>
+        </section>
+    }
+    @if (HasAuthorizedRetainedSurface && _previewCorrectionIntent is not null
+        && (HasAuthorizedAuditSurface || HasDisplayedRetainedCorrection))
+    {
+        <CorrectionStartPanel Intent="@_previewCorrectionIntent"
+                              @ref="_correctionPreview"
+                              StartProjection="@_previewCorrectionIntent.CurrentProjection"
+                              ShowCompetingAttemptNotice="@_competingCorrectionNotice"
+                              RetainedAttemptMessageId="@_resumedCorrectionMessageId"
+                              OnOpenOriginalReceipt="OpenOriginalCorrectionReceiptAsync"
+                              OnClose="CloseCorrectionAsync" />
+    }
+    @if (HasAuthorizedRetainedSurface && _globalCorrectionIntent is not null)
+    {
+        <GlobalAdministratorCorrectionPanel Intent="@_globalCorrectionIntent"
+                                            @ref="_globalCorrectionPanel"
+                                            CurrentProjection="@_globalAdministratorsProjection"
+                                            ProjectionRefreshProvider="RefreshGlobalAdministratorsProjectionAsync"
+                                            OnProofAvailable="OnGlobalProofAvailableAsync"
+                                            OnClose="CloseGlobalCorrectionAsync" />
+    }
+    @if (HasAuthorizedRetainedSurface && _previewCorrectionIntent is null && RetainedCorrectionAttempt is not null)
+    {
+        <FluentButton Appearance="ButtonAppearance.Outline"
+                      data-testid="tenants-correction-resume"
+                      OnClick="ResumeCorrectionAsync">
+            @Localizer["Tenants.Correction.Resume"]
+        </FluentButton>
+    }
+    @if (_selectedReceipt is not null && !Volatile.Read(ref _authenticationTransitionPending))
+    {
+        <AuditEvidenceReceipt Receipt="@_selectedReceipt"
+                              PairedReceiptReferences="@PairedGlobalReceiptReferences"
+                              OnOpenPairedReceipt="OpenPairedGlobalReceiptAsync"
+                              CorrectionIntent="@(_selectedReceiptFromCorrectionPreview && _previewCorrectionIntent is not null ? null : _selectedReceiptCorrectionIntent)"
+                              IsCorrectionViewportSafe="@HasMeasuredSafeViewport"
+                              OnStartCorrection="OpenReceiptCorrectionAsync"
+                              OnRoleSelected="SelectCorrectionRoleAsync"
+                              OnRetry="RefreshAsync"
+                              OnReset="ResetFiltersAsync"
+                              UseResetRecovery="@HasFilterValidation"
+                              HostEscalatesFailedRead="@EscalatesFailedRead"
+                              OnClose="CloseReceiptAsync" />
+    }
+    </FluentStack>
+</FcPageLayout>
+
+@code {
+    private const string FocusModulePath = "./js/tenantsFocus.js";
+    private const int PageSize = 50;
+    private bool _filtersDirty;
+    /// <summary>Upper bound on retained paging history.</summary>
+    private const int MaximumCursorHistory = CursorHistory.DefaultMaximum;
+
+    private readonly Stack<string?> _cursorHistory = new();
+
+    // Set when CursorHistory.Trim drops entries, cleared when the resulting jump has been announced. The
+    // trim re-appends the first-page sentinel beneath the newest entries, so one later Previous click moves
+    // the operator from the middle of the sequence to page one -- which the pager would otherwise render as
+    // an ordinary one-page step back.
+    private bool _pagingHistoryTruncated;
+    private bool _pagingJumpedToFirstPage;
+    private TenantAuditSnapshot _snapshot = TenantAuditSnapshot.Loading();
+    private string? _currentCursor;
+    private string? _fromText;
+    private string? _toText;
+    private string? _categoryText;
+    private string? _fromValidationKey;
+    private string? _toValidationKey;
+    private string? _categoryValidationKey;
+    private TenantAuditReceipt? _selectedReceipt;
+    private string? _selectedReceiptReference;
+    private string? _lastRouteReceiptReference;
+    private string? _dismissedReceiptReference;
+    private bool _selectedReceiptFromLauncher;
+    private bool _selectedReceiptFromCorrectionPreview;
+    private string? _pendingReceiptFocus;
+    private long _receiptFocusGeneration;
+    private TenantCorrectionStartIntent? _selectedReceiptCorrectionIntent;
+    private TenantCorrectionStartIntent? _activeCorrectionIntent;
+    private TenantCorrectionStartIntent? _previewCorrectionIntent;
+    private bool _competingCorrectionNotice;
+    private string? _resumedCorrectionMessageId;
+    private CorrectionStartPanel? _correctionPreview;
+    private TenantCorrectionStartIntent? _globalCorrectionIntent;
+    private GlobalAdministratorCorrectionPanel? _globalCorrectionPanel;
+    private readonly List<TenantCorrectionProofLink> _verifiedGlobalProofs = [];
+    private readonly Dictionary<string, TenantAuditRow> _verifiedGlobalRows = new(StringComparer.Ordinal);
+    private long _pairedProofGeneration;
+    private GlobalAdministratorsSnapshot? _globalAdministratorsProjection;
+    private bool _globalCorrectionAuthorized;
+    private readonly Dictionary<string, TenantCorrectionProjection> _correctionProjections = new(StringComparer.Ordinal);
+    private string? _activeCorrectionOrigin;
+    private string? _pendingCorrectionOrigin;
+    private int _correctionOpenGeneration;
+    private long _correctionProjectionGeneration;
+    private IAsyncDisposable? _readRefreshLease;
+    private string? _loadedTenantId;
+    private string? _initialLoadStartedTenantId;
+    private string? _subscriptionTenantId;
+    private bool _readRefreshSubscriptionInFlight;
+    private string? _pendingSubscriptionTenantId;
+    private readonly Lock _readRefreshSubscriptionLock = new();
+    private bool _isNotificationRefreshing;
+    private bool _pageLoadInFlight;
+    private bool _disposed;
+    private bool _authenticationTransitionPending;
+    private long _authenticationTransitionVersion;
+    private AuthenticationStateProvider? _authenticationStateProvider;
+    private long _loadGeneration;
+    private long _routeGeneration;
+    private CancellationTokenSource? _loadCancellation;
+    // Serialises the active-cancellation swap. A superseded source is cancelled immediately -- which is what
+    // callers observe -- but NOT disposed there: disposing one at the moment it is replaced races the
+    // request still inside SendAsync, where a CancellationToken.Register after Dispose throws
+    // ObjectDisposedException, which is not an OperationCanceledException and so slips past every caller's
+    // cancellation-only handler. Disposal is owned solely by CompleteCancellation, which the owning
+    // PendingOperation calls when its operation finishes. A prior version also tracked superseded sources in
+    // a List; nothing ever read it, so it is removed rather than left to read as a retention mechanism.
+    private readonly Lock _cancellationLock = new();
+    private readonly Dictionary<string, TenantRole> _selectedCorrectionRoles = new(StringComparer.Ordinal);
+    private IJSObjectReference? _focusModule;
+    private string? _activeCorrectionFocusReference;
+    private string? _pendingCorrectionFocusReference;
+    private long _correctionFocusGeneration;
+    private TenantHighImpactViewportObservation? _viewportObservation;
+
+    [Parameter]
+    public string TenantId { get; set; } = string.Empty;
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "targetUserId")]
+    public string? TargetUserId { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "supportSafeCommandReference")]
+    public string? SupportSafeCommandReference { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "returnUrl")]
+    public string? ReturnUrl { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "returnFocus")]
+    public string? ReturnFocus { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "source")]
+    public string? SourceKind { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "auditPartialReturn")]
+    public bool AuditPartialReturn { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "receiptReference")]
+    public string? ReceiptReference { get; set; }
+
+    private string? SafeBackReturnUrl
+    {
+        get
+        {
+            string? safe = TenantAuditNavigationSafety.SafeReturnUrlForTenant(ReturnUrl, TenantId, out _);
+            if (safe is null)
+            {
+                return null;
+            }
+
+            string? anchor = TenantAuditNavigationSafety.ReturnQueryValue(safe, "anchor");
+            string? existingFocus = TenantAuditNavigationSafety.ReturnQueryValue(safe, "auditFocus");
+            return ReturnFocus is not null
+                && (!TenantAuditNavigationSafety.IsFocusForReturnUrl(safe, ReturnFocus)
+                    || (anchor is not null && !string.Equals(anchor, ReturnFocus, StringComparison.Ordinal))
+                    || (existingFocus is not null && !string.Equals(existingFocus, ReturnFocus, StringComparison.Ordinal)))
+                ? null
+                : safe;
+        }
+    }
+
+    private bool HasBackLauncherFocus
+        => SafeBackReturnUrl is { } safe
+            && (TenantAuditNavigationSafety.IsFocusForReturnUrl(safe, ReturnFocus)
+                || TenantAuditNavigationSafety.ReturnQueryValue(safe, "auditFocus") is not null);
+
+    private string BackOriginLabel
+    {
+        get
+        {
+            string? safe = SafeBackReturnUrl;
+            if (safe is null)
+            {
+                return ReturnUrl is null && ReturnFocus is null
+                    && TenantAuditNavigationSafety.IsSafeTenantId(TenantId)
+                    && TenantId is not ("my" or "users")
+                    ? Localizer["Tenants.Audit.Context.SourceKind.TenantDetail"]
+                    : Localizer["Tenants.Audit.Context.SourceKind.TenantList"];
+            }
+
+            string path = safe.Split('?', 2)[0];
+            return path switch
+            {
+                "/tenants/my" => Localizer["Tenants.Audit.Context.SourceKind.MyTenants"],
+                "/tenants/users" => Localizer["Tenants.Audit.Context.SourceKind.UserLookup"],
+                "/tenants" when TenantAuditNavigationSafety.ReturnQueryValue(safe, "tab") is "users"
+                    => Localizer["Tenants.Audit.Context.SourceKind.UserLookup"],
+                "/tenants" when TenantAuditNavigationSafety.ReturnQueryValue(safe, "scope") is "mine"
+                    => Localizer["Tenants.Audit.Context.SourceKind.MyTenants"],
+                "/tenants" => Localizer["Tenants.Audit.Context.SourceKind.TenantList"],
+                _ => Localizer["Tenants.Audit.Context.SourceKind.TenantDetail"],
+            };
+        }
+    }
+
+    private string BackHref
+    {
+        get
+        {
+            if (ReturnFocus is not null && !TenantAuditNavigationSafety.IsSafeFocus(ReturnFocus))
+            {
+                return "/tenants?auditReturnUnavailable=true";
+            }
+
+            string? safe = SafeBackReturnUrl;
+            _ = TenantAuditNavigationSafety.SafeReturnUrlForTenant(ReturnUrl, TenantId, out bool strippedCursor);
+            if (safe is null)
+            {
+                return ReturnUrl is null && ReturnFocus is null && TenantAuditNavigationSafety.IsSafeTenantId(TenantId)
+                    && TenantId is not ("my" or "users")
+                    ? $"/tenants/{Uri.EscapeDataString(TenantId)}"
+                    : "/tenants?auditReturnUnavailable=true";
+            }
+
+            // SafeBackReturnUrl already rejected a return focus that conflicts with the route, anchor, or nested focus.
+            string? existingFocus = TenantAuditNavigationSafety.ReturnQueryValue(safe, "auditFocus");
+            if (ReturnFocus is not null && existingFocus is null)
+            {
+                safe += (safe.Contains('?', StringComparison.Ordinal) ? "&" : "?")
+                    + "auditFocus=" + Uri.EscapeDataString(ReturnFocus!);
+            }
+
+            if ((AuditPartialReturn || strippedCursor) && !safe.Contains("auditPartialReturn=", StringComparison.Ordinal))
+            {
+                safe += (safe.Contains('?', StringComparison.Ordinal) ? "&" : "?") + "auditPartialReturn=true";
+            }
+
+            return safe;
+        }
+    }
+
+    private string? PermissionRecoveryHref
+        => TenantAuditNavigationSafety.SafeRecoveryHref(BffComposition.AuditPermissionRecoveryHref);
+
+    private string? EscalationRecoveryHref
+        => TenantAuditNavigationSafety.SafeRecoveryHref(BffComposition.AuditEscalationRecoveryHref);
+
+    // The one condition under which the page renders its escalation link for a failed read. The markup renders
+    // the link from this property, and the receipt receives it, so the receipt never offers a second link for
+    // the same failure and never drops the only one.
+    private bool EscalatesFailedRead
+        => HasStateRecovery
+            && _snapshot.Kind is TenantAuditSurfaceKind.Unavailable or TenantAuditSurfaceKind.Error
+            && EscalationRecoveryHref is not null;
+
+    // Never echo an unsafe direct-route identifier into the heading or document title.
+    private string TenantDisplayName
+        => TenantAuditNavigationSafety.IsSafeTenantId(TenantId)
+            ? TenantId
+            : Localizer["Tenants.Audit.UnknownTenant"].Value;
+
+    private bool HasContext
+        => SafeTargetUserId is not null
+            || SafeCommandReference is not null
+            || !string.IsNullOrWhiteSpace(SourceKind);
+
+    private string? SafeTargetUserId
+        => TenantAuditNavigationSafety.IsSafeIdentifier(TargetUserId) ? TargetUserId : null;
+
+    private string? SafeCommandReference
+        => TenantAuditNavigationSafety.IsSafeHint(SupportSafeCommandReference) ? SupportSafeCommandReference : null;
+
+    // Context restoration is informational, never a blocking state, so it is always polite.
+    private string ContextLiveRegion
+        => "polite";
+
+    private string ContextText
+        => SafeTargetUserId is { } safeTarget
+            ? Localizer["Tenants.Audit.Context.User", GlobalAdministratorIdentityDisplay.Encode(safeTarget)]
+            : SafeCommandReference is { } safeCommand
+                ? Localizer["Tenants.Audit.Context.Command", safeCommand]
+                : Localizer["Tenants.Audit.Context.Source", SourceLabel];
+
+    // Resolve the machine source kind to a localized whole phrase so raw tokens never reach visible copy.
+    private string SourceLabel
+        => SourceKind switch
+        {
+            "tenant-list" => Localizer["Tenants.Audit.Context.SourceKind.TenantList"],
+            "tenant-detail" => Localizer["Tenants.Audit.Context.SourceKind.TenantDetail"],
+            "member-row" => Localizer["Tenants.Audit.Context.SourceKind.MemberRow"],
+            "user-lookup" => Localizer["Tenants.Audit.Context.SourceKind.UserLookup"],
+            "my-tenants" => Localizer["Tenants.Audit.Context.SourceKind.MyTenants"],
+            "command-result" => Localizer["Tenants.Audit.Context.SourceKind.CommandResult"],
+            _ => Localizer["Tenants.Audit.Context.SourceKind.Default"],
+        };
+
+    private bool ShouldRenderRows
+        => !Volatile.Read(ref _authenticationTransitionPending)
+            && (_snapshot.Kind is TenantAuditSurfaceKind.Ready
+            or TenantAuditSurfaceKind.Stale
+            or TenantAuditSurfaceKind.Degraded
+            or TenantAuditSurfaceKind.ListRefreshed)
+            && _snapshot.Rows.Count > 0
+            && !HasFilterValidation;
+
+    private bool HasAuthorizedAuditSurface
+        => HasAuthorizedRetainedSurface
+            && (_snapshot.Kind is TenantAuditSurfaceKind.Ready
+            or TenantAuditSurfaceKind.Empty
+            or TenantAuditSurfaceKind.FilteredEmpty
+            or TenantAuditSurfaceKind.ListRefreshed)
+            && _snapshot.Freshness is ReadModelFreshnessState.Current;
+
+    private bool HasAuthorizedRetainedSurface
+        => !Volatile.Read(ref _authenticationTransitionPending)
+            && (_snapshot.Kind is TenantAuditSurfaceKind.Ready
+            or TenantAuditSurfaceKind.Empty
+            or TenantAuditSurfaceKind.FilteredEmpty
+            or TenantAuditSurfaceKind.ListRefreshed
+            or TenantAuditSurfaceKind.Stale
+            or TenantAuditSurfaceKind.Degraded)
+            && string.Equals(_snapshot.TenantId, TenantId, StringComparison.Ordinal);
+
+    private bool HasFilterValidation
+        => _fromValidationKey is not null
+            || _toValidationKey is not null
+            || _categoryValidationKey is not null;
+
+    private bool HasMeasuredSafeViewport
+        => _viewportObservation is { HasMeasurement: true, State: TenantHighImpactViewportState.Safe };
+
+    private bool HasStateRecovery
+        => HasFilterValidation || _snapshot.Kind is TenantAuditSurfaceKind.Empty
+            or TenantAuditSurfaceKind.FilteredEmpty
+            or TenantAuditSurfaceKind.Stale
+            or TenantAuditSurfaceKind.Degraded
+            or TenantAuditSurfaceKind.Unauthorized
+            or TenantAuditSurfaceKind.InvalidCursor
+            or TenantAuditSurfaceKind.ListRefreshed
+            or TenantAuditSurfaceKind.Unavailable
+            or TenantAuditSurfaceKind.Error;
+
+    private bool CanResetForState
+        => HasFilterValidation || _snapshot.Kind is TenantAuditSurfaceKind.FilteredEmpty;
+
+    private bool CanRefreshForState
+        => !HasFilterValidation && _snapshot.Kind is TenantAuditSurfaceKind.Empty
+            or TenantAuditSurfaceKind.FilteredEmpty
+            or TenantAuditSurfaceKind.Stale
+            or TenantAuditSurfaceKind.Degraded
+            or TenantAuditSurfaceKind.InvalidCursor
+            or TenantAuditSurfaceKind.ListRefreshed
+            or TenantAuditSurfaceKind.Unavailable
+            or TenantAuditSurfaceKind.Error;
+
+    private bool CanContinueReadOnlyForState
+        => ShouldRenderRows
+            && _snapshot.Kind is TenantAuditSurfaceKind.Stale
+                or TenantAuditSurfaceKind.Degraded
+                or TenantAuditSurfaceKind.ListRefreshed;
+
+    private string ResourceState => HasFilterValidation ? "InvalidFilters" : _snapshot.Kind switch
+    {
+        TenantAuditSurfaceKind.Loading => "Loading",
+        TenantAuditSurfaceKind.Ready => "Ready",
+        TenantAuditSurfaceKind.Empty => "Empty",
+        TenantAuditSurfaceKind.FilteredEmpty => "FilteredEmpty",
+        TenantAuditSurfaceKind.Stale => "Stale",
+        TenantAuditSurfaceKind.Degraded => "Degraded",
+        TenantAuditSurfaceKind.Unauthorized => "Unauthorized",
+        TenantAuditSurfaceKind.InvalidCursor => "InvalidCursor",
+        TenantAuditSurfaceKind.ListRefreshed => "ListRefreshed",
+        TenantAuditSurfaceKind.Unavailable => "Unavailable",
+        TenantAuditSurfaceKind.Error => "Error",
+        _ => "Error",
+    };
+
+    private string StateTestId
+        => $"tenants-audit-{TestIdState(ResourceState)}";
+
+    private string StatusRole
+        => HasFilterValidation || _snapshot.Kind is TenantAuditSurfaceKind.Unauthorized
+            or TenantAuditSurfaceKind.InvalidCursor
+            or TenantAuditSurfaceKind.Degraded
+            or TenantAuditSurfaceKind.Unavailable
+            or TenantAuditSurfaceKind.Error
+                ? "alert"
+                : "status";
+
+    private string StatusLive => StatusRole == "alert" ? "assertive" : "polite";
+
+    private string StateIcon => _snapshot.Kind switch
+    {
+        TenantAuditSurfaceKind.Ready => "OK",
+        TenantAuditSurfaceKind.Empty => "0",
+        TenantAuditSurfaceKind.FilteredEmpty => "0",
+        TenantAuditSurfaceKind.Loading => "...",
+        TenantAuditSurfaceKind.ListRefreshed => "R",
+        TenantAuditSurfaceKind.Stale => "!",
+        TenantAuditSurfaceKind.Degraded => "!",
+        TenantAuditSurfaceKind.InvalidCursor => "!",
+        _ => "?",
+    };
+
+    protected override void OnInitialized()
+    {
+        _authenticationStateProvider = Services.GetService<AuthenticationStateProvider>();
+        if (_authenticationStateProvider is not null)
+        {
+            _authenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+        }
+
+        _viewportObservation = Services.GetService<TenantHighImpactViewportObservation>();
+        if (_viewportObservation is not null)
+        {
+            _viewportObservation.StateChanged += OnViewportObservationChanged;
+        }
+    }
+
+    private void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask)
+    {
+        long version = Interlocked.Increment(ref _authenticationTransitionVersion);
+        Volatile.Write(ref _authenticationTransitionPending, true);
+        Interlocked.Increment(ref _correctionOpenGeneration);
+        Interlocked.Increment(ref _pairedProofGeneration);
+        Interlocked.Increment(ref _loadGeneration);
+        CancelActiveCancellation();
+        Task callback = InvokeAsync(() => ApplyAuthenticationStateChangedAsync(authenticationStateTask, version));
+        _ = ObserveAuthenticationStateChangeAsync(callback);
+    }
+
+    private async Task ApplyAuthenticationStateChangedAsync(Task<AuthenticationState> authenticationStateTask, long version)
+    {
+        IAsyncDisposable? previousLease = null;
+        await InvokeAsync(() =>
+        {
+            if (_disposed || version != Volatile.Read(ref _authenticationTransitionVersion))
+            {
+                return;
+            }
+
+            previousLease = _readRefreshLease;
+            _readRefreshLease = null;
+            _subscriptionTenantId = null;
+            _initialLoadStartedTenantId = null;
+            ClearPaging();
+            _snapshot = TenantAuditSnapshot.Loading(TenantId);
+            _selectedReceipt = null;
+            _selectedReceiptCorrectionIntent = null;
+            _activeCorrectionIntent = null;
+            _previewCorrectionIntent = null;
+            _globalCorrectionIntent = null;
+            _globalAdministratorsProjection = null;
+            _globalCorrectionAuthorized = false;
+            _verifiedGlobalProofs.Clear();
+            _verifiedGlobalRows.Clear();
+            StateHasChanged();
+        }).ConfigureAwait(false);
+        if (previousLease is not null)
+        {
+            await DisposeLeaseSupportSafelyAsync(previousLease).ConfigureAwait(false);
+        }
+
+        try
+        {
+            _ = await authenticationStateTask.ConfigureAwait(false);
+        }
+        catch
+        {
+            await InvokeAsync(() =>
+            {
+                if (_disposed || version != Volatile.Read(ref _authenticationTransitionVersion))
+                {
+                    return;
+                }
+
+                _snapshot = TenantAuditSnapshot.Unavailable(new TenantAuditRequest(TenantId));
+                Volatile.Write(ref _authenticationTransitionPending, false);
+                StateHasChanged();
+            }).ConfigureAwait(false);
+            return;
+        }
+
+        if (_disposed || version != Volatile.Read(ref _authenticationTransitionVersion))
+        {
+            return;
+        }
+
+        string? tenantId = null;
+        await InvokeAsync(() =>
+        {
+            if (!_disposed && version == Volatile.Read(ref _authenticationTransitionVersion))
+            {
+                tenantId = TenantId;
+                _initialLoadStartedTenantId = tenantId;
+                Volatile.Write(ref _authenticationTransitionPending, false);
+            }
+        }).ConfigureAwait(false);
+        if (tenantId is not null && !_disposed && version == Volatile.Read(ref _authenticationTransitionVersion))
+        {
+            await LoadAsync(reuseETag: false, retainConfirmed: false, requestedTenantId: tenantId)
+                .ConfigureAwait(false);
+            await EnsureReadRefreshSubscriptionAsync(tenantId).ConfigureAwait(false);
+        }
+    }
+
+    private static async Task ObserveAuthenticationStateChangeAsync(Task callback)
+    {
+        try
+        {
+            await callback.ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+            // The renderer was disposed while the authentication callback was queued.
+        }
+    }
+
+    private void OnViewportObservationChanged(object? sender, EventArgs args)
+        => _ = RenderViewportChangeAsync();
+
+    private async Task RenderViewportChangeAsync()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        try
+        {
+            if (!HasMeasuredSafeViewport && _selectedReceiptCorrectionIntent?.IsAvailable is true)
+            {
+                await CaptureReceiptFocusForReplacementAsync(correctionOnly: true).ConfigureAwait(false);
+            }
+
+            await InvokeAsync(() =>
+            {
+                if (_disposed)
+                {
+                    return;
+                }
+
+                if (!HasMeasuredSafeViewport && !HasSubmittedCorrection && !HasDisplayedRetainedCorrection)
+                {
+                    Interlocked.Increment(ref _correctionOpenGeneration);
+                    if (_activeCorrectionIntent is not null || _previewCorrectionIntent is not null)
+                    {
+                        ScheduleCorrectionFocus(_activeCorrectionFocusReference, _activeCorrectionOrigin);
+                    }
+                    _activeCorrectionIntent = null;
+                    _previewCorrectionIntent = null;
+                    _activeCorrectionFocusReference = null;
+                }
+
+                ResolveReceiptSelection();
+                StateHasChanged();
+            }).ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+            // Navigation disposed the renderer between the alive check and queued callback.
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        string tenantId = TenantId;
+        long routeGeneration = Interlocked.Increment(ref _routeGeneration);
+        if (!TenantAuditNavigationSafety.IsSafeTenantId(tenantId))
+        {
+            Interlocked.Increment(ref _loadGeneration);
+            CancelActiveCancellation();
+            IAsyncDisposable? invalidLease = _readRefreshLease;
+            _readRefreshLease = null;
+            _subscriptionTenantId = null;
+            await InvokeAsync(() =>
+            {
+                ClearPaging();
+                _snapshot = TenantAuditSnapshot.Unavailable(new TenantAuditRequest("invalid"));
+                _loadedTenantId = null;
+                _initialLoadStartedTenantId = null;
+                _selectedReceiptReference = null;
+                _selectedReceiptFromLauncher = false;
+                _selectedReceiptFromCorrectionPreview = false;
+                _selectedReceipt = null;
+                _selectedReceiptCorrectionIntent = null;
+                _activeCorrectionIntent = null;
+                _previewCorrectionIntent = null;
+                _globalCorrectionIntent = null;
+                _globalAdministratorsProjection = null;
+                _globalCorrectionAuthorized = false;
+                Interlocked.Increment(ref _pairedProofGeneration);
+                _verifiedGlobalProofs.Clear();
+                _verifiedGlobalRows.Clear();
+                _dismissedReceiptReference = null;
+                _lastRouteReceiptReference = ReceiptReference;
+                StateHasChanged();
+            }).ConfigureAwait(false);
+            if (invalidLease is not null)
+            {
+                await DisposeLeaseSupportSafelyAsync(invalidLease).ConfigureAwait(false);
+            }
+            return;
+        }
+
+        bool tenantChanged = !string.Equals(_loadedTenantId, tenantId, StringComparison.Ordinal);
+        bool receiptRouteChanged = !string.Equals(_lastRouteReceiptReference, ReceiptReference, StringComparison.Ordinal);
+        if (tenantChanged)
+        {
+            IAsyncDisposable? previousLease = _readRefreshLease;
+            _readRefreshLease = null;
+            _subscriptionTenantId = null;
+            await InvokeAsync(() =>
+            {
+                ClearPaging();
+                _filtersDirty = false;
+                _snapshot = TenantAuditSnapshot.Loading(tenantId);
+                _loadedTenantId = tenantId;
+                _initialLoadStartedTenantId = null;
+                _dismissedReceiptReference = null;
+                _selectedReceiptReference = null;
+                _selectedReceiptFromLauncher = false;
+                _selectedReceiptFromCorrectionPreview = false;
+                _activeCorrectionIntent = null;
+                _globalCorrectionIntent = null;
+                _globalAdministratorsProjection = null;
+                _globalCorrectionAuthorized = false;
+                Interlocked.Increment(ref _pairedProofGeneration);
+                _verifiedGlobalProofs.Clear();
+                _verifiedGlobalRows.Clear();
+                TenantCorrectionAttempt? retained = RetainedCorrectionAttempt;
+                _previewCorrectionIntent = retained is { BlocksAdmission: true } ? retained.Snapshot.Intent : null;
+                _resumedCorrectionMessageId = _previewCorrectionIntent is null ? null : retained?.MessageId;
+                _activeCorrectionFocusReference = _previewCorrectionIntent?.OriginalAuditReference;
+                _activeCorrectionOrigin = _previewCorrectionIntent is null ? null : "grid";
+                _competingCorrectionNotice = false;
+                _lastRouteReceiptReference = ReceiptReference;
+                ResolveReceiptSelection();
+                if (ReceiptReference is not null)
+                {
+                    ScheduleReceiptHeadingFocus();
+                }
+                StateHasChanged();
+            }).ConfigureAwait(false);
+            if (previousLease is not null)
+            {
+                await DisposeLeaseSupportSafelyAsync(previousLease).ConfigureAwait(false);
+            }
+            if (routeGeneration != Volatile.Read(ref _routeGeneration))
+            {
+                return;
+            }
+        }
+
+        bool needsInitialLoad = !string.Equals(_initialLoadStartedTenantId, tenantId, StringComparison.Ordinal);
+        if (!tenantChanged)
+        {
+            if (receiptRouteChanged)
+            {
+                bool hadReceipt = _selectedReceipt is not null;
+                string? previousReference = _selectedReceiptReference;
+                _lastRouteReceiptReference = ReceiptReference;
+                _dismissedReceiptReference = null;
+                _selectedReceiptReference = null;
+                _selectedReceiptFromLauncher = false;
+                _selectedReceiptFromCorrectionPreview = false;
+                ResolveReceiptSelection();
+                if (ReceiptReference is null && hadReceipt)
+                {
+                    ScheduleReceiptFocus(previousReference);
+                }
+                else if (ReceiptReference is not null)
+                {
+                    ScheduleReceiptHeadingFocus();
+                }
+            }
+
+            if (!needsInitialLoad)
+            {
+                await EnsureReadRefreshSubscriptionAsync(tenantId).ConfigureAwait(false);
+                if (receiptRouteChanged)
+                {
+                    await RefreshPairedGlobalReceiptAsync().ConfigureAwait(false);
+                }
+                return;
+            }
+        }
+
+        // Only a tenant change may discard the retained validator and blank the grid. The route carries six
+        // [SupplyParameterFromQuery] parameters, none of which feed CreateRequest -- it is built from the
+        // filter fields (_fromText/_toText/_categoryText) -- so the member "open audit for this user" entry
+        // point re-enters here with an unchanged TenantId and an identical request. Re-reading
+        // unconditionally discarded the conditional-read validator, reset the grid to Loading and cancelled
+        // any in-flight notification or paging load on every such navigation.
+        _initialLoadStartedTenantId = tenantId;
+        await LoadAsync(
+            reuseETag: false,
+            retainConfirmed: false,
+            requestedTenantId: tenantId).ConfigureAwait(false);
+        await EnsureReadRefreshSubscriptionAsync(tenantId).ConfigureAwait(false);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        string? pendingCorrectionFocusReference = _pendingCorrectionFocusReference;
+        string? pendingCorrectionOrigin = _pendingCorrectionOrigin;
+        long correctionFocusGeneration = _correctionFocusGeneration;
+        _pendingCorrectionFocusReference = null;
+        _pendingCorrectionOrigin = null;
+
+        if (_pendingReceiptFocus is { } pendingReceiptFocus)
+        {
+            _pendingReceiptFocus = null;
+            long focusGeneration = _receiptFocusGeneration;
+            try
+            {
+                IJSObjectReference focusModule = _focusModule
+                    ??= await JS.InvokeAsync<IJSObjectReference>("import", FocusModulePath).ConfigureAwait(false);
+                if (!_disposed && focusGeneration == _receiptFocusGeneration)
+                {
+                    bool focused = pendingReceiptFocus is "heading"
+                        ? await focusModule.InvokeAsync<bool>("focusElementById", "tenants-audit-receipt-heading").ConfigureAwait(false)
+                        : await focusModule.InvokeAsync<bool>("focusElementById", pendingReceiptFocus).ConfigureAwait(false);
+                    if (!_disposed && focusGeneration == _receiptFocusGeneration && !focused)
+                    {
+                        _ = await focusModule.InvokeAsync<bool>("focusElementById", "tenant-audit-heading").ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (JSDisconnectedException)
+            {
+                // Focus is no longer observable after the circuit disconnects.
+            }
+            catch (JSException)
+            {
+                // The audit read remains usable if the focus module is unavailable.
+            }
+            catch (ObjectDisposedException)
+            {
+                // Navigation disposed the focus module during the handoff.
+            }
+            catch (OperationCanceledException)
+            {
+                // Renderer or circuit teardown cancelled the focus handoff.
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(pendingCorrectionFocusReference))
+        {
+            return;
+        }
+
+        try
+        {
+            IJSObjectReference module = _focusModule
+                ??= await JS.InvokeAsync<IJSObjectReference>("import", FocusModulePath).ConfigureAwait(false);
+            if (_disposed || correctionFocusGeneration != _correctionFocusGeneration)
+            {
+                return;
+            }
+            bool focused = await module
+                .InvokeAsync<bool>("focusCorrectionLauncher", pendingCorrectionFocusReference, pendingCorrectionOrigin)
+                .ConfigureAwait(false);
+            if (!_disposed && correctionFocusGeneration == _correctionFocusGeneration && !focused)
+            {
+                string fallback = _selectedReceipt is null
+                    ? "tenant-audit-heading"
+                    : "tenants-audit-receipt-heading";
+                _ = await module.InvokeAsync<bool>("focusElementById", fallback).ConfigureAwait(false);
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+            // The circuit is already gone; focus return is no longer observable.
+        }
+        catch (JSException)
+        {
+            // The audit read remains usable if the focus module is unavailable.
+        }
+        catch (ObjectDisposedException)
+        {
+            // Navigation disposed the focus module during the handoff.
+        }
+        catch (OperationCanceledException)
+        {
+            // Renderer or circuit teardown cancelled the focus handoff.
+        }
+    }
+
+    private async Task<TenantAuditSnapshot?> LoadAsync(
+        bool reuseETag,
+        bool retainConfirmed = false,
+        string? requestedTenantId = null,
+        string? requestedCursor = null,
+        bool useRequestedCursor = false)
+    {
+        string tenantId = requestedTenantId ?? TenantId;
+        TenantAuditSnapshot previous = _snapshot;
+        if (!TryCreateRequest(
+            tenantId,
+            useRequestedCursor ? requestedCursor : _currentCursor,
+            reuseETag ? previous.ETag : null,
+            out TenantAuditRequest? request))
+        {
+            return null;
+        }
+
+        using PendingOperation operation = BeginLoad();
+        long generation = operation.Generation;
+        CancellationToken cancellationToken = operation.CancellationToken;
+        if (!retainConfirmed)
+        {
+            Task receiptFocusProbe = CaptureReceiptFocusForReplacementAsync();
+            // Marshalled and generation-guarded like every other _snapshot write in this file. Callers reach
+            // here from ConfigureAwait(false) continuations, so a manual Refresh or filter change running on
+            // the dispatcher could interleave between this call's BeginLoad and this write and have its
+            // applied page overwritten with Loading. The sibling global-administrators page guards its
+            // equivalent write for the same reason.
+            await InvokeAsync(() =>
+            {
+                if (CanApply(tenantId, generation))
+                {
+                    _snapshot = TenantAuditSnapshot.Loading(tenantId);
+                    ResolveReceiptSelection();
+                    StateHasChanged();
+                }
+            }).ConfigureAwait(false);
+            await receiptFocusProbe.ConfigureAwait(false);
+        }
+
+        TenantAuditSnapshot result;
+        try
+        {
+            result = await QueryGateway
+                .GetTenantAuditAsync(request!, previous, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return null;
+        }
+
+        if (!CanApply(tenantId, generation))
+        {
+            return null;
+        }
+
+        bool receiptStateChanges = false;
+        bool removesReceiptCorrection = false;
+        await InvokeAsync(() =>
+        {
+            if (CanApply(tenantId, generation))
+            {
+                receiptStateChanges = _selectedReceipt is not null && ReceiptStateForSnapshot(result) != _selectedReceipt.State;
+                removesReceiptCorrection = !receiptStateChanges && WillRemoveReceiptCorrectionControl(result);
+            }
+        }).ConfigureAwait(false);
+        if (receiptStateChanges)
+        {
+            await CaptureReceiptFocusForReplacementAsync().ConfigureAwait(false);
+        }
+        else if (removesReceiptCorrection)
+        {
+            await CaptureReceiptFocusForReplacementAsync(correctionOnly: true).ConfigureAwait(false);
+        }
+
+        // Re-checked inside the dispatcher callback: the CanApply above ran on a thread-pool continuation,
+        // so a newer load can win between that check and this write.
+        await InvokeAsync(() =>
+        {
+            if (CanApply(tenantId, generation))
+            {
+                CaptureCorrectionAuthority(result);
+                if (result.Kind is TenantAuditSurfaceKind.ListRefreshed or TenantAuditSurfaceKind.InvalidCursor)
+                {
+                    ClearPaging();
+                }
+
+                _snapshot = result;
+                ResolveReceiptSelection();
+            }
+        }).ConfigureAwait(false);
+
+        // Page-load enrichment only. The gateway
+        // rethrows OperationCanceledException unfiltered, so without this handler a Refresh or paging click
+        // during the in-flight detail read let the cancellation escape LoadAsync and OnParametersSetAsync
+        // and tear down the circuit. The audit list itself has already been applied above.
+        try
+        {
+            await RefreshTenantProjectionForLoadAsync(tenantId, generation, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is EventStoreGatewayException or HttpRequestException or JsonException or OperationCanceledException)
+        {
+            // Supplementary tenant-detail evidence unavailable; the audit page stays usable.
+        }
+
+        if (string.Equals(tenantId, "system", StringComparison.Ordinal)
+            && (_globalCorrectionIntent is not null
+                || _snapshot.Rows.Any(static row => row.EventType is "GlobalAdministratorSet" or "GlobalAdministratorRemoved")))
+        {
+            await RefreshGlobalCorrectionEvidenceForLoadAsync(tenantId, generation, cancellationToken).ConfigureAwait(false);
+        }
+
+        if (!CanApply(tenantId, generation))
+        {
+            return null;
+        }
+
+        removesReceiptCorrection = false;
+        await InvokeAsync(() =>
+        {
+            if (CanApply(tenantId, generation))
+            {
+                removesReceiptCorrection = WillRemoveReceiptCorrectionControl(_snapshot);
+            }
+        }).ConfigureAwait(false);
+        if (removesReceiptCorrection)
+        {
+            await CaptureReceiptFocusForReplacementAsync(correctionOnly: true).ConfigureAwait(false);
+        }
+
+        // Marshalled for the same reason the _snapshot write above is: these fields are read by
+        // NextPageAsync/PreviousPageAsync and ResolveReceiptSelection on the renderer dispatcher, but this
+        // continuation runs on a thread-pool thread after ConfigureAwait(false).
+        await InvokeAsync(() =>
+        {
+            if (CanApply(tenantId, generation))
+            {
+                ResolveReceiptSelection();
+            }
+        }).ConfigureAwait(false);
+        if (CanApply(tenantId, generation) && string.Equals(tenantId, "system", StringComparison.Ordinal))
+        {
+            await RefreshPairedGlobalReceiptAsync().ConfigureAwait(false);
+        }
+        return result;
+    }
+
+    private async Task EnsureReadRefreshSubscriptionAsync(string tenantId)
+    {
+        // _subscriptionTenantId is only written after the await below, so without an in-flight guard a second
+        // OnParametersSetAsync for the same tenant passes the entry check mid-setup, subscribes again and
+        // overwrites _readRefreshLease -- orphaning the first lease, whose callback stays registered until
+        // the circuit ends.
+        if (_disposed
+            || string.IsNullOrWhiteSpace(tenantId)
+            || !BffComposition.IsReadSurfaceConnected
+            || string.Equals(_subscriptionTenantId, tenantId, StringComparison.Ordinal)
+            || Services.GetService(typeof(TenantReadRefreshSubscription)) is not TenantReadRefreshSubscription refreshSubscription)
+        {
+            return;
+        }
+
+        // Claim setup and hand a later tenant to the current owner atomically. Clearing a pending target in a
+        // finally block used to race a navigation arriving between the owner's last read and that clear,
+        // silently losing the newer tenant's subscription request.
+        lock (_readRefreshSubscriptionLock)
+        {
+            if (_disposed || string.Equals(_subscriptionTenantId, tenantId, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            if (_readRefreshSubscriptionInFlight)
+            {
+                _pendingSubscriptionTenantId = tenantId;
+                return;
+            }
+
+            _readRefreshSubscriptionInFlight = true;
+        }
+
+        bool released = false;
+        try
+        {
+            string? target = tenantId;
+            while (target is not null)
+            {
+                await SubscribeReadRefreshAsync(refreshSubscription, target).ConfigureAwait(false);
+                lock (_readRefreshSubscriptionLock)
+                {
+                    target = _disposed ? null : _pendingSubscriptionTenantId;
+                    _pendingSubscriptionTenantId = null;
+                    if (target is not null && string.Equals(_subscriptionTenantId, target, StringComparison.Ordinal))
+                    {
+                        target = null;
+                    }
+
+                    if (target is null)
+                    {
+                        _readRefreshSubscriptionInFlight = false;
+                        released = true;
+                    }
+                }
+            }
+        }
+        finally
+        {
+            if (!released)
+            {
+                lock (_readRefreshSubscriptionLock)
+                {
+                    _readRefreshSubscriptionInFlight = false;
+                }
+            }
+        }
+    }
+
+    private async Task SubscribeReadRefreshAsync(TenantReadRefreshSubscription refreshSubscription, string tenantId)
+    {
+        {
+            // Deliberately NOT _loadCancellation.Token. Subscription setup is independent of any one load:
+            // binding it to the load token meant a Refresh during setup cancelled SubscribeAsync, the catch
+            // below returned without recording _subscriptionTenantId, and nothing retried for the same
+            // tenant -- silently disabling projection auto-refresh for the rest of the circuit. Reading
+            // _loadCancellation?.Token here could also throw ObjectDisposedException on a concurrent
+            // supersession. The sibling global-administrators page already passes None.
+            TenantReadRefreshLease lease;
+            try
+            {
+                lease = await refreshSubscription.SubscribeAsync(
+                    GetTenantAuditQuery.ProjectionType,
+                    tenantId,
+                    () => InvokeAsync(() => RefreshFromNotificationAsync(tenantId)),
+                    CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+            catch
+            {
+                // Optional refresh only. A transport fault here must not escape OnParametersSetAsync and
+                // tear down the circuit; the surface stays usable through manual and command refresh.
+                return;
+            }
+
+            if (_disposed || !string.Equals(TenantId, tenantId, StringComparison.Ordinal))
+            {
+                await DisposeLeaseSupportSafelyAsync(lease).ConfigureAwait(false);
+                return;
+            }
+
+            if (!lease.IsSubscribed)
+            {
+                // Setup failed and registered no callback. Recording it would satisfy the "already
+                // subscribed" guard forever and permanently disable auto-refresh for this circuit.
+                return;
+            }
+
+            IAsyncDisposable? previousLease = _readRefreshLease;
+            _readRefreshLease = lease;
+            _subscriptionTenantId = tenantId;
+            if (previousLease is not null)
+            {
+                await DisposeLeaseSupportSafelyAsync(previousLease).ConfigureAwait(false);
+            }
+        }
+    }
+
+    /// <summary>Disposes an optional refresh lease without surfacing transport detail.</summary>
+    private static async Task DisposeLeaseSupportSafelyAsync(IAsyncDisposable lease)
+    {
+        try
+        {
+            await lease.DisposeAsync().ConfigureAwait(false);
+        }
+        catch
+        {
+            // Lease cleanup must never disclose transport details or block fail-closed rendering.
+        }
+    }
+
+    private async Task RefreshAsync()
+    {
+        if (_filtersDirty)
+        {
+            await ApplyFiltersAsync().ConfigureAwait(false);
+            return;
+        }
+
+        await LoadAsync(reuseETag: true).ConfigureAwait(false);
+    }
+
+    private async Task ApplyFiltersAsync()
+    {
+        ClearPaging();
+        _filtersDirty = false;
+        await LoadAsync(reuseETag: false).ConfigureAwait(false);
+    }
+
+    private async Task RefreshFromNotificationAsync(string tenantId)
+    {
+        if (_disposed || _filtersDirty || !string.Equals(TenantId, tenantId, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        _isNotificationRefreshing = true;
+        StateHasChanged();
+        try
+        {
+            await LoadAsync(reuseETag: true, retainConfirmed: true, requestedTenantId: tenantId).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            // Superseded or torn down; the newer load owns the surface.
+        }
+        catch
+        {
+            // This runs on a notification callback, not on a render path. An unhandled fault here would
+            // escape into the SignalR dispatch loop rather than being rendered, and the nudge is optional
+            // anyway -- the last-confirmed rows stay visible and manual refresh still works.
+        }
+        finally
+        {
+            // Guard disposal: a notification arriving as the circuit tears down would otherwise call
+            // InvokeAsync on a disposed component and throw ObjectDisposedException.
+            if (!_disposed)
+            {
+                try
+                {
+                    await InvokeAsync(() =>
+                    {
+                        _isNotificationRefreshing = false;
+                        StateHasChanged();
+                    });
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Disposed between the check above and the dispatch; nothing left to update.
+                }
+            }
+        }
+    }
+
+    private async Task ResetFiltersAsync()
+    {
+        _fromText = null;
+        _toText = null;
+        _categoryText = null;
+        _fromValidationKey = null;
+        _toValidationKey = null;
+        _categoryValidationKey = null;
+        _filtersDirty = false;
+        ClearPaging();
+        await LoadAsync(reuseETag: false).ConfigureAwait(false);
+    }
+
+    private async Task NextPageAsync()
+    {
+        if (_filtersDirty || _pageLoadInFlight || string.IsNullOrWhiteSpace(_snapshot.NextCursor))
+        {
+            return;
+        }
+
+        string tenantId = TenantId;
+        string? priorCursor = _currentCursor;
+        string nextCursor = _snapshot.NextCursor;
+        _pageLoadInFlight = true;
+        try
+        {
+            TenantAuditSnapshot? result = await LoadAsync(
+                reuseETag: false,
+                requestedTenantId: tenantId,
+                requestedCursor: nextCursor,
+                useRequestedCursor: true).ConfigureAwait(false);
+            // Marshalled: this continuation resumes on a thread-pool thread while the render LoadAsync
+            // queued through InvokeAsync is in flight, and that render reads _cursorHistory.Count for the
+            // Previous button's Disabled binding. Pushing onto a non-thread-safe Stack concurrently with
+            // that read is a data race, and could render page-2 rows with Previous still disabled.
+            await InvokeAsync(() =>
+            {
+                // The tenant-identity clause is defence in depth, not the load-bearing guard: after a route
+                // change LoadAsync's own CanApply already refuses to publish the late result, so
+                // ReferenceEquals(_snapshot, result) is false and rejects it first. Removing the clause
+                // therefore changes no observable behaviour and no test can isolate it -- kept so the rule
+                // survives any future loosening of the reference check.
+                // A_next_page_completing_after_the_route_moved_does_not_commit_its_cursor_onto_the_new_tenant
+                // pins the behaviour these three clauses jointly provide.
+                if (IsAppliedRequestedPage(result, nextCursor)
+                    && ReferenceEquals(_snapshot, result)
+                    && string.Equals(TenantId, tenantId, StringComparison.Ordinal))
+                {
+                    _cursorHistory.Push(priorCursor);
+                    _currentCursor = nextCursor;
+                    _pagingHistoryTruncated |= CursorHistory.Trim(_cursorHistory, MaximumCursorHistory);
+                    _pagingJumpedToFirstPage = false;
+                }
+            }).ConfigureAwait(false);
+        }
+        finally
+        {
+            _pageLoadInFlight = false;
+        }
+    }
+
+
+    private async Task PreviousPageAsync()
+    {
+        if (_filtersDirty || _pageLoadInFlight || _cursorHistory.Count == 0)
+        {
+            return;
+        }
+
+        string tenantId = TenantId;
+        string? previousCursor = _cursorHistory.Peek();
+        _pageLoadInFlight = true;
+        try
+        {
+            TenantAuditSnapshot? result = await LoadAsync(
+                reuseETag: false,
+                requestedTenantId: tenantId,
+                requestedCursor: previousCursor,
+                useRequestedCursor: true).ConfigureAwait(false);
+            // Marshalled for the same reason as NextPageAsync: this continuation resumes on a thread-pool
+            // thread while the render LoadAsync queued through InvokeAsync is still in flight, and that
+            // render reads _cursorHistory.Count for the Previous button's Disabled binding. Popping a
+            // non-thread-safe Stack concurrently with that read is a data race. Only NextPageAsync and both
+            // global-administrator pagers were marshalled when this rule was first applied.
+            await InvokeAsync(() =>
+            {
+                if (IsAppliedRequestedPage(result, previousCursor)
+                    && ReferenceEquals(_snapshot, result)
+                    && string.Equals(TenantId, tenantId, StringComparison.Ordinal)
+                    // The entry guard checked Count above, but that was before this dispatcher hop. The
+                    // filter controls carry no Disabled binding and OnFromChanged/OnToChanged/
+                    // OnCategoryChanged/ResetFiltersAsync all call ClearPaging() with no in-flight check, so
+                    // a filter change landing after _snapshot was assigned and before this body runs leaves
+                    // every other clause passing against an emptied stack -- and Stack.Pop() then throws
+                    // InvalidOperationException on the Blazor dispatcher, tearing down the circuit. The
+                    // global-administrator sibling has carried this clause since the hop was introduced.
+                    && _cursorHistory.Count > 0)
+                {
+                    _currentCursor = _cursorHistory.Pop();
+
+                    // A trimmed history re-appends the first-page sentinel under the newest entries, so one
+                    // Previous click walks the operator from the middle of the sequence straight to page one.
+                    // Rendered as an ordinary step back it silently misstates where they are.
+                    _pagingJumpedToFirstPage = _pagingHistoryTruncated
+                        && _currentCursor is null
+                        && _cursorHistory.Count == 0;
+                    if (_pagingJumpedToFirstPage)
+                    {
+                        _pagingHistoryTruncated = false;
+                    }
+                }
+            }).ConfigureAwait(false);
+        }
+        finally
+        {
+            _pageLoadInFlight = false;
+        }
+    }
+
+    private Task OnFromChanged(string? value)
+    {
+        _fromText = value;
+        _filtersDirty = true;
+        _ = TryCreateRequest(TenantId, null, null, out _);
+        return Task.CompletedTask;
+    }
+
+    private Task OnToChanged(string? value)
+    {
+        _toText = value;
+        _filtersDirty = true;
+        _ = TryCreateRequest(TenantId, null, null, out _);
+        return Task.CompletedTask;
+    }
+
+    private Task OnCategoryChanged(string? value)
+    {
+        _categoryText = value;
+        _filtersDirty = true;
+        _ = TryCreateRequest(TenantId, null, null, out _);
+        return Task.CompletedTask;
+    }
+
+    private bool TryCreateRequest(
+        string tenantId,
+        string? cursor,
+        string? eTag,
+        out TenantAuditRequest? request)
+    {
+        if (!TenantAuditNavigationSafety.IsSafeTenantId(tenantId))
+        {
+            request = null;
+            return false;
+        }
+
+        bool fromValid = TryParseDate(_fromText, out DateTimeOffset? from);
+        bool toValid = TryParseDate(_toText, out DateTimeOffset? to);
+        AuditEventCategory parsedCategory = default;
+        bool categoryValid = string.IsNullOrEmpty(_categoryText)
+            || (Enum.TryParse(_categoryText, ignoreCase: false, out parsedCategory)
+                && Enum.IsDefined(parsedCategory));
+        AuditEventCategory? category = categoryValid && !string.IsNullOrEmpty(_categoryText)
+            ? parsedCategory
+            : null;
+        bool rangeValid = !fromValid || !toValid || from is null || to is null || from <= to;
+
+        _fromValidationKey = !fromValid
+            ? "Tenants.Audit.Filter.Validation.FromUtc"
+            : !rangeValid
+                ? "Tenants.Audit.Filter.Validation.Range"
+                : null;
+        _toValidationKey = !toValid
+            ? "Tenants.Audit.Filter.Validation.ToUtc"
+            : !rangeValid
+                ? "Tenants.Audit.Filter.Validation.Range"
+                : null;
+        _categoryValidationKey = categoryValid
+            ? null
+            : "Tenants.Audit.Filter.Validation.Category";
+
+        if (!fromValid || !toValid || !categoryValid || !rangeValid)
+        {
+            // A failed local edit invalidates any prior read, including one still in flight. Keep no
+            // success chrome or rows under filters that were never submitted to the server.
+            Interlocked.Increment(ref _loadGeneration);
+            CancelActiveCancellation();
+            _snapshot = TenantAuditSnapshot.Error(new TenantAuditRequest(tenantId), TenantAuditReason.InvalidFilters);
+            ResolveReceiptSelection();
+            request = null;
+            return false;
+        }
+
+        request = new(
+            tenantId,
+            From: from,
+            To: to,
+            Category: category,
+            Cursor: cursor,
+            PageSize: PageSize,
+            ETag: eTag);
+        return true;
+    }
+
+    private void ClearPaging()
+    {
+        _cursorHistory.Clear();
+        _pagingHistoryTruncated = false;
+        _pagingJumpedToFirstPage = false;
+        _currentCursor = null;
+        _activeCorrectionIntent = null;
+        _activeCorrectionFocusReference = null;
+        _selectedCorrectionRoles.Clear();
+        _correctionProjections.Clear();
+        _previewCorrectionIntent = null;
+        Interlocked.Increment(ref _correctionOpenGeneration);
+        InvalidateCorrectionFocus();
+    }
+
+    private async Task OpenReceiptAsync(TenantAuditRow row)
+    {
+        TenantAuditRow? currentRow = _snapshot.Rows.FirstOrDefault(candidate =>
+            string.Equals(candidate.EventReference, row.EventReference, StringComparison.Ordinal));
+        if (currentRow is null || !ShouldRenderRows
+            || TenantAuditSupportSafety.SafeApprovedReference(currentRow.EventReference) is null)
+        {
+            return;
+        }
+
+        _selectedReceiptReference = currentRow.EventReference;
+        _selectedReceiptFromLauncher = true;
+        _selectedReceiptFromCorrectionPreview = false;
+        ResolveReceiptSelection();
+        ScheduleReceiptHeadingFocus();
+        await RefreshPairedGlobalReceiptAsync().ConfigureAwait(false);
+    }
+
+    private async Task OpenOriginalCorrectionReceiptAsync(string reference)
+    {
+        if (!HasAuthorizedRetainedSurface || TenantAuditSupportSafety.SafeApprovedReference(reference) is not { } safeReference)
+        {
+            return;
+        }
+        _selectedReceiptReference = safeReference;
+        _selectedReceiptFromLauncher = true;
+        _selectedReceiptFromCorrectionPreview = true;
+        ResolveReceiptSelection();
+        ScheduleReceiptHeadingFocus();
+        await RefreshPairedGlobalReceiptAsync().ConfigureAwait(false);
+    }
+
+    private IReadOnlyList<string> PairedGlobalReceiptReferences
+    {
+        get
+        {
+            if (!string.Equals(TenantId, "system", StringComparison.Ordinal)
+                || !HasAuthorizedAuditSurface || _selectedReceipt?.State is not TenantAuditReceiptState.Ready)
+            {
+                return [];
+            }
+
+            return _verifiedGlobalProofs.Select(proof =>
+                    string.Equals(_selectedReceiptReference, proof.OriginalAuditReference, StringComparison.Ordinal)
+                        ? proof.CorrectiveAuditReference
+                        : string.Equals(_selectedReceiptReference, proof.CorrectiveAuditReference, StringComparison.Ordinal)
+                            ? proof.OriginalAuditReference : null)
+                .Select(TenantAuditSupportSafety.SafeApprovedReference)
+                .Where(static reference => reference is not null)
+                .Select(static reference => reference!)
+                .Distinct(StringComparer.Ordinal)
+                .ToArray();
+        }
+    }
+
+    private async Task OnGlobalProofAvailableAsync()
+    {
+        if (!_disposed)
+        {
+            await RefreshPairedGlobalReceiptAsync().ConfigureAwait(false);
+        }
+    }
+
+    private async Task RefreshPairedGlobalReceiptAsync()
+    {
+        long generation = Interlocked.Increment(ref _pairedProofGeneration);
+        GlobalAdministratorCorrectionProofRegistry? registry = Services.GetService<GlobalAdministratorCorrectionProofRegistry>();
+        IReadOnlyList<GlobalAdministratorCorrectionSnapshot> retainedPairs = registry?.FindAll(_selectedReceiptReference ?? string.Empty) ?? [];
+        IReadOnlyList<GlobalAdministratorReconciliationState> pendingCompletions = registry?.PendingCompletions() ?? [];
+        string? selectedReference = _selectedReceiptReference;
+        List<TenantCorrectionProofLink> verified = [];
+        Dictionary<string, TenantAuditRow> rows = new(StringComparer.Ordinal);
+        try
+        {
+            if (selectedReference is not null
+                && (retainedPairs.Count > 0 || pendingCompletions.Count > 0)
+                && string.Equals(TenantId, "system", StringComparison.Ordinal)
+                && HasAuthorizedAuditSurface
+                && await BffComposition.ResolveGlobalAdministratorsAuthorizationAsync(CancellationToken.None)
+                    .ConfigureAwait(false) is TenantLifecycleAuthorizationReflectionState.Authorized)
+            {
+                GlobalAdministratorsSnapshot? completeProjection = pendingCompletions.Count > 0
+                    ? await GlobalAdministratorsProjectionLoader.LoadAsync(QueryGateway, cancellationToken: CancellationToken.None)
+                        .ConfigureAwait(false)
+                    : null;
+                if (completeProjection is { } projection
+                    && GlobalAdministratorCorrectionSnapshot.ProjectionIsReadable(projection)
+                    && projection.IsCompleteEvidence && !projection.HasMore)
+                {
+                    foreach (GlobalAdministratorReconciliationState pending in pendingCompletions)
+                    {
+                        try
+                        {
+                            string originalType = pending.ActionKind is GlobalAdministratorActionKind.Grant
+                                ? "GlobalAdministratorRemoved" : "GlobalAdministratorSet";
+                            TenantAuditRow? original = pending.SourceAuditReference is { } sourceReference
+                                && pending.SourceAuditTimestampUtc is { } sourceTime
+                                ? await FindOriginalGlobalAuditRowAsync(
+                                    sourceReference, sourceTime, pending.TargetUserId, originalType).ConfigureAwait(false)
+                                : null;
+                            if (original is null || pending.CorrelationId is null
+                                || pending.CommittedEventSequence is not > 0
+                                || pending.SubmittedAtUtc is not { } submittedAt)
+                            {
+                                continue;
+                            }
+
+                            (GlobalAdministratorAuditProof? corrective, bool complete) = await QueryGateway
+                                .FindGlobalAdministratorCorrectionProofAsync(
+                                    pending.CorrelationId, pending.CommittedEventSequence.Value, pending.TargetUserId,
+                                    pending.ActionKind is GlobalAdministratorActionKind.Grant
+                                        ? "GlobalAdministratorSet" : "GlobalAdministratorRemoved",
+                                    original.Timestamp, submittedAt, CancellationToken.None).ConfigureAwait(false);
+                            GlobalAdministratorCorrectionSnapshot? proven = complete && corrective is not null
+                                ? GlobalAdministratorCorrectionSnapshot.RebuildVerifiedCompletion(
+                                    pending, original, projection, corrective)
+                                : null;
+                            if (proven?.ProofLink is not { } provenLink)
+                            {
+                                continue;
+                            }
+
+                            registry?.Remember(proven);
+                            if (string.Equals(selectedReference, provenLink.OriginalAuditReference, StringComparison.Ordinal)
+                                || string.Equals(selectedReference, provenLink.CorrectiveAuditReference, StringComparison.Ordinal))
+                            {
+                                verified.Add(provenLink);
+                                rows[provenLink.OriginalAuditReference] = original;
+                                rows[provenLink.CorrectiveAuditReference] = corrective!.Row;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            // A pending completion remains available for the next authorized recheck.
+                        }
+                    }
+                }
+
+                foreach (GlobalAdministratorCorrectionSnapshot retained in retainedPairs)
+                {
+                    try
+                    {
+                        if (retained.ProofLink is not { } proof || retained.CorrelationId is null
+                            || retained.CommittedEventSequence is not > 0
+                            || retained.SubmittedAtUtc is not { } submittedAtUtc)
+                        {
+                            continue;
+                        }
+
+                        (GlobalAdministratorAuditProof? correctiveProof, bool complete) = await QueryGateway
+                            .FindGlobalAdministratorCorrectionProofAsync(
+                                retained.CorrelationId,
+                                retained.CommittedEventSequence.Value,
+                                retained.TargetUserId,
+                                retained.CorrectiveEventType,
+                                proof.OriginalTimestamp,
+                                submittedAtUtc,
+                                CancellationToken.None).ConfigureAwait(false);
+                        TenantAuditRow? corrective = correctiveProof?.Row;
+                        if (!complete || corrective is null
+                            || !string.Equals(corrective.EventReference, proof.CorrectiveAuditReference, StringComparison.Ordinal))
+                        {
+                            continue;
+                        }
+
+                        TenantAuditRow? original = await FindOriginalGlobalAuditRowAsync(retained).ConfigureAwait(false);
+                        if (original is null)
+                        {
+                            continue;
+                        }
+
+                        verified.Add(proof);
+                        rows[proof.OriginalAuditReference] = original;
+                        rows[proof.CorrectiveAuditReference] = corrective;
+                    }
+                    catch (Exception)
+                    {
+                        // One unavailable protected pair cannot hide independently verified neighbors.
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {
+            // Missing or unstable protected evidence leaves the paired receipt unavailable.
+        }
+
+        await InvokeAsync(() =>
+        {
+            if (!_disposed && generation == Volatile.Read(ref _pairedProofGeneration)
+                && string.Equals(_selectedReceiptReference, selectedReference, StringComparison.Ordinal))
+            {
+                _verifiedGlobalProofs.Clear();
+                _verifiedGlobalRows.Clear();
+                if (string.Equals(TenantId, "system", StringComparison.Ordinal) && HasAuthorizedAuditSurface)
+                {
+                    _verifiedGlobalProofs.AddRange(verified);
+                    foreach (KeyValuePair<string, TenantAuditRow> row in rows)
+                    {
+                        _verifiedGlobalRows[row.Key] = row.Value;
+                    }
+                }
+                ResolveReceiptSelection();
+                StateHasChanged();
+            }
+        }).ConfigureAwait(false);
+    }
+
+    private async Task<TenantAuditRow?> FindOriginalGlobalAuditRowAsync(GlobalAdministratorCorrectionSnapshot retained)
+    {
+        TenantCorrectionProofLink proof = retained.ProofLink!;
+        return await FindOriginalGlobalAuditRowAsync(
+            proof.OriginalAuditReference,
+            proof.OriginalTimestamp,
+            retained.TargetUserId,
+            retained.CorrectiveEventType is "GlobalAdministratorSet"
+                ? "GlobalAdministratorRemoved" : "GlobalAdministratorSet").ConfigureAwait(false);
+    }
+
+    private async Task<TenantAuditRow?> FindOriginalGlobalAuditRowAsync(
+        string reference, DateTimeOffset timestamp, string targetUserId, string originalEventType)
+    {
+        var visited = new HashSet<string>(StringComparer.Ordinal);
+        string? cursor = null;
+        string? version = null;
+        TenantAuditRow? original = null;
+        for (int page = 0; page < 50; page++)
+        {
+            TenantAuditRequest request = new("system", From: timestamp,
+                To: timestamp, Cursor: cursor, Stream: "global-administrators");
+            TenantAuditSnapshot audit = await QueryGateway.GetTenantAuditAsync(request, null, CancellationToken.None)
+                .ConfigureAwait(false);
+            if (audit.Kind is not TenantAuditSurfaceKind.Ready and not TenantAuditSurfaceKind.Empty
+                and not TenantAuditSurfaceKind.FilteredEmpty
+                || audit.Freshness is not ReadModelFreshnessState.Current
+                || audit.Lifecycle is not ProjectionLifecycleState.Current
+                || !audit.MatchesScope(request)
+                || audit.Rows.Count > request.PageSize
+                || !TenantLifecycleProjectionVersion.IsOrdered(audit.ProjectionVersion)
+                || audit.HasMore == string.IsNullOrWhiteSpace(audit.NextCursor)
+                || version is not null && !string.Equals(version, audit.ProjectionVersion, StringComparison.Ordinal))
+            {
+                return null;
+            }
+
+            version ??= audit.ProjectionVersion;
+            foreach (TenantAuditRow row in audit.Rows)
+            {
+                if (string.Equals(row.EventReference, reference, StringComparison.Ordinal)
+                    && string.Equals(row.TenantId, "system", StringComparison.Ordinal)
+                    && string.Equals(row.Scope, "system", StringComparison.Ordinal)
+                    && row.Category is AuditEventCategory.Access
+                    && string.Equals(row.Target, targetUserId, StringComparison.Ordinal)
+                    && row.Timestamp == timestamp
+                    && string.Equals(row.EventType, originalEventType, StringComparison.Ordinal)
+                    && TenantAuditReceipt.FromRow(row, audit.Kind).State is TenantAuditReceiptState.Ready)
+                {
+                    if (original is not null) return null;
+                    original = row;
+                }
+            }
+
+            if (!audit.HasMore) return original;
+            if (string.IsNullOrWhiteSpace(audit.NextCursor) || !visited.Add(audit.NextCursor)) return null;
+            cursor = audit.NextCursor;
+        }
+
+        return null;
+    }
+
+    private async Task OpenPairedGlobalReceiptAsync(string reference)
+    {
+        if (!PairedGlobalReceiptReferences.Contains(reference, StringComparer.Ordinal))
+        {
+            return;
+        }
+
+        _selectedReceiptReference = reference;
+        _selectedReceiptFromLauncher = true;
+        _selectedReceiptFromCorrectionPreview = false;
+        ResolveReceiptSelection();
+        ScheduleReceiptHeadingFocus();
+        await RefreshPairedGlobalReceiptAsync().ConfigureAwait(false);
+    }
+
+    private Task CloseReceiptAsync()
+    {
+        string? closedReference = _selectedReceiptReference;
+        bool fromCorrectionPreview = _selectedReceiptFromCorrectionPreview;
+        _dismissedReceiptReference = ReceiptReference;
+        _selectedReceiptReference = null;
+        _selectedReceiptFromLauncher = false;
+        _selectedReceiptFromCorrectionPreview = false;
+        _selectedReceipt = null;
+        _selectedReceiptCorrectionIntent = null;
+        ScheduleReceiptFocus(closedReference, fromCorrectionPreview);
+        return Task.CompletedTask;
+    }
+
+    private Task OpenGridCorrectionAsync(TenantCorrectionStartIntent intent)
+        => intent.IntendedCommandDomain is TenantCorrectionCommandDomain.GlobalAdministrators
+            ? OpenGlobalCorrectionAsync(intent, "grid")
+            : OpenCorrectionAsync(intent, "grid");
+
+    private Task OpenReceiptCorrectionAsync(TenantCorrectionStartIntent intent)
+        => intent.IntendedCommandDomain is TenantCorrectionCommandDomain.GlobalAdministrators
+            ? OpenGlobalCorrectionAsync(intent, "receipt")
+            : OpenCorrectionAsync(intent, "receipt");
+
+    private async Task OpenGlobalCorrectionAsync(TenantCorrectionStartIntent intent, string origin)
+    {
+        if (!HasAuthorizedAuditSurface || !HasMeasuredSafeViewport || !intent.IsAvailable
+            || !string.Equals(TenantId, "system", StringComparison.Ordinal)
+            || _globalCorrectionIntent is not null
+                && _globalCorrectionPanel?.Snapshot is { } activeSnapshot
+                && (activeSnapshot.LifecycleState is TenantCommandLifecycleState.RequestSent
+                    || activeSnapshot.HasCommandTracking))
+        {
+            return;
+        }
+
+        int generation = Interlocked.Increment(ref _correctionOpenGeneration);
+        GlobalAdministratorsSnapshot? projection;
+        TenantLifecycleAuthorizationReflectionState authorization;
+        try
+        {
+            projection = await RefreshGlobalAdministratorsProjectionAsync().ConfigureAwait(false);
+            authorization = await BffComposition
+                .ResolveGlobalAdministratorsAuthorizationAsync(CancellationToken.None).ConfigureAwait(false);
+        }
+        catch
+        {
+            projection = null;
+            authorization = TenantLifecycleAuthorizationReflectionState.Indeterminate;
+        }
+        await InvokeAsync(() =>
+        {
+            if (_disposed || generation != _correctionOpenGeneration
+                || Volatile.Read(ref _authenticationTransitionPending)
+                || !HasAuthorizedAuditSurface
+                || !HasMeasuredSafeViewport || !string.Equals(TenantId, "system", StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _globalAdministratorsProjection = projection;
+            _globalCorrectionAuthorized = authorization is TenantLifecycleAuthorizationReflectionState.Authorized;
+            TenantAuditRow? row = _snapshot.Rows.FirstOrDefault(candidate =>
+                string.Equals(candidate.EventReference, intent.OriginalAuditReference, StringComparison.Ordinal));
+            TenantCorrectionStartIntent? refreshed = row is null ? null : CreateCorrectionIntent(row);
+            if (refreshed?.IsAvailable is true)
+            {
+                _globalCorrectionIntent = refreshed;
+                _activeCorrectionFocusReference = intent.OriginalAuditReference;
+                _activeCorrectionOrigin = origin;
+                _receiptFocusGeneration++;
+                _pendingReceiptFocus = "tenants-correction-title";
+            }
+            else
+            {
+                ScheduleCorrectionFocus(intent.OriginalAuditReference, origin);
+            }
+
+            ResolveReceiptSelection();
+            StateHasChanged();
+        }).ConfigureAwait(false);
+    }
+
+    private Task CloseGlobalCorrectionAsync()
+    {
+        Interlocked.Increment(ref _correctionOpenGeneration);
+        ScheduleCorrectionFocus(_activeCorrectionFocusReference, _activeCorrectionOrigin);
+        _globalCorrectionIntent = null;
+        return Task.CompletedTask;
+    }
+
+    private Task<GlobalAdministratorsSnapshot> RefreshGlobalAdministratorsProjectionAsync()
+        => GlobalAdministratorsProjectionLoader.LoadAsync(QueryGateway, cancellationToken: CancellationToken.None);
+
+    private async Task RefreshGlobalCorrectionEvidenceForLoadAsync(
+        string tenantId, long generation, CancellationToken cancellationToken)
+    {
+        GlobalAdministratorsSnapshot projection;
+        TenantLifecycleAuthorizationReflectionState authorization;
+        try
+        {
+            authorization = await BffComposition.ResolveGlobalAdministratorsAuthorizationAsync(cancellationToken)
+                .ConfigureAwait(false);
+            projection = authorization is TenantLifecycleAuthorizationReflectionState.Authorized
+                ? await GlobalAdministratorsProjectionLoader.LoadAsync(QueryGateway, cancellationToken: cancellationToken)
+                    .ConfigureAwait(false)
+                : GlobalAdministratorsSnapshot.Unauthorized();
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+        catch
+        {
+            authorization = TenantLifecycleAuthorizationReflectionState.Indeterminate;
+            projection = GlobalAdministratorsSnapshot.Unavailable();
+        }
+
+        await InvokeAsync(() =>
+        {
+            if (!CanApply(tenantId, generation))
+            {
+                return;
+            }
+
+            _globalAdministratorsProjection = projection;
+            _globalCorrectionAuthorized = authorization is TenantLifecycleAuthorizationReflectionState.Authorized;
+            if (_globalCorrectionIntent is { } active
+                && _globalCorrectionPanel?.Snapshot is not { LifecycleState: TenantCommandLifecycleState.RequestSent }
+                && _globalCorrectionPanel?.Snapshot?.HasCommandTracking != true)
+            {
+                TenantAuditRow? row = _snapshot.Rows.FirstOrDefault(candidate =>
+                    string.Equals(candidate.EventReference, active.OriginalAuditReference, StringComparison.Ordinal));
+                if (row is not null)
+                {
+                    _globalCorrectionIntent = CreateCorrectionIntent(row);
+                }
+            }
+
+            ResolveReceiptSelection();
+            StateHasChanged();
+        }).ConfigureAwait(false);
+    }
+
+    private bool HasSubmittedCorrection => _previewCorrectionIntent is not null
+        && _correctionPreview?.HasSubmitted is true;
+
+    private TenantCorrectionAttempt? RetainedCorrectionAttempt
+        => Services.GetService<TenantCorrectionAttemptTracker>()?.Find(TenantId);
+
+    private bool HasDisplayedRetainedCorrection
+        => _previewCorrectionIntent is not null
+            && RetainedCorrectionAttempt is { } attempt
+            && attempt.Matches(_previewCorrectionIntent)
+            && (!attempt.IsExpired
+                || string.Equals(attempt.MessageId, _resumedCorrectionMessageId, StringComparison.Ordinal)
+                || string.Equals(attempt.MessageId, _correctionPreview?.Snapshot?.MessageId, StringComparison.Ordinal));
+
+    private Task ResumeCorrectionAsync()
+    {
+        ResumeCorrection(competing: false);
+        return Task.CompletedTask;
+    }
+
+    private void ResumeCorrection(bool competing)
+    {
+        if (!HasAuthorizedRetainedSurface || RetainedCorrectionAttempt is not { } attempt)
+        {
+            return;
+        }
+
+        _activeCorrectionIntent = null;
+        _previewCorrectionIntent = attempt.Snapshot.Intent;
+        _resumedCorrectionMessageId = attempt.MessageId;
+        _competingCorrectionNotice = competing;
+        _activeCorrectionFocusReference = attempt.Snapshot.OriginalAuditReference;
+        _activeCorrectionOrigin ??= "grid";
+        _receiptFocusGeneration++;
+        _pendingReceiptFocus = "tenants-correction-title";
+    }
+
+    private async Task<bool> OpenCorrectionAsync(TenantCorrectionStartIntent intent, string origin, bool retainStart = false)
+    {
+        if (!HasAuthorizedAuditSurface) return false;
+
+        if (RetainedCorrectionAttempt is { BlocksAdmission: true } retained)
+        {
+            ResumeCorrection(competing: !retained.Matches(intent));
+            return false;
+        }
+
+        if (HasSubmittedCorrection || !HasMeasuredSafeViewport || !intent.IsAvailable
+            || intent.IntendedCommandDomain is not TenantCorrectionCommandDomain.Tenants)
+        {
+            return false;
+        }
+
+        int generation = Interlocked.Increment(ref _correctionOpenGeneration);
+        _competingCorrectionNotice = false;
+        _resumedCorrectionMessageId = null;
+        InvalidateCorrectionFocus();
+        long projectionGeneration = Interlocked.Increment(ref _correctionProjectionGeneration);
+        string tenantId = TenantId;
+        long loadGeneration = Volatile.Read(ref _loadGeneration);
+        if (!retainStart)
+        {
+            _activeCorrectionIntent = null;
+        }
+        _previewCorrectionIntent = null;
+        bool installed = false;
+        TenantCorrectionProjection projection = await QueryGateway.GetTenantCorrectionProjectionAsync(
+            tenantId, intent.TargetUserId, CancellationToken.None).ConfigureAwait(false);
+        await InvokeAsync(() =>
+        {
+            if (_disposed || generation != _correctionOpenGeneration
+                || projectionGeneration != Volatile.Read(ref _correctionProjectionGeneration) || !HasMeasuredSafeViewport
+                || !CanApply(tenantId, loadGeneration))
+            {
+                return;
+            }
+
+            _correctionProjections[intent.TargetUserId] = projection;
+            TenantAuditRow? row = _snapshot.Rows.FirstOrDefault(candidate =>
+                string.Equals(candidate.EventReference, intent.OriginalAuditReference, StringComparison.Ordinal));
+            TenantCorrectionStartIntent? refreshed = row is null ? null : CreateCorrectionIntent(row);
+            _activeCorrectionFocusReference = intent.OriginalAuditReference;
+            _activeCorrectionOrigin = origin;
+            if (refreshed?.IsAvailable is true)
+            {
+                _activeCorrectionIntent = refreshed;
+                installed = true;
+            }
+            else
+            {
+                _activeCorrectionIntent = null;
+                ScheduleCorrectionFocus(intent.OriginalAuditReference, origin);
+            }
+            ResolveReceiptSelection();
+            StateHasChanged();
+        }).ConfigureAwait(false);
+        return installed;
+    }
+
+    private async Task HandoffCorrectionAsync(TenantCorrectionStartIntent intent)
+    {
+        // Handoff refreshes the same safety gates, then opens the existing preview. It never dispatches.
+        string? origin = _activeCorrectionOrigin;
+        int expectedGeneration = _correctionOpenGeneration + 1;
+        bool installed = await OpenCorrectionAsync(intent, origin ?? "grid", retainStart: true).ConfigureAwait(false);
+        await InvokeAsync(() =>
+        {
+            if (installed && _correctionOpenGeneration == expectedGeneration && _activeCorrectionIntent?.IsAvailable is true
+                && _activeCorrectionIntent.OriginalAuditReference == intent.OriginalAuditReference
+                && _activeCorrectionIntent.IntendedRole == intent.IntendedRole)
+            {
+                _previewCorrectionIntent = _activeCorrectionIntent;
+                _competingCorrectionNotice = false;
+                _resumedCorrectionMessageId = null;
+                _activeCorrectionIntent = null;
+                _receiptFocusGeneration++;
+                _pendingReceiptFocus = "tenants-correction-title";
+                StateHasChanged();
+            }
+        }).ConfigureAwait(false);
+    }
+
+    private Task CloseCorrectionAsync()
+    {
+        Interlocked.Increment(ref _correctionOpenGeneration);
+        ScheduleCorrectionFocus(_activeCorrectionFocusReference, _activeCorrectionOrigin);
+        _activeCorrectionFocusReference = null;
+        _activeCorrectionIntent = null;
+        _previewCorrectionIntent = null;
+        _competingCorrectionNotice = false;
+        _resumedCorrectionMessageId = null;
+        return Task.CompletedTask;
+    }
+
+    private void ResolveReceiptSelection()
+    {
+        CaptureCorrectionAuthority(_snapshot);
+        if (_selectedReceiptReference is null
+            && !_selectedReceiptFromLauncher
+            && ReceiptReference is not null
+            && !string.Equals(_dismissedReceiptReference, ReceiptReference, StringComparison.Ordinal))
+        {
+            _selectedReceiptReference = TenantAuditSupportSafety.SafeApprovedReference(ReceiptReference);
+            if (_selectedReceiptReference is null)
+            {
+                _selectedReceipt = TenantAuditReceipt.Unavailable(
+                    surfaceKind: _snapshot.Kind, checkedPage: false);
+                _selectedReceiptCorrectionIntent = null;
+                return;
+            }
+        }
+
+        if (_selectedReceiptReference is null)
+        {
+            _selectedReceipt = null;
+            _selectedReceiptCorrectionIntent = null;
+            return;
+        }
+
+        TenantAuditRow? selectedRow = _snapshot.Rows.FirstOrDefault(row =>
+            string.Equals(row.EventReference, _selectedReceiptReference, StringComparison.Ordinal));
+        if (selectedRow is null && string.Equals(TenantId, "system", StringComparison.Ordinal)
+            && HasAuthorizedRetainedSurface
+            && _verifiedGlobalRows.TryGetValue(_selectedReceiptReference, out TenantAuditRow? verifiedRow))
+        {
+            selectedRow = string.Equals(verifiedRow.TenantId, "system", StringComparison.Ordinal)
+                && string.Equals(verifiedRow.Scope, "system", StringComparison.Ordinal)
+                    ? verifiedRow : null;
+        }
+        _selectedReceipt = selectedRow is null
+            ? TenantAuditReceipt.Unavailable(
+                surfaceKind: _snapshot.Kind, checkedPage: IsCheckedPage(_snapshot.Kind))
+            : TenantAuditReceipt.FromRow(selectedRow, surfaceKind: _snapshot.Kind);
+        _selectedReceiptCorrectionIntent = selectedRow is null
+            || !_snapshot.Rows.Contains(selectedRow)
+            || _selectedReceipt.State is not TenantAuditReceiptState.Ready
+            ? null : CreateCorrectionIntent(selectedRow);
+    }
+
+    private bool WillRemoveReceiptCorrectionControl(TenantAuditSnapshot nextSnapshot)
+    {
+        if (_selectedReceiptCorrectionIntent?.IsAvailable is not true)
+        {
+            return false;
+        }
+
+        TenantAuditRow? nextRow = nextSnapshot.Rows.FirstOrDefault(row =>
+            string.Equals(row.EventReference, _selectedReceiptReference, StringComparison.Ordinal));
+        return nextRow is null
+            || TenantAuditReceipt.FromRow(nextRow, surfaceKind: nextSnapshot.Kind).State is not TenantAuditReceiptState.Ready
+            || !CreateCorrectionIntent(nextRow).IsAvailable;
+    }
+
+    private static bool IsCheckedPage(TenantAuditSurfaceKind kind)
+        => kind is TenantAuditSurfaceKind.Ready or TenantAuditSurfaceKind.Empty
+            or TenantAuditSurfaceKind.FilteredEmpty or TenantAuditSurfaceKind.Stale
+            or TenantAuditSurfaceKind.Degraded or TenantAuditSurfaceKind.ListRefreshed;
+
+    private TenantAuditReceiptState ReceiptStateForSnapshot(TenantAuditSnapshot snapshot)
+    {
+        TenantAuditRow? row = snapshot.Rows.FirstOrDefault(candidate =>
+            string.Equals(candidate.EventReference, _selectedReceiptReference, StringComparison.Ordinal));
+        return row is null
+            ? TenantAuditReceipt.Unavailable(
+                surfaceKind: snapshot.Kind, checkedPage: IsCheckedPage(snapshot.Kind)).State
+            : TenantAuditReceipt.FromRow(row, surfaceKind: snapshot.Kind).State;
+    }
+
+    private void CaptureCorrectionAuthority(TenantAuditSnapshot snapshot)
+    {
+        if (HasSubmittedCorrection || HasDisplayedRetainedCorrection)
+        {
+            return;
+        }
+
+        TenantCorrectionStartIntent? active = _activeCorrectionIntent ?? _previewCorrectionIntent;
+        if (active is null)
+        {
+            return;
+        }
+
+        TenantAuditRow? source = snapshot.Rows.FirstOrDefault(row =>
+            string.Equals(row.EventReference, active.OriginalAuditReference, StringComparison.Ordinal));
+        if (source is not null && TenantAuditReceipt.FromRow(source, surfaceKind: snapshot.Kind).State is TenantAuditReceiptState.Ready)
+        {
+            return;
+        }
+
+        Interlocked.Increment(ref _correctionOpenGeneration);
+        ScheduleCorrectionFocus(_activeCorrectionFocusReference ?? active.OriginalAuditReference, _activeCorrectionOrigin);
+        _previewCorrectionIntent = null;
+        _activeCorrectionIntent = null;
+        _activeCorrectionFocusReference = null;
+    }
+
+    private void ScheduleReceiptHeadingFocus()
+    {
+        _receiptFocusGeneration++;
+        _pendingReceiptFocus = "heading";
+    }
+
+    private void InvalidateCorrectionFocus()
+    {
+        _correctionFocusGeneration++;
+        _pendingCorrectionFocusReference = null;
+        _pendingCorrectionOrigin = null;
+        _receiptFocusGeneration++;
+        _pendingReceiptFocus = null;
+    }
+
+    private void ScheduleCorrectionFocus(string? reference, string? origin)
+    {
+        InvalidateCorrectionFocus();
+        _pendingCorrectionFocusReference = reference;
+        _pendingCorrectionOrigin = origin;
+    }
+
+    private void ScheduleReceiptFocus(string? reference, bool fromCorrectionPreview = false)
+    {
+        _receiptFocusGeneration++;
+        if (fromCorrectionPreview && _previewCorrectionIntent is not null
+            && string.Equals(_previewCorrectionIntent.OriginalAuditReference, reference, StringComparison.Ordinal))
+        {
+            _pendingReceiptFocus = "tenants-correction-original-receipt";
+            return;
+        }
+        int index = reference is null ? -1 : _snapshot.Rows.ToList().FindIndex(row =>
+            string.Equals(row.EventReference, reference, StringComparison.Ordinal));
+        _pendingReceiptFocus = index >= 0 && ShouldRenderRows
+            ? $"tenants-audit-receipt-launcher-{index}"
+            : "tenant-audit-heading";
+    }
+
+    private async Task CaptureReceiptFocusForReplacementAsync(bool correctionOnly = false)
+    {
+        TenantAuditReceipt? receipt = _selectedReceipt;
+        if (receipt is null)
+        {
+            return;
+        }
+
+        if (!RendererInfo.IsInteractive)
+        {
+            return;
+        }
+
+        long focusGeneration = _receiptFocusGeneration;
+        string? receiptReference = _selectedReceiptReference;
+        try
+        {
+            IJSObjectReference focusModule = _focusModule
+                ??= await JS.InvokeAsync<IJSObjectReference>("import", FocusModulePath).ConfigureAwait(false);
+            if (!IsCurrentReceiptFocusProbe(focusGeneration, receiptReference))
+            {
+                return;
+            }
+
+            string probe = correctionOnly
+                ? "isFocusInsideAuditReceiptCorrection"
+                : "isFocusInsideAuditReceipt";
+            if (await focusModule.InvokeAsync<bool>(probe).ConfigureAwait(false)
+                && IsCurrentReceiptFocusProbe(focusGeneration, receiptReference))
+            {
+                await InvokeAsync(() =>
+                {
+                    if (IsCurrentReceiptFocusProbe(focusGeneration, receiptReference))
+                    {
+                        ScheduleReceiptHeadingFocus();
+
+                        // The Loading write may already have painted and removed the focused control; render
+                        // now so the heading takes focus instead of waiting for the read to finish.
+                        StateHasChanged();
+                    }
+                }).ConfigureAwait(false);
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+            // No focus handoff is observable after circuit loss.
+        }
+        catch (JSException)
+        {
+            // Focus failure must not block the audit read.
+        }
+        catch (ObjectDisposedException)
+        {
+            // The component was disposed while checking focus.
+        }
+        catch (OperationCanceledException)
+        {
+            // Renderer or circuit teardown cancelled the replacement-control probe.
+        }
+    }
+
+    private bool IsCurrentReceiptFocusProbe(long focusGeneration, string? receiptReference)
+        => !_disposed && focusGeneration == Volatile.Read(ref _receiptFocusGeneration)
+            && _selectedReceipt is not null
+            && string.Equals(_selectedReceiptReference, receiptReference, StringComparison.Ordinal);
+
+    private TenantCorrectionStartIntent CreateCorrectionIntent(TenantAuditRow row)
+    {
+        bool global = row.EventType is "GlobalAdministratorSet" or "GlobalAdministratorRemoved";
+        string target = row.Narrative?.UserId ?? string.Empty;
+        _correctionProjections.TryGetValue(target, out TenantCorrectionProjection? projection);
+        TenantRole? intendedRole = _selectedCorrectionRoles.TryGetValue(row.EventReference, out TenantRole selectedRole)
+            ? selectedRole : null;
+        return TenantCorrectionStartIntent.Evaluate(new(
+            TenantAuditReceipt.FromRow(row, surfaceKind: _snapshot.Kind), row,
+            IsAuthorized: global ? _globalCorrectionAuthorized : projection?.IsAuthorized is true,
+            HasCurrentProjectionSnapshot: (global
+                ? _globalAdministratorsProjection is { IsCompleteEvidence: true, IsMutationEvidenceBacked: true } globalProjection
+                    && TenantLifecycleProjectionVersion.IsOrdered(globalProjection.ProjectionVersion)
+                : projection?.IsCurrent is true)
+                && _snapshot.Lifecycle is ProjectionLifecycleState.Current
+                && _snapshot.Freshness is ReadModelFreshnessState.Current,
+            CurrentProjectionSnapshotReference: global && _globalAdministratorsProjection is not null
+                ? _globalAdministratorsProjection.ProjectionVersion ?? string.Empty : string.Empty,
+            TenantStatus: projection?.TenantStatus ?? TenantStatus.Unknown,
+            CurrentRole: projection?.CurrentRole,
+            IntendedRole: intendedRole,
+            HasTenantCommandSupport: QueryGateway.SupportsTenantCorrectionStart
+                && BffComposition.IsReadSurfaceConnected && BffComposition.IsCommandSurfaceConnected,
+            HasGlobalAdministratorCommandSupport: global
+                && string.Equals(TenantId, "system", StringComparison.Ordinal)
+                && string.Equals(row.TenantId, "system", StringComparison.Ordinal)
+                && Services.GetService<ITenantCommandGateway>() is { SupportsCommandStatusLookup: true } globalCommandGateway
+                && (row.EventType is "GlobalAdministratorRemoved"
+                    ? globalCommandGateway.SupportsTrackedGlobalAdministratorDispatch
+                    : row.EventType is "GlobalAdministratorSet"
+                        && globalCommandGateway.SupportsTrackedGlobalAdministratorRemoveDispatch)
+                && BffComposition.IsGlobalAdministratorDispatchConnected
+                && BffComposition.IsGlobalAdministratorStatusConnected
+                && BffComposition.IsGlobalAdministratorRequeryConnected,
+            IsNarrowViewportSafe: HasMeasuredSafeViewport,
+            Projection: projection));
+    }
+
+    private Task SelectCorrectionRoleAsync(TenantCorrectionRoleSelection selection)
+    {
+        if (HasSubmittedCorrection || !HasMeasuredSafeViewport)
+        {
+            return Task.CompletedTask;
+        }
+        TenantAuditRow? row = _snapshot.Rows.FirstOrDefault(candidate =>
+            string.Equals(candidate.EventReference, selection.AuditReference, StringComparison.Ordinal));
+        if (row is null || !string.Equals(row.TenantId, TenantId, StringComparison.Ordinal)
+            || row.EventType is not ("UserRemovedFromTenant" or "UserRoleChanged"))
+        {
+            return Task.CompletedTask;
+        }
+        Interlocked.Increment(ref _correctionOpenGeneration);
+        if (_activeCorrectionIntent is not null || _previewCorrectionIntent is not null)
+        {
+            ScheduleCorrectionFocus(_activeCorrectionFocusReference, _activeCorrectionOrigin);
+        }
+        _activeCorrectionIntent = null;
+        _previewCorrectionIntent = null;
+        if (selection.Role is TenantRole.TenantOwner or TenantRole.TenantContributor or TenantRole.TenantReader)
+        {
+            _selectedCorrectionRoles[selection.AuditReference] = selection.Role;
+        }
+        else
+        {
+            _selectedCorrectionRoles.Remove(selection.AuditReference);
+        }
+        ResolveReceiptSelection();
+        return Task.CompletedTask;
+    }
+
+    private async Task RefreshTenantProjectionForLoadAsync(
+        string tenantId,
+        long generation,
+        CancellationToken cancellationToken)
+    {
+        long projectionGeneration = Interlocked.Increment(ref _correctionProjectionGeneration);
+        string[] targets = _snapshot.Rows.Where(row => row.EventType is "UserRemovedFromTenant" or "UserRoleChanged")
+            .Select(row => row.Narrative?.UserId ?? string.Empty).Where(target => !string.IsNullOrWhiteSpace(target))
+            .Distinct(StringComparer.Ordinal).ToArray();
+        IReadOnlyList<TenantCorrectionProjection> projections = await QueryGateway.GetTenantCorrectionProjectionsAsync(
+            tenantId, targets, cancellationToken).ConfigureAwait(false);
+        Dictionary<string, TenantCorrectionProjection> captures = projections
+            .GroupBy(projection => projection.TargetUserId, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.Count() == 1 ? group.Single()
+                : TenantCorrectionProjection.Unavailable(tenantId, group.Key), StringComparer.Ordinal);
+        bool removesReceiptCorrection = false;
+        await InvokeAsync(() =>
+        {
+            if (CanApply(tenantId, generation) && projectionGeneration == Volatile.Read(ref _correctionProjectionGeneration))
+            {
+                _correctionProjections.Clear();
+                foreach (var capture in captures)
+                {
+                    _correctionProjections[capture.Key] = capture.Value;
+                }
+                removesReceiptCorrection = WillRemoveReceiptCorrectionControl(_snapshot);
+            }
+        }).ConfigureAwait(false);
+        if (removesReceiptCorrection)
+        {
+            await CaptureReceiptFocusForReplacementAsync(correctionOnly: true).ConfigureAwait(false);
+        }
+        await InvokeAsync(() =>
+        {
+            if (CanApply(tenantId, generation) && projectionGeneration == Volatile.Read(ref _correctionProjectionGeneration))
+            {
+                if (_activeCorrectionIntent is not null)
+                {
+                    TenantAuditRow? row = _snapshot.Rows.FirstOrDefault(candidate =>
+                        string.Equals(candidate.EventReference, _activeCorrectionIntent.OriginalAuditReference, StringComparison.Ordinal));
+                    TenantCorrectionStartIntent? updated = row is null ? null : CreateCorrectionIntent(row);
+                    if (updated?.IsAvailable is not true)
+                    {
+                        _ = CloseCorrectionAsync();
+                    }
+                    else
+                    {
+                        _activeCorrectionIntent = updated;
+                    }
+                }
+                if (_previewCorrectionIntent is not null)
+                {
+                    TenantAuditRow? row = _snapshot.Rows.FirstOrDefault(candidate =>
+                        string.Equals(candidate.EventReference, _previewCorrectionIntent.OriginalAuditReference, StringComparison.Ordinal));
+                    if (row is not null)
+                    {
+                        // Keep the child mounted so it can preserve submitted/terminal snapshots. Pre-submit
+                        // previews receive even unavailable captures and immediately lose their old authority.
+                        _previewCorrectionIntent = CreateCorrectionIntent(row);
+                    }
+                }
+                ResolveReceiptSelection();
+                StateHasChanged();
+            }
+        }).ConfigureAwait(false);
+    }
+
+    // The datetime-local filter input carries no timezone. Interpret it as UTC so the absolute
+    // date-range filter stays deterministic and aligns with the UTC-rendered timestamp column,
+    // rather than depending on the InteractiveServer host's local timezone.
+    private static bool TryParseDate(string? value, out DateTimeOffset? parsed)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            parsed = null;
+            return true;
+        }
+
+        string[] formats =
+        [
+            "yyyy-MM-dd'T'HH:mm",
+            "yyyy-MM-dd'T'HH:mm:ss",
+            "yyyy-MM-dd'T'HH:mm:ss.F",
+            "yyyy-MM-dd'T'HH:mm:ss.FF",
+            "yyyy-MM-dd'T'HH:mm:ss.FFF",
+            "yyyy-MM-dd'T'HH:mm:ss.FFFF",
+            "yyyy-MM-dd'T'HH:mm:ss.FFFFF",
+            "yyyy-MM-dd'T'HH:mm:ss.FFFFFF",
+            "yyyy-MM-dd'T'HH:mm:ss.FFFFFFF",
+        ];
+        if (!DateTime.TryParseExact(
+            value,
+            formats,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out DateTime local))
+        {
+            string[] offsetFormats =
+            [
+                "yyyy-MM-dd'T'HH:mmK",
+                "yyyy-MM-dd'T'HH:mm:ssK",
+                "yyyy-MM-dd'T'HH:mm:ss.FK",
+                "yyyy-MM-dd'T'HH:mm:ss.FFK",
+                "yyyy-MM-dd'T'HH:mm:ss.FFFK",
+                "yyyy-MM-dd'T'HH:mm:ss.FFFFK",
+                "yyyy-MM-dd'T'HH:mm:ss.FFFFFK",
+                "yyyy-MM-dd'T'HH:mm:ss.FFFFFFK",
+                "yyyy-MM-dd'T'HH:mm:ss.FFFFFFFK",
+            ];
+            if (DateTimeOffset.TryParseExact(
+                value,
+                offsetFormats,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal,
+                out DateTimeOffset absolute))
+            {
+                parsed = absolute.ToUniversalTime();
+                return parsed.Value != default(DateTimeOffset);
+            }
+
+            parsed = null;
+            return false;
+        }
+
+        parsed = new DateTimeOffset(DateTime.SpecifyKind(local, DateTimeKind.Unspecified), TimeSpan.Zero);
+        return parsed.Value != default(DateTimeOffset);
+    }
+
+    private static string TestIdState(string resourceState)
+    {
+        string result = string.Empty;
+        foreach (char character in resourceState)
+        {
+            if (char.IsUpper(character) && result.Length > 0)
+            {
+                result += "-";
+            }
+
+            result += char.ToLowerInvariant(character);
+        }
+
+        return result;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _disposed = true;
+        Interlocked.Increment(ref _authenticationTransitionVersion);
+        if (_authenticationStateProvider is not null)
+        {
+            _authenticationStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+            _authenticationStateProvider = null;
+        }
+        Interlocked.Increment(ref _loadGeneration);
+        CancelActiveCancellation();
+
+        if (_viewportObservation is not null)
+        {
+            _viewportObservation.StateChanged -= OnViewportObservationChanged;
+            _viewportObservation = null;
+        }
+
+        if (_readRefreshLease is not null)
+        {
+            await _readRefreshLease.DisposeAsync().ConfigureAwait(false);
+            _readRefreshLease = null;
+        }
+
+        _subscriptionTenantId = null;
+        _loadedTenantId = null;
+
+        if (_focusModule is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await _focusModule.DisposeAsync().ConfigureAwait(false);
+        }
+        catch (JSDisconnectedException)
+        {
+            // The circuit is already gone; no support-safe value is logged or surfaced here.
+        }
+    }
+
+    private PendingOperation BeginLoad()
+    {
+        var source = new CancellationTokenSource();
+        lock (_cancellationLock)
+        {
+            RetireCancellationCore(_loadCancellation);
+            _loadCancellation = source;
+        }
+
+        // Interlocked, not ++: OnParametersSetAsync reaches BeginLoad from a ConfigureAwait(false)
+        // continuation (it awaits the previous lease's DisposeAsync, a remote unsubscribe) while Refresh
+        // reaches it on the dispatcher. A lost increment gives two loads the same generation, and the older
+        // completion then passes CanApply and writes its stale page over the newer rows.
+        return new(
+            Interlocked.Increment(ref _loadGeneration),
+            source,
+            () => CompleteCancellation(source));
+    }
+
+    private void CancelActiveCancellation()
+    {
+        lock (_cancellationLock)
+        {
+            RetireCancellationCore(_loadCancellation);
+            _loadCancellation = null;
+        }
+    }
+
+    private void RetireCancellationCore(CancellationTokenSource? source)
+    {
+        if (source is null)
+        {
+            return;
+        }
+
+        source.Cancel();
+    }
+
+    private void CompleteCancellation(CancellationTokenSource source)
+    {
+        lock (_cancellationLock)
+        {
+            if (ReferenceEquals(_loadCancellation, source))
+            {
+                _loadCancellation = null;
+            }
+        }
+
+        source.Dispose();
+    }
+
+    private bool CanApply(string tenantId, long generation)
+        => !_disposed
+            && generation == Volatile.Read(ref _loadGeneration)
+            && string.Equals(TenantId, tenantId, StringComparison.Ordinal);
+
+    private static bool IsAppliedRequestedPage(TenantAuditSnapshot? snapshot, string? requestedCursor)
+        => snapshot is not null
+            && (snapshot.Kind is TenantAuditSurfaceKind.Ready
+                or TenantAuditSurfaceKind.Stale
+                or TenantAuditSurfaceKind.Empty
+                or TenantAuditSurfaceKind.FilteredEmpty
+                or TenantAuditSurfaceKind.Degraded)
+            && string.Equals(snapshot.RequestCursor, requestedCursor, StringComparison.Ordinal);
+
+    private sealed class PendingOperation : IDisposable
+    {
+        private Action? _complete;
+
+        public PendingOperation(
+            long generation,
+            CancellationTokenSource cancellation,
+            Action complete)
+        {
+            Generation = generation;
+            CancellationToken = cancellation.Token;
+            _complete = complete;
+        }
+
+        public long Generation { get; }
+
+        public CancellationToken CancellationToken { get; }
+
+        public void Dispose()
+            => Interlocked.Exchange(ref _complete, null)?.Invoke();
+    }
+}

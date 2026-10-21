@@ -1,0 +1,21 @@
+{
+  "command": [
+    "aspire",
+    "start",
+    "--non-interactive",
+    "--isolated",
+    "--no-build",
+    "--apphost",
+    "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+    "--format",
+    "Json"
+  ],
+  "environment": {
+    "EnableKeycloak": "true",
+    "KeycloakPersistent": "false",
+    "NAMESPACE": "folders-task36-baseline-20261021"
+  },
+  "exit_code": 0,
+  "seconds": 4.6245646476745605,
+  "private_log": "/tmp/folders-task36-baseline-start.log"
+}

@@ -1,0 +1,40 @@
+[
+  {
+    "command": [
+      "dotnet",
+      "format",
+      "whitespace",
+      "Hexalith.Folders.slnx",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs"
+    ],
+    "exit_code": 0,
+    "seconds": 10.965354681015015,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/format-whitespace-attempt-2.log"
+  },
+  {
+    "command": [
+      "dotnet",
+      "format",
+      "analyzers",
+      "Hexalith.Folders.slnx",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs"
+    ],
+    "exit_code": 0,
+    "seconds": 35.52605652809143,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/format-analyzers-attempt-2.log"
+  }
+]

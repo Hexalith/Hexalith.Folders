@@ -1,0 +1,38 @@
+[
+  {
+    "project": "domain",
+    "command": [
+      "dotnet",
+      "build",
+      "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+      "-c",
+      "Debug",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false",
+      "--no-restore",
+      "-m:1",
+      "-nr:false"
+    ],
+    "exit_code": 0,
+    "seconds": 12.445844750000106,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/build-attempt-7-domain.log"
+  },
+  {
+    "project": "apphost",
+    "command": [
+      "dotnet",
+      "build",
+      "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+      "-c",
+      "Debug",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false",
+      "--no-restore",
+      "-m:1",
+      "-nr:false"
+    ],
+    "exit_code": 0,
+    "seconds": 14.841289752999728,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/build-attempt-7-apphost.log"
+  }
+]

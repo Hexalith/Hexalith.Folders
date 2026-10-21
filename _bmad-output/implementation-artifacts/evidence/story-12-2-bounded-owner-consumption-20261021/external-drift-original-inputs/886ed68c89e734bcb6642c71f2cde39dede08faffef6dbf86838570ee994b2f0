@@ -1,0 +1,687 @@
+// <copyright file="CapabilityAndObservabilityCheckpointTests.cs" company="ITANEO">
+// Copyright (c) ITANEO (https://www.itaneo.com). All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace Hexalith.Memories.AccessTelemetry.Tests.Capability;
+
+using System.Diagnostics.Metrics;
+using Dapr;
+using Dapr.Client;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting.Internal;
+using Hexalith.Memories.AccessTelemetry.Lifecycle;
+
+using Hexalith.Memories.AccessTelemetry.Capability;
+using Hexalith.Memories.AccessTelemetry.Contracts;
+using Hexalith.Memories.AccessTelemetry.Observability;
+using Hexalith.Memories.AccessTelemetry.Tests.Observability;
+
+using Microsoft.Extensions.Time.Testing;
+
+using NSubstitute;
+
+using Shouldly;
+
+/// <summary>Story 27.2 C5 checkpoint for capability, authority, and observability gates.</summary>
+[Collection(AccessTelemetryLifecycleMetricsTestCollection.Name)]
+public sealed class CapabilityAndObservabilityCheckpointTests
+{
+    [Fact]
+    public void CapabilityGate_AllRequiredEvidenceForExactProfile_Passes()
+    {
+        AccessTelemetryCapabilityGateResult result = AccessTelemetryCapabilityGate.Evaluate(
+            ValidProfile(),
+            new string('a', 64),
+            production: true,
+            allowAlpha: false,
+            DateTimeOffset.UtcNow);
+
+        result.AllowsWrites.ShouldBeTrue();
+        result.Health.ShouldBe(AccessTelemetryHealthState.Healthy);
+        result.BusinessReadinessAvailable.ShouldBeTrue();
+    }
+
+    [Theory]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.StrongCrudAndEtags))]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.MultiKeyTransactionsAndConflicts))]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.ActorReactivationFailoverAndReminders))]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.EffectivePerRecordTtl))]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.TwoWriterThroughputDuringPurge))]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.TenantIsolationAndEncryption))]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.PhysicalCapacityEvidence))]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.ReclamationEvidenceHooks))]
+    public void CapabilityGate_MissingAnyRequiredBehavior_BlocksOnlyLifecycleWrites(string property)
+    {
+        AccessTelemetryCapabilityProfile profile = ValidProfile().WithCapability(property, value: false);
+
+        AccessTelemetryCapabilityGateResult result = AccessTelemetryCapabilityGate.Evaluate(
+            profile,
+            new string('a', 64),
+            production: true,
+            allowAlpha: false,
+            DateTimeOffset.UtcNow);
+
+        result.AllowsWrites.ShouldBeFalse();
+        result.Health.ShouldBe(AccessTelemetryHealthState.Unhealthy);
+        result.Reason.ShouldBe(AccessTelemetryReason.CapabilityUnproven);
+        result.BusinessReadinessAvailable.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void CapabilityGate_ProfileHashStalenessAlphaAndVersionPin_FailClosed()
+    {
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        AccessTelemetryCapabilityGate.Evaluate(ValidProfile(), new string('b', 64), true, false, now).AllowsWrites.ShouldBeFalse();
+        AccessTelemetryCapabilityGate.Evaluate(ValidProfile() with { ValidUntilUtc = now.AddSeconds(-1) }, new string('a', 64), true, false, now).AllowsWrites.ShouldBeFalse();
+        AccessTelemetryCapabilityGate.Evaluate(ValidProfile() with { IsAlpha = true }, new string('a', 64), true, false, now).AllowsWrites.ShouldBeFalse();
+        AccessTelemetryCapabilityGate.Evaluate(ValidProfile() with { IsAlpha = true }, new string('a', 64), true, true, now).AllowsWrites.ShouldBeTrue();
+        AccessTelemetryCapabilityGate.Evaluate(ValidProfile() with { ExactVersionPinned = false }, new string('a', 64), true, true, now).AllowsWrites.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task CapabilityProbeRunner_AllRequiredBehavioralProofs_PublishesHealthyExactProfile()
+    {
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        var runtimeGate = new AccessTelemetryRuntimeGate();
+        var runner = new AccessTelemetryCapabilityProbeRunner(
+            AccessTelemetryCapabilityProbeRunner.RequiredCapabilities.Select(
+                capability => new StubCapabilityProbe(capability, passed: true)),
+            runtimeGate,
+            TimeProvider.System);
+
+        AccessTelemetryCapabilityGateResult result = await runner.RunAsync(
+            ProbeContext(now.AddHours(1)),
+            CancellationToken.None);
+
+        result.AllowsWrites.ShouldBeTrue();
+        runtimeGate.Current.ShouldBe(result);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task LocalFunctionalStartup_RequiresRealProbeSetAndNeverSatisfiesFullOrProduction(bool production)
+    {
+        var gate = new AccessTelemetryRuntimeGate();
+        var runner = new AccessTelemetryCapabilityProbeRunner(
+            AccessTelemetryCapabilityProbeRunner.RequiredCapabilities.Select(name => new StubCapabilityProbe(name,
+                AccessTelemetryCapabilityProbeRunner.LocalFunctionalCapabilities.Contains(name))), gate, TimeProvider.System);
+        AccessTelemetryCapabilityProbeContext context = ProbeContext(DateTimeOffset.UtcNow.AddMinutes(1)) with
+        {
+            LocalFunctional = true, Production = production,
+            CurrentRunId = "offline-run", CurrentSourceMappingHash = new string('a', 64), LocalFunctionalProfileJson = LocalCanonicalProfile(),
+            ComponentProfileHash = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(LocalCanonicalProfile()))),
+        };
+        (await runner.RunAsync(context, CancellationToken.None)).AllowsWrites.ShouldBe(!production);
+        (await runner.RunAsync(context with { LocalFunctional = false }, CancellationToken.None)).AllowsWrites.ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.StrongCrudAndEtags))]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.MultiKeyTransactionsAndConflicts))]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.ActorReactivationFailoverAndReminders))]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.EffectivePerRecordTtl))]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.RecordAndRequestBounds))]
+    [InlineData(nameof(AccessTelemetryCapabilityProfile.TenantIsolationAndEncryption))]
+    public async Task LocalFunctionalStartup_MissingActualProbeFailsClosed(string missing)
+    {
+        var gate = new AccessTelemetryRuntimeGate();
+        var runner = new AccessTelemetryCapabilityProbeRunner(
+            AccessTelemetryCapabilityProbeRunner.RequiredCapabilities.Select(name => new StubCapabilityProbe(name, name != missing)), gate, TimeProvider.System);
+        AccessTelemetryCapabilityGateResult result = await runner.RunAsync(
+            ProbeContext(DateTimeOffset.UtcNow.AddMinutes(1)) with { LocalFunctional = true, Production = false, CurrentRunId = "offline-run", CurrentSourceMappingHash = new string('a', 64), LocalFunctionalProfileJson = LocalCanonicalProfile(), ComponentProfileHash = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(LocalCanonicalProfile()))) }, CancellationToken.None);
+        result.AllowsWrites.ShouldBeFalse();
+        gate.Current.AllowsWrites.ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData("foreign")]
+    [InlineData("missing")]
+    [InlineData("partial")]
+    [InlineData("expired")]
+    [InlineData("default-expiry")]
+    [InlineData("valid")]
+    [InlineData("full")]
+    public async Task HostedLocalIntentNeverFallsThroughAndExpiredIntentRunsNoProbes(string variant)
+    {
+        int probes = 0;
+        var gate = new AccessTelemetryRuntimeGate();
+        var runner = new AccessTelemetryCapabilityProbeRunner(AccessTelemetryCapabilityProbeRunner.RequiredCapabilities.Select(name => new StubCapabilityProbe(name, true, observe: () => probes++)), gate, TimeProvider.System);
+        string canonical = LocalCanonicalProfile();
+        var options = new AccessTelemetryOptions
+        {
+            LocalFunctionalRunId = variant is "partial" or "full" ? string.Empty : "offline-run", DeploymentId = "offline-run", Retention = TimeSpan.FromHours(1),
+            LocalFunctionalSourceMappingHash = variant == "full" ? string.Empty : new string('a', 64), LocalFunctionalProfileJson = variant == "full" ? string.Empty : canonical,
+            ComponentProfileHash = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(canonical))),
+            CapacityEvidenceId = "capacity-development", PhysicalReclamationEvidenceId = "pending-story-27-3",
+        };
+        var provider = new AccessTelemetryRuntimeOptionsProvider(options);
+        provider.Publish(options);
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?> { ["HEXALITH_G4_RUN_ID"] = variant == "missing" ? null : variant == "foreign" ? "foreign-run" : "offline-run", ["HEXALITH_SOURCE_MAPPING_HASH"] = new string('a', 64) }).Build();
+        DateTimeOffset expiry = variant == "default-expiry" ? default : DateTimeOffset.UtcNow.AddMinutes(variant == "expired" ? -1 : 1);
+        using var hosted = new AccessTelemetryCapabilityProbeHostedService(runner, provider, new AccessTelemetryCapabilityEvidenceOptions { ExactVersionPinned = true, ValidUntilUtc = expiry }, new HostingEnvironment { EnvironmentName = "Development" }, configuration, TimeProvider.System);
+        AccessTelemetryCapabilityGateResult result = (await hosted.ProbeCurrentAsync(CancellationToken.None)).ShouldNotBeNull();
+        bool allowed = variant is "valid" or "full";
+        result.AllowsWrites.ShouldBe(allowed);
+        probes.ShouldBe(allowed ? 10 : 0);
+        if (variant == "partial") AccessTelemetryOptionsValidator.Validate(options, "Development").IsValid.ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task HostedLocalStartupProof_IsAttemptedOnceWithInitiallyClosedGateAndNoWithdrawalRetry(bool failed)
+    {
+        DateTimeOffset now = new(2026, 10, 16, 12, 0, 0, TimeSpan.Zero);
+        var time = new FakeTimeProvider(now);
+        int probes = 0;
+        var gate = new AccessTelemetryRuntimeGate(time);
+        var runner = new AccessTelemetryCapabilityProbeRunner(AccessTelemetryCapabilityProbeRunner.RequiredCapabilities.Select(
+            name => new StubCapabilityProbe(name, !failed, observe: () => probes++)), gate, time);
+        string canonical = LocalCanonicalProfile();
+        var options = new AccessTelemetryOptions
+        {
+            LocalFunctionalRunId = "offline-run", DeploymentId = "offline-run", Retention = TimeSpan.FromHours(1),
+            LocalFunctionalSourceMappingHash = new string('a', 64), LocalFunctionalProfileJson = canonical,
+            ComponentProfileHash = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(canonical))),
+            CapacityEvidenceId = "capacity-development", PhysicalReclamationEvidenceId = "pending-story-27-3",
+        };
+        var provider = new AccessTelemetryRuntimeOptionsProvider(options);
+        provider.Publish(options);
+        string path = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(path, "{\"schemaVersion\":1,\"state\":\"disabled\",\"profileSha256\":\"" + options.ComponentProfileHash + "\",\"expiresUtcMs\":" + now.AddMinutes(10).ToUnixTimeMilliseconds() + "}");
+            IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["HEXALITH_G4_RUN_ID"] = "offline-run", ["HEXALITH_SOURCE_MAPPING_HASH"] = new string('a', 64),
+                ["AccessTelemetryQualification:GatePath"] = path,
+            }).Build();
+            using var hosted = new AccessTelemetryCapabilityProbeHostedService(runner, provider,
+                new AccessTelemetryCapabilityEvidenceOptions { ExactVersionPinned = true, ValidUntilUtc = now.AddHours(2) },
+                new HostingEnvironment { EnvironmentName = "Development" }, configuration, time);
+            (await hosted.ProbeCurrentAsync(CancellationToken.None)).ShouldNotBeNull().AllowsWrites.ShouldBe(!failed);
+            probes.ShouldBe(10);
+            time.Advance(TimeSpan.FromSeconds(30));
+            (await hosted.ProbeCurrentAsync(CancellationToken.None)).ShouldNotBeNull().AllowsWrites.ShouldBe(!failed);
+            File.Delete(path);
+            (await hosted.ProbeCurrentAsync(CancellationToken.None)).ShouldNotBeNull().AllowsWrites.ShouldBe(!failed);
+            probes.ShouldBe(10);
+            configuration["HEXALITH_G4_RUN_ID"] = "foreign-run";
+            (await hosted.ProbeCurrentAsync(CancellationToken.None)).ShouldNotBeNull().AllowsWrites.ShouldBeFalse();
+            configuration["HEXALITH_G4_RUN_ID"] = "offline-run";
+            (await hosted.ProbeCurrentAsync(CancellationToken.None)).ShouldNotBeNull().AllowsWrites.ShouldBeFalse();
+            time.Advance(TimeSpan.FromHours(2));
+            (await hosted.ProbeCurrentAsync(CancellationToken.None)).ShouldNotBeNull().AllowsWrites.ShouldBeFalse();
+            probes.ShouldBe(10);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Theory]
+    [InlineData("source")]
+    [InlineData("run")]
+    [InlineData("profile")]
+    [InlineData("expiry")]
+    [InlineData("mode")]
+    public async Task LocalStartupProof_ChangedBindingNeverStartsAnotherProbeAttempt(string changed)
+    {
+        DateTimeOffset now = new(2026, 10, 16, 12, 0, 0, TimeSpan.Zero);
+        var time = new FakeTimeProvider(now);
+        int probes = 0;
+        var runner = new AccessTelemetryCapabilityProbeRunner(AccessTelemetryCapabilityProbeRunner.RequiredCapabilities.Select(
+            name => new StubCapabilityProbe(name, true, observe: () => probes++)), new AccessTelemetryRuntimeGate(time), time);
+        AccessTelemetryCapabilityProbeContext context = ProbeContext(now.AddHours(1)) with
+        {
+            LocalFunctional = true, Production = false, CurrentRunId = "offline-run", CurrentSourceMappingHash = new string('a', 64),
+            LocalFunctionalProfileJson = LocalCanonicalProfile(),
+            ComponentProfileHash = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(LocalCanonicalProfile()))),
+        };
+        (await runner.RunAsync(context, CancellationToken.None)).AllowsWrites.ShouldBeTrue();
+        AccessTelemetryCapabilityProbeContext drifted = changed switch
+        {
+            "source" => context with { CurrentSourceMappingHash = new string('b', 64) },
+            "run" => context with { CurrentRunId = "foreign-run" },
+            "profile" => context with { ComponentProfileHash = new string('b', 64) },
+            "expiry" => context with { ValidUntilUtc = now.AddHours(2) },
+            _ => context with { LocalFunctional = false },
+        };
+        (await runner.RunAsync(drifted, CancellationToken.None)).AllowsWrites.ShouldBeFalse();
+        (await runner.RunAsync(context, CancellationToken.None)).AllowsWrites.ShouldBeFalse();
+        probes.ShouldBe(10);
+    }
+
+    [Fact]
+    public async Task FullStartupProof_ContinuesItsExistingRepeatedBehavior()
+    {
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        int probes = 0;
+        var runner = new AccessTelemetryCapabilityProbeRunner(AccessTelemetryCapabilityProbeRunner.RequiredCapabilities.Select(
+            name => new StubCapabilityProbe(name, true, observe: () => probes++)), new AccessTelemetryRuntimeGate(), TimeProvider.System);
+        AccessTelemetryCapabilityProbeContext context = ProbeContext(now.AddHours(1));
+        (await runner.RunAsync(context, CancellationToken.None)).AllowsWrites.ShouldBeTrue();
+        (await runner.RunAsync(context, CancellationToken.None)).AllowsWrites.ShouldBeTrue();
+        probes.ShouldBe(20);
+    }
+
+    [Theory]
+    [InlineData(120, 30)]
+    [InlineData(5, 5)]
+    public async Task LocalStartupTimeout_IsRetainedFailureAndLateSdkCompletionStartsNoMoreOperations(int lifetimeSeconds, int timeoutSeconds)
+    {
+        DateTimeOffset now = new(2026, 10, 16, 12, 0, 0, TimeSpan.Zero);
+        var time = new FakeTimeProvider(now);
+        DaprClient client = NSubstitute.Substitute.For<DaprClient>();
+        var sdk = new TaskCompletionSource<(string Value, string Etag)>(TaskCreationOptions.RunContinuationsAsynchronously);
+        CancellationToken admittedToken = default;
+        client.GetStateAndETagAsync<string>(NSubstitute.Arg.Any<string>(), NSubstitute.Arg.Any<string>(),
+            ConsistencyMode.Strong, NSubstitute.Arg.Any<IReadOnlyDictionary<string, string>>(), NSubstitute.Arg.Any<CancellationToken>())
+            .Returns(call => { admittedToken = call.ArgAt<CancellationToken>(4); return sdk.Task; });
+        var options = new AccessTelemetryRuntimeOptionsProvider(new AccessTelemetryOptions());
+        var actual = new DaprAccessTelemetryCapabilityProbe(nameof(AccessTelemetryCapabilityProfile.StrongCrudAndEtags), client,
+            options, new MonotonicRecordIdGenerator(), time, NullLogger<DaprAccessTelemetryCapabilityProbe>.Instance);
+        Task<AccessTelemetryCapabilityProbeResult>? active = null;
+        var gate = new AccessTelemetryRuntimeGate(time);
+        var runner = new AccessTelemetryCapabilityProbeRunner(
+            [new StubCapabilityProbe(nameof(AccessTelemetryCapabilityProfile.StrongCrudAndEtags), false,
+                execute: token => active = actual.ProbeAsync(token))], gate, time);
+        AccessTelemetryCapabilityProbeContext context = ProbeContext(now.AddSeconds(lifetimeSeconds)) with
+        {
+            LocalFunctional = true, Production = false, CurrentRunId = "offline-run", CurrentSourceMappingHash = new string('a', 64),
+            LocalFunctionalProfileJson = LocalCanonicalProfile(),
+            ComponentProfileHash = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(LocalCanonicalProfile()))),
+        };
+
+        Task<AccessTelemetryCapabilityGateResult> attempt = runner.RunAsync(context, CancellationToken.None);
+        attempt.IsCompleted.ShouldBeFalse();
+        time.Advance(TimeSpan.FromSeconds(timeoutSeconds - 1));
+        attempt.IsCompleted.ShouldBeFalse();
+        time.Advance(TimeSpan.FromSeconds(1));
+        AccessTelemetryCapabilityGateResult result = await attempt.WaitAsync(TimeSpan.FromSeconds(5));
+        result.AllowsWrites.ShouldBeFalse();
+        admittedToken.IsCancellationRequested.ShouldBeTrue();
+        gate.Current.AllowsWrites.ShouldBeFalse();
+        (await runner.RunAsync(context, CancellationToken.None)).AllowsWrites.ShouldBeFalse();
+        sdk.SetResult((null!, "etag"));
+        _ = await Should.ThrowAsync<OperationCanceledException>(() => active!);
+        client.ReceivedCalls().Count().ShouldBe(1);
+    }
+
+    private static string LocalCanonicalProfile() => System.Text.Json.JsonSerializer.Serialize(new
+    {
+        purpose = "local-functional-retention", runId = "offline-run", sourceMappingHash = new string('a', 64), componentType = "state.postgresql/v2",
+        runtimeImage = "ghcr.io/dapr/daprd:1.18.1@sha256:b7f7d296f01f0b4b82bf3c5f087ecf26165ce08caf3e87f94b8c72b9e11873f8",
+        postgresqlImage = "docker.io/library/postgres:18.6-trixie@sha256:5a5a84b19854a9ffaa54082c166ff4ec27473a361e496e5ea167f298f2da9722",
+        sslMode = "verify-full", retentionSeconds = 3600, qualificationCredit = false,
+    });
+
+    [Theory]
+    [InlineData("missing")]
+    [InlineData("foreign-run")]
+    [InlineData("foreign-source")]
+    [InlineData("backend")]
+    [InlineData("runtime")]
+    [InlineData("retention")]
+    public async Task LocalFunctionalStartup_RejectsSelfHashedIncompleteOrForeignProfile(string drift)
+    {
+        var gate = new AccessTelemetryRuntimeGate();
+        var runner = new AccessTelemetryCapabilityProbeRunner(AccessTelemetryCapabilityProbeRunner.RequiredCapabilities.Select(name => new StubCapabilityProbe(name, true)), gate, TimeProvider.System);
+        string profile = drift switch
+        {
+            "missing" => "{\"purpose\":\"local-functional-retention\",\"qualificationCredit\":false}",
+            "foreign-run" => LocalCanonicalProfile().Replace("offline-run", "foreign-run", StringComparison.Ordinal),
+            "foreign-source" => LocalCanonicalProfile().Replace(new string('a', 64), new string('b', 64), StringComparison.Ordinal),
+            "backend" => LocalCanonicalProfile().Replace("18.6-trixie", "18.5-trixie", StringComparison.Ordinal),
+            "runtime" => LocalCanonicalProfile().Replace("1.18.1@", "1.18.2@", StringComparison.Ordinal),
+            _ => LocalCanonicalProfile().Replace("3600", "86400", StringComparison.Ordinal),
+        };
+        var context = ProbeContext(DateTimeOffset.UtcNow.AddMinutes(1)) with { LocalFunctional = true, CurrentRunId = "offline-run", CurrentSourceMappingHash = new string('a', 64), LocalFunctionalProfileJson = profile, ComponentProfileHash = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(profile))) };
+        (await runner.RunAsync(context, CancellationToken.None)).AllowsWrites.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void RuntimeGate_ClosesImmediatelyWhenPublishedEvidenceExpires()
+    {
+        DateTimeOffset now = new(2026, 7, 18, 10, 0, 0, TimeSpan.Zero);
+        var clock = new FakeTimeProvider(now);
+        var runtimeGate = new AccessTelemetryRuntimeGate(clock);
+        runtimeGate.Publish(new AccessTelemetryCapabilityGateResult(
+            true,
+            true,
+            AccessTelemetryHealthState.Healthy,
+            AccessTelemetryReason.None,
+            now.AddSeconds(30)));
+
+        runtimeGate.Current.AllowsWrites.ShouldBeTrue();
+        clock.Advance(TimeSpan.FromSeconds(30));
+
+        runtimeGate.Current.AllowsWrites.ShouldBeFalse();
+        runtimeGate.Current.Reason.ShouldBe(AccessTelemetryReason.CapabilityUnproven);
+        runtimeGate.Current.BusinessReadinessAvailable.ShouldBeTrue();
+    }
+
+    [Theory]
+    [InlineData("missing")]
+    [InlineData("failed")]
+    [InlineData("duplicate")]
+    [InlineData("faulted")]
+    public async Task CapabilityProbeRunner_IncompleteAmbiguousOrFaultedEvidence_FailsClosed(string failure)
+    {
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        List<IAccessTelemetryCapabilityProbe> probes = AccessTelemetryCapabilityProbeRunner.RequiredCapabilities
+            .Select(capability => (IAccessTelemetryCapabilityProbe)new StubCapabilityProbe(capability, passed: true))
+            .ToList();
+        string target = AccessTelemetryCapabilityProbeRunner.RequiredCapabilities[0];
+        if (failure == "missing")
+        {
+            probes.RemoveAt(0);
+        }
+        else if (failure == "failed")
+        {
+            probes[0] = new StubCapabilityProbe(target, passed: false);
+        }
+        else if (failure == "duplicate")
+        {
+            probes.Add(new StubCapabilityProbe(target, passed: true));
+        }
+        else
+        {
+            probes[0] = new StubCapabilityProbe(target, passed: true, throws: true);
+        }
+
+        var runtimeGate = new AccessTelemetryRuntimeGate();
+        var runner = new AccessTelemetryCapabilityProbeRunner(probes, runtimeGate, TimeProvider.System);
+
+        AccessTelemetryCapabilityGateResult result = await runner.RunAsync(
+            ProbeContext(now.AddHours(1)),
+            CancellationToken.None);
+
+        result.AllowsWrites.ShouldBeFalse();
+        result.Reason.ShouldBe(AccessTelemetryReason.CapabilityUnproven);
+        result.BusinessReadinessAvailable.ShouldBeTrue();
+        runtimeGate.Current.ShouldBe(result);
+    }
+
+    [Fact]
+    public void AuthorityPolicy_SeparatesWriterLifecycleClockInspectorAndAdapterActions()
+    {
+        AccessTelemetryAuthorityPolicy.Allows(AccessTelemetryAuthority.ServerWriter, AccessTelemetryAuthorityAction.Write).ShouldBeTrue();
+        AccessTelemetryAuthorityPolicy.Allows(AccessTelemetryAuthority.ServerWriter, AccessTelemetryAuthorityAction.Read).ShouldBeFalse();
+        AccessTelemetryAuthorityPolicy.Allows(AccessTelemetryAuthority.ServerWriter, AccessTelemetryAuthorityAction.Delete).ShouldBeFalse();
+        AccessTelemetryAuthorityPolicy.Allows(AccessTelemetryAuthority.LifecycleService, AccessTelemetryAuthorityAction.Delete).ShouldBeTrue();
+        AccessTelemetryAuthorityPolicy.Allows(AccessTelemetryAuthority.Clock, AccessTelemetryAuthorityAction.SignTime).ShouldBeTrue();
+        AccessTelemetryAuthorityPolicy.Allows(AccessTelemetryAuthority.Clock, AccessTelemetryAuthorityAction.Write).ShouldBeFalse();
+        AccessTelemetryAuthorityPolicy.Allows(AccessTelemetryAuthority.Inspector, AccessTelemetryAuthorityAction.SanitizedInspect).ShouldBeTrue();
+        AccessTelemetryAuthorityPolicy.Allows(AccessTelemetryAuthority.Inspector, AccessTelemetryAuthorityAction.RotateKeys).ShouldBeFalse();
+        AccessTelemetryAuthorityPolicy.Allows(AccessTelemetryAuthority.AdapterEvidence, AccessTelemetryAuthorityAction.PhysicalEvidence).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void LifecycleCounter_EmitsOnlyBoundedStateAndReasonLabels()
+    {
+        List<KeyValuePair<string, object?>> tags = [];
+        using var listener = new MeterListener();
+        listener.InstrumentPublished = (instrument, current) =>
+        {
+            if (instrument.Name == "memories.access.telemetry.lifecycle.records")
+            {
+                current.EnableMeasurementEvents(instrument);
+            }
+        };
+        listener.SetMeasurementEventCallback<long>((_, _, measurementTags, _) => tags.AddRange(measurementTags.ToArray()));
+        listener.Start();
+
+        AccessTelemetryLifecycleMetrics.Record(AccessTelemetryRecordState.Dropped, AccessTelemetryReason.QueueFull);
+
+        tags.ShouldBe(
+        [
+            new KeyValuePair<string, object?>("state", "dropped"),
+            new KeyValuePair<string, object?>("reason", "queue_full"),
+        ]);
+    }
+
+    [Fact]
+    public void StateOperationCounter_EmitsExactUnlabelledTargetDelta()
+    {
+        var measurements = new List<(long Value, KeyValuePair<string, object?>[] Tags)>();
+        using var listener = new MeterListener();
+        listener.InstrumentPublished = (instrument, current) =>
+        {
+            if (instrument.Name == AccessTelemetryMetricContract.StateOperations)
+            {
+                current.EnableMeasurementEvents(instrument);
+            }
+        };
+        listener.SetMeasurementEventCallback<long>((_, value, tags, _) =>
+            measurements.Add((value, tags.ToArray())));
+        listener.Start();
+
+        AccessTelemetryLifecycleMetrics.RecordStateOperations(3);
+
+        measurements.Count.ShouldBe(1);
+        measurements[0].Value.ShouldBe(3);
+        measurements[0].Tags.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void LifecycleGauges_UseLiveClockAndAggregateHealthWithoutInventingPhysicalEvidence()
+    {
+        DateTimeOffset now = new(2026, 7, 18, 10, 0, 0, TimeSpan.Zero);
+        var clock = new FakeTimeProvider(now);
+        List<(string Name, double Value, KeyValuePair<string, object?>[] Tags)> doubles = [];
+        List<(string Name, long Value, KeyValuePair<string, object?>[] Tags)> integers = [];
+        using var listener = new MeterListener();
+        listener.InstrumentPublished = (instrument, current) =>
+        {
+            if (instrument.Meter.Name == AccessTelemetryLifecycleMetrics.MeterName)
+            {
+                current.EnableMeasurementEvents(instrument);
+            }
+        };
+        listener.SetMeasurementEventCallback<double>((instrument, value, tags, _) =>
+            doubles.Add((instrument.Name, value, tags.ToArray())));
+        listener.SetMeasurementEventCallback<long>((instrument, value, tags, _) =>
+            integers.Add((instrument.Name, value, tags.ToArray())));
+        listener.Start();
+
+        AccessTelemetryLifecycleMetrics.RecordRuntimeGate(
+            true,
+            now.AddSeconds(30),
+            AccessTelemetryHealthState.Healthy,
+            AccessTelemetryReason.None,
+            clock);
+        AccessTelemetryLifecycleMetrics.RecordProcessorHealth(
+            AccessTelemetryHealthState.Degraded,
+            AccessTelemetryReason.DependencyUnavailable);
+        AccessTelemetryLifecycleMetrics.RecordAttestation(CreateAttestation(now.AddSeconds(-10)), now, clock);
+        AccessTelemetryLifecycleMetrics.RecordExpiryState(7, now.AddSeconds(-30), now.AddSeconds(-20));
+        AccessTelemetryLifecycleMetrics.RecordCapacity(450, 900);
+        AccessTelemetryLifecycleMetrics.RecordPhysicalEvidence(present: false);
+        AccessTelemetryLifecycleMetrics.Record(AccessTelemetryRecordState.Dropped, AccessTelemetryReason.QueueFull);
+        AccessTelemetryLifecycleMetrics.RecordDaprLatency(11);
+        AccessTelemetryLifecycleMetrics.RecordAttestationLatency(12);
+        AccessTelemetryLifecycleMetrics.RecordStateLatency(13);
+        AccessTelemetryLifecycleMetrics.RecordStateOperations(3);
+        AccessTelemetryLifecycleMetrics.RecordExpiryLag(30);
+        AccessTelemetryLifecycleMetrics.RecordPurgeLatency(14);
+        AccessTelemetryLifecycleMetrics.RecordReminder(succeeded: true);
+        listener.RecordObservableInstruments();
+
+        Last(integers, AccessTelemetryMetricContract.CapacityRecords).Value.ShouldBe(450);
+        Last(doubles, AccessTelemetryMetricContract.CapacityUtilization).Value.ShouldBe(0.5);
+        Last(integers, AccessTelemetryMetricContract.ExpiryIndexDepth).Value.ShouldBe(7);
+        Last(doubles, AccessTelemetryMetricContract.AttestationAge).Value.ShouldBe(10);
+        Last(doubles, AccessTelemetryMetricContract.ExpiryOldestDueAge).Value.ShouldBe(30);
+        Last(doubles, AccessTelemetryMetricContract.PurgeCohortAge).Value.ShouldBe(20);
+        Last(integers, AccessTelemetryMetricContract.Profile).Tags.ShouldContain(
+            new KeyValuePair<string, object?>("state", "matched"));
+        Last(integers, AccessTelemetryMetricContract.Health).Tags.ShouldContain(
+            new KeyValuePair<string, object?>("state", "degraded"));
+        integers.ShouldNotContain(measurement =>
+            measurement.Name == AccessTelemetryMetricContract.PhysicalEvidenceLastTimestamp);
+
+        AccessTelemetryLifecycleMetrics.RecordPhysicalEvidence(present: true, now.AddSeconds(-60));
+        clock.Advance(TimeSpan.FromSeconds(5));
+        listener.RecordObservableInstruments();
+
+        Last(doubles, AccessTelemetryMetricContract.AttestationAge).Value.ShouldBe(15);
+        Last(doubles, AccessTelemetryMetricContract.ExpiryOldestDueAge).Value.ShouldBe(35);
+        Last(doubles, AccessTelemetryMetricContract.PurgeCohortAge).Value.ShouldBe(25);
+        Last(integers, AccessTelemetryMetricContract.PhysicalEvidenceLastTimestamp).Value
+            .ShouldBe(now.AddSeconds(-60).ToUnixTimeSeconds());
+        string[] observedNames = doubles.Select(static measurement => measurement.Name)
+            .Concat(integers.Select(static measurement => measurement.Name))
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        foreach (string expected in AccessTelemetryMetricContract.MetricTagKeyPolicy.Keys.Except(
+            [
+                AccessTelemetryMetricContract.QueueRecords,
+                AccessTelemetryMetricContract.QueueBytes,
+                AccessTelemetryMetricContract.QueueOldestAge,
+            ],
+            StringComparer.Ordinal))
+        {
+            observedNames.ShouldContain(expected);
+        }
+
+        AccessTelemetryLifecycleMetrics.RecordProcessorHealth(
+            AccessTelemetryHealthState.Healthy,
+            AccessTelemetryReason.None);
+        listener.RecordObservableInstruments();
+        Last(integers, AccessTelemetryMetricContract.Health).Tags.ShouldContain(
+            new KeyValuePair<string, object?>("state", "no_data"));
+        AccessTelemetryLifecycleMetrics.RecordProcessorHealth(
+            AccessTelemetryHealthState.Healthy,
+            AccessTelemetryReason.None,
+            clock.GetUtcNow());
+        listener.RecordObservableInstruments();
+        Last(integers, AccessTelemetryMetricContract.Health).Tags.ShouldContain(
+            new KeyValuePair<string, object?>("state", "healthy"));
+
+        AccessTelemetryLifecycleMetrics.RecordProcessorHealth(
+            AccessTelemetryHealthState.Unhealthy,
+            AccessTelemetryReason.ClockUntrusted);
+        listener.RecordObservableInstruments();
+        Last(integers, AccessTelemetryMetricContract.Health).Tags.ShouldContain(
+            new KeyValuePair<string, object?>("state", "unhealthy"));
+        Last(integers, AccessTelemetryMetricContract.Health).Tags.ShouldContain(
+            new KeyValuePair<string, object?>("reason", "clock_untrusted"));
+
+        AccessTelemetryLifecycleMetrics.RecordProcessorHealth(
+            AccessTelemetryHealthState.Healthy,
+            AccessTelemetryReason.None);
+        clock.Advance(TimeSpan.FromSeconds(25));
+        listener.RecordObservableInstruments();
+        Last(integers, AccessTelemetryMetricContract.Profile).Tags.ShouldContain(
+            new KeyValuePair<string, object?>("state", "unproven"));
+        Last(integers, AccessTelemetryMetricContract.Health).Tags.ShouldContain(
+            new KeyValuePair<string, object?>("reason", "capability_unproven"));
+    }
+
+    [Fact]
+    public void HealthPrecedence_IsUnhealthyThenDegradedThenNoDataOrHealthy()
+    {
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        AccessTelemetryHealthEvaluator.Evaluate(true, true, true, now.AddMinutes(-16), now).State.ShouldBe(AccessTelemetryHealthState.NoData);
+        AccessTelemetryHealthEvaluator.Evaluate(true, true, true, now.AddMinutes(-14), now).State.ShouldBe(AccessTelemetryHealthState.Healthy);
+        AccessTelemetryHealthEvaluator.Evaluate(true, true, false, now.AddMinutes(-16), now).State.ShouldBe(AccessTelemetryHealthState.Degraded);
+        AccessTelemetryHealthEvaluator.Evaluate(true, false, false, now.AddMinutes(-16), now).State.ShouldBe(AccessTelemetryHealthState.Unhealthy);
+        AccessTelemetryHealthEvaluator.Evaluate(false, true, true, null, now).State.ShouldBe(AccessTelemetryHealthState.Unhealthy);
+    }
+
+    [Fact]
+    public void HealthDetails_HaveOperationalFieldsWithoutRawOrIdentifierValues()
+    {
+        AccessTelemetryHealthSnapshot snapshot = AccessTelemetryHealthEvaluator.CreateFailure(
+            AccessTelemetryReason.RemoteValidationPending);
+
+        snapshot.Cause.ShouldNotBeNullOrWhiteSpace();
+        snapshot.Impact.ShouldNotBeNullOrWhiteSpace();
+        snapshot.Owner.ShouldNotBeNullOrWhiteSpace();
+        snapshot.NextAction.ShouldNotBeNullOrWhiteSpace();
+        string combined = $"{snapshot.Cause} {snapshot.Impact} {snapshot.Owner} {snapshot.NextAction}";
+        combined.ShouldNotContain("tenant-a", Case.Sensitive);
+        combined.ShouldNotContain("record-", Case.Sensitive);
+        combined.ShouldNotContain("redis", Case.Insensitive);
+        combined.ShouldNotContain("process", Case.Insensitive);
+    }
+
+    private static AccessTelemetryCapabilityProfile ValidProfile()
+        => new()
+        {
+            ComponentProfileHash = new string('a', 64),
+            ExactVersionPinned = true,
+            DaprOnlyBoundary = true,
+            StrongCrudAndEtags = true,
+            MultiKeyTransactionsAndConflicts = true,
+            ActorReactivationFailoverAndReminders = true,
+            EffectivePerRecordTtl = true,
+            RecordAndRequestBounds = true,
+            TwoWriterThroughputDuringPurge = true,
+            DeclaredDurabilityAndFailureBehavior = true,
+            TenantIsolationAndEncryption = true,
+            PhysicalCapacityEvidence = true,
+            ReclamationEvidenceHooks = true,
+            CapacityEvidenceId = "capacity-development",
+            PhysicalReclamationEvidenceId = "pending-story-27-3",
+            ValidUntilUtc = DateTimeOffset.UtcNow.AddHours(1),
+        };
+
+    private static (string Name, T Value, KeyValuePair<string, object?>[] Tags) Last<T>(
+        IEnumerable<(string Name, T Value, KeyValuePair<string, object?>[] Tags)> measurements,
+        string name)
+        => measurements.Last(measurement => string.Equals(measurement.Name, name, StringComparison.Ordinal));
+
+    private static SignedClockAttestation CreateAttestation(DateTimeOffset issuedAt)
+        => new()
+        {
+            DeploymentId = "deployment-a",
+            AppId = "memories-access-telemetry",
+            ServiceInstanceId = "01HM5Q9WXGK6T8Q4Z5Y6V7W8XB",
+            ProcessEpoch = "01HM5Q9WXGK6T8Q4Z5Y6V7W8XC",
+            ComponentProfileHash = new string('a', 64),
+            RequestingProcessEpoch = "01HM5Q9WXGK6T8Q4Z5Y6V7W8X9",
+            RequestingServiceInstanceId = "01HM5Q9WXGK6T8Q4Z5Y6V7W8XA",
+            Nonce = "01HM5Q9WXGK6T8Q4Z5Y6V7W8XD",
+            NotBeforeUnixMilliseconds = issuedAt.AddMilliseconds(-10).ToUnixTimeMilliseconds(),
+            NotAfterUnixMilliseconds = issuedAt.AddMilliseconds(10).ToUnixTimeMilliseconds(),
+            IssuedAtUnixMilliseconds = issuedAt.ToUnixTimeMilliseconds(),
+            ExpiresAtUnixMilliseconds = issuedAt.AddSeconds(30).ToUnixTimeMilliseconds(),
+            SignerKeyEpoch = "clock-key-1",
+            Signature = Convert.ToBase64String(new byte[64]),
+        };
+
+    private static AccessTelemetryCapabilityProbeContext ProbeContext(DateTimeOffset validUntilUtc)
+        => new()
+        {
+            ComponentProfileHash = new string('a', 64),
+            ExactVersionPinned = true,
+            DaprOnlyBoundary = true,
+            Production = true,
+            AllowAlpha = false,
+            IsAlpha = false,
+            CapacityEvidenceId = "capacity-development",
+            PhysicalReclamationEvidenceId = "pending-story-27-3",
+            ValidUntilUtc = validUntilUtc,
+        };
+
+    private sealed class StubCapabilityProbe(string capability, bool passed, bool throws = false, Action? observe = null,
+        Func<CancellationToken, Task<AccessTelemetryCapabilityProbeResult>>? execute = null)
+        : IAccessTelemetryCapabilityProbe
+    {
+        public Task<AccessTelemetryCapabilityProbeResult> ProbeAsync(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            observe?.Invoke();
+            if (execute is not null) return execute(cancellationToken);
+            return throws
+                ? Task.FromException<AccessTelemetryCapabilityProbeResult>(new InvalidOperationException("probe failed"))
+                : Task.FromResult(new AccessTelemetryCapabilityProbeResult(capability, passed));
+        }
+    }
+}

@@ -13,9 +13,14 @@ namespace Hexalith.Folders.Tests.Projections.OperationalStatus;
 
 public sealed class OperationalStatusCapacityTests
 {
-    [Fact]
-    public async Task TenThousandPositionsAndNinetyEightHistoricalTasksRebuildAndCatchUpWithBoundedValues()
+    /// <summary>Rebuilds complete original owners and preserves bounded identity proofs and historical task views after growth.</summary>
+    /// <param name="count">The complete original owner history length.</param>
+    [Theory]
+    [InlineData(10_001)]
+    [InlineData(32_769)]
+    public async Task CompleteOriginalOwnersRebuildGrowAndPreserveHistoricalTasksWithBoundedValues(int count)
     {
+        CancellationToken token = TestContext.Current.CancellationToken;
         var history = OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now).ToList();
         var locked = history.OfType<WorkspaceLockAcquired>().Single();
         var released = history.OfType<WorkspaceLockReleased>().Single();
@@ -27,45 +32,93 @@ public sealed class OperationalStatusCapacityTests
             history.Add(released with { TaskId = taskId, HolderTaskId = taskId, LockId = lockId });
         }
         List<OperationalStatusEvent> sources = [.. OperationalStatusTestData.Sources(history)];
-        while (sources.Count < 10_000)
-            sources.Add(Rejection(sources[0], sources.Count + 1));
+        while (sources.Count < count) sources.Add(Rejection(sources[0], sources.Count + 1));
+        string originalHash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(sources.Select(item => item.Source))));
         OperationalStatusTestStore store = new();
         OperationalStatusProjectionWriter writer = new(store, store, store);
-        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "large-rebuild", sources, 10_000,
-            TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
-        OperationalStatusCheckpoint checkpoint = store.Snapshot<OperationalStatusCheckpoint>("statestore",
-            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!;
-        checkpoint.Sequence.ShouldBe(10_000);
+        var other = OperationalStatusTestData.Sources([OperationalStatusTestData.Created(folder: "folder-b")]);
+        other[0] = OperationalStatusEventReader.ReadStored(other[0].Source! with { GlobalPosition = count + 1 });
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "large-rebuild", sources, count,
+            token, additionalOwners: [("folder-b", other)])).IsSuccess.ShouldBeTrue();
+        var coordinator = new Hexalith.EventStore.Client.Projections.SharedProjectionEpochCoordinator(store, store);
+        var scope = OperationalStatusGeneration.Scope("tenant-a");
+        var sdkCheckpoint = (await coordinator.GetCheckpointAsync(scope, "folder-a", token))!;
+        sdkCheckpoint.OwnerSequenceNumber.ShouldBe(count);
+        sdkCheckpoint.CapturedEventDigests.ShouldBeNull();
+        sdkCheckpoint.CapturedIdentityReference!.Count.ShouldBe(count);
+        JsonSerializer.SerializeToUtf8Bytes(sdkCheckpoint).Length.ShouldBeLessThan(4096);
+        OperationalStatusCheckpoint checkpoint = (await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope,
+            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), token)).Value!;
+        checkpoint.Sequence.ShouldBe(count);
         JsonSerializer.SerializeToUtf8Bytes(checkpoint).Length.ShouldBeLessThan(16_384);
         checkpoint.State.TaskClosures.ShouldBeEmpty();
         checkpoint.EventDigests.Count.ShouldBe(1);
-        var reader = new EventStoreOperationalStatusReadModel(new(store, store), new OperationalStatusClock(),
-            new OperationalStatusSequenceReader { Head = 10_000 });
+        var sequence = new OperationalStatusSequenceReader { Head = count };
+        var reader = new EventStoreOperationalStatusReadModel(coordinator, new OperationalStatusClock(), sequence);
         foreach (string taskId in new[] { "task-a", "historical-97" })
         {
             var result = await reader.GetAsync(new TaskStatusReadModelRequest("tenant-a", taskId, "reader",
                 "read_task_status", "corr-a", "eventually_consistent")
-            { AuthorizedFolderId = "folder-a", AuthorizationWatermark = "authority" }, TestContext.Current.CancellationToken);
+            { AuthorizedFolderId = "folder-a", AuthorizationWatermark = "authority" }, token);
             result.Status.ShouldBe(TaskStatusReadModelStatus.Available);
             result.Snapshot!.TerminalState.ShouldBe("ready");
         }
-        (await new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-a", "duplicate",
-            [sources[0]], TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
-        (await writer.ApplyAsync("tenant-a", "folder-a", "catch-up", [Rejection(sources[0], 10_001)],
-            TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
-        store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!.Sequence.ShouldBe(10_001);
-        sources.Add(Rejection(sources[0], 10_001));
-        (await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, 10_001, TestContext.Current.CancellationToken))
-            .Count.ShouldBeGreaterThan(10_000);
-        // Acceptance remains open: the production SDK captured-identity handoff rejects this lawful history.
-        var blocked = await Should.ThrowAsync<InvalidOperationException>(() => NamedOperationalStatusRebuildFixture.RebuildAsync(
-            store, "tenant-a", "folder-a", "above-sdk-identity-boundary", sources, 10_001, TestContext.Current.CancellationToken));
-        blocked.Message.ShouldContain("projection_handler_failure");
-        var identityBoundary = await Should.ThrowAsync<ArgumentException>(() => new Hexalith.EventStore.Client.Projections.SharedProjectionEpochCoordinator(store, store)
-            .SeedCapturedOwnerSequenceAsync(OperationalStatusGeneration.Scope("tenant-a"), "above-sdk-identity-boundary", "folder-a", 10_001,
-                TestContext.Current.CancellationToken, new byte[10_001 * 32]));
-        identityBoundary.Message.ShouldContain("Captured event identities must cover the complete owner history");
-        identityBoundary.ParamName.ShouldBe("capturedEventDigests");
+        // A later independent owner generation inherits the complete original owner's proof and views.
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-b", "other-owner", other,
+            other[0].Source!.GlobalPosition, token)).IsSuccess.ShouldBeTrue();
+        (await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope,
+            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), token)).Value!.SourceDigest.ShouldBe(checkpoint.SourceDigest);
+        foreach (int index in new[] { 0, 7, count / 2, count - 1 })
+            (await writer.ApplyAsync("tenant-a", "folder-a", "duplicate-" + index, [sources[index]], token)).IsSuccess.ShouldBeTrue();
+        var growth = Rejection(sources[0], count + 1);
+        growth = OperationalStatusEventReader.ReadStored(growth.Source! with { GlobalPosition = count + 2 });
+        var concurrent = await Task.WhenAll(
+            new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-a", "catch-up-a", [growth], token),
+            new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-a", "catch-up-b", [growth], token));
+        concurrent.Any(result => result.IsSuccess).ShouldBeTrue();
+        (await writer.ApplyAsync("tenant-a", "folder-a", "catch-up-settled", [growth], token)).IsSuccess.ShouldBeTrue();
+        sources.Add(growth);
+        sequence.Head++;
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "grown-rebuild", sources,
+            growth.Source!.GlobalPosition, token)).IsSuccess.ShouldBeTrue();
+        (await coordinator.GetCheckpointAsync(scope, "folder-a", token))!.CapturedIdentityReference!.Count.ShouldBe(count + 1);
+        foreach (int historical in Enumerable.Range(0, 98))
+        {
+            string taskId = historical == 0 ? "task-a" : "historical-" + historical;
+            var result = await reader.GetAsync(new TaskStatusReadModelRequest("tenant-a", taskId, "reader",
+                "read_task_status", "corr-a", "eventually_consistent")
+            { AuthorizedFolderId = "folder-a", AuthorizationWatermark = "authority" }, token);
+            result.Status.ShouldBe(TaskStatusReadModelStatus.Available);
+            result.Snapshot!.TerminalState.ShouldBe("ready");
+        }
+        foreach (int index in new[] { 0, count / 2, count })
+            (await writer.ApplyAsync("tenant-a", "folder-a", "grown-duplicate-" + index, [sources[index]], token)).IsSuccess.ShouldBeTrue();
+        string before = JsonSerializer.Serialize((await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope,
+            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), token)).Value);
+        // Every conflict is awaited below; preserve selected checkpoint and all source bytes.
+        foreach (int index in new[] { 0, count / 2, count })
+        {
+            foreach (bool message in new[] { true, false })
+            {
+                var original = sources[index].Source!;
+                var changed = OperationalStatusEventReader.ReadStored(message
+                    ? original with { MessageId = "conflicting-" + index }
+                    : original with
+                    {
+                        Payload = index == 0
+                        ? JsonSerializer.SerializeToUtf8Bytes(OperationalStatusTestData.Created() with { DisplayName = "contradictory" })
+                        : Encoding.UTF8.GetBytes("{\"Code\":\"UnsupportedCommandType\",\"CommandType\":\"ChangedUnknownCommand\"}")
+                    });
+                await Should.ThrowAsync<InvalidOperationException>(() => writer.ApplyAsync("tenant-a", "folder-a", "conflict-" + index, [changed], token));
+            }
+        }
+        JsonSerializer.Serialize((await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope,
+            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), token)).Value).ShouldBe(before);
+        Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(sources.Take(count).Select(item => item.Source))))
+            .ShouldBe(originalHash);
+        (await coordinator.GetStatusAsync(scope, token)).IsBuilding.ShouldBeFalse();
+        store.BatchOptions.MaxOperations.ShouldBe(100);
+        store.BatchOptions.MaxCanonicalManifestBytes.ShouldBe(1_048_576);
     }
 
     [Fact]

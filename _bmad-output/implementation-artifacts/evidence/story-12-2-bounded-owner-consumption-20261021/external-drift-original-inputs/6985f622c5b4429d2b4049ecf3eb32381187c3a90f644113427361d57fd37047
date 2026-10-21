@@ -1,0 +1,556 @@
+@using Hexalith.Tenants.Contracts.Enums
+@using Microsoft.JSInterop
+@using Hexalith.Tenants.Contracts.Queries
+@using Hexalith.Tenants.UI.State.TenantCommands
+@using Microsoft.Extensions.DependencyInjection
+@inject IStringLocalizer<TenantsResources> Localizer
+@inject IServiceProvider Services
+@implements IAsyncDisposable
+
+<section class="tenant-lifecycle"
+         aria-labelledby="tenants-lifecycle-heading"
+         data-testid="tenants-lifecycle-actions">
+    <header class="tenant-lifecycle__header">
+        <div>
+            <h2 id="tenants-lifecycle-heading">@Localizer["Tenants.Lifecycle.Title"]</h2>
+            <p>@Localizer["Tenants.Lifecycle.Description", TenantId]</p>
+        </div>
+        <dl class="tenant-lifecycle__facts" aria-label="@Localizer["Tenants.Lifecycle.FactsLabel"]">
+            <div data-testid="tenants-lifecycle-state">
+                <dt>@Localizer["Tenants.Lifecycle.StateLabel"]</dt>
+                <dd>@Localizer[$"Tenants.Lifecycle.Status.{CurrentStatus}"]</dd>
+            </div>
+            <div data-testid="tenants-lifecycle-current-status">
+                <dt>@Localizer["Tenants.Lifecycle.CurrentStatusLabel"]</dt>
+                <dd>@Localizer[$"Tenants.Lifecycle.Status.{CurrentStatus}"]</dd>
+            </div>
+            <div data-testid="tenants-lifecycle-freshness">
+                <dt>@Localizer["Tenants.Lifecycle.FreshnessLabel"]</dt>
+                <dd><TruthStateBadge Freshness="@Freshness" ResourcePrefix="Tenants.Lifecycle" TestId="tenants-lifecycle-freshness-badge" /></dd>
+            </div>
+            <div data-testid="tenants-lifecycle-projection-lifecycle">
+                <dt>@Localizer["Tenants.ProjectionLifecycle.Label"]</dt>
+                <dd><ProjectionLifecycleBadge Lifecycle="@Lifecycle" TestId="tenants-lifecycle-projection-lifecycle-badge" /></dd>
+            </div>
+            <div data-testid="tenants-lifecycle-governance-gate">
+                <dt>@Localizer["Tenants.Lifecycle.GovernanceGateLabel"]</dt>
+                <dd>@Localizer[$"Tenants.Lifecycle.Governance.{GovernanceReadiness}"]</dd>
+            </div>
+        </dl>
+    </header>
+
+    <div class="tenant-lifecycle__announcer"
+         aria-live="@LiveRegion"
+         aria-atomic="true"
+         data-testid="tenants-lifecycle-live-region">
+        @HighImpactReason(PrimaryAvailability, HighImpactAvailability(PrimaryAvailability))
+    </div>
+
+    <div class="tenant-lifecycle__actions" role="list">
+        @foreach (TenantLifecycleAvailability availability in Availabilities)
+        {
+            string actionId = availability.Operation is TenantLifecycleOperation.EnableTenant
+                ? "tenants-lifecycle-enable"
+                : "tenants-lifecycle-disable";
+            string reasonId = $"{actionId}-reason";
+            string recoveryId = $"{actionId}-recovery";
+            string domainOutcomeId = $"{actionId}-domain-outcome";
+            string abandonHintId = $"{actionId}-abandon-hint";
+            TenantHighImpactActionAvailability highImpact = HighImpactAvailability(availability);
+            TenantHighImpactActionEvidence evidence = availability.Evidence!;
+            bool isActionDisabled = IsActionDisabled(availability);
+            bool hasSupplementalDomainOutcome = highImpact.DomainOutcome is not TenantHighImpactDomainOutcome.None
+                && highImpact.UnavailableReason is not TenantHighImpactUnavailableReason.None;
+            bool showAbandonAffordance = HasMatchingRetainedAttempt(availability) && !CanResumeRetained(availability);
+            string describedBy = hasSupplementalDomainOutcome
+                ? $"{reasonId} {recoveryId} {domainOutcomeId}"
+                : $"{reasonId} {recoveryId}";
+            if (showAbandonAffordance)
+            {
+                describedBy = $"{describedBy} {abandonHintId}";
+            }
+
+            <div class="tenant-lifecycle__action"
+                 role="listitem"
+                 data-testid="@(actionId + "-availability")"
+                 data-action="@highImpact.Action">
+                @if (availability.Operation is TenantLifecycleOperation.EnableTenant)
+                {
+                    <span class="tenant-lifecycle__button-focus" tabindex="-1" @ref="_enableElement">
+                        <FluentButton Id="@actionId"
+                                      Appearance="ButtonAppearance.Primary"
+                                      Class="tenant-lifecycle__button"
+                                      data-testid="@actionId"
+                                      Disabled="@isActionDisabled"
+                                      aria-disabled="@isActionDisabled.ToString().ToLowerInvariant()"
+                                      aria-describedby="@describedBy"
+                                      OnClick="() => OpenFlowAsync(availability)">
+                            @Localizer[$"Tenants.Lifecycle.Operation.{availability.Operation}"]
+                        </FluentButton>
+                    </span>
+                }
+                else
+                {
+                    <span class="tenant-lifecycle__button-focus" tabindex="-1" @ref="_disableElement">
+                        <FluentButton Id="@actionId"
+                                      Appearance="ButtonAppearance.Primary"
+                                      Class="tenant-lifecycle__button"
+                                      data-testid="@actionId"
+                                      Disabled="@isActionDisabled"
+                                      aria-disabled="@isActionDisabled.ToString().ToLowerInvariant()"
+                                      aria-describedby="@describedBy"
+                                      OnClick="() => OpenFlowAsync(availability)">
+                            @Localizer[$"Tenants.Lifecycle.Operation.{availability.Operation}"]
+                        </FluentButton>
+                    </span>
+                }
+                <p id="@reasonId"
+                   class="tenant-lifecycle__reason"
+                   tabindex="0"
+                   data-testid="@(actionId + "-unavailable-reason")"
+                   data-reason-category="@ReasonCategory(availability, highImpact)">
+                    <span data-testid="@(actionId + "-reason")">@HighImpactReason(availability, highImpact)</span>
+                </p>
+                @if (hasSupplementalDomainOutcome)
+                {
+                    <small id="@domainOutcomeId"
+                           class="tenant-lifecycle__domain-outcome"
+                           data-testid="@(actionId + "-domain-outcome")">
+                        @Localizer[$"Tenants.HighImpact.DomainOutcome.{highImpact.DomainOutcome}"]
+                    </small>
+                }
+                <p id="@recoveryId"
+                   class="tenant-lifecycle__reason"
+                   data-testid="@(actionId + "-recovery")">
+                    @HighImpactRecovery(availability, highImpact)
+                </p>
+                @if (showAbandonAffordance)
+                {
+                    @* Abandon needs neither reflected authority nor command connectivity: it is a local tracker
+                       Forget plus a lease release, with no gateway call. It lives inside the command flow,
+                       which this exact state cannot open, so without a launcher affordance a retained attempt
+                       is simultaneously unresumable and unabandonable and its aggregate lease blocks every
+                       other command on this tenant until the retention window expires. *@
+                    <p id="@abandonHintId"
+                       class="tenant-lifecycle__reason"
+                       data-testid="@(actionId + "-abandon-hint")">
+                        @Localizer["Tenants.Lifecycle.Retained.AbandonUnreachable"]
+                    </p>
+                    <FluentButton Appearance="ButtonAppearance.Outline"
+                                  data-testid="@(actionId + "-abandon")"
+                                  aria-describedby="@abandonHintId"
+                                  OnClick="AbandonRetainedAttemptAsync">
+                        @Localizer["Tenants.Lifecycle.Abandon"]
+                    </FluentButton>
+                }
+                <dl class="tenant-lifecycle__facts"
+                    data-testid="@(actionId + "-facts")">
+                    <dt>@Localizer["Tenants.HighImpact.Fact.Identity"]</dt><dd data-testid="@(actionId + "-identity")">@evidence.TenantId</dd>
+                    <dt>@Localizer["Tenants.HighImpact.Fact.Status"]</dt><dd data-testid="@(actionId + "-status")">@StatusText(evidence.TenantStatus)</dd>
+                    <dt>@Localizer["Tenants.HighImpact.Fact.Freshness"]</dt><dd data-testid="@(actionId + "-freshness")">@FreshnessText(evidence.Freshness)</dd>
+                    <dt>@Localizer["Tenants.HighImpact.Fact.Action"]</dt><dd data-testid="@(actionId + "-action")">@Localizer[$"Tenants.HighImpact.Action.{highImpact.Action}"]</dd>
+                </dl>
+            </div>
+        }
+    </div>
+
+    @if (_activeAvailability is not null && Detail is not null)
+    {
+        <TenantLifecycleCommandFlow @ref="_activeFlow"
+                                    Detail="@Detail"
+                                    Availability="@_activeAvailability"
+                                    IsCommandSurfaceAvailable="@IsCommandSurfaceAvailable"
+                                    ProjectionVersion="@ProjectionVersion"
+                                    OnProjectionRefreshRequested="@OnProjectionRefreshRequested"
+                                    OnCloseRequested="@CloseFlowAsync"
+                                    OnCommandActivityChanged="@OnCommandActivityChanged"
+                                    CommandActivityLease="@CommandActivityLease"
+                                    ProjectionEvidenceProvider="@ProjectionEvidenceProvider"
+                                    AuthorizationReflectionProvider="@AuthorizationReflectionProvider" />
+    }
+</section>
+
+@code {
+    private TenantLifecycleAvailability? _activeAvailability;
+    private ElementReference _enableElement;
+    private ElementReference _disableElement;
+    private TenantLifecycleOperation? _returnFocusOperation;
+    private string? _activeFlowTenantId;
+    private TenantLifecycleCommandFlow? _activeFlow;
+    private TenantLifecycleAttemptTracker? _attemptTracker;
+    private TenantLifecycleCommandSnapshot? _retainedAttempt;
+    private bool _retainedAttemptLapsed;
+    private bool _disposed;
+
+    [Parameter]
+    public string TenantId { get; set; } = string.Empty;
+
+    [Parameter]
+    public TenantDetail? Detail { get; set; }
+
+    [Parameter]
+    public TenantStatus CurrentStatus { get; set; } = TenantStatus.Unknown;
+
+    [Parameter]
+    public ReadModelFreshnessState Freshness { get; set; } = ReadModelFreshnessState.Unknown;
+
+    [Parameter]
+    public ProjectionLifecycleState Lifecycle { get; set; } = ProjectionLifecycleState.Unknown;
+
+    [Parameter]
+    public TenantDetailSurfaceKind SurfaceKind { get; set; } = TenantDetailSurfaceKind.Unknown;
+
+    [Parameter]
+    public bool IsCommandSurfaceConnected { get; set; }
+
+    [Parameter]
+    public TenantLifecycleAuthorizationReflectionState AuthorizationReflection { get; set; } = TenantLifecycleAuthorizationReflectionState.Indeterminate;
+
+    [Parameter]
+    public TenantLifecycleGovernanceReadiness GovernanceReadiness { get; set; } = TenantLifecycleGovernanceReadiness.Unresolved;
+
+    [Parameter]
+    public bool IsNarrowSafetyContext { get; set; }
+
+    [Parameter]
+    public TenantHighImpactActionEvidence? EnableEvidence { get; set; }
+
+    [Parameter]
+    public TenantHighImpactActionEvidence? DisableEvidence { get; set; }
+
+    [Parameter]
+    public bool IsCommandSurfaceAvailable { get; set; } = true;
+
+    [Parameter]
+    public string? ProjectionVersion { get; set; }
+
+    [Parameter]
+    public EventCallback OnProjectionRefreshRequested { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnCommandActivityChanged { get; set; }
+
+    /// <summary>
+    /// Gets or sets the aggregate command-activity lease, forwarded to the lifecycle command flow so a
+    /// refused acquisition aborts the dispatch instead of being discarded.
+    /// </summary>
+    [Parameter]
+    public Func<bool, Task<bool>>? CommandActivityLease { get; set; }
+
+    [Parameter]
+    public Func<TenantLifecycleCommandRequest, CancellationToken, Task<TenantDetailSnapshot?>>? ProjectionEvidenceProvider { get; set; }
+
+    /// <summary>Gets or sets the submit-time server-reflected lifecycle authority provider.</summary>
+    [Parameter]
+    public Func<CancellationToken, Task<TenantLifecycleAuthorizationReflectionState>>? AuthorizationReflectionProvider { get; set; }
+
+    private TenantLifecycleAvailabilityInput Input
+        => new(
+            TenantId,
+            CurrentStatus,
+            Freshness,
+            SurfaceKind,
+            IsCommandSurfaceConnected,
+            ProjectionVersion,
+            GovernanceReadiness,
+            AuthorizationReflection,
+            IsNarrowSafetyContext,
+            Lifecycle);
+
+    private TenantLifecycleAttemptTracker? AttemptTracker
+        => _attemptTracker ??= Services.GetService<TenantLifecycleAttemptTracker>();
+
+    private IReadOnlyList<TenantLifecycleAvailability> Availabilities
+        =>
+        [
+            ResolveAvailability(TenantLifecycleOperation.EnableTenant, EnableEvidence),
+            ResolveAvailability(TenantLifecycleOperation.DisableTenant, DisableEvidence),
+        ];
+
+    private static TenantHighImpactActionAvailability HighImpactAvailability(TenantLifecycleAvailability availability)
+        => TenantHighImpactActionAvailabilityEvaluator.Evaluate(
+            availability.Evidence
+                ?? throw new InvalidOperationException("Lifecycle availability must retain its high-impact evidence."));
+
+    private TenantLifecycleAvailability PrimaryAvailability
+        => Availabilities.FirstOrDefault(static availability => availability.IsUnavailable)
+            ?? Availabilities[0];
+
+    private string LiveRegion
+        => Availabilities.Any(static availability => availability.LiveRegionPoliteness is TenantCommandLiveRegionPoliteness.Assertive)
+            || !IsCommandSurfaceAvailable
+            ? "assertive"
+            : "polite";
+
+    private bool IsActionDisabled(TenantLifecycleAvailability availability)
+        => HasMatchingRetainedAttempt(availability)
+            ? !CanResumeRetained(availability)
+            : !HighImpactAvailability(availability).IsEligible || !IsCommandSurfaceAvailable;
+
+    private string HighImpactReason(
+        TenantLifecycleAvailability availability,
+        TenantHighImpactActionAvailability highImpact)
+        => HasMatchingRetainedAttempt(availability)
+            ? AuthorizationReflection is not TenantLifecycleAuthorizationReflectionState.Authorized
+                ? Localizer["Tenants.HighImpact.Unavailable.MissingPermission"].Value
+                : !IsCommandSurfaceConnected
+                    ? Localizer["Tenants.Lifecycle.Unavailable.InFlightOrCommandSurface"].Value
+                    : Localizer["Tenants.Lifecycle.Retained.Resume"].Value
+            : !IsCommandSurfaceAvailable && highImpact.IsEligible
+            ? Localizer["Tenants.Lifecycle.Unavailable.InFlightOrCommandSurface"].Value
+            : Localizer[highImpact.SafeMessageKey].Value;
+
+    private string HighImpactRecovery(
+        TenantLifecycleAvailability availability,
+        TenantHighImpactActionAvailability highImpact)
+        => HasMatchingRetainedAttempt(availability)
+            ? AuthorizationReflection is not TenantLifecycleAuthorizationReflectionState.Authorized
+                ? Localizer["Tenants.HighImpact.Recovery.MissingPermission"].Value
+                : !IsCommandSurfaceConnected
+                    ? Localizer["Tenants.Lifecycle.Unavailable.InFlightOrCommandSurface.Recovery"].Value
+                    : Localizer["Tenants.Lifecycle.Retained.Recovery"].Value
+            : !IsCommandSurfaceAvailable && highImpact.IsEligible
+                ? Localizer["Tenants.Lifecycle.Unavailable.InFlightOrCommandSurface.Recovery"].Value
+                : Localizer[highImpact.RecoveryKey].Value;
+
+    private string ReasonCategory(
+        TenantLifecycleAvailability availability,
+        TenantHighImpactActionAvailability highImpact)
+        => HasMatchingRetainedAttempt(availability)
+            ? TenantHighImpactReasonCategoryNames.RetainedAttempt
+            : !IsCommandSurfaceAvailable && highImpact.IsEligible
+            ? TenantHighImpactReasonCategoryNames.InFlightOrCommandSurface
+            : highImpact.UnavailableReason is TenantHighImpactUnavailableReason.None
+                && highImpact.DomainOutcome is TenantHighImpactDomainOutcome.LifecycleStateAlreadySet
+                ? TenantHighImpactReasonCategoryNames.LifecycleStateAlreadySet
+            : TenantHighImpactReasonCategoryNames.ForUnavailableReason(highImpact.UnavailableReason);
+
+    private string StatusText(TenantStatus status)
+        => Localizer[$"Tenants.Lifecycle.Status.{(Enum.IsDefined(status) ? status : TenantStatus.Unknown)}"];
+
+    private string FreshnessText(TenantHighImpactFreshnessState freshness)
+        => Localizer[$"Tenants.HighImpact.Freshness.{(Enum.IsDefined(freshness) ? freshness : TenantHighImpactFreshnessState.Unknown)}"];
+
+    protected override void OnParametersSet()
+    {
+        // Find prunes on read, so a retained attempt that expired on the clock disappears here. Nothing else
+        // notices on the same route: the page reclaims a stale tracker-owned admission key only from
+        // OnParametersSetAsync, and the flow that would lower the lease may be unmounted. This transition --
+        // an attempt this component previously observed for this tenant is now gone -- is the one signal that
+        // separates a lapsed attempt from the pre-dispatch window, where the tracker is legitimately empty
+        // while a submit already holds the lease. Releasing on the latter would pull the lease out from under
+        // an in-flight command, so the flag is set only on present-to-absent, never on absent.
+        TenantLifecycleCommandSnapshot? previouslyRetained = _retainedAttempt;
+        _retainedAttempt = AttemptTracker?.Find(TenantId);
+        if (_retainedAttempt is null
+            && previouslyRetained is { Intent: not null }
+            && string.Equals(previouslyRetained.Intent.TenantId, TenantId, StringComparison.Ordinal))
+        {
+            _retainedAttemptLapsed = true;
+        }
+        if (_activeAvailability is null)
+        {
+            TenantLifecycleCommandSnapshot? retained = _retainedAttempt;
+            if (retained is { RetainsAttempt: true, Intent: not null }
+                && string.Equals(retained.Intent.TenantId, TenantId, StringComparison.Ordinal))
+            {
+                TenantLifecycleAvailability retainedAvailability = retained.Intent.Operation is TenantLifecycleOperation.EnableTenant
+                    ? ResolveAvailability(TenantLifecycleOperation.EnableTenant, EnableEvidence)
+                    : ResolveAvailability(TenantLifecycleOperation.DisableTenant, DisableEvidence);
+                if (CanResumeRetained(retainedAvailability))
+                {
+                    _activeAvailability = retainedAvailability;
+                    _activeFlowTenantId = TenantId;
+                }
+            }
+
+            return;
+        }
+
+        // An open confirm must not retarget a different tenant when the parent remounts parameters.
+        if (!string.Equals(_activeFlowTenantId, TenantId, StringComparison.Ordinal)
+            || Detail is null
+            || !string.Equals(Detail.TenantId, TenantId, StringComparison.Ordinal))
+        {
+            _activeAvailability = null;
+            _activeFlowTenantId = null;
+            return;
+        }
+
+        _activeAvailability = _activeAvailability.Operation is TenantLifecycleOperation.EnableTenant
+            ? ResolveAvailability(TenantLifecycleOperation.EnableTenant, EnableEvidence)
+            : ResolveAvailability(TenantLifecycleOperation.DisableTenant, DisableEvidence);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_retainedAttemptLapsed)
+        {
+            _retainedAttemptLapsed = false;
+
+            // The page's lease seam re-checks ownership and pending state before it releases anything, so this
+            // is a request, not a release. Lowering it here is what frees the aggregate for every sibling
+            // command surface once a retained attempt lapses without a terminal transition.
+            if (CommandActivityLease is not null)
+            {
+                _ = await CommandActivityLease(false).ConfigureAwait(false);
+            }
+            else
+            {
+                await InvokeAsync(() => OnCommandActivityChanged.InvokeAsync(false)).ConfigureAwait(false);
+            }
+        }
+
+        if (_returnFocusOperation is null)
+        {
+            return;
+        }
+
+        TenantLifecycleOperation operation = _returnFocusOperation.Value;
+        _returnFocusOperation = null;
+        if (operation is TenantLifecycleOperation.EnableTenant)
+        {
+            await FocusSafelyAsync(_enableElement).ConfigureAwait(false);
+            return;
+        }
+
+        await FocusSafelyAsync(_disableElement).ConfigureAwait(false);
+    }
+
+    private static async Task FocusSafelyAsync(ElementReference element)
+    {
+        try
+        {
+            await element.FocusAsync().ConfigureAwait(false);
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+        catch (JSException)
+        {
+        }
+    }
+
+    internal Task ApplySignalRNudgeAsync()
+        => _disposed || _activeFlow is null
+            ? Task.CompletedTask
+            : _activeFlow.HandleAuthoritativeRefreshNudgeAsync();
+
+    private async Task OpenFlowAsync(TenantLifecycleAvailability availability)
+    {
+        if (IsActionDisabled(availability))
+        {
+            return;
+        }
+
+        _activeAvailability = availability;
+        _activeFlowTenantId = TenantId;
+        await Task.CompletedTask.ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Stops tracking a retained attempt that cannot be opened for reconciliation, releasing its aggregate lease.
+    /// </summary>
+    /// <remarks>
+    /// Mirrors <c>TenantLifecycleCommandFlow.AbandonAsync</c>, which is unreachable while
+    /// <see cref="CanResumeRetained"/> is false because that control renders inside the flow. Forget runs
+    /// first so the page's lease seam observes no pending ownership and actually releases the key. This is
+    /// local state plus a lease release with no gateway call, so it stays available with the command surface
+    /// disconnected or authority unproven. The command outcome stays unverified, which the hint copy states.
+    /// </remarks>
+    private async Task AbandonRetainedAttemptAsync()
+    {
+        TenantLifecycleCommandSnapshot? retained = _retainedAttempt;
+        if (retained is not { RetainsAttempt: true, Intent: not null }
+            || string.IsNullOrWhiteSpace(retained.MessageId))
+        {
+            return;
+        }
+
+        AttemptTracker?.Forget(retained.Intent.TenantId, retained.MessageId);
+        _retainedAttempt = null;
+        if (CommandActivityLease is not null)
+        {
+            _ = await CommandActivityLease(false).ConfigureAwait(false);
+            return;
+        }
+
+        // Never invoke an EventCallback after ConfigureAwait(false): the parent's StateHasChanged would run
+        // off the circuit dispatcher and tear the circuit down.
+        await InvokeAsync(() => OnCommandActivityChanged.InvokeAsync(false)).ConfigureAwait(false);
+    }
+
+    private bool CanResumeRetained(TenantLifecycleAvailability availability)
+        => HasMatchingRetainedAttempt(availability)
+            && AuthorizationReflection is TenantLifecycleAuthorizationReflectionState.Authorized
+            && IsCommandSurfaceConnected;
+
+    private bool HasMatchingRetainedAttempt(TenantLifecycleAvailability availability)
+    {
+        TenantLifecycleCommandSnapshot? retained = _retainedAttempt;
+        return retained is { RetainsAttempt: true, Intent: not null }
+            && retained.Intent.Operation == availability.Operation
+            && string.Equals(retained.Intent.TenantId, TenantId, StringComparison.Ordinal);
+    }
+
+    private TenantLifecycleAvailability ResolveAvailability(
+        TenantLifecycleOperation operation,
+        TenantHighImpactActionEvidence? suppliedEvidence)
+    {
+        TenantHighImpactAction expectedAction = operation is TenantLifecycleOperation.EnableTenant
+            ? TenantHighImpactAction.EnableTenant
+            : TenantHighImpactAction.DisableTenant;
+        if (suppliedEvidence is null)
+        {
+            return Input.Evaluate(operation);
+        }
+
+        if (string.Equals(suppliedEvidence.TenantId, TenantId, StringComparison.Ordinal)
+            && suppliedEvidence.Action == expectedAction)
+        {
+            return TenantLifecycleAvailability.FromEvidence(suppliedEvidence with
+            {
+                ProjectionVersion = ProjectionVersion ?? suppliedEvidence.ProjectionVersion,
+            });
+        }
+
+        // Never render or evaluate another tenant/action slot's facts. Preserve only the parameters for the
+        // current rendered tenant and fail every authority/readiness gate closed.
+        return TenantLifecycleAvailability.FromEvidence(new(
+            TenantId,
+            expectedAction,
+            TenantHighImpactEvaluationStage.PreviewEntry,
+            Enum.IsDefined(CurrentStatus) ? CurrentStatus : TenantStatus.Unknown,
+            TenantHighImpactActionEvidence.FromReadModelFreshness(Freshness),
+            Freshness is ReadModelFreshnessState.Current,
+            Enum.IsDefined(SurfaceKind) ? SurfaceKind : TenantDetailSurfaceKind.Unknown,
+            Enum.IsDefined(Lifecycle) ? Lifecycle : ProjectionLifecycleState.Unknown,
+            TenantHighImpactAuthorityEvidence.Indeterminate,
+            TenantHighImpactNamespaceScopeEvidence.NotRequired,
+            TenantHighImpactSupportEvidence.Unknown,
+            TenantHighImpactAdmissionEvidence.Unknown,
+            TenantHighImpactPreviewEvidence.Missing,
+            TenantHighImpactProofEvidence.NotRequired,
+            TenantHighImpactViewportState.Unknown,
+            IsInputComplete: false,
+            TenantHighImpactTargetState.NotApplicable,
+            ProjectionVersion));
+    }
+
+    private async Task CloseFlowAsync()
+    {
+        _returnFocusOperation = _activeAvailability?.Operation;
+        _activeAvailability = null;
+        _activeFlowTenantId = null;
+        await Task.CompletedTask.ConfigureAwait(false);
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        _disposed = true;
+        _activeFlow = null;
+        _activeAvailability = null;
+        _activeFlowTenantId = null;
+        return ValueTask.CompletedTask;
+    }
+}

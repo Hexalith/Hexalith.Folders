@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>hexalith</ToolCommandName>
+    <IsPackable>true</IsPackable>
+    <IsPublishable>true</IsPublishable>
+    <CreateRidSpecificToolPackages>false</CreateRidSpecificToolPackages>
+    <UseAppHost>false</UseAppHost>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishAot>false</PublishAot>
+    <Description>Generic Hexalith EventStore gateway CLI and MCP server for decorated Contracts packages.</Description>
+    <PackageTags>hexalith;eventstore;mcp;cli;dotnet-tool</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RequireContractsFlag>true</RequireContractsFlag>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <InternalsVisibleTo Include="Hexalith.McpCli.Cli.Tests" />
+    <ProjectReference Include="../Hexalith.McpCli.Core/Hexalith.McpCli.Core.csproj" />
+    <ProjectReference Include="../Hexalith.McpCli.Mcp/Hexalith.McpCli.Mcp.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="System.CommandLine" />
+  </ItemGroup>
+  <!-- Enroll each production *.Contracts package with a direct, versionless
+       PackageReference marked HexalithContracts="true". This project's build
+       rejects unmarked *.Contracts references. -->
+  <Import Project="Build/ModuleAssemblyManifest.targets" />
+</Project>
