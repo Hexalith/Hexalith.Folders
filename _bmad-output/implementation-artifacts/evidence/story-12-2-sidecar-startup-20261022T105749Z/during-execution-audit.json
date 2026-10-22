@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-22T11:10:50.880347+00:00",
+  "counts": {
+    "files_sha256": 15098,
+    "assemblies_sha256": 584,
+    "runtime_manifests_sha256": 1
+  },
+  "errors": [],
+  "passed": true
+}

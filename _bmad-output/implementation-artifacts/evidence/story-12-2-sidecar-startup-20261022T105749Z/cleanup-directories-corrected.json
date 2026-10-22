@@ -1,0 +1,28 @@
+{
+  "utc": "2026-10-22T11:16:41.364051+00:00",
+  "all_matching_fixture_container_names": [],
+  "early_timeout_fixture_id": "6cda30b27c552404",
+  "passing_fixture_id": "19978a25f7622309",
+  "known_fixture_directories": [
+    {
+      "path": "/tmp/folders-durability-4dirgm1r.keg",
+      "exists": false
+    },
+    {
+      "path": "/tmp/folders-sidecar-control-8tifdn4c",
+      "exists": false
+    },
+    {
+      "path": "/tmp/folders-sidecar-control-w12rcunw",
+      "exists": false
+    }
+  ],
+  "note": "Corrected ownership selector: the default user Dapr config is outside fixture resources, and its ancestor /home/administrator is unrelated. The initial read-only probe over-selected that existing ancestor and failed its absence assertion; no removal was attempted. All exact fixture and native-control directories are absent.",
+  "unrelated_configuration_ancestors_preserved": [
+    {
+      "path": "/home/administrator",
+      "exists": true
+    }
+  ],
+  "passed": true
+}

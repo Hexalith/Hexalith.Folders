@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+    "-c",
+    "Debug",
+    "--no-restore",
+    "-p:BuildProjectReferences=false",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreRoot=/home/administrator/projects/hexalith/eventstore",
+    "-p:CustomAfterMicrosoftCommonTargets=/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-sidecar-startup-20261022T105749Z/qualified-test-references.targets",
+    "-m:1",
+    "-nr:false",
+    "-v:quiet"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "started_utc": "2026-10-22T11:02:22.792768+00:00",
+  "elapsed_seconds": 2.368536131994915,
+  "exit_code": 0,
+  "environment": {
+    "DOTNET_ROOT": "/home/administrator/.dotnet",
+    "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+  }
+}

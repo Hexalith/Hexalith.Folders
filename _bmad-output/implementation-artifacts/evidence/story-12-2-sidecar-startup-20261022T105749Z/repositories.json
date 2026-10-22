@@ -1,0 +1,16 @@
+{
+  "folders": {
+    "head": "460f7b036a526ac08d563f2e69bd3a017fea54f6",
+    "branch": "main",
+    "status": "M _bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md\n M tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-sidecar-startup-20261022T105749Z/",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Folders.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Folders.git (push)",
+    "recent_history": "460f7b036a526ac08d563f2e69bd3a017fea54f6 fix: story 12.2\n0a693eb48b37faed255c9f560ecbba691e3f1bf1 fix: story 12.2\nf65dfb08600b44a24d2db4dc57a129da96313a82 fix: story 12.2"
+  },
+  "eventstore": {
+    "head": "70b2206b531a71c883fbe2e4749047b399d26447",
+    "branch": "main",
+    "status": "M src/Hexalith.EventStore.AppHost/Program.cs\n M src/Hexalith.EventStore.Aspire/HexalithEventStoreExtensions.cs\n M src/Hexalith.EventStore/Extensions/EventStoreRateLimitPartition.cs\n M src/Hexalith.EventStore/Extensions/ServiceCollectionExtensions.cs\n M src/Hexalith.EventStore/Program.cs\n M tests/Hexalith.EventStore.AppHost.Tests/Configuration/DomainModuleAspireExtensionTests.cs\n M tests/Hexalith.EventStore.Server.Tests/Configuration/EventStoreWorkloadRateLimitTests.cs\n?? _bmad-output/implementation-artifacts/evidence/internal-actor-admission-20261022/\n?? _bmad-output/implementation-artifacts/spec-5-4-ext-protection-1-owner-delivery.md\n?? _bmad-output/implementation-artifacts/spec-internal-actor-admission-isolation.md\n?? src/Hexalith.EventStore/Extensions/EventStoreActorCallbackEndpointMetadata.cs\n?? tests/Hexalith.EventStore.Server.LiveSidecar.Tests/Actors/ActorCallbackAdmissionProcessTests.cs\n?? tests/Hexalith.EventStore.Server.Tests/Authentication/ActorCallbackRateLimitPartitionTests.cs\n?? tests/Hexalith.EventStore.Server.Tests/Configuration/ActorCallbackRateLimitPipelineTests.cs\n?? tests/Hexalith.EventStore.Server.Tests/Configuration/CustomHostActorCallbackRateLimitTests.cs\n?? tools/qualify-internal-actor-admission.py\n?? tools/tests/test_qualify_internal_actor_admission.py",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.EventStore.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.EventStore.git (push)",
+    "recent_history": "70b2206b531a71c883fbe2e4749047b399d26447 docs: reopen story 3.22 after chunk B and C review\nc66a0a3345ad97b137959179a0583faf81d59e4b build: sync local changes via /pushall\n4b0d69fdcf3162226f7a165e5a0782c10a979804 fix: story 12.2"
+  }
+}

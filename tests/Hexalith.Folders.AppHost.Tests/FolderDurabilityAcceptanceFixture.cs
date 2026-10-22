@@ -654,6 +654,12 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     {
         using CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
         timeout.CancelAfter(TimeSpan.FromMinutes(4));
+        // Standalone Dapr loads --config separately from watched resources. Keeping the same
+        // Configuration in both paths makes unrelated directory events trigger a runtime reload.
+        string componentDirectory = Path.Combine(_temporaryDirectory, "components");
+        string configurationDirectory = Path.Combine(_temporaryDirectory, "configuration");
+        Directory.CreateDirectory(componentDirectory);
+        Directory.CreateDirectory(configurationDirectory);
         _builder = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Hexalith_Folders_AppHost>(
             ["--EnableKeycloak=true", "--KeycloakPersistent=false"], timeout.Token).ConfigureAwait(false);
         ProjectResource originalWorker = _builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders-workers");
@@ -702,7 +708,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.Server.Commands.CommandRouter", "Debug");
         if (_provider is not null)
         {
-            string secretComponent = Path.Combine(_temporaryDirectory, "provider-secretstore.yaml");
+            string secretComponent = Path.Combine(componentDirectory, "provider-secretstore.yaml");
             await File.WriteAllTextAsync(secretComponent,
                 $"apiVersion: dapr.io/v1alpha1\nkind: Component\nmetadata:\n  name: folders-provider-credentials\nspec:\n  type: secretstores.local.file\n  version: v1\n  metadata:\n    - name: secretsFile\n      value: '{_provider.SecretFile}'\n    - name: multiValued\n      value: 'true'\nscopes:\n  - {AppId("folders")}\n", timeout.Token).ConfigureAwait(false);
             IResourceBuilder<ProjectResource> folders = _builder.CreateResourceBuilder(
@@ -729,7 +735,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         {
             if (component.Options?.LocalPath is string source)
             {
-                string path = Path.Combine(_temporaryDirectory, Path.GetFileName(source));
+                string path = Path.Combine(componentDirectory, Path.GetFileName(source));
                 string content = await File.ReadAllTextAsync(source, timeout.Token).ConfigureAwait(false);
                 if (component.Name is "statestore" or "pubsub" && !content.Contains("localhost:6379", StringComparison.Ordinal))
                 {
@@ -761,14 +767,14 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
                 {
                     foreach (string source in Directory.EnumerateFiles(Path.GetDirectoryName(config)!))
                     {
-                        string target = Path.Combine(_temporaryDirectory, Path.GetFileName(source));
+                        string target = Path.Combine(source == config ? configurationDirectory : componentDirectory, Path.GetFileName(source));
                         if (!File.Exists(target))
                         {
                             await File.WriteAllTextAsync(target, IsolateDaprYaml(await File.ReadAllTextAsync(source, timeout.Token).ConfigureAwait(false)), timeout.Token).ConfigureAwait(false);
                         }
                     }
 
-                    isolatedConfig = Path.Combine(_temporaryDirectory, Path.GetFileName(config));
+                    isolatedConfig = Path.Combine(configurationDirectory, Path.GetFileName(config));
                 }
 
                 annotation.Sidecar.Annotations.Remove(optionsAnnotation);
@@ -777,7 +783,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
                     AppId = AppId(project.Name),
                     Config = isolatedConfig,
                     ResourcesPaths = [project.Name.StartsWith("folders-workers-proof-", StringComparison.Ordinal)
-                        ? Path.Combine(_temporaryDirectory, "ordinary-proof") : _temporaryDirectory],
+                        ? Path.Combine(_temporaryDirectory, "ordinary-proof") : componentDirectory],
                 }));
                 annotation.Sidecar.Annotations.Add(new EnvironmentCallbackAnnotation(context => context.EnvironmentVariables["NAMESPACE"] = DaprNamespace));
             }
@@ -785,7 +791,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
 
         string proofDirectory = Path.Combine(_temporaryDirectory, "ordinary-proof");
         Directory.CreateDirectory(proofDirectory);
-        foreach (string source in Directory.EnumerateFiles(_temporaryDirectory, "*.yaml"))
+        foreach (string source in Directory.EnumerateFiles(componentDirectory, "*.yaml"))
         {
             string content = await File.ReadAllTextAsync(source, timeout.Token).ConfigureAwait(false);
             if (Path.GetFileName(source) == "statestore.yaml")

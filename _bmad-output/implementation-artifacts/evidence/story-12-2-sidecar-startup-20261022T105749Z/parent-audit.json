@@ -1,0 +1,66 @@
+{
+  "utc": "2026-10-22T11:13:55.308352+00:00",
+  "scope": "Selected qualified production/SDK runtime plus startup-path-only fixture correction; no current external SDK-source qualification.",
+  "counts": {
+    "files_sha256": 15098,
+    "assemblies_sha256": 584,
+    "runtime_manifests_sha256": 1
+  },
+  "observed_modules": 186,
+  "sidecars_with_separate_configuration": 9,
+  "fixture_methods_outside_startup_unchanged": true,
+  "results": {
+    "fixture-helpers": [
+      {
+        "total": "22",
+        "passed": "22",
+        "failed": "0",
+        "skipped": "0",
+        "errors": "0",
+        "time": "1.109"
+      }
+    ],
+    "strict-live": [
+      {
+        "total": "1",
+        "passed": "0",
+        "failed": "1",
+        "skipped": "0",
+        "errors": "0",
+        "time": "4.023"
+      }
+    ],
+    "strict-selected-live": [
+      {
+        "total": "1",
+        "passed": "0",
+        "failed": "1",
+        "skipped": "0",
+        "errors": "0",
+        "time": "91.849"
+      }
+    ],
+    "strict-observed-live": [
+      {
+        "total": "1",
+        "passed": "1",
+        "failed": "0",
+        "skipped": "0",
+        "errors": "0",
+        "time": "343.629"
+      }
+    ]
+  },
+  "reused_capacity": "Prior byte-bound 10,001/32,769 component and 10,001 authenticated capacity/SDK process evidence; not newly executed here.",
+  "remaining_fixture_processes": [],
+  "remaining_fixture_containers": [],
+  "errors": [],
+  "passed": true,
+  "whole_story_complete": false,
+  "open_gates": [
+    "Package/PD10",
+    "SM4 acknowledgement performance",
+    "SDK broad-regression/current external-source disposition",
+    "Independent whole-story review"
+  ]
+}

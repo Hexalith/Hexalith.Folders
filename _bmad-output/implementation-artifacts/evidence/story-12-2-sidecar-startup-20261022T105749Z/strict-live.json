@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+    "-showLiveOutput",
+    "-result-xml",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-sidecar-startup-20261022T105749Z/strict-live.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "started_utc": "2026-10-22T11:01:14.182076+00:00",
+  "elapsed_seconds": 4.211787647989695,
+  "exit_code": 1,
+  "environment": {
+    "DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE": "false",
+    "DOTNET_USE_POLLING_FILE_WATCHER": "1",
+    "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true",
+    "DOTNET_ROOT": "/home/administrator/.dotnet",
+    "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+  }
+}

@@ -1,0 +1,31 @@
+<assemblies schema-version="3" id="23036633-e27c-43a3-9f3b-db0308a268d3" computer="DESKTOP-VIOG240" user="administrator" start-rtf="2026-10-22T11:05:47.0129412+00:00" finish-rtf="2026-10-22T11:11:30.6272561+00:00" timestamp="10/22/2026 13:11:30"><assembly environment="64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]" id="7fba53dc-60ea-4187-aa0c-f7708921c927" name="/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll" run-date="2026-10-22" run-time="11:05:47" start-rtf="2026-10-22T11:05:47.0129412+00:00" test-framework="xUnit.net v3 4.0.2+0c7aa4991f" target-framework=".NETCoreApp,Version=v10.0" errors="0" failed="0" finish-rtf="2026-10-22T11:11:30.6272561+00:00" not-run="0" passed="1" skipped="0" time="343.629" time-rtf="00:05:43.6290000" total="1"><collection name="Folder durability acceptance" id="21b4be66-1fdd-429a-b4a0-f1bf6783ae48" failed="0" not-run="0" passed="1" skipped="0" time="256.464" time-rtf="00:04:16.4640000" total="1"><test id="d765fcfc-167a-43e7-be32-0ea331fc8b69" name="Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures" result="Pass" time="256.464" time-rtf="00:04:16.4640000" start-rtf="2026-10-22T11:07:06.4761681+00:00" finish-rtf="2026-10-22T11:11:22.9495144+00:00" type="Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests" method="RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures" source-file="/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs" source-line="33"><output>PASS provider binding: retained rejection does not strand later configuration; missing retained view fails closed; complete source rebuild preserves exact binding and retained source
+Provider readiness: status=ready; category=none; reason=success
+Bound-target revocation observation: HTTP 404; pull=False
+PASS bound-target denial: absent real repository cannot append preparation success; exact target restored privately
+PASS persisted retention: ordinary writes; selected view TTL=34559994s; configured=34560000s
+PASS persisted retention: ordinary writes; selected view TTL=34559994s; configured=34560000s
+PASS persisted retention: ordinary writes; selected view TTL=34559994s; configured=34560000s
+PASS persisted retention: complete-source rebuild; selected view TTL=34559991s; configured=34560000s
+PASS persisted retention: complete-source rebuild; selected view TTL=34559991s; configured=34560000s
+PASS persisted retention: complete-source rebuild; selected view TTL=34559990s; configured=34560000s
+PASS all six concerns: altered observation timestamps fail full-row integrity; SDK shared empty-checkpoint rebuild restores exact source-folded lifecycle/lock/workspace/cleanup/task/commit metadata
+PASS SDK interrupted generation: sealed private streamed staging survives changed writer PIDs; the same SDK session resumes promotion and authenticated ordinary replay before completion; source hashes unchanged
+PASS ordinary-write processes: proof-a=81644; proof-b=81806
+PASS two concurrent Workers replica processes: overlapping ordered writes from a fresh shared derived-state namespace ACK in both processes and converge exactly without changing retained source
+PASS task-pipeline restart: folders 50581-&gt;73676
+PASS task-pipeline restart: folders-workers 51940-&gt;75137
+PASS task-pipeline restart: folders-workers-replica 54057-&gt;76568
+PASS task-pipeline restart: eventstore 55991-&gt;78122
+PASS real-provider task pipeline: supported Forgejo TLS, private credential resolution, bound/prepared/locked/clean release, six metadata concerns, restart, equivalent replay, closed-binding denial and scoped task reads
+PASS real-source: sequence=1 retainedSha256=874e5f48dd8fd4c33228d38a42edef383a0a853ac3ea64b56c02289856f0b840
+PASS process-replacement: folders 73676-&gt;98033
+PASS process-replacement: folders-workers 75137-&gt;1251
+PASS process-replacement: folders-workers-replica 76568-&gt;2868
+PASS process-replacement: eventstore 78122-&gt;4136
+PASS rebuild: two complete empty-checkpoint rebuilds preserve views and retained bytes
+PASS two-process-delivery: existing Server and Workers converge without duplicate source advancement
+PASS safe-failure: unsupported version, corrupt view, foreign tenant and unavailable store preserve source/checkpoint
+PERFORMANCE command_acknowledgement: count=9 p50_ms=333.862 p95_ms=7792.582 budget_p95_ms=1000 over_budget=True
+PERFORMANCE workers_operational_delivery: count=26 p50_ms=57.778 p95_ms=258.854 budget_p95_ms=1000 over_budget=False
+PERFORMANCE status_read: count=12 p50_ms=37.089 p95_ms=79.891 budget_p95_ms=500 over_budget=False
+</output></test></collection></assembly></assemblies>

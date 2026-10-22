@@ -1,0 +1,190 @@
+{
+  "created_utc": "2026-10-22T11:17:14.380524+00:00",
+  "task36_selected_candidate_consumer_qualified": true,
+  "whole_story_complete": false,
+  "current_results": [
+    {
+      "label": "strict-live",
+      "packet": "story-12-2-sidecar-startup-20261022T105749Z",
+      "xml_sha256": "033a5744ed440fe086c72441de5e3ef0827d5323d04a8af29ef7034fa3d3ba59",
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "4.023"
+    },
+    {
+      "label": "strict-selected-live",
+      "packet": "story-12-2-sidecar-startup-20261022T105749Z",
+      "xml_sha256": "e39939bdc0e0633df5e92abc9656795c9577d66437ad47ee3e539b9b6dce35b5",
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "91.849"
+    },
+    {
+      "label": "strict-observed-live",
+      "packet": "story-12-2-sidecar-startup-20261022T105749Z",
+      "xml_sha256": "4860d9b39cdfe26dfe70179658aef45391089e4416e1595207b9929c40fd1c12",
+      "total": "1",
+      "passed": "1",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "343.629"
+    },
+    {
+      "label": "fixture-helpers",
+      "packet": "story-12-2-sidecar-startup-20261022T105749Z",
+      "xml_sha256": "9167ec38afcf2dcdeae060586bd05394077a9a23de427767c76a8f447e0b9f4b",
+      "total": "22",
+      "passed": "22",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.109"
+    }
+  ],
+  "explicitly_reused_results": [
+    {
+      "label": "capacity-final-live",
+      "packet": "story-12-2-inherited-owner-requalification-20261022T084922Z",
+      "xml_sha256": "602475c5b6fe7e9d0c9eacda832e60c5a37c5b3667268a75635565ba8c8a8d82",
+      "total": "1",
+      "passed": "1",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "2074.168"
+    },
+    {
+      "label": "final-consumer-components",
+      "packet": "story-12-2-inherited-owner-requalification-20261022T084922Z",
+      "xml_sha256": "635dd3f7e9685ff56ae0652e0af1ab9c0e5d4346d0c7f9945f86114469052c6b",
+      "total": "2190",
+      "passed": "2188",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "2",
+      "time": "61.863"
+    },
+    {
+      "label": "sdk-focused",
+      "packet": "story-12-2-inherited-owner-requalification-20261022T084922Z",
+      "xml_sha256": "8f62e43cc18bed2147b6b38e613a9a72ad89d73e52cbf7449a1538d3cfaf1071",
+      "total": "112",
+      "passed": "112",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "7.857"
+    },
+    {
+      "label": "sdk-full",
+      "packet": "story-12-2-inherited-owner-requalification-20261022T084922Z",
+      "xml_sha256": "9b14be55932071ddaed736a37b92fb3a18ac799723debe3684af6d984874ba0f",
+      "total": "2075",
+      "passed": "2073",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "2",
+      "time": "33.811"
+    },
+    {
+      "label": "sdk-domain-full",
+      "packet": "story-12-2-inherited-owner-requalification-20261022T084922Z",
+      "xml_sha256": "e150ccc34c4a299d599d32bb5a2a23e74432056ab500306d849d9881b35e56f0",
+      "total": "1164",
+      "passed": "1164",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "251.156"
+    }
+  ],
+  "required_component_sizes": [
+    "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.CompleteOriginalOwnersRebuildGrowAndPreserveHistoricalTasksWithBoundedValues(count: 10001)",
+    "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.CompleteOriginalOwnersRebuildGrowAndPreserveHistoricalTasksWithBoundedValues(count: 32769)"
+  ],
+  "sdk_reused_process_evidence": {
+    "packet": "story-12-2-inherited-owner-requalification-20261022T084922Z",
+    "path": "sdk-reused-process-evidence.json",
+    "sha256": "997b080f5031c5ff74889130213e203731c5f8b4becc50d88e1da35f404cfbb0"
+  },
+  "folders_http_32769_executed": false,
+  "runtime": {
+    "observations": 186,
+    "identity_errors": 0,
+    "sidecars": 9,
+    "all_configs_outside_watched_resource_directories": true,
+    "configuration_triggered_sighup_reloads": 0,
+    "admission_unavailable_messages": 0,
+    "production_runtime": "Byte-identical to prior sealed selection; only the fixture test DLL/PDB were rebuilt.",
+    "current_external_sdk_source": "Seven pre-existing source deltas remain preserved and are not compiled or qualified here."
+  },
+  "performance": [
+    {
+      "name": "command_acknowledgement",
+      "count": 9,
+      "p50_ms": 333.862,
+      "p95_ms": 7792.582,
+      "budget_p95_ms": 1000.0,
+      "over_budget": true
+    },
+    {
+      "name": "workers_operational_delivery",
+      "count": 26,
+      "p50_ms": 57.778,
+      "p95_ms": 258.854,
+      "budget_p95_ms": 1000.0,
+      "over_budget": false
+    },
+    {
+      "name": "status_read",
+      "count": 12,
+      "p50_ms": 37.089,
+      "p95_ms": 79.891,
+      "budget_p95_ms": 500.0,
+      "over_budget": false
+    }
+  ],
+  "strict_pass_markers": [
+    "PASS provider binding: retained rejection does not strand later configuration; missing retained view fails closed; complete source rebuild preserves exact binding and retained source",
+    "PASS bound-target denial: absent real repository cannot append preparation success; exact target restored privately",
+    "PASS persisted retention: ordinary writes; selected view TTL=34559994s; configured=34560000s",
+    "PASS persisted retention: ordinary writes; selected view TTL=34559994s; configured=34560000s",
+    "PASS persisted retention: ordinary writes; selected view TTL=34559994s; configured=34560000s",
+    "PASS persisted retention: complete-source rebuild; selected view TTL=34559991s; configured=34560000s",
+    "PASS persisted retention: complete-source rebuild; selected view TTL=34559991s; configured=34560000s",
+    "PASS persisted retention: complete-source rebuild; selected view TTL=34559990s; configured=34560000s",
+    "PASS all six concerns: altered observation timestamps fail full-row integrity; SDK shared empty-checkpoint rebuild restores exact source-folded lifecycle/lock/workspace/cleanup/task/commit metadata",
+    "PASS SDK interrupted generation: sealed private streamed staging survives changed writer PIDs; the same SDK session resumes promotion and authenticated ordinary replay before completion; source hashes unchanged",
+    "PASS ordinary-write processes: proof-a=81644; proof-b=81806",
+    "PASS two concurrent Workers replica processes: overlapping ordered writes from a fresh shared derived-state namespace ACK in both processes and converge exactly without changing retained source",
+    "PASS task-pipeline restart: folders 50581->73676",
+    "PASS task-pipeline restart: folders-workers 51940->75137",
+    "PASS task-pipeline restart: folders-workers-replica 54057->76568",
+    "PASS task-pipeline restart: eventstore 55991->78122",
+    "PASS real-provider task pipeline: supported Forgejo TLS, private credential resolution, bound/prepared/locked/clean release, six metadata concerns, restart, equivalent replay, closed-binding denial and scoped task reads",
+    "PASS real-source: sequence=1 retainedSha256=874e5f48dd8fd4c33228d38a42edef383a0a853ac3ea64b56c02289856f0b840",
+    "PASS process-replacement: folders 73676->98033",
+    "PASS process-replacement: folders-workers 75137->1251",
+    "PASS process-replacement: folders-workers-replica 76568->2868",
+    "PASS process-replacement: eventstore 78122->4136",
+    "PASS rebuild: two complete empty-checkpoint rebuilds preserve views and retained bytes",
+    "PASS two-process-delivery: existing Server and Workers converge without duplicate source advancement",
+    "PASS safe-failure: unsupported version, corrupt view, foreign tenant and unavailable store preserve source/checkpoint"
+  ],
+  "task36_assessment": "The byte-bound prior production-handler component sizes, authenticated 10001 recovery/inheritance lane, and explicitly reused SDK process evidence combine with this unchanged strict authenticated real-provider pass. Only Task 36 selected-candidate consumer qualification is complete; no current-external-SDK-source, package/release, performance or whole-story acceptance is inferred.",
+  "remaining": [
+    "Current external SDK graph and separately owned SDK broad-regression disposition",
+    "Release/package and PD10 qualification",
+    "SM4 acknowledgement latency",
+    "Independent whole-story review and acceptance"
+  ],
+  "preservation_audit": "final-preservation-audit.json",
+  "cleanup": "cleanup-final.json"
+}

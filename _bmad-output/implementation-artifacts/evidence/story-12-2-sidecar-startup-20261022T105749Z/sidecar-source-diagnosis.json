@@ -1,0 +1,180 @@
+{
+  "daprd_sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+  "runtime_version": "1.18.7",
+  "runtime_commit": "b32a815fa2260983e181b95272ea555fe17d3895",
+  "source_references": [
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/b32a815fa2260983e181b95272ea555fe17d3895/pkg/runtime/config.go",
+      "sha256": "0d8e1781a90cf097fc4de68755b49f13ef508604b5234f21d2af2aab8dce9346",
+      "relevant_lines": [
+        257
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/b32a815fa2260983e181b95272ea555fe17d3895/pkg/runtime/runtime.go",
+      "sha256": "507306a037a4e4b18a5826acf78ed3376180d9bc03ecdd86dbf53559e7133f1a",
+      "relevant_lines": [
+        193,
+        194
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/b32a815fa2260983e181b95272ea555fe17d3895/pkg/runtime/hotreload/reconciler/sighup.go",
+      "sha256": "48f1e6a56b9dc382eb119e844b44dd6022f6ac3f8d8df1334fc0331d2327ec9c",
+      "relevant_lines": [
+        144,
+        151,
+        167
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/b32a815fa2260983e181b95272ea555fe17d3895/pkg/runtime/hotreload/reconciler/signal_posix.go",
+      "sha256": "6074a4e9ecda68864b09a4f0205669fcf90156432a9c12841041a11efa3b6878",
+      "relevant_lines": [
+        25,
+        26
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/b32a815fa2260983e181b95272ea555fe17d3895/pkg/runtime/hotreload/loader/disk/disk.go",
+      "sha256": "89d997f1821f7d98cc5668129169adfff6c4a150cdfc975a968c9af7a4d3a876",
+      "relevant_lines": [
+        165
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/b32a815fa2260983e181b95272ea555fe17d3895/pkg/config/configuration.go",
+      "sha256": "83b4b4438c32996f8071573da35839afaa9a67722228731ae85576ddbf658f83",
+      "relevant_lines": [
+        87
+      ]
+    }
+  ],
+  "prior_log_evidence": [
+    {
+      "lane": "strict-live",
+      "log_sha256": "a71db58e7abd51b8c37094d06a8c5d24e201891059e2a00018e6c9740b5f2a30",
+      "events": [
+        {
+          "line": 2717,
+          "text": "      120: 2026-10-22T10:10:10.7390000Z time=\"2026-10-22T12:10:10.736292788+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 2735,
+          "text": "      129: 2026-10-22T10:10:10.7390000Z time=\"2026-10-22T12:10:10.738731323+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2797,
+          "text": "      114: 2026-10-22T10:10:10.7410000Z time=\"2026-10-22T12:10:10.740680663+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 2799,
+          "text": "      115: 2026-10-22T10:10:10.7430000Z time=\"2026-10-22T12:10:10.74303533+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2833,
+          "text": "      121: 2026-10-22T10:10:10.7180000Z time=\"2026-10-22T12:10:10.716256541+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 2835,
+          "text": "      122: 2026-10-22T10:10:10.7180000Z time=\"2026-10-22T12:10:10.717137156+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2867,
+          "text": "      119: 2026-10-22T10:10:10.7220000Z time=\"2026-10-22T12:10:10.72200037+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 2869,
+          "text": "      120: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.725080187+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2917,
+          "text": "      117: 2026-10-22T10:10:10.7180000Z time=\"2026-10-22T12:10:10.716261951+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 2919,
+          "text": "      118: 2026-10-22T10:10:10.7190000Z time=\"2026-10-22T12:10:10.718980118+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2937,
+          "text": "      121: 2026-10-22T10:10:10.7350000Z time=\"2026-10-22T12:10:10.735122337+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 2939,
+          "text": "      122: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.744413068+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2989,
+          "text": "      119: 2026-10-22T10:10:10.7200000Z time=\"2026-10-22T12:10:10.719665901+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 2991,
+          "text": "      120: 2026-10-22T10:10:10.7230000Z time=\"2026-10-22T12:10:10.723362646+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        }
+      ]
+    },
+    {
+      "lane": "strict-retry-live",
+      "log_sha256": "ec9062cf3d03de9bbd2a4f0be86f0d035f7c5c22e875be370d50d73161ce1fc1",
+      "events": [
+        {
+          "line": 2683,
+          "text": "      121: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.741029438+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 2685,
+          "text": "      122: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.741980709+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2747,
+          "text": "      121: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.742501472+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 2749,
+          "text": "      122: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.745636294+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2783,
+          "text": "      129: 2026-10-22T10:16:32.7410000Z time=\"2026-10-22T12:16:32.740968964+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 2785,
+          "text": "      130: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.742332654+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2803,
+          "text": "      120: 2026-10-22T10:16:32.7410000Z time=\"2026-10-22T12:16:32.739864394+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 2813,
+          "text": "      125: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.744903352+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2867,
+          "text": "      106: 2026-10-22T10:16:32.7410000Z time=\"2026-10-22T12:16:32.741079996+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 2871,
+          "text": "      108: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.741212879+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2957,
+          "text": "      119: 2026-10-22T10:16:32.7500000Z time=\"2026-10-22T12:16:32.750320222+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 2959,
+          "text": "      120: 2026-10-22T10:16:32.7510000Z time=\"2026-10-22T12:16:32.751481983+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 3023,
+          "text": "      117: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.745109599+02:00\" level=info msg=\"Received Configuration CREATED event: accesscontrol - triggering SIGHUP reload\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.hotreload.reconciler type=log ver=1.18.7"
+        },
+        {
+          "line": 3027,
+          "text": "      118: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.74519473+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        }
+      ]
+    }
+  ],
+  "analysis": "Standalone FromConfig loads the internal config but does not populate configAPIResource; runtime only stores a raw Configuration when that variable is non-null. A watched directory event loads accesscontrol as an untracked Configuration and the reconciler sends SIGHUP to itself. Co-location and separation controls execute the same deny-by-default config bytes with HotReload enabled. Only the separation control avoids reload after the same non-resource event."
+}

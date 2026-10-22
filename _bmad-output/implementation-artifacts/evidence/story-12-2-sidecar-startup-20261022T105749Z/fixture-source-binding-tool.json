@@ -1,0 +1,28 @@
+{
+  "command": [
+    "dotnet",
+    "/tmp/folders-task36-parent-source-verifier/bin/Debug/net10.0/Verifier.dll",
+    "/home/administrator/projects/hexalith/folders",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-sidecar-startup-20261022T105749Z/fixture-build-freeze.json",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-sidecar-startup-20261022T105749Z/fixture-source-binding"
+  ],
+  "tool_identities": [
+    {
+      "path": "/tmp/folders-task36-parent-source-verifier/Program.cs",
+      "sha256": "62dabfb7199528dd599f7f6ab1f45eab8d8ee444e889b932ddc75b20fb56789d"
+    },
+    {
+      "path": "/tmp/folders-task36-parent-source-verifier/Verifier.csproj",
+      "sha256": "cdd6f0b4e4b9c72196431282fc7f42508e52e0f6a10b88a948a157bbdabd220b"
+    },
+    {
+      "path": "/tmp/folders-task36-parent-source-verifier/bin/Debug/net10.0/Verifier.dll",
+      "sha256": "410d4413b7c18939472cf83bd7438d680adea21621a333ae84e4c7acfb0cfe54"
+    },
+    {
+      "path": "/tmp/folders-task36-parent-source-verifier/bin/Debug/net10.0/Verifier.pdb",
+      "sha256": "813f76b7eb85d6fad76d1fc21f195800b6c216278cb710cf417b101685d9ba52"
+    }
+  ],
+  "source_note": "Existing independent portable-PDB verifier; it reads the exact fixture DLL/PDB, checks PE/PDB identity and source documents, and writes only the requested evidence directory."
+}

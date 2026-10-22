@@ -1,0 +1,9 @@
+<Project>
+  <Target Name="SelectQualifiedFixtureCompileReferences" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildProjectName)' == 'Hexalith.Folders.AppHost.Tests'">
+    <ItemGroup>
+      <ReferencePath Update="@(ReferencePath)" Condition="$([System.String]::Copy('%(ReferencePath.Filename)').StartsWith('Hexalith.')) and Exists('$(MSBuildProjectDirectory)/bin/Debug/net10.0/%(ReferencePath.Filename)%(ReferencePath.Extension)')">
+        <ReferenceAssembly>$(MSBuildProjectDirectory)/bin/Debug/net10.0/%(ReferencePath.Filename)%(ReferencePath.Extension)</ReferenceAssembly>
+      </ReferencePath>
+    </ItemGroup>
+  </Target>
+</Project>

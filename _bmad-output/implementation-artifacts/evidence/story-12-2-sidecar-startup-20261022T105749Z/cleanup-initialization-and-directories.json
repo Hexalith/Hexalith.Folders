@@ -1,0 +1,25 @@
+{
+  "utc": "2026-10-22T11:15:23.522323+00:00",
+  "all_matching_fixture_container_names": [],
+  "early_timeout_fixture_id": "6cda30b27c552404",
+  "passing_fixture_id": "19978a25f7622309",
+  "known_fixture_directories": [
+    {
+      "path": "/home/administrator",
+      "exists": true
+    },
+    {
+      "path": "/tmp/folders-durability-4dirgm1r.keg",
+      "exists": false
+    },
+    {
+      "path": "/tmp/folders-sidecar-control-8tifdn4c",
+      "exists": false
+    },
+    {
+      "path": "/tmp/folders-sidecar-control-w12rcunw",
+      "exists": false
+    }
+  ],
+  "note": "Read-only supplementary probe includes the early provider timeout and native diagnostic directories; no container/process was removed by this probe. The initial reference-load failure did not emit a retained run identifier; no fixture-named container remains globally."
+}

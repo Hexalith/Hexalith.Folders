@@ -1,0 +1,25 @@
+{
+  "utc": "2026-10-22T11:07:04.055432+00:00",
+  "container": "folders-durability-19978a25f7622309",
+  "rows": [
+    {
+      "RejectionEventType": null,
+      "Domain": "global-administrators",
+      "CommittedEventSequence": 1,
+      "DrainAttemptCount": null,
+      "AggregateId": "global-administrators",
+      "RecoveryReasonCode": null,
+      "Retryable": null,
+      "CorrelationId": "01m5hmp0gqch5zwzagjgkt37x2",
+      "MessageId": "01m5hmp0gqch5zwzagjgkt37x2",
+      "Timestamp": "2026-10-22T11:07:03.2092738+00:00",
+      "EventCount": 1,
+      "Status": 4,
+      "kind": "command-status",
+      "FailureReason": null,
+      "TimeoutDuration": null,
+      "storage_key_sha256": "192d012624f4d03603438a56aa0c5a3d90aec4d29ad570d5793f0ad252e8fd6c"
+    }
+  ],
+  "query_sha256": "5c745b2bf572a8949a3dee0e213304d7da10466f11ddc38fa1a8bf5476de5835"
+}

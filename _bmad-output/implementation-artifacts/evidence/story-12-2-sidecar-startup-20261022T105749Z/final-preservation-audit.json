@@ -1,0 +1,26 @@
+{
+  "utc": "2026-10-22T11:17:14.380524+00:00",
+  "counts": {
+    "files_sha256": 15098,
+    "assemblies_sha256": 584,
+    "runtime_manifests_sha256": 1
+  },
+  "errors": [],
+  "prior_seals": [
+    {
+      "packet": "story-12-2-strict-continuation-20261022T100829Z",
+      "seal_sha256": "8aeecab416dcd8823b5f8cd7642bb46b74eb81d855cc53292c40e85a77fe8c40",
+      "files": 546,
+      "errors": []
+    },
+    {
+      "packet": "story-12-2-inherited-owner-requalification-20261022T084922Z",
+      "seal_sha256": "a0baaf2bef34dda73f331b70b043f166a4de0a1239e2247aea2beaec1426f369",
+      "files": 2434,
+      "errors": []
+    }
+  ],
+  "historical_files": 6503,
+  "historical_errors": [],
+  "passed": true
+}

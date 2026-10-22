@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--check"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "started_utc": "2026-10-22T11:17:14.219576+00:00",
+  "elapsed_seconds": 0.08603987999958917,
+  "exit_code": 0,
+  "environment": {
+    "DOTNET_ROOT": "/home/administrator/.dotnet",
+    "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+  }
+}

@@ -1,0 +1,2747 @@
+{
+  "started_utc": "2026-10-22T11:05:45.658036+00:00",
+  "observed_utc": "2026-10-22T11:12:01.290884+00:00",
+  "fixture_ids": [
+    "19978a25f7622309"
+  ],
+  "containers": [
+    {
+      "name": "folders-durability-19978a25f7622309",
+      "id": "2720e58bb8e9ce8fae1a8fbc8b928255d3c239a6a1192b37e0edccb884a9b98f",
+      "created_utc": "2026-10-22T11:05:47.123317457Z",
+      "image_id": "sha256:8b81dd37ff027bec4e516d41acfbe9fe2460070dc6d4a4570a2ac5b9d59df065",
+      "observed_utc": "2026-10-22T11:11:29.521522+00:00",
+      "running": false
+    },
+    {
+      "name": "folders-provider-19978a25f7622309",
+      "id": "42b8ae6a02c2599869f4b7b3da585c326e50a96721a06e9f8b0e95721c822dd0",
+      "created_utc": "2026-10-22T11:05:47.759263014Z",
+      "image_id": "sha256:7c4e1db440be7b2ca685b49d0d7864cdd78e92431f531bf7893659def8200fc5",
+      "observed_utc": "2026-10-22T11:11:29.521522+00:00",
+      "running": true
+    }
+  ],
+  "provider_probes": [
+    {
+      "utc": "2026-10-22T11:05:50.059163+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:05:52.371116+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:05:54.769892+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:05:57.300028+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:05:59.675403+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:02.147780+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:04.606018+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:06.894295+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:09.150441+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:11.421879+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:13.751196+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:16.036796+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:18.328153+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:20.582990+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:22.830757+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:25.143368+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:27.415503+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:29.692917+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:31.972460+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:34.244285+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:36.712137+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:38.984896+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:41.290268+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:43.566541+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:45.844652+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:48.128972+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:50.401533+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:52.691557+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:54.964765+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:57.236498+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:06:59.518748+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:01.783284+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:04.055432+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:06.342129+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:08.638303+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:10.918613+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:13.187473+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:15.491340+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:17.770439+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:20.042203+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:22.333897+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:24.610013+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:26.890300+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:29.161267+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:31.447355+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:33.732858+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:36.009929+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:38.286368+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:40.560420+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:42.838501+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:45.130326+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:47.417404+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:49.690241+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:51.972388+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:54.250909+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:56.554452+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:07:58.834376+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:01.103959+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:03.381734+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:05.650540+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:07.923452+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:10.196546+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:12.472377+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:14.753933+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:17.025661+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:19.304282+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:21.568315+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:23.837669+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:26.111968+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:28.419854+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:30.799826+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:33.067651+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:35.355630+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:37.628850+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:39.895964+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:42.178274+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:44.446911+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:46.788977+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:49.072651+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:51.334436+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:53.635867+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:55.918772+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:08:58.197049+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:00.467326+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:02.738008+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:05.018506+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:07.293321+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:09.563048+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:11.837062+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:14.119763+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:16.429568+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:18.695639+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:20.958129+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:23.248164+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:25.549581+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:27.826087+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:30.121915+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:32.452307+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:34.753544+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:37.027436+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:39.305718+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:41.576469+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:43.855778+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:46.151663+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:48.467635+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:50.775612+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:53.055238+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:55.338132+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:57.631078+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:09:59.912533+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:02.207910+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:04.482459+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:06.773129+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:09.042386+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:11.328171+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:13.602239+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:15.875071+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:18.151671+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:20.425185+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:22.722736+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:25.015108+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:27.365767+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:29.679120+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:31.975884+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:34.258400+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:36.535899+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:38.815878+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:41.091194+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:43.369681+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:45.658093+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:47.942605+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:50.223846+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:52.508583+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:54.888694+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:57.270600+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:10:59.616761+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:11:01.927656+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:11:04.210892+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:11:06.539637+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:11:08.854280+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:11:11.179275+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:11:13.504035+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:11:15.889232+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:11:18.158157+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:11:20.388272+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:11:22.631678+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:11:24.981782+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:11:27.259541+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-22T11:11:29.521522+00:00",
+      "fixture_id": "19978a25f7622309",
+      "status": 200
+    }
+  ],
+  "sidecars": [
+    {
+      "pid": 82144,
+      "utc": "2026-10-22T11:05:52.371116+00:00",
+      "argv": [
+        "/home/administrator/.dapr/bin/daprd",
+        "--config",
+        "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+        "--app-protocol",
+        "http",
+        "--log-level",
+        "info",
+        "--app-max-concurrency",
+        "-1",
+        "--placement-host-address",
+        "localhost:50005",
+        "--resources-path",
+        "/tmp/folders-durability-4dirgm1r.keg/components",
+        "--max-body-size",
+        "4Mi",
+        "--read-buffer-size",
+        "4Ki",
+        "--scheduler-host-address",
+        "localhost:50006",
+        "--app-id",
+        "folders-workers-19978a25f7622309",
+        "--app-channel-address",
+        "localhost",
+        "--app-port",
+        "37681",
+        "--dapr-http-port",
+        "27925",
+        "--dapr-grpc-port",
+        "27926",
+        "--profile-port",
+        "-1",
+        "--metrics-port",
+        "27924",
+        "--dapr-internal-grpc-port",
+        "38321"
+      ],
+      "namespace": "folders-durability-19978a25f7622309",
+      "config_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+          "sha256": "624a03f5e9ebc56de68e4740838c99008d6082a8b3b8521d85354ab4e4f77877"
+        }
+      ],
+      "resource_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/provider-secretstore.yaml",
+          "sha256": "6a0e438cffdd81f865914a17e05eccdf3cdf8051fbaff0b542636758679ffef1"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/llm.memories.yaml",
+          "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/pubsub.yaml",
+          "sha256": "2c4e2ed19ad0eabdaba3af82fa5e9b3d84166edecbeb5d76d2e4d188fa54a094"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/statestore.yaml",
+          "sha256": "be7c83ba8b0b5b2a49d7d8020b9b41e5650f30e062aa5a33324eaf803a8c6d86"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/resiliency.yaml",
+          "sha256": "afe6a3b758c11df25d572d4e618df98891799eca42c8d3d148f8b3bcdc6cd7ee"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/secretstore.memories.yaml",
+          "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef"
+        }
+      ]
+    },
+    {
+      "pid": 82264,
+      "utc": "2026-10-22T11:05:52.371116+00:00",
+      "argv": [
+        "/home/administrator/.dapr/bin/daprd",
+        "--config",
+        "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+        "--app-protocol",
+        "http",
+        "--log-level",
+        "info",
+        "--app-max-concurrency",
+        "-1",
+        "--placement-host-address",
+        "localhost:50005",
+        "--resources-path",
+        "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof",
+        "--max-body-size",
+        "4Mi",
+        "--read-buffer-size",
+        "4Ki",
+        "--scheduler-host-address",
+        "localhost:50006",
+        "--app-id",
+        "folders-workers-proof-a-19978a25f7622309",
+        "--app-channel-address",
+        "localhost",
+        "--app-port",
+        "46061",
+        "--dapr-http-port",
+        "27922",
+        "--dapr-grpc-port",
+        "27923",
+        "--profile-port",
+        "-1",
+        "--metrics-port",
+        "27921",
+        "--dapr-internal-grpc-port",
+        "46305"
+      ],
+      "namespace": "folders-durability-19978a25f7622309",
+      "config_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+          "sha256": "624a03f5e9ebc56de68e4740838c99008d6082a8b3b8521d85354ab4e4f77877"
+        }
+      ],
+      "resource_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof/provider-secretstore.yaml",
+          "sha256": "6a0e438cffdd81f865914a17e05eccdf3cdf8051fbaff0b542636758679ffef1"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof/llm.memories.yaml",
+          "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof/pubsub.yaml",
+          "sha256": "b5f8b34698cb9d588bc54452d664e12adae78f0aed1387119755d39fa30b5b27"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof/statestore.yaml",
+          "sha256": "9b1bb6f8d55108af9a15d16f4858f522f9b5c8d7582223afef311018a14f8448"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof/resiliency.yaml",
+          "sha256": "afe6a3b758c11df25d572d4e618df98891799eca42c8d3d148f8b3bcdc6cd7ee"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof/secretstore.memories.yaml",
+          "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef"
+        }
+      ]
+    },
+    {
+      "pid": 82272,
+      "utc": "2026-10-22T11:05:52.371116+00:00",
+      "argv": [
+        "/home/administrator/.dapr/bin/daprd",
+        "--config",
+        "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+        "--app-protocol",
+        "http",
+        "--log-level",
+        "info",
+        "--app-max-concurrency",
+        "-1",
+        "--placement-host-address",
+        "localhost:50005",
+        "--resources-path",
+        "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof",
+        "--max-body-size",
+        "4Mi",
+        "--read-buffer-size",
+        "4Ki",
+        "--scheduler-host-address",
+        "localhost:50006",
+        "--app-id",
+        "folders-workers-proof-b-19978a25f7622309",
+        "--app-channel-address",
+        "localhost",
+        "--app-port",
+        "37603",
+        "--dapr-http-port",
+        "27919",
+        "--dapr-grpc-port",
+        "27920",
+        "--profile-port",
+        "-1",
+        "--metrics-port",
+        "27918",
+        "--dapr-internal-grpc-port",
+        "37333"
+      ],
+      "namespace": "folders-durability-19978a25f7622309",
+      "config_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+          "sha256": "624a03f5e9ebc56de68e4740838c99008d6082a8b3b8521d85354ab4e4f77877"
+        }
+      ],
+      "resource_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof/provider-secretstore.yaml",
+          "sha256": "6a0e438cffdd81f865914a17e05eccdf3cdf8051fbaff0b542636758679ffef1"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof/llm.memories.yaml",
+          "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof/pubsub.yaml",
+          "sha256": "b5f8b34698cb9d588bc54452d664e12adae78f0aed1387119755d39fa30b5b27"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof/statestore.yaml",
+          "sha256": "9b1bb6f8d55108af9a15d16f4858f522f9b5c8d7582223afef311018a14f8448"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof/resiliency.yaml",
+          "sha256": "afe6a3b758c11df25d572d4e618df98891799eca42c8d3d148f8b3bcdc6cd7ee"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/ordinary-proof/secretstore.memories.yaml",
+          "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef"
+        }
+      ]
+    },
+    {
+      "pid": 84796,
+      "utc": "2026-10-22T11:05:57.300028+00:00",
+      "argv": [
+        "/home/administrator/.dapr/bin/daprd",
+        "--config",
+        "/home/administrator/.dapr/config.yaml",
+        "--app-protocol",
+        "http",
+        "--log-level",
+        "info",
+        "--app-max-concurrency",
+        "-1",
+        "--placement-host-address",
+        "localhost:50005",
+        "--resources-path",
+        "/tmp/folders-durability-4dirgm1r.keg/components",
+        "--max-body-size",
+        "4Mi",
+        "--read-buffer-size",
+        "4Ki",
+        "--scheduler-host-address",
+        "localhost:50006",
+        "--app-id",
+        "memories-19978a25f7622309",
+        "--app-channel-address",
+        "localhost",
+        "--app-port",
+        "35351",
+        "--dapr-http-port",
+        "27928",
+        "--dapr-grpc-port",
+        "27929",
+        "--profile-port",
+        "-1",
+        "--metrics-port",
+        "27927",
+        "--dapr-internal-grpc-port",
+        "40453"
+      ],
+      "namespace": "folders-durability-19978a25f7622309",
+      "config_files": [
+        {
+          "path": "/home/administrator/.dapr/config.yaml",
+          "sha256": "66bfad2ed3aaf160aa131950701f4ca6c7dc25e1540af855305b5d0cd98eb1f6"
+        }
+      ],
+      "resource_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/provider-secretstore.yaml",
+          "sha256": "6a0e438cffdd81f865914a17e05eccdf3cdf8051fbaff0b542636758679ffef1"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/llm.memories.yaml",
+          "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/pubsub.yaml",
+          "sha256": "2c4e2ed19ad0eabdaba3af82fa5e9b3d84166edecbeb5d76d2e4d188fa54a094"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/statestore.yaml",
+          "sha256": "be7c83ba8b0b5b2a49d7d8020b9b41e5650f30e062aa5a33324eaf803a8c6d86"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/resiliency.yaml",
+          "sha256": "afe6a3b758c11df25d572d4e618df98891799eca42c8d3d148f8b3bcdc6cd7ee"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/secretstore.memories.yaml",
+          "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef"
+        }
+      ]
+    },
+    {
+      "pid": 94919,
+      "utc": "2026-10-22T11:06:22.830757+00:00",
+      "argv": [
+        "/home/administrator/.dapr/bin/daprd",
+        "--config",
+        "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+        "--app-protocol",
+        "http",
+        "--log-level",
+        "info",
+        "--app-max-concurrency",
+        "-1",
+        "--placement-host-address",
+        "localhost:50005",
+        "--resources-path",
+        "/tmp/folders-durability-4dirgm1r.keg/components",
+        "--max-body-size",
+        "4Mi",
+        "--read-buffer-size",
+        "4Ki",
+        "--scheduler-host-address",
+        "localhost:50006",
+        "--app-id",
+        "eventstore-19978a25f7622309",
+        "--app-channel-address",
+        "localhost",
+        "--app-port",
+        "37533",
+        "--dapr-http-port",
+        "27943",
+        "--dapr-grpc-port",
+        "27944",
+        "--profile-port",
+        "-1",
+        "--metrics-port",
+        "27942",
+        "--dapr-internal-grpc-port",
+        "44501"
+      ],
+      "namespace": "folders-durability-19978a25f7622309",
+      "config_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+          "sha256": "624a03f5e9ebc56de68e4740838c99008d6082a8b3b8521d85354ab4e4f77877"
+        }
+      ],
+      "resource_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/provider-secretstore.yaml",
+          "sha256": "6a0e438cffdd81f865914a17e05eccdf3cdf8051fbaff0b542636758679ffef1"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/llm.memories.yaml",
+          "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/pubsub.yaml",
+          "sha256": "2c4e2ed19ad0eabdaba3af82fa5e9b3d84166edecbeb5d76d2e4d188fa54a094"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/statestore.yaml",
+          "sha256": "be7c83ba8b0b5b2a49d7d8020b9b41e5650f30e062aa5a33324eaf803a8c6d86"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/resiliency.yaml",
+          "sha256": "afe6a3b758c11df25d572d4e618df98891799eca42c8d3d148f8b3bcdc6cd7ee"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/secretstore.memories.yaml",
+          "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef"
+        }
+      ]
+    },
+    {
+      "pid": 94934,
+      "utc": "2026-10-22T11:06:22.830757+00:00",
+      "argv": [
+        "/home/administrator/.dapr/bin/daprd",
+        "--config",
+        "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+        "--app-protocol",
+        "http",
+        "--log-level",
+        "info",
+        "--app-max-concurrency",
+        "-1",
+        "--placement-host-address",
+        "localhost:50005",
+        "--resources-path",
+        "/tmp/folders-durability-4dirgm1r.keg/components",
+        "--max-body-size",
+        "4Mi",
+        "--read-buffer-size",
+        "4Ki",
+        "--enable-app-health-check",
+        "--app-health-check-path",
+        "/alive",
+        "--scheduler-host-address",
+        "localhost:50006",
+        "--app-id",
+        "tenants-19978a25f7622309",
+        "--app-channel-address",
+        "localhost",
+        "--app-port",
+        "45445",
+        "--dapr-http-port",
+        "27940",
+        "--dapr-grpc-port",
+        "27941",
+        "--profile-port",
+        "-1",
+        "--metrics-port",
+        "27939",
+        "--dapr-internal-grpc-port",
+        "41851"
+      ],
+      "namespace": "folders-durability-19978a25f7622309",
+      "config_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+          "sha256": "624a03f5e9ebc56de68e4740838c99008d6082a8b3b8521d85354ab4e4f77877"
+        }
+      ],
+      "resource_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/provider-secretstore.yaml",
+          "sha256": "6a0e438cffdd81f865914a17e05eccdf3cdf8051fbaff0b542636758679ffef1"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/llm.memories.yaml",
+          "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/pubsub.yaml",
+          "sha256": "2c4e2ed19ad0eabdaba3af82fa5e9b3d84166edecbeb5d76d2e4d188fa54a094"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/statestore.yaml",
+          "sha256": "be7c83ba8b0b5b2a49d7d8020b9b41e5650f30e062aa5a33324eaf803a8c6d86"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/resiliency.yaml",
+          "sha256": "afe6a3b758c11df25d572d4e618df98891799eca42c8d3d148f8b3bcdc6cd7ee"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/secretstore.memories.yaml",
+          "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef"
+        }
+      ]
+    },
+    {
+      "pid": 94985,
+      "utc": "2026-10-22T11:06:22.830757+00:00",
+      "argv": [
+        "/home/administrator/.dapr/bin/daprd",
+        "--config",
+        "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+        "--app-protocol",
+        "http",
+        "--log-level",
+        "info",
+        "--app-max-concurrency",
+        "-1",
+        "--placement-host-address",
+        "localhost:50005",
+        "--resources-path",
+        "/tmp/folders-durability-4dirgm1r.keg/components",
+        "--max-body-size",
+        "4Mi",
+        "--read-buffer-size",
+        "4Ki",
+        "--scheduler-host-address",
+        "localhost:50006",
+        "--app-id",
+        "folders-workers-19978a25f7622309",
+        "--app-channel-address",
+        "localhost",
+        "--app-port",
+        "35965",
+        "--dapr-http-port",
+        "27934",
+        "--dapr-grpc-port",
+        "27935",
+        "--profile-port",
+        "-1",
+        "--metrics-port",
+        "27933",
+        "--dapr-internal-grpc-port",
+        "45419"
+      ],
+      "namespace": "folders-durability-19978a25f7622309",
+      "config_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+          "sha256": "624a03f5e9ebc56de68e4740838c99008d6082a8b3b8521d85354ab4e4f77877"
+        }
+      ],
+      "resource_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/provider-secretstore.yaml",
+          "sha256": "6a0e438cffdd81f865914a17e05eccdf3cdf8051fbaff0b542636758679ffef1"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/llm.memories.yaml",
+          "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/pubsub.yaml",
+          "sha256": "2c4e2ed19ad0eabdaba3af82fa5e9b3d84166edecbeb5d76d2e4d188fa54a094"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/statestore.yaml",
+          "sha256": "be7c83ba8b0b5b2a49d7d8020b9b41e5650f30e062aa5a33324eaf803a8c6d86"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/resiliency.yaml",
+          "sha256": "afe6a3b758c11df25d572d4e618df98891799eca42c8d3d148f8b3bcdc6cd7ee"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/secretstore.memories.yaml",
+          "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef"
+        }
+      ]
+    },
+    {
+      "pid": 95000,
+      "utc": "2026-10-22T11:06:22.830757+00:00",
+      "argv": [
+        "/home/administrator/.dapr/bin/daprd",
+        "--config",
+        "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+        "--app-protocol",
+        "http",
+        "--log-level",
+        "info",
+        "--app-max-concurrency",
+        "-1",
+        "--placement-host-address",
+        "localhost:50005",
+        "--resources-path",
+        "/tmp/folders-durability-4dirgm1r.keg/components",
+        "--max-body-size",
+        "4Mi",
+        "--read-buffer-size",
+        "4Ki",
+        "--scheduler-host-address",
+        "localhost:50006",
+        "--app-id",
+        "folders-19978a25f7622309",
+        "--app-channel-address",
+        "localhost",
+        "--app-port",
+        "40557",
+        "--dapr-http-port",
+        "27937",
+        "--dapr-grpc-port",
+        "27938",
+        "--profile-port",
+        "-1",
+        "--metrics-port",
+        "27936",
+        "--dapr-internal-grpc-port",
+        "36489"
+      ],
+      "namespace": "folders-durability-19978a25f7622309",
+      "config_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+          "sha256": "624a03f5e9ebc56de68e4740838c99008d6082a8b3b8521d85354ab4e4f77877"
+        }
+      ],
+      "resource_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/provider-secretstore.yaml",
+          "sha256": "6a0e438cffdd81f865914a17e05eccdf3cdf8051fbaff0b542636758679ffef1"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/llm.memories.yaml",
+          "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/pubsub.yaml",
+          "sha256": "2c4e2ed19ad0eabdaba3af82fa5e9b3d84166edecbeb5d76d2e4d188fa54a094"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/statestore.yaml",
+          "sha256": "be7c83ba8b0b5b2a49d7d8020b9b41e5650f30e062aa5a33324eaf803a8c6d86"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/resiliency.yaml",
+          "sha256": "afe6a3b758c11df25d572d4e618df98891799eca42c8d3d148f8b3bcdc6cd7ee"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/secretstore.memories.yaml",
+          "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef"
+        }
+      ]
+    },
+    {
+      "pid": 95011,
+      "utc": "2026-10-22T11:06:22.830757+00:00",
+      "argv": [
+        "/home/administrator/.dapr/bin/daprd",
+        "--config",
+        "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+        "--app-protocol",
+        "http",
+        "--log-level",
+        "info",
+        "--app-max-concurrency",
+        "-1",
+        "--placement-host-address",
+        "localhost:50005",
+        "--resources-path",
+        "/tmp/folders-durability-4dirgm1r.keg/components",
+        "--max-body-size",
+        "4Mi",
+        "--read-buffer-size",
+        "4Ki",
+        "--scheduler-host-address",
+        "localhost:50006",
+        "--app-id",
+        "folders-ui-19978a25f7622309",
+        "--app-channel-address",
+        "localhost",
+        "--app-port",
+        "35357",
+        "--dapr-http-port",
+        "27931",
+        "--dapr-grpc-port",
+        "27932",
+        "--profile-port",
+        "-1",
+        "--metrics-port",
+        "27930",
+        "--dapr-internal-grpc-port",
+        "34981"
+      ],
+      "namespace": "folders-durability-19978a25f7622309",
+      "config_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/configuration/accesscontrol.yaml",
+          "sha256": "624a03f5e9ebc56de68e4740838c99008d6082a8b3b8521d85354ab4e4f77877"
+        }
+      ],
+      "resource_files": [
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/provider-secretstore.yaml",
+          "sha256": "6a0e438cffdd81f865914a17e05eccdf3cdf8051fbaff0b542636758679ffef1"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/llm.memories.yaml",
+          "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/pubsub.yaml",
+          "sha256": "2c4e2ed19ad0eabdaba3af82fa5e9b3d84166edecbeb5d76d2e4d188fa54a094"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/statestore.yaml",
+          "sha256": "be7c83ba8b0b5b2a49d7d8020b9b41e5650f30e062aa5a33324eaf803a8c6d86"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/resiliency.yaml",
+          "sha256": "afe6a3b758c11df25d572d4e618df98891799eca42c8d3d148f8b3bcdc6cd7ee"
+        },
+        {
+          "path": "/tmp/folders-durability-4dirgm1r.keg/components/secretstore.memories.yaml",
+          "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef"
+        }
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "pid": 82573,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 82573,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 82573,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 82573,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 82573,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 82573,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 82573,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 82573,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "expected_sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "matches": true
+    },
+    {
+      "pid": 82624,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 82624,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 82624,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 82624,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 82624,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 82624,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 82624,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 82624,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "expected_sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "matches": true
+    },
+    {
+      "pid": 82729,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 82729,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 82729,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 82729,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 82729,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 82729,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 82729,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 82729,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "expected_sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "matches": true
+    },
+    {
+      "pid": 94686,
+      "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+      "sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "expected_sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "matches": true
+    },
+    {
+      "pid": 95218,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+      "sha256": "9101b9e6357d759d639b287fece56163562abd8365a26c562d355a428e79611a",
+      "expected_sha256": "9101b9e6357d759d639b287fece56163562abd8365a26c562d355a428e79611a",
+      "matches": true
+    },
+    {
+      "pid": 95218,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "expected_sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "matches": true
+    },
+    {
+      "pid": 95218,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 95218,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 95218,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "sha256": "57f0b929996c4376a1a6bab639759ed1f97c95474d1e4a6a3c635f5f3b0ce957",
+      "expected_sha256": "57f0b929996c4376a1a6bab639759ed1f97c95474d1e4a6a3c635f5f3b0ce957",
+      "matches": true
+    },
+    {
+      "pid": 95218,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+      "sha256": "b98ac5c6ffb11d23194ad8fd12dcff9bb96baa0cf3fba8616283d0663dce7bd7",
+      "expected_sha256": "b98ac5c6ffb11d23194ad8fd12dcff9bb96baa0cf3fba8616283d0663dce7bd7",
+      "matches": true
+    },
+    {
+      "pid": 95218,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll",
+      "sha256": "124cfa81c27ac8560f26f204f0fdfd0d1a2bb89e07c0130f1a6be03c01426b31",
+      "expected_sha256": "124cfa81c27ac8560f26f204f0fdfd0d1a2bb89e07c0130f1a6be03c01426b31",
+      "matches": true
+    },
+    {
+      "pid": 95218,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 95220,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+      "sha256": "9101b9e6357d759d639b287fece56163562abd8365a26c562d355a428e79611a",
+      "expected_sha256": "9101b9e6357d759d639b287fece56163562abd8365a26c562d355a428e79611a",
+      "matches": true
+    },
+    {
+      "pid": 95220,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+      "sha256": "b98ac5c6ffb11d23194ad8fd12dcff9bb96baa0cf3fba8616283d0663dce7bd7",
+      "expected_sha256": "b98ac5c6ffb11d23194ad8fd12dcff9bb96baa0cf3fba8616283d0663dce7bd7",
+      "matches": true
+    },
+    {
+      "pid": 95220,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "sha256": "57f0b929996c4376a1a6bab639759ed1f97c95474d1e4a6a3c635f5f3b0ce957",
+      "expected_sha256": "57f0b929996c4376a1a6bab639759ed1f97c95474d1e4a6a3c635f5f3b0ce957",
+      "matches": true
+    },
+    {
+      "pid": 95220,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "expected_sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "matches": true
+    },
+    {
+      "pid": 95220,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 95220,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 95220,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 95220,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 95220,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.dll",
+      "sha256": "37c89bb663cea342d0963c13ba62bfffa5b8efb11009b14f43285013ff5e6ea0",
+      "expected_sha256": "37c89bb663cea342d0963c13ba62bfffa5b8efb11009b14f43285013ff5e6ea0",
+      "matches": true
+    },
+    {
+      "pid": 95220,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.dll",
+      "sha256": "69f44651631ff33033252585c65f39107450b8b072e843500b2f8f30077ffba6",
+      "expected_sha256": "69f44651631ff33033252585c65f39107450b8b072e843500b2f8f30077ffba6",
+      "matches": true
+    },
+    {
+      "pid": 95267,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 95267,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 95267,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 95267,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 95267,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 95267,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 95267,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 95267,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "expected_sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "matches": true
+    },
+    {
+      "pid": 95286,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 95286,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll",
+      "sha256": "d2d3fedab571badbf50e45524eae5a1a700f958ba4988e680608cf2115119bdd",
+      "expected_sha256": "d2d3fedab571badbf50e45524eae5a1a700f958ba4988e680608cf2115119bdd",
+      "matches": true
+    },
+    {
+      "pid": 95286,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 95286,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 95286,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 95286,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 95286,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 95286,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "expected_sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "matches": true
+    },
+    {
+      "pid": 95286,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 95286,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "sha256": "116cf2ac939b270645ed7943aa1a1718b256b698f3dd6ed232f8c50ab10f6982",
+      "expected_sha256": "116cf2ac939b270645ed7943aa1a1718b256b698f3dd6ed232f8c50ab10f6982",
+      "matches": true
+    },
+    {
+      "pid": 95286,
+      "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+      "sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "expected_sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "matches": true
+    },
+    {
+      "pid": 95342,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.Client.dll",
+      "sha256": "4d9aa597b7a99fd47fbddd0b9465c8454a4a1099d9508cc44d19025cc25ffaed",
+      "expected_sha256": "4d9aa597b7a99fd47fbddd0b9465c8454a4a1099d9508cc44d19025cc25ffaed",
+      "matches": true
+    },
+    {
+      "pid": 95342,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.dll",
+      "sha256": "d9a8f200ff7953e82ebfd645e0a2206b720da0dc83654345d207641f8f80e399",
+      "expected_sha256": "d9a8f200ff7953e82ebfd645e0a2206b720da0dc83654345d207641f8f80e399",
+      "matches": true
+    },
+    {
+      "pid": 95342,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.dll",
+      "sha256": "1d6531b6d515000d730336df5c2588a116ad7afa4e124cb8cd4301f3d7ac716d",
+      "expected_sha256": "1d6531b6d515000d730336df5c2588a116ad7afa4e124cb8cd4301f3d7ac716d",
+      "matches": true
+    },
+    {
+      "pid": 95342,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.dll",
+      "sha256": "24b44da959565e154315b088b0e63c68ae473130a18939a3acc77a6151038f53",
+      "expected_sha256": "24b44da959565e154315b088b0e63c68ae473130a18939a3acc77a6151038f53",
+      "matches": true
+    },
+    {
+      "pid": 95342,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.UI.dll",
+      "sha256": "8366b636a8b8554cd11375b3bc8bc1a689fc6acea82bb183eca5bec6bbec1807",
+      "expected_sha256": "8366b636a8b8554cd11375b3bc8bc1a689fc6acea82bb183eca5bec6bbec1807",
+      "matches": true
+    },
+    {
+      "pid": 95220,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "expected_sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "matches": true
+    },
+    {
+      "pid": 95218,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "expected_sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "matches": true
+    },
+    {
+      "pid": 82624,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "expected_sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "matches": true
+    },
+    {
+      "pid": 95286,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "expected_sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "matches": true
+    },
+    {
+      "pid": 95220,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+      "sha256": "1c6b19500a6372be35fe4d056344af55a308f2d5ebbcccc080f1f120358be7dd",
+      "expected_sha256": "1c6b19500a6372be35fe4d056344af55a308f2d5ebbcccc080f1f120358be7dd",
+      "matches": true
+    },
+    {
+      "pid": 95267,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "expected_sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "matches": true
+    },
+    {
+      "pid": 95218,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 50581,
+      "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+      "sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "expected_sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "matches": true
+    },
+    {
+      "pid": 50738,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 50738,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll",
+      "sha256": "d2d3fedab571badbf50e45524eae5a1a700f958ba4988e680608cf2115119bdd",
+      "expected_sha256": "d2d3fedab571badbf50e45524eae5a1a700f958ba4988e680608cf2115119bdd",
+      "matches": true
+    },
+    {
+      "pid": 50738,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 50738,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 50738,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 50738,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 50738,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 50738,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 50738,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "expected_sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "matches": true
+    },
+    {
+      "pid": 50738,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "sha256": "116cf2ac939b270645ed7943aa1a1718b256b698f3dd6ed232f8c50ab10f6982",
+      "expected_sha256": "116cf2ac939b270645ed7943aa1a1718b256b698f3dd6ed232f8c50ab10f6982",
+      "matches": true
+    },
+    {
+      "pid": 50738,
+      "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+      "sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "expected_sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "matches": true
+    },
+    {
+      "pid": 52163,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 52163,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 52163,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 52163,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 52163,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 52163,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 52163,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 52163,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "expected_sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "matches": true
+    },
+    {
+      "pid": 54420,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 54420,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 54420,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 54420,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 54420,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 54420,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 54420,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 54420,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "expected_sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "matches": true
+    },
+    {
+      "pid": 56255,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+      "sha256": "9101b9e6357d759d639b287fece56163562abd8365a26c562d355a428e79611a",
+      "expected_sha256": "9101b9e6357d759d639b287fece56163562abd8365a26c562d355a428e79611a",
+      "matches": true
+    },
+    {
+      "pid": 56255,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "expected_sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "matches": true
+    },
+    {
+      "pid": 56255,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 56255,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 56255,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "sha256": "57f0b929996c4376a1a6bab639759ed1f97c95474d1e4a6a3c635f5f3b0ce957",
+      "expected_sha256": "57f0b929996c4376a1a6bab639759ed1f97c95474d1e4a6a3c635f5f3b0ce957",
+      "matches": true
+    },
+    {
+      "pid": 56255,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+      "sha256": "b98ac5c6ffb11d23194ad8fd12dcff9bb96baa0cf3fba8616283d0663dce7bd7",
+      "expected_sha256": "b98ac5c6ffb11d23194ad8fd12dcff9bb96baa0cf3fba8616283d0663dce7bd7",
+      "matches": true
+    },
+    {
+      "pid": 56255,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll",
+      "sha256": "124cfa81c27ac8560f26f204f0fdfd0d1a2bb89e07c0130f1a6be03c01426b31",
+      "expected_sha256": "124cfa81c27ac8560f26f204f0fdfd0d1a2bb89e07c0130f1a6be03c01426b31",
+      "matches": true
+    },
+    {
+      "pid": 56255,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 56255,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "expected_sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "matches": true
+    },
+    {
+      "pid": 73676,
+      "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+      "sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "expected_sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "matches": true
+    },
+    {
+      "pid": 73816,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 73816,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll",
+      "sha256": "d2d3fedab571badbf50e45524eae5a1a700f958ba4988e680608cf2115119bdd",
+      "expected_sha256": "d2d3fedab571badbf50e45524eae5a1a700f958ba4988e680608cf2115119bdd",
+      "matches": true
+    },
+    {
+      "pid": 73816,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 73816,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 73816,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 73816,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 73816,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 73816,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "expected_sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "matches": true
+    },
+    {
+      "pid": 73816,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 73816,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "sha256": "116cf2ac939b270645ed7943aa1a1718b256b698f3dd6ed232f8c50ab10f6982",
+      "expected_sha256": "116cf2ac939b270645ed7943aa1a1718b256b698f3dd6ed232f8c50ab10f6982",
+      "matches": true
+    },
+    {
+      "pid": 73816,
+      "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+      "sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "expected_sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "matches": true
+    },
+    {
+      "pid": 75436,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 75436,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 75436,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 75436,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 75436,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 75436,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 75436,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 75436,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "expected_sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "matches": true
+    },
+    {
+      "pid": 76868,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 76868,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 76868,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 76868,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 76868,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 76868,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 76868,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 76868,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "expected_sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "matches": true
+    },
+    {
+      "pid": 78459,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+      "sha256": "9101b9e6357d759d639b287fece56163562abd8365a26c562d355a428e79611a",
+      "expected_sha256": "9101b9e6357d759d639b287fece56163562abd8365a26c562d355a428e79611a",
+      "matches": true
+    },
+    {
+      "pid": 78459,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "expected_sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "matches": true
+    },
+    {
+      "pid": 78459,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 78459,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 78459,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "sha256": "57f0b929996c4376a1a6bab639759ed1f97c95474d1e4a6a3c635f5f3b0ce957",
+      "expected_sha256": "57f0b929996c4376a1a6bab639759ed1f97c95474d1e4a6a3c635f5f3b0ce957",
+      "matches": true
+    },
+    {
+      "pid": 78459,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 78459,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+      "sha256": "b98ac5c6ffb11d23194ad8fd12dcff9bb96baa0cf3fba8616283d0663dce7bd7",
+      "expected_sha256": "b98ac5c6ffb11d23194ad8fd12dcff9bb96baa0cf3fba8616283d0663dce7bd7",
+      "matches": true
+    },
+    {
+      "pid": 78459,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll",
+      "sha256": "124cfa81c27ac8560f26f204f0fdfd0d1a2bb89e07c0130f1a6be03c01426b31",
+      "expected_sha256": "124cfa81c27ac8560f26f204f0fdfd0d1a2bb89e07c0130f1a6be03c01426b31",
+      "matches": true
+    },
+    {
+      "pid": 78459,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "expected_sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "matches": true
+    },
+    {
+      "pid": 73816,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "expected_sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "matches": true
+    },
+    {
+      "pid": 98033,
+      "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+      "sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "expected_sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "matches": true
+    },
+    {
+      "pid": 98533,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 98533,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll",
+      "sha256": "d2d3fedab571badbf50e45524eae5a1a700f958ba4988e680608cf2115119bdd",
+      "expected_sha256": "d2d3fedab571badbf50e45524eae5a1a700f958ba4988e680608cf2115119bdd",
+      "matches": true
+    },
+    {
+      "pid": 98533,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 98533,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 98533,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 98533,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 98533,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 98533,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 98533,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "expected_sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "matches": true
+    },
+    {
+      "pid": 98533,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "sha256": "116cf2ac939b270645ed7943aa1a1718b256b698f3dd6ed232f8c50ab10f6982",
+      "expected_sha256": "116cf2ac939b270645ed7943aa1a1718b256b698f3dd6ed232f8c50ab10f6982",
+      "matches": true
+    },
+    {
+      "pid": 98533,
+      "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+      "sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "expected_sha256": "2c69b81100accc4322cf97d3a4079705b5361b6ec2e7d8e2cf395d024a82f4fe",
+      "matches": true
+    },
+    {
+      "pid": 1588,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 1588,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 1588,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 1588,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 1588,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 1588,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 1588,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 1588,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "expected_sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "matches": true
+    },
+    {
+      "pid": 3011,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "expected_sha256": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "matches": true
+    },
+    {
+      "pid": 3011,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 3011,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 3011,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 3011,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "expected_sha256": "72bfd20df08e5e90e0da559f10c0448e92e3b073601986e6b8037fc24a04259c",
+      "matches": true
+    },
+    {
+      "pid": 3011,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "expected_sha256": "c8ee87bf0f3efd99ec2d243797ddeba46d3649bc83b5b5f323079da2be4d2171",
+      "matches": true
+    },
+    {
+      "pid": 3011,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "expected_sha256": "4ddd567e719127e8b5b6bd45d453818e6a3a7c1a3599454a22bdc392457b5cdc",
+      "matches": true
+    },
+    {
+      "pid": 3011,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "expected_sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "matches": true
+    },
+    {
+      "pid": 4297,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+      "sha256": "9101b9e6357d759d639b287fece56163562abd8365a26c562d355a428e79611a",
+      "expected_sha256": "9101b9e6357d759d639b287fece56163562abd8365a26c562d355a428e79611a",
+      "matches": true
+    },
+    {
+      "pid": 4297,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "expected_sha256": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "matches": true
+    },
+    {
+      "pid": 4297,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "expected_sha256": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches": true
+    },
+    {
+      "pid": 4297,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "expected_sha256": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches": true
+    },
+    {
+      "pid": 4297,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "sha256": "57f0b929996c4376a1a6bab639759ed1f97c95474d1e4a6a3c635f5f3b0ce957",
+      "expected_sha256": "57f0b929996c4376a1a6bab639759ed1f97c95474d1e4a6a3c635f5f3b0ce957",
+      "matches": true
+    },
+    {
+      "pid": 4297,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+      "sha256": "b98ac5c6ffb11d23194ad8fd12dcff9bb96baa0cf3fba8616283d0663dce7bd7",
+      "expected_sha256": "b98ac5c6ffb11d23194ad8fd12dcff9bb96baa0cf3fba8616283d0663dce7bd7",
+      "matches": true
+    },
+    {
+      "pid": 4297,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "expected_sha256": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "matches": true
+    },
+    {
+      "pid": 4297,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll",
+      "sha256": "124cfa81c27ac8560f26f204f0fdfd0d1a2bb89e07c0130f1a6be03c01426b31",
+      "expected_sha256": "124cfa81c27ac8560f26f204f0fdfd0d1a2bb89e07c0130f1a6be03c01426b31",
+      "matches": true
+    },
+    {
+      "pid": 4297,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "expected_sha256": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "matches": true
+    }
+  ]
+}

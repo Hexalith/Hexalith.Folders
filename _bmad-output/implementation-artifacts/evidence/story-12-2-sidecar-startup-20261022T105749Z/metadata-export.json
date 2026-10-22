@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-22T11:13:27.668262+00:00",
+  "snapshots": 110,
+  "metadata_rows": 4768,
+  "actor_storage_keys": "SHA-256 only",
+  "tenant_partition_values_exported": false,
+  "command_replay_bodies_exported": false,
+  "credentials_exported": false,
+  "note": "Observer results are scrubbed before sealing. The Lua query reads only named metadata fields; the final packet removes actor key/digest material and retains a storage-key hash for timeline correlation."
+}

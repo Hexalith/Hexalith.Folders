@@ -1,0 +1,17 @@
+{
+  "time": "2026-10-22T11:12:03.826690+00:00",
+  "fixture_ids": [
+    "19978a25f7622309"
+  ],
+  "same_uid_environments_checked": 891,
+  "proven_owned_remaining_processes": [],
+  "matching_containers": [],
+  "running_cli_apphosts": [
+    {
+      "appHostPath": "/home/administrator/projects/hexalith/tenants/src/Hexalith.Tenants.AppHost/Hexalith.Tenants.AppHost.csproj",
+      "appHostPid": 67730,
+      "status": "running"
+    }
+  ],
+  "note": "Read-only exact fixture-ID ownership probe; no environment values are exported and no unrelated process/container mutation was issued."
+}

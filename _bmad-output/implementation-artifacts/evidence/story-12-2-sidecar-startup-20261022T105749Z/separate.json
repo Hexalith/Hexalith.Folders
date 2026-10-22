@@ -1,0 +1,33 @@
+{
+  "started_utc": "2026-10-22T10:59:00.445525+00:00",
+  "argv": [
+    "/home/administrator/.dapr/bin/daprd",
+    "--app-id",
+    "folders-startup-control-separate",
+    "--config",
+    "/tmp/folders-sidecar-control-w12rcunw/accesscontrol.yaml",
+    "--resources-path",
+    "/tmp/folders-sidecar-control-w12rcunw/resources",
+    "--dapr-http-port",
+    "40909",
+    "--dapr-grpc-port",
+    "33865",
+    "--dapr-internal-grpc-port",
+    "56461",
+    "--metrics-port",
+    "53297",
+    "--placement-host-address",
+    "",
+    "--scheduler-host-address",
+    "",
+    "--log-level",
+    "debug"
+  ],
+  "pid": 76173,
+  "exit_code": 0,
+  "config_sha256": "d7d5af6a3b1d8cc50b8189864f3fa25643f7f4c4c50a3147caeea6ae9f280fb6",
+  "hot_reload_disabled": false,
+  "unchanged_configuration_created_reload": false,
+  "observed_before_cleanup": true,
+  "temporary_directory_removed_after_return": true
+}

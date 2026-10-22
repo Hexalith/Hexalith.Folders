@@ -1,0 +1,287 @@
+[
+  {
+    "pe": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.pdb",
+    "peSha256": "A6527F647A592315C63209104F9CF50AAACC0935B685A10281B86E37DF7EB4C6",
+    "pdbSha256": "DEF50802BFC2764D499849F76E134B3562119C3C722B89C6EC8AB03C46BBBB9C",
+    "mvid": "1a65bd55-b1f0-42a6-b244-2aa7358fe16b",
+    "identityMatches": true,
+    "documents": [
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/AspireFoldersAppHostFixture.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "1DF1E3B8A1F52A5123BDDC7D3FAC5C4C649231EEE79909F353A5E799672CF629",
+        "sha256": "1DF1E3B8A1F52A5123BDDC7D3FAC5C4C649231EEE79909F353A5E799672CF629",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceCollection.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "B61D23436CD5AAF0FBACAC6AD5C96E05C513E0E9CC5873D877261114A24B35EF",
+        "sha256": "B61D23436CD5AAF0FBACAC6AD5C96E05C513E0E9CC5873D877261114A24B35EF",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "24507E4AA5D3D3F40AE7286126C15B89A52A3A267CD5B20B7648995210C4436E",
+        "sha256": "24507E4AA5D3D3F40AE7286126C15B89A52A3A267CD5B20B7648995210C4436E",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "F5E8767AD02D57441DC3C46F1366E72EB77853FC9C6C0371555A73E1EFD1BABC",
+        "sha256": "F5E8767AD02D57441DC3C46F1366E72EB77853FC9C6C0371555A73E1EFD1BABC",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttp.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "DFE64E45E8EF6B9B980AE87548302390A5060043CCF056E99D2DE141C1718167",
+        "sha256": "DFE64E45E8EF6B9B980AE87548302390A5060043CCF056E99D2DE141C1718167",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttpTests.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "6715F58A0ABD77E5C912C34CC729B97A891EFDE34C0C947CD76504A661A23440",
+        "sha256": "6715F58A0ABD77E5C912C34CC729B97A891EFDE34C0C947CD76504A661A23440",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityProcess.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "FEEC2AD4274D1F19B4357BBBE11C1ABD9356A49E4A8645797199A5904CE91B8B",
+        "sha256": "FEEC2AD4274D1F19B4357BBBE11C1ABD9356A49E4A8645797199A5904CE91B8B",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "DAD1FF997B95FA176F58E6DB7AD7E6D34F698F2A72150946325606536F3A4EC7",
+        "sha256": "DAD1FF997B95FA176F58E6DB7AD7E6D34F698F2A72150946325606536F3A4EC7",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySharedRebuild.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "80B7F436C6CB9377A332C0ED603AD74A3937B1F34A2C293EFCBE98B3811EB915",
+        "sha256": "80B7F436C6CB9377A332C0ED603AD74A3937B1F34A2C293EFCBE98B3811EB915",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySharedRebuildTests.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "38252F8AC94C51049E923046437AAE89762673A14C3B426FC648CE3A780A7BEB",
+        "sha256": "38252F8AC94C51049E923046437AAE89762673A14C3B426FC648CE3A780A7BEB",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FoldersTopologyCrossProcessTests.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "B6CB386ED8436ED5F6DEBD05A148E594CD0CF625EE918F7E8F37334C40EDBAE9",
+        "sha256": "B6CB386ED8436ED5F6DEBD05A148E594CD0CF625EE918F7E8F37334C40EDBAE9",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/Fr58PublicMutationSearchRoundTripTests.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "D615DE52A66504E30A9114031AB909DD5A943CCB263C7E6A41F5259B37D4CE4C",
+        "sha256": "D615DE52A66504E30A9114031AB909DD5A943CCB263C7E6A41F5259B37D4CE4C",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalProviderFixture.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "C29F2C1DB87ECA42B5197A3592D4F25A180837AD7C3A4AFCFCFEBDE36E18239D",
+        "sha256": "C29F2C1DB87ECA42B5197A3592D4F25A180837AD7C3A4AFCFCFEBDE36E18239D",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "293FB7434830EA65007437278B1F62096D6F409D2F4208F03412F0C7E6B8EC38",
+        "sha256": "293FB7434830EA65007437278B1F62096D6F409D2F4208F03412F0C7E6B8EC38",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "F5743F9FA2B33803C8A3A29F9A55E5751B5BCCE9A31897D1982A1CCD99316B90",
+        "sha256": "F5743F9FA2B33803C8A3A29F9A55E5751B5BCCE9A31897D1982A1CCD99316B90",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/RecordingDurabilityHttpHandler.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "5F67985170114555EB630CD675F3349B947A55C3A764D4DA50549266D4B46094",
+        "sha256": "5F67985170114555EB630CD675F3349B947A55C3A764D4DA50549266D4B46094",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/SelectedOperationalAcceptanceStore.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "8C0928E10BE21286F1A615CE969A22C074435603B11E5D56358F4FA817A55000",
+        "sha256": "8C0928E10BE21286F1A615CE969A22C074435603B11E5D56358F4FA817A55000",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/Task36QualificationEvidence.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "B25A81CB4024BD199A6F3ADDDAFAB175E411893ECF318A44E524352D3F36633C",
+        "sha256": "B25A81CB4024BD199A6F3ADDDAFAB175E411893ECF318A44E524352D3F36633C",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": null
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/obj/Debug/net10.0/Hexalith.Folders.AppHost.Tests.GlobalUsings.g.cs",
+        "generated": true,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "8F86A2CBF00FF3EEE0BDA2BC0EB5E1FC19C8544D5DC650C53D0132325956B592",
+        "sha256": "8F86A2CBF00FF3EEE0BDA2BC0EB5E1FC19C8544D5DC650C53D0132325956B592",
+        "matches": true,
+        "selectedFrom": "embedded",
+        "diskMatches": true,
+        "embeddedMatches": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+        "generated": true,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "F79C1AD9A9FC76110B3655F5BFB5FF4E3168E9ADDCEFF05B937C0796F0EC34EB",
+        "sha256": "F79C1AD9A9FC76110B3655F5BFB5FF4E3168E9ADDCEFF05B937C0796F0EC34EB",
+        "matches": true,
+        "selectedFrom": "embedded",
+        "diskMatches": true,
+        "embeddedMatches": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/obj/Debug/net10.0/SelfRegisteredExtensions.cs",
+        "generated": true,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "FD7199EEF832E18EBA41E572D229E8F05A599F7ED65B64B26F01004FB29BFE6A",
+        "sha256": "FD7199EEF832E18EBA41E572D229E8F05A599F7ED65B64B26F01004FB29BFE6A",
+        "matches": true,
+        "selectedFrom": "embedded",
+        "diskMatches": true,
+        "embeddedMatches": true
+      },
+      {
+        "path": "/home/administrator/.nuget/packages/xunit.v3.core.mtp-v2/4.0.2/_content/DefaultRunnerReporters.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "E110BB9FE21CA6C3120A00382C773A086D62A008A0B0D2B76D08416F27D92BF2",
+        "sha256": "E110BB9FE21CA6C3120A00382C773A086D62A008A0B0D2B76D08416F27D92BF2",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": true
+      },
+      {
+        "path": "/home/administrator/.nuget/packages/xunit.v3.core.mtp-v2/4.0.2/_content/DefaultResultWriters.cs",
+        "generated": false,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "206A1DD2D92F05C8C977F2A86BC283FBBF519E69ABF17808BE1DAEE9A2642FE3",
+        "sha256": "206A1DD2D92F05C8C977F2A86BC283FBBF519E69ABF17808BE1DAEE9A2642FE3",
+        "matches": true,
+        "selectedFrom": "disk",
+        "diskMatches": true,
+        "embeddedMatches": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/obj/Debug/net10.0/XunitAutoGeneratedEntryPoint.cs",
+        "generated": true,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "9CC93AD4FBCC90341C3965A47F01308510839B1ABE55A2BBA149117130790620",
+        "sha256": "9CC93AD4FBCC90341C3965A47F01308510839B1ABE55A2BBA149117130790620",
+        "matches": true,
+        "selectedFrom": "embedded",
+        "diskMatches": true,
+        "embeddedMatches": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/obj/Debug/net10.0/Hexalith.Folders.AppHost.Tests.AssemblyInfo.cs",
+        "generated": true,
+        "checksumAlgorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+        "expected": "71FA241B1E1BAA391F2F31D71FCB0576E109D6A0F163BEBE746470C764DCE4A9",
+        "sha256": "71FA241B1E1BAA391F2F31D71FCB0576E109D6A0F163BEBE746470C764DCE4A9",
+        "matches": true,
+        "selectedFrom": "embedded",
+        "diskMatches": true,
+        "embeddedMatches": true
+      }
+    ]
+  }
+]
