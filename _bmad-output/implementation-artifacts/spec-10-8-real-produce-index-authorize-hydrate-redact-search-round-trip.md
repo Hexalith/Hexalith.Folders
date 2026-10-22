@@ -2,7 +2,7 @@
 title: 'Story 10.8: Real produce/index/authorize/hydrate/redact/search round trip'
 type: 'feature'
 created: '2026-09-07'
-status: 'done'
+status: 'in-progress'
 baseline_commit: 'a99644cfb426bea40f932741fdec1c7ec2f825c1'
 route: 'dispatch'
 review_loop_iteration: 0
@@ -197,8 +197,15 @@ Active recall is Indexed-only; status may list Stale. Copy the status handler’
 
 ## Verification
 
-**Commands:**
-- `dotnet restore Hexalith.Folders.slnx -p:NuGetAudit=false` && `dotnet build Hexalith.Folders.slnx --configuration Debug --no-restore` — 0 errors/warnings
-- Individual `dotnet test` on Folders.Tests, Workers.Tests, Server.Tests, IntegrationTests, Cli.Tests, Mcp.Tests, Client.Tests, Contracts.Tests, Testing.Tests — pass
-- `HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet test tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj --configuration Debug --no-build` — FR58 executed, not skipped (after Task 0 green)
-- Leakage corpus + production Dapr-policy conformance — pass
+These are planned acceptance checks, not results of the current run. Actual September results, including the IntegrationTests and Testing.Tests failures, are recorded under Implementation Notes above.
+
+- Restore and build the Debug project-reference graph with no errors or warnings.
+- Run the affected test projects individually; under Microsoft.Testing.Platform, use the built xUnit v3 hosts for focused filters.
+- Run the governed AppHost scenario only after Task 0 is green; require an executed authenticated FR58 round trip with no failures or skips.
+- Run leakage-corpus and production Dapr-policy conformance checks.
+
+## Task 0 recheck — 2026-10-22
+
+At `0534d1388a2f3334b581d0a0d362f0b341e10809`, Task 0 remains blocked. The current prerequisite audit is recorded in the dedicated [Story 10.8 Dev Agent Record](10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md#task-0-recheck--2026-10-22). Story 12.1 and production ACL/Server authorization implementations have advanced since September, but Stories 12.3 and 12.5 still lack their production implementations; 12.2 acceptance, 4.20, and 11.15 remain incomplete. The FR58 gate stays false and no OQ5 artifact exists.
+
+The frontmatter now matches the dedicated story and sprint tracker (`in-progress`); the frozen intent is unchanged. This run updates documentation only. No build, test host, AppHost, or live FR58 acceptance run was executed.

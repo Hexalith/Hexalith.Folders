@@ -351,6 +351,25 @@ Cursor Grok 4.6
 - AppHost diagnostics relabeled. FR58 public-REST test exists but fail-closes on governed skip while Task 0 is blocked.
 - Story remains incomplete: no OQ5 artifact, no live DCP pass.
 
+### Task 0 recheck — 2026-10-22
+
+The worktree was clean on `main` at `0534d1388a2f3334b581d0a0d362f0b341e10809`. Current source and acceptance records supersede the September blocker descriptions where noted below.
+
+| Prerequisite | Current evidence | Disposition |
+| --- | --- | --- |
+| Story 12.1 durable repository | Sprint tracker records `done`. `FolderDomainProcessor.AcceptedResult` now returns `PayloadDomainResult` with `result.Events`; the old `PayloadNoOpDomainResult` description no longer describes this processor. | Earlier repository/eventless-mapping blocker has advanced; this does not prove the file-mutation round trip. |
+| Story 12.2 projections/task completion | The final 2026-10-22 section of `spec-12-2-durable-projections-and-task-completion-pipeline.md` records strict authenticated provider acceptance passing 1/1 for a selected SDK candidate. Whole-story SM4 acknowledgement, package/PD10, SDK dispositions and independent review remain open; status is `in-progress`. | Not accepted as a completed prerequisite. |
+| Story 12.3 workspace content/read source | `FoldersServerServiceCollectionExtensions.cs:110-117` still registers `UnavailableWorkspacePathPolicyEvidenceProvider`, `UnavailableWorkspaceFileContentStore`, `UnavailableWorkspaceFileDeleteOperationStore`, and `UnavailableWorkspaceFileContextSource`. Story 12.3 remains `backlog`. | Blocks the required public file mutation and authoritative content/read substrate. |
+| Story 12.5 retry/reconciliation | `SemanticIndexingProcessManager.cs:242-250,281-304` records the publication result in the bridge. `FoldersSemanticIndexingEventProcessor.cs:66-69` then returns `Processed`. There is no production outbox/reconciler to recover a retryable publication/remove result without another delivery; Story 12.5 remains `backlog`. | Recoverable at-least-once egress is not established. |
+| Production ACL and Server validator | `FoldersServerHostComposition.cs:47-51,73-74` now registers EventStore-backed folder permissions and `VerifiedReceiptEventStoreAuthorizationValidator`; Workers also register EventStore-backed folder permissions in `FoldersWorkersModule.cs:92-100`. | The blanket September unpopulated-ACL/Server-DenyAll claims are stale. Registration alone is not FR58 authorization acceptance. |
+| Stories 4.20 and 11.15 | Canonical Epic 10 lists both as prerequisites. Sprint tracker records both `backlog`. Other stories' authenticated DCP evidence is not the dedicated no-seed FR58 proof. | Bounded file/context lifecycle and the governed FR58 lane remain unaccepted. |
+| Story 12.6 | Tracker remains `in-progress`; the processor now preserves accepted result events. | Do not reuse the old eventless-mapping claim or infer all-mutation acceptance from the mapping fix. |
+| Live FR58 and OQ5 | `Fr58PublicMutationSearchRoundTripTests.cs:28-29` still returns `false` from `LivePathPrerequisitesSatisfied()`. `docs/exit-criteria/fr58-search-evidence.md` is absent. | Keep the gate closed and Story 10.8 incomplete. |
+
+The existing owned facade/CLI work remains present: active search accepts only `Indexed`, checks bridge availability after authorization, and exposes non-task-scoped CLI `indexing-status`. No prerequisite implementation is pulled into this story. Per Task 0, stop production-path implementation while the hard prerequisites remain absent.
+
+Validation in this run is documentation/static inspection only; no build, test host, AppHost, governed FR58 run, or Product/Security/Test approval is claimed. The companion spec's erroneous `done` frontmatter is reconciled to `in-progress`, and its prospective acceptance list is labeled as planned checks. Historical evidence and the frozen intent are preserved.
+
 ### File List
 
 - `src/Hexalith.Folders/Queries/ContextSearch/ContextSearchQueryHandler.cs`
@@ -372,5 +391,6 @@ Cursor Grok 4.6
 
 | Date | Change | Author |
 | --- | --- | --- |
+| 2026-10-22 | Rechecked Task 0 against current source and Story 12.2 qualification; recorded remaining prerequisites and reconciled companion spec lifecycle/verification wording. No runtime change or FR58 pass. | Codex |
 | 2026-09-08 | Implemented owned 10.8 facade/CLI/parity work; Task 0 fail-closed live DCP/OQ5. Story remains incomplete. | Cursor Grok 4.6 |
 | 2026-07-15 | Created implementation-ready Story 10.8 context from the finalized metadata-only FR58 and approved structural correction. | Administrator (via bmad-create-story) |
