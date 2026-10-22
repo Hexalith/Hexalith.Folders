@@ -1,0 +1,755 @@
+{
+  "task36_closure_pass": false,
+  "corrected_inherited_owner_live_case_pass": true,
+  "strict_consumer_pass": false,
+  "capacity": {
+    "total": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "errors": 0,
+    "pass": true,
+    "command": {
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests",
+        "-showLiveOutput",
+        "-result-xml",
+        "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/capacity-final-live.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-22T09:12:50.021705+00:00",
+      "elapsed_seconds": 2074.3892455179885,
+      "exit_code": 0,
+      "environment": {
+        "FOLDERS_TASK36_FOLD_LOG": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/capacity-final-fold-callbacks.jsonl",
+        "DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE": "false",
+        "DOTNET_USE_POLLING_FILE_WATCHER": "1",
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true",
+        "DOTNET_ROOT": "/home/administrator/.dotnet",
+        "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+      }
+    }
+  },
+  "strict": {
+    "total": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "errors": 0,
+    "pass": false,
+    "command": {
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "-showLiveOutput",
+        "-result-xml",
+        "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/strict-live.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-22T09:15:06.570910+00:00",
+      "elapsed_seconds": 233.42498853699362,
+      "exit_code": 1,
+      "environment": {
+        "FOLDERS_TASK36_FOLD_LOG": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/strict-fold-callbacks.jsonl",
+        "DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE": "false",
+        "DOTNET_USE_POLLING_FILE_WATCHER": "1",
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true",
+        "DOTNET_ROOT": "/home/administrator/.dotnet",
+        "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+      }
+    }
+  },
+  "component_results": {
+    "sdk-focused": {
+      "total": 112,
+      "passed": 112,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "pass": true,
+      "command": {
+        "argv": [
+          "dotnet",
+          "/home/administrator/projects/hexalith/eventstore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll",
+          "-class",
+          "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests",
+          "-class",
+          "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests",
+          "-class",
+          "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/sdk-focused.xml"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders",
+        "started_utc": "2026-10-22T08:56:57.622730+00:00",
+        "elapsed_seconds": 8.353815130001749,
+        "exit_code": 0,
+        "environment": {
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+        }
+      }
+    },
+    "sdk-full": {
+      "total": 2075,
+      "passed": 2073,
+      "failed": 0,
+      "skipped": 2,
+      "errors": 0,
+      "pass": true,
+      "command": {
+        "argv": [
+          "dotnet",
+          "/home/administrator/projects/hexalith/eventstore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/sdk-full.xml"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders",
+        "started_utc": "2026-10-22T08:58:50.219881+00:00",
+        "elapsed_seconds": 34.26958333700895,
+        "exit_code": 0,
+        "environment": {
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+        }
+      }
+    },
+    "sdk-domain-full": {
+      "total": 1164,
+      "passed": 1164,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "pass": true,
+      "command": {
+        "argv": [
+          "dotnet",
+          "/home/administrator/projects/hexalith/eventstore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.dll",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/sdk-domain-full.xml"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders",
+        "started_utc": "2026-10-22T09:00:52.908352+00:00",
+        "elapsed_seconds": 251.43623357999604,
+        "exit_code": 0,
+        "environment": {
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+        }
+      }
+    },
+    "final-consumer-components": {
+      "total": 2190,
+      "passed": 2188,
+      "failed": 0,
+      "skipped": 2,
+      "errors": 0,
+      "pass": true,
+      "command": {
+        "argv": [
+          "dotnet",
+          "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/final-consumer-components.xml"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders",
+        "started_utc": "2026-10-22T09:15:07.708133+00:00",
+        "elapsed_seconds": 62.24664844799554,
+        "exit_code": 0,
+        "environment": {
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+        }
+      }
+    },
+    "final-apphost-helpers": {
+      "total": 22,
+      "passed": 22,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "pass": true,
+      "command": {
+        "argv": [
+          "dotnet",
+          "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+          "-class",
+          "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+          "-class",
+          "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/final-apphost-helpers.xml"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders",
+        "started_utc": "2026-10-22T09:19:15.495507+00:00",
+        "elapsed_seconds": 1.2481149879895383,
+        "exit_code": 0,
+        "environment": {
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+        }
+      }
+    }
+  },
+  "original_rebuild_sessions": [
+    {
+      "TenantId": "durability-99e34285df2392cc",
+      "Domain": "folders",
+      "ProjectionType": "operational-status",
+      "OperationId": "01m5he6phjprx1171vg9rcdf8h",
+      "CatalogFingerprint": "953c4e567086bf004fc1fe98d0832103505af0639128012b2ea1287290a133cf"
+    },
+    {
+      "TenantId": "durability-99e34285df2392cc",
+      "Domain": "folders",
+      "ProjectionType": "operational-status",
+      "OperationId": "01m5he6phjprx1171vg9rcdf8h",
+      "CatalogFingerprint": "953c4e567086bf004fc1fe98d0832103505af0639128012b2ea1287290a133cf"
+    },
+    {
+      "TenantId": "durability-99e34285df2392cc",
+      "Domain": "folders",
+      "ProjectionType": "operational-status",
+      "OperationId": "01m5hf0rrwx8j2dbst3xxra98q",
+      "CatalogFingerprint": "953c4e567086bf004fc1fe98d0832103505af0639128012b2ea1287290a133cf"
+    },
+    {
+      "TenantId": "durability-99e34285df2392cc",
+      "Domain": "folders",
+      "ProjectionType": "operational-status",
+      "OperationId": "01m5hf5gjk4x3zffkyfxx1s2bk",
+      "CatalogFingerprint": "953c4e567086bf004fc1fe98d0832103505af0639128012b2ea1287290a133cf"
+    },
+    {
+      "TenantId": "durability-99e34285df2392cc",
+      "Domain": "folders",
+      "ProjectionType": "operational-status",
+      "OperationId": "01m5hfytkgs6q1fdfr00s12wfm",
+      "CatalogFingerprint": "953c4e567086bf004fc1fe98d0832103505af0639128012b2ea1287290a133cf"
+    }
+  ],
+  "phase_results": [
+    "phase=Begin ownerOrdinal= part= events=0 elapsedMs=52.513 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=0 events=256 elapsedMs=226.502 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=1 events=256 elapsedMs=161.909 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=2 events=256 elapsedMs=157.304 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=3 events=256 elapsedMs=152.351 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=4 events=256 elapsedMs=150.086 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=5 events=256 elapsedMs=155.870 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=6 events=256 elapsedMs=155.740 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=7 events=256 elapsedMs=159.784 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=8 events=256 elapsedMs=165.198 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=9 events=256 elapsedMs=155.406 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=10 events=256 elapsedMs=157.769 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=11 events=256 elapsedMs=146.950 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=12 events=256 elapsedMs=150.880 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=13 events=256 elapsedMs=146.784 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=14 events=256 elapsedMs=160.607 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=15 events=256 elapsedMs=155.685 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=16 events=256 elapsedMs=161.330 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=17 events=256 elapsedMs=157.391 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=18 events=256 elapsedMs=150.047 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=19 events=256 elapsedMs=163.723 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=20 events=256 elapsedMs=153.266 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=21 events=256 elapsedMs=162.444 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=22 events=256 elapsedMs=156.630 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=23 events=256 elapsedMs=155.241 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=24 events=256 elapsedMs=163.273 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=25 events=256 elapsedMs=154.942 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=26 events=256 elapsedMs=146.477 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=27 events=256 elapsedMs=145.164 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=28 events=256 elapsedMs=154.065 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=29 events=256 elapsedMs=149.977 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=30 events=256 elapsedMs=158.077 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=31 events=256 elapsedMs=151.962 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=32 events=256 elapsedMs=137.042 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=33 events=256 elapsedMs=142.531 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=34 events=256 elapsedMs=145.327 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=35 events=256 elapsedMs=146.250 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=36 events=256 elapsedMs=144.941 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=37 events=256 elapsedMs=147.716 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=38 events=256 elapsedMs=148.504 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=39 events=17 elapsedMs=150.663 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulateComplete ownerOrdinal=0 part= events=0 elapsedMs=266441.163 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=1 part=0 events=1 elapsedMs=139.928 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulateComplete ownerOrdinal=1 part= events=0 elapsedMs=418.858 status=Completed sdkPhase=Accumulating reason=",
+    "phase=Finalize ownerOrdinal= part= events=0 elapsedMs=1204.506 status=Completed sdkPhase=Finalized reason=",
+    "phase=Stage ownerOrdinal= part= events=0 elapsedMs=485854.851 status=Completed sdkPhase=Prepared reason=",
+    "phase=Begin ownerOrdinal= part= events=0 elapsedMs=124.084 status=AlreadyCompleted sdkPhase=Prepared reason=",
+    "phase=Commit ownerOrdinal= part= events=0 elapsedMs=1614.966 status=Completed sdkPhase=Committed reason=",
+    "phase=Verify ownerOrdinal= part= events=0 elapsedMs=72083.905 status=AlreadyCompleted sdkPhase=Committed reason=",
+    "phase=Begin ownerOrdinal= part= events=0 elapsedMs=153719.423 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=0 events=1 elapsedMs=132.046 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulateComplete ownerOrdinal=0 part= events=0 elapsedMs=466.637 status=Completed sdkPhase=Accumulating reason=",
+    "phase=Finalize ownerOrdinal= part= events=0 elapsedMs=9.691 status=Completed sdkPhase=Finalized reason=",
+    "phase=Stage ownerOrdinal= part= events=0 elapsedMs=176.966 status=Completed sdkPhase=Prepared reason=",
+    "phase=Commit ownerOrdinal= part= events=0 elapsedMs=99.127 status=Completed sdkPhase=Committed reason=",
+    "phase=Verify ownerOrdinal= part= events=0 elapsedMs=290.748 status=AlreadyCompleted sdkPhase=Committed reason=",
+    "phase=Begin ownerOrdinal= part= events=0 elapsedMs=207.702 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=0 events=256 elapsedMs=138.684 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=1 events=256 elapsedMs=132.026 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=2 events=256 elapsedMs=136.385 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=3 events=256 elapsedMs=138.947 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=4 events=256 elapsedMs=138.793 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=5 events=256 elapsedMs=136.280 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=6 events=256 elapsedMs=149.698 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=7 events=256 elapsedMs=129.588 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=8 events=256 elapsedMs=133.342 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=9 events=256 elapsedMs=132.142 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=10 events=256 elapsedMs=124.016 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=11 events=256 elapsedMs=130.215 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=12 events=256 elapsedMs=131.006 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=13 events=256 elapsedMs=133.573 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=14 events=256 elapsedMs=140.479 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=15 events=256 elapsedMs=152.303 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=16 events=256 elapsedMs=199.846 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=17 events=256 elapsedMs=129.959 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=18 events=256 elapsedMs=129.159 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=19 events=256 elapsedMs=127.844 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=20 events=256 elapsedMs=128.074 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=21 events=256 elapsedMs=130.602 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=22 events=256 elapsedMs=138.699 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=23 events=256 elapsedMs=132.652 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=24 events=256 elapsedMs=138.140 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=25 events=256 elapsedMs=136.478 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=26 events=256 elapsedMs=133.183 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=27 events=256 elapsedMs=131.591 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=28 events=256 elapsedMs=135.323 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=29 events=256 elapsedMs=140.811 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=30 events=256 elapsedMs=149.564 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=31 events=256 elapsedMs=140.462 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=32 events=256 elapsedMs=144.734 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=33 events=256 elapsedMs=138.087 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=34 events=256 elapsedMs=148.582 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=35 events=256 elapsedMs=131.379 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=36 events=256 elapsedMs=134.246 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=37 events=256 elapsedMs=132.907 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=38 events=256 elapsedMs=137.558 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=39 events=18 elapsedMs=130.482 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulateComplete ownerOrdinal=0 part= events=0 elapsedMs=250785.579 status=Completed sdkPhase=Accumulating reason=",
+    "phase=Finalize ownerOrdinal= part= events=0 elapsedMs=1179.527 status=Completed sdkPhase=Finalized reason=",
+    "phase=Stage ownerOrdinal= part= events=0 elapsedMs=488408.130 status=Completed sdkPhase=Prepared reason=",
+    "phase=Commit ownerOrdinal= part= events=0 elapsedMs=3438.335 status=Completed sdkPhase=Committed reason=",
+    "phase=Verify ownerOrdinal= part= events=0 elapsedMs=79795.118 status=AlreadyCompleted sdkPhase=Committed reason=",
+    "phase=Begin ownerOrdinal= part= events=0 elapsedMs=167522.477 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulatePart ownerOrdinal=0 part=0 events=1 elapsedMs=134.460 status=Completed sdkPhase=Accumulating reason=",
+    "phase=AccumulateComplete ownerOrdinal=0 part= events=0 elapsedMs=427.410 status=Completed sdkPhase=Accumulating reason=",
+    "phase=Finalize ownerOrdinal= part= events=0 elapsedMs=5.134 status=Completed sdkPhase=Finalized reason=",
+    "phase=Stage ownerOrdinal= part= events=0 elapsedMs=191.073 status=Completed sdkPhase=Prepared reason=",
+    "phase=Commit ownerOrdinal= part= events=0 elapsedMs=102.763 status=Completed sdkPhase=Committed reason=",
+    "phase=Verify ownerOrdinal= part= events=0 elapsedMs=298.584 status=AlreadyCompleted sdkPhase=Committed reason="
+  ],
+  "launcher_replacements": [
+    {
+      "resource": "folders",
+      "before": 23715,
+      "after": 57510
+    },
+    {
+      "resource": "folders-workers",
+      "before": 23702,
+      "after": 58780
+    },
+    {
+      "resource": "folders-workers-replica",
+      "before": 17567,
+      "after": 59714
+    },
+    {
+      "resource": "eventstore",
+      "before": 23593,
+      "after": 60853
+    }
+  ],
+  "managed_processes": {
+    "folders": [
+      24218,
+      57814
+    ],
+    "folders-workers": [
+      24263,
+      58934
+    ],
+    "folders-workers-replica": [
+      18093,
+      59838
+    ],
+    "eventstore": [
+      24196,
+      60900
+    ]
+  },
+  "retained_inherited_proof": {
+    "raw_checkpoint_sha256_before": "71e3a10b7f42eeaff4af8f31ea7addf7e392579173b3c78baaea4f5746534276",
+    "raw_checkpoint_sha256_after": "71e3a10b7f42eeaff4af8f31ea7addf7e392579173b3c78baaea4f5746534276",
+    "raw_checkpoint_equal": true,
+    "reference_equal": true,
+    "canonical_sha256_before": "70115AD30C55739A35CA81DF9D07660F2FD60B241313073725F6E42A9B320D88",
+    "canonical_sha256_after": "70115AD30C55739A35CA81DF9D07660F2FD60B241313073725F6E42A9B320D88",
+    "canonical_equal": true,
+    "captured_identity_sha256": "819DB2504786426F5F954BC89B6DB157BE7CBFF031CF1CEF34B0F3A41F541D81",
+    "fold_callback_delta": 0,
+    "canonical_origin": "reconstructed-DTO-matched-to-persisted-SDK-captured-leaf",
+    "current_capture": {
+      "capacity-10001-01m5he6ph1ht3m90dva7hz52yq-other": 10003
+    }
+  },
+  "events": [
+    {
+      "phase": "before-inheritance",
+      "operation": "01m5he6phjprx1171vg9rcdf8h",
+      "sourceHash": "80709FC479BEA0D821A99BD71546B85A0C5AADF1FA76CC98C9EF2621D1E4CD0A",
+      "owner": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+      "sdkKey": "shared-checkpoint:f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU:F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC",
+      "rawCheckpoint": "{\"capturedEventDigests\":null,\"capturedIdentityReference\":{\"count\":10001,\"epoch\":1,\"height\":2,\"lastPosition\":10002,\"namespaceHash\":\"71A2B5CD51814976C0B671CA4092DDE5A4EEF8BFAC921BEC3E09422301C77211\",\"operationHash\":\"95167A333DD660F6454FB80DDB9728B5710081A4AE002DE6FA224084A6F46C48\",\"rootDigest\":\"131824A114D89B69B783760C93B425669FFCBDBD2E85B12B4C10D7AC0818F124\",\"scopeHash\":\"f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU\",\"sourceHash\":\"F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC\",\"version\":1},\"ownerSequenceNumber\":10001,\"position\":10002,\"token\":\"MTAwMDI=\"}",
+      "checkpoint": {
+        "Position": 10002,
+        "Token": "MTAwMDI=",
+        "OwnerSequenceNumber": 10001,
+        "CapturedEventDigests": null,
+        "CapturedIdentityReference": {
+          "Version": 1,
+          "NamespaceHash": "71A2B5CD51814976C0B671CA4092DDE5A4EEF8BFAC921BEC3E09422301C77211",
+          "ScopeHash": "f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU",
+          "SourceHash": "F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC",
+          "OperationHash": "95167A333DD660F6454FB80DDB9728B5710081A4AE002DE6FA224084A6F46C48",
+          "Epoch": 1,
+          "Count": 10001,
+          "RootDigest": "131824A114D89B69B783760C93B425669FFCBDBD2E85B12B4C10D7AC0818F124",
+          "Height": 2,
+          "LastPosition": 10002
+        }
+      },
+      "canonicalSha256": "70115AD30C55739A35CA81DF9D07660F2FD60B241313073725F6E42A9B320D88",
+      "capturedIdentitySha256": "819DB2504786426F5F954BC89B6DB157BE7CBFF031CF1CEF34B0F3A41F541D81",
+      "canonicalOrigin": "reconstructed-DTO-matched-to-persisted-SDK-captured-leaf"
+    },
+    {
+      "phase": "inherited-replay",
+      "index": 0,
+      "outcome": {
+        "ProjectionType": "operational-status",
+        "Status": 1,
+        "State": null,
+        "ReasonCode": null
+      },
+      "canonicalSha256": "70115AD30C55739A35CA81DF9D07660F2FD60B241313073725F6E42A9B320D88"
+    },
+    {
+      "phase": "inherited-replay",
+      "index": 5000,
+      "outcome": {
+        "ProjectionType": "operational-status",
+        "Status": 1,
+        "State": null,
+        "ReasonCode": null
+      },
+      "canonicalSha256": "05338569C01BE6904D80013A9FCA41B3F4C386179D9A75BB60C0C8F3A8273796"
+    },
+    {
+      "phase": "inherited-replay",
+      "index": 10000,
+      "outcome": {
+        "ProjectionType": "operational-status",
+        "Status": 1,
+        "State": null,
+        "ReasonCode": null
+      },
+      "canonicalSha256": "BCC6775B405F4C6336B54D2AE1C0714E0E22E7FEC4B7C622D061708B4F28DB18"
+    },
+    {
+      "phase": "after-inherited-replay",
+      "operation": "01m5he6phjprx1171vg9rcdf8h",
+      "epoch": {
+        "version": 1,
+        "epoch": 2,
+        "activeGeneration": 2,
+        "phase": 0,
+        "operationId": "01m5hf0rrwx8j2dbst3xxra98q",
+        "inventoryFingerprint": "v1:s3VW5Dn8ruxVWPFKH95di_Ue7Kb0mySYjaDCQMTANcc",
+        "captureHighWatermarks": {
+          "capacity-10001-01m5he6ph1ht3m90dva7hz52yq-other": 10003
+        },
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "folders-operational-status"
+        ],
+        "registeredWriters": [
+          "folders-operational-status"
+        ],
+        "journal": [],
+        "stageFingerprint": "stream:00D31829B1A15E05E4832CFA48D8DD890BBA08B1D9C26152EEB4751AFC966B84:1",
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": 0,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "durability-99e34285df2392cc"
+      },
+      "checkpoint": {
+        "Position": 10002,
+        "Token": "MTAwMDI=",
+        "OwnerSequenceNumber": 10001,
+        "CapturedEventDigests": null,
+        "CapturedIdentityReference": {
+          "Version": 1,
+          "NamespaceHash": "71A2B5CD51814976C0B671CA4092DDE5A4EEF8BFAC921BEC3E09422301C77211",
+          "ScopeHash": "f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU",
+          "SourceHash": "F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC",
+          "OperationHash": "95167A333DD660F6454FB80DDB9728B5710081A4AE002DE6FA224084A6F46C48",
+          "Epoch": 1,
+          "Count": 10001,
+          "RootDigest": "131824A114D89B69B783760C93B425669FFCBDBD2E85B12B4C10D7AC0818F124",
+          "Height": 2,
+          "LastPosition": 10002
+        }
+      },
+      "rawCheckpoint": "{\"capturedEventDigests\":null,\"capturedIdentityReference\":{\"count\":10001,\"epoch\":1,\"height\":2,\"lastPosition\":10002,\"namespaceHash\":\"71A2B5CD51814976C0B671CA4092DDE5A4EEF8BFAC921BEC3E09422301C77211\",\"operationHash\":\"95167A333DD660F6454FB80DDB9728B5710081A4AE002DE6FA224084A6F46C48\",\"rootDigest\":\"131824A114D89B69B783760C93B425669FFCBDBD2E85B12B4C10D7AC0818F124\",\"scopeHash\":\"f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU\",\"sourceHash\":\"F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC\",\"version\":1},\"ownerSequenceNumber\":10001,\"position\":10002,\"token\":\"MTAwMDI=\"}",
+      "canonicalSha256": "70115AD30C55739A35CA81DF9D07660F2FD60B241313073725F6E42A9B320D88",
+      "foldCallbackDelta": 0
+    },
+    {
+      "phase": "proof-fault",
+      "fault": "missing-root",
+      "proofKey": "shared-identity-v1:71A2B5CD51814976C0B671CA4092DDE5A4EEF8BFAC921BEC3E09422301C77211:node:131824A114D89B69B783760C93B425669FFCBDBD2E85B12B4C10D7AC0818F124",
+      "outcome": {
+        "ProjectionType": "operational-status",
+        "Status": 3,
+        "State": null,
+        "ReasonCode": "projection_handler_failure"
+      }
+    },
+    {
+      "phase": "proof-fault",
+      "fault": "corrupt-root",
+      "proofKey": "shared-identity-v1:71A2B5CD51814976C0B671CA4092DDE5A4EEF8BFAC921BEC3E09422301C77211:node:131824A114D89B69B783760C93B425669FFCBDBD2E85B12B4C10D7AC0818F124",
+      "outcome": {
+        "ProjectionType": "operational-status",
+        "Status": 3,
+        "State": null,
+        "ReasonCode": "projection_handler_failure"
+      }
+    },
+    {
+      "phase": "grown-rebuild",
+      "status": {
+        "Epoch": 3,
+        "ActiveGeneration": 3,
+        "OperationId": "01m5hf5gjk4x3zffkyfxx1s2bk",
+        "StageFingerprint": "stream:BBCC93694A821B8BC193E7522A1F3DBDD7E0C42ADFBFC5762E44786BEF79BA8C:626",
+        "IsBuilding": false,
+        "IsAborting": false,
+        "PendingDeliveryCount": 0,
+        "IsOffboarded": false,
+        "DeliveryConflicts": [],
+        "DeliveryConflictOverflow": null,
+        "ParkingEvidence": [],
+        "ParkingEvidenceOverflow": null,
+        "PendingFoldFailures": [],
+        "IsCapacityLimited": false,
+        "IsDegraded": false,
+        "OperationTenantId": "durability-99e34285df2392cc"
+      },
+      "checkpoint": {
+        "Position": 10004,
+        "Token": "MTAwMDQ=",
+        "OwnerSequenceNumber": 10002,
+        "CapturedEventDigests": null,
+        "CapturedIdentityReference": {
+          "Version": 1,
+          "NamespaceHash": "99751F973322CB2406A691158745B43D071EF465293205D0E020600036BB92BE",
+          "ScopeHash": "f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU",
+          "SourceHash": "F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC",
+          "OperationHash": "2840A027DA5506161AEAAEDC134528F0A4CB4C30427620873BA7C655C680DD91",
+          "Epoch": 3,
+          "Count": 10002,
+          "RootDigest": "16EF6E8FA41E7824891CD3BE42E0FC95AA2D76D1DD564BD680ABF956872F01B3",
+          "Height": 2,
+          "LastPosition": 10004
+        }
+      },
+      "rawCheckpoint": "{\"capturedEventDigests\":null,\"capturedIdentityReference\":{\"count\":10002,\"epoch\":3,\"height\":2,\"lastPosition\":10004,\"namespaceHash\":\"99751F973322CB2406A691158745B43D071EF465293205D0E020600036BB92BE\",\"operationHash\":\"2840A027DA5506161AEAAEDC134528F0A4CB4C30427620873BA7C655C680DD91\",\"rootDigest\":\"16EF6E8FA41E7824891CD3BE42E0FC95AA2D76D1DD564BD680ABF956872F01B3\",\"scopeHash\":\"f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU\",\"sourceHash\":\"F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC\",\"version\":1},\"ownerSequenceNumber\":10002,\"position\":10004,\"token\":\"MTAwMDQ=\"}"
+    },
+    {
+      "phase": "final-state",
+      "sourceHash": "80709FC479BEA0D821A99BD71546B85A0C5AADF1FA76CC98C9EF2621D1E4CD0A",
+      "otherHash": "773F109B781D426A1B13EEAC2B05B1D3C108E7C46C99BDC87828D43A62E74667",
+      "checkpoint": {
+        "Position": 10004,
+        "Token": "MTAwMDQ=",
+        "OwnerSequenceNumber": 10002,
+        "CapturedEventDigests": null,
+        "CapturedIdentityReference": {
+          "Version": 1,
+          "NamespaceHash": "99751F973322CB2406A691158745B43D071EF465293205D0E020600036BB92BE",
+          "ScopeHash": "f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU",
+          "SourceHash": "F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC",
+          "OperationHash": "2840A027DA5506161AEAAEDC134528F0A4CB4C30427620873BA7C655C680DD91",
+          "Epoch": 3,
+          "Count": 10002,
+          "RootDigest": "16EF6E8FA41E7824891CD3BE42E0FC95AA2D76D1DD564BD680ABF956872F01B3",
+          "Height": 2,
+          "LastPosition": 10004
+        }
+      },
+      "status": {
+        "Epoch": 4,
+        "ActiveGeneration": 4,
+        "OperationId": "01m5hfytkgs6q1fdfr00s12wfm",
+        "StageFingerprint": "stream:00D31829B1A15E05E4832CFA48D8DD890BBA08B1D9C26152EEB4751AFC966B84:1",
+        "IsBuilding": false,
+        "IsAborting": false,
+        "PendingDeliveryCount": 0,
+        "IsOffboarded": false,
+        "DeliveryConflicts": [
+          {
+            "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+            "EnvelopePosition": 2,
+            "AcceptedDigest": "819DB2504786426F5F954BC89B6DB157BE7CBFF031CF1CEF34B0F3A41F541D81",
+            "ConflictingDigest": "EBFF52369CF5351496A4D30B7A707B0A0AEC97E83FD418D7B518B4F925ECB78A",
+            "ObservedEpoch": 4,
+            "ResolvedByOperationId": null,
+            "RequiredOwnerSequenceNumber": null,
+            "ResolvedByOwnerSequenceNumber": null
+          },
+          {
+            "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+            "EnvelopePosition": 2,
+            "AcceptedDigest": "819DB2504786426F5F954BC89B6DB157BE7CBFF031CF1CEF34B0F3A41F541D81",
+            "ConflictingDigest": "4F09F7E5803FBF51344D424138DE484F6150D80ABFFAAC12E480F3D1BDE2F97C",
+            "ObservedEpoch": 4,
+            "ResolvedByOperationId": null,
+            "RequiredOwnerSequenceNumber": null,
+            "ResolvedByOwnerSequenceNumber": null
+          },
+          {
+            "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+            "EnvelopePosition": 5002,
+            "AcceptedDigest": "C13BCA042601DC488964483E6E2CD322D13E5976740D54FD7A8ABEF6C67203F1",
+            "ConflictingDigest": "91D74501A4816ADB64BE69F6187BEF08DEADBAA0CE975A7E2524F17B7EF33C1C",
+            "ObservedEpoch": 4,
+            "ResolvedByOperationId": null,
+            "RequiredOwnerSequenceNumber": null,
+            "ResolvedByOwnerSequenceNumber": null
+          },
+          {
+            "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+            "EnvelopePosition": 5002,
+            "AcceptedDigest": "C13BCA042601DC488964483E6E2CD322D13E5976740D54FD7A8ABEF6C67203F1",
+            "ConflictingDigest": "849F0BCEDB977CF931C0EF3B3EE75952ED1B79CC9D48CE4A78CAB591B3766BF0",
+            "ObservedEpoch": 4,
+            "ResolvedByOperationId": null,
+            "RequiredOwnerSequenceNumber": null,
+            "ResolvedByOwnerSequenceNumber": null
+          },
+          {
+            "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+            "EnvelopePosition": 10004,
+            "AcceptedDigest": "17C996BC69A84B2B8EC88F74F59AB8EBEC505A6ABF14B5A7DEC56118F228C248",
+            "ConflictingDigest": "2390533476362534C8ADC235357FC6F9AF6FC8750A11382E819FD0314935A338",
+            "ObservedEpoch": 4,
+            "ResolvedByOperationId": null,
+            "RequiredOwnerSequenceNumber": null,
+            "ResolvedByOwnerSequenceNumber": null
+          },
+          {
+            "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+            "EnvelopePosition": 10004,
+            "AcceptedDigest": "17C996BC69A84B2B8EC88F74F59AB8EBEC505A6ABF14B5A7DEC56118F228C248",
+            "ConflictingDigest": "117F73BCBD9C87157441A4E86B01C2E0638FB74BFCAC56F53E122A0608436180",
+            "ObservedEpoch": 4,
+            "ResolvedByOperationId": null,
+            "RequiredOwnerSequenceNumber": null,
+            "ResolvedByOwnerSequenceNumber": null
+          },
+          {
+            "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+            "EnvelopePosition": 3,
+            "AcceptedDigest": "819DB2504786426F5F954BC89B6DB157BE7CBFF031CF1CEF34B0F3A41F541D81",
+            "ConflictingDigest": "C03BEA789182E3F1DD6B097A8B00763232FF0C7D031952F38D966115B265B830",
+            "ObservedEpoch": 4,
+            "ResolvedByOperationId": null,
+            "RequiredOwnerSequenceNumber": null,
+            "ResolvedByOwnerSequenceNumber": null
+          },
+          {
+            "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+            "EnvelopePosition": 2,
+            "AcceptedDigest": "36C89846B91C740BF60740C7403AF280DB5C3F5B8D2B9A4047B0115A0524714F",
+            "ConflictingDigest": "20DFD145940928D40AE31F2F68DEA3134C89AB79A265FBD7C4BF2ADA1E514AEF",
+            "ObservedEpoch": 4,
+            "ResolvedByOperationId": null,
+            "RequiredOwnerSequenceNumber": null,
+            "ResolvedByOwnerSequenceNumber": null
+          }
+        ],
+        "DeliveryConflictOverflow": null,
+        "ParkingEvidence": [],
+        "ParkingEvidenceOverflow": null,
+        "PendingFoldFailures": [],
+        "IsCapacityLimited": false,
+        "IsDegraded": true,
+        "OperationTenantId": "durability-99e34285df2392cc"
+      },
+      "rawCheckpoint": "{\"capturedEventDigests\":null,\"capturedIdentityReference\":{\"count\":10002,\"epoch\":3,\"height\":2,\"lastPosition\":10004,\"namespaceHash\":\"99751F973322CB2406A691158745B43D071EF465293205D0E020600036BB92BE\",\"operationHash\":\"2840A027DA5506161AEAAEDC134528F0A4CB4C30427620873BA7C655C680DD91\",\"rootDigest\":\"16EF6E8FA41E7824891CD3BE42E0FC95AA2D76D1DD564BD680ABF956872F01B3\",\"scopeHash\":\"f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU\",\"sourceHash\":\"F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC\",\"version\":1},\"ownerSequenceNumber\":10002,\"position\":10004,\"token\":\"MTAwMDQ=\"}",
+      "selectedCheckpoint": "{\"SchemaVersion\":2,\"ManagedTenantId\":\"durability-99e34285df2392cc\",\"FolderId\":\"capacity-10001-01m5he6ph1ht3m90dva7hz52yq\",\"Sequence\":10002,\"SourceDigest\":\"BDFCB8F7DD83378B201D9FB8E9FA0D7E7DF66B69BAFB69DEB5E70E376ED417C2\",\"ObservedAt\":\"2026-10-22T09:13:49.3456913+00:00\",\"State\":{\"IsCreated\":true,\"ManagedTenantId\":\"durability-99e34285df2392cc\",\"OrganizationId\":\"durability-99e34285df2392cc\",\"FolderId\":\"capacity-10001-01m5he6ph1ht3m90dva7hz52yq\",\"DisplayName\":null,\"Description\":null,\"PathLabel\":null,\"Tags\":[],\"LifecycleState\":0,\"RepositoryBindingState\":0,\"WorkspaceLifecycleState\":null,\"WorkspaceOperatorDisposition\":null,\"WorkspaceId\":null,\"WorkspacePolicyRef\":null,\"WorkspaceLifecycleEvent\":null,\"WorkspaceOperationId\":null,\"WorkspaceCorrelationId\":null,\"WorkspaceTaskId\":null,\"WorkspaceActorPrincipalId\":null,\"WorkspaceLifecycleUpdatedAt\":null,\"WorkspaceLockId\":null,\"WorkspaceLockIntent\":null,\"WorkspaceLockRequestedLeaseSeconds\":null,\"WorkspaceLockHolderTaskId\":null,\"WorkspaceLockAcquiredAt\":null,\"WorkspaceLockEffectiveAt\":null,\"WorkspaceLockExpiresAt\":null,\"WorkspaceLockRetryEligibilityBasis\":null,\"RepositoryBindingId\":null,\"ProviderBindingRef\":null,\"RepositoryProfileRef\":null,\"ExternalRepositoryRefFingerprint\":null,\"BranchRefPolicyRef\":null,\"BranchRefPolicy\":null,\"RepositoryBindingFailureCategory\":null,\"RepositoryBindingOutcomeCategory\":null,\"RepositoryBindingUpdatedAt\":null,\"RepositoryBindingActorPrincipalId\":null,\"RepositoryBindingCorrelationId\":null,\"RepositoryBindingTaskId\":null,\"RepositoryBindingIdempotencyKey\":null,\"RepositoryBindingIdempotencyFingerprint\":null,\"WorkspaceCommitReference\":null,\"WorkspaceCommitFailureCategory\":null,\"WorkspaceCommitOutcomeCategory\":null,\"WorkspaceCommitAuthorMetadataReference\":null,\"WorkspaceCommitBranchRefTarget\":null,\"WorkspaceCommitMessageClassification\":null,\"WorkspaceCommitChangedPathMetadataDigest\":null,\"WorkspaceCommitReconciliationReference\":null,\"WorkspaceCommitReconciliationRequired\":false,\"ArchiveReasonCode\":null,\"ArchiveActorPrincipalId\":null,\"ArchiveCorrelationId\":null,\"ArchiveTaskId\":null,\"ArchiveIdempotencyKey\":null,\"ArchivedAt\":null,\"AccessOverrides\":{},\"AccessSequence\":0,\"IdempotencyFingerprints\":{},\"FileIdentities\":{},\"WorkspaceCommitOperationId\":null,\"TaskClosures\":{}},\"EventDigests\":{\"10002\":\"8A7C24BCBE7CF1B01F1C43CEFE458D523B16AB1A7794FF35237DEC3F6E977402\"},\"MessageIds\":{\"10002\":\"capacity-message-10002\"},\"WorkspaceEvidence\":{},\"TaskEvidence\":{},\"IntegrityDigest\":\"A329E1C8F8E4E5353E3F5546ECE9D970138883882AAA1F99D66195DAE4316556\",\"TaskClosedSequences\":{}}"
+    }
+  ],
+  "fold_observations": [
+    {
+      "action": "registered",
+      "source": null,
+      "position": null,
+      "processId": 24218
+    },
+    {
+      "action": "fold",
+      "source": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq-primer",
+      "position": 1,
+      "processId": 24218
+    },
+    {
+      "action": "registered",
+      "source": null,
+      "position": null,
+      "processId": 57814
+    },
+    {
+      "action": "fold",
+      "source": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+      "position": 10004,
+      "processId": 57814
+    }
+  ],
+  "remaining_gates": {
+    "consumer": "Strict real-provider lane failed waiting for BranchRefPolicyConfigured with internal actor HTTP429/admission-unavailable directly observed; no terminal admission state inferred. Broader current-source Server/Workers/integration suites are outside this narrow rerun.",
+    "package_PD10": "No publication or dependency pin change. Package/Release and PD10 qualification remain open.",
+    "SM4": "Acknowledgement performance remains open; synthetic projection timings do not establish the SM4 budget.",
+    "whole_story": "Story12.2 and its independent review/whole-story acceptance remain open. Root Task36 checkbox is unchanged."
+  }
+}
