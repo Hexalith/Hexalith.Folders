@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "dotnet",
+    "/home/administrator/projects/hexalith/eventstore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll",
+    "-class",
+    "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests",
+    "-class",
+    "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests",
+    "-class",
+    "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests",
+    "-result-xml",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/sdk-focused.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "started_utc": "2026-10-22T08:56:57.622730+00:00",
+  "elapsed_seconds": 8.353815130001749,
+  "exit_code": 0,
+  "environment": {
+    "DOTNET_ROOT": "/home/administrator/.dotnet",
+    "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+  }
+}

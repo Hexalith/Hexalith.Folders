@@ -1,0 +1,160 @@
+{
+  "events": [
+    {
+      "phase": "before-inheritance",
+      "operation": "01m5he6phjprx1171vg9rcdf8h",
+      "sourceHash": "80709FC479BEA0D821A99BD71546B85A0C5AADF1FA76CC98C9EF2621D1E4CD0A",
+      "owner": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+      "sdkKey": "shared-checkpoint:f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU:F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC",
+      "rawCheckpoint": "{\"capturedEventDigests\":null,\"capturedIdentityReference\":{\"count\":10001,\"epoch\":1,\"height\":2,\"lastPosition\":10002,\"namespaceHash\":\"71A2B5CD51814976C0B671CA4092DDE5A4EEF8BFAC921BEC3E09422301C77211\",\"operationHash\":\"95167A333DD660F6454FB80DDB9728B5710081A4AE002DE6FA224084A6F46C48\",\"rootDigest\":\"131824A114D89B69B783760C93B425669FFCBDBD2E85B12B4C10D7AC0818F124\",\"scopeHash\":\"f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU\",\"sourceHash\":\"F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC\",\"version\":1},\"ownerSequenceNumber\":10001,\"position\":10002,\"token\":\"MTAwMDI=\"}",
+      "checkpoint": {
+        "Position": 10002,
+        "Token": "MTAwMDI=",
+        "OwnerSequenceNumber": 10001,
+        "CapturedEventDigests": null,
+        "CapturedIdentityReference": {
+          "Version": 1,
+          "NamespaceHash": "71A2B5CD51814976C0B671CA4092DDE5A4EEF8BFAC921BEC3E09422301C77211",
+          "ScopeHash": "f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU",
+          "SourceHash": "F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC",
+          "OperationHash": "95167A333DD660F6454FB80DDB9728B5710081A4AE002DE6FA224084A6F46C48",
+          "Epoch": 1,
+          "Count": 10001,
+          "RootDigest": "131824A114D89B69B783760C93B425669FFCBDBD2E85B12B4C10D7AC0818F124",
+          "Height": 2,
+          "LastPosition": 10002
+        }
+      },
+      "canonicalSha256": "70115AD30C55739A35CA81DF9D07660F2FD60B241313073725F6E42A9B320D88",
+      "capturedIdentitySha256": "819DB2504786426F5F954BC89B6DB157BE7CBFF031CF1CEF34B0F3A41F541D81",
+      "canonicalOrigin": "reconstructed-DTO-matched-to-persisted-SDK-captured-leaf"
+    },
+    {
+      "phase": "inherited-replay",
+      "index": 0,
+      "outcome": {
+        "ProjectionType": "operational-status",
+        "Status": 1,
+        "State": null,
+        "ReasonCode": null
+      },
+      "canonicalSha256": "70115AD30C55739A35CA81DF9D07660F2FD60B241313073725F6E42A9B320D88"
+    },
+    {
+      "phase": "inherited-replay",
+      "index": 5000,
+      "outcome": {
+        "ProjectionType": "operational-status",
+        "Status": 1,
+        "State": null,
+        "ReasonCode": null
+      },
+      "canonicalSha256": "05338569C01BE6904D80013A9FCA41B3F4C386179D9A75BB60C0C8F3A8273796"
+    },
+    {
+      "phase": "inherited-replay",
+      "index": 10000,
+      "outcome": {
+        "ProjectionType": "operational-status",
+        "Status": 1,
+        "State": null,
+        "ReasonCode": null
+      },
+      "canonicalSha256": "BCC6775B405F4C6336B54D2AE1C0714E0E22E7FEC4B7C622D061708B4F28DB18"
+    },
+    {
+      "phase": "after-inherited-replay",
+      "operation": "01m5he6phjprx1171vg9rcdf8h",
+      "epoch": {
+        "version": 1,
+        "epoch": 2,
+        "activeGeneration": 2,
+        "phase": 0,
+        "operationId": "01m5hf0rrwx8j2dbst3xxra98q",
+        "inventoryFingerprint": "v1:s3VW5Dn8ruxVWPFKH95di_Ue7Kb0mySYjaDCQMTANcc",
+        "captureHighWatermarks": {
+          "capacity-10001-01m5he6ph1ht3m90dva7hz52yq-other": 10003
+        },
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "folders-operational-status"
+        ],
+        "registeredWriters": [
+          "folders-operational-status"
+        ],
+        "journal": [],
+        "stageFingerprint": "stream:00D31829B1A15E05E4832CFA48D8DD890BBA08B1D9C26152EEB4751AFC966B84:1",
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": 0,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "durability-99e34285df2392cc"
+      },
+      "checkpoint": {
+        "Position": 10002,
+        "Token": "MTAwMDI=",
+        "OwnerSequenceNumber": 10001,
+        "CapturedEventDigests": null,
+        "CapturedIdentityReference": {
+          "Version": 1,
+          "NamespaceHash": "71A2B5CD51814976C0B671CA4092DDE5A4EEF8BFAC921BEC3E09422301C77211",
+          "ScopeHash": "f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU",
+          "SourceHash": "F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC",
+          "OperationHash": "95167A333DD660F6454FB80DDB9728B5710081A4AE002DE6FA224084A6F46C48",
+          "Epoch": 1,
+          "Count": 10001,
+          "RootDigest": "131824A114D89B69B783760C93B425669FFCBDBD2E85B12B4C10D7AC0818F124",
+          "Height": 2,
+          "LastPosition": 10002
+        }
+      },
+      "rawCheckpoint": "{\"capturedEventDigests\":null,\"capturedIdentityReference\":{\"count\":10001,\"epoch\":1,\"height\":2,\"lastPosition\":10002,\"namespaceHash\":\"71A2B5CD51814976C0B671CA4092DDE5A4EEF8BFAC921BEC3E09422301C77211\",\"operationHash\":\"95167A333DD660F6454FB80DDB9728B5710081A4AE002DE6FA224084A6F46C48\",\"rootDigest\":\"131824A114D89B69B783760C93B425669FFCBDBD2E85B12B4C10D7AC0818F124\",\"scopeHash\":\"f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU\",\"sourceHash\":\"F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC\",\"version\":1},\"ownerSequenceNumber\":10001,\"position\":10002,\"token\":\"MTAwMDI=\"}",
+      "canonicalSha256": "70115AD30C55739A35CA81DF9D07660F2FD60B241313073725F6E42A9B320D88",
+      "foldCallbackDelta": 0
+    },
+    {
+      "phase": "proof-fault",
+      "fault": "missing-root",
+      "proofKey": "shared-identity-v1:71A2B5CD51814976C0B671CA4092DDE5A4EEF8BFAC921BEC3E09422301C77211:node:131824A114D89B69B783760C93B425669FFCBDBD2E85B12B4C10D7AC0818F124",
+      "outcome": {
+        "ProjectionType": "operational-status",
+        "Status": 3,
+        "State": null,
+        "ReasonCode": "projection_handler_failure"
+      }
+    },
+    {
+      "phase": "proof-fault",
+      "fault": "corrupt-root",
+      "proofKey": "shared-identity-v1:71A2B5CD51814976C0B671CA4092DDE5A4EEF8BFAC921BEC3E09422301C77211:node:131824A114D89B69B783760C93B425669FFCBDBD2E85B12B4C10D7AC0818F124",
+      "outcome": {
+        "ProjectionType": "operational-status",
+        "Status": 3,
+        "State": null,
+        "ReasonCode": "projection_handler_failure"
+      }
+    }
+  ],
+  "boundary": "Assertions through inherited replay, damaged-proof controls and ordinary growth were reached. Complete grown rebuild and final conflict assertions are still running; no whole-case pass is claimed."
+}

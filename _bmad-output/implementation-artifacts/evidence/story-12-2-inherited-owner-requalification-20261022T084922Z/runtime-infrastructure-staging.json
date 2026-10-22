@@ -1,0 +1,292 @@
+{
+  "utc": "2026-10-22T09:27:42.954527+00:00",
+  "fixture_ids": [
+    "6cc3683a3aae5418",
+    "99e34285df2392cc"
+  ],
+  "sidecars": [
+    {
+      "pid": 17514,
+      "executable": "/usr/local/bin/dapr",
+      "executableSha256": "43429557ff18a7230737b945699417ec391ad41bd431244c175b79ab3c904ce5",
+      "arguments": {
+        "--app-id": "folders-workers-proof-a-99e34285df2392cc",
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj/ordinary-proof",
+        "--app-port": "32895",
+        "--dapr-grpc-port": "24360",
+        "--dapr-http-port": "24359",
+        "--app-protocol": "http"
+      }
+    },
+    {
+      "pid": 17519,
+      "executable": "/usr/local/bin/dapr",
+      "executableSha256": "43429557ff18a7230737b945699417ec391ad41bd431244c175b79ab3c904ce5",
+      "arguments": {
+        "--app-id": "folders-workers-proof-b-99e34285df2392cc",
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj/ordinary-proof",
+        "--app-port": "40501",
+        "--dapr-grpc-port": "24357",
+        "--dapr-http-port": "24356",
+        "--app-protocol": "http"
+      }
+    },
+    {
+      "pid": 17559,
+      "executable": "/usr/local/bin/dapr",
+      "executableSha256": "43429557ff18a7230737b945699417ec391ad41bd431244c175b79ab3c904ce5",
+      "arguments": {
+        "--app-id": "folders-workers-99e34285df2392cc",
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-port": "44967",
+        "--dapr-grpc-port": "24363",
+        "--dapr-http-port": "24362",
+        "--app-protocol": "http"
+      }
+    },
+    {
+      "pid": 17857,
+      "executable": "/home/administrator/.dapr/bin/daprd",
+      "executableSha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--app-protocol": "http",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-id": "folders-workers-99e34285df2392cc",
+        "--app-port": "44967",
+        "--dapr-http-port": "24362",
+        "--dapr-grpc-port": "24363"
+      }
+    },
+    {
+      "pid": 17858,
+      "executable": "/home/administrator/.dapr/bin/daprd",
+      "executableSha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--app-protocol": "http",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj/ordinary-proof",
+        "--app-id": "folders-workers-proof-b-99e34285df2392cc",
+        "--app-port": "40501",
+        "--dapr-http-port": "24356",
+        "--dapr-grpc-port": "24357"
+      }
+    },
+    {
+      "pid": 17885,
+      "executable": "/home/administrator/.dapr/bin/daprd",
+      "executableSha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--app-protocol": "http",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj/ordinary-proof",
+        "--app-id": "folders-workers-proof-a-99e34285df2392cc",
+        "--app-port": "32895",
+        "--dapr-http-port": "24359",
+        "--dapr-grpc-port": "24360"
+      }
+    },
+    {
+      "pid": 19143,
+      "executable": "/usr/local/bin/dapr",
+      "executableSha256": "43429557ff18a7230737b945699417ec391ad41bd431244c175b79ab3c904ce5",
+      "arguments": {
+        "--app-id": "memories-99e34285df2392cc",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-port": "40149",
+        "--dapr-grpc-port": "24366",
+        "--dapr-http-port": "24365",
+        "--app-protocol": "http"
+      }
+    },
+    {
+      "pid": 19401,
+      "executable": "/home/administrator/.dapr/bin/daprd",
+      "executableSha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--config": "/home/administrator/.dapr/config.yaml",
+        "--app-protocol": "http",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-id": "memories-99e34285df2392cc",
+        "--app-port": "40149",
+        "--dapr-http-port": "24365",
+        "--dapr-grpc-port": "24366"
+      }
+    },
+    {
+      "pid": 23591,
+      "executable": "/usr/local/bin/dapr",
+      "executableSha256": "43429557ff18a7230737b945699417ec391ad41bd431244c175b79ab3c904ce5",
+      "arguments": {
+        "--app-id": "eventstore-99e34285df2392cc",
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-port": "37915",
+        "--dapr-grpc-port": "24381",
+        "--dapr-http-port": "24380",
+        "--app-protocol": "http"
+      }
+    },
+    {
+      "pid": 23650,
+      "executable": "/usr/local/bin/dapr",
+      "executableSha256": "43429557ff18a7230737b945699417ec391ad41bd431244c175b79ab3c904ce5",
+      "arguments": {
+        "--app-id": "tenants-99e34285df2392cc",
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-port": "35219",
+        "--dapr-grpc-port": "24378",
+        "--dapr-http-port": "24377",
+        "--app-protocol": "http"
+      }
+    },
+    {
+      "pid": 23686,
+      "executable": "/usr/local/bin/dapr",
+      "executableSha256": "43429557ff18a7230737b945699417ec391ad41bd431244c175b79ab3c904ce5",
+      "arguments": {
+        "--app-id": "folders-workers-99e34285df2392cc",
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-port": "33939",
+        "--dapr-grpc-port": "24372",
+        "--dapr-http-port": "24371",
+        "--app-protocol": "http"
+      }
+    },
+    {
+      "pid": 23692,
+      "executable": "/usr/local/bin/dapr",
+      "executableSha256": "43429557ff18a7230737b945699417ec391ad41bd431244c175b79ab3c904ce5",
+      "arguments": {
+        "--app-id": "folders-99e34285df2392cc",
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-port": "44721",
+        "--dapr-grpc-port": "24375",
+        "--dapr-http-port": "24374",
+        "--app-protocol": "http"
+      }
+    },
+    {
+      "pid": 23823,
+      "executable": "/usr/local/bin/dapr",
+      "executableSha256": "43429557ff18a7230737b945699417ec391ad41bd431244c175b79ab3c904ce5",
+      "arguments": {
+        "--app-id": "folders-ui-99e34285df2392cc",
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-port": "43921",
+        "--dapr-grpc-port": "24369",
+        "--dapr-http-port": "24368",
+        "--app-protocol": "http"
+      }
+    },
+    {
+      "pid": 23974,
+      "executable": "/home/administrator/.dapr/bin/daprd",
+      "executableSha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--app-protocol": "http",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-id": "eventstore-99e34285df2392cc",
+        "--app-port": "37915",
+        "--dapr-http-port": "24380",
+        "--dapr-grpc-port": "24381"
+      }
+    },
+    {
+      "pid": 23986,
+      "executable": "/home/administrator/.dapr/bin/daprd",
+      "executableSha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--app-protocol": "http",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-id": "tenants-99e34285df2392cc",
+        "--app-port": "35219",
+        "--dapr-http-port": "24377",
+        "--dapr-grpc-port": "24378"
+      }
+    },
+    {
+      "pid": 23995,
+      "executable": "/home/administrator/.dapr/bin/daprd",
+      "executableSha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--app-protocol": "http",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-id": "folders-99e34285df2392cc",
+        "--app-port": "44721",
+        "--dapr-http-port": "24374",
+        "--dapr-grpc-port": "24375"
+      }
+    },
+    {
+      "pid": 23999,
+      "executable": "/home/administrator/.dapr/bin/daprd",
+      "executableSha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--app-protocol": "http",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-id": "folders-workers-99e34285df2392cc",
+        "--app-port": "33939",
+        "--dapr-http-port": "24371",
+        "--dapr-grpc-port": "24372"
+      }
+    },
+    {
+      "pid": 24034,
+      "executable": "/home/administrator/.dapr/bin/daprd",
+      "executableSha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--config": "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml",
+        "--app-protocol": "http",
+        "--resources-path": "/tmp/folders-durability-1oxu1beo.0fj",
+        "--app-id": "folders-ui-99e34285df2392cc",
+        "--app-port": "43921",
+        "--dapr-http-port": "24368",
+        "--dapr-grpc-port": "24369"
+      }
+    }
+  ],
+  "component_configs": {
+    "/tmp/folders-durability-1oxu1beo.0fj/ordinary-proof/statestore.yaml": {
+      "sha256": "e8ace4f135abb27ef7cc43371dbbe3fffb87902467ef05faba2cfa485f22bce8",
+      "text": "# DAPR State Store Component -- Local Development\n# =============================================================\n# Redis-backed state store for actor state and command status tracking.\n# actorStateStore: \"true\" enables DAPR actor state management.\n#\n# keyPrefix: \"none\" keeps state keys un-prefixed so they are shared verbatim across the\n# eventstore / tenants / folders app-ids (preserves the Folders state-key layout that the\n# previous in-code component established -- do not change without a state-migration story).\n#\n# Component Scoping (Folders topology, Epic 9): the EventStore command gateway owns aggregate\n# actor state; Tenants writes projections; the Folders services read/write folder state; the Memories\n# search-index server (Story 9.2) reuses this shared state store. There is no eventstore-admin app-id\n# in the gateway-only Folders topology.\napiVersion: dapr.io/v1alpha1\nkind: Component\nmetadata:\n  name: statestore\nspec:\n  type: state.redis\n  version: v1\n  metadata:\n    # DAPR does not support the `{env:VAR|default}` template form, so an unset\n    # REDIS_HOST left the literal string as the hostname and daprd failed with\n    # \"no such host\". `dapr init` provisions Redis at 127.0.0.1:53296 with no password.\n    - name: redisHost\n      value: \"127.0.0.1:53296\"\n    - name: redisPassword\n      value: \"\"\n    - name: actorStateStore\n      value: \"true\"\n    - name: keyPrefix\n      value: \"ordinary-proof-99e34285df2392cc\"\nscopes:\n  - eventstore-99e34285df2392cc\n  - tenants-99e34285df2392cc\n  - folders-99e34285df2392cc\n  - folders-workers-99e34285df2392cc\n  - folders-ui-99e34285df2392cc\n  - memories-99e34285df2392cc\n\n  - folders-workers-proof-a-99e34285df2392cc\n  - folders-workers-proof-b-99e34285df2392cc\n"
+    },
+    "/tmp/folders-durability-1oxu1beo.0fj/ordinary-proof/resiliency.yaml": {
+      "sha256": "35e9e77800ea86f9bc602b03ab3354a53c9a592dcc3484a7f302d2b4ee07a13d",
+      "text": "# DAPR Resiliency Policies -- Local Development\n# ================================================================\n# Retry / timeout / circuit-breaker policies for the Folders topology. Targets reference the\n# eventstore app and the shared statestore / pubsub components (Epic 9). A Resiliency CRD is not\n# scoped per app-id (no `scopes:` field); each sidecar that loads it applies the matching targets.\napiVersion: dapr.io/v1alpha1\nkind: Resiliency\nmetadata:\n  name: resiliency\nspec:\n  policies:\n    retries:\n      defaultRetry:\n        policy: constant\n        duration: 1s\n        maxRetries: 3\n      # Pub/sub outbound: publisher -> sidecar -> broker\n      pubsubRetryOutbound:\n        policy: exponential\n        maxInterval: 10s\n        maxRetries: 3\n      # Pub/sub inbound: broker -> sidecar -> subscriber app\n      pubsubRetryInbound:\n        policy: exponential\n        maxInterval: 30s\n        maxRetries: 10\n    timeouts:\n      # Each timeout is a named duration string (DAPR rejects nested objects here).\n      daprSidecar: 5s\n      # Pub/sub outbound: prevent hung sidecar->broker calls\n      pubsubTimeout: 10s\n      # Pub/sub inbound: allow more time for subscriber processing\n      subscriberTimeout: 30s\n    circuitBreakers:\n      defaultBreaker:\n        maxRequests: 1\n        interval: 10s\n        timeout: 30s\n        trip: consecutiveFailures > 3\n      # Pub/sub circuit breaker for prolonged broker outages\n      pubsubBreaker:\n        maxRequests: 1\n        interval: 10s\n        timeout: 30s\n        trip: consecutiveFailures > 5\n  targets:\n    apps:\n      eventstore-99e34285df2392cc:\n        retry: defaultRetry\n        timeout: daprSidecar\n        circuitBreaker: defaultBreaker\n    # These policies AUGMENT built-in pub/sub component retries.\n    # Effective retry count = component built-in retries x resiliency retries.\n    components:\n      pubsub:\n        outbound:\n          retry: pubsubRetryOutbound\n          timeout: pubsubTimeout\n          circuitBreaker: pubsubBreaker\n        inbound:\n          retry: pubsubRetryInbound\n          timeout: subscriberTimeout\n      # State store resiliency: retry and circuit breaker for state persistence.\n      # Without this target, transient Redis failures would fail without retry.\n      statestore:\n        retry: defaultRetry\n        timeout: daprSidecar\n        circuitBreaker: defaultBreaker\n"
+    },
+    "/tmp/folders-durability-1oxu1beo.0fj/ordinary-proof/accesscontrol.yaml": {
+      "sha256": "35731fc1585243ad160842fe7593e3f422a5485bed4108e70ba1f98da666abd1",
+      "text": "# WARNING: Local development only.\n# Production must use deny-by-default Dapr access control with mTLS.\napiVersion: dapr.io/v1alpha1\nkind: Configuration\nmetadata:\n  name: accesscontrol\nspec:\n  accessControl:\n    defaultAction: allow\n    trustDomain: \"public\"\n    policies:\n      - appId: eventstore-99e34285df2392cc\n        defaultAction: allow\n        trustDomain: \"public\"\n        namespace: \"folders-durability-99e34285df2392cc\"\n      - appId: tenants-99e34285df2392cc\n        defaultAction: allow\n        trustDomain: \"public\"\n        namespace: \"folders-durability-99e34285df2392cc\"\n      - appId: folders-99e34285df2392cc\n        defaultAction: allow\n        trustDomain: \"public\"\n        namespace: \"folders-durability-99e34285df2392cc\"\n      - appId: folders-workers-99e34285df2392cc\n        defaultAction: allow\n        trustDomain: \"public\"\n        namespace: \"folders-durability-99e34285df2392cc\"\n      - appId: memories-99e34285df2392cc\n        defaultAction: allow\n        trustDomain: \"public\"\n        namespace: \"folders-durability-99e34285df2392cc\"\n"
+    },
+    "/tmp/folders-durability-1oxu1beo.0fj/statestore.yaml": {
+      "sha256": "699c9ef364e9ff28ccb5011143f1dc621803667391a5c7b37c301e5c09875376",
+      "text": "# DAPR State Store Component -- Local Development\n# =============================================================\n# Redis-backed state store for actor state and command status tracking.\n# actorStateStore: \"true\" enables DAPR actor state management.\n#\n# keyPrefix: \"none\" keeps state keys un-prefixed so they are shared verbatim across the\n# eventstore / tenants / folders app-ids (preserves the Folders state-key layout that the\n# previous in-code component established -- do not change without a state-migration story).\n#\n# Component Scoping (Folders topology, Epic 9): the EventStore command gateway owns aggregate\n# actor state; Tenants writes projections; the Folders services read/write folder state; the Memories\n# search-index server (Story 9.2) reuses this shared state store. There is no eventstore-admin app-id\n# in the gateway-only Folders topology.\napiVersion: dapr.io/v1alpha1\nkind: Component\nmetadata:\n  name: statestore\nspec:\n  type: state.redis\n  version: v1\n  metadata:\n    # DAPR does not support the `{env:VAR|default}` template form, so an unset\n    # REDIS_HOST left the literal string as the hostname and daprd failed with\n    # \"no such host\". `dapr init` provisions Redis at 127.0.0.1:53296 with no password.\n    - name: redisHost\n      value: \"127.0.0.1:53296\"\n    - name: redisPassword\n      value: \"\"\n    - name: actorStateStore\n      value: \"true\"\n    - name: keyPrefix\n      value: \"none\"\nscopes:\n  - eventstore-99e34285df2392cc\n  - tenants-99e34285df2392cc\n  - folders-99e34285df2392cc\n  - folders-workers-99e34285df2392cc\n  - folders-ui-99e34285df2392cc\n  - memories-99e34285df2392cc\n"
+    },
+    "/tmp/folders-durability-1oxu1beo.0fj/resiliency.yaml": {
+      "sha256": "35e9e77800ea86f9bc602b03ab3354a53c9a592dcc3484a7f302d2b4ee07a13d",
+      "text": "# DAPR Resiliency Policies -- Local Development\n# ================================================================\n# Retry / timeout / circuit-breaker policies for the Folders topology. Targets reference the\n# eventstore app and the shared statestore / pubsub components (Epic 9). A Resiliency CRD is not\n# scoped per app-id (no `scopes:` field); each sidecar that loads it applies the matching targets.\napiVersion: dapr.io/v1alpha1\nkind: Resiliency\nmetadata:\n  name: resiliency\nspec:\n  policies:\n    retries:\n      defaultRetry:\n        policy: constant\n        duration: 1s\n        maxRetries: 3\n      # Pub/sub outbound: publisher -> sidecar -> broker\n      pubsubRetryOutbound:\n        policy: exponential\n        maxInterval: 10s\n        maxRetries: 3\n      # Pub/sub inbound: broker -> sidecar -> subscriber app\n      pubsubRetryInbound:\n        policy: exponential\n        maxInterval: 30s\n        maxRetries: 10\n    timeouts:\n      # Each timeout is a named duration string (DAPR rejects nested objects here).\n      daprSidecar: 5s\n      # Pub/sub outbound: prevent hung sidecar->broker calls\n      pubsubTimeout: 10s\n      # Pub/sub inbound: allow more time for subscriber processing\n      subscriberTimeout: 30s\n    circuitBreakers:\n      defaultBreaker:\n        maxRequests: 1\n        interval: 10s\n        timeout: 30s\n        trip: consecutiveFailures > 3\n      # Pub/sub circuit breaker for prolonged broker outages\n      pubsubBreaker:\n        maxRequests: 1\n        interval: 10s\n        timeout: 30s\n        trip: consecutiveFailures > 5\n  targets:\n    apps:\n      eventstore-99e34285df2392cc:\n        retry: defaultRetry\n        timeout: daprSidecar\n        circuitBreaker: defaultBreaker\n    # These policies AUGMENT built-in pub/sub component retries.\n    # Effective retry count = component built-in retries x resiliency retries.\n    components:\n      pubsub:\n        outbound:\n          retry: pubsubRetryOutbound\n          timeout: pubsubTimeout\n          circuitBreaker: pubsubBreaker\n        inbound:\n          retry: pubsubRetryInbound\n          timeout: subscriberTimeout\n      # State store resiliency: retry and circuit breaker for state persistence.\n      # Without this target, transient Redis failures would fail without retry.\n      statestore:\n        retry: defaultRetry\n        timeout: daprSidecar\n        circuitBreaker: defaultBreaker\n"
+    },
+    "/tmp/folders-durability-1oxu1beo.0fj/accesscontrol.yaml": {
+      "sha256": "35731fc1585243ad160842fe7593e3f422a5485bed4108e70ba1f98da666abd1",
+      "text": "# WARNING: Local development only.\n# Production must use deny-by-default Dapr access control with mTLS.\napiVersion: dapr.io/v1alpha1\nkind: Configuration\nmetadata:\n  name: accesscontrol\nspec:\n  accessControl:\n    defaultAction: allow\n    trustDomain: \"public\"\n    policies:\n      - appId: eventstore-99e34285df2392cc\n        defaultAction: allow\n        trustDomain: \"public\"\n        namespace: \"folders-durability-99e34285df2392cc\"\n      - appId: tenants-99e34285df2392cc\n        defaultAction: allow\n        trustDomain: \"public\"\n        namespace: \"folders-durability-99e34285df2392cc\"\n      - appId: folders-99e34285df2392cc\n        defaultAction: allow\n        trustDomain: \"public\"\n        namespace: \"folders-durability-99e34285df2392cc\"\n      - appId: folders-workers-99e34285df2392cc\n        defaultAction: allow\n        trustDomain: \"public\"\n        namespace: \"folders-durability-99e34285df2392cc\"\n      - appId: memories-99e34285df2392cc\n        defaultAction: allow\n        trustDomain: \"public\"\n        namespace: \"folders-durability-99e34285df2392cc\"\n"
+    }
+  },
+  "redis": [
+    {
+      "name": "folders-durability-99e34285df2392cc",
+      "identity": "01c61cc472a2fe6f3e733c397c7345bc98fb8ad28593af5aad42ee6246161bf9 sha256:8b81dd37ff027bec4e516d41acfbe9fe2460070dc6d4a4570a2ac5b9d59df065 redis:7-alpine"
+    }
+  ]
+}

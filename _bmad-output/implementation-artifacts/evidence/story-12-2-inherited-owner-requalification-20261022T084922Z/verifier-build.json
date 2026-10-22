@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "dotnet",
+    "build",
+    "/tmp/folders-task36-pdb-20261022T084922Z/Verifier.csproj",
+    "-c",
+    "Debug"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "started_utc": "2026-10-22T08:58:55.117947+00:00",
+  "elapsed_seconds": 1.5411897680023685,
+  "exit_code": 0,
+  "environment": {
+    "DOTNET_ROOT": "/home/administrator/.dotnet",
+    "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+  }
+}

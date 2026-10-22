@@ -1,0 +1,1834 @@
+[
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ProjectionDispatchOptionsTests.Validate_RejectsNonPositiveLimits(mutate: Action`1 { Method = Void <get_NonPositiveLimits>b__2_0(Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions), Target = <>c { } })",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ProjectionDispatchOptionsTests.Validate_RejectsNonPositiveLimits(mutate: Action`1 { Method = Void <get_NonPositiveLimits>b__2_1(Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions), Target = <>c { } })",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ProjectionDispatchOptionsTests.Validate_RejectsNonPositiveLimits(mutate: Action`1 { Method = Void <get_NonPositiveLimits>b__2_2(Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions), Target = <>c { } })",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ProjectionDispatchOptionsTests.Validate_RejectsNonPositiveLimits(mutate: Action`1 { Method = Void <get_NonPositiveLimits>b__2_3(Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions), Target = <>c { } })",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ProjectionDispatchOptionsTests.Validate_RejectsNonPositiveLimits(mutate: Action`1 { Method = Void <get_NonPositiveLimits>b__2_4(Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions), Target = <>c { } })",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ProjectionDispatchOptionsTests.Validate_RejectsNonPositiveLimits(mutate: Action`1 { Method = Void <get_NonPositiveLimits>b__2_5(Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions), Target = <>c { } })",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ProjectionDispatchOptionsTests.Validate_RejectsNonPositiveLimits(mutate: Action`1 { Method = Void <get_NonPositiveLimits>b__2_6(Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions), Target = <>c { } })",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ProjectionDispatchOptionsTests.Validate_RejectsNonPositiveLimits(mutate: Action`1 { Method = Void <get_NonPositiveLimits>b__2_7(Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions), Target = <>c { } })",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ProjectionDispatchOptionsTests.Validate_RejectsNonPositiveLimits(mutate: Action`1 { Method = Void <get_NonPositiveLimits>b__2_8(Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions), Target = <>c { } })",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ProjectionDispatchOptionsTests.Validate_RejectsNonPositiveLimits(mutate: Action`1 { Method = Void <get_NonPositiveLimits>b__2_9(Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions), Target = <>c { } })",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ProjectionDispatchOptionsTests.Validate_RejectsNonPositiveLimits(mutate: Action`1 { Method = Void <get_NonPositiveLimits>b__2_10(Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions), Target = <>c { } })",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Events.EventPayloadEvolutionRegistryTests.ReadForReplay_RejectsEffectivePayloadExpandedPastReadableLimit",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Registration.ReadModelAndCursorRegistrationTests.BatchCanonicalSerializer_MatchesDefaultDaprJsonOptions_SoBatchValuesRoundTrip",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Registration.ReadModelAndCursorRegistrationTests.AddEventStoreReadModelStore_InvalidBatchOptions_ThrowsAtRegistration",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.AuthoritativeEventStreamReaderTests.CompleteStablePrefix_ReturnsOneCoherentObservation",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.AuthoritativeEventStreamReaderTests.GapReorderOrDuplicate_Denies(first: 1, second: 3)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.AuthoritativeEventStreamReaderTests.GapReorderOrDuplicate_Denies(first: 2, second: 1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.AuthoritativeEventStreamReaderTests.GapReorderOrDuplicate_Denies(first: 1, second: 1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Canonicalize_SortsObjectKeysOrdinally_PreservesArrayOrder(input: \\\"{\\\\\\\"b\\\\\\\":1,\\\\\\\"a\\\\\\\":2}\\\", expected: \\\"{\\\\\\\"a\\\\\\\":2,\\\\\\\"b\\\\\\\":1}\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Canonicalize_SortsObjectKeysOrdinally_PreservesArrayOrder(input: \\\"{\\\\\\\"b\\\\\\\":1,\\\\\\\"a\\\\\\\":{\\\\\\\"d\\\\\\\":4,\\\\\\\"c\\\\\\\":3},\\\\\\\"arr\\\\\\\":[3,1,2]}\\\", expected: \\\"{\\\\\\\"a\\\\\\\":{\\\\\\\"c\\\\\\\":3,\\\\\\\"d\\\\\\\":4},\\\\\\\"arr\\\\\\\":[3,1,2],\\\\\\\"b\\\\\\\":1}\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Canonicalize_SortsObjectKeysOrdinally_PreservesArrayOrder(input: \\\"{ \\\\\\\"z\\\\\\\" : \\\\\\\"x\\\\\\\" }\\\", expected: \\\"{\\\\\\\"z\\\\\\\":\\\\\\\"x\\\\\\\"}\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Compute_FrozenGoldenFingerprint_DetectsAnySerializationDrift",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.ScopeHash_ChangesWithAnyComponent",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Compute_MatchesIndependentSha256OfManifest",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Compute_IsDeterministicAcrossRebuilds",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Compute_ChangesWhenOperationOrderChanges",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Compute_ChangesWhenTimeToLiveChanges",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Canonicalize_IsIndependentOfPropertyOrder",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.BuildCanonicalManifest_GoldenVector_IsFrozen",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Compute_ChangesWhenValueOrConcurrencyChanges",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.InMemoryReadModelStoreTests.TrySaveAsync_ConcurrentWriteInjection_FailsHeldETagAndPreservesConcurrentValue",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.InMemoryReadModelStoreTests.TryEraseAsync_ConcurrentWriteInjection_ReturnsConflictAndPreservesConcurrentValue",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.AggregateReplayerTests.Replay_UpToSequenceZero_ReturnsInitialState_WithoutInvokingApply",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.AggregateReplayerTests.Replay_MissingSequenceGap_FailsExplicitly",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: False, interior: False, crosses: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: True, interior: False, crosses: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: False, interior: True, crosses: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: True, interior: True, crosses: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: False, interior: True, crosses: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: True, interior: True, crosses: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"active\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"phase\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"writers\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"checkpoints\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"stream-bounds\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"operation\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.ReplacementGenerationDoesNotProveAnOmittedOwnerWithoutCopyOnWriteInheritance",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.LegacyInlinePrefixUpgradesAndMalformedInlineFailsClosed",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerRejectsChangedHistoricalIdentity(changed: \\\"payload\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerRejectsChangedHistoricalIdentity(changed: \\\"position\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerRejectsChangedHistoricalIdentity(changed: \\\"sequence\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.ConcurrentEpochChangeCannotBeOverwrittenByAStaleCheckpointSeed",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerCheckpointWithoutSelectedProofCannotAcknowledgeHistory(futureReference: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerCheckpointWithoutSelectedProofCannotAcknowledgeHistory(futureReference: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerProofCannotBeRetiredByAnOlderGeneration",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.EpochChangeDuringInheritedIdentityReadRechecksTheLeaseBeforeAcknowledging",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerProofRemainsSelectedAfterALaterRebuildAborts(captureInheritedOwner: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerProofRemainsSelectedAfterALaterRebuildAborts(captureInheritedOwner: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerMissingOrCorruptProofFailsClosed(corruption: \\\"missing-inventory\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerMissingOrCorruptProofFailsClosed(corruption: \\\"retired-inventory\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerMissingOrCorruptProofFailsClosed(corruption: \\\"missing-leaf\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerMissingOrCorruptProofFailsClosed(corruption: \\\"corrupt-root\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerMissingOrCorruptProofFailsClosed(corruption: \\\"wrong-source\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.OmittedOwnerRetainsExactCapturedReplayAfterAnotherOwnerPromotes",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.EveryRetainedPrefixPageIncludingPartialLeafIsComparedBeforePromotion(changed: 1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.EveryRetainedPrefixPageIncludingPartialLeafIsComparedBeforePromotion(changed: 64)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.EveryRetainedPrefixPageIncludingPartialLeafIsComparedBeforePromotion(changed: 65)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.EveryRetainedPrefixPageIncludingPartialLeafIsComparedBeforePromotion(changed: 129)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.InheritedOwnerKeepsExactNextSequenceAndGapChecks",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionBoundedIdentityTests.OrdinaryCheckpointMigrationPreservesLegacyInlineEpochProof",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_TransactionQualifiedProfile_PartialCommit_IsCaughtByReadBackProof",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_TransactionQualifiedProfile_CarriesOperationTtlMetadata",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.CoordinatedReplayOwners_ReadSameExistingRebuildReceiptForEachSelectedRoute(profile: Resumable)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.CoordinatedReplayOwners_ReadSameExistingRebuildReceiptForEachSelectedRoute(profile: TransactionQualified)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OwnerProof_ReadsExistingSelectedModelAndTerminalReceiptWithoutMutations(profile: Resumable)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OwnerProof_ReadsExistingSelectedModelAndTerminalReceiptWithoutMutations(profile: TransactionQualified)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_MisqualifiedPartialTransactionCannotPublishProof",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_ExplicitVersionAndLegitimateUtcTerminalRepresentationsPreserveWriterBytes(terminal: \\\"2026-10-16T12:00:00Z\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_ExplicitVersionAndLegitimateUtcTerminalRepresentationsPreserveWriterBytes(terminal: \\\"2026-10-16T12:00:00.1Z\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_ExplicitVersionAndLegitimateUtcTerminalRepresentationsPreserveWriterBytes(terminal: \\\"2026-10-16T12:00:00.1234567Z\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_ExplicitVersionAndLegitimateUtcTerminalRepresentationsPreserveWriterBytes(terminal: \\\"2026-10-16T12:00:00+00:00\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_ExplicitVersionAndLegitimateUtcTerminalRepresentationsPreserveWriterBytes(terminal: \\\"2026-10-16T12:00:00.1234567+00:00\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.MissingMarkerStatusCannotResumeInterruptedBatch",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.DeadlineOwnerProofQualifiesOnlyUnexpiredUnambiguousSelectedEvidence(profile: Resumable, logicalBytes: 12807, qualified: True, padding: 'x')",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.DeadlineOwnerProofQualifiesOnlyUnexpiredUnambiguousSelectedEvidence(profile: TransactionQualified, logicalBytes: 12807, qualified: True, padding: 'x')",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.DeadlineOwnerProofQualifiesOnlyUnexpiredUnambiguousSelectedEvidence(profile: Resumable, logicalBytes: 16384, qualified: True, padding: 'x')",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.DeadlineOwnerProofQualifiesOnlyUnexpiredUnambiguousSelectedEvidence(profile: TransactionQualified, logicalBytes: 16384, qualified: True, padding: 'x')",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.DeadlineOwnerProofQualifiesOnlyUnexpiredUnambiguousSelectedEvidence(profile: Resumable, logicalBytes: 16385, qualified: False, padding: 'x')",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.DeadlineOwnerProofQualifiesOnlyUnexpiredUnambiguousSelectedEvidence(profile: TransactionQualified, logicalBytes: 16385, qualified: False, padding: 'x')",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.DeadlineOwnerProofQualifiesOnlyUnexpiredUnambiguousSelectedEvidence(profile: Resumable, logicalBytes: 16384, qualified: True, padding: '~')",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.DeadlineOwnerProofQualifiesOnlyUnexpiredUnambiguousSelectedEvidence(profile: TransactionQualified, logicalBytes: 16384, qualified: True, padding: '~')",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.DeadlineOwnerProofQualifiesOnlyUnexpiredUnambiguousSelectedEvidence(profile: Resumable, logicalBytes: 16385, qualified: False, padding: '~')",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.DeadlineOwnerProofQualifiesOnlyUnexpiredUnambiguousSelectedEvidence(profile: TransactionQualified, logicalBytes: 16385, qualified: False, padding: '~')",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RepeatedCompensatedConflictsReclaimInlineAndExternalManifests(size: 10)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RepeatedCompensatedConflictsReclaimInlineAndExternalManifests(size: 20000)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.CommittedRecoveryFinishesOwnEnvelopeWithoutRollingBackNewerSharedIndex",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_CompletionBudgetRefusesAReachableNearLimitControlRecordBeforeAnyEffects(profile: Resumable)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_CompletionBudgetRefusesAReachableNearLimitControlRecordBeforeAnyEffects(profile: TransactionQualified)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.AppliedReceipt_ReadsOriginalCompletedBatchAfterSelectedOwnerAdvancesWithoutWrites(profile: Resumable)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.AppliedReceipt_ReadsOriginalCompletedBatchAfterSelectedOwnerAdvancesWithoutWrites(profile: TransactionQualified)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.EscapedTopLevelDiscriminatorRemainsRecoverableWhileNestedNamesAreOrdinary",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PreparedManifest_ReportsPlannedOperationsWithoutClaimingCommittedLogicalModelMutations",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OriginalEventManifest_WrongGenerationCannotResumeOrOverwritePartialWork",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ValidDigestCannotAuthorizeAChangedOriginalIdentity(change: \\\"scope\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ValidDigestCannotAuthorizeAChangedOriginalIdentity(change: \\\"batch\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ValidDigestCannotAuthorizeAChangedOriginalIdentity(change: \\\"owner-identity\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ValidDigestCannotAuthorizeAChangedOriginalIdentity(change: \\\"owner-generation\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ValidDigestCannotAuthorizeAChangedOriginalIdentity(change: \\\"owner-route\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_TransactionQualifiedProfile_AmbiguousDispatch_DoesNotReportSuccess",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PendingConditionalManifestIsRecoveredAcrossAdapterRestartThenFreshConflictRetry",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_MixedRoutesRetainEachOriginalReceiptDiscriminator(profile: Resumable)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_MixedRoutesRetainEachOriginalReceiptDiscriminator(profile: TransactionQualified)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OriginalEventManifest_LostSuccessfulDeleteResponseIsProvenBySameIdentityReadback",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_PreCommitConflict_ConditionallyRestoresPreviousValue",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OriginalEventManifest_RecoversPreparedAndPartlyCompactedBatchesWithoutRecomputingIdentity(afterCommit: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OriginalEventManifest_RecoversPreparedAndPartlyCompactedBatchesWithoutRecomputingIdentity(afterCommit: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_TransactionQualifiedProfile_CompletedRetry_ReverifiesKeys",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OriginalEventManifest_OneMiBCeilingCannotBeRaisedForGuardedOwners",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_MalformedTerminalControlsCannotAuthorizeOwnerOrAppliedProofOrMutate(corruption: \\\"missing_version\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_MalformedTerminalControlsCannotAuthorizeOwnerOrAppliedProofOrMutate(corruption: \\\"unsupported_version\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_MalformedTerminalControlsCannotAuthorizeOwnerOrAppliedProofOrMutate(corruption: \\\"missing_time\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_MalformedTerminalControlsCannotAuthorizeOwnerOrAppliedProofOrMutate(corruption: \\\"invalid_time\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_MalformedTerminalControlsCannotAuthorizeOwnerOrAppliedProofOrMutate(corruption: \\\"no_offset\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_MalformedTerminalControlsCannotAuthorizeOwnerOrAppliedProofOrMutate(corruption: \\\"wrong_offset\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_MalformedTerminalControlsCannotAuthorizeOwnerOrAppliedProofOrMutate(corruption: \\\"invalid_day\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_ResumableDelete_UsesEnvelopeEtagAndRemovesValue",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ChangedEvidenceNeverFallsBackToTheRichReceipt(change: \\\"missing\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ChangedEvidenceNeverFallsBackToTheRichReceipt(change: \\\"malformed\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ChangedEvidenceNeverFallsBackToTheRichReceipt(change: \\\"scope\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ChangedEvidenceNeverFallsBackToTheRichReceipt(change: \\\"batch\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ChangedEvidenceNeverFallsBackToTheRichReceipt(change: \\\"fingerprint\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ChangedEvidenceNeverFallsBackToTheRichReceipt(change: \\\"owner\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ChangedEvidenceNeverFallsBackToTheRichReceipt(change: \\\"unknown-rich-field\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ChangedEvidenceNeverFallsBackToTheRichReceipt(change: \\\"unknown-nested-rich-field\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ChangedEvidenceNeverFallsBackToTheRichReceipt(change: \\\"duplicate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ActualSdkCompletionPublishesOnlyBoundedMetadata(profile: Resumable)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_ActualSdkCompletionPublishesOnlyBoundedMetadata(profile: TransactionQualified)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"owner\\\", corruption: \\\"duplicate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"reconcile\\\", corruption: \\\"case_nested_duplicate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"reconcile\\\", corruption: \\\"case_duplicate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"reconcile\\\", corruption: \\\"nested_duplicate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"reconcile\\\", corruption: \\\"duplicate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"applied\\\", corruption: \\\"padding_bits\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"applied\\\", corruption: \\\"fingerprint\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"applied\\\", corruption: \\\"case_nested_duplicate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"applied\\\", corruption: \\\"case_duplicate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"applied\\\", corruption: \\\"nested_duplicate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"applied\\\", corruption: \\\"duplicate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"owner\\\", corruption: \\\"padding_bits\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"owner\\\", corruption: \\\"fingerprint\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"owner\\\", corruption: \\\"case_nested_duplicate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"owner\\\", corruption: \\\"case_duplicate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"owner\\\", corruption: \\\"nested_duplicate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"reconcile\\\", corruption: \\\"fingerprint\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_RejectsMalformedOrDuplicateEvidenceWithinItsExistingReadsWithoutMutation(operation: \\\"reconcile\\\", corruption: \\\"padding_bits\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_StrictProofParsingPreservesLegacyGuardOffBatchExecution(missingVersion: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_StrictProofParsingPreservesLegacyGuardOffBatchExecution(missingVersion: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OriginalEventManifest_TerminalCleanupUncertaintyRetainsSameIdentityRecoveryWithoutModelWrites(profile: Resumable, throws: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OriginalEventManifest_TerminalCleanupUncertaintyRetainsSameIdentityRecoveryWithoutModelWrites(profile: Resumable, throws: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OriginalEventManifest_TerminalCleanupUncertaintyRetainsSameIdentityRecoveryWithoutModelWrites(profile: TransactionQualified, throws: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OriginalEventManifest_TerminalCleanupUncertaintyRetainsSameIdentityRecoveryWithoutModelWrites(profile: TransactionQualified, throws: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PendingKeyRecoveryRequiresSingleOwnerAndStillRejectsCoordinatedOwnerMode(coordinated: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PendingKeyRecoveryRequiresSingleOwnerAndStillRejectsCoordinatedOwnerMode(coordinated: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeSingleOwnerRecoveryRetainsTheOriginalNativeSelectionAndReceipt(phase: AfterInstallOperation, ordinal: 0)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeSingleOwnerRecoveryRetainsTheOriginalNativeSelectionAndReceipt(phase: AfterInstallOperation, ordinal: 1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeSingleOwnerRecoveryRetainsTheOriginalNativeSelectionAndReceipt(phase: BeforeCompaction, ordinal: 1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeSingleOwnerRecoveryRetainsTheOriginalNativeSelectionAndReceipt(phase: RecoveryReceiptWritten, ordinal: 1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeSingleOwnerRecoveryRetainsTheOriginalNativeSelectionAndReceipt(phase: RecoveryManifestReclaimed, ordinal: 1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryCeilingsCannotBeRaisedAndFailBeforeStateAccess(limit: \\\"operations\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryCeilingsCannotBeRaisedAndFailBeforeStateAccess(limit: \\\"key\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryCeilingsCannotBeRaisedAndFailBeforeStateAccess(limit: \\\"manifest\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryCeilingsCannotBeRaisedAndFailBeforeStateAccess(limit: \\\"lower\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_CompletedRetry_ReturnsAlreadyCompleted",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.MatchExistingEnvelopeCannotLosePreviousValueOnNonDiscoveryKey",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OriginalEventManifest_LargePreparedOrCommittedWorkUsesSeparateManifestBudgetAndRecovers(afterCommit: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OriginalEventManifest_LargePreparedOrCommittedWorkUsesSeparateManifestBudgetAndRecovers(afterCommit: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_IdentityReuse_DifferentFingerprint_ReturnsIdentityConflict",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.CompactedRead_ExpiryWrappersAndEnvelopeRefusalRemainReadOnly(inMemory: False, state: \\\"live\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.CompactedRead_ExpiryWrappersAndEnvelopeRefusalRemainReadOnly(inMemory: False, state: \\\"expired\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.CompactedRead_ExpiryWrappersAndEnvelopeRefusalRemainReadOnly(inMemory: False, state: \\\"malformed\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.CompactedRead_ExpiryWrappersAndEnvelopeRefusalRemainReadOnly(inMemory: False, state: \\\"pending\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.CompactedRead_ExpiryWrappersAndEnvelopeRefusalRemainReadOnly(inMemory: True, state: \\\"live\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.CompactedRead_ExpiryWrappersAndEnvelopeRefusalRemainReadOnly(inMemory: True, state: \\\"expired\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.CompactedRead_ExpiryWrappersAndEnvelopeRefusalRemainReadOnly(inMemory: True, state: \\\"malformed\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.CompactedRead_ExpiryWrappersAndEnvelopeRefusalRemainReadOnly(inMemory: True, state: \\\"pending\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_PublicationRechecksOutputsAfterEarlierVerification(profile: Resumable)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_PublicationRechecksOutputsAfterEarlierVerification(profile: TransactionQualified)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_AbortMarkerCasRace_RequiresMatchingAbortingMarker(matchingFingerprint: True, expectedStatus: Conflict)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_AbortMarkerCasRace_RequiresMatchingAbortingMarker(matchingFingerprint: False, expectedStatus: Indeterminate)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.TerminalAnchorProofCorruptionIsRefusedWithoutMutation(fault: \\\"scope\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.TerminalAnchorProofCorruptionIsRefusedWithoutMutation(fault: \\\"key\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.TerminalAnchorProofCorruptionIsRefusedWithoutMutation(fault: \\\"candidate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.TerminalAnchorProofCorruptionIsRefusedWithoutMutation(fault: \\\"previous\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.TerminalAnchorProofCorruptionIsRefusedWithoutMutation(fault: \\\"missing-kind\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.TerminalAnchorProofCorruptionIsRefusedWithoutMutation(fault: \\\"retained-payload\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OriginalEventManifest_ConflictingPrivateBytesOrForeignReferenceNeverResumeEffects(foreignReference: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OriginalEventManifest_ConflictingPrivateBytesOrForeignReferenceNeverResumeEffects(foreignReference: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.CoordinatedReplayOwners_ConflictingOrInventedRouteEvidenceFailsBeforeStateAccess",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_CancelledBeforeDispatch_Throws",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_ResumableProfile_PersistsCanonicalValuesAndRetainsReceipt",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_TransactionQualifiedProfile_IssuesExactlyOneOrderedTransaction",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_NonterminalRecoveryDoesNotRequireTerminalTime(status: 0)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_NonterminalRecoveryDoesNotRequireTerminalTime(status: 1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_NonterminalRecoveryDoesNotRequireTerminalTime(status: 2)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ReceiptProof_NonterminalRecoveryDoesNotRequireTerminalTime(status: 3)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_LegacyRetryDoesNotAcquireNewAuthorityAndOldReaderCannotReachRichMarker",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.SelectedOwner_RejectsAmbiguousPersistedMetadataBeforeAuthorizingReceipts(corruption: \\\"owner\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.SelectedOwner_RejectsAmbiguousPersistedMetadataBeforeAuthorizingReceipts(corruption: \\\"case_owner\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.SelectedOwner_RejectsAmbiguousPersistedMetadataBeforeAuthorizingReceipts(corruption: \\\"version\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.SelectedOwner_RejectsAmbiguousPersistedMetadataBeforeAuthorizingReceipts(corruption: \\\"case_version\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.SelectedOwner_RejectsAmbiguousPersistedMetadataBeforeAuthorizingReceipts(corruption: \\\"generation\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.SelectedOwner_RejectsAmbiguousPersistedMetadataBeforeAuthorizingReceipts(corruption: \\\"freshness\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.SelectedOwner_RejectsAmbiguousPersistedMetadataBeforeAuthorizingReceipts(corruption: \\\"case_freshness\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_EveryInterruptionRefusesWithoutRichReadsAndOriginalRetryConverges(phase: MarkerPrepared, ordinal: -1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_EveryInterruptionRefusesWithoutRichReadsAndOriginalRetryConverges(phase: AfterInstallOperation, ordinal: 0)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_EveryInterruptionRefusesWithoutRichReadsAndOriginalRetryConverges(phase: BeforeCommit, ordinal: -1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_EveryInterruptionRefusesWithoutRichReadsAndOriginalRetryConverges(phase: AfterCommit, ordinal: -1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_EveryInterruptionRefusesWithoutRichReadsAndOriginalRetryConverges(phase: AfterCompaction, ordinal: 0)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_EveryInterruptionRefusesWithoutRichReadsAndOriginalRetryConverges(phase: AfterCompaction, ordinal: 1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_EveryInterruptionRefusesWithoutRichReadsAndOriginalRetryConverges(phase: BeforeReceipt, ordinal: -1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_EveryInterruptionRefusesWithoutRichReadsAndOriginalRetryConverges(phase: BeforeCompletionProof, ordinal: -1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_EveryInterruptionRefusesWithoutRichReadsAndOriginalRetryConverges(phase: AfterCompletionProof, ordinal: -1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.CoordinatedReplayOwners_StagedCandidatesCannotAuthorizeCompletionBeforeCommit",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_PublicationTransportAndCancellationReconcileTheSameOriginalReceipt(profile: Resumable, cancellation: False, afterPersistence: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_PublicationTransportAndCancellationReconcileTheSameOriginalReceipt(profile: Resumable, cancellation: False, afterPersistence: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_PublicationTransportAndCancellationReconcileTheSameOriginalReceipt(profile: Resumable, cancellation: True, afterPersistence: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_PublicationTransportAndCancellationReconcileTheSameOriginalReceipt(profile: Resumable, cancellation: True, afterPersistence: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_PublicationTransportAndCancellationReconcileTheSameOriginalReceipt(profile: TransactionQualified, cancellation: False, afterPersistence: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_PublicationTransportAndCancellationReconcileTheSameOriginalReceipt(profile: TransactionQualified, cancellation: False, afterPersistence: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_PublicationTransportAndCancellationReconcileTheSameOriginalReceipt(profile: TransactionQualified, cancellation: True, afterPersistence: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ContentFreeCompletion_PublicationTransportAndCancellationReconcileTheSameOriginalReceipt(profile: TransactionQualified, cancellation: True, afterPersistence: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OwnerProof_RefusesLegacyModelWithoutMintingOrRepairingEvidence",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.OrdinaryDiscriminatorStringsAndNestedMetadataRemainNormalValues",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PendingRecoveryRefusesMismatchedScopeAndCorruptEvidenceWithoutWrites(fault: \\\"tenant\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PendingRecoveryRefusesMismatchedScopeAndCorruptEvidenceWithoutWrites(fault: \\\"domain\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PendingRecoveryRefusesMismatchedScopeAndCorruptEvidenceWithoutWrites(fault: \\\"aggregate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PendingRecoveryRefusesMismatchedScopeAndCorruptEvidenceWithoutWrites(fault: \\\"projection\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PendingRecoveryRefusesMismatchedScopeAndCorruptEvidenceWithoutWrites(fault: \\\"candidate\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PendingRecoveryRefusesMismatchedScopeAndCorruptEvidenceWithoutWrites(fault: \\\"ordinal\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PendingRecoveryRefusesMismatchedScopeAndCorruptEvidenceWithoutWrites(fault: \\\"fingerprint\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PendingRecoveryRefusesMismatchedScopeAndCorruptEvidenceWithoutWrites(fault: \\\"manifest\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PendingRecoveryRefusesMismatchedScopeAndCorruptEvidenceWithoutWrites(fault: \\\"status\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.PendingRecoveryRefusesMismatchedScopeAndCorruptEvidenceWithoutWrites(fault: \\\"previous\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryValidatesNonDiscoveryEnvelopeBeforeAnyMutation(fault: \\\"fabricated-previous\\\", committed: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryValidatesNonDiscoveryEnvelopeBeforeAnyMutation(fault: \\\"fabricated-previous\\\", committed: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryValidatesNonDiscoveryEnvelopeBeforeAnyMutation(fault: \\\"candidate\\\", committed: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryValidatesNonDiscoveryEnvelopeBeforeAnyMutation(fault: \\\"delete\\\", committed: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryValidatesNonDiscoveryEnvelopeBeforeAnyMutation(fault: \\\"ordinal\\\", committed: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryValidatesNonDiscoveryEnvelopeBeforeAnyMutation(fault: \\\"missing\\\", committed: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryValidatesNonDiscoveryEnvelopeBeforeAnyMutation(fault: \\\"previous\\\", committed: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryValidatesNonDiscoveryEnvelopeBeforeAnyMutation(fault: \\\"candidate\\\", committed: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryValidatesNonDiscoveryEnvelopeBeforeAnyMutation(fault: \\\"delete\\\", committed: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryValidatesNonDiscoveryEnvelopeBeforeAnyMutation(fault: \\\"ordinal\\\", committed: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryValidatesNonDiscoveryEnvelopeBeforeAnyMutation(fault: \\\"missing\\\", committed: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.RecoveryValidatesNonDiscoveryEnvelopeBeforeAnyMutation(fault: \\\"previous\\\", committed: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_ResumableProfile_AppliesTtlOnlyToCompactedCandidate",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_ReceiptMarkerCasRace_RequiresMatchingCompletedReceipt(matchingFingerprint: True, expectedStatus: Completed)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.ExecuteAsync_ReceiptMarkerCasRace_RequiresMatchingCompletedReceipt(matchingFingerprint: False, expectedStatus: Indeterminate)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.TerminalRecoveryAnchorSurvivesEveryCleanupBoundary(phase: BeforeReceipt, compensate: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.TerminalRecoveryAnchorSurvivesEveryCleanupBoundary(phase: RecoveryReceiptWritten, compensate: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.TerminalRecoveryAnchorSurvivesEveryCleanupBoundary(phase: RecoveryManifestReclaimed, compensate: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.TerminalRecoveryAnchorSurvivesEveryCleanupBoundary(phase: RecoveryAnchorCompacted, compensate: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.TerminalRecoveryAnchorSurvivesEveryCleanupBoundary(phase: RecoveryReceiptWritten, compensate: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.TerminalRecoveryAnchorSurvivesEveryCleanupBoundary(phase: RecoveryManifestReclaimed, compensate: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.DaprReadModelBatchTests.TerminalRecoveryAnchorSurvivesEveryCleanupBoundary(phase: RecoveryAnchorCompacted, compensate: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationNamespaceTests.ConcurrentChangesCannotCertifyFiniteCut(vector: \\\"roster\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationNamespaceTests.ConcurrentChangesCannotCertifyFiniteCut(vector: \\\"head\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationNamespaceTests.ConcurrentChangesCannotCertifyFiniteCut(vector: \\\"authority\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationNamespaceTests.MissingOrChangedNativeProofCannotEstablishCompleteCut(change: \\\"retained-prefix\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewThreeExpiryTests.OmittedExpiredUnconditionalNeverHelpsOrWaitsForForeignPendingEnvelope(staged: False, retained: False, profile: Resumable)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewThreeExpiryTests.OmittedExpiredUnconditionalNeverHelpsOrWaitsForForeignPendingEnvelope(staged: False, retained: True, profile: Resumable)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewThreeExpiryTests.OmittedExpiredUnconditionalNeverHelpsOrWaitsForForeignPendingEnvelope(staged: True, retained: False, profile: Resumable)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewThreeExpiryTests.OmittedExpiredUnconditionalNeverHelpsOrWaitsForForeignPendingEnvelope(staged: True, retained: True, profile: Resumable)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewThreeExpiryTests.OmittedExpiredUnconditionalNeverHelpsOrWaitsForForeignPendingEnvelope(staged: False, retained: False, profile: TransactionQualified)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewThreeExpiryTests.OmittedExpiredUnconditionalNeverHelpsOrWaitsForForeignPendingEnvelope(staged: False, retained: True, profile: TransactionQualified)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Events.EventEvolutionCapabilityLossTests.ConcurrentRepeatedObservationsRemainStickyForEveryFollowingCaller",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionDeliveryConflictTests.ExactGapRetryAfterTransientFoldFailureResolvesOnlyItsGap(identityConflict: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionDeliveryConflictTests.ExactGapRetryAfterTransientFoldFailureResolvesOnlyItsGap(identityConflict: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionDeliveryConflictTests.CorruptConflictAuditCannotReportCurrentReadiness(corruption: \\\"overflow-epoch\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionDeliveryConflictTests.CorruptConflictAuditCannotReportCurrentReadiness(corruption: \\\"gap-without-required-sequence\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionDeliveryConflictTests.CorruptConflictAuditCannotReportCurrentReadiness(corruption: \\\"gap-wrong-resolution\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionDeliveryConflictTests.CorruptConflictAuditCannotReportCurrentReadiness(corruption: \\\"gap-nonpositive\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionDeliveryConflictTests.FutureGapIdentityIsStableWhileAcceptedPrefixAdvancesAcrossRestarts",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionDeliveryConflictTests.LegacyEpochNearByteLimitIsDurablyUnavailableWhenConflictEvidenceCannotFit",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionDeliveryConflictTests.OwnerSequenceGapPersistsUntilExactMissingPrefixAndDeliveryAreFolded",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionCopyOnWriteTests.OrdinaryRetirementResumesAfterRootBatchAndBeforeLaterDelivery",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionCopyOnWriteTests.AbandonedStageCannotBecomeInheritedAfterAnotherTenantPromotes",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionCopyOnWriteTests.SelectedDeleteMasksAnInheritedValueAcrossLaterPromotions",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionChunkedDeliveryTests.TenThousandPositionHistoryKeepsEpochDocumentBounded",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationDispatcherTests.PagingAndPassBoundPreservePrefix(maximum: 103, expected: 103, complete: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationDispatcherTests.PagingAndPassBoundPreservePrefix(maximum: 2, expected: 2, complete: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationDispatcherTests.AutomaticReconnectReconstructsOriginalAcknowledgedPrefix",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationDispatcherTests.ReconnectRebuildsAcknowledgedPrefixAndOriginalReferences",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Events.EventUpcastChainExecutorTests.ConcurrentObservationDuringAwaitRefusesResumedSuccess",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.CapturedPositionRequiresTheCapturedEventIdentity",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.CapturedOwnerRejectsAnEarlierEventBeyondItsSealedWatermark",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.Journal_DifferentPayloadCheckpointSplitConflicts",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SingleKeyReadClassifiesPostReadStateOutageAsUnavailable",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRejectsConflictingOrMissingKnownPrefix(priorSequence: 1, omitIdentities: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRejectsConflictingOrMissingKnownPrefix(priorSequence: 8, omitIdentities: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRejectsConflictingOrMissingKnownPrefix(priorSequence: 1, omitIdentities: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.AbortAfterInterruptedStage_ReconcilesAndDeletesReservedGeneration",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRejectsMalformedRetainedIdentityVectors(byteCount: 0, priorSequence: 1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRejectsMalformedRetainedIdentityVectors(byteCount: 31, priorSequence: 1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRejectsMalformedRetainedIdentityVectors(byteCount: 33, priorSequence: 8)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRejectsMalformedRetainedIdentityVectors(byteCount: 64, priorSequence: 1)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRejectsMalformedRetainedIdentityVectors(byteCount: 288, priorSequence: 8)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedPrefixExtensionPreservesANewerConcurrentCheckpoint",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRequiresANewCompleteIdentityVector(byteCount: 0)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRequiresANewCompleteIdentityVector(byteCount: 31)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRequiresANewCompleteIdentityVector(byteCount: 224)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRequiresANewCompleteIdentityVector(byteCount: 255)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRequiresANewCompleteIdentityVector(byteCount: 288)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SingleKeyReadClassifiesDaprPostReadStateOutageAsUnavailable",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRejectsAheadCheckpointEvenWhenItsSequenceAlreadyMatches",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SingleKeyReadRetriesAfterPromotionDuringPhysicalRead",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.LegacyConsumerCheckpointWithoutOwnerIndexRequiresRebuild",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.ConcurrentBeginAndOrdinaryDelivery_ConvergeWithoutLostWrite",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.Begin_RequiresEveryConfiguredWriterAndRejectsStaleLease",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.CapturedIdentityPrefixExtendsAfterOrdinaryGrowthAndPreservesReplay",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.CommittedSelector_HidesIncompleteCatchUpAndRestartReplaysPreparedManifest",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.LargePreparedCatchUpSurvivesBatchFailureAndCleansReservedChunks",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.BeginRetry_MustMatchFingerprintAndEveryCapturedWatermark",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.CapturedPositionIsNotAcknowledgedBeforePromotionAndCanReplayAfterAbort",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.LegacyCheckpointRequiresCapturedRebuildBeforeSequenceDeliveryResumes",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.Abort_DrainsAcceptedDeliveryIntoOldGenerationAndRemovesStaging",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.StoreOwnedCancellationDuringPreparedChunkReadAndWriteIsRetryable",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.SequenceSeedRejectsBehindCheckpointWhenItsSequenceAlreadyMatches",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionEpochCoordinatorTests.MultiKeyRead_PinsOneCommittedGenerationAcrossPromotion",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_DomainServiceCurrentState_WithUnknownEventTypeName_ThrowsMissingApplyMethodException",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_JsonElementArray_WithUnknownEventType_ThrowsMissingApplyMethodException",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_DifferentAggregateTypes_ConcurrentFirstUse_DoesNotInterfere",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_EnumerableEvents_WithUnknownEventType_ThrowsMissingApplyMethodException",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.Replay_LateInvalidEvidenceRefusesWholeBatch(invalid: \\\"type\\\", category: UnknownEventType)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.Replay_LateInvalidEvidenceRefusesWholeBatch(invalid: \\\"payload\\\", category: DeserializationFailed)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.Replay_LateInvalidEvidenceRefusesWholeBatch(invalid: \\\"version\\\", category: UnsupportedVersion)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.Replay_LateInvalidEvidenceRefusesWholeBatch(invalid: \\\"format\\\", category: UnsupportedVersion)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"type\\\", shape: \\\"typed\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"payload\\\", shape: \\\"typed\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"version\\\", shape: \\\"typed\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"format\\\", shape: \\\"typed\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"type\\\", shape: \\\"enumerable\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"payload\\\", shape: \\\"enumerable\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"version\\\", shape: \\\"enumerable\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"format\\\", shape: \\\"enumerable\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"type\\\", shape: \\\"json\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"payload\\\", shape: \\\"json\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"version\\\", shape: \\\"json\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"format\\\", shape: \\\"json\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"type\\\", shape: \\\"nested\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"payload\\\", shape: \\\"nested\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"version\\\", shape: \\\"nested\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_LateInvalidReplayEvidenceRefusesWholeBatch(invalid: \\\"format\\\", shape: \\\"nested\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.EventStoreAggregateTests.ProcessAsync_BrokenTerminatableState_OnAggregateTerminatedReplay_ThrowsMissingApplyMethodException",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_CancelledBeforeDispatch_ThrowsWithoutStateAccess",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_DeleteOperation_RemovesValueAfterCommit",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_CompletedRetry_SameFingerprint_ReturnsAlreadyCompletedWithoutReapplying",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.WriteOperation_WithNonPositiveTimeToLive_Throws",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_AmbiguousAfterCommit_ReconcilesToCompleted",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.DeleteOperation_WithUnconditionalConcurrency_Throws",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_MultiOperationSuccess_PersistsEveryOperationAndCompactsEnvelopes",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_CompensationRace_PreservesConcurrentValueAndDoesNotReportConflictAsProven",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ReadModelBatch_EmptyManifest_Throws",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_ExpectedEtagConcurrencyWithNullEtag_ThrowsBeforeStateAccess",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_PreCommitConflict_CompensatesRestoringPreviousView",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_PreCommitConflict_CompensatesRestoringPreviousValue",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.Staging_PreparedCandidatesRemainPreviousVisibleUntilCommitAndVerify",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.WriteOperation_WithIdempotentAbsentConcurrency_Throws",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_KeyExceedingByteLimit_ThrowsBeforeStateAccess",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.Staging_AbortRestoresEveryPreviousValue",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_ExceedingOperationLimit_ThrowsBeforeStateAccess",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_ExpectedETagWrite_Match_Succeeds",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_TransactionQualifiedProfile_WritesAndDeletesWithoutEnvelopes",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_ManifestExceedingByteLimit_ThrowsBeforeStateAccess",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.DeleteOperation_WithCreateOnlyConcurrency_Throws",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ReadModelBatch_DuplicateLogicalKey_Throws",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_PostDispatchCancellation_ReconcilesWithoutRollback",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_IdentityReuse_DifferentFingerprint_ReturnsIdentityConflict",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_ExpectedETagWrite_StaleEtag_ConflictsAndPreservesValue",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_CompactionRace_PreservesConcurrentValueAndDoesNotReportSuccess",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_LeavesSeededDeliveryAndRebuildCheckpointsUnchanged",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchStoreTests.ExecuteAsync_InterruptedBeforeCommit_KeepsPreviousViewThenConvergesOnRetry",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.MissingApplyMethodExceptionTests.Message_IncludesAggregateAndMessageIds_WhenProvided",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.MissingApplyMethodExceptionTests.Constructor_NullStateType_Throws",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.MissingApplyMethodExceptionTests.Message_IncludesTombstoningHint_ForAggregateTerminatedEvent",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.MissingApplyMethodExceptionTests.Constructor_OptionalContextDefaultsToNull",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.MissingApplyMethodExceptionTests.Exception_IsAssignableToInvalidOperationException",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.MissingApplyMethodExceptionTests.Constructor_PreservesAllProperties",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.MissingApplyMethodExceptionTests.Message_OmitsTombstoningHint_ForNonTerminatableStateAndUnrelatedEvent",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.MissingApplyMethodExceptionTests.Message_OmitsContextSuffix_WhenIdsAreNull",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.MissingApplyMethodExceptionTests.Message_ContainsStateTypeAndEventTypeName",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.MissingApplyMethodExceptionTests.Message_IncludesTombstoningHint_ForTerminatableState",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.MissingApplyMethodExceptionTests.Constructor_WhitespaceEventTypeName_Throws",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationFeedTests.NativePrefixReplacementPoisonsPersistedIndex(change: \\\"incarnation\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationFeedTests.NativePrefixReplacementPoisonsPersistedIndex(change: \\\"digest\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationFeedTests.NativePrefixReplacementPoisonsPersistedIndex(change: \\\"missing\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationFeedTests.MissingSourcePrefixDoesNotCommitOrCertifyHighWater",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationFeedTests.ConcurrentNamespaceRevisionChangeRejectsBeforeCommit",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationFeedTests.NativeCutRequiresActualMatchingSourcePrefixBeforeProjectionOrPersistence(scenario: \\\"matching\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationFeedTests.NativeCutRequiresActualMatchingSourcePrefixBeforeProjectionOrPersistence(scenario: \\\"advanced\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationFeedTests.NativeCutRequiresActualMatchingSourcePrefixBeforeProjectionOrPersistence(scenario: \\\"missing-proof\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationFeedTests.NativeCutRequiresActualMatchingSourcePrefixBeforeProjectionOrPersistence(scenario: \\\"incarnation\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationFeedTests.NativeCutRequiresActualMatchingSourcePrefixBeforeProjectionOrPersistence(scenario: \\\"digest\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationFeedTests.NativeCutRequiresActualMatchingSourcePrefixBeforeProjectionOrPersistence(scenario: \\\"event-digest\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourcePublicationFeedTests.ReconciliationRequiresSameNativeIncarnationAndEqualHeadPrefix",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionStreamedStageTests.TenThousandHighEntropyRowsBeyond64MiBPromoteOnlyAfterSealedStream",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionStreamedStageTests.MetadataWrittenAfterAbortIsRecoveredBeforeNextEpoch",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionStreamedStageTests.NearLimitOperationIdCanStageAndCleanStreamMetadata",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.DaprSourcePublicationIndexStoreTests.NativePrefixCannotBeSubstitutedThroughOwningActor(change: \\\"incarnation\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.DaprSourcePublicationIndexStoreTests.NativePrefixCannotBeSubstitutedThroughOwningActor(change: \\\"digest\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.DaprSourcePublicationIndexStoreTests.NativePrefixCannotBeSubstitutedThroughOwningActor(change: \\\"missing\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.DaprSourcePublicationIndexStoreTests.OwningMutationRejectsPrefixAndCoverageSubstitution(vector: \\\"changed\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.DaprSourcePublicationIndexStoreTests.OwningMutationRejectsPrefixAndCoverageSubstitution(vector: \\\"dropped\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.DaprSourcePublicationIndexStoreTests.OwningMutationRejectsPrefixAndCoverageSubstitution(vector: \\\"reordered\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.DaprSourcePublicationIndexStoreTests.OwningMutationRejectsPrefixAndCoverageSubstitution(vector: \\\"regressed-head\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.DaprSourcePublicationIndexStoreTests.OwningMutationRejectsPrefixAndCoverageSubstitution(vector: \\\"missing-head\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelLegacyScratchInterruptionTests.NearLimitOriginalLegacyManifestRetainsBoundedCompensationAcrossInterruptionAndCorruption",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Events.BoundedPayloadPrimitiveTests.ScratchAllocator_RefusesConcurrentOverReservationAndReleasesAfterFailure",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewFiveRegressionTests.TerminalLogicalDiscoveryValidatesCompleteOriginalScopeBeforeAnyAuxiliaryWrite(component: \\\"batch\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.GatewayNativeSourceMetadataReaderTests.ExistingGatewayHttpFailuresCannotReleaseNativeEvidence(failure: \\\"omitted-erased\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.ApplyMethodResolverTests.RehydrateState_RuntimeTypeMatchingOnlyByShortName_ThrowsMissingApplyMethod",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Aggregates.ApplyMethodResolverTests.RehydrateState_UnanchoredNearMiss_ThrowsMissingApplyMethod",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourceNamespaceSnapshotReaderTests.AdvancedSourceReleasesOnlyCertifiedConsecutivePrefix(gapped: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourceNamespaceSnapshotReaderTests.AdvancedSourceReleasesOnlyCertifiedConsecutivePrefix(gapped: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourceNamespaceSnapshotReaderTests.NativeCutBindsActualSourceProofAndExactAccumulatedPrefix(scenario: \\\"matching\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourceNamespaceSnapshotReaderTests.NativeCutBindsActualSourceProofAndExactAccumulatedPrefix(scenario: \\\"advanced\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourceNamespaceSnapshotReaderTests.NativeCutBindsActualSourceProofAndExactAccumulatedPrefix(scenario: \\\"missing-proof\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourceNamespaceSnapshotReaderTests.NativeCutBindsActualSourceProofAndExactAccumulatedPrefix(scenario: \\\"incarnation\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourceNamespaceSnapshotReaderTests.NativeCutBindsActualSourceProofAndExactAccumulatedPrefix(scenario: \\\"digest\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourceNamespaceSnapshotReaderTests.NativeCutBindsActualSourceProofAndExactAccumulatedPrefix(scenario: \\\"event-digest\\\")",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Streams.SourceNamespaceSnapshotReaderTests.FoldReleasesEachPrefixBeforeNextAndRawSnapshotBoundsAggregateBytes",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewThreeRecoveryTests.RetainedLegacyIdentityPreservesLawfulMaximumUtf8BatchIds(prefixed: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewThreeRecoveryTests.RetainedLegacyIdentityPreservesLawfulMaximumUtf8BatchIds(prefixed: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionExpiryAndScratchTests.StreamedSelectedAndInheritedGenerationsKeepOriginalDeadlines(copyOnWrite: False)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionExpiryAndScratchTests.StreamedSelectedAndInheritedGenerationsKeepOriginalDeadlines(copyOnWrite: True)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionExpiryAndScratchTests.InheritedReadCrossingDeadlineDuringPhysicalAwaitReturnsAbsence",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelExpiryReviewRegressionTests.RetainedCreateOnlyOverExpiredPhysicalBytesRecoversOriginalBatchRepeatedly(failure: AfterInstallOperation)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelExpiryReviewRegressionTests.RetainedCreateOnlyOverExpiredPhysicalBytesRecoversOriginalBatchRepeatedly(failure: BeforeCommit)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelExpiryReviewRegressionTests.RetainedCreateOnlyOverExpiredPhysicalBytesRecoversOriginalBatchRepeatedly(failure: RecoveryManifestReclaimed)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Conventions.NamingConventionEngineTests.GetDomainName_ConcurrentCalls_AllReturnCorrectResults",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Conventions.NamingConventionEngineTests.GetDomainName_InheritedFalse_DerivedGetsConventionName",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionControlIndexTests.ConcurrentTenantsAndDuplicateDelivery_PersistOneGlobalMembershipPerTenant",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.DeadlineIsVersionedImmutableAndRoundTripsWithoutChangingHistoricalConstructors",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: AfterInstallOperation)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: BeforeCommit)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: BeforeCompaction)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: RecoveryReceiptWritten)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: RecoveryManifestReclaimed)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.StagedBatchCrossingDeadlineRemovesOnlyItsOwnEnvelopeAndCompletesCheckpoint",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.FinalValueAndReceiptBecomeAbsentAtInclusiveDeadlineWithoutRefreshingOnRetry(profile: Resumable)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.FinalValueAndReceiptBecomeAbsentAtInclusiveDeadlineWithoutRefreshingOnRetry(profile: TransactionQualified)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.ExpiredUnconditionalCandidateNeverDeletesOrReplacesANewerRow(profile: Resumable)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.ExpiredUnconditionalCandidateNeverDeletesOrReplacesANewerRow(profile: TransactionQualified)",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.DaprCompactionUsesRemainingRetentionAndDeadlineAwareBulkReads",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.CompactionRaceAndLaterRecoveryPreserveConcurrentNewerValue",
+    "result": "Pass"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.PendingBatchRecoveryLiveTests.RestartRecoversInterruptedConditionalBatchAndPreservesLaterSharedIndex(committed: False)",
+    "result": "Skip"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.PendingBatchRecoveryLiveTests.RestartRecoversInterruptedConditionalBatchAndPreservesLaterSharedIndex(committed: True)",
+    "result": "Skip"
+  },
+  {
+    "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionParkingEvidenceTests.MalformedParkingAuditFailsClosed(corruption: \\\"epoch\\\")",
+    "result": "Pass"
+  }
+]

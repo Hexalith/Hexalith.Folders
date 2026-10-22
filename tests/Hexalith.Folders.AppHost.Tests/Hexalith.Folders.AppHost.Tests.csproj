@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../tools/Task36FoldObserver/Task36FoldObserver.csproj" ReferenceOutputAssembly="false" IsAspireProjectResource="false" />
     <!-- Referencing the AppHost (IsAspireProjectResource=false so this test project is not itself an Aspire
          resource) generates the Projects.Hexalith_Folders_AppHost metadata type the testing builder boots. -->
     <ProjectReference Include="..\..\src\Hexalith.Folders.AppHost\Hexalith.Folders.AppHost.csproj">

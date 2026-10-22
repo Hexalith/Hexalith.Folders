@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "aspire",
+    "describe",
+    "--apphost",
+    "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+    "--format",
+    "Json"
+  ],
+  "exit": 0,
+  "stdout": "",
+  "stderr": "\u2139\ufe0f No AppHost is currently running for 'src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj'. Use 'aspire run' to start it first.\n"
+}

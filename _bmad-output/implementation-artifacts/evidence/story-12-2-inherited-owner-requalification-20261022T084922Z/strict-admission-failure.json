@@ -1,0 +1,25 @@
+{
+  "observed": [
+    {
+      "line": 9531,
+      "text": "      1149: 2026-10-22T09:16:51.0540000Z {\"EventId\":0,\"LogLevel\":\"Error\",\"Category\":\"Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler\",\"Message\":\"Unable to persist unknown idempotency outcome. Stage=IdempotencyUnknownOutcomePersistenceFailed\",\"Exception\":\"Dapr.DaprApiException: error invoke actor method: error from actor service: (429) {\\u0022type\\u0022:\\u0022https://hexalith.io/problems/rate-limit-exceeded\\u0022,\\u0022title\\u0022:\\u0022Too Many Requests\\u0022,\\u0022status\\u0022:429,\\u0022detail\\u0022:\\u0022Rate limit exceeded. Please retry after the specified interval.\\u0022,\\u0022instance\\u0022:\\u0022/actors/IdempotencyAdmissionActor/durability-6cc3683a3aae5418:local1:UwFx70JQsM5aGGOGM3l8PJrA8VTuKTl5x6vjccUxq3o/method/MarkRecoveryAsync\\u0022,\\u0022correlationId\\u0022:\\u002201M5HEC7ZC1H8P1ME9S0GX4KXD\\u0022,\\u0022tenantId\\u0022:\\u0022unknown\\u0022,\\u0022consumerId\\u0022:\\u0022anonymous\\u0022}\\n   at Dapr.Actors.DaprHttpInteractor.SendAsyncHandleUnsuccessfulResponse(Func\\u00601 requestFunc, String relativeUri, CancellationToken cancellationToken)\\n   at Dapr.Actors.DaprHttpInteractor.SendAsync(Func\\u00601 requestFunc, String relativeUri, CancellationToken cancellationToken)\\n   at Dapr.Actors.DaprHttpInteractor.InvokeActorMethodWithRemotingAsync(ActorMessageSerializersManager serializersManager, IActorRequestMessage remotingRequestRequestMessage, CancellationToken cancellationToken)\\n   at Dapr.Actors.Communication.Client.ActorRemotingClient.InvokeAsync(IActorRequestMessage remotingRequestMessage, CancellationToken cancellationToken)\\n   at Dapr.Actors.Client.ActorProxy.InvokeMethodAsync(Int32 interfaceId, Int32 methodId, String methodName, IActorRequestMessageBody requestMsgBodyValue, CancellationToken cancellationToken)\\n   at Hexalith.EventStore.Server.Commands.IdempotencyAdmissionCoordinator.MarkRecoveryAsync(IdempotencyAdmissionSession session, IdempotencyAdmissionState state, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Commands/IdempotencyAdmissionCoordinator.cs:line 262\\n   at Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler.MarkRecoveryStateAsync(IIdempotencyAdmissionCoordinator coordinator, IdempotencyAdmissionSession session, IdempotencyAdmissionState state, ILogger logger) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Pipeline/SubmitCommandHandler.cs:line 751\",\"State\":{\"{OriginalFormat}\":\"Unable to persist unknown idempotency outcome. Stage=IdempotencyUnknownOutcomePersistenceFailed\"}}"
+    },
+    {
+      "line": 9613,
+      "text": "      1180: 2026-10-22T09:16:53.5120000Z {\"EventId\":0,\"LogLevel\":\"Warning\",\"Category\":\"Hexalith.EventStore.ErrorHandling.IdempotencyAdmissionFailureExceptionHandler\",\"Message\":\"Idempotency admission failed closed. Code=idempotency_admission_unavailable, CorrelationId=01M5HECAC411FEAHW34TX88KHQ, Stage=IdempotencyAdmissionFailedClosed\",\"State\":{\"Code\":\"idempotency_admission_unavailable\",\"CorrelationId\":\"01M5HECAC411FEAHW34TX88KHQ\",\"{OriginalFormat}\":\"Idempotency admission failed closed. Code={Code}, CorrelationId={CorrelationId}, Stage=IdempotencyAdmissionFailedClosed\"}}"
+    },
+    {
+      "line": 9661,
+      "text": "      1196: 2026-10-22T09:16:54.5220000Z {\"EventId\":0,\"LogLevel\":\"Warning\",\"Category\":\"Hexalith.EventStore.ErrorHandling.IdempotencyAdmissionFailureExceptionHandler\",\"Message\":\"Idempotency admission failed closed. Code=idempotency_admission_unavailable, CorrelationId=01M5HECBBP8B5WNSXEKR5AWY5W, Stage=IdempotencyAdmissionFailedClosed\",\"State\":{\"Code\":\"idempotency_admission_unavailable\",\"CorrelationId\":\"01M5HECBBP8B5WNSXEKR5AWY5W\",\"{OriginalFormat}\":\"Idempotency admission failed closed. Code={Code}, CorrelationId={CorrelationId}, Stage=IdempotencyAdmissionFailedClosed\"}}"
+    },
+    {
+      "line": 9715,
+      "text": "      1213: 2026-10-22T09:16:55.5280000Z {\"EventId\":0,\"LogLevel\":\"Warning\",\"Category\":\"Hexalith.EventStore.ErrorHandling.IdempotencyAdmissionFailureExceptionHandler\",\"Message\":\"Idempotency admission failed closed. Code=idempotency_admission_unavailable, CorrelationId=01M5HECCB4HJ24B7EMAMKF93KN, Stage=IdempotencyAdmissionFailedClosed\",\"State\":{\"Code\":\"idempotency_admission_unavailable\",\"CorrelationId\":\"01M5HECCB4HJ24B7EMAMKF93KN\",\"{OriginalFormat}\":\"Idempotency admission failed closed. Code={Code}, CorrelationId={CorrelationId}, Stage=IdempotencyAdmissionFailedClosed\"}}"
+    },
+    {
+      "line": 14908,
+      "text": "    Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures [FAIL]"
+    }
+  ],
+  "claim_boundary": "Internal actor HTTP429 and admission-unavailable are directly observed. The test fails waiting for its retained event; no terminal admission state, causal repair or successful acknowledgement is inferred."
+}

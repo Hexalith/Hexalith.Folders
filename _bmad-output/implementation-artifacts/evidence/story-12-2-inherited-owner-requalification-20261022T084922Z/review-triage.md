@@ -1,0 +1,19 @@
+# Qualification wiring review
+
+The bmad-build blind reviewer examined test wiring and new evidence. Whole-story review remains a separate gate. No production source was changed.
+
+| Finding | Verdict and resolution |
+| --- | --- |
+| Observer absent from ordinary opted-in invocation | Medium, patched. AppHost.Tests builds the observer with ReferenceOutputAssembly=false; the fixture provides its default absolute assembly path and isolated log sink. Explicit evidence sinks remain supported. |
+| Incomplete SDK dependency selection | High, patched in qualification wiring. The first launch failed on matching Commons. The exact qualified graph now includes Commons and ULID, and generated runtime dependency manifests include the missing assets. All necessary outputs are independently checked; no package/project pins were changed. |
+| Silent missing destination binaries | Medium, patched. The final read-only audit requires Client, Contracts, DomainService and Commons DLL/PDB pairs in every necessary output plus ULID and the runtime assets. It passes 81 checks/13 manifests. |
+| Selection receipt overwrite | Medium, patched. Every executed attempt has a distinct receipt/script. The third selector's optional Memories-path assertion remains a failed command; nine necessary outputs had completed, and a separate successful audit verifies their actual state. Six missing AppHost/UI portable PDB sidecars were added separately without changing mapped images. Future selector runs preflight the nine actual paths before mutation. |
+| Portable-PDB verifier does not enforce frozen binary hashes | Medium, patched through a mandatory companion. verify-frozen.py compares every expected source/config and DLL/PDB hash. Source binding separately checks PE/PDB GUID/stamp, MVID and ordinary/embedded source checksums. |
+| Trimmed or absent raw checkpoint can falsely compare equal | Medium, patched. Redis cjson transports the value as an escaped string plus original byte length; the inner persisted string is preserved and length-verified. The checkpoint must be present and contain the selected namespace and root digest. |
+| Canonical hash was only local reconstruction | Medium, patched and labeled. The reconstructed canonical payload's owner/source/position identity digest must equal the real Dapr-persisted sealed leaf. Direct SDK JournalAsync and authenticated named replay then prove acceptance against that retained identity. No independent host-side canonical-byte tap is claimed. |
+| Altered identities only exercised current capture | Medium, patched. A second B-only promotion omits grown A before all message/payload/position/sequence conflicts. |
+| Any failed proof outcome accepted | Medium, patched. Direct JournalAsync must throw InvalidOperationException and the named route must return exactly Indeterminate/projection_handler_failure. Successful restored-proof replay is mandatory. The reviewer's initial rebuild-required suggestion was false for the actual exception mapping and was withdrawn on follow-up. |
+| Final rejected requests lack persisted end-state assertions | Medium, patched. Raw SDK checkpoint/reference, domain checkpoint, lifecycle value and zero callback delta are asserted after every conflict group, including position/sequence. Inherited lifecycle preservation is checked immediately after B-only promotion. |
+| Observer project bypasses package mode | Medium, patched on follow-up. It now uses the repository's HexalithEventStoreFromSource conditional project/package seam and centrally versioned package fallback. Both modes' evaluated items are retained. The built Debug branch selects the identical source reference; no compiled source or binary changed in this correction. |
+
+The reviewer confirmed the substantive corrections. The final frozen-hash companion was added after that follow-up. No acceptance is inferred from this review while live lanes are running.

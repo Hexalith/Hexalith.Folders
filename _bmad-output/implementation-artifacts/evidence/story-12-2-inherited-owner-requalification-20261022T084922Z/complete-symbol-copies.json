@@ -1,0 +1,11 @@
+{
+  "copies": [
+    "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+  ],
+  "note": "Only six missing portable PDB sidecar files added; mapped DLL bytes and host behavior unchanged."
+}

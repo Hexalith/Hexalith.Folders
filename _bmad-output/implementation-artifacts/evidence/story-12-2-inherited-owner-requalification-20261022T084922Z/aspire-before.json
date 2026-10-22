@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "aspire",
+    "ps",
+    "--format",
+    "Json"
+  ],
+  "exit": 0,
+  "stdout": "[\n  {\n    \"appHostPath\": \"/home/administrator/projects/hexalith/tenants/src/Hexalith.Tenants.AppHost/Hexalith.Tenants.AppHost.csproj\",\n    \"appHostPid\": 67730,\n    \"status\": \"running\",\n    \"sdkVersion\": \"13.6.1\",\n    \"cliPid\": 62588,\n    \"dashboardUrl\": \"https://localhost:17117/login?t=e220633154576867103a19a3d5dd6d48\",\n    \"logFilePath\": \"/home/administrator/.aspire/logs/cli_20261021T172217864_detach-child_2575a417c1374a57a3b87c247c15aef4.log\"\n  }\n]\n",
+  "stderr": ""
+}

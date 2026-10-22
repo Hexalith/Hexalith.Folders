@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "dotnet",
+    "/tmp/folders-task36-pdb-20261022T084922Z/bin/Debug/net10.0/Verifier.dll",
+    "/home/administrator/projects/hexalith/folders",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/executed-source-freeze.json",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/executed-source-binding"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "started_utc": "2026-10-22T09:00:15.072064+00:00",
+  "elapsed_seconds": 0.6324967429973185,
+  "exit_code": 0,
+  "environment": {
+    "DOTNET_ROOT": "/home/administrator/.dotnet",
+    "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+  }
+}

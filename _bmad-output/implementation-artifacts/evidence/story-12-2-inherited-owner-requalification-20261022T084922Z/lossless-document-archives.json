@@ -1,0 +1,26 @@
+[
+  {
+    "originalPath": "_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/source-binding/all-pdb-documents.json",
+    "originalSha256": "6f9f3ad10535598f48cde6ccf66d64f94e11bd74fd77ee712bcb67a58c2d765e",
+    "originalBytes": 70017836,
+    "archivePath": "_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/source-binding/all-pdb-documents.json.gz",
+    "archiveSha256": "2fee6ba35c31132e154368173e3ff46420f301c2ceda36fa39f1002b22f34679",
+    "archiveBytes": 7319258
+  },
+  {
+    "originalPath": "_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/executed-source-binding/all-pdb-documents.json",
+    "originalSha256": "a4c3964ec9561c080ccce838b215af17ecca239dce6f748cd4baabd2a5f197ed",
+    "originalBytes": 11005546,
+    "archivePath": "_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/executed-source-binding/all-pdb-documents.json.gz",
+    "archiveSha256": "8adee0d4a42671d62bb4e046d52dc12d509fab95bf58ef73bfc1738cb4ef2620",
+    "archiveBytes": 1129945
+  },
+  {
+    "originalPath": "_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/qualified-source-binding-v2/all-pdb-documents.json",
+    "originalSha256": "fe9e18d79503a8af07b03f84efc75557e30eb16c66ca68cd8d54b01b96a11b7f",
+    "originalBytes": 11006457,
+    "archivePath": "_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/qualified-source-binding-v2/all-pdb-documents.json.gz",
+    "archiveSha256": "442467caa5eccfc5897660208d3870b4d20640fdfc4d7c71b4b4225363204987",
+    "archiveBytes": 1130118
+  }
+]

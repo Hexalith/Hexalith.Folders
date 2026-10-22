@@ -1,0 +1,7 @@
+{
+  "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true",
+  "DOTNET_USE_POLLING_FILE_WATCHER": "1",
+  "DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE": "false",
+  "FOLDERS_TASK36_OBSERVER": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+  "FOLDERS_TASK36_FOLD_LOG": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/live-fold-callbacks.jsonl"
+}

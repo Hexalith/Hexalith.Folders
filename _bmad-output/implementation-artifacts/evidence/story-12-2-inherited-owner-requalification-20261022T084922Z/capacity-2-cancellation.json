@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-22T09:09:18.028872+00:00",
+  "pid": 76872,
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests",
+    "-showLiveOutput",
+    "-result-xml",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/capacity-live-2.xml"
+  ],
+  "signal": "SIGINT",
+  "reason": "Stop diagnostic lane before long stage: missing consumer runtime dependency manifest entry and review-required harness controls need correction. No acceptance claimed."
+}

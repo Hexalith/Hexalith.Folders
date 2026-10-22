@@ -5,7 +5,8 @@
             "url": "https://learn.microsoft.com/api/mcp"
         },
         "fluent-ui-blazor": {
-            "command": "fluentui-mcp"
+            "type": "http",
+            "url": "http://127.0.0.1:8812/mcp"
         }
     },
     "servers": {

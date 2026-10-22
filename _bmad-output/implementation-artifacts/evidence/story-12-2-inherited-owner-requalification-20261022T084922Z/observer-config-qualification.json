@@ -1,0 +1,10 @@
+{
+  "planned_source_delta": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/Task36FoldObserver.csproj",
+      "original": "7e4eef5058125011d807048a80ce99cd8142cd4efd2c9281623d93f913315f3c",
+      "current": "8d78c6ccf50922364474c96c44b7bc316ad725e94fa2fa8de5727cf2ecf33e77"
+    }
+  ],
+  "explanation": "Review correction adds conditional project/package references. The already-built Debug/source branch selects the identical DomainService ProjectReference; the two evaluated-item commands verify that branch and the separate package branch. No C# or binary changed."
+}

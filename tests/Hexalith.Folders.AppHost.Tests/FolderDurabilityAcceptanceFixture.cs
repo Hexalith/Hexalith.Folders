@@ -65,6 +65,10 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     public bool Enabled { get; } = Environment.GetEnvironmentVariable(AspireFoldersAppHostFixture.OptInEnvironmentVariable)
         is string value && (value.Equals("true", StringComparison.OrdinalIgnoreCase) || value == "1");
 
+    /// <summary>Gets the test-only callback observation sink, retained externally when requested.</summary>
+    public string FoldObservationPath => Environment.GetEnvironmentVariable("FOLDERS_TASK36_FOLD_LOG")
+        ?? Path.Combine(_temporaryDirectory, "fold-callbacks.jsonl");
+
     /// <summary>Gets the fresh managed tenant created by this fixture's real Tenants commands.</summary>
     public string TenantId => "durability-" + _runId;
 
@@ -273,10 +277,12 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         string catalog = await DiscoverNamedProjectionAsync(client).ConfigureAwait(false);
         DomainSharedProjectionRebuildIdentity identity = new(TenantId, "folders", OperationalStatusKeys.ProjectionType,
             dispatchId, catalog);
+        observe?.Invoke("TASK36 session=" + JsonSerializer.Serialize(identity));
         string capture = DomainSharedProjectionRebuildFingerprint.EmptyInventory;
         for (int ordinal = 0; ordinal < owners.Count; ordinal++)
             capture = DomainSharedProjectionRebuildFingerprint.AppendInventory(capture, ordinal,
                 DomainSharedProjectionRebuildFingerprint.ComputeHistory(owners[ordinal].AggregateId, false, owners[ordinal].Events));
+        observe?.Invoke($"TASK36 operation={dispatchId} capture={capture} sourceHashes={string.Join(",", owners.Select(owner => Convert.ToHexString(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(owner.Events)))))}");
         async Task<DomainSharedProjectionRebuildResponse> StepAsync(DomainSharedProjectionRebuildRequest body)
         {
             if (retryBudget is not null) await RefreshCapacityWorkloadTokensAsync().ConfigureAwait(false);
@@ -366,6 +372,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, true,
             TestContext.Current.CancellationToken).ConfigureAwait(false);
         await RequireStatusAsync(response, HttpStatusCode.OK, "SDK named capacity delivery").ConfigureAwait(false);
+        Console.WriteLine("TASK36 named-response " + await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(false));
         return (await response.Content.ReadFromJsonAsync<ProjectionDispatchResponse>(TestContext.Current.CancellationToken)
             .ConfigureAwait(false))!.Outcomes.Single();
     }
@@ -481,6 +488,22 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         const string script = "local c='0'; local n=0; local m=0; local i=0; local p=0; repeat local r=redis.call('SCAN',c,'MATCH','shared*','COUNT',1000); c=r[1]; for _,k in ipairs(r[2]) do if redis.call('TYPE',k).ok=='hash' then local b=redis.call('HSTRLEN',k,'data'); n=n+1; m=math.max(m,b); if string.find(k,'shared-identity-v1:',1,true)==1 then i=math.max(i,b) end; if string.find(k,'shared-checkpoint:',1,true)==1 then p=math.max(p,b) end end end until c=='0'; return {n,m,i,p}";
         return await FolderDurabilityProcess.RunAsync("docker", "exec", _redisName!, "redis-cli", "--raw", "EVAL", script, "0").ConfigureAwait(false);
     }
+
+    /// <summary>Reads exact persisted JSON bytes from the isolated Redis diagnostic sink.</summary>
+    public async Task<string> QualificationPersistedValueAsync(string key)
+    {
+        const string script = "local v=redis.call('HGET',KEYS[1],'data'); if not v then return redis.error_reply('qualification proof value missing') end; return cjson.encode({string.len(v),v})";
+        string encoded = await FolderDurabilityProcess.RunAsync("docker", "exec", _redisName!, "redis-cli", "--raw", "EVAL", script, "1", key).ConfigureAwait(false);
+        using JsonDocument document = JsonDocument.Parse(encoded);
+        string raw = document.RootElement[1].GetString()!;
+        if (Encoding.UTF8.GetByteCount(raw) != document.RootElement[0].GetInt32() || raw.Length == 0)
+            throw new InvalidOperationException("Persisted qualification bytes are missing or changed in transport.");
+        return raw;
+    }
+
+    /// <summary>Removes one task-owned derived proof value for a fail-closed qualification control.</summary>
+    public Task RemoveQualificationProofAsync(string key)
+        => _dapr!.DeleteStateAsync("statestore", key, cancellationToken: TestContext.Current.CancellationToken);
 
     /// <summary>Gets the distinct actual process identities used by the ordinary-write lane.</summary>
     public (int First, int Second) OrdinaryProofProcessIds()
@@ -666,6 +689,14 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         }
         _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
             .WithEnvironment("EventStore__ProjectionDispatch__MaxRebuildEventCount", "40000");
+        string observer = Environment.GetEnvironmentVariable("FOLDERS_TASK36_OBSERVER")
+            ?? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll"));
+        if (!File.Exists(observer)) throw new InvalidOperationException("Build the Task36FoldObserver test project before running durability acceptance.");
+        _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
+            .WithEnvironment("DOTNET_STARTUP_HOOKS", observer)
+            .WithEnvironment("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES", "Task36FoldObserver")
+            .WithEnvironment("FOLDERS_TASK36_FOLD_LOG", FoldObservationPath);
+
 
         _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "eventstore"))
             .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.Server.Commands.CommandRouter", "Debug");

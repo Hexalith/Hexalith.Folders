@@ -1,0 +1,18 @@
+{
+  "utc": "20261022T091827Z",
+  "lane": "strict-live",
+  "container": "folders-durability-6cc3683a3aae5418",
+  "argv": [
+    "docker",
+    "exec",
+    "folders-durability-6cc3683a3aae5418",
+    "redis-cli",
+    "--raw",
+    "EVAL",
+    "local c='0';local a={};repeat local r=redis.call('SCAN',c,'MATCH','shared-*','COUNT',1000);c=r[1];for _,k in ipairs(r[2]) do if string.match(k,'^shared%-epoch:[%x]+$') or string.match(k,'^shared%-checkpoint:[%x]+:[%x]+$') then if redis.call('TYPE',k).ok=='hash' then table.insert(a,{k,redis.call('HGET',k,'data'),redis.call('HGET',k,'version')}) end end end until c=='0';return cjson.encode(a)",
+    "0"
+  ],
+  "exit_code": 0,
+  "stdout": "{}\n",
+  "stderr": ""
+}

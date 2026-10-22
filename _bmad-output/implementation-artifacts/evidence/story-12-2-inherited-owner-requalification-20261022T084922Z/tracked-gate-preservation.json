@@ -1,0 +1,26 @@
+[
+  {
+    "path": "Directory.Packages.props",
+    "head_sha256": "612e9a06c31014393fcafe21d653b762ce89b1d265b61c070d58bf1bdc67116f",
+    "worktree_sha256": "612e9a06c31014393fcafe21d653b762ce89b1d265b61c070d58bf1bdc67116f",
+    "same": true
+  },
+  {
+    "path": ".gitmodules",
+    "head_sha256": "a58f12852498d0ae2ceee340ce835955c6547a4e7f8f4de0311eae6d122b3183",
+    "worktree_sha256": "a58f12852498d0ae2ceee340ce835955c6547a4e7f8f4de0311eae6d122b3183",
+    "same": true
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+    "head_sha256": "3f1620a996d7a39d3e3ab46f94d0809042c25c02b6bcf07de5f8da65dda426d7",
+    "worktree_sha256": "3f1620a996d7a39d3e3ab46f94d0809042c25c02b6bcf07de5f8da65dda426d7",
+    "same": true
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/sprint-status.yaml",
+    "head_sha256": "c3a26b2096f15652cebe1903ec16f3a1e8a1a759ef552b564a0ed6b930db681e",
+    "worktree_sha256": "c3a26b2096f15652cebe1903ec16f3a1e8a1a759ef552b564a0ed6b930db681e",
+    "same": true
+  }
+]
