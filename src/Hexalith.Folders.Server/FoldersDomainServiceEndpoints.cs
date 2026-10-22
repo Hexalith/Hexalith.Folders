@@ -97,7 +97,7 @@ public static partial class FoldersDomainServiceEndpoints
         endpoints.MapPost("/query", async (QueryEnvelope query, IServiceProvider services, CancellationToken token) =>
         {
             QueryResult result = await DomainQueryDispatcher.ExecuteAsync(services, query, token).ConfigureAwait(false);
-            return result.Success ? Results.Ok(result) : result.ErrorMessage is QueryAdapterFailureReason.InvalidEnvelope or QueryAdapterFailureReason.InvalidCursor
+            return result.Success ? Results.Ok(result) : result.ErrorMessage is QueryAdapterFailureReason.InvalidEnvelope or QueryAdapterFailureReason.InvalidCursor or QueryAdapterFailureReason.InvalidPage
                 ? Results.BadRequest(result) : Results.NotFound(QueryResult.Failure("safe-denial"));
         }).RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
             EventStoreWorkloadAuthenticationDefaults.WorkloadScheme, EventStoreWorkloadOperations.DomainServiceQuery));
@@ -3336,7 +3336,8 @@ public static partial class FoldersDomainServiceEndpoints
                     body.ExpectedFileVersion.Value, body.OwnerFileId, cancellationToken).ConfigureAwait(false) : null;
             var evidence = await httpContext.RequestServices.GetRequiredService<IWorkspacePathPolicyEvidenceProvider>()
                 .GetEvidenceAsync(new(envelope.TenantId, folderId, workspaceId, taskId, body.OperationId!,
-                    WorkspacePathPolicyValidator.ComputePathMetadataDigest(path), path.PathPolicyClass) { PathMetadata = path }, cancellationToken).ConfigureAwait(false);
+                    WorkspacePathPolicyValidator.ComputePathMetadataDigest(path), path.PathPolicyClass)
+                { PathMetadata = path }, cancellationToken).ConfigureAwait(false);
             if (evidence.Decision != WorkspacePathPolicyEvidenceDecision.NoEscape)
                 return ContentProblem(evidence.Decision == WorkspacePathPolicyEvidenceDecision.Unavailable ? "file_policy_unavailable" : "resource_unavailable", correlationId, taskId);
             var store = httpContext.RequestServices.GetRequiredService<IAuthoritativeContentStore>();
@@ -3388,8 +3389,10 @@ public static partial class FoldersDomainServiceEndpoints
             validation.ObservedByteLength,
             taskId)
         {
-            ContentReceiptId = receiptId, ExpectedFileVersion = body.ExpectedFileVersion,
-            ExpectedLockFence = body.ExpectedLockFence, OwnerFileId = body.OwnerFileId,
+            ContentReceiptId = receiptId,
+            ExpectedFileVersion = body.ExpectedFileVersion,
+            ExpectedLockFence = body.ExpectedLockFence,
+            OwnerFileId = body.OwnerFileId,
         };
 
         string contentCommandId = GenerateCanonicalMessageId();

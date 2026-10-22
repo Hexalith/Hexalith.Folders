@@ -19,6 +19,13 @@ public sealed class FolderOwnerReadQueryHandler(LayeredFolderAuthorizationServic
         VerifiedQueryCaller? caller = VerifiedQueryCaller.Get(accessor.HttpContext);
         if (caller is null || !ReferenceEquals(caller.Query, query) || query.CallerAuthority?.Origin != "delegated-owner-query")
             return QueryResult.Failure("safe-denial");
+        try
+        {
+            using JsonDocument payload = JsonDocument.Parse(query.Payload);
+            if (payload.RootElement.ValueKind != JsonValueKind.Object || payload.RootElement.EnumerateObject().Any()
+                || query.EntityId != query.AggregateId || query.Paging is not null) return QueryResult.Failure(QueryAdapterFailureReason.InvalidEnvelope);
+        }
+        catch (JsonException) { return QueryResult.Failure(QueryAdapterFailureReason.InvalidEnvelope); }
         LayeredFolderAuthorizationResult result = await authorization.AuthorizeCurrentMetadataReadAsync(new(
             query.TenantId, query.UserId, "actor_present", "read_metadata", LayeredFolderOperationPolicy.StrictRead(),
             EventStoreClaimTransformEvidence.Allowed(query.TenantId, query.UserId, query.CallerAuthority.Permissions),
@@ -29,13 +36,6 @@ public sealed class FolderOwnerReadQueryHandler(LayeredFolderAuthorizationServic
             if (!result.Decision.Retryable) return QueryResult.Failure("safe-denial");
             return Success(FolderOwnerReadOutcome.Unavailable);
         }
-        try
-        {
-            using JsonDocument payload = JsonDocument.Parse(query.Payload);
-            if (payload.RootElement.ValueKind != JsonValueKind.Object || payload.RootElement.EnumerateObject().Any()
-                || query.EntityId != query.AggregateId || query.Paging is not null) return QueryResult.Failure(QueryAdapterFailureReason.InvalidEnvelope);
-        }
-        catch (JsonException) { return QueryResult.Failure(QueryAdapterFailureReason.InvalidEnvelope); }
         LayeredFolderAuthorizationResult final = await authorization.AuthorizeCurrentMetadataReadAsync(new(
             query.TenantId, query.UserId, "actor_present", "read_metadata", LayeredFolderOperationPolicy.StrictRead(),
             EventStoreClaimTransformEvidence.Allowed(query.TenantId, query.UserId, query.CallerAuthority.Permissions),

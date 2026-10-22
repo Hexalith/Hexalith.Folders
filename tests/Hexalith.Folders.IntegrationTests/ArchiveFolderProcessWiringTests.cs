@@ -77,7 +77,7 @@ public sealed class ArchiveFolderProcessWiringTests
                 LastEventTimestamp = Now.AddMinutes(-1),
                 ProjectionWatermark = "tenant-a:1",
             }, TestContext.Current.CancellationToken).ConfigureAwait(true);
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             using IServiceScope scope = host.App.Services.CreateScope();
             LayeredFolderAuthorizationService authorizer = scope.ServiceProvider.GetRequiredService<LayeredFolderAuthorizationService>();
@@ -121,6 +121,11 @@ public sealed class ArchiveFolderProcessWiringTests
             }
             else
             {
+                result.IsRejection.ShouldBeFalse();
+                FolderArchived archived = result.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderArchived>();
+                archived.ActorPrincipalId.ShouldBe("user-a");
+                archived.FolderId.ShouldBe("folder-a");
+                host.Repository.EventsAppended.ShouldBe(1);
                 evidence.Requests.Count.ShouldBe(2);
                 evidence.Requests[0].PrincipalId.ShouldBe("user-a");
                 evidence.Requests[1].PrincipalId.ShouldBe("user-a");

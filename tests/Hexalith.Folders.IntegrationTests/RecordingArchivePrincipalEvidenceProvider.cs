@@ -11,6 +11,6 @@ internal sealed class RecordingArchivePrincipalEvidenceProvider : IFolderPermiss
         CancellationToken cancellationToken = default)
     {
         Requests.Add(request);
-        return Task.FromResult(FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "org-a"));
+        return Task.FromResult(FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "tenant-a"));
     }
 }

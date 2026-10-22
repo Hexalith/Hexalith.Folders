@@ -2951,14 +2951,20 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-12-1-current-pin-durable-repository-acceptance.md`
   summary: Validate malformed delegated owner query shape before deriving a stale or unavailable outcome.
   evidence: Review BH4 found that the separately merged handler authorizes before checking payload, entity ID and paging, so an authenticated bound malformed query can return a stale/unavailable outcome. It remains fail closed and is outside the durability matrix.
+  status: resolved 2026-10-22
+  resolution: spec-five-deferred-callback-boundaries.md moves shape validation after caller verification and before owner authorization. Regressions cover malformed JSON, empty/nonobject/nonempty payloads, mismatched/missing entity and paging under stale/unavailable evidence, with zero authorization-evidence reads and unchanged unverified safe denial.
 
 - source_spec: `spec-12-1-current-pin-durable-repository-acceptance.md`
   summary: Map the owner-read `/query` endpoint's SDK `InvalidPage` result to HTTP 400.
   evidence: Review EC1 found the separately merged endpoint maps only `InvalidEnvelope` and `InvalidCursor` to 400, while the selected SDK also returns `InvalidPage`; a client pagination error currently becomes a nondisclosing 404.
+  status: resolved 2026-10-22
+  resolution: spec-five-deferred-callback-boundaries.md adds InvalidPage to the callback's HTTP 400 mapping and tests all three input errors through the signed production host. This closes the Folders endpoint item; the separate EventStore gateway invoker's InvalidPage preservation remains outside this change.
 
 - source_spec: `spec-12-1-current-pin-durable-repository-acceptance.md`
   summary: Reject unsupported operational-index source-guard versions on the separately merged metadata route.
   evidence: Review EC2 found the route calls the old `AdminOperationalIndexMetadata.Create` overload and ignores `Request.ProjectionSourceGuardVersion`, so unsupported capability requests can receive a successful response.
+  status: resolved 2026-10-22
+  resolution: Production now delegates to the existing SDK metadata endpoint, which rejects unsupported versions. FoldersCallbackBoundaryTests exercises signed production requests for null/1 success and 0/-1/2/Int32.MaxValue rejection in both legacy and app/version-bound requests; no duplicate module implementation was added.
 
 - source_spec: `spec-1-17-builds-synthetic-acceptance-pins.md`
   summary: Reconcile the existing Folders release-workflow exact upload-artifact pin contract and investigate its blocking-test CI job.
@@ -2969,6 +2975,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: `/query` non-input failures all map to 404 safe-denial; no endpoint-level status test (unverified medium).
   evidence: FoldersDomainServiceEndpoints.cs:1972-1976; settle by reading DomainQueryDispatcher failure reasons.
+  status: resolved 2026-10-22
+  resolution: Dispatcher inspection confirms missing-handler and caller-binding diagnostics must be sanitized. Signed production HTTP regressions pin identical 404 safe-denial results for protected/internal failures and missing handlers, while successful owner stale/unavailable payloads retain HTTP 200. The existing nondisclosing status contract is preserved.
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Reserved/tenant-id AggregateId on non-CreateFolder commands and fold exceptions escaping FolderDomainProcessor as 500 (unverified medium).
   evidence: FoldersDomainServiceRequestHandler.cs:2498-2511, FolderDomainProcessor.cs:112-130; probe with reserved-id commands.
@@ -3005,6 +3013,9 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Callback authorization is asserted as endpoint metadata only; add 401/403 request tests for /process, /project, /query, /admin; strengthen the archive-principal accepted row.
   evidence: FoldersServerHostCompositionTests.cs, ServerEndpointRegistrationTests.cs, ArchiveFolderProcessWiringTests.cs.
+  status: resolved 2026-10-22
+  resolution: Production callback request tests cover missing channel/assertion, invalid channel/signature, wrong-operation 403, and valid credentials on all four routes, with a terminal probe after actual authorization. The archive accepted row now asserts a FolderArchived event and one append; its invalid organization fixture was corrected to the managed tenant.
+  verification_note: Correctly signed assertions from an unauthorized workload caller are also rejected before admission on every callback route.
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Test data uses OrganizationId == ManagedTenantId everywhere; tenant/organization swap bugs are undetectable; stray org-a seeds remain.
   evidence: GoldenLifecycleParityTests.cs, FolderCommandFactory defaults.
@@ -3017,3 +3028,7 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-12-2-durable-projections-and-task-completion-pipeline.md`
   summary: Durable workspace views report a fixed status-only cleanup value and an unavailable provider reference until cleanup eligibility and provider-reference projection are owned.
   evidence: OperationalStatusFold.cs:268-278 always emits status_only/cleanup_status_only/(false, cleanup_not_applicable), provref_unavailable and (null, unavailable). This is fail-safe and never claims eligibility, but it drops the per-state reason codes of the old in-memory mapping (InMemoryFolderRepository.cs:609-618). Eligibility rules (terminal closure, seven-day window, legal hold) belong to Story 4.22/FR30 (review round 4, blind-16).
+
+- source_spec: `spec-five-deferred-callback-boundaries.md`
+  summary: Preserve InvalidPage when the EventStore gateway receives an HTTP 400 domain-query result.
+  evidence: At selected EventStore revision 995117f9b899a2994e99257091b0ea35cfbe5090, src/Hexalith.EventStore/Queries/DaprDomainQueryInvoker.cs:54-57 preserves only InvalidEnvelope/InvalidCursor and remaps InvalidPage to ActorException. The Folders callback now correctly returns 400; correcting this separate existing transport behavior belongs to EventStore and must preserve its input-error expectations. The dependency's pre-existing local edits were preserved.
