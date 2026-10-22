@@ -1,0 +1,31 @@
+{
+  "utc": "2026-10-22T09:50:21.012311+00:00",
+  "component_directories": [
+    {
+      "path": "/tmp/folders-durability-1oxu1beo.0fj",
+      "exists": false
+    },
+    {
+      "path": "/tmp/folders-durability-1oxu1beo.0fj/ordinary-proof",
+      "exists": false
+    }
+  ],
+  "redis_container_checks": [
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "01c61cc472a2fe6f3e733c397c7345bc98fb8ad28593af5aad42ee6246161bf9",
+        "--format",
+        "{{.Id}}"
+      ],
+      "exit_code": 1,
+      "stdout": "\n",
+      "stderr": "error: no such object: 01c61cc472a2fe6f3e733c397c7345bc98fb8ad28593af5aad42ee6246161bf9\n",
+      "absent": true
+    }
+  ],
+  "owned_verifier_directory": "/tmp/folders-task36-pdb-20261022T084922Z",
+  "verifier_removed": true,
+  "verifier_exists": false
+}

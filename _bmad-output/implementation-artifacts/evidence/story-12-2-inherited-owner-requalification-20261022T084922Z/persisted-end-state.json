@@ -1,0 +1,257 @@
+{
+  "read_through": "Production DaprReadModelStore and SharedProjectionEpochCoordinator, before fixture disposal",
+  "original_inherited_proof": {
+    "raw_checkpoint_sha256_before": "71e3a10b7f42eeaff4af8f31ea7addf7e392579173b3c78baaea4f5746534276",
+    "raw_checkpoint_sha256_after": "71e3a10b7f42eeaff4af8f31ea7addf7e392579173b3c78baaea4f5746534276",
+    "raw_checkpoint_equal": true,
+    "reference_equal": true,
+    "canonical_sha256_before": "70115AD30C55739A35CA81DF9D07660F2FD60B241313073725F6E42A9B320D88",
+    "canonical_sha256_after": "70115AD30C55739A35CA81DF9D07660F2FD60B241313073725F6E42A9B320D88",
+    "canonical_equal": true,
+    "captured_identity_sha256": "819DB2504786426F5F954BC89B6DB157BE7CBFF031CF1CEF34B0F3A41F541D81",
+    "fold_callback_delta": 0,
+    "canonical_origin": "reconstructed-DTO-matched-to-persisted-SDK-captured-leaf",
+    "current_capture": {
+      "capacity-10001-01m5he6ph1ht3m90dva7hz52yq-other": 10003
+    }
+  },
+  "final_selected_sdk_checkpoint": {
+    "Position": 10004,
+    "Token": "MTAwMDQ=",
+    "OwnerSequenceNumber": 10002,
+    "CapturedEventDigests": null,
+    "CapturedIdentityReference": {
+      "Version": 1,
+      "NamespaceHash": "99751F973322CB2406A691158745B43D071EF465293205D0E020600036BB92BE",
+      "ScopeHash": "f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU",
+      "SourceHash": "F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC",
+      "OperationHash": "2840A027DA5506161AEAAEDC134528F0A4CB4C30427620873BA7C655C680DD91",
+      "Epoch": 3,
+      "Count": 10002,
+      "RootDigest": "16EF6E8FA41E7824891CD3BE42E0FC95AA2D76D1DD564BD680ABF956872F01B3",
+      "Height": 2,
+      "LastPosition": 10004
+    }
+  },
+  "original_raw_sdk_checkpoint": "{\"capturedEventDigests\":null,\"capturedIdentityReference\":{\"count\":10002,\"epoch\":3,\"height\":2,\"lastPosition\":10004,\"namespaceHash\":\"99751F973322CB2406A691158745B43D071EF465293205D0E020600036BB92BE\",\"operationHash\":\"2840A027DA5506161AEAAEDC134528F0A4CB4C30427620873BA7C655C680DD91\",\"rootDigest\":\"16EF6E8FA41E7824891CD3BE42E0FC95AA2D76D1DD564BD680ABF956872F01B3\",\"scopeHash\":\"f-cuGywkyGrnr0mYpVee-HTnngg--0KkwhR4QFtk8OU\",\"sourceHash\":\"F531C81472B3942A41301E6862FD9797CE6CB93907613A57A119C8A3022D97DC\",\"version\":1},\"ownerSequenceNumber\":10002,\"position\":10004,\"token\":\"MTAwMDQ=\"}",
+  "selected_domain_checkpoint": {
+    "SchemaVersion": 2,
+    "ManagedTenantId": "durability-99e34285df2392cc",
+    "FolderId": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+    "Sequence": 10002,
+    "SourceDigest": "BDFCB8F7DD83378B201D9FB8E9FA0D7E7DF66B69BAFB69DEB5E70E376ED417C2",
+    "ObservedAt": "2026-10-22T09:13:49.3456913+00:00",
+    "State": {
+      "IsCreated": true,
+      "ManagedTenantId": "durability-99e34285df2392cc",
+      "OrganizationId": "durability-99e34285df2392cc",
+      "FolderId": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+      "DisplayName": null,
+      "Description": null,
+      "PathLabel": null,
+      "Tags": [],
+      "LifecycleState": 0,
+      "RepositoryBindingState": 0,
+      "WorkspaceLifecycleState": null,
+      "WorkspaceOperatorDisposition": null,
+      "WorkspaceId": null,
+      "WorkspacePolicyRef": null,
+      "WorkspaceLifecycleEvent": null,
+      "WorkspaceOperationId": null,
+      "WorkspaceCorrelationId": null,
+      "WorkspaceTaskId": null,
+      "WorkspaceActorPrincipalId": null,
+      "WorkspaceLifecycleUpdatedAt": null,
+      "WorkspaceLockId": null,
+      "WorkspaceLockIntent": null,
+      "WorkspaceLockRequestedLeaseSeconds": null,
+      "WorkspaceLockHolderTaskId": null,
+      "WorkspaceLockAcquiredAt": null,
+      "WorkspaceLockEffectiveAt": null,
+      "WorkspaceLockExpiresAt": null,
+      "WorkspaceLockRetryEligibilityBasis": null,
+      "RepositoryBindingId": null,
+      "ProviderBindingRef": null,
+      "RepositoryProfileRef": null,
+      "ExternalRepositoryRefFingerprint": null,
+      "BranchRefPolicyRef": null,
+      "BranchRefPolicy": null,
+      "RepositoryBindingFailureCategory": null,
+      "RepositoryBindingOutcomeCategory": null,
+      "RepositoryBindingUpdatedAt": null,
+      "RepositoryBindingActorPrincipalId": null,
+      "RepositoryBindingCorrelationId": null,
+      "RepositoryBindingTaskId": null,
+      "RepositoryBindingIdempotencyKey": null,
+      "RepositoryBindingIdempotencyFingerprint": null,
+      "WorkspaceCommitReference": null,
+      "WorkspaceCommitFailureCategory": null,
+      "WorkspaceCommitOutcomeCategory": null,
+      "WorkspaceCommitAuthorMetadataReference": null,
+      "WorkspaceCommitBranchRefTarget": null,
+      "WorkspaceCommitMessageClassification": null,
+      "WorkspaceCommitChangedPathMetadataDigest": null,
+      "WorkspaceCommitReconciliationReference": null,
+      "WorkspaceCommitReconciliationRequired": false,
+      "ArchiveReasonCode": null,
+      "ArchiveActorPrincipalId": null,
+      "ArchiveCorrelationId": null,
+      "ArchiveTaskId": null,
+      "ArchiveIdempotencyKey": null,
+      "ArchivedAt": null,
+      "AccessOverrides": {},
+      "AccessSequence": 0,
+      "IdempotencyFingerprints": {},
+      "FileIdentities": {},
+      "WorkspaceCommitOperationId": null,
+      "TaskClosures": {}
+    },
+    "EventDigests": {
+      "10002": "8A7C24BCBE7CF1B01F1C43CEFE458D523B16AB1A7794FF35237DEC3F6E977402"
+    },
+    "MessageIds": {
+      "10002": "capacity-message-10002"
+    },
+    "WorkspaceEvidence": {},
+    "TaskEvidence": {},
+    "IntegrityDigest": "A329E1C8F8E4E5353E3F5546ECE9D970138883882AAA1F99D66195DAE4316556",
+    "TaskClosedSequences": {}
+  },
+  "epoch_status": {
+    "Epoch": 4,
+    "ActiveGeneration": 4,
+    "OperationId": "01m5hfytkgs6q1fdfr00s12wfm",
+    "StageFingerprint": "stream:00D31829B1A15E05E4832CFA48D8DD890BBA08B1D9C26152EEB4751AFC966B84:1",
+    "IsBuilding": false,
+    "IsAborting": false,
+    "PendingDeliveryCount": 0,
+    "IsOffboarded": false,
+    "DeliveryConflicts": [
+      {
+        "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+        "EnvelopePosition": 2,
+        "AcceptedDigest": "819DB2504786426F5F954BC89B6DB157BE7CBFF031CF1CEF34B0F3A41F541D81",
+        "ConflictingDigest": "EBFF52369CF5351496A4D30B7A707B0A0AEC97E83FD418D7B518B4F925ECB78A",
+        "ObservedEpoch": 4,
+        "ResolvedByOperationId": null,
+        "RequiredOwnerSequenceNumber": null,
+        "ResolvedByOwnerSequenceNumber": null
+      },
+      {
+        "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+        "EnvelopePosition": 2,
+        "AcceptedDigest": "819DB2504786426F5F954BC89B6DB157BE7CBFF031CF1CEF34B0F3A41F541D81",
+        "ConflictingDigest": "4F09F7E5803FBF51344D424138DE484F6150D80ABFFAAC12E480F3D1BDE2F97C",
+        "ObservedEpoch": 4,
+        "ResolvedByOperationId": null,
+        "RequiredOwnerSequenceNumber": null,
+        "ResolvedByOwnerSequenceNumber": null
+      },
+      {
+        "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+        "EnvelopePosition": 5002,
+        "AcceptedDigest": "C13BCA042601DC488964483E6E2CD322D13E5976740D54FD7A8ABEF6C67203F1",
+        "ConflictingDigest": "91D74501A4816ADB64BE69F6187BEF08DEADBAA0CE975A7E2524F17B7EF33C1C",
+        "ObservedEpoch": 4,
+        "ResolvedByOperationId": null,
+        "RequiredOwnerSequenceNumber": null,
+        "ResolvedByOwnerSequenceNumber": null
+      },
+      {
+        "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+        "EnvelopePosition": 5002,
+        "AcceptedDigest": "C13BCA042601DC488964483E6E2CD322D13E5976740D54FD7A8ABEF6C67203F1",
+        "ConflictingDigest": "849F0BCEDB977CF931C0EF3B3EE75952ED1B79CC9D48CE4A78CAB591B3766BF0",
+        "ObservedEpoch": 4,
+        "ResolvedByOperationId": null,
+        "RequiredOwnerSequenceNumber": null,
+        "ResolvedByOwnerSequenceNumber": null
+      },
+      {
+        "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+        "EnvelopePosition": 10004,
+        "AcceptedDigest": "17C996BC69A84B2B8EC88F74F59AB8EBEC505A6ABF14B5A7DEC56118F228C248",
+        "ConflictingDigest": "2390533476362534C8ADC235357FC6F9AF6FC8750A11382E819FD0314935A338",
+        "ObservedEpoch": 4,
+        "ResolvedByOperationId": null,
+        "RequiredOwnerSequenceNumber": null,
+        "ResolvedByOwnerSequenceNumber": null
+      },
+      {
+        "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+        "EnvelopePosition": 10004,
+        "AcceptedDigest": "17C996BC69A84B2B8EC88F74F59AB8EBEC505A6ABF14B5A7DEC56118F228C248",
+        "ConflictingDigest": "117F73BCBD9C87157441A4E86B01C2E0638FB74BFCAC56F53E122A0608436180",
+        "ObservedEpoch": 4,
+        "ResolvedByOperationId": null,
+        "RequiredOwnerSequenceNumber": null,
+        "ResolvedByOwnerSequenceNumber": null
+      },
+      {
+        "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+        "EnvelopePosition": 3,
+        "AcceptedDigest": "819DB2504786426F5F954BC89B6DB157BE7CBFF031CF1CEF34B0F3A41F541D81",
+        "ConflictingDigest": "C03BEA789182E3F1DD6B097A8B00763232FF0C7D031952F38D966115B265B830",
+        "ObservedEpoch": 4,
+        "ResolvedByOperationId": null,
+        "RequiredOwnerSequenceNumber": null,
+        "ResolvedByOwnerSequenceNumber": null
+      },
+      {
+        "SourceStream": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+        "EnvelopePosition": 2,
+        "AcceptedDigest": "36C89846B91C740BF60740C7403AF280DB5C3F5B8D2B9A4047B0115A0524714F",
+        "ConflictingDigest": "20DFD145940928D40AE31F2F68DEA3134C89AB79A265FBD7C4BF2ADA1E514AEF",
+        "ObservedEpoch": 4,
+        "ResolvedByOperationId": null,
+        "RequiredOwnerSequenceNumber": null,
+        "ResolvedByOwnerSequenceNumber": null
+      }
+    ],
+    "DeliveryConflictOverflow": null,
+    "ParkingEvidence": [],
+    "ParkingEvidenceOverflow": null,
+    "PendingFoldFailures": [],
+    "IsCapacityLimited": false,
+    "IsDegraded": true,
+    "OperationTenantId": "durability-99e34285df2392cc"
+  },
+  "callback_observations": [
+    {
+      "action": "registered",
+      "source": null,
+      "position": null,
+      "processId": 24218
+    },
+    {
+      "action": "fold",
+      "source": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq-primer",
+      "position": 1,
+      "processId": 24218
+    },
+    {
+      "action": "registered",
+      "source": null,
+      "position": null,
+      "processId": 57814
+    },
+    {
+      "action": "fold",
+      "source": "capacity-10001-01m5he6ph1ht3m90dva7hz52yq",
+      "position": 10004,
+      "processId": 57814
+    }
+  ],
+  "intentional_conflicts": {
+    "count": 8,
+    "acknowledged_or_resolved": 0,
+    "is_degraded": true
+  },
+  "retained_value_bounds": {
+    "shared_values": 80718,
+    "maximum_shared_value_bytes": 9098,
+    "maximum_identity_value_bytes": 9098,
+    "maximum_base_sdk_checkpoint_bytes": 575,
+    "boundary": "Point-in-time retained Redis values, not a measurement of every canonical batch or physical write."
+  }
+}

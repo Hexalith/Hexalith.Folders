@@ -1,0 +1,391 @@
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+index 1fcec761..935bf012 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+@@ -65,6 +65,10 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+     public bool Enabled { get; } = Environment.GetEnvironmentVariable(AspireFoldersAppHostFixture.OptInEnvironmentVariable)
+         is string value && (value.Equals("true", StringComparison.OrdinalIgnoreCase) || value == "1");
+ 
++    /// <summary>Gets the test-only callback observation sink, retained externally when requested.</summary>
++    public string FoldObservationPath => Environment.GetEnvironmentVariable("FOLDERS_TASK36_FOLD_LOG")
++        ?? Path.Combine(_temporaryDirectory, "fold-callbacks.jsonl");
++
+     /// <summary>Gets the fresh managed tenant created by this fixture's real Tenants commands.</summary>
+     public string TenantId => "durability-" + _runId;
+ 
+@@ -273,10 +277,12 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         string catalog = await DiscoverNamedProjectionAsync(client).ConfigureAwait(false);
+         DomainSharedProjectionRebuildIdentity identity = new(TenantId, "folders", OperationalStatusKeys.ProjectionType,
+             dispatchId, catalog);
++        observe?.Invoke("TASK36 session=" + JsonSerializer.Serialize(identity));
+         string capture = DomainSharedProjectionRebuildFingerprint.EmptyInventory;
+         for (int ordinal = 0; ordinal < owners.Count; ordinal++)
+             capture = DomainSharedProjectionRebuildFingerprint.AppendInventory(capture, ordinal,
+                 DomainSharedProjectionRebuildFingerprint.ComputeHistory(owners[ordinal].AggregateId, false, owners[ordinal].Events));
++        observe?.Invoke($"TASK36 operation={dispatchId} capture={capture} sourceHashes={string.Join(",", owners.Select(owner => Convert.ToHexString(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(owner.Events)))))}");
+         async Task<DomainSharedProjectionRebuildResponse> StepAsync(DomainSharedProjectionRebuildRequest body)
+         {
+             if (retryBudget is not null) await RefreshCapacityWorkloadTokensAsync().ConfigureAwait(false);
+@@ -366,6 +372,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, true,
+             TestContext.Current.CancellationToken).ConfigureAwait(false);
+         await RequireStatusAsync(response, HttpStatusCode.OK, "SDK named capacity delivery").ConfigureAwait(false);
++        Console.WriteLine("TASK36 named-response " + await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(false));
+         return (await response.Content.ReadFromJsonAsync<ProjectionDispatchResponse>(TestContext.Current.CancellationToken)
+             .ConfigureAwait(false))!.Outcomes.Single();
+     }
+@@ -482,6 +489,22 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         return await FolderDurabilityProcess.RunAsync("docker", "exec", _redisName!, "redis-cli", "--raw", "EVAL", script, "0").ConfigureAwait(false);
+     }
+ 
++    /// <summary>Reads exact persisted JSON bytes from the isolated Redis diagnostic sink.</summary>
++    public async Task<string> QualificationPersistedValueAsync(string key)
++    {
++        const string script = "local v=redis.call('HGET',KEYS[1],'data'); if not v then return redis.error_reply('qualification proof value missing') end; return cjson.encode({string.len(v),v})";
++        string encoded = await FolderDurabilityProcess.RunAsync("docker", "exec", _redisName!, "redis-cli", "--raw", "EVAL", script, "1", key).ConfigureAwait(false);
++        using JsonDocument document = JsonDocument.Parse(encoded);
++        string raw = document.RootElement[1].GetString()!;
++        if (Encoding.UTF8.GetByteCount(raw) != document.RootElement[0].GetInt32() || raw.Length == 0)
++            throw new InvalidOperationException("Persisted qualification bytes are missing or changed in transport.");
++        return raw;
++    }
++
++    /// <summary>Removes one task-owned derived proof value for a fail-closed qualification control.</summary>
++    public Task RemoveQualificationProofAsync(string key)
++        => _dapr!.DeleteStateAsync("statestore", key, cancellationToken: TestContext.Current.CancellationToken);
++
+     /// <summary>Gets the distinct actual process identities used by the ordinary-write lane.</summary>
+     public (int First, int Second) OrdinaryProofProcessIds()
+         => (ResourceProcessId("folders-workers-proof-a"), ResourceProcessId("folders-workers-proof-b"));
+@@ -666,6 +689,14 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         }
+         _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
+             .WithEnvironment("EventStore__ProjectionDispatch__MaxRebuildEventCount", "40000");
++        string observer = Environment.GetEnvironmentVariable("FOLDERS_TASK36_OBSERVER")
++            ?? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll"));
++        if (!File.Exists(observer)) throw new InvalidOperationException("Build the Task36FoldObserver test project before running durability acceptance.");
++        _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
++            .WithEnvironment("DOTNET_STARTUP_HOOKS", observer)
++            .WithEnvironment("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES", "Task36FoldObserver")
++            .WithEnvironment("FOLDERS_TASK36_FOLD_LOG", FoldObservationPath);
++
+ 
+         _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "eventstore"))
+             .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.Server.Commands.CommandRouter", "Debug");
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj b/tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj
+index 194fc05a..b610ad44 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj
++++ b/tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj
+@@ -5,6 +5,7 @@
+   </PropertyGroup>
+ 
+   <ItemGroup>
++    <ProjectReference Include="../tools/Task36FoldObserver/Task36FoldObserver.csproj" ReferenceOutputAssembly="false" IsAspireProjectResource="false" />
+     <!-- Referencing the AppHost (IsAspireProjectResource=false so this test project is not itself an Aspire
+          resource) generates the Projects.Hexalith_Folders_AppHost metadata type the testing builder boots. -->
+     <ProjectReference Include="..\..\src\Hexalith.Folders.AppHost\Hexalith.Folders.AppHost.csproj">
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs b/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs
+index a47f212a..dd0d3431 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs
+@@ -3,6 +3,7 @@ using System.Net;
+ using System.Security.Cryptography;
+ using System.Text;
+ using System.Text.Json;
++using System.Text.Json.Nodes;
+ 
+ using Hexalith.EventStore.Client.Projections;
+ using Hexalith.EventStore.Contracts.Projections;
+@@ -48,6 +49,7 @@ public sealed class OperationalStatusBoundedHistoryAcceptanceTests(FolderDurabil
+         // Both large capture owners still have empty checkpoints before their private staging.
+         string primer = folder + "-primer";
+         (await fixture.NamedDeliveryAsync(primer, History(primer, 1, timestamp)[0])).Status.ShouldBe(ProjectionDispatchStatus.Completed);
++        Task36QualificationEvidence.FoldCount(fixture.FoldObservationPath, primer).ShouldBe(1);
+         fixture.RecordRuntimeBindings(output.WriteLine);
+         string key = OperationalStatusKeys.Checkpoint(fixture.TenantId, folder);
+         output.WriteLine($"CAPACITY input=synthetic-original-owner count={count} owner={folder} sourceSha256={sourceHash} otherSha256={otherHash}");
+@@ -75,14 +77,75 @@ public sealed class OperationalStatusBoundedHistoryAcceptanceTests(FolderDurabil
+         JsonSerializer.SerializeToUtf8Bytes(captured).Length.ShouldBeLessThan(4096);
+         (await coordinator.ReadAsync<FolderLifecycleStatusReadModelSnapshot>(scope,
+             OperationalStatusKeys.Lifecycle(fixture.TenantId, folder), token)).Value!.LifecycleState.ShouldBe(FolderLifecycleProjectionState.Active);
++        string sdkKey = Task36QualificationEvidence.CheckpointKey(scope, folder);
++        string retainedBefore = await fixture.QualificationPersistedValueAsync(sdkKey);
++        retainedBefore.ShouldNotBeNullOrWhiteSpace();
++        retainedBefore.ShouldContain(captured.CapturedIdentityReference!.NamespaceHash);
++        retainedBefore.ShouldContain(captured.CapturedIdentityReference.RootDigest);
++        string selectedBefore = JsonSerializer.Serialize(checkpoint);
++        string lifecycleBefore = JsonSerializer.Serialize((await coordinator.ReadAsync<FolderLifecycleStatusReadModelSnapshot>(scope,
++            OperationalStatusKeys.Lifecycle(fixture.TenantId, folder), token)).Value);
++        var sealedLeaf = await coordinator.CapturedIdentities.ReadPageAsync(scope, captured.CapturedIdentityReference, 1, token);
++        SharedProjectionDelivery canonical = Task36QualificationEvidence.Delivery(fixture.TenantId, folder, original[0]);
++        Task36QualificationEvidence.CapturedDigest(canonical).ShouldBe(sealedLeaf.Digests[..32]);
++        string canonicalBefore = Task36QualificationEvidence.Hash(canonical.CanonicalPayload);
++        var oldLease = await coordinator.RefreshLeaseAsync(scope, OperationalStatusGeneration.WriterId, token);
++        output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new { phase = "before-inheritance", operation, sourceHash,
++            owner = folder, sdkKey, rawCheckpoint = retainedBefore, checkpoint = captured, canonicalSha256 = canonicalBefore, capturedIdentitySha256 = Convert.ToHexString(sealedLeaf.Digests[..32]), canonicalOrigin = "reconstructed-DTO-matched-to-persisted-SDK-captured-leaf" }));
+         using (HttpResponseMessage inherited = await fixture.NamedProjectAsync(otherFolder, other,
+             FolderDurabilityAcceptanceFixture.NewId(), retryBudget: phaseBudget, observe: output.WriteLine))
+             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(inherited, HttpStatusCode.OK, "Independent owner generation");
+         (await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope, key, token)).Value!.SourceDigest.ShouldBe(checkpoint.SourceDigest);
++        (await fixture.QualificationPersistedValueAsync(sdkKey)).ShouldBe(retainedBefore);
++        JsonSerializer.Serialize((await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope, key, token)).Value).ShouldBe(selectedBefore);
++        var epoch = (await fixture.RawStore.GetAsync<JsonObject>(scope.StoreName, "shared-epoch:" + scope.ComputeHash(), token)).Value.ShouldNotBeNull();
++        var captureMap = epoch.Single(pair => pair.Key.Equals("CaptureHighWatermarks", StringComparison.OrdinalIgnoreCase)).Value!.AsObject();
++        captureMap.ContainsKey(folder).ShouldBeFalse();
++        captureMap.ContainsKey(otherFolder).ShouldBeTrue();
++        JsonSerializer.Serialize((await coordinator.ReadAsync<FolderLifecycleStatusReadModelSnapshot>(scope,
++            OperationalStatusKeys.Lifecycle(fixture.TenantId, folder), token)).Value).ShouldBe(lifecycleBefore);
++        (await coordinator.JournalAsync(scope, oldLease, canonical, token)).ShouldBe(SharedProjectionJournalResult.StaleLease);
++        var lease = await coordinator.RefreshLeaseAsync(scope, OperationalStatusGeneration.WriterId, token);
++        int beforeFolds = Task36QualificationEvidence.FoldCount(fixture.FoldObservationPath, folder);
+         foreach (int index in new[] { 0, count / 2, count - 1 })
+-            (await fixture.NamedDeliveryAsync(folder, original[index])).Status.ShouldBe(ProjectionDispatchStatus.AlreadyCompleted);
++        {
++            var delivery = Task36QualificationEvidence.Delivery(fixture.TenantId, folder, original[index]);
++            (await coordinator.JournalAsync(scope, lease, delivery, token)).ShouldBe(SharedProjectionJournalResult.AlreadyCaptured);
++            var replay = await fixture.NamedDeliveryAsync(folder, original[index]);
++            output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new { phase = "inherited-replay", index,
++                outcome = replay, canonicalSha256 = Task36QualificationEvidence.Hash(delivery.CanonicalPayload) }));
++            replay.Status.ShouldBe(ProjectionDispatchStatus.AlreadyCompleted);
++        }
++        Task36QualificationEvidence.FoldCount(fixture.FoldObservationPath, folder).ShouldBe(beforeFolds);
++        (await fixture.QualificationPersistedValueAsync(sdkKey)).ShouldBe(retainedBefore);
++        JsonSerializer.Serialize(await coordinator.GetCheckpointAsync(scope, folder, token)).ShouldBe(JsonSerializer.Serialize(captured));
++        Task36QualificationEvidence.Hash(Task36QualificationEvidence.Delivery(fixture.TenantId, folder, original[0]).CanonicalPayload).ShouldBe(canonicalBefore);
++        output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new { phase = "after-inherited-replay", operation,
++            epoch, checkpoint = captured, rawCheckpoint = retainedBefore, canonicalSha256 = canonicalBefore, foldCallbackDelta = Task36QualificationEvidence.FoldCount(fixture.FoldObservationPath, folder) - beforeFolds }));
++
++        // Damage only task-owned derived proof, then restore its original value before the next control.
++        string proofKey = "shared-identity-v1:" + captured.CapturedIdentityReference!.NamespaceHash + ":node:" + captured.CapturedIdentityReference.RootDigest;
++        var proof = (await fixture.RawStore.GetAsync<SharedProjectionCapturedIdentityPage>(scope.StoreName, proofKey, token)).Value.ShouldNotBeNull();
++        foreach (string fault in new[] { "missing-root", "corrupt-root" })
++        {
++            try
++            {
++                if (fault == "missing-root") await fixture.RemoveQualificationProofAsync(proofKey);
++                else await fixture.RawStore.SaveAsync(scope.StoreName, proofKey, proof with { LastPosition = proof.LastPosition - 1 }, token);
++                await Should.ThrowAsync<InvalidOperationException>(() => coordinator.JournalAsync(scope, lease, canonical, token));
++                var refused = await fixture.NamedDeliveryAsync(folder, original[0]);
++                output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new { phase = "proof-fault", fault, proofKey, outcome = refused }));
++                refused.Status.ShouldBe(ProjectionDispatchStatus.Indeterminate);
++                refused.ReasonCode.ShouldBe(ProjectionDispatchReasonCodes.HandlerFailure);
++                Task36QualificationEvidence.FoldCount(fixture.FoldObservationPath, folder).ShouldBe(beforeFolds);
++                (await fixture.QualificationPersistedValueAsync(sdkKey)).ShouldBe(retainedBefore);
++            }
++            finally { await fixture.RawStore.SaveAsync(scope.StoreName, proofKey, proof, token); }
++        }
++        (await fixture.NamedDeliveryAsync(folder, original[0])).Status.ShouldBe(ProjectionDispatchStatus.AlreadyCompleted);
+         ProjectionEventDto growth = Rejection(count + 1, timestamp) with { GlobalPosition = count + 3 };
+         (await fixture.NamedDeliveryAsync(folder, growth)).Status.ShouldBe(ProjectionDispatchStatus.Completed);
++        Task36QualificationEvidence.FoldCount(fixture.FoldObservationPath, folder).ShouldBe(beforeFolds + 1);
+         ProjectionEventDto[] grown = [.. original, growth];
+         using (HttpResponseMessage rebuilt = await fixture.NamedProjectAsync(folder, grown,
+             FolderDurabilityAcceptanceFixture.NewId(), retryBudget: phaseBudget, observe: output.WriteLine))
+@@ -92,6 +155,19 @@ public sealed class OperationalStatusBoundedHistoryAcceptanceTests(FolderDurabil
+             OperationalStatusKeys.Checkpoint(fixture.TenantId, otherFolder), token)).Value!.Sequence.ShouldBe(1);
+         foreach (int index in new[] { 0, count / 2, count })
+             (await fixture.NamedDeliveryAsync(folder, grown[index])).Status.ShouldBe(ProjectionDispatchStatus.AlreadyCompleted);
++        output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new { phase = "grown-rebuild", status = await coordinator.GetStatusAsync(scope, token),
++            checkpoint = await coordinator.GetCheckpointAsync(scope, folder, token), rawCheckpoint = await fixture.QualificationPersistedValueAsync(sdkKey) }));
++        // Repeat omission after growth so every altered identity below exercises inherited-owner proof.
++        using (HttpResponseMessage omittedAgain = await fixture.NamedProjectAsync(otherFolder, other,
++            FolderDurabilityAcceptanceFixture.NewId(), retryBudget: phaseBudget, observe: output.WriteLine))
++            await FolderDurabilityAcceptanceFixture.RequireStatusAsync(omittedAgain, HttpStatusCode.OK, "Omit grown original owner");
++        var omittedState = (await fixture.RawStore.GetAsync<JsonObject>(scope.StoreName, "shared-epoch:" + scope.ComputeHash(), token)).Value!;
++        omittedState.Single(pair => pair.Key.Equals("CaptureHighWatermarks", StringComparison.OrdinalIgnoreCase)).Value!.AsObject().ContainsKey(folder).ShouldBeFalse();
++        string finalRaw = await fixture.QualificationPersistedValueAsync(sdkKey);
++        string finalSdk = JsonSerializer.Serialize(await coordinator.GetCheckpointAsync(scope, folder, token));
++        string finalLifecycle = JsonSerializer.Serialize((await coordinator.ReadAsync<FolderLifecycleStatusReadModelSnapshot>(scope,
++            OperationalStatusKeys.Lifecycle(fixture.TenantId, folder), token)).Value);
++        int finalFolds = Task36QualificationEvidence.FoldCount(fixture.FoldObservationPath, folder);
+         string selected = JsonSerializer.Serialize((await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope, key, token)).Value);
+         foreach (int index in new[] { 0, count / 2, count })
+         {
+@@ -110,6 +186,21 @@ public sealed class OperationalStatusBoundedHistoryAcceptanceTests(FolderDurabil
+             payloadConflict.ReasonCode.ShouldBe(ProjectionDispatchReasonCodes.DeliveryIdentityConflict);
+         }
+         JsonSerializer.Serialize((await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope, key, token)).Value).ShouldBe(selected);
++        foreach (var altered in new[] { grown[0] with { GlobalPosition = grown[0].GlobalPosition + 1 }, grown[0] with { SequenceNumber = 2 } })
++        {
++            var conflict = await fixture.NamedDeliveryAsync(folder, altered);
++            conflict.Status.ShouldBe(ProjectionDispatchStatus.Failed);
++            conflict.ReasonCode.ShouldBe(ProjectionDispatchReasonCodes.DeliveryIdentityConflict);
++        }
++        (await fixture.QualificationPersistedValueAsync(sdkKey)).ShouldBe(finalRaw);
++        JsonSerializer.Serialize(await coordinator.GetCheckpointAsync(scope, folder, token)).ShouldBe(finalSdk);
++        JsonSerializer.Serialize((await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope, key, token)).Value).ShouldBe(selected);
++        JsonSerializer.Serialize((await coordinator.ReadAsync<FolderLifecycleStatusReadModelSnapshot>(scope,
++            OperationalStatusKeys.Lifecycle(fixture.TenantId, folder), token)).Value).ShouldBe(finalLifecycle);
++        Task36QualificationEvidence.FoldCount(fixture.FoldObservationPath, folder).ShouldBe(finalFolds);
++        output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new { phase = "final-state", sourceHash, otherHash,
++            checkpoint = await coordinator.GetCheckpointAsync(scope, folder, token), status = await coordinator.GetStatusAsync(scope, token),
++            rawCheckpoint = await fixture.QualificationPersistedValueAsync(sdkKey), selectedCheckpoint = selected }));
+         Hash(original).ShouldBe(sourceHash);
+         Hash(other).ShouldBe(otherHash);
+         (await coordinator.GetStatusAsync(scope, token)).IsBuilding.ShouldBeFalse();
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/Task36QualificationEvidence.cs b/tests/Hexalith.Folders.AppHost.Tests/Task36QualificationEvidence.cs
+new file mode 100644
+index 00000000..cd945aae
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/Task36QualificationEvidence.cs
+@@ -0,0 +1,48 @@
++using System.Buffers.Binary;
++using System.Security.Cryptography;
++using System.Text;
++using System.Text.Json;
++using Hexalith.EventStore.Client.Projections;
++using Hexalith.EventStore.Contracts.Projections;
++
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Observes the isolated Task 36 callback and canonical identity evidence.</summary>
++internal static class Task36QualificationEvidence
++{
++    internal static int FoldCount(string path, string source)
++    {
++        string[] rows = File.ReadAllLines(path);
++        if (!rows.Any(row => row.Contains("\"registered\"", StringComparison.Ordinal)))
++            throw new InvalidOperationException("The live fold observer has not registered.");
++        return rows.Select(row => JsonDocument.Parse(row)).Count(row =>
++            row.RootElement.GetProperty("action").GetString() == "fold"
++            && row.RootElement.GetProperty("source").GetString() == source);
++    }
++
++    internal static SharedProjectionDelivery Delivery(string tenant, string owner, ProjectionEventDto source)
++        => new(owner, source.GlobalPosition,
++            JsonSerializer.SerializeToUtf8Bytes(new ProjectionRequest(tenant, "folders", owner, [source]), new JsonSerializerOptions(JsonSerializerDefaults.Web)),
++            JsonSerializer.SerializeToUtf8Bytes(source.GlobalPosition), OwnerSequenceNumber: source.SequenceNumber);
++
++    // This byte formula is evidence-only: compare the reconstructed canonical source to the SDK-sealed leaf.
++    internal static byte[] CapturedDigest(SharedProjectionDelivery delivery)
++    {
++        byte[] stream = Encoding.UTF8.GetBytes(delivery.SourceStream);
++        Span<byte> header = stackalloc byte[24];
++        BinaryPrimitives.WriteInt32LittleEndian(header, stream.Length);
++        BinaryPrimitives.WriteInt64LittleEndian(header[4..], delivery.EnvelopePosition);
++        BinaryPrimitives.WriteInt64LittleEndian(header[12..], delivery.OwnerSequenceNumber);
++        BinaryPrimitives.WriteInt32LittleEndian(header[20..], delivery.CanonicalPayload.Length);
++        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
++        hash.AppendData(header);
++        hash.AppendData(stream);
++        hash.AppendData(delivery.CanonicalPayload);
++        return hash.GetHashAndReset();
++    }
++
++    internal static string CheckpointKey(SharedProjectionScope scope, string owner)
++        => "shared-checkpoint:" + scope.ComputeHash() + ":" + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(owner)));
++
++    internal static string Hash(ReadOnlySpan<byte> bytes) => Convert.ToHexString(SHA256.HashData(bytes));
++}
+diff --git a/tests/tools/Task36FoldObserver/ObservedProjectionHandler.cs b/tests/tools/Task36FoldObserver/ObservedProjectionHandler.cs
+new file mode 100644
+index 00000000..68a376dd
+--- /dev/null
++++ b/tests/tools/Task36FoldObserver/ObservedProjectionHandler.cs
+@@ -0,0 +1,41 @@
++using System.Reflection;
++using System.Runtime.ExceptionServices;
++using System.Text.Json;
++using Hexalith.EventStore.Client.Projections;
++using Hexalith.EventStore.DomainService;
++
++namespace Task36FoldObserver;
++
++/// <summary>Delegates the complete production handler interface while observing callback entry.</summary>
++public class ObservedProjectionHandler : DispatchProxy
++{
++    private static readonly object Sync = new();
++    /// <summary>Gets or sets the unmodified production handler.</summary>
++    public IAsyncDomainSharedProjectionStreamingRebuildHandler Inner { get; set; } = null!;
++
++    /// <inheritdoc/>
++    protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
++    {
++        ArgumentNullException.ThrowIfNull(targetMethod);
++        if (targetMethod.Name == "FoldCatchUpAsync")
++        {
++            ArgumentNullException.ThrowIfNull(args);
++            var delivery = (SharedProjectionDelivery)args[0]!;
++            Record("fold", delivery.SourceStream, delivery.EnvelopePosition);
++        }
++        try { return targetMethod.Invoke(Inner, args); }
++        catch (TargetInvocationException exception) when (exception.InnerException is not null)
++        {
++            ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
++            throw;
++        }
++    }
++
++    internal static void Record(string action, string? source, long? position)
++    {
++        string path = Environment.GetEnvironmentVariable("FOLDERS_TASK36_FOLD_LOG")
++            ?? throw new InvalidOperationException("Qualification fold sink is required.");
++        lock (Sync)
++            File.AppendAllText(path, JsonSerializer.Serialize(new { action, source, position, processId = Environment.ProcessId }) + "\n");
++    }
++}
+diff --git a/tests/tools/Task36FoldObserver/StartupHook.cs b/tests/tools/Task36FoldObserver/StartupHook.cs
+new file mode 100644
+index 00000000..e28c4fd0
+--- /dev/null
++++ b/tests/tools/Task36FoldObserver/StartupHook.cs
+@@ -0,0 +1,6 @@
++/// <summary>Preloads the qualification observer into the host default assembly context.</summary>
++internal static class StartupHook
++{
++    /// <summary>Initializes the startup hook; ASP.NET hosting then discovers the loaded observer.</summary>
++    public static void Initialize() { }
++}
+diff --git a/tests/tools/Task36FoldObserver/Task36FoldObserver.csproj b/tests/tools/Task36FoldObserver/Task36FoldObserver.csproj
+new file mode 100644
+index 00000000..bb187b5e
+--- /dev/null
++++ b/tests/tools/Task36FoldObserver/Task36FoldObserver.csproj
+@@ -0,0 +1,8 @@
++<Project Sdk="Microsoft.NET.Sdk">
++  <PropertyGroup><IsPackable>false</IsPackable></PropertyGroup>
++  <ItemGroup>
++    <FrameworkReference Include="Microsoft.AspNetCore.App" />
++    <ProjectReference Include="$(HexalithEventStoreRoot)/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
++    <PackageReference Include="Hexalith.EventStore.DomainService" Condition="'$(HexalithEventStoreFromSource)' != 'true'" />
++  </ItemGroup>
++</Project>
+diff --git a/tests/tools/Task36FoldObserver/Task36HostingStartup.cs b/tests/tools/Task36FoldObserver/Task36HostingStartup.cs
+new file mode 100644
+index 00000000..525de66e
+--- /dev/null
++++ b/tests/tools/Task36FoldObserver/Task36HostingStartup.cs
+@@ -0,0 +1,33 @@
++using Hexalith.EventStore.DomainService;
++using Microsoft.AspNetCore.Hosting;
++using Microsoft.Extensions.DependencyInjection;
++
++[assembly: HostingStartup(typeof(Task36FoldObserver.Task36HostingStartup))]
++
++namespace Task36FoldObserver;
++
++/// <summary>Observes real callback entry in the disposable qualification host.</summary>
++public sealed class Task36HostingStartup : IHostingStartup
++{
++    /// <inheritdoc/>
++    public void Configure(IWebHostBuilder builder)
++    {
++        ArgumentNullException.ThrowIfNull(builder);
++        builder.ConfigureServices(services =>
++        {
++            services.AddSingleton<IEnumerable<IAsyncDomainProjectionHandler>>(provider =>
++                services.Where(d => d.ServiceType == typeof(IAsyncDomainProjectionHandler)).Select(d =>
++                {
++                    var handler = (IAsyncDomainProjectionHandler)(d.ImplementationInstance
++                        ?? d.ImplementationFactory?.Invoke(provider)
++                        ?? ActivatorUtilities.GetServiceOrCreateInstance(provider, d.ImplementationType!));
++                    if (handler is not IAsyncDomainSharedProjectionStreamingRebuildHandler streaming
++                        || handler.ProjectionType != "operational-status") return handler;
++                    var proxy = System.Reflection.DispatchProxy.Create<IAsyncDomainSharedProjectionStreamingRebuildHandler, ObservedProjectionHandler>();
++                    ((ObservedProjectionHandler)(object)proxy).Inner = streaming;
++                    ObservedProjectionHandler.Record("registered", null, null);
++                    return (IAsyncDomainProjectionHandler)proxy;
++                }).ToArray());
++        });
++    }
++}

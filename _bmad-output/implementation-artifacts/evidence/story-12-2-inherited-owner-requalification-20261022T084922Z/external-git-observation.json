@@ -1,0 +1,31 @@
+{
+  "utc": "2026-10-22T09:55:50.045582+00:00",
+  "prior": {
+    "/home/administrator/projects/hexalith/folders": {
+      "head": "f65dfb08600b44a24d2db4dc57a129da96313a82",
+      "branch": "main",
+      "status": "?? _bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/cleanup-resources.json"
+    },
+    "/home/administrator/projects/hexalith/eventstore": {
+      "head": "c66a0a3345ad97b137959179a0583faf81d59e4b",
+      "branch": "main",
+      "status": ""
+    }
+  },
+  "current": {
+    "/home/administrator/projects/hexalith/folders": {
+      "head": "f65dfb08600b44a24d2db4dc57a129da96313a82",
+      "status": "M _bmad-output/implementation-artifacts/spec-12-2-task-36-inherited-owner-requalification.md\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/SHA256SUMS\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/cleanup-resources.json\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/final-frozen-sealed.json\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/final-git-observation.json\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/handoff.md\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/packet-verification.json\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/persisted-end-state.json"
+    },
+    "/home/administrator/projects/hexalith/eventstore": {
+      "head": "c66a0a3345ad97b137959179a0583faf81d59e4b",
+      "status": ""
+    }
+  },
+  "claim_boundary": "This qualification agent issued no stage, commit, push, branch or dependency-update operation. Other activity changed Git recording during the session. File-byte qualification is checked independently; no external mutation is undone.",
+  "initial_root_head": "72dff26e2ecc042afe76c10046576a2424d0d85b",
+  "external_root_commits": [
+    "a3daf26e7d689e879677c0687de49ee7b8ef6121",
+    "f65dfb08600b44a24d2db4dc57a129da96313a82"
+  ]
+}

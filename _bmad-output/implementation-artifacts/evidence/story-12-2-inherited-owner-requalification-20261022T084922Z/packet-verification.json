@@ -1,0 +1,19 @@
+{
+  "checks": {
+    "complete_live_case": true,
+    "strict_separate_failure": true,
+    "same_original_session": true,
+    "four_managed_replacements": true,
+    "unchanged_inherited_identity": true,
+    "three_original_replays": true,
+    "two_failclosed_proof_controls": true,
+    "grown_selected_reference": true,
+    "conflicts_retained_unresolved": true,
+    "runtime-audit-final": true,
+    "final-frozen-after": true,
+    "historical-preservation": true,
+    "complete-selected-runtime-audit": true,
+    "cleanup": true
+  },
+  "passed": true
+}
