@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-22T10:24:00.180894+00:00",
+  "path": "/tmp/folders-strict-continuation-pdb-20261022T100829Z",
+  "source_identity_checks": {
+    "Verifier.csproj": true,
+    "Program.cs": true
+  },
+  "exists_after": false,
+  "scope": "Only the identity-checked task-created standalone audit tool directory was removed."
+}

@@ -1,0 +1,197 @@
+{
+  "rows": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+      "actual": "0baba05e9b8aa490ea0a128847d14c5257f6d63833947684813040287b657a1a",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": "0baba05e9b8aa490ea0a128847d14c5257f6d63833947684813040287b657a1a",
+      "matches_selected_sdk": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+      "actual": "bd75fbcb2d13bd469d78ebbfa15ca7160217e7df91344fad4d3b4cc5b119e5dc",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": "bd75fbcb2d13bd469d78ebbfa15ca7160217e7df91344fad4d3b4cc5b119e5dc",
+      "matches_selected_sdk": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+      "actual": "fdf8193c7279cbf8259e83e72ad130cd76aee9d29f33f54f105de892aaf7425e",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": "fdf8193c7279cbf8259e83e72ad130cd76aee9d29f33f54f105de892aaf7425e",
+      "matches_selected_sdk": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "actual": "cfd07f73cf35568506ba3eaeddf1ff360891c9d3c7ae5da151f4b4b940a3e0e8",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb",
+      "actual": "dd135b6704eec9c27ad834d6de7c9ca994573302d4d66d1b8cf976e791983733",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.pdb",
+      "actual": "3eec900058e3cb1a60e01c3c0537d626ac3b82c9248252ef335af90ad8da9e9a",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+      "actual": "5a46c7d857b0d2e79c420881a01823e37221d10f53495264570fb9da6d116a7a",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "actual": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": "d1537fb20caebfd89da0e2cf50be4c2d6a7f4f802500b7b1d4c48ed6ed286565",
+      "matches_selected_sdk": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+      "actual": "e6240227e896f604a39e95955c0d64c4fecfba79fe5fc95a1d3f6b165213d4a9",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": "e6240227e896f604a39e95955c0d64c4fecfba79fe5fc95a1d3f6b165213d4a9",
+      "matches_selected_sdk": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "actual": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": "f84c910486784538f74343dacd689d574cc17824f21f2f1160028593b124d7a3",
+      "matches_selected_sdk": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+      "actual": "9101b9e6357d759d639b287fece56163562abd8365a26c562d355a428e79611a",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+      "actual": "1c6b19500a6372be35fe4d056344af55a308f2d5ebbcccc080f1f120358be7dd",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "actual": "57f0b929996c4376a1a6bab639759ed1f97c95474d1e4a6a3c635f5f3b0ce957",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+      "actual": "41273ead6289a7e64685e06337134c34ea6953fc4e24f529404c59a65fe10cf4",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.pdb",
+      "actual": "1c3e26f14b702b028606cbed99465764a49958d0d5fd8f57d129608d9ab86e1c",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+      "actual": "a6a4ceccd719efa8c18736800e71b0efbaeb6bf0bb2c8705b06cf08a9ea8d8fa",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "actual": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": "2bdf48488d2b4b707d4d3a5d7e016b95774f0a44648d2e0f92385d00f67f8d91",
+      "matches_selected_sdk": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+      "actual": "b98ac5c6ffb11d23194ad8fd12dcff9bb96baa0cf3fba8616283d0663dce7bd7",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "actual": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": "d743ca3489b307b39ef61378b6848af0a68d4dcf498856829c8b227ae5d7588c",
+      "matches_selected_sdk": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "actual": "a3daa3a2a535912e95d609ceb325cf8ecf9e98c383fae8c020de0912215fc130",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.dll",
+      "actual": "37c89bb663cea342d0963c13ba62bfffa5b8efb11009b14f43285013ff5e6ea0",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.dll",
+      "actual": "69f44651631ff33033252585c65f39107450b8b072e843500b2f8f30077ffba6",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+      "actual": "dcebfba03282f1b0e1642d264142e75b5184efe8db627107f55baba898a40e1f",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.pdb",
+      "actual": "abf0c487dc633d6c45b020123867636a6c9887570d79af4b6653ee37b8c39964",
+      "frozen_expected": null,
+      "matches_frozen": false,
+      "selected_sdk_expected": null,
+      "matches_selected_sdk": null
+    }
+  ],
+  "claim": "Actual Aspire Tenants launch path; prior required-output selector instead named the Server library directory."
+}

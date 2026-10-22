@@ -1,0 +1,10 @@
+{
+  "folders": {
+    "head": "0a693eb48b37faed255c9f560ecbba691e3f1bf1",
+    "status": "M _bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-strict-continuation-20261022T100829Z/"
+  },
+  "eventstore": {
+    "head": "c66a0a3345ad97b137959179a0583faf81d59e4b",
+    "status": "?? _bmad-output/implementation-artifacts/spec-5-4-ext-protection-1-owner-delivery.md"
+  }
+}

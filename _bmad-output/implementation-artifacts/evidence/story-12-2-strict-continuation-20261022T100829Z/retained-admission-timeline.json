@@ -1,0 +1,90 @@
+{
+  "source": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/strict-live.log",
+  "provenance": "Read-only extract from sealed prior failed strict run; not current execution.",
+  "rows": [
+    {
+      "line": 7557,
+      "time": "899: 2026-10-22T09:16:41.9260000Z",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "message": "Command received: CorrelationId=01m5hebz1kts4dxhcavq9e4wqf, CausationId=protected, CommandType=Hexalith.Folders.Commands.BindRepository, TenantId=durability-6cc3683a3aae5418, Domain=folders, AggregateId=fld-76484401e1dcee57dfe35986e22ef3f2290846e2, Stage=CommandReceived",
+      "exception": null
+    },
+    {
+      "line": 7559,
+      "time": "900: 2026-10-22T09:16:41.9430000Z",
+      "category": "Hexalith.EventStore.Server.Actors.IdempotencyAdmissionActor",
+      "message": "Idempotency key reserved. Stage=IdempotencyReserved",
+      "exception": null
+    },
+    {
+      "line": 7561,
+      "time": "901: 2026-10-22T09:16:41.9520000Z",
+      "category": "Hexalith.EventStore.Server.Commands.CommandRouter",
+      "message": "Routing command to actor: CorrelationId=01m5hebz1kts4dxhcavq9e4wqf, CausationId=01m5hebz23dk6bnsjvwewfy4aw, TenantId=durability-6cc3683a3aae5418, Domain=folders, AggregateId=fld-76484401e1dcee57dfe35986e22ef3f2290846e2, CommandType=Hexalith.Folders.Commands.BindRepository, ActorId=durability-6cc3683a3aae5418:folders:fld-76484401e1dcee57dfe35986e22ef3f2290846e2, Stage=CommandRouting",
+      "exception": null
+    },
+    {
+      "line": 8255,
+      "time": "976: 2026-10-22T09:16:44.3040000Z",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "message": "Command received: CorrelationId=01m5hec1cew7jvc5evze1ne4ga, CausationId=protected, CommandType=Hexalith.Folders.Commands.GrantFolderAccess, TenantId=durability-6cc3683a3aae5418, Domain=folders, AggregateId=fld-76484401e1dcee57dfe35986e22ef3f2290846e2, Stage=CommandReceived",
+      "exception": null
+    },
+    {
+      "line": 8362,
+      "time": "977: 2026-10-22T09:16:44.3190000Z",
+      "category": "Hexalith.EventStore.Server.Actors.IdempotencyAdmissionActor",
+      "message": "Idempotency key reserved. Stage=IdempotencyReserved",
+      "exception": null
+    },
+    {
+      "line": 8364,
+      "time": "978: 2026-10-22T09:16:44.3280000Z",
+      "category": "Hexalith.EventStore.Server.Commands.CommandRouter",
+      "message": "Routing command to actor: CorrelationId=01m5hec1cew7jvc5evze1ne4ga, CausationId=01m5hec1cew7jvc5evze1ne4ga, TenantId=durability-6cc3683a3aae5418, Domain=folders, AggregateId=fld-76484401e1dcee57dfe35986e22ef3f2290846e2, CommandType=Hexalith.Folders.Commands.GrantFolderAccess, ActorId=durability-6cc3683a3aae5418:folders:fld-76484401e1dcee57dfe35986e22ef3f2290846e2, Stage=CommandRouting",
+      "exception": null
+    },
+    {
+      "line": 8696,
+      "time": "1023: 2026-10-22T09:16:46.5300000Z",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "message": "Command received: CorrelationId=01m5hec3hzgrts59sv1vhmahry, CausationId=protected, CommandType=Hexalith.Folders.Commands.GrantFolderAccess, TenantId=durability-6cc3683a3aae5418, Domain=folders, AggregateId=fld-76484401e1dcee57dfe35986e22ef3f2290846e2, Stage=CommandReceived",
+      "exception": null
+    },
+    {
+      "line": 8698,
+      "time": "1024: 2026-10-22T09:16:46.5450000Z",
+      "category": "Hexalith.EventStore.Server.Actors.IdempotencyAdmissionActor",
+      "message": "Idempotency key reserved. Stage=IdempotencyReserved",
+      "exception": null
+    },
+    {
+      "line": 8700,
+      "time": "1025: 2026-10-22T09:16:46.5550000Z",
+      "category": "Hexalith.EventStore.Server.Commands.CommandRouter",
+      "message": "Routing command to actor: CorrelationId=01m5hec3hzgrts59sv1vhmahry, CausationId=01m5hec3hzgrts59sv1vhmahry, TenantId=durability-6cc3683a3aae5418, Domain=folders, AggregateId=fld-76484401e1dcee57dfe35986e22ef3f2290846e2, CommandType=Hexalith.Folders.Commands.GrantFolderAccess, ActorId=durability-6cc3683a3aae5418:folders:fld-76484401e1dcee57dfe35986e22ef3f2290846e2, Stage=CommandRouting",
+      "exception": null
+    },
+    {
+      "line": 9071,
+      "time": "1072: 2026-10-22T09:16:48.7400000Z",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "message": "Command received: CorrelationId=01m5hec5q35yxx5y7s2rgx9jjc, CausationId=protected, CommandType=Hexalith.Folders.Commands.GrantFolderAccess, TenantId=durability-6cc3683a3aae5418, Domain=folders, AggregateId=fld-76484401e1dcee57dfe35986e22ef3f2290846e2, Stage=CommandReceived",
+      "exception": null
+    },
+    {
+      "line": 9073,
+      "time": "1073: 2026-10-22T09:16:48.7550000Z",
+      "category": "Hexalith.EventStore.Server.Actors.IdempotencyAdmissionActor",
+      "message": "Idempotency key reserved. Stage=IdempotencyReserved",
+      "exception": null
+    },
+    {
+      "line": 9075,
+      "time": "1074: 2026-10-22T09:16:48.7640000Z",
+      "category": "Hexalith.EventStore.Server.Commands.CommandRouter",
+      "message": "Routing command to actor: CorrelationId=01m5hec5q35yxx5y7s2rgx9jjc, CausationId=01m5hec5q35yxx5y7s2rgx9jjc, TenantId=durability-6cc3683a3aae5418, Domain=folders, AggregateId=fld-76484401e1dcee57dfe35986e22ef3f2290846e2, CommandType=Hexalith.Folders.Commands.GrantFolderAccess, ActorId=durability-6cc3683a3aae5418:folders:fld-76484401e1dcee57dfe35986e22ef3f2290846e2, Stage=CommandRouting",
+      "exception": null
+    }
+  ]
+}

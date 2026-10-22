@@ -1,0 +1,48 @@
+{
+  "inspected_utc": "2026-10-22T10:21:03.145918+00:00",
+  "files": [
+    {
+      "path": "/home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore/Extensions/ServiceCollectionExtensions.cs",
+      "sha256": "48cfec334d1e31fa68ba4eb4f1a260d031ba2743a4c424260f525fa5b2d4f542",
+      "line_start": 219,
+      "line_end": 298
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore/Extensions/EventStoreRateLimitPartition.cs",
+      "sha256": "61f912145ca27c112e2651ca8e07abe216eb37401e9b1b4861b61a2654575928",
+      "line_start": 9,
+      "line_end": 63
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Pipeline/SubmitCommandHandler.cs",
+      "sha256": "9107def83c54a02fcf64a0811447b2cd6a8daea5c41ed24c30d203a6e08f1ecb",
+      "line_start": 130,
+      "line_end": 133
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Commands/IdempotencyAdmissionCoordinator.cs",
+      "sha256": "04ed245f460bc4d6033eeb79d6184ca7df4027bfb1cfc170887be95400fe5acc",
+      "line_start": 256,
+      "line_end": 275
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/Program.cs",
+      "sha256": "cd509f244dedc29fc72a8f49c55eec67b56042d1879a4316a9f204f2be232e2a",
+      "line_start": 29,
+      "line_end": 36
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/appsettings.json",
+      "sha256": "25cd8a5e56f73ac4f8679b1cbeba4c17510e48612b37f23c0775281b7f5b6c38",
+      "line_start": 35,
+      "line_end": 45
+    }
+  ],
+  "observed_from_source": [
+    "Global chained tenant and consumer rate limiting applies to requests without an actor-route exemption in this registration.",
+    "Trusted internal identity can select a bounded partition; unrecognized identity falls back to anonymous.",
+    "Pending admission returns an existing execution message identity before reaching ordinary command routing.",
+    "MarkRecoveryAsync invokes the IdempotencyAdmissionActor."
+  ],
+  "claim_boundary": "Source inspection describes executable paths. It does not establish which lease rejected a historical request, the exact actor request authentication, durable state after the historical failure, or a causal repair. No SDK or consumer source was edited."
+}

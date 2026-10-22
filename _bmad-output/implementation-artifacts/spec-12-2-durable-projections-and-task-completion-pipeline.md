@@ -679,3 +679,50 @@ No Folders or SDK product source, dependency pin, Git index, quota, assertion, d
 was changed. Task36 remains unchecked and Story12.2 remains in-progress for this SDK-owned correction,
 exact consumer/strict live requalification, and the separately open broad SDK, package/PD10, SM4 and
 independent review gates. No new complete authenticated live pass or32,769 Folders HTTP run is claimed.
+
+## Current continuation checkpoint — 2026-10-22
+
+The user resumed build 12.2 after pushing the qualification work; the starting clean HEAD is
+`0a693eb48b37faed255c9f560ecbba691e3f1bf1`. The completed narrow
+[inherited-owner qualification](spec-12-2-task-36-inherited-owner-requalification.md) and its
+[handoff](evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/handoff.md) supersede
+the inherited-owner failure above for their exact source and runtime identities. That packet records
+the complete authenticated 10,001-position recovery/inheritance case passing, both required consumer
+component sizes passing, and fresh SDK controls; do not repeat the expensive passing capacity lane
+unless source drift or a new failure requires it. Task 36 remains unchecked because strict authenticated
+real-provider acceptance failed at BranchRefPolicyConfigured with internal actor429/admission-unavailable.
+
+Continue the outstanding consumer qualification using the existing Debug project-reference seam to
+`/home/administrator/projects/hexalith/eventstore` and the exact source/binary selection and audits in
+that handoff. Check current source and runtime identities before executing; preserve all sealed evidence.
+Investigate the strict admission failure and execute the unchanged strict real-provider lane on verified
+outputs if feasible. Apply a necessary consumer correction only when the retained failure and current
+source establish it; do not weaken admission, assertions, deadlines or retry limits. SDK implementation
+remains separately owned: an SDK-owned defect requires an exact actionable handoff, rather than a
+Folders workaround or SDK source edits in this session. Record current commands, outcomes and fixture
+cleanup in a new evidence directory, and leave any unestablished gate open.
+
+The existing no-publication/no-Git-mutation/no-pin-change scope remains in force. Package/PD10, SM4
+and independent whole-story review retain their separate dispositions; this continuation does not
+authorize a performance redesign or SDK release. Keep the original baseline and frozen intent intact.
+
+## Strict consumer continuation result — 2026-10-22
+
+The [continuation handoff](evidence/story-12-2-strict-continuation-20261022T100829Z/README.md)
+retains two unchanged strict commands, their XML, actual runtime identities, sidecar launch arguments
+and cleanup. Both failed in fixture initialization at `DaprClient.CheckHealthAsync` after the existing
+100-second HttpClient timeout: 0 passed/1 failed/0 skipped in 226.062 and 211.058 seconds respectively.
+Neither run reached authenticated commands or consumer acceptance. Sidecars handled SIGHUP during
+startup and subsequently forced shutdown; signal sender and cause remain unclassified. The retained
+component files and launch arguments establish no configuration correction. These startup failures
+do not re-execute or classify the historical actor429/admission failure.
+
+Parent independently checked all 546 sealed packet files, both XML outcomes, 15,098 current source/config
+hashes, 584 actual runtime artifacts and 6,503 historical evidence hashes, with zero drift. The expanded
+runtime inventory includes the actual launched Tenants executable directory. Exact fixture-owned cleanup
+passed and the unrelated Tenants AppHost remained running. No product/SDK source, qualified binary,
+dependency pin, assertion, deadline, retry policy or admission setting changed.
+
+Task 36 remains unchecked and Story 12.2 remains in-progress. Next diagnose the sidecar signal/restart
+sequence before rerunning strict acceptance, then address the separately owned historical SDK admission
+failure if it recurs. Package/PD10, SM4 and independent whole-story review remain separate open gates.

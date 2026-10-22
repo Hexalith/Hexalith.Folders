@@ -1,0 +1,27 @@
+<assemblies schema-version="3" id="c917bc55-affd-4317-8083-ce4bf9fef34f" computer="DESKTOP-VIOG240" user="administrator" start-rtf="2026-10-22T10:16:02.5403161+00:00" finish-rtf="2026-10-22T10:19:33.5886119+00:00" timestamp="10/22/2026 12:19:33"><assembly environment="64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]" id="2bdbb7a6-dd1c-4646-9687-07a63ff53ef1" name="/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll" run-date="2026-10-22" run-time="10:16:02" start-rtf="2026-10-22T10:16:02.5403161+00:00" test-framework="xUnit.net v3 4.0.2+0c7aa4991f" target-framework=".NETCoreApp,Version=v10.0" errors="0" failed="1" finish-rtf="2026-10-22T10:19:33.5886119+00:00" not-run="0" passed="0" skipped="0" time="211.058" time-rtf="00:03:31.0580000" total="1"><collection name="Folder durability acceptance" id="6601f317-2d41-4f64-b76e-5dbe9ce8c527" failed="1" not-run="0" passed="0" skipped="0" time="0.000" time-rtf="00:00:00" total="1"><test id="e514c8bb-1992-4a6c-993d-f69038681240" name="Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures" result="Fail" time="0" time-rtf="00:00:00.0000000" start-rtf="2026-10-22T10:19:33.5769674+00:00" finish-rtf="2026-10-22T10:19:33.5769674+00:00" type="Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests" method="RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures" source-file="/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs" source-line="33"><failure exception-type="Xunit.Sdk.TestPipelineException"><message>Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync
+---- System.Threading.Tasks.TaskCanceledException : The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.
+-------- System.TimeoutException : The operation was canceled.
+------------ System.Threading.Tasks.TaskCanceledException : The operation was canceled.
+---------------- System.IO.IOException : Unable to read data from the transport connection: Operation canceled.
+-------------------- System.Net.Sockets.SocketException : Operation canceled</message><stack-trace>
+----- Inner Stack Trace -----
+   at System.Net.Http.HttpClient.HandleFailure(Exception e, Boolean telemetryStarted, HttpResponseMessage response, CancellationTokenSource cts, CancellationToken cancellationToken, CancellationTokenSource pendingRequestsCts)
+   at System.Net.Http.HttpClient.&lt;SendAsync&gt;g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Dapr.Client.DaprClientGrpc.CheckHealthAsync(CancellationToken cancellationToken)
+   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.StartAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 880
+   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 115
+   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 121
+----- Inner Stack Trace -----
+
+----- Inner Stack Trace -----
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.&lt;SendAsync&gt;g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+----- Inner Stack Trace -----
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource&lt;System.Int32&gt;.GetResult(Int16 token)
+   at System.Net.Http.HttpConnection.InitialFillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+----- Inner Stack Trace -----
+</stack-trace></failure></test></collection></assembly></assemblies>

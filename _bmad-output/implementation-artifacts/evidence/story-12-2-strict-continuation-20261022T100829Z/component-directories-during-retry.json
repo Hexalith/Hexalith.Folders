@@ -1,0 +1,117 @@
+{
+  "utc": "2026-10-22T10:18:58.037652+00:00",
+  "records": [
+    {
+      "path": "/tmp/folders-durability-ll2s1g4x.ipa",
+      "exists": true,
+      "files": [
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/provider-secretstore.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 339,
+          "sha256": "fa771df133f6c618e345e5fe9f3006a157e500a9c78c077f3c058a9d2e54d419"
+        },
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/llm.memories.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 759,
+          "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229"
+        },
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/pubsub.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 1434,
+          "sha256": "6bb2e2c447b4a5caaf78eebc932eb12500085c8a8845b8e7102b5b7c24f2fb34"
+        },
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/accesscontrol.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 1065,
+          "sha256": "7bf2910adef4ee855a9f0109942624693d25179f9cd2a8250655a8025af4b19c"
+        },
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/statestore.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 1615,
+          "sha256": "7948a9b92dcd9d0ac71b1b5d353fc6260e2e269e0a34564f5af5fbd4fa4da36a",
+          "actor_state_store_enabled": true,
+          "redis_isolated": true
+        },
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/resiliency.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 2374,
+          "sha256": "69122030fbca371b8b972eaf26492cac9960d37ccf60b2fc6e6be2e53c68b8ea"
+        },
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/secretstore.memories.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 915,
+          "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef"
+        },
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/ordinary-proof/provider-secretstore.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 339,
+          "sha256": "fa771df133f6c618e345e5fe9f3006a157e500a9c78c077f3c058a9d2e54d419"
+        },
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/ordinary-proof/llm.memories.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 759,
+          "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229"
+        },
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/ordinary-proof/pubsub.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 1655,
+          "sha256": "d641c0f0f42b4714c90181db867531e3e34ee84f95488010b240c4f9acfe8b77"
+        },
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/ordinary-proof/accesscontrol.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 1065,
+          "sha256": "7bf2910adef4ee855a9f0109942624693d25179f9cd2a8250655a8025af4b19c"
+        },
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/ordinary-proof/statestore.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 1733,
+          "sha256": "3ed191d974af28948ffe200ff912fe2d3ce68e243c23997b3d857e392a6b36d2",
+          "actor_state_store_enabled": true,
+          "redis_isolated": true
+        },
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/ordinary-proof/resiliency.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 2374,
+          "sha256": "69122030fbca371b8b972eaf26492cac9960d37ccf60b2fc6e6be2e53c68b8ea"
+        },
+        {
+          "path": "/tmp/folders-durability-ll2s1g4x.ipa/ordinary-proof/secretstore.memories.yaml",
+          "uid": 1000,
+          "owned_by_current_uid": true,
+          "size": 915,
+          "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef"
+        }
+      ],
+      "uid": 1000,
+      "owned_by_current_uid": true,
+      "mode": "0o700"
+    }
+  ],
+  "claim": "Read-only ownership/existence/hash audit. No component secret contents or credentials are retained."
+}

@@ -1,0 +1,2059 @@
+{
+  "results": [
+    {
+      "lane": "strict-live",
+      "sidecar_events": [
+        {
+          "line": 286,
+          "text": "      44: 2026-10-22T10:09:33.7250000Z time=\"2026-10-22T12:09:33.725416045+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 288,
+          "text": "      45: 2026-10-22T10:09:33.7250000Z time=\"2026-10-22T12:09:33.725493014+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 380,
+          "text": "      91: 2026-10-22T10:09:33.7280000Z time=\"2026-10-22T12:09:33.728041246+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 444,
+          "text": "      27: 2026-10-22T10:09:33.7850000Z time=\"2026-10-22T12:09:33.785665391+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 446,
+          "text": "      28: 2026-10-22T10:09:33.7850000Z time=\"2026-10-22T12:09:33.785726599+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 510,
+          "text": "      60: 2026-10-22T10:09:33.7880000Z time=\"2026-10-22T12:09:33.788939343+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 572,
+          "text": "      27: 2026-10-22T10:09:33.8060000Z time=\"2026-10-22T12:09:33.804870479+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 574,
+          "text": "      28: 2026-10-22T10:09:33.8060000Z time=\"2026-10-22T12:09:33.80491775+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 632,
+          "text": "      57: 2026-10-22T10:09:33.8080000Z time=\"2026-10-22T12:09:33.807932658+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 776,
+          "text": "      75: 2026-10-22T10:09:36.7100000Z time=\"2026-10-22T12:09:36.707386539+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 2941ms\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 930,
+          "text": "      104: 2026-10-22T10:09:37.0010000Z time=\"2026-10-22T12:09:37.000581436+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 3294ms\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 1090,
+          "text": "      75: 2026-10-22T10:09:37.3020000Z time=\"2026-10-22T12:09:37.300684002+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 3507ms\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 1230,
+          "text": "      62: 2026-10-22T10:09:38.1220000Z time=\"2026-10-22T12:09:38.122917711+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 1232,
+          "text": "      63: 2026-10-22T10:09:38.1220000Z time=\"2026-10-22T12:09:38.122977829+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 1318,
+          "text": "      106: 2026-10-22T10:09:38.1340000Z time=\"2026-10-22T12:09:38.134297462+02:00\" level=info msg=\"Actor runtime started\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 1813,
+          "text": "      48: 2026-10-22T10:10:07.9970000Z time=\"2026-10-22T12:10:07.997183784+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 1815,
+          "text": "      49: 2026-10-22T10:10:07.9990000Z time=\"2026-10-22T12:10:07.997231837+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 1915,
+          "text": "      99: 2026-10-22T10:10:08.0000000Z time=\"2026-10-22T12:10:08.000023028+02:00\" level=info msg=\"Actor runtime started\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 1995,
+          "text": "      51: 2026-10-22T10:10:08.2110000Z time=\"2026-10-22T12:10:08.210662642+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 1997,
+          "text": "      52: 2026-10-22T10:10:08.2110000Z time=\"2026-10-22T12:10:08.210718581+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2069,
+          "text": "      51: 2026-10-22T10:10:08.1610000Z time=\"2026-10-22T12:10:08.159524454+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 2071,
+          "text": "      52: 2026-10-22T10:10:08.1610000Z time=\"2026-10-22T12:10:08.159548942+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2159,
+          "text": "      96: 2026-10-22T10:10:08.1650000Z time=\"2026-10-22T12:10:08.165163306+02:00\" level=info msg=\"Actor runtime started\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2183,
+          "text": "      108: 2026-10-22T10:10:08.1650000Z time=\"2026-10-22T12:10:08.165704943+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 18ms\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2249,
+          "text": "      55: 2026-10-22T10:10:08.2590000Z time=\"2026-10-22T12:10:08.259843888+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 2251,
+          "text": "      56: 2026-10-22T10:10:08.2590000Z time=\"2026-10-22T12:10:08.259912099+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2339,
+          "text": "      100: 2026-10-22T10:10:08.2910000Z time=\"2026-10-22T12:10:08.285413706+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2423,
+          "text": "      54: 2026-10-22T10:10:08.2360000Z time=\"2026-10-22T12:10:08.236639212+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 2425,
+          "text": "      55: 2026-10-22T10:10:08.2360000Z time=\"2026-10-22T12:10:08.236674731+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2525,
+          "text": "      105: 2026-10-22T10:10:08.2480000Z time=\"2026-10-22T12:10:08.239121662+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2625,
+          "text": "      102: 2026-10-22T10:10:08.2190000Z time=\"2026-10-22T12:10:08.219623257+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2735,
+          "text": "      129: 2026-10-22T10:10:10.7390000Z time=\"2026-10-22T12:10:10.738731323+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2741,
+          "text": "      132: 2026-10-22T10:10:10.7390000Z time=\"2026-10-22T12:10:10.739011155+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2763,
+          "text": "      143: 2026-10-22T10:10:10.7410000Z time=\"2026-10-22T12:10:10.741567303+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2765,
+          "text": "      144: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.744333829+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2767,
+          "text": "      145: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.744366583+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2779,
+          "text": "      151: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.745096335+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2799,
+          "text": "      115: 2026-10-22T10:10:10.7430000Z time=\"2026-10-22T12:10:10.74303533+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2813,
+          "text": "      122: 2026-10-22T10:10:10.7430000Z time=\"2026-10-22T12:10:10.743641494+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2815,
+          "text": "      123: 2026-10-22T10:10:10.7430000Z time=\"2026-10-22T12:10:10.743800301+02:00\" level=info msg=\"Actor runtime stopped\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2835,
+          "text": "      122: 2026-10-22T10:10:10.7180000Z time=\"2026-10-22T12:10:10.717137156+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2843,
+          "text": "      126: 2026-10-22T10:10:10.7180000Z time=\"2026-10-22T12:10:10.717752337+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2851,
+          "text": "      130: 2026-10-22T10:10:10.7180000Z time=\"2026-10-22T12:10:10.718005637+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2869,
+          "text": "      120: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.725080187+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2877,
+          "text": "      124: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.725670213+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2885,
+          "text": "      128: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.725837948+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2919,
+          "text": "      118: 2026-10-22T10:10:10.7190000Z time=\"2026-10-22T12:10:10.718980118+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2927,
+          "text": "      122: 2026-10-22T10:10:10.7200000Z time=\"2026-10-22T12:10:10.720478333+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2929,
+          "text": "      123: 2026-10-22T10:10:10.7200000Z time=\"2026-10-22T12:10:10.72051785+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2939,
+          "text": "      122: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.744413068+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2943,
+          "text": "      124: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.744912484+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2951,
+          "text": "      128: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.745009001+02:00\" level=info msg=\"Actor runtime stopped\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2991,
+          "text": "      120: 2026-10-22T10:10:10.7230000Z time=\"2026-10-22T12:10:10.723362646+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 3003,
+          "text": "      126: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.72378826+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 3007,
+          "text": "      128: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.723821875+02:00\" level=info msg=\"Actor runtime stopped\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 3011,
+          "text": "      130: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.724481016+02:00\" level=info msg=\"Dapr is shutting down\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3013,
+          "text": "      131: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.724515092+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3025,
+          "text": "      137: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.725271521+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3057,
+          "text": "      131: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832172536+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3059,
+          "text": "      132: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832196473+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 2623ms\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3061,
+          "text": "      133: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832229366+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3063,
+          "text": "      134: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832272941+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3079,
+          "text": "      142: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832526472+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3081,
+          "text": "      127: 2026-10-22T10:10:10.8550000Z time=\"2026-10-22T12:10:10.855761586+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Internal desc = the state store is not configured to use the actor runtime. Have you set the - name: actorStateStore value: \\\"true\\\" in your state store component file?\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3083,
+          "text": "      128: 2026-10-22T10:10:10.8550000Z time=\"2026-10-22T12:10:10.855798467+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 2667ms\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3085,
+          "text": "      129: 2026-10-22T10:10:10.8550000Z time=\"2026-10-22T12:10:10.855850478+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3087,
+          "text": "      130: 2026-10-22T10:10:10.8550000Z time=\"2026-10-22T12:10:10.855895014+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3099,
+          "text": "      136: 2026-10-22T10:10:10.8570000Z time=\"2026-10-22T12:10:10.857312017+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3199,
+          "text": "      132: 2026-10-22T10:10:13.9120000Z time=\"2026-10-22T12:10:13.912189453+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3201,
+          "text": "      133: 2026-10-22T10:10:13.9120000Z time=\"2026-10-22T12:10:13.91227049+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 5708ms\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3205,
+          "text": "      135: 2026-10-22T10:10:13.9120000Z time=\"2026-10-22T12:10:13.912374646+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3207,
+          "text": "      136: 2026-10-22T10:10:13.9120000Z time=\"2026-10-22T12:10:13.912565706+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3219,
+          "text": "      142: 2026-10-22T10:10:13.9130000Z time=\"2026-10-22T12:10:13.913159611+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3255,
+          "text": "      152: 2026-10-22T10:10:15.7450000Z time=\"2026-10-22T12:10:15.745300713+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3265,
+          "text": "      138: 2026-10-22T10:10:15.7250000Z time=\"2026-10-22T12:10:15.725074128+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3279,
+          "text": "      145: 2026-10-22T10:10:15.8320000Z time=\"2026-10-22T12:10:15.832547421+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3289,
+          "text": "      139: 2026-10-22T10:10:15.8570000Z time=\"2026-10-22T12:10:15.856972969+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3307,
+          "text": "      143: 2026-10-22T10:10:18.9130000Z time=\"2026-10-22T12:10:18.912963249+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3831,
+          "text": "      132: 2026-10-22T10:11:25.8190000Z time=\"2026-10-22T12:11:25.819342475+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Internal desc = the state store is not configured to use the actor runtime. Have you set the - name: actorStateStore value: \\\"true\\\" in your state store component file?\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3833,
+          "text": "      133: 2026-10-22T10:11:25.8190000Z time=\"2026-10-22T12:11:25.819385248+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 77838ms\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3835,
+          "text": "      134: 2026-10-22T10:11:25.8190000Z time=\"2026-10-22T12:11:25.819434683+02:00\" level=info msg=\"Dapr is shutting down\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3837,
+          "text": "      135: 2026-10-22T10:11:25.8190000Z time=\"2026-10-22T12:11:25.819457407+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3851,
+          "text": "      142: 2026-10-22T10:11:25.8200000Z time=\"2026-10-22T12:11:25.820198029+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3855,
+          "text": "      143: 2026-10-22T10:11:30.8190000Z time=\"2026-10-22T12:11:30.819616945+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        }
+      ],
+      "terminal_failure": [
+        "    Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures [FAIL]",
+        "      Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync",
+        "      ---- System.Threading.Tasks.TaskCanceledException : The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.",
+        "      -------- System.TimeoutException : The operation was canceled.",
+        "      ------------ System.Threading.Tasks.TaskCanceledException : The operation was canceled.",
+        "      ---------------- System.IO.IOException : Unable to read data from the transport connection: Operation canceled.",
+        "      -------------------- System.Net.Sockets.SocketException : Operation canceled",
+        "      Stack Trace:",
+        "        ",
+        "        ----- Inner Stack Trace -----",
+        "           at System.Net.Http.HttpClient.HandleFailure(Exception e, Boolean telemetryStarted, HttpResponseMessage response, CancellationTokenSource cts, CancellationToken cancellationToken, CancellationTokenSource pendingRequestsCts)",
+        "           at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)",
+        "           at Dapr.Client.DaprClientGrpc.CheckHealthAsync(CancellationToken cancellationToken)",
+        "        tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs(880,0): at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.StartAsync()",
+        "        tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs(115,0): at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync()",
+        "        tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs(121,0): at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync()",
+        "        ----- Inner Stack Trace -----",
+        "        "
+      ],
+      "app_runtime_binding_count": 0,
+      "current_admission_unavailable_count": 0,
+      "current_rate_limit_count": 0,
+      "sidecar_launches": [
+        {
+          "line": 194,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      7: 2026-10-22T10:09:32.9210000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"folders-workers-6d75f951afaf8bfc\", \"--config\", \"/tmp/folders-durability-nxit1a0e.x31/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-nxit1a0e.x31\", \"--app-port\", \"42569\", \"--dapr-grpc-port\", \"10328\", \"--dapr-http-port\", \"10327\", \"--metrics-port\", \"10326\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 198,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      1: 2026-10-22T10:09:32.9160000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"folders-workers-proof-b-6d75f951afaf8bfc\", \"--config\", \"/tmp/folders-durability-nxit1a0e.x31/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-nxit1a0e.x31/ordinary-proof\", \"--app-port\", \"43109\", \"--dapr-grpc-port\", \"10322\", \"--dapr-http-port\", \"10321\", \"--metrics-port\", \"10320\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 202,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      1: 2026-10-22T10:09:32.9120000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"folders-workers-proof-a-6d75f951afaf8bfc\", \"--config\", \"/tmp/folders-durability-nxit1a0e.x31/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-nxit1a0e.x31/ordinary-proof\", \"--app-port\", \"45829\", \"--dapr-grpc-port\", \"10325\", \"--dapr-http-port\", \"10324\", \"--metrics-port\", \"10323\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 964,
+          "resource": "memories-dapr-cli",
+          "text": "      25: 2026-10-22T10:09:37.1050000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"memories-6d75f951afaf8bfc\", \"--resources-path\", \"/tmp/folders-durability-nxit1a0e.x31\", \"--app-port\", \"40349\", \"--dapr-grpc-port\", \"10331\", \"--dapr-http-port\", \"10330\", \"--metrics-port\", \"10329\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 1663,
+          "resource": "eventstore-dapr-cli",
+          "text": "      11: 2026-10-22T10:10:07.5120000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"eventstore-6d75f951afaf8bfc\", \"--config\", \"/tmp/folders-durability-nxit1a0e.x31/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-nxit1a0e.x31\", \"--app-port\", \"35319\", \"--dapr-grpc-port\", \"10346\", \"--dapr-http-port\", \"10345\", \"--metrics-port\", \"10344\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 1685,
+          "resource": "tenants-dapr-cli",
+          "text": "      14: 2026-10-22T10:10:07.5730000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-health-check-path\", \"/alive\", \"--app-id\", \"tenants-6d75f951afaf8bfc\", \"--config\", \"/tmp/folders-durability-nxit1a0e.x31/accesscontrol.yaml\", \"--enable-app-health-check\", \"--resources-path\", \"/tmp/folders-durability-nxit1a0e.x31\", \"--app-port\", \"35627\", \"--dapr-grpc-port\", \"10343\", \"--dapr-http-port\", \"10342\", \"--metrics-port\", \"10341\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 1697,
+          "resource": "folders-dapr-cli",
+          "text": "      17: 2026-10-22T10:10:07.6480000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"folders-6d75f951afaf8bfc\", \"--config\", \"/tmp/folders-durability-nxit1a0e.x31/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-nxit1a0e.x31\", \"--app-port\", \"40127\", \"--dapr-grpc-port\", \"10340\", \"--dapr-http-port\", \"10339\", \"--metrics-port\", \"10338\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 1703,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      17: 2026-10-22T10:10:07.6790000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"folders-workers-6d75f951afaf8bfc\", \"--config\", \"/tmp/folders-durability-nxit1a0e.x31/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-nxit1a0e.x31\", \"--app-port\", \"43893\", \"--dapr-grpc-port\", \"10337\", \"--dapr-http-port\", \"10336\", \"--metrics-port\", \"10335\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 1705,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      14: 2026-10-22T10:10:07.7560000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"folders-ui-6d75f951afaf8bfc\", \"--config\", \"/tmp/folders-durability-nxit1a0e.x31/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-nxit1a0e.x31\", \"--app-port\", \"38217\", \"--dapr-grpc-port\", \"10334\", \"--dapr-http-port\", \"10333\", \"--metrics-port\", \"10332\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        }
+      ],
+      "native_startup_error_metrics": [
+        {
+          "line": 380,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      91: 2026-10-22T10:09:33.7280000Z time=\"2026-10-22T12:09:33.728041246+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 510,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      60: 2026-10-22T10:09:33.7880000Z time=\"2026-10-22T12:09:33.788939343+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 632,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      57: 2026-10-22T10:09:33.8080000Z time=\"2026-10-22T12:09:33.807932658+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 770,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      72: 2026-10-22T10:09:36.7060000Z time=\"2026-10-22T12:09:36.706640261+02:00\" level=error msg=\"Failed to start subscription for pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 772,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      73: 2026-10-22T10:09:36.7100000Z time=\"2026-10-22T12:09:36.706983062+02:00\" level=error msg=\"Failed to start subscription for pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 776,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      75: 2026-10-22T10:09:36.7100000Z time=\"2026-10-22T12:09:36.707386539+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 2941ms\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 778,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      76: 2026-10-22T10:09:36.7100000Z time=\"2026-10-22T12:09:36.707583188+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 780,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      77: 2026-10-22T10:09:36.7100000Z time=\"2026-10-22T12:09:36.707774877+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 926,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      85: 2026-10-22T10:09:37.0390000Z time=\"2026-10-22T12:09:37.039105961+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 930,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      104: 2026-10-22T10:09:37.0010000Z time=\"2026-10-22T12:09:37.000581436+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 3294ms\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 1084,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      72: 2026-10-22T10:09:37.3020000Z time=\"2026-10-22T12:09:37.300628756+02:00\" level=error msg=\"Failed to start subscription for pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1086,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      73: 2026-10-22T10:09:37.3020000Z time=\"2026-10-22T12:09:37.300644616+02:00\" level=error msg=\"Failed to start subscription for pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1090,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      75: 2026-10-22T10:09:37.3020000Z time=\"2026-10-22T12:09:37.300684002+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 3507ms\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 1094,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      77: 2026-10-22T10:09:37.3020000Z time=\"2026-10-22T12:09:37.30097349+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1096,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      78: 2026-10-22T10:09:37.3020000Z time=\"2026-10-22T12:09:37.301008968+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1146,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      86: 2026-10-22T10:09:37.3490000Z time=\"2026-10-22T12:09:37.349545343+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1148,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      91: 2026-10-22T10:09:37.7190000Z time=\"2026-10-22T12:09:37.719382045+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1150,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      87: 2026-10-22T10:09:37.7930000Z time=\"2026-10-22T12:09:37.792491016+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1164,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      92: 2026-10-22T10:09:37.9340000Z time=\"2026-10-22T12:09:37.933825476+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1166,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      88: 2026-10-22T10:09:38.0730000Z time=\"2026-10-22T12:09:38.072919945+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1318,
+          "resource": "memories-dapr-cli",
+          "text": "      106: 2026-10-22T10:09:38.1340000Z time=\"2026-10-22T12:09:38.134297462+02:00\" level=info msg=\"Actor runtime started\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 1361,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      93: 2026-10-22T10:09:38.5250000Z time=\"2026-10-22T12:09:38.525326321+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1369,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      94: 2026-10-22T10:09:39.0620000Z time=\"2026-10-22T12:09:39.060256341+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1371,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      95: 2026-10-22T10:09:39.3080000Z time=\"2026-10-22T12:09:39.307647273+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1375,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      89: 2026-10-22T10:09:39.4300000Z time=\"2026-10-22T12:09:39.430028504+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1377,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      90: 2026-10-22T10:09:39.5520000Z time=\"2026-10-22T12:09:39.552635139+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1412,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      96: 2026-10-22T10:09:40.2990000Z time=\"2026-10-22T12:09:40.299748205+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1414,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      97: 2026-10-22T10:09:40.4550000Z time=\"2026-10-22T12:09:40.454925618+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1416,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      91: 2026-10-22T10:09:41.0610000Z time=\"2026-10-22T12:09:41.061489939+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1418,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      92: 2026-10-22T10:09:41.1470000Z time=\"2026-10-22T12:09:41.147549816+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1420,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      98: 2026-10-22T10:09:41.8280000Z time=\"2026-10-22T12:09:41.828259429+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1422,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      99: 2026-10-22T10:09:42.2480000Z time=\"2026-10-22T12:09:42.240056013+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1443,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      93: 2026-10-22T10:09:43.4010000Z time=\"2026-10-22T12:09:43.401505045+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1445,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      100: 2026-10-22T10:09:43.4090000Z time=\"2026-10-22T12:09:43.409584189+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1447,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      94: 2026-10-22T10:09:43.7240000Z time=\"2026-10-22T12:09:43.71967397+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1455,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      96: 2026-10-22T10:09:47.2110000Z time=\"2026-10-22T12:09:47.211363191+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1476,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      102: 2026-10-22T10:09:47.2760000Z time=\"2026-10-22T12:09:47.276275816+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1478,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      103: 2026-10-22T10:09:47.6020000Z time=\"2026-10-22T12:09:47.602690859+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1480,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      97: 2026-10-22T10:09:48.3470000Z time=\"2026-10-22T12:09:48.347477557+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1484,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      104: 2026-10-22T10:09:51.2300000Z time=\"2026-10-22T12:09:51.230810674+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1486,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      105: 2026-10-22T10:09:51.3600000Z time=\"2026-10-22T12:09:51.360166487+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1507,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      98: 2026-10-22T10:09:52.5690000Z time=\"2026-10-22T12:09:52.569310216+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1509,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      99: 2026-10-22T10:09:52.7720000Z time=\"2026-10-22T12:09:52.772575387+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1519,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      107: 2026-10-22T10:09:57.0890000Z time=\"2026-10-22T12:09:57.089389115+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1521,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      108: 2026-10-22T10:09:57.2550000Z time=\"2026-10-22T12:09:57.254988075+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1548,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      101: 2026-10-22T10:10:00.2410000Z time=\"2026-10-22T12:10:00.241507797+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1571,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      102: 2026-10-22T10:10:02.9590000Z time=\"2026-10-22T12:10:02.959385832+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1915,
+          "resource": "eventstore-dapr-cli",
+          "text": "      99: 2026-10-22T10:10:08.0000000Z time=\"2026-10-22T12:10:08.000023028+02:00\" level=info msg=\"Actor runtime started\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2159,
+          "resource": "tenants-dapr-cli",
+          "text": "      96: 2026-10-22T10:10:08.1650000Z time=\"2026-10-22T12:10:08.165163306+02:00\" level=info msg=\"Actor runtime started\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2183,
+          "resource": "tenants-dapr-cli",
+          "text": "      108: 2026-10-22T10:10:08.1650000Z time=\"2026-10-22T12:10:08.165704943+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 18ms\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2339,
+          "resource": "folders-dapr-cli",
+          "text": "      100: 2026-10-22T10:10:08.2910000Z time=\"2026-10-22T12:10:08.285413706+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2525,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      105: 2026-10-22T10:10:08.2480000Z time=\"2026-10-22T12:10:08.239121662+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2625,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      102: 2026-10-22T10:10:08.2190000Z time=\"2026-10-22T12:10:08.219623257+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2655,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      109: 2026-10-22T10:10:09.2450000Z time=\"2026-10-22T12:10:09.245354328+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 2735,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      129: 2026-10-22T10:10:10.7390000Z time=\"2026-10-22T12:10:10.738731323+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2741,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      132: 2026-10-22T10:10:10.7390000Z time=\"2026-10-22T12:10:10.739011155+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2763,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      143: 2026-10-22T10:10:10.7410000Z time=\"2026-10-22T12:10:10.741567303+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2765,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      144: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.744333829+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2779,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      151: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.745096335+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2799,
+          "resource": "eventstore-dapr-cli",
+          "text": "      115: 2026-10-22T10:10:10.7430000Z time=\"2026-10-22T12:10:10.74303533+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2813,
+          "resource": "eventstore-dapr-cli",
+          "text": "      122: 2026-10-22T10:10:10.7430000Z time=\"2026-10-22T12:10:10.743641494+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2815,
+          "resource": "eventstore-dapr-cli",
+          "text": "      123: 2026-10-22T10:10:10.7430000Z time=\"2026-10-22T12:10:10.743800301+02:00\" level=info msg=\"Actor runtime stopped\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2835,
+          "resource": "folders-dapr-cli",
+          "text": "      122: 2026-10-22T10:10:10.7180000Z time=\"2026-10-22T12:10:10.717137156+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2843,
+          "resource": "folders-dapr-cli",
+          "text": "      126: 2026-10-22T10:10:10.7180000Z time=\"2026-10-22T12:10:10.717752337+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2851,
+          "resource": "folders-dapr-cli",
+          "text": "      130: 2026-10-22T10:10:10.7180000Z time=\"2026-10-22T12:10:10.718005637+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2869,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      120: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.725080187+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2877,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      124: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.725670213+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2885,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      128: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.725837948+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2919,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      118: 2026-10-22T10:10:10.7190000Z time=\"2026-10-22T12:10:10.718980118+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2927,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      122: 2026-10-22T10:10:10.7200000Z time=\"2026-10-22T12:10:10.720478333+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2929,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      123: 2026-10-22T10:10:10.7200000Z time=\"2026-10-22T12:10:10.72051785+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2939,
+          "resource": "memories-dapr-cli",
+          "text": "      122: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.744413068+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2943,
+          "resource": "memories-dapr-cli",
+          "text": "      124: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.744912484+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2951,
+          "resource": "memories-dapr-cli",
+          "text": "      128: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.745009001+02:00\" level=info msg=\"Actor runtime stopped\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2991,
+          "resource": "tenants-dapr-cli",
+          "text": "      120: 2026-10-22T10:10:10.7230000Z time=\"2026-10-22T12:10:10.723362646+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 3003,
+          "resource": "tenants-dapr-cli",
+          "text": "      126: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.72378826+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 3007,
+          "resource": "tenants-dapr-cli",
+          "text": "      128: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.723821875+02:00\" level=info msg=\"Actor runtime stopped\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 3011,
+          "resource": "tenants-dapr-cli",
+          "text": "      130: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.724481016+02:00\" level=info msg=\"Dapr is shutting down\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3025,
+          "resource": "tenants-dapr-cli",
+          "text": "      137: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.725271521+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3057,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      131: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832172536+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3059,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      132: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832196473+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 2623ms\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3061,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      133: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832229366+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3075,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      140: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832511883+02:00\" level=error msg=\"error retrieving pending Redis messages: context canceled\" app_id=folders-workers-6d75f951afaf8bfc component=\"pubsub (pubsub.redis/v1)\" instance=DESKTOP-VIOG240 scope=dapr.contrib type=log ver=1.18.7"
+        },
+        {
+          "line": 3077,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      141: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832519678+02:00\" level=error msg=\"error retrieving pending Redis messages: context canceled\" app_id=folders-workers-6d75f951afaf8bfc component=\"pubsub (pubsub.redis/v1)\" instance=DESKTOP-VIOG240 scope=dapr.contrib type=log ver=1.18.7"
+        },
+        {
+          "line": 3079,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      142: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832526472+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3081,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      127: 2026-10-22T10:10:10.8550000Z time=\"2026-10-22T12:10:10.855761586+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Internal desc = the state store is not configured to use the actor runtime. Have you set the - name: actorStateStore value: \\\"true\\\" in your state store component file?\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3083,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      128: 2026-10-22T10:10:10.8550000Z time=\"2026-10-22T12:10:10.855798467+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 2667ms\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3085,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      129: 2026-10-22T10:10:10.8550000Z time=\"2026-10-22T12:10:10.855850478+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3099,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      136: 2026-10-22T10:10:10.8570000Z time=\"2026-10-22T12:10:10.857312017+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3161,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      110: 2026-10-22T10:10:11.4050000Z time=\"2026-10-22T12:10:11.404949265+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3199,
+          "resource": "folders-dapr-cli",
+          "text": "      132: 2026-10-22T10:10:13.9120000Z time=\"2026-10-22T12:10:13.912189453+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3201,
+          "resource": "folders-dapr-cli",
+          "text": "      133: 2026-10-22T10:10:13.9120000Z time=\"2026-10-22T12:10:13.91227049+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 5708ms\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3205,
+          "resource": "folders-dapr-cli",
+          "text": "      135: 2026-10-22T10:10:13.9120000Z time=\"2026-10-22T12:10:13.912374646+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3219,
+          "resource": "folders-dapr-cli",
+          "text": "      142: 2026-10-22T10:10:13.9130000Z time=\"2026-10-22T12:10:13.913159611+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3251,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      103: 2026-10-22T10:10:14.9510000Z time=\"2026-10-22T12:10:14.951308415+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3253,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      104: 2026-10-22T10:10:15.0670000Z time=\"2026-10-22T12:10:15.067535658+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3255,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      152: 2026-10-22T10:10:15.7450000Z time=\"2026-10-22T12:10:15.745300713+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3265,
+          "resource": "tenants-dapr-cli",
+          "text": "      138: 2026-10-22T10:10:15.7250000Z time=\"2026-10-22T12:10:15.725074128+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3279,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      145: 2026-10-22T10:10:15.8320000Z time=\"2026-10-22T12:10:15.832547421+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3289,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      139: 2026-10-22T10:10:15.8570000Z time=\"2026-10-22T12:10:15.856972969+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3307,
+          "resource": "folders-dapr-cli",
+          "text": "      143: 2026-10-22T10:10:18.9130000Z time=\"2026-10-22T12:10:18.912963249+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3343,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      112: 2026-10-22T10:10:22.0260000Z time=\"2026-10-22T12:10:22.026354477+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3363,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      106: 2026-10-22T10:10:24.5980000Z time=\"2026-10-22T12:10:24.59811703+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3393,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      113: 2026-10-22T10:10:24.9990000Z time=\"2026-10-22T12:10:24.999386006+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3503,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      107: 2026-10-22T10:10:39.9210000Z time=\"2026-10-22T12:10:39.921364789+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3549,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      114: 2026-10-22T10:10:45.1750000Z time=\"2026-10-22T12:10:45.174979531+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3557,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      108: 2026-10-22T10:10:46.3940000Z time=\"2026-10-22T12:10:46.394633232+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3559,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      115: 2026-10-22T10:10:49.2440000Z time=\"2026-10-22T12:10:49.244581304+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3665,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      109: 2026-10-22T10:11:03.3780000Z time=\"2026-10-22T12:11:03.378753313+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3827,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      116: 2026-10-22T10:11:24.5610000Z time=\"2026-10-22T12:11:24.56126564+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3831,
+          "resource": "eventstore-dapr-cli",
+          "text": "      132: 2026-10-22T10:11:25.8190000Z time=\"2026-10-22T12:11:25.819342475+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Internal desc = the state store is not configured to use the actor runtime. Have you set the - name: actorStateStore value: \\\"true\\\" in your state store component file?\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3833,
+          "resource": "eventstore-dapr-cli",
+          "text": "      133: 2026-10-22T10:11:25.8190000Z time=\"2026-10-22T12:11:25.819385248+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 77838ms\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3835,
+          "resource": "eventstore-dapr-cli",
+          "text": "      134: 2026-10-22T10:11:25.8190000Z time=\"2026-10-22T12:11:25.819434683+02:00\" level=info msg=\"Dapr is shutting down\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3849,
+          "resource": "eventstore-dapr-cli",
+          "text": "      141: 2026-10-22T10:11:25.8200000Z time=\"2026-10-22T12:11:25.82009522+02:00\" level=error msg=\"error retrieving pending Redis messages: context canceled\" app_id=eventstore-6d75f951afaf8bfc component=\"pubsub (pubsub.redis/v1)\" instance=DESKTOP-VIOG240 scope=dapr.contrib type=log ver=1.18.7"
+        },
+        {
+          "line": 3851,
+          "resource": "eventstore-dapr-cli",
+          "text": "      142: 2026-10-22T10:11:25.8200000Z time=\"2026-10-22T12:11:25.820198029+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3853,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      110: 2026-10-22T10:11:29.9760000Z time=\"2026-10-22T12:11:29.975980186+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3855,
+          "resource": "eventstore-dapr-cli",
+          "text": "      143: 2026-10-22T10:11:30.8190000Z time=\"2026-10-22T12:11:30.819616945+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3867,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      117: 2026-10-22T10:11:39.5040000Z time=\"2026-10-22T12:11:39.504298993+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3871,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      118: 2026-10-22T10:11:56.9630000Z time=\"2026-10-22T12:11:56.963773821+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3875,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      111: 2026-10-22T10:12:04.6150000Z time=\"2026-10-22T12:12:04.614066947+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3879,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      119: 2026-10-22T10:12:11.6630000Z time=\"2026-10-22T12:12:11.663708837+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3983,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      112: 2026-10-22T10:12:58.3770000Z time=\"2026-10-22T12:12:58.377084107+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 4011,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      113: 2026-10-22T10:13:01.2140000Z time=\"2026-10-22T12:13:01.214273908+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        }
+      ]
+    },
+    {
+      "lane": "strict-retry-live",
+      "sidecar_events": [
+        {
+          "line": 256,
+          "text": "      27: 2026-10-22T10:16:08.1430000Z time=\"2026-10-22T12:16:08.143321557+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 258,
+          "text": "      28: 2026-10-22T10:16:08.1430000Z time=\"2026-10-22T12:16:08.143366264+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 382,
+          "text": "      44: 2026-10-22T10:16:08.1510000Z time=\"2026-10-22T12:16:08.151634743+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 384,
+          "text": "      45: 2026-10-22T10:16:08.1510000Z time=\"2026-10-22T12:16:08.151785967+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 472,
+          "text": "      89: 2026-10-22T10:16:08.1540000Z time=\"2026-10-22T12:16:08.154191582+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 546,
+          "text": "      57: 2026-10-22T10:16:08.1460000Z time=\"2026-10-22T12:16:08.146572013+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 572,
+          "text": "      27: 2026-10-22T10:16:08.1540000Z time=\"2026-10-22T12:16:08.154901472+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 574,
+          "text": "      28: 2026-10-22T10:16:08.1540000Z time=\"2026-10-22T12:16:08.154925239+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 644,
+          "text": "      63: 2026-10-22T10:16:08.1570000Z time=\"2026-10-22T12:16:08.157681195+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 812,
+          "text": "      75: 2026-10-22T10:16:09.4400000Z time=\"2026-10-22T12:16:09.439248729+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1299ms\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 858,
+          "text": "      77: 2026-10-22T10:16:09.4550000Z time=\"2026-10-22T12:16:09.455469509+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1327ms\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 916,
+          "text": "      104: 2026-10-22T10:16:09.5720000Z time=\"2026-10-22T12:16:09.570975865+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1444ms\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 1246,
+          "text": "      62: 2026-10-22T10:16:11.1830000Z time=\"2026-10-22T12:16:11.183795974+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 1248,
+          "text": "      63: 2026-10-22T10:16:11.1830000Z time=\"2026-10-22T12:16:11.183857804+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 1340,
+          "text": "      109: 2026-10-22T10:16:11.1880000Z time=\"2026-10-22T12:16:11.187524702+02:00\" level=info msg=\"Actor runtime started\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 1757,
+          "text": "      48: 2026-10-22T10:16:31.6180000Z time=\"2026-10-22T12:16:31.61870827+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 1759,
+          "text": "      49: 2026-10-22T10:16:31.6180000Z time=\"2026-10-22T12:16:31.618772475+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 1847,
+          "text": "      93: 2026-10-22T10:16:31.6280000Z time=\"2026-10-22T12:16:31.621611401+02:00\" level=info msg=\"Actor runtime started\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 1941,
+          "text": "      51: 2026-10-22T10:16:31.6740000Z time=\"2026-10-22T12:16:31.674755897+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 1943,
+          "text": "      52: 2026-10-22T10:16:31.6740000Z time=\"2026-10-22T12:16:31.674879488+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2035,
+          "text": "      98: 2026-10-22T10:16:31.6770000Z time=\"2026-10-22T12:16:31.677305034+02:00\" level=info msg=\"Actor runtime started\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2055,
+          "text": "      108: 2026-10-22T10:16:31.6770000Z time=\"2026-10-22T12:16:31.677900292+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 15ms\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2125,
+          "text": "      55: 2026-10-22T10:16:31.6690000Z time=\"2026-10-22T12:16:31.66865374+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 2127,
+          "text": "      56: 2026-10-22T10:16:31.6690000Z time=\"2026-10-22T12:16:31.66867404+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2219,
+          "text": "      102: 2026-10-22T10:16:31.6740000Z time=\"2026-10-22T12:16:31.670706125+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2305,
+          "text": "      54: 2026-10-22T10:16:31.6850000Z time=\"2026-10-22T12:16:31.685461367+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 2307,
+          "text": "      55: 2026-10-22T10:16:31.6850000Z time=\"2026-10-22T12:16:31.685499491+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2391,
+          "text": "      97: 2026-10-22T10:16:31.6880000Z time=\"2026-10-22T12:16:31.688456275+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2479,
+          "text": "      51: 2026-10-22T10:16:31.7660000Z time=\"2026-10-22T12:16:31.766040434+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 2481,
+          "text": "      52: 2026-10-22T10:16:31.7660000Z time=\"2026-10-22T12:16:31.766076083+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2581,
+          "text": "      102: 2026-10-22T10:16:31.7730000Z time=\"2026-10-22T12:16:31.773018568+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2685,
+          "text": "      122: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.741980709+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2691,
+          "text": "      125: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.74222574+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2705,
+          "text": "      128: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.742696092+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2713,
+          "text": "      132: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762129038+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2715,
+          "text": "      133: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762147564+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1089ms\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2717,
+          "text": "      134: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762335138+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2719,
+          "text": "      135: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762363904+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2733,
+          "text": "      142: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762767691+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2749,
+          "text": "      122: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.745636294+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2755,
+          "text": "      125: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.746144374+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2765,
+          "text": "      130: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.746302441+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2785,
+          "text": "      130: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.742332654+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2791,
+          "text": "      133: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.742786147+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2801,
+          "text": "      138: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.742884869+02:00\" level=info msg=\"Actor runtime stopped\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2813,
+          "text": "      125: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.744903352+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2829,
+          "text": "      133: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.746205587+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2841,
+          "text": "      139: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.746505932+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2851,
+          "text": "      144: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.747249469+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2853,
+          "text": "      145: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.7472909+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2865,
+          "text": "      151: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.748014033+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2871,
+          "text": "      108: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.741212879+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2887,
+          "text": "      116: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.74169146+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2895,
+          "text": "      120: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.74237177+02:00\" level=info msg=\"Actor runtime stopped\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2959,
+          "text": "      120: 2026-10-22T10:16:32.7510000Z time=\"2026-10-22T12:16:32.751481983+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2965,
+          "text": "      123: 2026-10-22T10:16:32.7510000Z time=\"2026-10-22T12:16:32.751689106+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2971,
+          "text": "      126: 2026-10-22T10:16:32.7510000Z time=\"2026-10-22T12:16:32.751803298+02:00\" level=info msg=\"Actor runtime stopped\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2979,
+          "text": "      130: 2026-10-22T10:16:32.7600000Z time=\"2026-10-22T12:16:32.760919308+02:00\" level=info msg=\"Dapr is shutting down\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2981,
+          "text": "      131: 2026-10-22T10:16:32.7610000Z time=\"2026-10-22T12:16:32.761005857+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2993,
+          "text": "      137: 2026-10-22T10:16:32.7610000Z time=\"2026-10-22T12:16:32.761404838+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3027,
+          "text": "      118: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.74519473+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 3035,
+          "text": "      122: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.745766623+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 3043,
+          "text": "      126: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.746049343+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 3045,
+          "text": "      127: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.831343485+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3047,
+          "text": "      128: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.831370738+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1073ms\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3051,
+          "text": "      130: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.831438224+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3053,
+          "text": "      131: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.831485345+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3063,
+          "text": "      136: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.83180633+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3139,
+          "text": "      132: 2026-10-22T10:16:35.3530000Z time=\"2026-10-22T12:16:35.35389342+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3141,
+          "text": "      133: 2026-10-22T10:16:35.3530000Z time=\"2026-10-22T12:16:35.353956613+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 3693ms\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3143,
+          "text": "      134: 2026-10-22T10:16:35.3540000Z time=\"2026-10-22T12:16:35.354387782+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3145,
+          "text": "      135: 2026-10-22T10:16:35.3540000Z time=\"2026-10-22T12:16:35.354435956+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3161,
+          "text": "      143: 2026-10-22T10:16:35.3550000Z time=\"2026-10-22T12:16:35.355179874+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3207,
+          "text": "      143: 2026-10-22T10:16:37.7620000Z time=\"2026-10-22T12:16:37.762900748+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3217,
+          "text": "      152: 2026-10-22T10:16:37.7480000Z time=\"2026-10-22T12:16:37.748199181+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3227,
+          "text": "      137: 2026-10-22T10:16:37.8310000Z time=\"2026-10-22T12:16:37.831794676+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3237,
+          "text": "      138: 2026-10-22T10:16:37.7610000Z time=\"2026-10-22T12:16:37.761706224+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3273,
+          "text": "      144: 2026-10-22T10:16:40.3550000Z time=\"2026-10-22T12:16:40.355133738+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3787,
+          "text": "      131: 2026-10-22T10:17:46.0210000Z time=\"2026-10-22T12:17:46.021011195+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 74430ms\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3789,
+          "text": "      132: 2026-10-22T10:17:46.0210000Z time=\"2026-10-22T12:17:46.021127151+02:00\" level=info msg=\"Dapr is shutting down\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3791,
+          "text": "      133: 2026-10-22T10:17:46.0210000Z time=\"2026-10-22T12:17:46.02117803+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3805,
+          "text": "      140: 2026-10-22T10:17:46.0210000Z time=\"2026-10-22T12:17:46.021386217+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3811,
+          "text": "      142: 2026-10-22T10:17:51.0220000Z time=\"2026-10-22T12:17:51.022258302+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        }
+      ],
+      "terminal_failure": [
+        "    Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures [FAIL]",
+        "      Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync",
+        "      ---- System.Threading.Tasks.TaskCanceledException : The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.",
+        "      -------- System.TimeoutException : The operation was canceled.",
+        "      ------------ System.Threading.Tasks.TaskCanceledException : The operation was canceled.",
+        "      ---------------- System.IO.IOException : Unable to read data from the transport connection: Operation canceled.",
+        "      -------------------- System.Net.Sockets.SocketException : Operation canceled",
+        "      Stack Trace:",
+        "        ",
+        "        ----- Inner Stack Trace -----",
+        "           at System.Net.Http.HttpClient.HandleFailure(Exception e, Boolean telemetryStarted, HttpResponseMessage response, CancellationTokenSource cts, CancellationToken cancellationToken, CancellationTokenSource pendingRequestsCts)",
+        "           at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)",
+        "           at Dapr.Client.DaprClientGrpc.CheckHealthAsync(CancellationToken cancellationToken)",
+        "        tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs(880,0): at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.StartAsync()",
+        "        tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs(115,0): at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync()",
+        "        tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs(121,0): at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync()",
+        "        ----- Inner Stack Trace -----",
+        "        "
+      ],
+      "app_runtime_binding_count": 0,
+      "current_admission_unavailable_count": 0,
+      "current_rate_limit_count": 0,
+      "sidecar_launches": [
+        {
+          "line": 194,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      1: 2026-10-22T10:16:07.8580000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"folders-workers-proof-b-01d2110fdb2927df\", \"--config\", \"/tmp/folders-durability-ll2s1g4x.ipa/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-ll2s1g4x.ipa/ordinary-proof\", \"--app-port\", \"46283\", \"--dapr-grpc-port\", \"11757\", \"--dapr-http-port\", \"11756\", \"--metrics-port\", \"11755\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 200,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      1: 2026-10-22T10:16:07.8810000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"folders-workers-proof-a-01d2110fdb2927df\", \"--config\", \"/tmp/folders-durability-ll2s1g4x.ipa/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-ll2s1g4x.ipa/ordinary-proof\", \"--app-port\", \"40529\", \"--dapr-grpc-port\", \"11760\", \"--dapr-http-port\", \"11759\", \"--metrics-port\", \"11758\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 204,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      7: 2026-10-22T10:16:07.8810000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"folders-workers-01d2110fdb2927df\", \"--config\", \"/tmp/folders-durability-ll2s1g4x.ipa/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-ll2s1g4x.ipa\", \"--app-port\", \"46825\", \"--dapr-grpc-port\", \"11763\", \"--dapr-http-port\", \"11762\", \"--metrics-port\", \"11761\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 992,
+          "resource": "memories-dapr-cli",
+          "text": "      25: 2026-10-22T10:16:10.8640000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"memories-01d2110fdb2927df\", \"--resources-path\", \"/tmp/folders-durability-ll2s1g4x.ipa\", \"--app-port\", \"37443\", \"--dapr-grpc-port\", \"11766\", \"--dapr-http-port\", \"11765\", \"--metrics-port\", \"11764\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 1595,
+          "resource": "eventstore-dapr-cli",
+          "text": "      11: 2026-10-22T10:16:31.2530000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"eventstore-01d2110fdb2927df\", \"--config\", \"/tmp/folders-durability-ll2s1g4x.ipa/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-ll2s1g4x.ipa\", \"--app-port\", \"42921\", \"--dapr-grpc-port\", \"11781\", \"--dapr-http-port\", \"11780\", \"--metrics-port\", \"11779\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 1639,
+          "resource": "tenants-dapr-cli",
+          "text": "      14: 2026-10-22T10:16:31.2980000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-health-check-path\", \"/alive\", \"--app-id\", \"tenants-01d2110fdb2927df\", \"--config\", \"/tmp/folders-durability-ll2s1g4x.ipa/accesscontrol.yaml\", \"--enable-app-health-check\", \"--resources-path\", \"/tmp/folders-durability-ll2s1g4x.ipa\", \"--app-port\", \"34539\", \"--dapr-grpc-port\", \"11778\", \"--dapr-http-port\", \"11777\", \"--metrics-port\", \"11776\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 1651,
+          "resource": "folders-dapr-cli",
+          "text": "      17: 2026-10-22T10:16:31.3460000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"folders-01d2110fdb2927df\", \"--config\", \"/tmp/folders-durability-ll2s1g4x.ipa/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-ll2s1g4x.ipa\", \"--app-port\", \"39209\", \"--dapr-grpc-port\", \"11775\", \"--dapr-http-port\", \"11774\", \"--metrics-port\", \"11773\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 1653,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      17: 2026-10-22T10:16:31.3370000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"folders-workers-01d2110fdb2927df\", \"--config\", \"/tmp/folders-durability-ll2s1g4x.ipa/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-ll2s1g4x.ipa\", \"--app-port\", \"41749\", \"--dapr-grpc-port\", \"11772\", \"--dapr-http-port\", \"11771\", \"--metrics-port\", \"11770\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        },
+        {
+          "line": 1673,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      14: 2026-10-22T10:16:31.4480000Z [sys] Starting process...: Cmd = /usr/local/bin/dapr, Args = [\"run\", \"--app-id\", \"folders-ui-01d2110fdb2927df\", \"--config\", \"/tmp/folders-durability-ll2s1g4x.ipa/accesscontrol.yaml\", \"--resources-path\", \"/tmp/folders-durability-ll2s1g4x.ipa\", \"--app-port\", \"36479\", \"--dapr-grpc-port\", \"11769\", \"--dapr-http-port\", \"11768\", \"--metrics-port\", \"11767\", \"--app-channel-address\", \"localhost\", \"--app-protocol\", \"http\"]"
+        }
+      ],
+      "native_startup_error_metrics": [
+        {
+          "line": 472,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      89: 2026-10-22T10:16:08.1540000Z time=\"2026-10-22T12:16:08.154191582+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 546,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      57: 2026-10-22T10:16:08.1460000Z time=\"2026-10-22T12:16:08.146572013+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 644,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      63: 2026-10-22T10:16:08.1570000Z time=\"2026-10-22T12:16:08.157681195+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 806,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      72: 2026-10-22T10:16:09.4400000Z time=\"2026-10-22T12:16:09.439135569+02:00\" level=error msg=\"Failed to start subscription for pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 808,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      73: 2026-10-22T10:16:09.4400000Z time=\"2026-10-22T12:16:09.439153113+02:00\" level=error msg=\"Failed to start subscription for pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 812,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      75: 2026-10-22T10:16:09.4400000Z time=\"2026-10-22T12:16:09.439248729+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1299ms\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 814,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      76: 2026-10-22T10:16:09.4400000Z time=\"2026-10-22T12:16:09.439615121+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 816,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      77: 2026-10-22T10:16:09.4400000Z time=\"2026-10-22T12:16:09.43968151+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 848,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      72: 2026-10-22T10:16:09.4550000Z time=\"2026-10-22T12:16:09.455061917+02:00\" level=error msg=\"Failed to start subscription for pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 850,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      73: 2026-10-22T10:16:09.4550000Z time=\"2026-10-22T12:16:09.455276624+02:00\" level=error msg=\"Failed to start subscription for pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 854,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      75: 2026-10-22T10:16:09.4550000Z time=\"2026-10-22T12:16:09.455416792+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 856,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      76: 2026-10-22T10:16:09.4550000Z time=\"2026-10-22T12:16:09.455419903+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 858,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      77: 2026-10-22T10:16:09.4550000Z time=\"2026-10-22T12:16:09.455469509+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1327ms\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 916,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      104: 2026-10-22T10:16:09.5720000Z time=\"2026-10-22T12:16:09.570975865+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1444ms\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 944,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      91: 2026-10-22T10:16:09.8430000Z time=\"2026-10-22T12:16:09.843857238+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 950,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      91: 2026-10-22T10:16:10.0730000Z time=\"2026-10-22T12:16:10.072942151+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 952,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      92: 2026-10-22T10:16:10.1120000Z time=\"2026-10-22T12:16:10.112034067+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 954,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      92: 2026-10-22T10:16:09.9640000Z time=\"2026-10-22T12:16:09.964176563+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 964,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      93: 2026-10-22T10:16:10.4900000Z time=\"2026-10-22T12:16:10.490770185+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 966,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      94: 2026-10-22T10:16:10.5460000Z time=\"2026-10-22T12:16:10.545974725+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 968,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      93: 2026-10-22T10:16:10.6910000Z time=\"2026-10-22T12:16:10.691442799+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 994,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      94: 2026-10-22T10:16:10.8800000Z time=\"2026-10-22T12:16:10.879933003+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1340,
+          "resource": "memories-dapr-cli",
+          "text": "      109: 2026-10-22T10:16:11.1880000Z time=\"2026-10-22T12:16:11.187524702+02:00\" level=info msg=\"Actor runtime started\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 1358,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      95: 2026-10-22T10:16:11.5190000Z time=\"2026-10-22T12:16:11.518950026+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1362,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      95: 2026-10-22T10:16:11.6790000Z time=\"2026-10-22T12:16:11.67907537+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1364,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      96: 2026-10-22T10:16:11.7810000Z time=\"2026-10-22T12:16:11.781182211+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1391,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      96: 2026-10-22T10:16:12.2950000Z time=\"2026-10-22T12:16:12.295628615+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1393,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      97: 2026-10-22T10:16:13.0510000Z time=\"2026-10-22T12:16:13.051837955+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1395,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      97: 2026-10-22T10:16:13.3130000Z time=\"2026-10-22T12:16:13.312925368+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1416,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      98: 2026-10-22T10:16:14.0480000Z time=\"2026-10-22T12:16:14.048198039+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1418,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      98: 2026-10-22T10:16:14.2370000Z time=\"2026-10-22T12:16:14.237015026+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1420,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      99: 2026-10-22T10:16:14.5130000Z time=\"2026-10-22T12:16:14.513497404+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1422,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      99: 2026-10-22T10:16:16.6440000Z time=\"2026-10-22T12:16:16.644666677+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1443,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      100: 2026-10-22T10:16:17.7210000Z time=\"2026-10-22T12:16:17.721670554+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1445,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      100: 2026-10-22T10:16:18.0340000Z time=\"2026-10-22T12:16:18.034282443+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1447,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      101: 2026-10-22T10:16:18.3940000Z time=\"2026-10-22T12:16:18.394630034+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1455,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      102: 2026-10-22T10:16:19.9670000Z time=\"2026-10-22T12:16:19.967702543+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1480,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      103: 2026-10-22T10:16:21.9770000Z time=\"2026-10-22T12:16:21.977862976+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1486,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      103: 2026-10-22T10:16:23.2850000Z time=\"2026-10-22T12:16:23.285539746+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1488,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      104: 2026-10-22T10:16:23.6290000Z time=\"2026-10-22T12:16:23.629115052+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1492,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      104: 2026-10-22T10:16:24.3370000Z time=\"2026-10-22T12:16:24.337542284+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1519,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      105: 2026-10-22T10:16:28.2430000Z time=\"2026-10-22T12:16:28.243346851+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1527,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      105: 2026-10-22T10:16:28.9530000Z time=\"2026-10-22T12:16:28.953334239+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1535,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      107: 2026-10-22T10:16:30.0590000Z time=\"2026-10-22T12:16:30.058989276+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1547,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      107: 2026-10-22T10:16:30.7610000Z time=\"2026-10-22T12:16:30.761101735+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 1847,
+          "resource": "eventstore-dapr-cli",
+          "text": "      93: 2026-10-22T10:16:31.6280000Z time=\"2026-10-22T12:16:31.621611401+02:00\" level=info msg=\"Actor runtime started\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2035,
+          "resource": "tenants-dapr-cli",
+          "text": "      98: 2026-10-22T10:16:31.6770000Z time=\"2026-10-22T12:16:31.677305034+02:00\" level=info msg=\"Actor runtime started\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2055,
+          "resource": "tenants-dapr-cli",
+          "text": "      108: 2026-10-22T10:16:31.6770000Z time=\"2026-10-22T12:16:31.677900292+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 15ms\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2219,
+          "resource": "folders-dapr-cli",
+          "text": "      102: 2026-10-22T10:16:31.6740000Z time=\"2026-10-22T12:16:31.670706125+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2391,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      97: 2026-10-22T10:16:31.6880000Z time=\"2026-10-22T12:16:31.688456275+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2581,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      102: 2026-10-22T10:16:31.7730000Z time=\"2026-10-22T12:16:31.773018568+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2685,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      122: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.741980709+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2691,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      125: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.74222574+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2705,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      128: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.742696092+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2713,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      132: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762129038+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2715,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      133: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762147564+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1089ms\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2717,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      134: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762335138+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2731,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      141: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762676172+02:00\" level=error msg=\"error retrieving pending Redis messages: context canceled\" app_id=folders-workers-01d2110fdb2927df component=\"pubsub (pubsub.redis/v1)\" instance=DESKTOP-VIOG240 scope=dapr.contrib type=log ver=1.18.7"
+        },
+        {
+          "line": 2733,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      142: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762767691+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2749,
+          "resource": "folders-dapr-cli",
+          "text": "      122: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.745636294+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2755,
+          "resource": "folders-dapr-cli",
+          "text": "      125: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.746144374+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2765,
+          "resource": "folders-dapr-cli",
+          "text": "      130: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.746302441+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2785,
+          "resource": "memories-dapr-cli",
+          "text": "      130: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.742332654+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2791,
+          "resource": "memories-dapr-cli",
+          "text": "      133: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.742786147+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2801,
+          "resource": "memories-dapr-cli",
+          "text": "      138: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.742884869+02:00\" level=info msg=\"Actor runtime stopped\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2813,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      125: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.744903352+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2829,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      133: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.746205587+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2841,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      139: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.746505932+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2851,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      144: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.747249469+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2865,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      151: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.748014033+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2871,
+          "resource": "eventstore-dapr-cli",
+          "text": "      108: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.741212879+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2887,
+          "resource": "eventstore-dapr-cli",
+          "text": "      116: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.74169146+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2895,
+          "resource": "eventstore-dapr-cli",
+          "text": "      120: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.74237177+02:00\" level=info msg=\"Actor runtime stopped\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2959,
+          "resource": "tenants-dapr-cli",
+          "text": "      120: 2026-10-22T10:16:32.7510000Z time=\"2026-10-22T12:16:32.751481983+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2965,
+          "resource": "tenants-dapr-cli",
+          "text": "      123: 2026-10-22T10:16:32.7510000Z time=\"2026-10-22T12:16:32.751689106+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2971,
+          "resource": "tenants-dapr-cli",
+          "text": "      126: 2026-10-22T10:16:32.7510000Z time=\"2026-10-22T12:16:32.751803298+02:00\" level=info msg=\"Actor runtime stopped\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2979,
+          "resource": "tenants-dapr-cli",
+          "text": "      130: 2026-10-22T10:16:32.7600000Z time=\"2026-10-22T12:16:32.760919308+02:00\" level=info msg=\"Dapr is shutting down\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2993,
+          "resource": "tenants-dapr-cli",
+          "text": "      137: 2026-10-22T10:16:32.7610000Z time=\"2026-10-22T12:16:32.761404838+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3027,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      118: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.74519473+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 3035,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      122: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.745766623+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 3043,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      126: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.746049343+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 3045,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      127: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.831343485+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3047,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      128: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.831370738+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1073ms\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3051,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      130: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.831438224+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3063,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      136: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.83180633+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3139,
+          "resource": "folders-dapr-cli",
+          "text": "      132: 2026-10-22T10:16:35.3530000Z time=\"2026-10-22T12:16:35.35389342+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3141,
+          "resource": "folders-dapr-cli",
+          "text": "      133: 2026-10-22T10:16:35.3530000Z time=\"2026-10-22T12:16:35.353956613+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 3693ms\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3143,
+          "resource": "folders-dapr-cli",
+          "text": "      134: 2026-10-22T10:16:35.3540000Z time=\"2026-10-22T12:16:35.354387782+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3159,
+          "resource": "folders-dapr-cli",
+          "text": "      142: 2026-10-22T10:16:35.3550000Z time=\"2026-10-22T12:16:35.355147842+02:00\" level=error msg=\"error retrieving pending Redis messages: context canceled\" app_id=folders-01d2110fdb2927df component=\"pubsub (pubsub.redis/v1)\" instance=DESKTOP-VIOG240 scope=dapr.contrib type=log ver=1.18.7"
+        },
+        {
+          "line": 3161,
+          "resource": "folders-dapr-cli",
+          "text": "      143: 2026-10-22T10:16:35.3550000Z time=\"2026-10-22T12:16:35.355179874+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3205,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      108: 2026-10-22T10:16:37.4860000Z time=\"2026-10-22T12:16:37.485961555+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3207,
+          "resource": "folders-workers-dapr-cli",
+          "text": "      143: 2026-10-22T10:16:37.7620000Z time=\"2026-10-22T12:16:37.762900748+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3217,
+          "resource": "folders-workers-replica-dapr-cli",
+          "text": "      152: 2026-10-22T10:16:37.7480000Z time=\"2026-10-22T12:16:37.748199181+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3227,
+          "resource": "folders-ui-dapr-cli",
+          "text": "      137: 2026-10-22T10:16:37.8310000Z time=\"2026-10-22T12:16:37.831794676+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3237,
+          "resource": "tenants-dapr-cli",
+          "text": "      138: 2026-10-22T10:16:37.7610000Z time=\"2026-10-22T12:16:37.761706224+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3253,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      108: 2026-10-22T10:16:39.1920000Z time=\"2026-10-22T12:16:39.192365494+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3273,
+          "resource": "folders-dapr-cli",
+          "text": "      144: 2026-10-22T10:16:40.3550000Z time=\"2026-10-22T12:16:40.355133738+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3293,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      109: 2026-10-22T10:16:42.2360000Z time=\"2026-10-22T12:16:42.236325065+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3317,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      110: 2026-10-22T10:16:44.8740000Z time=\"2026-10-22T12:16:44.874053292+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3353,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      111: 2026-10-22T10:16:46.5060000Z time=\"2026-10-22T12:16:46.506563423+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3355,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      111: 2026-10-22T10:16:47.4060000Z time=\"2026-10-22T12:16:47.406341117+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3425,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      112: 2026-10-22T10:16:57.8030000Z time=\"2026-10-22T12:16:57.801298162+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3487,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      113: 2026-10-22T10:17:05.9860000Z time=\"2026-10-22T12:17:05.986320732+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3513,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      112: 2026-10-22T10:17:08.4300000Z time=\"2026-10-22T12:17:08.430694334+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3533,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      113: 2026-10-22T10:17:10.8070000Z time=\"2026-10-22T12:17:10.807330982+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3589,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      114: 2026-10-22T10:17:15.2990000Z time=\"2026-10-22T12:17:15.299018747+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3641,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      114: 2026-10-22T10:17:27.3580000Z time=\"2026-10-22T12:17:27.358552772+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3727,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      115: 2026-10-22T10:17:37.3500000Z time=\"2026-10-22T12:17:37.350454868+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3729,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      115: 2026-10-22T10:17:38.8510000Z time=\"2026-10-22T12:17:38.851656195+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3787,
+          "resource": "eventstore-dapr-cli",
+          "text": "      131: 2026-10-22T10:17:46.0210000Z time=\"2026-10-22T12:17:46.021011195+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 74430ms\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3789,
+          "resource": "eventstore-dapr-cli",
+          "text": "      132: 2026-10-22T10:17:46.0210000Z time=\"2026-10-22T12:17:46.021127151+02:00\" level=info msg=\"Dapr is shutting down\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3803,
+          "resource": "eventstore-dapr-cli",
+          "text": "      139: 2026-10-22T10:17:46.0210000Z time=\"2026-10-22T12:17:46.021363081+02:00\" level=error msg=\"error retrieving pending Redis messages: context canceled\" app_id=eventstore-01d2110fdb2927df component=\"pubsub (pubsub.redis/v1)\" instance=DESKTOP-VIOG240 scope=dapr.contrib type=log ver=1.18.7"
+        },
+        {
+          "line": 3805,
+          "resource": "eventstore-dapr-cli",
+          "text": "      140: 2026-10-22T10:17:46.0210000Z time=\"2026-10-22T12:17:46.021386217+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3811,
+          "resource": "eventstore-dapr-cli",
+          "text": "      142: 2026-10-22T10:17:51.0220000Z time=\"2026-10-22T12:17:51.022258302+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3821,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      116: 2026-10-22T10:17:52.8480000Z time=\"2026-10-22T12:17:52.848547402+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3823,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      116: 2026-10-22T10:17:52.8680000Z time=\"2026-10-22T12:17:52.868107454+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3827,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      117: 2026-10-22T10:18:07.7680000Z time=\"2026-10-22T12:18:07.768440148+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3833,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      117: 2026-10-22T10:18:28.8280000Z time=\"2026-10-22T12:18:28.827897644+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3835,
+          "resource": "folders-workers-proof-a-dapr-cli",
+          "text": "      118: 2026-10-22T10:18:30.1600000Z time=\"2026-10-22T12:18:30.15999872+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3895,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      118: 2026-10-22T10:19:05.5350000Z time=\"2026-10-22T12:19:05.535544539+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic folders.events: subscription to topic 'folders.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        },
+        {
+          "line": 3943,
+          "resource": "folders-workers-proof-b-dapr-cli",
+          "text": "      119: 2026-10-22T10:19:21.9000000Z time=\"2026-10-22T12:19:21.900107783+02:00\" level=error msg=\"Retry failed for subscription pubsub pubsub, topic tenants.events: subscription to topic 'tenants.events' on pubsub 'pubsub' is not allowed. Will retry.\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+        }
+      ]
+    }
+  ],
+  "component_directories_after": [
+    {
+      "lane": "strict-live",
+      "path": "/tmp/folders-durability-nxit1a0e.x31",
+      "exists": false
+    },
+    {
+      "lane": "strict-retry-live",
+      "path": "/tmp/folders-durability-ll2s1g4x.ipa",
+      "exists": false
+    }
+  ],
+  "claim": "Both current runs are startup-only failures; signal sender and restart cause remain unclassified. No current admission failure was reached."
+}

@@ -1,0 +1,232 @@
+{
+  "entries": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server",
+      "required": true,
+      "present": true,
+      "sha256": "a2b66e35123ef3b0754ff6f656456e6b4dfd18937dc78ed1177a7e90bfba04f9",
+      "executable": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "required": true,
+      "present": true,
+      "sha256": "116cf2ac939b270645ed7943aa1a1718b256b698f3dd6ed232f8c50ab10f6982",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+      "required": true,
+      "present": true,
+      "sha256": "df580dc7a396ae6e98d860b7830dc86a82dfb726134727461a20d0296e72c3eb",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.deps.json",
+      "required": true,
+      "present": true,
+      "sha256": "6208b6a10b58d7373c146d048fc9cb3790777e8a126eb4a7ac51c4bdea3c4e48",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.runtimeconfig.json",
+      "required": true,
+      "present": true,
+      "sha256": "2854c873c21edc9fa7c2056f9d4744054aeb11f009d271702daa7794b74e895f",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers",
+      "required": true,
+      "present": true,
+      "sha256": "6facacc84f4f56d238aa5b6676b6af2b7eb1a85753a21b758cb044cf644cc559",
+      "executable": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "required": true,
+      "present": true,
+      "sha256": "daf2a6f6161ed827d53b875a46e34ef636e8b56da7c2fd3d7cc5ea83903c6eb7",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.pdb",
+      "required": true,
+      "present": true,
+      "sha256": "3d1c6d002b22c355d77a5bef86e12cf3dc6c32597a7c1cfcd915cc8ded47d611",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.deps.json",
+      "required": true,
+      "present": true,
+      "sha256": "a306dff717c3d3af8b4cc82173fdb8a638903d7f7d7c6200d0784076e2218ee2",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.runtimeconfig.json",
+      "required": true,
+      "present": true,
+      "sha256": "2854c873c21edc9fa7c2056f9d4744054aeb11f009d271702daa7794b74e895f",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore",
+      "required": true,
+      "present": true,
+      "sha256": "95068119590adf5333c46f382248b35f0989dd463f2cba850d527755bd469dac",
+      "executable": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll",
+      "required": true,
+      "present": true,
+      "sha256": "124cfa81c27ac8560f26f204f0fdfd0d1a2bb89e07c0130f1a6be03c01426b31",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.pdb",
+      "required": true,
+      "present": true,
+      "sha256": "ab5bd6284c1b32ae7903a8b70e250cee0570c3de9a5579aa95aba4a9acb2823c",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.deps.json",
+      "required": true,
+      "present": true,
+      "sha256": "ada86325a0140af1ceb471a6b3c7f825431ca8e9401912bac40bdf96c4af3b39",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.runtimeconfig.json",
+      "required": true,
+      "present": true,
+      "sha256": "2854c873c21edc9fa7c2056f9d4744054aeb11f009d271702daa7794b74e895f",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.UI",
+      "required": true,
+      "present": true,
+      "sha256": "39f62d0cc20ce2044586a319af3b3315be6b2bf371ea79b1ba5cd8f214ad7fcc",
+      "executable": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.UI.dll",
+      "required": true,
+      "present": true,
+      "sha256": "8366b636a8b8554cd11375b3bc8bc1a689fc6acea82bb183eca5bec6bbec1807",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.UI.pdb",
+      "required": true,
+      "present": true,
+      "sha256": "1521a535e71e5b914199b428e429847178612704cc4d20893ca80651e6c76181",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.UI.deps.json",
+      "required": true,
+      "present": true,
+      "sha256": "39090af84df3a69bd86372cf19add1958f706f74187cec536d1283d6d2492fd0",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.UI.runtimeconfig.json",
+      "required": true,
+      "present": true,
+      "sha256": "2854c873c21edc9fa7c2056f9d4744054aeb11f009d271702daa7794b74e895f",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Debug/net10.0/Hexalith.Tenants.Server",
+      "required": true,
+      "present": false,
+      "sha256": null,
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Debug/net10.0/Hexalith.Tenants.Server.dll",
+      "required": true,
+      "present": true,
+      "sha256": "37c89bb663cea342d0963c13ba62bfffa5b8efb11009b14f43285013ff5e6ea0",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Debug/net10.0/Hexalith.Tenants.Server.pdb",
+      "required": true,
+      "present": true,
+      "sha256": "abf0c487dc633d6c45b020123867636a6c9887570d79af4b6653ee37b8c39964",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Debug/net10.0/Hexalith.Tenants.Server.deps.json",
+      "required": true,
+      "present": true,
+      "sha256": "7073e9551bddc3e9fb7131128b2b08c4985d089dfa0096b2efeaecc2f92c3ac1",
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Debug/net10.0/Hexalith.Tenants.Server.runtimeconfig.json",
+      "required": true,
+      "present": false,
+      "sha256": null,
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Server",
+      "required": false,
+      "present": false,
+      "sha256": null,
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Server.dll",
+      "required": false,
+      "present": false,
+      "sha256": null,
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Server.pdb",
+      "required": false,
+      "present": false,
+      "sha256": null,
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Server.deps.json",
+      "required": false,
+      "present": false,
+      "sha256": null,
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Server.runtimeconfig.json",
+      "required": false,
+      "present": false,
+      "sha256": null,
+      "executable": false
+    }
+  ],
+  "missing_required": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Debug/net10.0/Hexalith.Tenants.Server",
+      "required": true,
+      "present": false,
+      "sha256": null,
+      "executable": false
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Debug/net10.0/Hexalith.Tenants.Server.runtimeconfig.json",
+      "required": true,
+      "present": false,
+      "sha256": null,
+      "executable": false
+    }
+  ],
+  "passed": false,
+  "optional_memories_note": "Absent in prior strict and passing capacity logs as well; not identified as this startup failure cause. No output repair performed."
+}

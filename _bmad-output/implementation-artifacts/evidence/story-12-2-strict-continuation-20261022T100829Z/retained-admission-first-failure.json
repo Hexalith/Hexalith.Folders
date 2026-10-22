@@ -1,0 +1,161 @@
+{
+  "source": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-inherited-owner-requalification-20261022T084922Z/strict-live.log",
+  "source_sha256": "401f99f8163ba54f189ccaf6a6f3fb79964b6d4fe8e43ebe2abd53f7ecb4dffc",
+  "provenance": "Read-only extract from sealed prior strict failure; not current execution.",
+  "rows": [
+    {
+      "line": 9475,
+      "time": "1121: 2026-10-22T09:16:50.9730000Z",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "message": "Command received: CorrelationId=01m5hec7wekhz4tkm9pzf98gq1, CausationId=protected, CommandType=Hexalith.Folders.Commands.ConfigureBranchRefPolicy, TenantId=durability-6cc3683a3aae5418, Domain=folders, AggregateId=fld-76484401e1dcee57dfe35986e22ef3f2290846e2, Stage=CommandReceived",
+      "exception": null
+    },
+    {
+      "line": 9477,
+      "time": "1122: 2026-10-22T09:16:50.9870000Z",
+      "category": "Hexalith.EventStore.Server.Actors.IdempotencyAdmissionActor",
+      "message": "Idempotency key reserved. Stage=IdempotencyReserved",
+      "exception": null
+    },
+    {
+      "line": 9479,
+      "time": "1123: 2026-10-22T09:16:50.9950000Z",
+      "category": "Hexalith.EventStore.Server.Commands.CommandRouter",
+      "message": "Routing command to actor: CorrelationId=01m5hec7wekhz4tkm9pzf98gq1, CausationId=01m5hec7wvzrzzvcef8v2tpqhe, TenantId=durability-6cc3683a3aae5418, Domain=folders, AggregateId=fld-76484401e1dcee57dfe35986e22ef3f2290846e2, CommandType=Hexalith.Folders.Commands.ConfigureBranchRefPolicy, ActorId=durability-6cc3683a3aae5418:folders:fld-76484401e1dcee57dfe35986e22ef3f2290846e2, Stage=CommandRouting",
+      "exception": null
+    },
+    {
+      "line": 9495,
+      "time": "1131: 2026-10-22T09:16:51.0220000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC7YBNBCWJVC85A0S4WSZ, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9497,
+      "time": "1132: 2026-10-22T09:16:51.0220000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC7YBNBCWJVC85A0S4WT0, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9499,
+      "time": "1133: 2026-10-22T09:16:51.0230000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC7YE3J19BFRTX8B1XVT2, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9503,
+      "time": "1135: 2026-10-22T09:16:51.0310000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC7YQ3P4Q6BZ0BV2FC642, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9513,
+      "time": "1140: 2026-10-22T09:16:51.0380000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC7YYKEADSD3WK957P3Y6, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9515,
+      "time": "1141: 2026-10-22T09:16:51.0410000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC7Z1R68TCYENN0Z024JJ, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9517,
+      "time": "1142: 2026-10-22T09:16:51.0430000Z",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "message": "Failed to archive command: CorrelationId=01m5hec7wekhz4tkm9pzf98gq1, TenantId=durability-6cc3683a3aae5418. Replay may be unavailable. Command processing continues. Stage=ArchiveWriteFailed",
+      "exception": "Dapr.DaprApiException: error invoke actor method: error from actor service: (429) {\"type\":\"https://hexalith.io/problems/rate-limit-exceeded\",\"title\":\"Too Many Requests\",\"status\":429,\"detail\":\"Rate limit exceeded. Please retry after the specified interval.\",\"instance\":\"/actors/IdempotencyAdmissionActor/durability-6cc3683a3aae5418:local1:UwFx70JQsM5aGGOGM3l8PJrA8VTuKTl5x6vjccUxq3o/method/ValidateAuthorityAsync\",\"correlationId\":\"01M5HEC7Z1R68TCYENN0Z024JJ\",\"tenantId\":\"unknown\",\"consumerId\":\"anonymous\"}\n   at Dapr.Actors.DaprHttpInteractor.SendAsyncHandleUnsuccessfulResponse(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.SendAsync(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.InvokeActorMethodWithRemotingAsync(ActorMessageSerializersManager serializersManager, IActorRequestMessage remotingRequestRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Communication.Client.ActorRemotingClient.InvokeAsync(IActorRequestMessage remotingRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Client.ActorProxy.InvokeMethodAsync(Int32 interfaceId, Int32 methodId, String methodName, IActorRequestMessageBody requestMsgBodyValue, CancellationToken cancellationToken)\n   at Hexalith.EventStore.Server.Commands.IdempotencyExecutionContextProtector.ValidateProofAndAuthorityAsync(IdempotencyExecutionContext context, IdempotencyExecutionPurpose purpose, CancellationToken cancellationToken, Boolean proofAlreadyValidated, Boolean useActorDecision) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Commands/IdempotencyExecutionContextProtector.cs:line 188\n   at Hexalith.EventStore.Server.Commands.IdempotencyExecutionContextProtector.ValidateAsync(IdempotencyExecutionContext context, SubmitCommand command, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Commands/IdempotencyExecutionContextProtector.cs:line 57\n   at Hexalith.EventStore.Server.Commands.IdempotencyAdmissionCoordinator.ValidateExecutionAsync(IdempotencyAdmissionSession session, SubmitCommand command, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Commands/IdempotencyAdmissionCoordinator.cs:line 236\n   at Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler.Handle(SubmitCommand request, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Pipeline/SubmitCommandHandler.cs:line 442"
+    },
+    {
+      "line": 9519,
+      "time": "1143: 2026-10-22T09:16:51.0440000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC7Z4DEJXQJEYDQK8X9KB, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9521,
+      "time": "1144: 2026-10-22T09:16:51.0460000Z",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "message": "Correlation index write failed: MessageId=protected, CorrelationId=01m5hec7wekhz4tkm9pzf98gq1, TenantId=durability-6cc3683a3aae5418. Message-primary lookup remains authoritative. Stage=CorrelationIndexWriteFailed",
+      "exception": "Dapr.DaprApiException: error invoke actor method: error from actor service: (429) {\"type\":\"https://hexalith.io/problems/rate-limit-exceeded\",\"title\":\"Too Many Requests\",\"status\":429,\"detail\":\"Rate limit exceeded. Please retry after the specified interval.\",\"instance\":\"/actors/IdempotencyAdmissionActor/durability-6cc3683a3aae5418:local1:UwFx70JQsM5aGGOGM3l8PJrA8VTuKTl5x6vjccUxq3o/method/ValidateAuthorityAsync\",\"correlationId\":\"01M5HEC7Z4DEJXQJEYDQK8X9KB\",\"tenantId\":\"unknown\",\"consumerId\":\"anonymous\"}\n   at Dapr.Actors.DaprHttpInteractor.SendAsyncHandleUnsuccessfulResponse(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.SendAsync(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.InvokeActorMethodWithRemotingAsync(ActorMessageSerializersManager serializersManager, IActorRequestMessage remotingRequestRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Communication.Client.ActorRemotingClient.InvokeAsync(IActorRequestMessage remotingRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Client.ActorProxy.InvokeMethodAsync(Int32 interfaceId, Int32 methodId, String methodName, IActorRequestMessageBody requestMsgBodyValue, CancellationToken cancellationToken)\n   at Hexalith.EventStore.Server.Commands.IdempotencyExecutionContextProtector.ValidateProofAndAuthorityAsync(IdempotencyExecutionContext context, IdempotencyExecutionPurpose purpose, CancellationToken cancellationToken, Boolean proofAlreadyValidated, Boolean useActorDecision) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Commands/IdempotencyExecutionContextProtector.cs:line 188\n   at Hexalith.EventStore.Server.Commands.IdempotencyExecutionContextProtector.ValidateAsync(IdempotencyExecutionContext context, SubmitCommand command, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Commands/IdempotencyExecutionContextProtector.cs:line 57\n   at Hexalith.EventStore.Server.Commands.IdempotencyAdmissionCoordinator.ValidateExecutionAsync(IdempotencyAdmissionSession session, SubmitCommand command, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Commands/IdempotencyAdmissionCoordinator.cs:line 236\n   at Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler.Handle(SubmitCommand request, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Pipeline/SubmitCommandHandler.cs:line 466"
+    },
+    {
+      "line": 9523,
+      "time": "1145: 2026-10-22T09:16:51.0470000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC7Z6ZJ0XKBTWDZTHAGGN, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9525,
+      "time": "1146: 2026-10-22T09:16:51.0480000Z",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "message": "Failed to track command activity: CorrelationId=01m5hec7wekhz4tkm9pzf98gq1, TenantId=durability-6cc3683a3aae5418. Admin command list may be stale. Stage=ActivityTrackingFailed",
+      "exception": "Dapr.DaprApiException: error invoke actor method: error from actor service: (429) {\"type\":\"https://hexalith.io/problems/rate-limit-exceeded\",\"title\":\"Too Many Requests\",\"status\":429,\"detail\":\"Rate limit exceeded. Please retry after the specified interval.\",\"instance\":\"/actors/IdempotencyAdmissionActor/durability-6cc3683a3aae5418:local1:UwFx70JQsM5aGGOGM3l8PJrA8VTuKTl5x6vjccUxq3o/method/ValidateAuthorityAsync\",\"correlationId\":\"01M5HEC7Z6ZJ0XKBTWDZTHAGGN\",\"tenantId\":\"unknown\",\"consumerId\":\"anonymous\"}\n   at Dapr.Actors.DaprHttpInteractor.SendAsyncHandleUnsuccessfulResponse(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.SendAsync(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.InvokeActorMethodWithRemotingAsync(ActorMessageSerializersManager serializersManager, IActorRequestMessage remotingRequestRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Communication.Client.ActorRemotingClient.InvokeAsync(IActorRequestMessage remotingRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Client.ActorProxy.InvokeMethodAsync(Int32 interfaceId, Int32 methodId, String methodName, IActorRequestMessageBody requestMsgBodyValue, CancellationToken cancellationToken)\n   at Hexalith.EventStore.Server.Commands.IdempotencyExecutionContextProtector.ValidateProofAndAuthorityAsync(IdempotencyExecutionContext context, IdempotencyExecutionPurpose purpose, CancellationToken cancellationToken, Boolean proofAlreadyValidated, Boolean useActorDecision) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Commands/IdempotencyExecutionContextProtector.cs:line 188\n   at Hexalith.EventStore.Server.Commands.IdempotencyExecutionContextProtector.ValidateAsync(IdempotencyExecutionContext context, SubmitCommand command, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Commands/IdempotencyExecutionContextProtector.cs:line 57\n   at Hexalith.EventStore.Server.Commands.IdempotencyAdmissionCoordinator.ValidateExecutionAsync(IdempotencyAdmissionSession session, SubmitCommand command, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Commands/IdempotencyAdmissionCoordinator.cs:line 236\n   at Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler.Handle(SubmitCommand request, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Pipeline/SubmitCommandHandler.cs:line 514"
+    },
+    {
+      "line": 9527,
+      "time": "1147: 2026-10-22T09:16:51.0480000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC7Z8R5HB5KNRSJCT6RGA, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9529,
+      "time": "1148: 2026-10-22T09:16:51.0520000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC7ZC1H8P1ME9S0GX4KXD, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9531,
+      "time": "1149: 2026-10-22T09:16:51.0540000Z",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "message": "Unable to persist unknown idempotency outcome. Stage=IdempotencyUnknownOutcomePersistenceFailed",
+      "exception": "Dapr.DaprApiException: error invoke actor method: error from actor service: (429) {\"type\":\"https://hexalith.io/problems/rate-limit-exceeded\",\"title\":\"Too Many Requests\",\"status\":429,\"detail\":\"Rate limit exceeded. Please retry after the specified interval.\",\"instance\":\"/actors/IdempotencyAdmissionActor/durability-6cc3683a3aae5418:local1:UwFx70JQsM5aGGOGM3l8PJrA8VTuKTl5x6vjccUxq3o/method/MarkRecoveryAsync\",\"correlationId\":\"01M5HEC7ZC1H8P1ME9S0GX4KXD\",\"tenantId\":\"unknown\",\"consumerId\":\"anonymous\"}\n   at Dapr.Actors.DaprHttpInteractor.SendAsyncHandleUnsuccessfulResponse(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.SendAsync(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.InvokeActorMethodWithRemotingAsync(ActorMessageSerializersManager serializersManager, IActorRequestMessage remotingRequestRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Communication.Client.ActorRemotingClient.InvokeAsync(IActorRequestMessage remotingRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Client.ActorProxy.InvokeMethodAsync(Int32 interfaceId, Int32 methodId, String methodName, IActorRequestMessageBody requestMsgBodyValue, CancellationToken cancellationToken)\n   at Hexalith.EventStore.Server.Commands.IdempotencyAdmissionCoordinator.MarkRecoveryAsync(IdempotencyAdmissionSession session, IdempotencyAdmissionState state, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Commands/IdempotencyAdmissionCoordinator.cs:line 262\n   at Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler.MarkRecoveryStateAsync(IIdempotencyAdmissionCoordinator coordinator, IdempotencyAdmissionSession session, IdempotencyAdmissionState state, ILogger logger) in /home/administrator/projects/hexalith/eventstore/src/Hexalith.EventStore.Server/Pipeline/SubmitCommandHandler.cs:line 751"
+    },
+    {
+      "line": 9553,
+      "time": "1154: 2026-10-22T09:16:52.0120000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC8XCAQ0CNFC7F0NWB9QF, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9563,
+      "time": "1159: 2026-10-22T09:16:52.0150000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC8XFYC446BW0BK1ATSQ5, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9565,
+      "time": "1160: 2026-10-22T09:16:52.0190000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC8XK1GYV6489BSW0YQAT, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9569,
+      "time": "1162: 2026-10-22T09:16:52.0260000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC8XT35KQCPX1SBSF78YY, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    },
+    {
+      "line": 9571,
+      "time": "1163: 2026-10-22T09:16:52.0370000Z",
+      "category": "Hexalith.EventStore.RateLimiting",
+      "message": "Rate limit exceeded: CorrelationId=01M5HEC8Y5Z9NB05MHPNP4ETQ0, TenantId=unknown, ConsumerId=anonymous, SourceIP=127.0.0.1",
+      "exception": null
+    }
+  ]
+}

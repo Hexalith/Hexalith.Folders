@@ -1,0 +1,741 @@
+{
+  "results": [
+    {
+      "lane": "strict-live",
+      "sidecar_events": [
+        {
+          "line": 286,
+          "text": "      44: 2026-10-22T10:09:33.7250000Z time=\"2026-10-22T12:09:33.725416045+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 288,
+          "text": "      45: 2026-10-22T10:09:33.7250000Z time=\"2026-10-22T12:09:33.725493014+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 380,
+          "text": "      91: 2026-10-22T10:09:33.7280000Z time=\"2026-10-22T12:09:33.728041246+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 444,
+          "text": "      27: 2026-10-22T10:09:33.7850000Z time=\"2026-10-22T12:09:33.785665391+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 446,
+          "text": "      28: 2026-10-22T10:09:33.7850000Z time=\"2026-10-22T12:09:33.785726599+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 510,
+          "text": "      60: 2026-10-22T10:09:33.7880000Z time=\"2026-10-22T12:09:33.788939343+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 572,
+          "text": "      27: 2026-10-22T10:09:33.8060000Z time=\"2026-10-22T12:09:33.804870479+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 574,
+          "text": "      28: 2026-10-22T10:09:33.8060000Z time=\"2026-10-22T12:09:33.80491775+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 632,
+          "text": "      57: 2026-10-22T10:09:33.8080000Z time=\"2026-10-22T12:09:33.807932658+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 776,
+          "text": "      75: 2026-10-22T10:09:36.7100000Z time=\"2026-10-22T12:09:36.707386539+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 2941ms\" app_id=folders-workers-proof-b-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 930,
+          "text": "      104: 2026-10-22T10:09:37.0010000Z time=\"2026-10-22T12:09:37.000581436+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 3294ms\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 1090,
+          "text": "      75: 2026-10-22T10:09:37.3020000Z time=\"2026-10-22T12:09:37.300684002+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 3507ms\" app_id=folders-workers-proof-a-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 1230,
+          "text": "      62: 2026-10-22T10:09:38.1220000Z time=\"2026-10-22T12:09:38.122917711+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 1232,
+          "text": "      63: 2026-10-22T10:09:38.1220000Z time=\"2026-10-22T12:09:38.122977829+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 1318,
+          "text": "      106: 2026-10-22T10:09:38.1340000Z time=\"2026-10-22T12:09:38.134297462+02:00\" level=info msg=\"Actor runtime started\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 1813,
+          "text": "      48: 2026-10-22T10:10:07.9970000Z time=\"2026-10-22T12:10:07.997183784+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 1815,
+          "text": "      49: 2026-10-22T10:10:07.9990000Z time=\"2026-10-22T12:10:07.997231837+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 1915,
+          "text": "      99: 2026-10-22T10:10:08.0000000Z time=\"2026-10-22T12:10:08.000023028+02:00\" level=info msg=\"Actor runtime started\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 1995,
+          "text": "      51: 2026-10-22T10:10:08.2110000Z time=\"2026-10-22T12:10:08.210662642+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 1997,
+          "text": "      52: 2026-10-22T10:10:08.2110000Z time=\"2026-10-22T12:10:08.210718581+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2069,
+          "text": "      51: 2026-10-22T10:10:08.1610000Z time=\"2026-10-22T12:10:08.159524454+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 2071,
+          "text": "      52: 2026-10-22T10:10:08.1610000Z time=\"2026-10-22T12:10:08.159548942+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2159,
+          "text": "      96: 2026-10-22T10:10:08.1650000Z time=\"2026-10-22T12:10:08.165163306+02:00\" level=info msg=\"Actor runtime started\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2183,
+          "text": "      108: 2026-10-22T10:10:08.1650000Z time=\"2026-10-22T12:10:08.165704943+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 18ms\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2249,
+          "text": "      55: 2026-10-22T10:10:08.2590000Z time=\"2026-10-22T12:10:08.259843888+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 2251,
+          "text": "      56: 2026-10-22T10:10:08.2590000Z time=\"2026-10-22T12:10:08.259912099+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2339,
+          "text": "      100: 2026-10-22T10:10:08.2910000Z time=\"2026-10-22T12:10:08.285413706+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2423,
+          "text": "      54: 2026-10-22T10:10:08.2360000Z time=\"2026-10-22T12:10:08.236639212+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 2425,
+          "text": "      55: 2026-10-22T10:10:08.2360000Z time=\"2026-10-22T12:10:08.236674731+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2525,
+          "text": "      105: 2026-10-22T10:10:08.2480000Z time=\"2026-10-22T12:10:08.239121662+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2625,
+          "text": "      102: 2026-10-22T10:10:08.2190000Z time=\"2026-10-22T12:10:08.219623257+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2735,
+          "text": "      129: 2026-10-22T10:10:10.7390000Z time=\"2026-10-22T12:10:10.738731323+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2741,
+          "text": "      132: 2026-10-22T10:10:10.7390000Z time=\"2026-10-22T12:10:10.739011155+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2763,
+          "text": "      143: 2026-10-22T10:10:10.7410000Z time=\"2026-10-22T12:10:10.741567303+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2765,
+          "text": "      144: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.744333829+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2767,
+          "text": "      145: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.744366583+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2779,
+          "text": "      151: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.745096335+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2799,
+          "text": "      115: 2026-10-22T10:10:10.7430000Z time=\"2026-10-22T12:10:10.74303533+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2813,
+          "text": "      122: 2026-10-22T10:10:10.7430000Z time=\"2026-10-22T12:10:10.743641494+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2815,
+          "text": "      123: 2026-10-22T10:10:10.7430000Z time=\"2026-10-22T12:10:10.743800301+02:00\" level=info msg=\"Actor runtime stopped\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2835,
+          "text": "      122: 2026-10-22T10:10:10.7180000Z time=\"2026-10-22T12:10:10.717137156+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2843,
+          "text": "      126: 2026-10-22T10:10:10.7180000Z time=\"2026-10-22T12:10:10.717752337+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2851,
+          "text": "      130: 2026-10-22T10:10:10.7180000Z time=\"2026-10-22T12:10:10.718005637+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2869,
+          "text": "      120: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.725080187+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2877,
+          "text": "      124: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.725670213+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2885,
+          "text": "      128: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.725837948+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2919,
+          "text": "      118: 2026-10-22T10:10:10.7190000Z time=\"2026-10-22T12:10:10.718980118+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2927,
+          "text": "      122: 2026-10-22T10:10:10.7200000Z time=\"2026-10-22T12:10:10.720478333+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2929,
+          "text": "      123: 2026-10-22T10:10:10.7200000Z time=\"2026-10-22T12:10:10.72051785+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2939,
+          "text": "      122: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.744413068+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2943,
+          "text": "      124: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.744912484+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2951,
+          "text": "      128: 2026-10-22T10:10:10.7510000Z time=\"2026-10-22T12:10:10.745009001+02:00\" level=info msg=\"Actor runtime stopped\" app_id=memories-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2991,
+          "text": "      120: 2026-10-22T10:10:10.7230000Z time=\"2026-10-22T12:10:10.723362646+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 3003,
+          "text": "      126: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.72378826+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 3007,
+          "text": "      128: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.723821875+02:00\" level=info msg=\"Actor runtime stopped\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 3011,
+          "text": "      130: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.724481016+02:00\" level=info msg=\"Dapr is shutting down\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3013,
+          "text": "      131: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.724515092+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3025,
+          "text": "      137: 2026-10-22T10:10:10.7270000Z time=\"2026-10-22T12:10:10.725271521+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3057,
+          "text": "      131: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832172536+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3059,
+          "text": "      132: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832196473+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 2623ms\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3061,
+          "text": "      133: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832229366+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3063,
+          "text": "      134: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832272941+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3079,
+          "text": "      142: 2026-10-22T10:10:10.8320000Z time=\"2026-10-22T12:10:10.832526472+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3081,
+          "text": "      127: 2026-10-22T10:10:10.8550000Z time=\"2026-10-22T12:10:10.855761586+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Internal desc = the state store is not configured to use the actor runtime. Have you set the - name: actorStateStore value: \\\"true\\\" in your state store component file?\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3083,
+          "text": "      128: 2026-10-22T10:10:10.8550000Z time=\"2026-10-22T12:10:10.855798467+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 2667ms\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3085,
+          "text": "      129: 2026-10-22T10:10:10.8550000Z time=\"2026-10-22T12:10:10.855850478+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3087,
+          "text": "      130: 2026-10-22T10:10:10.8550000Z time=\"2026-10-22T12:10:10.855895014+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3099,
+          "text": "      136: 2026-10-22T10:10:10.8570000Z time=\"2026-10-22T12:10:10.857312017+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3199,
+          "text": "      132: 2026-10-22T10:10:13.9120000Z time=\"2026-10-22T12:10:13.912189453+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3201,
+          "text": "      133: 2026-10-22T10:10:13.9120000Z time=\"2026-10-22T12:10:13.91227049+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 5708ms\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3205,
+          "text": "      135: 2026-10-22T10:10:13.9120000Z time=\"2026-10-22T12:10:13.912374646+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3207,
+          "text": "      136: 2026-10-22T10:10:13.9120000Z time=\"2026-10-22T12:10:13.912565706+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3219,
+          "text": "      142: 2026-10-22T10:10:13.9130000Z time=\"2026-10-22T12:10:13.913159611+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3255,
+          "text": "      152: 2026-10-22T10:10:15.7450000Z time=\"2026-10-22T12:10:15.745300713+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3265,
+          "text": "      138: 2026-10-22T10:10:15.7250000Z time=\"2026-10-22T12:10:15.725074128+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=tenants-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3279,
+          "text": "      145: 2026-10-22T10:10:15.8320000Z time=\"2026-10-22T12:10:15.832547421+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-workers-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3289,
+          "text": "      139: 2026-10-22T10:10:15.8570000Z time=\"2026-10-22T12:10:15.856972969+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-ui-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3307,
+          "text": "      143: 2026-10-22T10:10:18.9130000Z time=\"2026-10-22T12:10:18.912963249+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3831,
+          "text": "      132: 2026-10-22T10:11:25.8190000Z time=\"2026-10-22T12:11:25.819342475+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Internal desc = the state store is not configured to use the actor runtime. Have you set the - name: actorStateStore value: \\\"true\\\" in your state store component file?\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3833,
+          "text": "      133: 2026-10-22T10:11:25.8190000Z time=\"2026-10-22T12:11:25.819385248+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 77838ms\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3835,
+          "text": "      134: 2026-10-22T10:11:25.8190000Z time=\"2026-10-22T12:11:25.819434683+02:00\" level=info msg=\"Dapr is shutting down\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3837,
+          "text": "      135: 2026-10-22T10:11:25.8190000Z time=\"2026-10-22T12:11:25.819457407+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3851,
+          "text": "      142: 2026-10-22T10:11:25.8200000Z time=\"2026-10-22T12:11:25.820198029+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3855,
+          "text": "      143: 2026-10-22T10:11:30.8190000Z time=\"2026-10-22T12:11:30.819616945+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=eventstore-6d75f951afaf8bfc instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        }
+      ],
+      "terminal_failure": [
+        "    Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures [FAIL]",
+        "      Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync",
+        "      ---- System.Threading.Tasks.TaskCanceledException : The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.",
+        "      -------- System.TimeoutException : The operation was canceled.",
+        "      ------------ System.Threading.Tasks.TaskCanceledException : The operation was canceled.",
+        "      ---------------- System.IO.IOException : Unable to read data from the transport connection: Operation canceled.",
+        "      -------------------- System.Net.Sockets.SocketException : Operation canceled",
+        "      Stack Trace:",
+        "        ",
+        "        ----- Inner Stack Trace -----",
+        "           at System.Net.Http.HttpClient.HandleFailure(Exception e, Boolean telemetryStarted, HttpResponseMessage response, CancellationTokenSource cts, CancellationToken cancellationToken, CancellationTokenSource pendingRequestsCts)",
+        "           at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)",
+        "           at Dapr.Client.DaprClientGrpc.CheckHealthAsync(CancellationToken cancellationToken)",
+        "        tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs(880,0): at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.StartAsync()",
+        "        tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs(115,0): at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync()",
+        "        tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs(121,0): at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync()",
+        "        ----- Inner Stack Trace -----",
+        "        "
+      ],
+      "app_runtime_binding_count": 0,
+      "current_admission_unavailable_count": 0,
+      "current_rate_limit_count": 0
+    },
+    {
+      "lane": "strict-retry-live",
+      "sidecar_events": [
+        {
+          "line": 256,
+          "text": "      27: 2026-10-22T10:16:08.1430000Z time=\"2026-10-22T12:16:08.143321557+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 258,
+          "text": "      28: 2026-10-22T10:16:08.1430000Z time=\"2026-10-22T12:16:08.143366264+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 382,
+          "text": "      44: 2026-10-22T10:16:08.1510000Z time=\"2026-10-22T12:16:08.151634743+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 384,
+          "text": "      45: 2026-10-22T10:16:08.1510000Z time=\"2026-10-22T12:16:08.151785967+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 472,
+          "text": "      89: 2026-10-22T10:16:08.1540000Z time=\"2026-10-22T12:16:08.154191582+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 546,
+          "text": "      57: 2026-10-22T10:16:08.1460000Z time=\"2026-10-22T12:16:08.146572013+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 572,
+          "text": "      27: 2026-10-22T10:16:08.1540000Z time=\"2026-10-22T12:16:08.154901472+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 574,
+          "text": "      28: 2026-10-22T10:16:08.1540000Z time=\"2026-10-22T12:16:08.154925239+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 644,
+          "text": "      63: 2026-10-22T10:16:08.1570000Z time=\"2026-10-22T12:16:08.157681195+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 812,
+          "text": "      75: 2026-10-22T10:16:09.4400000Z time=\"2026-10-22T12:16:09.439248729+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1299ms\" app_id=folders-workers-proof-a-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 858,
+          "text": "      77: 2026-10-22T10:16:09.4550000Z time=\"2026-10-22T12:16:09.455469509+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1327ms\" app_id=folders-workers-proof-b-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 916,
+          "text": "      104: 2026-10-22T10:16:09.5720000Z time=\"2026-10-22T12:16:09.570975865+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1444ms\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 1246,
+          "text": "      62: 2026-10-22T10:16:11.1830000Z time=\"2026-10-22T12:16:11.183795974+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 1248,
+          "text": "      63: 2026-10-22T10:16:11.1830000Z time=\"2026-10-22T12:16:11.183857804+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 1340,
+          "text": "      109: 2026-10-22T10:16:11.1880000Z time=\"2026-10-22T12:16:11.187524702+02:00\" level=info msg=\"Actor runtime started\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 1757,
+          "text": "      48: 2026-10-22T10:16:31.6180000Z time=\"2026-10-22T12:16:31.61870827+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 1759,
+          "text": "      49: 2026-10-22T10:16:31.6180000Z time=\"2026-10-22T12:16:31.618772475+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 1847,
+          "text": "      93: 2026-10-22T10:16:31.6280000Z time=\"2026-10-22T12:16:31.621611401+02:00\" level=info msg=\"Actor runtime started\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 1941,
+          "text": "      51: 2026-10-22T10:16:31.6740000Z time=\"2026-10-22T12:16:31.674755897+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 1943,
+          "text": "      52: 2026-10-22T10:16:31.6740000Z time=\"2026-10-22T12:16:31.674879488+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2035,
+          "text": "      98: 2026-10-22T10:16:31.6770000Z time=\"2026-10-22T12:16:31.677305034+02:00\" level=info msg=\"Actor runtime started\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2055,
+          "text": "      108: 2026-10-22T10:16:31.6770000Z time=\"2026-10-22T12:16:31.677900292+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 15ms\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2125,
+          "text": "      55: 2026-10-22T10:16:31.6690000Z time=\"2026-10-22T12:16:31.66865374+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 2127,
+          "text": "      56: 2026-10-22T10:16:31.6690000Z time=\"2026-10-22T12:16:31.66867404+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2219,
+          "text": "      102: 2026-10-22T10:16:31.6740000Z time=\"2026-10-22T12:16:31.670706125+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2305,
+          "text": "      54: 2026-10-22T10:16:31.6850000Z time=\"2026-10-22T12:16:31.685461367+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 2307,
+          "text": "      55: 2026-10-22T10:16:31.6850000Z time=\"2026-10-22T12:16:31.685499491+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2391,
+          "text": "      97: 2026-10-22T10:16:31.6880000Z time=\"2026-10-22T12:16:31.688456275+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2479,
+          "text": "      51: 2026-10-22T10:16:31.7660000Z time=\"2026-10-22T12:16:31.766040434+02:00\" level=info msg=\"Using 'statestore' as actor state store\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.state type=log ver=1.18.7"
+        },
+        {
+          "line": 2481,
+          "text": "      52: 2026-10-22T10:16:31.7660000Z time=\"2026-10-22T12:16:31.766076083+02:00\" level=info msg=\"Component loaded: statestore (state.redis/v1)\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.processor type=log ver=1.18.7"
+        },
+        {
+          "line": 2581,
+          "text": "      102: 2026-10-22T10:16:31.7730000Z time=\"2026-10-22T12:16:31.773018568+02:00\" level=info msg=\"Actor runtime started\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2685,
+          "text": "      122: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.741980709+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2691,
+          "text": "      125: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.74222574+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2705,
+          "text": "      128: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.742696092+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2713,
+          "text": "      132: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762129038+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2715,
+          "text": "      133: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762147564+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1089ms\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2717,
+          "text": "      134: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762335138+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2719,
+          "text": "      135: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762363904+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2733,
+          "text": "      142: 2026-10-22T10:16:32.7620000Z time=\"2026-10-22T12:16:32.762767691+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2749,
+          "text": "      122: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.745636294+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2755,
+          "text": "      125: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.746144374+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2765,
+          "text": "      130: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.746302441+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2785,
+          "text": "      130: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.742332654+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2791,
+          "text": "      133: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.742786147+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2801,
+          "text": "      138: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.742884869+02:00\" level=info msg=\"Actor runtime stopped\" app_id=memories-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2813,
+          "text": "      125: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.744903352+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2829,
+          "text": "      133: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.746205587+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2841,
+          "text": "      139: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.746505932+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2851,
+          "text": "      144: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.747249469+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2853,
+          "text": "      145: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.7472909+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2865,
+          "text": "      151: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.748014033+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2871,
+          "text": "      108: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.741212879+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2887,
+          "text": "      116: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.74169146+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2895,
+          "text": "      120: 2026-10-22T10:16:32.7490000Z time=\"2026-10-22T12:16:32.74237177+02:00\" level=info msg=\"Actor runtime stopped\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2959,
+          "text": "      120: 2026-10-22T10:16:32.7510000Z time=\"2026-10-22T12:16:32.751481983+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 2965,
+          "text": "      123: 2026-10-22T10:16:32.7510000Z time=\"2026-10-22T12:16:32.751689106+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2971,
+          "text": "      126: 2026-10-22T10:16:32.7510000Z time=\"2026-10-22T12:16:32.751803298+02:00\" level=info msg=\"Actor runtime stopped\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 2979,
+          "text": "      130: 2026-10-22T10:16:32.7600000Z time=\"2026-10-22T12:16:32.760919308+02:00\" level=info msg=\"Dapr is shutting down\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2981,
+          "text": "      131: 2026-10-22T10:16:32.7610000Z time=\"2026-10-22T12:16:32.761005857+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 2993,
+          "text": "      137: 2026-10-22T10:16:32.7610000Z time=\"2026-10-22T12:16:32.761404838+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3027,
+          "text": "      118: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.74519473+02:00\" level=info msg=\"Received signal 'hangup'; restarting\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.signals type=log ver=1.18.7"
+        },
+        {
+          "line": 3035,
+          "text": "      122: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.745766623+02:00\" level=info msg=\"Actor runtime shutting down\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 3043,
+          "text": "      126: 2026-10-22T10:16:32.7480000Z time=\"2026-10-22T12:16:32.746049343+02:00\" level=info msg=\"Actor runtime stopped\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime.actor type=log ver=1.18.7"
+        },
+        {
+          "line": 3045,
+          "text": "      127: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.831343485+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3047,
+          "text": "      128: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.831370738+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 1073ms\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3051,
+          "text": "      130: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.831438224+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3053,
+          "text": "      131: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.831485345+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3063,
+          "text": "      136: 2026-10-22T10:16:32.8310000Z time=\"2026-10-22T12:16:32.83180633+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3139,
+          "text": "      132: 2026-10-22T10:16:35.3530000Z time=\"2026-10-22T12:16:35.35389342+02:00\" level=warning msg=\"Failed to register hosted actors: api error: code = Unavailable desc = actor runtime is closed\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3141,
+          "text": "      133: 2026-10-22T10:16:35.3530000Z time=\"2026-10-22T12:16:35.353956613+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 3693ms\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3143,
+          "text": "      134: 2026-10-22T10:16:35.3540000Z time=\"2026-10-22T12:16:35.354387782+02:00\" level=info msg=\"Dapr is shutting down\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3145,
+          "text": "      135: 2026-10-22T10:16:35.3540000Z time=\"2026-10-22T12:16:35.354435956+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3161,
+          "text": "      143: 2026-10-22T10:16:35.3550000Z time=\"2026-10-22T12:16:35.355179874+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3207,
+          "text": "      143: 2026-10-22T10:16:37.7620000Z time=\"2026-10-22T12:16:37.762900748+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3217,
+          "text": "      152: 2026-10-22T10:16:37.7480000Z time=\"2026-10-22T12:16:37.748199181+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-workers-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3227,
+          "text": "      137: 2026-10-22T10:16:37.8310000Z time=\"2026-10-22T12:16:37.831794676+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-ui-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3237,
+          "text": "      138: 2026-10-22T10:16:37.7610000Z time=\"2026-10-22T12:16:37.761706224+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=tenants-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3273,
+          "text": "      144: 2026-10-22T10:16:40.3550000Z time=\"2026-10-22T12:16:40.355133738+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=folders-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3787,
+          "text": "      131: 2026-10-22T10:17:46.0210000Z time=\"2026-10-22T12:17:46.021011195+02:00\" level=info msg=\"dapr initialized. Status: Running. Init Elapsed 74430ms\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3789,
+          "text": "      132: 2026-10-22T10:17:46.0210000Z time=\"2026-10-22T12:17:46.021127151+02:00\" level=info msg=\"Dapr is shutting down\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3791,
+          "text": "      133: 2026-10-22T10:17:46.0210000Z time=\"2026-10-22T12:17:46.02117803+02:00\" level=info msg=\"Shutting down component statestore (state.redis/v1)\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3805,
+          "text": "      140: 2026-10-22T10:17:46.0210000Z time=\"2026-10-22T12:17:46.021386217+02:00\" level=info msg=\"Dapr runtime stopped\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        },
+        {
+          "line": 3811,
+          "text": "      142: 2026-10-22T10:17:51.0220000Z time=\"2026-10-22T12:17:51.022258302+02:00\" level=fatal msg=\"Graceful shutdown timeout exceeded, forcing shutdown\" app_id=eventstore-01d2110fdb2927df instance=DESKTOP-VIOG240 scope=dapr.runtime type=log ver=1.18.7"
+        }
+      ],
+      "terminal_failure": [
+        "    Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures [FAIL]",
+        "      Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync",
+        "      ---- System.Threading.Tasks.TaskCanceledException : The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.",
+        "      -------- System.TimeoutException : The operation was canceled.",
+        "      ------------ System.Threading.Tasks.TaskCanceledException : The operation was canceled.",
+        "      ---------------- System.IO.IOException : Unable to read data from the transport connection: Operation canceled.",
+        "      -------------------- System.Net.Sockets.SocketException : Operation canceled",
+        "      Stack Trace:",
+        "        ",
+        "        ----- Inner Stack Trace -----",
+        "           at System.Net.Http.HttpClient.HandleFailure(Exception e, Boolean telemetryStarted, HttpResponseMessage response, CancellationTokenSource cts, CancellationToken cancellationToken, CancellationTokenSource pendingRequestsCts)",
+        "           at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)",
+        "           at Dapr.Client.DaprClientGrpc.CheckHealthAsync(CancellationToken cancellationToken)",
+        "        tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs(880,0): at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.StartAsync()",
+        "        tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs(115,0): at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync()",
+        "        tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs(121,0): at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync()",
+        "        ----- Inner Stack Trace -----",
+        "        "
+      ],
+      "app_runtime_binding_count": 0,
+      "current_admission_unavailable_count": 0,
+      "current_rate_limit_count": 0
+    }
+  ],
+  "component_directories_after": [
+    {
+      "lane": "strict-live",
+      "path": "/tmp/folders-durability-nxit1a0e.x31",
+      "exists": false
+    },
+    {
+      "lane": "strict-retry-live",
+      "path": "/tmp/folders-durability-ll2s1g4x.ipa",
+      "exists": false
+    }
+  ],
+  "claim": "Both current runs are startup-only failures; signal sender and restart cause remain unclassified. No current admission failure was reached."
+}

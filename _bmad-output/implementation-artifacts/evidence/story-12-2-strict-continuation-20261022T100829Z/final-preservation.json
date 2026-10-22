@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "python3",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-strict-continuation-20261022T100829Z/audit-final.py"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "started_utc": "2026-10-22T10:23:20.315666+00:00",
+  "elapsed_seconds": 4.680528030003188,
+  "exit_code": 0,
+  "environment": {
+    "DOTNET_ROOT": "/home/administrator/.dotnet",
+    "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+  }
+}

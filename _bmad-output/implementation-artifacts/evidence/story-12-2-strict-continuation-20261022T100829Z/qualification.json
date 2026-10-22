@@ -1,0 +1,63 @@
+{
+  "created_utc": "2026-10-22T10:21:03.146971+00:00",
+  "qualified": false,
+  "story": "12.2",
+  "task36_complete": false,
+  "product_source_changed": false,
+  "qualified_outputs_changed": false,
+  "results": [
+    {
+      "lane": "strict-live",
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "226.062",
+      "exit_code": 1,
+      "command_receipt": "strict-live.json",
+      "failure": "Fixture InitializeAsync -> StartAsync line 880 -> DaprClient.CheckHealthAsync -> existing 100-second HttpClient timeout. No authenticated consumer command reached."
+    },
+    {
+      "lane": "strict-retry-live",
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "211.058",
+      "exit_code": 1,
+      "command_receipt": "strict-retry-live.json",
+      "failure": "Fixture InitializeAsync -> StartAsync line 880 -> DaprClient.CheckHealthAsync -> existing 100-second HttpClient timeout. No authenticated consumer command reached."
+    }
+  ],
+  "reused_evidence": {
+    "packet": "story-12-2-inherited-owner-requalification-20261022T084922Z",
+    "capacity": "Prior authenticated 10001-position pass and both required component sizes reused only with exact-source provenance; expensive capacity lane not repeated.",
+    "sealed_packet_files": 2434,
+    "source_config_inputs": 15098,
+    "frozen_assembly_pdb_inputs": 303
+  },
+  "current_audits": {
+    "prior_frozen_drift_before": 0,
+    "selected_runtime_checks": 81,
+    "runtime_manifests": 13,
+    "extended_freeze_artifacts": 584,
+    "source_binding_pdbs": 158,
+    "ordinary_source_document_copies": 22086,
+    "generated_source_document_copies": 1736,
+    "source_binding_errors": 0,
+    "actual_startup_dll_observations": 270,
+    "actual_startup_hexalith_observations": 66,
+    "actual_startup_identity_errors": 0
+  },
+  "remaining": [
+    "Strict authenticated real-provider acceptance",
+    "Historical SDK admission/rate-limit failure investigation and any separately owned SDK correction",
+    "Current sidecar SIGHUP/startup health failure diagnosis",
+    "Package/PD10 qualification",
+    "SM4 acknowledgement performance",
+    "Independent whole-story review"
+  ],
+  "claim_boundary": "Two current startup failures do not re-execute or classify the historical internal actor429/admission failure. No successful strict persisted end-state or Task36 closure is claimed."
+}

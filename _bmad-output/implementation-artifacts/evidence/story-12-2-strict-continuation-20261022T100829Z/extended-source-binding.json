@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "dotnet",
+    "/tmp/folders-strict-continuation-pdb-20261022T100829Z/bin/Debug/net10.0/Verifier.dll",
+    "/home/administrator/projects/hexalith/folders",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-strict-continuation-20261022T100829Z/extended-source-runtime-freeze.json",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-strict-continuation-20261022T100829Z/extended-source-binding"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "started_utc": "2026-10-22T10:15:48.727734+00:00",
+  "elapsed_seconds": 0.9802723550092196,
+  "exit_code": 0,
+  "environment": {
+    "DOTNET_ROOT": "/home/administrator/.dotnet",
+    "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/home/administrator/.cache/dotnet_bundle_extract"
+  }
+}

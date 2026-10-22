@@ -1,0 +1,16 @@
+{
+  "folders": {
+    "head": "0a693eb48b37faed255c9f560ecbba691e3f1bf1",
+    "branch": "main",
+    "status": "M _bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-strict-continuation-20261022T100829Z/",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Folders.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Folders.git (push)",
+    "history": "0a693eb4 fix: story 12.2\nf65dfb08 fix: story 12.2\na3daf26e fix: story 12.2\n72dff26e fix: record conditional EventStore testing references in scaffold policy\n98bc5aa1 fix: align lifecycle harness, scaffold policy, and PD10 inventory"
+  },
+  "eventstore": {
+    "head": "c66a0a3345ad97b137959179a0583faf81d59e4b",
+    "branch": "main",
+    "status": "",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.EventStore.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.EventStore.git (push)",
+    "history": "c66a0a334 build: sync local changes via /pushall\n4b0d69fdc fix: story 12.2\na964048c3 build: merge origin/main into main via /pushall\nb2e3a4137 build: sync local changes via /pushall\ned19e342f build: merge origin/fix/p1r-qualification-time-budget into main via /pushall"
+  }
+}
