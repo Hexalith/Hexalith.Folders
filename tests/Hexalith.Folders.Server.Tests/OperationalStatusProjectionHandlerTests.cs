@@ -166,7 +166,7 @@ public sealed class OperationalStatusProjectionHandlerTests
         declared.ShouldBe(expected);
         root.GetProperty("currentPayloads").EnumerateArray().ShouldAllBe(static value => value.GetProperty("payloadVersion").GetInt32() == 1);
         root.GetProperty("missingVersionRegistry").EnumerateArray().Select(static value => value.GetProperty("eventTypeName").GetString()!)
-            .Order(StringComparer.Ordinal).ShouldBe(expected);
+            .Order(StringComparer.Ordinal).ShouldBe(expected.Where(name => name != typeof(WorkspaceContentErasureAuthorized).FullName).ToArray());
         root.GetProperty("missingVersionRegistry").EnumerateArray().ShouldAllBe(static value => value.GetProperty("readAsVersion").GetInt32() == 1
             && value.GetProperty("status").GetString() == "closed-legacy-v1");
         foreach (string entry in File.ReadAllLines(Path.Combine(directory, "retained-fixtures-sha256.txt")))

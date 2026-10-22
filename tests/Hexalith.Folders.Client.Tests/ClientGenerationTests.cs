@@ -762,10 +762,16 @@ Workspace_preparation_failed=50
     public void Oq2WireValidationRejectsCoercionAndCompleteShapeDrift()
     {
         const string path = "{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"}";
-        const string inline = "{\"requestSchemaVersion\":\"v2\",\"fileOperationKind\":\"add\",\"transportOperation\":\"PutFileInline\",\"operationId\":\"operation_01HZY7Z6N7J4Q2X8\",\"pathMetadata\":" + path + ",\"contentHashReference\":\"hashref_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"byteLength\":0,\"inlineContent\":{\"mediaType\":\"text/plain\",\"contentBytes\":\"\"}}";
+        const string inline = "{\"requestSchemaVersion\":\"v2\",\"expectedFileVersion\":0,\"expectedLockFence\":1,\"fileOperationKind\":\"add\",\"transportOperation\":\"PutFileInline\",\"operationId\":\"operation_01HZY7Z6N7J4Q2X8\",\"pathMetadata\":" + path + ",\"contentHashReference\":\"hashref_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"byteLength\":0,\"inlineContent\":{\"mediaType\":\"text/plain\",\"contentBytes\":\"\"}}";
 
         AddFileRequest add = JsonConvert.DeserializeObject<AddFileRequest>(inline).ShouldNotBeNull();
         add.FileOperationKind.ShouldBe(AddFileRequestFileOperationKind.Add);
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<AddFileRequest>(inline.Replace("\"expectedLockFence\":1,", "", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<AddFileRequest>(inline.Replace("\"expectedFileVersion\":0,", "", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<AddFileRequest>(inline.Replace("\"expectedLockFence\":1", "\"expectedLockFence\":0", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<AddFileRequest>(inline.Replace("\"expectedLockFence\":1", "\"expectedLockFence\":null", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<AddFileRequest>(inline.Replace("\"expectedLockFence\":1", "\"expectedLockFence\":\"1\"", StringComparison.Ordinal)));
+
         ((FileMutationRequest)add).FileOperationKind.ShouldBe(FileMutationRequestFileOperationKind.Add);
 
         FileMutationRequest undefinedKind = JsonConvert.DeserializeObject<FileMutationRequest>(inline).ShouldNotBeNull();
@@ -805,6 +811,7 @@ Workspace_preparation_failed=50
         RemoveFileRequest remove = new()
         {
             RequestSchemaVersion = "v2",
+            ExpectedFileVersion = 1, ExpectedLockFence = 1,
             FileOperationKind = RemoveFileRequestFileOperationKind.Remove,
             TransportOperation = FileMutationRequestTransportOperation.MetadataOnlyRemoval,
             OperationId = "operation_01HZY7Z6N7J4Q2X8",
@@ -840,6 +847,7 @@ Workspace_preparation_failed=50
         const string hash = "hashref_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         AddFileRequest request = new()
         {
+            ExpectedFileVersion = 0, ExpectedLockFence = 1,
             RequestSchemaVersion = "v2",
             FileOperationKind = AddFileRequestFileOperationKind.Add,
             TransportOperation = FileMutationRequestTransportOperation.PutFileStream,
@@ -1363,6 +1371,14 @@ Workspace_preparation_failed=50
         const string searchItem = "{\"path\":{" + "\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},\"kind\":\"file\",\"byteLength\":1,\"sensitivity\":\"public_metadata\",\"redaction\":\"not_redacted\"}";
         string searchJson = $"{{\"items\":[{searchItem}],\"page\":{{\"limit\":1,\"isTruncated\":false}},\"limits\":{{\"queryFamily\":\"search\",\"configuredLimit\":1,\"actualCount\":1,\"actualBytes\":1,\"elapsedMilliseconds\":1,\"isTruncated\":false,\"truncatedReason\":\"not_truncated\"}},\"freshness\":{freshness}}}";
         FileSearchResult searchResult = JsonConvert.DeserializeObject<FileSearchResult>(searchJson).ShouldNotBeNull();
+        string legacyRoundtrip = JsonConvert.SerializeObject(searchResult);
+        JObject.Parse(legacyRoundtrip)["items"]![0]!["version"].ShouldBeNull();
+        JsonConvert.DeserializeObject<FileSearchResult>(legacyRoundtrip).ShouldNotBeNull();
+        string identifiedSearch = MutateJson(searchJson, root => { root["items"]![0]!["fileId"] = "file_0123456789abcdef"; root["items"]![0]!["version"] = 7; });
+        var identified = JsonConvert.DeserializeObject<FileSearchResult>(identifiedSearch).ShouldNotBeNull();
+        JObject.Parse(JsonConvert.SerializeObject(identified))["items"]![0]!["version"]!.Value<long>().ShouldBe(7);
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(MutateJson(identifiedSearch, root => root["items"]![0]!["version"] = 0)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(MutateJson(identifiedSearch, root => root["items"]![0]!["version"] = -1)));
         searchResult.Page.TruncatedReason.ShouldBeNull();
         ContentAllowedFileMetadataItem searchResultItem = searchResult.Items.Single();
         ((FileMetadataItem)searchResultItem).Path.NormalizedPath.ShouldBe(searchResultItem.Path.NormalizedPath);
@@ -1472,6 +1488,7 @@ Workspace_preparation_failed=50
     private static FileMutationRequest CreateFileMutation(FileMutationRequestFileOperationKind kind, FileMutationRequestTransportOperation transportOperation) =>
         new()
         {
+            ExpectedFileVersion = 0, ExpectedLockFence = 1,
             FileOperationKind = kind,
             TransportOperation = transportOperation,
             OperationId = "01ARZ3NDEKTSV4RRFFQ69G5FAV",

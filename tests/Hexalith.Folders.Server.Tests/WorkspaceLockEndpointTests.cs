@@ -602,7 +602,7 @@ public sealed class WorkspaceLockEndpointTests
         else
         {
             JsonElement contentHash = submitted.Payload.GetProperty("contentHashReference");
-            contentHash.GetString().ShouldBe(contentHashReference);
+            contentHash.GetString().ShouldBe(WorkspaceContentTransportTestServices.Hash(transportOperation == "PutFileStream" ? new byte[checked((int)byteLength!.Value)] : Convert.FromBase64String("aGVsbG8gd29ybGQh")));
         }
 
         if (byteLength is null)
@@ -639,7 +639,7 @@ public sealed class WorkspaceLockEndpointTests
                 {
                     normalizedPath = "docs/readme.md",
                     displayName = "readme.md",
-                    pathPolicyClass = "tenant_sensitive_document",
+                    pathPolicyClass = "content_allowed",
                     unicodeNormalization = "NFC",
                 },
                 contentHashReference = "hashref-a",
@@ -694,7 +694,7 @@ public sealed class WorkspaceLockEndpointTests
             {
                 normalizedPath = "docs/readme.md",
                 displayName = "readme.md",
-                pathPolicyClass = "tenant_sensitive_document",
+                pathPolicyClass = "content_allowed",
                 unicodeNormalization = "NFC",
             },
             [forbiddenPropertyName] = forbiddenPropertyValue,
@@ -820,7 +820,7 @@ public sealed class WorkspaceLockEndpointTests
                 {
                     normalizedPath = "docs/readme.md",
                     displayName = "readme.md",
-                    pathPolicyClass = "tenant_sensitive_document",
+                    pathPolicyClass = "content_allowed",
                     unicodeNormalization = "NFC",
                 },
                 contentHashReference = "hashref-a",
@@ -935,7 +935,7 @@ public sealed class WorkspaceLockEndpointTests
                 {
                     normalizedPath = "docs/readme.md",
                     displayName = "readme.md",
-                    pathPolicyClass = "tenant_sensitive_document",
+                    pathPolicyClass = "content_allowed",
                     unicodeNormalization = "NFC",
                 },
                 contentHashReference = "hashref-a",
@@ -971,7 +971,7 @@ public sealed class WorkspaceLockEndpointTests
                 {
                     normalizedPath = "docs/readme.md",
                     displayName = "readme.md",
-                    pathPolicyClass = "tenant_sensitive_document",
+                    pathPolicyClass = "content_allowed",
                     unicodeNormalization = "NFC",
                 },
                 contentHashReference = "hashref-a",
@@ -1109,7 +1109,7 @@ public sealed class WorkspaceLockEndpointTests
             {
                 normalizedPath = "docs/readme.md",
                 displayName = "readme.md",
-                pathPolicyClass = "tenant_sensitive_document",
+                pathPolicyClass = "content_allowed",
                 unicodeNormalization = "NFC",
             },
             contentHashReference = "hashref-a",
@@ -1194,6 +1194,7 @@ public sealed class WorkspaceLockEndpointTests
         builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
+        WorkspaceContentTransportTestServices.Add(builder);
         builder.Services.RemoveAll<IEventStoreGatewayClient>();
         builder.Services.AddSingleton<IEventStoreGatewayClient>(gateway);
         builder.Services.RemoveAll<ITenantContextAccessor>();
@@ -1213,6 +1214,7 @@ public sealed class WorkspaceLockEndpointTests
         builder.Services.AddSingleton(lockReadModel);
 
         WebApplication app = builder.Build();
+        WorkspaceContentTransportTestServices.Authenticate(app);
         app.MapFoldersServerEndpoints();
         return app;
     }
@@ -1254,7 +1256,8 @@ public sealed class WorkspaceLockEndpointTests
         long? byteLength = null)
     {
         transportOperation ??= fileOperationKind == "remove" ? "metadataOnlyRemoval" : "PutFileInline";
-        contentHashReference ??= fileOperationKind == "remove" ? null : "hashref-a";
+        contentHashReference = fileOperationKind == "remove" ? null
+            : WorkspaceContentTransportTestServices.Hash(transportOperation == "PutFileStream" ? new byte[checked((int)(byteLength ?? 262145))] : Convert.FromBase64String("aGVsbG8gd29ybGQh"));
         byteLength ??= fileOperationKind == "remove" ? null : 12;
         object? inlineContent = fileOperationKind == "remove" || transportOperation == "PutFileStream"
             ? null
@@ -1279,6 +1282,7 @@ public sealed class WorkspaceLockEndpointTests
             Content = JsonContent.Create(new
             {
                 requestSchemaVersion = "v1",
+                expectedFileVersion = 0, expectedLockFence = 1,
                 operationId = "operation-a",
                 fileOperationKind,
                 transportOperation,
@@ -1286,7 +1290,7 @@ public sealed class WorkspaceLockEndpointTests
                 {
                     normalizedPath,
                     displayName = "readme.md",
-                    pathPolicyClass = "tenant_sensitive_document",
+                    pathPolicyClass = "content_allowed",
                     unicodeNormalization = "NFC",
                 },
                 contentHashReference,
@@ -1295,6 +1299,7 @@ public sealed class WorkspaceLockEndpointTests
                 streamDescriptor,
             }),
         };
+        if (transportOperation == "PutFileStream") request.Content = WorkspaceContentTransportTestServices.Multipart(request.Content!, new byte[checked((int)byteLength!.Value)]);
         request.Headers.Add("Idempotency-Key", "idempotency-file-a");
         request.Headers.Add("X-Correlation-Id", "correlation-a");
         request.Headers.Add("X-Hexalith-Task-Id", "task-a");
@@ -1311,6 +1316,7 @@ public sealed class WorkspaceLockEndpointTests
             Content = JsonContent.Create(new
             {
                 requestSchemaVersion = "v1",
+                expectedFileVersion = 0, expectedLockFence = 1,
                 operationId = "operation-a",
                 fileOperationKind = "add",
                 transportOperation = "PutFileInline",
@@ -1318,10 +1324,10 @@ public sealed class WorkspaceLockEndpointTests
                 {
                     normalizedPath = "docs/readme.md",
                     displayName = "readme.md",
-                    pathPolicyClass = "tenant_sensitive_document",
+                    pathPolicyClass = "content_allowed",
                     unicodeNormalization = "NFC",
                 },
-                contentHashReference = "hashref-a",
+                contentHashReference = InlineHash(contentBytes),
                 byteLength,
                 inlineContent = new
                 {
@@ -1347,7 +1353,7 @@ public sealed class WorkspaceLockEndpointTests
                 declaredLength,
                 observedLength = byteLength,
                 stagingReference = "staged-content-a",
-                observedContentHashReference = "hashref-a",
+                observedContentHashReference = WorkspaceContentTransportTestServices.Hash(new byte[checked((int)Math.Min(byteLength, 1048577))]),
                 uploadMode = "request_body_stream",
             }
             : new
@@ -1362,6 +1368,7 @@ public sealed class WorkspaceLockEndpointTests
             Content = JsonContent.Create(new
             {
                 requestSchemaVersion = "v1",
+                expectedFileVersion = 0, expectedLockFence = 1,
                 operationId = "operation-a",
                 fileOperationKind = "change",
                 transportOperation = "PutFileStream",
@@ -1369,16 +1376,23 @@ public sealed class WorkspaceLockEndpointTests
                 {
                     normalizedPath = "docs/readme.md",
                     displayName = "readme.md",
-                    pathPolicyClass = "tenant_sensitive_document",
+                    pathPolicyClass = "content_allowed",
                     unicodeNormalization = "NFC",
                 },
-                contentHashReference = "hashref-a",
+                contentHashReference = WorkspaceContentTransportTestServices.Hash(new byte[checked((int)Math.Min(byteLength, 1048577))]),
                 byteLength,
                 streamDescriptor,
             }),
         };
+        request.Content = WorkspaceContentTransportTestServices.Multipart(request.Content!, new byte[checked((int)Math.Min(byteLength, 1048577))]);
         AddFileMutationHeaders(request);
         return request;
+    }
+
+    private static string InlineHash(string content)
+    {
+        try { return WorkspaceContentTransportTestServices.Hash(Convert.FromBase64String(content)); }
+        catch (FormatException) { return "hashref-a"; }
     }
 
     private static void AddFileMutationHeaders(HttpRequestMessage request)

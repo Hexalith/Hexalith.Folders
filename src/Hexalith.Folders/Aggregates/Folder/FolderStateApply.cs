@@ -134,6 +134,12 @@ public static class FolderStateApply
             FolderWorkspaceLifecycleEventRecorded recorded => ApplyWorkspaceLifecycleEvent(state, recorded),
             WorkspaceLockAcquired acquired => ApplyWorkspaceLockAcquired(state, acquired),
             WorkspaceLockReleased released => ApplyWorkspaceLockReleased(state, released),
+            WorkspaceContentErasureAuthorized erased => state with
+            {
+                ContentErasureGrants = new Dictionary<string, long>(state.ContentErasureGrants, StringComparer.Ordinal)
+                    { [erased.ReceiptId] = erased.SourceGeneration }.ToFrozenDictionary(StringComparer.Ordinal),
+                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, erased),
+            },
             WorkspaceFileMutationAccepted accepted => ApplyWorkspaceFileMutationAccepted(state, accepted),
             WorkspaceCommitSucceeded succeeded => ApplyWorkspaceCommitSucceeded(state, succeeded),
             WorkspaceCommitFailed failed => ApplyWorkspaceCommitFailed(state, failed),
@@ -331,6 +337,7 @@ public static class FolderStateApply
 
         return WithWorkspaceTransition(state, acquired, transition, acquired.WorkspaceId, acquired.LockId) with
         {
+            WorkspaceLockFence = acquired.LockFence ?? checked(state.WorkspaceLockFence + 1),
             WorkspaceLockId = acquired.LockId,
             WorkspaceLockIntent = acquired.LockIntent,
             WorkspaceLockRequestedLeaseSeconds = acquired.RequestedLeaseSeconds,
@@ -384,9 +391,36 @@ public static class FolderStateApply
 
         return WithWorkspaceTransition(state, accepted, transition, accepted.WorkspaceId, accepted.OperationId) with
         {
+            ContentPublications = RecordContentPublication(state, accepted),
             FileIdentities = FolderFileIdentityState.Apply(state.FileIdentities, accepted),
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, accepted),
         };
+    }
+
+    private static IReadOnlyDictionary<string, WorkspaceContentBinding> RecordContentPublication(
+        FolderState state, WorkspaceFileMutationAccepted accepted)
+    {
+        if (accepted.ContentBinding is not { } binding) return state.ContentPublications;
+        if (binding.ManagedTenantId != accepted.ManagedTenantId || binding.FolderId != accepted.FolderId
+            || binding.WorkspaceId != accepted.WorkspaceId || binding.TaskId != accepted.TaskId
+            || (binding.CommandId != accepted.IdempotencyKey && accepted.IdempotencyKey != WorkspaceContentBinding.BatchItemKey(binding.CommandId, binding.OperationId))
+            || binding.FileId != accepted.OwnerFileId
+            || binding.OperationId != accepted.OperationId || binding.FileOperationKind != accepted.FileOperationKind
+            || binding.PathMetadataDigest != accepted.PathMetadataDigest || binding.LockFence != state.WorkspaceLockFence
+            || binding.Version <= 0 || binding.ExpectedVersion < 0
+            || binding.ContentHashReference != accepted.ContentHashReference || binding.ByteLength != accepted.ByteLength
+            || binding.MediaType != accepted.MediaType || binding.PolicyVersion != "1.1.0"
+            || string.IsNullOrWhiteSpace(binding.PolicyDigest)
+            || (binding.FileOperationKind == "remove") != (binding.ReceiptId is null)
+            || binding.ReceiptId is not null && state.ContentErasureGrants.ContainsKey(binding.ReceiptId)
+            || state.ContentPublications.ContainsKey(accepted.IdempotencyKey))
+            throw new InvalidOperationException("Invalid authoritative workspace content binding.");
+        long previous = state.ContentPublications.Values.Where(item => item.FileId == binding.FileId)
+            .Select(item => item.Version).DefaultIfEmpty(0).Max();
+        if (binding.Version != previous + 1) throw new InvalidOperationException("Invalid workspace content version.");
+        var next = new Dictionary<string, WorkspaceContentBinding>(state.ContentPublications, StringComparer.Ordinal)
+        { [accepted.IdempotencyKey] = binding };
+        return next.ToFrozenDictionary(StringComparer.Ordinal);
     }
 
     private static FolderState ApplyWorkspaceCommitSucceeded(FolderState state, WorkspaceCommitSucceeded succeeded)
@@ -401,6 +435,10 @@ public static class FolderStateApply
 
         FolderState next = WithWorkspaceTransition(state, succeeded, transition, succeeded.WorkspaceId, succeeded.OperationId) with
         {
+            CommittedContentReferences = state.ContentPublications.Values
+                .Where(binding => binding.ReceiptId is not null && state.FileIdentities.TryGetValue(binding.FileId, out var file) && file.Active)
+                .GroupBy(binding => binding.FileId, StringComparer.Ordinal)
+                .ToFrozenDictionary(group => group.Key, group => group.MaxBy(binding => binding.Version)!.ReceiptId!, StringComparer.Ordinal),
             WorkspaceCommitOperationId = succeeded.OperationId,
             WorkspaceCommitReference = succeeded.CommitReference,
             WorkspaceCommitFailureCategory = null,
@@ -536,6 +574,7 @@ public static class FolderStateApply
             WorkspacePreparationRequested value => value.ActorPrincipalId,
             WorkspaceLockAcquired value => value.ActorPrincipalId,
             WorkspaceLockReleased value => value.ActorPrincipalId,
+            WorkspaceContentErasureAuthorized value => value.ActorPrincipalId,
             WorkspaceFileMutationAccepted value => value.ActorPrincipalId,
             WorkspaceCommitSucceeded value => value.ActorPrincipalId,
             WorkspaceCommitFailed value => value.ActorPrincipalId,

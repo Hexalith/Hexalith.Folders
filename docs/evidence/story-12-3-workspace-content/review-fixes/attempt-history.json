@@ -1,0 +1,105 @@
+{
+  "scope": "Review patch attempts, separate from current passing parent gates. Earlier original/audit attempts remain in their historical snapshots.",
+  "attempts": [
+    {
+      "lane": "sdk-build",
+      "full_log": "/tmp/story123-review-sdk-build.log",
+      "full_log_sha256": "847a16493045bfe459df86f0e9bf1231ddfe8fc8ba1164ac4489e5d23f714c5b",
+      "outcome": "superseded failed attempt",
+      "reason": "New test-double read arguments; corrected.",
+      "summary": [
+        "1 Error(s)"
+      ]
+    },
+    {
+      "lane": "sdk-persistence",
+      "full_log": "/tmp/story123-review-sdk-persistence.log",
+      "full_log_sha256": "56bfc7ac0a2ba210d9b7ab1b41129e4d0a54e1231fef07cb1dce098d78cdb710",
+      "outcome": "superseded failed attempt",
+      "reason": "Real provider reports create-only collision as DaprException; rejection and persisted fence are now verified.",
+      "summary": [
+        "Hexalith.EventStore.DomainService.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 0.985s"
+      ]
+    },
+    {
+      "lane": "server-build",
+      "full_log": "/tmp/story123-review-server-build.log",
+      "full_log_sha256": "20dd31ea62948215e6078de97db8eef55f6df7f5ba74c5cd8cb1fc07621fb080",
+      "outcome": "superseded failed attempt",
+      "reason": "New fixture Client reference/API arguments/analyzers; corrected.",
+      "summary": [
+        "4 Error(s)"
+      ]
+    },
+    {
+      "lane": "server-build-fixed",
+      "full_log": "/tmp/story123-review-server-build-fixed.log",
+      "full_log_sha256": "da039c2a41bc04bd892779afd14531a548e576dbf554f316de8c84a2a5abaae0",
+      "outcome": "superseded failed attempt",
+      "reason": "New fixture compile/analyzer correction.",
+      "summary": [
+        "33 Error(s)"
+      ]
+    },
+    {
+      "lane": "server-build-next",
+      "full_log": "/tmp/story123-review-server-build-next.log",
+      "full_log_sha256": "102e0ff89adfb8dec14105f859bfb62ff2334ef3e731b0c7077b4598c6a3faf3",
+      "outcome": "superseded failed attempt",
+      "reason": "New fixture compile/analyzer correction.",
+      "summary": [
+        "8 Error(s)"
+      ]
+    },
+    {
+      "lane": "server-build-rerun",
+      "full_log": "/tmp/story123-review-server-build-rerun.log",
+      "full_log_sha256": "872c0ec252ad791457a2a2754f097a5276c67246b570d136dffae0cc3331f928",
+      "outcome": "superseded failed attempt",
+      "reason": "New fixture compile/analyzer correction.",
+      "summary": [
+        "6 Error(s)"
+      ]
+    },
+    {
+      "lane": "server-build-focused",
+      "full_log": "/tmp/story123-review-server-build-focused.log",
+      "full_log_sha256": "289557da0887abb695b282bfadba84710d654c936099dcda5425b66130b67492",
+      "outcome": "superseded failed attempt",
+      "reason": "New fixture compile/analyzer correction.",
+      "summary": [
+        "1 Error(s)"
+      ]
+    },
+    {
+      "lane": "server-focused",
+      "full_log": "/tmp/story123-review-server-focused.log",
+      "full_log_sha256": "a35e3eaf32db5824e3066ee225c44caabcbfc85ef7633ac970c6317427949257",
+      "outcome": "superseded failed attempt",
+      "reason": "35 passed/11 failed from fixture DI/organization evidence/terminal event/range route; final focused46 and full1100 passed.",
+      "summary": [
+        "Hexalith.Folders.Server.Tests  Total: 46, Errors: 0, Failed: 11, Skipped: 0, Not Run: 0, Time: 5.924s"
+      ]
+    },
+    {
+      "lane": "client-legacy",
+      "full_log": "/tmp/story123-review-client-legacy-first.log",
+      "full_log_sha256": "5772354aaf8e7dc2afad6ed1732503f3fa2344ce185e0e39691831ba02827355",
+      "outcome": "superseded failed attempt",
+      "reason": "Reproduced optional Version=0 serialization; recorded as P2 and fixed deterministically.",
+      "summary": [
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 0.224s"
+      ]
+    },
+    {
+      "lane": "parent-contracts",
+      "full_log": "/tmp/story123-parent-final-verification/contracts-initial.log",
+      "full_log_sha256": "093574075b7396b29238f0bdaf59ca5bd8f992228bcfa16464df2a5a3446a88c",
+      "outcome": "superseded failed attempt",
+      "reason": "359 passed/1 failed due to blanket cache-key lint in new test fixture. Replaced typed read with strong byte-state/ETag and exact scoped-key assertion; current full360 passed.",
+      "summary": [
+        "Hexalith.Folders.Contracts.Tests  Total: 360, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 16.393s"
+      ]
+    }
+  ]
+}

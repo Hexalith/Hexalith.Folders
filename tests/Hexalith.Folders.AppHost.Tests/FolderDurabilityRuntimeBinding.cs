@@ -35,7 +35,7 @@ internal static class FolderDurabilityRuntimeBinding
         if (!OperatingSystem.IsLinux()) return true;
         string project = resource switch
         {
-            "folders" => "Hexalith.Folders.Server",
+            "folders" or "folders-replica" => "Hexalith.Folders.Server",
             "eventstore" => "Hexalith.Folders.EventStore",
             _ => "Hexalith.Folders.Workers",
         };

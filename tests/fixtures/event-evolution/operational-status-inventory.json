@@ -58,6 +58,10 @@
       "payloadVersion": 1
     },
     {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceContentErasureAuthorized",
+      "payloadVersion": 1
+    },
+    {
       "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceFileMutationAccepted",
       "payloadVersion": 1
     },

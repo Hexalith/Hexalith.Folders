@@ -1,0 +1,55 @@
+[
+  {
+    "log": "/tmp/story123-audit-sdk-protocol.log",
+    "sha256": "38fc0c85214387b3a21eeb2b19e54bd47be5201304ca169b1efcc6c0e2d848d7",
+    "reason": "Initial deterministic fault tests used byte hooks which typed reads did not call; the test seam was corrected and protocol16/16 passed.",
+    "summary": [
+      "    Hexalith.EventStore.DomainService.Tests.Content.AuthoritativeContentStoreTests.ReplacementCompletesIrreversibleDeletionAfterCrashWithoutReopeningAuthority [FAIL]",
+      "    Hexalith.EventStore.DomainService.Tests.Content.AuthoritativeContentStoreTests.StaleFailedClaimCannotReopenCommittedDeletionWhileBodyDeletionIsPaused [FAIL]",
+      "   Hexalith.EventStore.DomainService.Tests  Total: 15, Errors: 0, Failed: 2, Skipped: 0, Not Run: 0, Time: 5.530s"
+    ]
+  },
+  {
+    "log": "/tmp/story123-audit-server-tests.log",
+    "sha256": "2adfbbaf1685837a2b7fa735bc2ef57a527a00dbf60b84885a0511befb506d67",
+    "reason": "Six new tests incorrectly expected a rejection ResultPayload; assertions were corrected to FolderCommandRejected.Code.",
+    "summary": [
+      "    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(receipt: null, workspace: \"workspace_0123456789\", generation: 0) [FAIL]",
+      "    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(receipt: \"content_ABCDEF\", workspace: \"workspace_0123456789\", generation: 0) [FAIL]",
+      "    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(receipt: \"content_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\u00b7\u00b7\u00b7, workspace: \"workspace_0123456789\", generation: 0) [FAIL]",
+      "    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(receipt: \"content_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\u00b7\u00b7\u00b7, workspace: null, generation: 0) [FAIL]",
+      "    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(receipt: \"content_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\u00b7\u00b7\u00b7, workspace: \"../unsafe\", generation: 0) [FAIL]",
+      "    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(receipt: \"content_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\u00b7\u00b7\u00b7, workspace: \"workspace_0123456789\", generation: -1) [FAIL]",
+      "   Hexalith.Folders.Server.Tests  Total: 57, Errors: 0, Failed: 6, Skipped: 0, Not Run: 0, Time: 5.958s"
+    ]
+  },
+  {
+    "log": "/tmp/story123-audit-client-tests.log",
+    "sha256": "cc697652e1acc71bbd425b0c095d496f396304df7d0d9066ce04be7d23e2c732",
+    "reason": "One valid streamed test fixture omitted the newly required observations; corrected, then342/342 passed.",
+    "summary": [
+      "    Hexalith.Folders.Client.Tests.ClientGenerationTests.HandBuiltStreamMutationsRejectEveryEvidenceMismatch [FAIL]",
+      "   Hexalith.Folders.Client.Tests  Total: 342, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 12.929s"
+    ]
+  },
+  {
+    "log": "/tmp/story123-audit-mcp-tests.log",
+    "sha256": "0e1ee39817b1b948c25e9d988cdb04fba61fa1813f854d1534ac6631ff3320ac",
+    "reason": "New invalid-fence tests exposed an uncaught helper exception; adapter now validates to existing safe usage_error, then15/15 passed.",
+    "summary": [
+      "    Hexalith.Folders.Mcp.Tests.FileTransportTests.InvalidObservedFenceIsSafeUsageFailureWithoutAdmission(fence: 0) [FAIL]",
+      "    Hexalith.Folders.Mcp.Tests.FileTransportTests.InvalidObservedFenceIsSafeUsageFailureWithoutAdmission(fence: -1) [FAIL]",
+      "   Hexalith.Folders.Mcp.Tests  Total: 15, Errors: 0, Failed: 2, Skipped: 0, Not Run: 0, Time: 0.282s"
+    ]
+  },
+  {
+    "log": "/tmp/story123-audit-server-build.log",
+    "sha256": "d5c0093c78f2818f045abe675d5cfe13223186bcf57baa4402b5503cfffe58d3",
+    "reason": "Nullable assertion warning treated as error in the new test; fixed."
+  },
+  {
+    "log": "/tmp/story123-audit-mcp-build.log",
+    "sha256": "983fadcdf938dce607e1f40c196545590291d0ccacb3789406a90a238484d52c",
+    "reason": "One positional existing test call lacked new required observation arguments; fixed."
+  }
+]

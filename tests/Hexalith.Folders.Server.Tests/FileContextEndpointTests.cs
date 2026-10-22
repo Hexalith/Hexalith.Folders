@@ -28,6 +28,21 @@ public sealed class FileContextEndpointTests
     private static readonly DateTimeOffset Now = new(2026, 5, 27, 8, 45, 0, TimeSpan.Zero);
 
     [Fact]
+    public async Task ProductionSourceShouldRejectMissingPolicyBeforeAnyContentDependency()
+    {
+        await using WebApplication app = BuildApp(source: null);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/workspaces/workspace-a/context/tree?limit=10");
+        AddQueryHeaders(request);
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        json.ShouldContain("\"code\":\"file_policy_unavailable\"");
+        json.ShouldNotContain("folder-a"); json.ShouldNotContain("workspace-a");
+    }
+
+    [Fact]
     public void MapFoldersServerEndpointsShouldRegisterContextQueryRoutes()
     {
         using WebApplication app = BuildApp(new RecordingContextSource());
@@ -245,9 +260,9 @@ public sealed class FileContextEndpointTests
     [Theory]
     [InlineData(WorkspaceFileContextSourceStatus.Timeout, HttpStatusCode.RequestTimeout, "query_timeout")]
     [InlineData(WorkspaceFileContextSourceStatus.ResponseLimitExceeded, HttpStatusCode.RequestEntityTooLarge, "response_limit_exceeded")]
-    [InlineData(WorkspaceFileContextSourceStatus.Redacted, HttpStatusCode.NotFound, "redacted")]
-    [InlineData(WorkspaceFileContextSourceStatus.BinaryDisallowed, HttpStatusCode.NotFound, "redacted")]
-    [InlineData(WorkspaceFileContextSourceStatus.LargeFileDisallowed, HttpStatusCode.NotFound, "redacted")]
+    [InlineData(WorkspaceFileContextSourceStatus.Redacted, HttpStatusCode.NotFound, "resource_unavailable")]
+    [InlineData(WorkspaceFileContextSourceStatus.BinaryDisallowed, HttpStatusCode.NotFound, "resource_unavailable")]
+    [InlineData(WorkspaceFileContextSourceStatus.LargeFileDisallowed, HttpStatusCode.NotFound, "resource_unavailable")]
     [InlineData(WorkspaceFileContextSourceStatus.Unavailable, HttpStatusCode.ServiceUnavailable, "read_model_unavailable")]
     public async Task SourceDenialsShouldReturnSafeProblemDetails(
         WorkspaceFileContextSourceStatus sourceStatus,
@@ -403,9 +418,9 @@ public sealed class FileContextEndpointTests
     }
 
     private static WebApplication BuildApp(
-        RecordingContextSource source,
+        RecordingContextSource? source,
         string? tenantId = "tenant-a",
-        string? principalId = "user-a")
+        string? principalId = "user-a", Action<WebApplicationBuilder>? configure = null)
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
@@ -429,13 +444,20 @@ public sealed class FileContextEndpointTests
         builder.Services.AddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
         builder.Services.RemoveAll<IDaprPolicyEvidenceProvider>();
         builder.Services.AddSingleton<IDaprPolicyEvidenceProvider>(new AllowingDaprPolicyEvidenceProvider());
-        builder.Services.RemoveAll<IWorkspaceFileContextSource>();
-        builder.Services.AddSingleton<IWorkspaceFileContextSource>(source);
+        if (source is not null)
+        {
+            builder.Services.RemoveAll<IWorkspaceFileContextSource>();
+            builder.Services.AddSingleton<IWorkspaceFileContextSource>(source);
+        }
+        else builder.Services.AddSingleton<Dapr.Client.DaprClient>(static _ => new Dapr.Client.DaprClientBuilder().Build());
 
+        configure?.Invoke(builder);
         WebApplication app = builder.Build();
         app.MapFoldersServerEndpoints();
         return app;
     }
+
+    internal static WebApplication BuildProductionApp(Action<WebApplicationBuilder> configure) => BuildApp(null, configure: configure);
 
     private static void AddQueryHeaders(HttpRequestMessage request)
     {

@@ -11,6 +11,29 @@ namespace Hexalith.Folders.EventStore.Tests;
 
 public sealed class MutateFilesIdempotencyIntentAdapterTests
 {
+    [Theory]
+    [InlineData("expectedFileVersion")]
+    [InlineData("expectedLockFence")]
+    public void ExplicitVersionAndLockFencesBelongToCanonicalIntent(string field)
+    {
+        var adapter = new MutateFilesIdempotencyIntentAdapter();
+        var first = adapter.CreateIntent(Command($$"""{"taskId":"task-a","workspaceId":"workspace-a","{{field}}":1}"""));
+        var second = adapter.CreateIntent(Command($$"""{"taskId":"task-a","workspaceId":"workspace-a","{{field}}":2}"""));
+        first.SemanticOptions!["semantic_payload_sha256"].ShouldNotBe(second.SemanticOptions!["semantic_payload_sha256"]);
+    }
+
+    [Fact]
+    public void BatchItemsAreOrderedSemanticIntentAndExcludePhysicalReceipts()
+    {
+        var adapter = new MutateFilesIdempotencyIntentAdapter();
+        string payload = """{"taskId":"task-a","workspaceId":"workspace-a","items":[{"operationId":"operation-a","contentHashReference":"hash-a","expectedFileVersion":0,"contentReceiptId":"receipt-a"},{"operationId":"operation-b","contentHashReference":"hash-b","expectedFileVersion":0}]}""";
+        string Hash(string value) => adapter.CreateIntent(Command(value)).SemanticOptions!["semantic_payload_sha256"];
+        Hash(payload).ShouldBe(Hash(payload.Replace("receipt-a", "receipt-b", StringComparison.Ordinal)));
+        Hash(payload).ShouldNotBe(Hash(payload.Replace("hash-b", "hash-c", StringComparison.Ordinal)));
+        Hash(payload).ShouldNotBe(Hash(payload.Replace("operation-a", "operation-c", StringComparison.Ordinal)));
+        Hash(payload).ShouldNotBe(Hash(payload.Replace("\"expectedFileVersion\":0", "\"expectedFileVersion\":1", StringComparison.Ordinal)));
+    }
+
     [Fact]
     public void EquivalentPathMetadataShouldProduceTheSameCanonicalIntent()
     {

@@ -7,6 +7,7 @@ internal sealed class ActorFoldedFolderRepository(FolderEventReplay replay) : IF
 {
     private FolderStreamName? _stream;
     private FolderState? _state;
+    private object? _source;
 
     /// <summary>Admits the actor-owned state for one authorized command.</summary>
     internal void Begin(string tenantId, string aggregateId, object? currentState)
@@ -16,8 +17,16 @@ internal sealed class ActorFoldedFolderRepository(FolderEventReplay replay) : IF
             throw new InvalidOperationException("The actor state was already admitted.");
         }
 
+        _source = currentState;
         _stream = FolderStreamName.Create(tenantId, aggregateId);
         _state = replay.FoldFolder(currentState, tenantId, aggregateId);
+    }
+
+    /// <summary>Exposes only this already-authorized actor invocation to content qualification.</summary>
+    internal bool TryRead(string tenantId, string folderId, out FolderState? state, out object? source)
+    {
+        state = _state; source = _source;
+        return _stream?.Value == FolderStreamName.Create(tenantId, folderId).Value && state is not null;
     }
 
     /// <inheritdoc/>

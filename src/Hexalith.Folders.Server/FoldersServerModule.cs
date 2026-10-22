@@ -59,6 +59,8 @@ public static class FoldersServerModule
 
     public const string MutateFilesCommandType = MutateWorkspaceFile.CommandTypeName;
 
+    public const string AuthorizeContentErasureCommandType = "Hexalith.Folders.Commands.AuthorizeWorkspaceContentErasure";
+
     public const string CommitWorkspaceCommandType = CommitWorkspace.CommandTypeName;
 
     // Maximum length for canonical identifiers (correlation id, task id, idempotency key,

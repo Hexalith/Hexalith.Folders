@@ -48,12 +48,15 @@ public static class FileUpload
         string operationId,
         FileMutationRequestFileOperationKind fileOperationKind = FileMutationRequestFileOperationKind.Add,
         string? contentMediaType = null,
-        string? contentHashReference = null)
+        string? contentHashReference = null,
+        long? expectedFileVersion = null,
+        long? expectedLockFence = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(mediaType);
         ArgumentNullException.ThrowIfNull(pathMetadata);
         ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
         EnsureUploadOperationKind(fileOperationKind);
+        ValidateDurableObservation(expectedFileVersion, expectedLockFence);
 
         if (content.Length > MaximumFileBytes)
         {
@@ -86,6 +89,8 @@ public static class FileUpload
 
         FileMutationRequest request = new()
         {
+            ExpectedFileVersion = expectedFileVersion!.Value,
+            ExpectedLockFence = expectedLockFence!.Value,
             RequestSchemaVersion = RequestSchemaVersionV2,
             OperationId = operationId,
             PathMetadata = pathMetadata,
@@ -112,7 +117,9 @@ public static class FileUpload
         string mediaType,
         PathMetadata pathMetadata,
         string operationId,
-        FileMutationRequestFileOperationKind fileOperationKind = FileMutationRequestFileOperationKind.Add)
+        FileMutationRequestFileOperationKind fileOperationKind = FileMutationRequestFileOperationKind.Add,
+        long? expectedFileVersion = null,
+        long? expectedLockFence = null)
     {
         ArgumentNullException.ThrowIfNull(stagingEvidence);
         ArgumentException.ThrowIfNullOrWhiteSpace(mediaType);
@@ -121,6 +128,7 @@ public static class FileUpload
         ArgumentException.ThrowIfNullOrWhiteSpace(stagingEvidence.StagingReference);
         ArgumentException.ThrowIfNullOrWhiteSpace(stagingEvidence.ObservedContentHashReference);
         EnsureUploadOperationKind(fileOperationKind);
+        ValidateDurableObservation(expectedFileVersion, expectedLockFence);
 
         if (stagingEvidence.ObservedLength <= InlineTransportBoundaryBytes)
         {
@@ -147,6 +155,8 @@ public static class FileUpload
 
         FileMutationRequest request = new()
         {
+            ExpectedFileVersion = expectedFileVersion!.Value,
+            ExpectedLockFence = expectedLockFence!.Value,
             RequestSchemaVersion = RequestSchemaVersionV2,
             OperationId = operationId,
             PathMetadata = pathMetadata,
@@ -177,6 +187,12 @@ public static class FileUpload
         return request.ComputeIdempotencyHash(workspaceId, taskId);
     }
 
+    internal static void ValidateDurableObservation(long? expectedFileVersion, long? expectedLockFence)
+    {
+        if (expectedFileVersion is null or < 0) throw new ArgumentOutOfRangeException(nameof(expectedFileVersion), "A caller-observed nonnegative file version is required.");
+        if (expectedLockFence is null or <= 0) throw new ArgumentOutOfRangeException(nameof(expectedLockFence), "A caller-observed positive lock fence is required.");
+    }
+
     private static void EnsureUploadOperationKind(FileMutationRequestFileOperationKind fileOperationKind)
     {
         if (fileOperationKind is not (FileMutationRequestFileOperationKind.Add or FileMutationRequestFileOperationKind.Change))
@@ -187,7 +203,8 @@ public static class FileUpload
         }
     }
 
-    private static string ComputeContentHashReference(ReadOnlySpan<byte> content)
+    /// <summary>Calculates the canonical reference from the exact observed bytes.</summary>
+    internal static string ComputeContentHashReference(ReadOnlySpan<byte> content)
     {
         Span<byte> digest = stackalloc byte[32];
         _ = SHA256.HashData(content, digest);

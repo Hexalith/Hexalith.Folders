@@ -40,6 +40,8 @@ internal static class FileCommand
         Option<string> folderId = CommandOptions.RequiredId("--folder-id", "Opaque folder identifier.");
         Option<string> workspaceId = CommandOptions.RequiredId("--workspace-id", "Opaque workspace identifier.");
         Option<string> operationId = CommandOptions.RequiredId("--operation-id", "Opaque per-file operation identifier.");
+        Option<long> expectedFileVersion = new("--expected-file-version") { Description = "Caller-observed file version; zero for a new file.", Required = true };
+        Option<long> expectedLockFence = new("--expected-lock-fence") { Description = "Caller-observed positive lock acquisition fence.", Required = true };
         Option<string> file = CommandOptions.RequiredId("--file", "Path to the local file content, or - to read bytes from stdin.");
         Option<string> path = CommandOptions.RequiredId("--path", "Workspace-root-relative normalized path.");
         Option<string> displayName = CommandOptions.RequiredId("--display-name", "Human-readable file name.");
@@ -52,12 +54,16 @@ internal static class FileCommand
             description,
             pipeline,
             global,
-            [folderId, workspaceId, operationId, file, path, displayName, mediaType, contentMediaType, pathPolicyClass],
+            [folderId, workspaceId, operationId, expectedFileVersion, expectedLockFence, file, path, displayName, mediaType, contentMediaType, pathPolicyClass],
             async (parseResult, client, sourcing, ct) =>
             {
+                if (parseResult.GetValue(expectedFileVersion) < 0 || parseResult.GetValue(expectedLockFence) <= 0)
+                    throw new CliUsageException("File upload requires an observed nonnegative version and positive lock fence.");
                 ReadOnlyMemory<byte> content = ReadFileBytes(parseResult.GetValue(file)!);
                 FileUploadDescriptor descriptor = new()
                 {
+                    ExpectedFileVersion = parseResult.GetValue(expectedFileVersion),
+                    ExpectedLockFence = parseResult.GetValue(expectedLockFence),
                     FolderId = parseResult.GetValue(folderId)!,
                     WorkspaceId = parseResult.GetValue(workspaceId)!,
                     OperationId = parseResult.GetValue(operationId)!,

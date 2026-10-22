@@ -45,6 +45,8 @@ internal static class FoldersCanonicalIntentBuilder
         "contentHashReference", "byteLength", "mediaType", "branchRefTarget",
         "changedPathMetadataDigest", "authorMetadataReference",
         "commitMessageClassification", "auditMetadataKeys",
+        "ownerFileId", "expectedFileVersion", "expectedLockFence", "items",
+        "receiptId", "assignedTaskId", "expectedGeneration",
     };
 
     public static IdempotencyCanonicalIntent Create(
@@ -328,8 +330,9 @@ internal static class FoldersCanonicalIntentBuilder
             foreach (JsonProperty property in element.EnumerateObject().OrderBy(static item => item.Name, StringComparer.Ordinal))
             {
                 string childPath = path.Length == 0 ? property.Name : $"{path}.{property.Name}";
-                if (!SemanticPayloadPaths.Contains(childPath)
-                    && !SemanticPayloadPaths.Any(allowed => allowed.StartsWith($"{childPath}.", StringComparison.Ordinal)))
+                string semanticPath = childPath.StartsWith("items.", StringComparison.Ordinal) ? childPath[6..] : childPath;
+                if (!SemanticPayloadPaths.Contains(semanticPath)
+                    && !SemanticPayloadPaths.Any(allowed => allowed.StartsWith($"{semanticPath}.", StringComparison.Ordinal)))
                 {
                     continue;
                 }

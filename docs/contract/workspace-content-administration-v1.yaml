@@ -1,0 +1,47 @@
+openapi: 3.1.0
+info:
+  title: Folders authoritative content administration
+  version: 1.0.0
+  description: Separate administrative transport; enables no public v2 operation.
+paths:
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/content/disposition:
+    post:
+      operationId: AdministerWorkspaceContentDisposition
+      description: Current manage_folder_access authority is checked before protected observation or effect. A receipt grants no authority.
+      security:
+        - bearer: []
+      parameters:
+        - {name: folderId, in: path, required: true, schema: {type: string, pattern: '^[a-z0-9._-]{1,128}$'}}
+        - {name: workspaceId, in: path, required: true, schema: {type: string, pattern: '^[a-z0-9._-]{1,128}$'}}
+      requestBody:
+        required: true
+        description: JSON is bounded to 16384 bytes; duplicate and unknown properties are rejected.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [receiptId, operation]
+              properties:
+                receiptId: {type: string, pattern: '^content_[a-f0-9]{64}$'}
+                operation: {type: string, enum: [hold, release, abandon, apply]}
+      responses:
+        '200':
+          description: Operation evaluated; apply erases only after a fresh qualifying P7D epoch and a serialized source grant.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [accepted, erased]
+                properties:
+                  accepted: {type: boolean, const: true}
+                  erased: {type: boolean}
+        '400': {description: Canonical content_evidence_invalid; no submitted value is echoed.}
+        '401': {description: Authentication required.}
+        '404': {description: Canonical resource_unavailable safe denial.}
+        '409': {description: Canonical concurrency_conflict; sealed receipts cannot acquire holds or references.}
+        '503': {description: Canonical file_policy_unavailable; authority or persistence cannot be established.}
+components:
+  securitySchemes:
+    bearer: {type: http, scheme: bearer, bearerFormat: JWT}

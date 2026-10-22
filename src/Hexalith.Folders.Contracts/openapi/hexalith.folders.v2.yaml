@@ -17704,6 +17704,8 @@ components:
           mediaType: text/plain
           contentBytes: c3ludGhldGljIGF1dGhvcml6ZWQgcmVxdWVzdCBib2R5
           contentMediaType: text/plain
+        expectedFileVersion: 0
+        expectedLockFence: 1
     ChangeFileStreamRequest:
       summary: Synthetic streamed change request for larger content.
       value:
@@ -17725,6 +17727,8 @@ components:
           stagingReference: staged-content-a
           observedContentHashReference: hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002ABCDEF
           uploadMode: request_body_stream
+        expectedFileVersion: 1
+        expectedLockFence: 1
     RemoveFileRequest:
       summary: Synthetic metadata-only file removal request.
       value:
@@ -17737,6 +17741,8 @@ components:
           displayName: synthetic-remove-003.md
           pathPolicyClass: content_allowed
           unicodeNormalization: NFC
+        expectedFileVersion: 1
+        expectedLockFence: 1
     FileInlineTooLargeProblem:
       summary: 'Synthetic inline content exceeds the D-9 boundary. The retry-as-stream hint is carried via the `X-Hexalith-Retry-Transport: stream` response header;
         the configured limit value is intentionally absent from the body to keep 413 disclosure safe for pre-authentication callers.'
@@ -20080,6 +20086,11 @@ components:
       - effectiveAt
       - expiresAt
       properties:
+        lockFence:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Monotonic source lock acquisition fence for file mutation admission.
         lockId:
           $ref: '#/components/schemas/OpaqueIdentifier'
         leaseStatus:
@@ -20325,7 +20336,23 @@ components:
       - transportOperation
       - operationId
       - pathMetadata
+      - expectedFileVersion
+      - expectedLockFence
       properties:
+        ownerFileId:
+          type: string
+          maxLength: 128
+          description: Optional explicit owner incarnation; an exact accepted path is resolved by the owner when omitted.
+        expectedFileVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Caller-observed immutable version; zero for a new incarnation. Required by durable execution.
+        expectedLockFence:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Caller-observed lock acquisition fence. Required by durable execution.
         requestSchemaVersion:
           type: string
           const: v2
@@ -21162,6 +21189,15 @@ components:
       - sensitivity
       - redaction
       properties:
+        fileId:
+          type: string
+          maxLength: 128
+          description: Opaque owner incarnation for a currently visible authoritative file.
+        version:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Immutable authoritative version for subsequent fenced mutations.
         path:
           $ref: '#/components/schemas/VisiblePathMetadata'
         kind:

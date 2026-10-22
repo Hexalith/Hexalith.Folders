@@ -36,7 +36,10 @@ public sealed partial class FolderDomainProcessor(
     IFolderTelemetryEmitter telemetryEmitter,
     IFolderRepository? actorFolderRepository = null,
     IOrganizationProviderBindingRepository? actorOrganizationRepository = null,
-    IOrganizationAclRepository? actorOrganizationAclRepository = null) : IDomainProcessor
+    IOrganizationAclRepository? actorOrganizationAclRepository = null,
+    Microsoft.AspNetCore.Http.IHttpContextAccessor? httpContextAccessor = null,
+    Content.WorkspaceContentBatch? contentBatch = null,
+    Hexalith.EventStore.DomainService.Content.IAuthoritativeContentStore? authoritativeContent = null) : IDomainProcessor
 {
     private static readonly JsonSerializerOptions PayloadJsonOptions = new(JsonSerializerDefaults.Web)
     {
@@ -189,8 +192,12 @@ public sealed partial class FolderDomainProcessor(
             return await ProcessReleaseWorkspaceLockAsync(command).ConfigureAwait(false);
         }
 
+        if (command.CommandType == FoldersServerModule.AuthorizeContentErasureCommandType)
+            return ProcessContentErasure(command);
+
         if (string.Equals(command.CommandType, FoldersServerModule.MutateFilesCommandType, StringComparison.Ordinal))
         {
+            if (httpContextAccessor?.HttpContext is { } context) context.Items["Folders:WorkspaceContentCommand"] = command.MessageId;
             return await ProcessMutateFilesAsync(command).ConfigureAwait(false);
         }
 
@@ -1207,6 +1214,19 @@ public sealed partial class FolderDomainProcessor(
 
     private async Task<DomainResult> ProcessMutateFilesAsync(CommandEnvelope envelope)
     {
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(envelope.Payload);
+            if (document.RootElement.ValueKind != JsonValueKind.Object) return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+            if (document.RootElement.TryGetProperty("items", out JsonElement items))
+                return await ProcessContentBatchAsync(envelope, document.RootElement, items).ConfigureAwait(false);
+        }
+        catch (JsonException) { return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null); }
+        return await ProcessSingleFileMutationAsync(envelope).ConfigureAwait(false);
+    }
+
+    private async Task<DomainResult> ProcessSingleFileMutationAsync(CommandEnvelope envelope)
+    {
         FileMutationPayload? payload;
         try
         {
@@ -1276,6 +1296,8 @@ public sealed partial class FolderDomainProcessor(
         {
             OwnerFileId = payload.OwnerFileId,
             ProjectFileReferenceId = payload.ProjectFileReferenceId,
+            ContentReceiptId = payload.ContentReceiptId, ExpectedFileVersion = payload.ExpectedFileVersion,
+            ExpectedLockFence = payload.ExpectedLockFence,
         };
 
 
@@ -1290,6 +1312,30 @@ public sealed partial class FolderDomainProcessor(
         }
 
         return ToDomainResult(envelope, result);
+    }
+
+    private DomainResult ProcessContentErasure(CommandEnvelope command)
+    {
+        Content.WorkspaceContentErasureRequest? request;
+        try { request = JsonSerializer.Deserialize<Content.WorkspaceContentErasureRequest>(command.Payload, PayloadJsonOptions); }
+        catch (JsonException) { return Rejection(command, FolderResultCode.ValidationFailed, null); }
+        if (request is null || !Content.WorkspaceContentErasure.IsCanonicalRequest(request)
+            || _actorFolderRepository is null) return Rejection(command, FolderResultCode.ValidationFailed, null);
+        var state = _actorFolderRepository.Load(FolderStreamName.Create(command.TenantId, command.AggregateId));
+        if (state.ContentErasureGrants.TryGetValue(request.ReceiptId, out long grant) && grant >= request.ExpectedGeneration)
+            return grant == request.ExpectedGeneration ? new PayloadDomainResult("{\"status\":\"accepted\"}", [])
+                : Rejection(command, FolderResultCode.AppendConflict, null);
+        if (!FolderActorSequenceScope.TryGet(command.TenantId, command.AggregateId, out long head) || head != request.ExpectedGeneration
+            || Content.WorkspaceContentErasure.HasActiveTask(state)
+            || request.AssignedTaskId is { } task && !state.IsTaskClosed(request.WorkspaceId, task)
+            || Content.WorkspaceContentErasure.HasLiveReference(state, request.ReceiptId))
+            return Rejection(command, FolderResultCode.AppendConflict, null);
+        string fingerprint = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(
+            System.Text.Encoding.UTF8.GetBytes(request.ReceiptId + ":" + head.ToString(System.Globalization.CultureInfo.InvariantCulture))));
+        var accepted = new WorkspaceContentErasureAuthorized(command.TenantId, state.OrganizationId!, command.AggregateId,
+            request.WorkspaceId, request.ReceiptId, head, command.UserId, command.CorrelationId, ReadRequiredTaskId(command),
+            command.MessageId, fingerprint, DateTimeOffset.UtcNow);
+        return new PayloadDomainResult("{\"status\":\"accepted\"}", [accepted]);
     }
 
     private async Task<DomainResult> ProcessCommitWorkspaceAsync(CommandEnvelope envelope)
@@ -1736,6 +1782,9 @@ public sealed partial class FolderDomainProcessor(
         long? ObservedByteLength,
         string? TaskId)
     {
+        public string? ContentReceiptId { get; init; }
+        public long? ExpectedFileVersion { get; init; }
+        public long? ExpectedLockFence { get; init; }
         public string? OwnerFileId { get; init; }
         public string? ProjectFileReferenceId { get; init; }
     }

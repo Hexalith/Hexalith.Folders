@@ -85,3 +85,32 @@ Verification must prove this artifact exists, contains no generic placeholders, 
 ## Deferred implementation
 
 This document does not itself add cleanup workers, projection compaction, tenant-deletion flows, audit endpoints, Dapr state configuration, OpenAPI fields, or idempotency code. Story 4.22 implements the revised working-file trigger and durable recovery fields; Story 12.6 implements the separately approved consumed-key class through Hexalith.EventStore. Unaffected C3 classes and the OQ8 class retain their recorded approvals.
+
+
+## Authoritative workspace bodies — owner decision 2026-10-22
+
+Jerome approved the authoritative-body prerequisite and disposition in
+`_bmad-output/implementation-artifacts/story-12-3-content-prerequisite-proposal-2026-10-22.md`
+with "approve both and continue". This class is separate from disposable temporary working files.
+
+EventStore owns the physical body namespace, immutable tenant/task receipts, atomic publication ledger,
+legal holds, abandoned-upload dispositions and cleanup epochs. Folders events, snapshots, projections,
+audit and diagnostics remain metadata-only. Working copies and indexes never establish body truth.
+
+- Preserve every live staged/current-committed reference without automatic TTL. Pending/indeterminate
+  publication remains protected; lock loss, restart, recovery expiry and archive alone authorize no deletion.
+- Accepted removal suppresses ordinary retrieval immediately, including all versions of that incarnation.
+  Legal hold preserves physical bytes without restoring visibility. Replay cannot resurrect a tombstone.
+- Superseded, removed and abandoned bodies qualify only with no live authoritative reference, terminal
+  associated work and no active task. A never-assigned upload first requires its durable abandoned disposition.
+- Begin a fresh seven-calendar-day (`P7D`) epoch at qualification. Legitimate resume cancels it; later
+  eligibility starts a new epoch. A hold blocks erasure; release requires a fresh qualifying epoch.
+- At deletion, recheck source generation, terminal/no-active/reference predicates and SDK-owned hold
+  generation. Reserve the exact immutable receipt against new references/holds and serialize an explicit
+  metadata-only erasure grant through the owning EventStore aggregate before physical erasure. Unavailable
+  authority or unresolved publication preserves bytes. Retain independently governed receipt/tombstone metadata.
+
+The content administrative transport requires current `manage_folder_access` authority for its exact tenant,
+folder and workspace; it delegates hold/release/abandon/apply to the SDK. It does not expose v2 or execute Git.
+Source qualification and live Folders acceptance evidence are recorded with Story 12.3; this policy record
+alone claims no runtime completion or deployment.

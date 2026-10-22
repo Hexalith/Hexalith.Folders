@@ -18,6 +18,8 @@ using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.FolderAccess;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server.Authentication;
+using Hexalith.Folders.Server.Content;
+using Hexalith.EventStore.DomainService.Content;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -26,7 +28,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Hexalith.Folders.Server;
 
-public static class FoldersDomainServiceEndpoints
+public static partial class FoldersDomainServiceEndpoints
 {
     private const string FreshnessHeaderName = "X-Hexalith-Freshness";
     private const string EventuallyConsistent = "eventually_consistent";
@@ -90,6 +92,7 @@ public static class FoldersDomainServiceEndpoints
     public static IEndpointRouteBuilder MapFoldersDomainServiceEndpoints(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
+        WorkspaceContentRetentionEndpoints.Map(endpoints);
 
         endpoints.MapPost("/query", async (QueryEnvelope query, IServiceProvider services, CancellationToken token) =>
         {
@@ -3262,13 +3265,16 @@ public static class FoldersDomainServiceEndpoints
         string taskId = envelope.TaskId;
 
         FileMutationHttpRequest? body;
+        byte[]? streamedBytes;
         try
         {
-            body = await httpContext.Request
-                .ReadFromJsonAsync<FileMutationHttpRequest>(RequestJsonOptions, cancellationToken)
-                .ConfigureAwait(false);
+            (body, streamedBytes) = await ReadFileMutationBodyAsync(httpContext.Request, cancellationToken).ConfigureAwait(false);
         }
-        catch (JsonException)
+        catch (WorkspaceContentPolicyException exception)
+        {
+            return ContentProblem(exception.Code, correlationId, taskId);
+        }
+        catch (Exception exception) when (exception is JsonException or System.IO.IOException or FormatException or ArgumentException)
         {
             return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
@@ -3295,28 +3301,78 @@ public static class FoldersDomainServiceEndpoints
         FileMutationTransportValidation validation = ValidateFileMutationRequest(body);
         if (!validation.IsAccepted)
         {
-            string category = validation.Result switch
+            if (validation.Result == FileMutationRequestValidationResult.InputLimitExceeded)
+                httpContext.Response.Headers["X-Hexalith-Retry-Transport"] = "stream";
+            return ContentProblem(validation.Result switch
             {
                 FileMutationRequestValidationResult.PathValidationFailed => "path_validation_failed",
-                FileMutationRequestValidationResult.InputLimitExceeded => "input_limit_exceeded",
-                _ => "validation_error",
-            };
-            int statusCode = validation.Result == FileMutationRequestValidationResult.InputLimitExceeded
-                ? StatusCodes.Status413PayloadTooLarge
-                : StatusCodes.Status400BadRequest;
-            if (validation.Result == FileMutationRequestValidationResult.InputLimitExceeded)
-            {
-                httpContext.Response.Headers["X-Hexalith-Retry-Transport"] = "stream";
-            }
-
-            return FolderProblemDetailsFactory.ForDomain(
-                statusCode,
-                category: category,
-                code: category,
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
+                FileMutationRequestValidationResult.ContentLimitExceeded => "file_content_limit_exceeded",
+                FileMutationRequestValidationResult.InputLimitExceeded => "d9_inline_limit_exceeded",
+                _ => "content_evidence_invalid",
+            }, correlationId, taskId);
         }
+        string? receiptId = null;
+        try
+        {
+            if (body.ExpectedLockFence is null or <= 0 || body.ExpectedFileVersion is null or < 0)
+                return ContentProblem("content_evidence_invalid", correlationId, taskId);
+            if (streamedBytes is not null && (streamedBytes.LongLength != body.ByteLength
+                || "hashref_" + Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(streamedBytes)) != body.ContentHashReference))
+                return ContentProblem("content_evidence_invalid", correlationId, taskId);
+            var policySource = httpContext.RequestServices.GetRequiredService<Hexalith.Folders.Queries.FileContext.IWorkspaceFilePolicySource>();
+            var policy = policySource.Capture();
+            var path = new PathMetadata(body.PathMetadata!.NormalizedPath!, body.PathMetadata.DisplayName!,
+                body.PathMetadata.PathPolicyClass!, body.PathMetadata.UnicodeNormalization!);
+            if (policy.Classify(path) is "excluded" or "restricted") return ContentProblem("resource_unavailable", correlationId, taskId);
+            if (policy.ProtectionMode != "non_confidential") return ContentProblem("confidential_operation_not_durable", correlationId, taskId);
+            httpContext.Items[WorkspaceContentAuthority.ActionItem] = "mutate_files";
+            httpContext.Items["Folders:ContentExpectedFence"] = body.ExpectedLockFence.Value;
+            var scope = new ContentScope(envelope.TenantId, "folders", folderId, workspaceId);
+            var authority = httpContext.RequestServices.GetRequiredService<IContentAuthority>();
+            await authority.AuthorizeAsync(httpContext.User, scope, ContentOperation.Read, scope, cancellationToken).ConfigureAwait(false);
+            WorkspaceContentBinding? replay = authority is WorkspaceContentAuthority owner
+                ? await owner.ValidateIngressAsync(scope, taskId, body.OperationId!, body.FileOperationKind!, path,
+                    body.ContentHashReference, body.ByteLength, validation.MediaType, body.ExpectedLockFence.Value,
+                    body.ExpectedFileVersion.Value, body.OwnerFileId, cancellationToken).ConfigureAwait(false) : null;
+            var evidence = await httpContext.RequestServices.GetRequiredService<IWorkspacePathPolicyEvidenceProvider>()
+                .GetEvidenceAsync(new(envelope.TenantId, folderId, workspaceId, taskId, body.OperationId!,
+                    WorkspacePathPolicyValidator.ComputePathMetadataDigest(path), path.PathPolicyClass) { PathMetadata = path }, cancellationToken).ConfigureAwait(false);
+            if (evidence.Decision != WorkspacePathPolicyEvidenceDecision.NoEscape)
+                return ContentProblem(evidence.Decision == WorkspacePathPolicyEvidenceDecision.Unavailable ? "file_policy_unavailable" : "resource_unavailable", correlationId, taskId);
+            var store = httpContext.RequestServices.GetRequiredService<IAuthoritativeContentStore>();
+            if (body.FileOperationKind is "add" or "change")
+            {
+                ContentReceipt receipt;
+                if (replay?.ReceiptId is { } replayReceipt)
+                    // Accepted source evidence is immutable. Replay needs current authorization/policy,
+                    // not a new upload lease or physically retained bytes for a suppressed receipt.
+                    receipt = new(replayReceipt, replay.ContentHashReference![8..], replay.ByteLength!.Value, replay.MediaType!, replay.TaskId);
+                else if (body.TransportOperation == "PutFileInline" || streamedBytes is not null)
+                {
+                    byte[] bytes = streamedBytes ?? Convert.FromBase64String(body.InlineContent!.Value.GetProperty("contentBytes").GetString()!);
+                    if (bytes.LongLength > 1048576) return ContentProblem("file_content_limit_exceeded", correlationId, taskId);
+                    if (bytes.LongLength != body.ByteLength || "hashref_" + Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(bytes)) != body.ContentHashReference)
+                        return ContentProblem("content_evidence_invalid", correlationId, taskId);
+                    receipt = await store.UploadAsync(httpContext.User,
+                        new(scope, taskId, body.ContentHashReference![8..], bytes.LongLength, validation.MediaType!, body.OperationId),
+                        new MemoryStream(bytes, writable: false), cancellationToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    string staging = body.StreamDescriptor!.Value.GetProperty("stagingReference").GetString()!;
+                    receipt = await store.VerifyUploadAsync(httpContext.User, new(scope, taskId, staging), cancellationToken).ConfigureAwait(false);
+                }
+                if ("hashref_" + receipt.Sha256 != body.ContentHashReference || receipt.ByteLength != body.ByteLength || receipt.MediaType != validation.MediaType)
+                    return ContentProblem("content_evidence_invalid", correlationId, taskId);
+                receiptId = receipt.Id;
+            }
+            if (!policySource.IsCurrent(policy)) return ContentProblem("file_policy_unavailable", correlationId, taskId);
+        }
+        catch (WorkspaceContentPolicyException exception) { return ContentProblem(exception.Code, correlationId, taskId); }
+        catch (UnauthorizedAccessException) { return ContentProblem("resource_unavailable", correlationId, taskId); }
+        catch (ContentConflictException) { return ContentProblem("concurrency_conflict", correlationId, taskId); }
+        catch (ArgumentException) { return ContentProblem("content_evidence_invalid", correlationId, taskId); }
+        catch (Exception exception) when (exception is not OperationCanceledException) { return ContentProblem("file_policy_unavailable", correlationId, taskId); }
 
         FileMutationGatewayPayload gatewayPayload = new(
             body.RequestSchemaVersion,
@@ -3330,14 +3386,19 @@ public static class FoldersDomainServiceEndpoints
             validation.MediaType,
             validation.TransportEvidenceKind,
             validation.ObservedByteLength,
-            taskId);
+            taskId)
+        {
+            ContentReceiptId = receiptId, ExpectedFileVersion = body.ExpectedFileVersion,
+            ExpectedLockFence = body.ExpectedLockFence, OwnerFileId = body.OwnerFileId,
+        };
 
+        string contentCommandId = GenerateCanonicalMessageId();
         SubmitCommandResponse submitted;
         try
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: GenerateCanonicalMessageId(),
+                    MessageId: contentCommandId,
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -3353,6 +3414,20 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (EventStoreGatewayException ex)
         {
+            if (ex.ReasonCode == "folder-command-rejected")
+            {
+                try
+                {
+                    var retained = await httpContext.RequestServices.GetRequiredService<WorkspaceContentRejectionReader>()
+                        .ReadAsync(new(envelope.TenantId, "folders", folderId, workspaceId), correlationId, taskId, cancellationToken).ConfigureAwait(false);
+                    if (retained is { } code) return ContentDomainProblem(code, correlationId, taskId);
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
+                catch (Exception) { }
+                return ContentProblem("file_policy_unavailable", correlationId, taskId);
+            }
+            if (ex.StatusCode is 403 or 404) return ContentProblem("resource_unavailable", correlationId, taskId);
+            if (ex.StatusCode == 503) return ContentProblem("file_policy_unavailable", correlationId, taskId);
             return ToArchiveGatewayProblem(ex, correlationId, taskId);
         }
         catch (OperationCanceledException)
@@ -3681,7 +3756,9 @@ public static class FoldersDomainServiceEndpoints
             return FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed);
         }
 
-        if (decoded.LongLength != body.ByteLength)
+        if (decoded.LongLength > 1048576)
+            return FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ContentLimitExceeded);
+        if (decoded.LongLength != body.ByteLength || "hashref_" + Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(decoded)) != body.ContentHashReference)
         {
             return FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed);
         }
@@ -3717,7 +3794,9 @@ public static class FoldersDomainServiceEndpoints
             return FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed);
         }
 
-        return FileMutationTransportValidation.Accepted(mediaType, "stream_observed", observedLength);
+        return observedLength > 1048576
+            ? FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ContentLimitExceeded)
+            : FileMutationTransportValidation.Accepted(mediaType, "stream_observed", observedLength);
     }
 
     private static bool TryGetStringProperty(JsonElement element, string propertyName, out string? value)
@@ -4257,7 +4336,7 @@ public static class FoldersDomainServiceEndpoints
 
         int? limit = requestLimit ?? ReadOptionalIntQuery(httpContext, "limit");
         string? cursor = requestCursor ?? FolderHttpHeaderReader.ReadQuery(httpContext, "cursor");
-        string actionToken = kind == WorkspaceFileContextQueryKind.Range
+        string actionToken = kind is WorkspaceFileContextQueryKind.Range or WorkspaceFileContextQueryKind.Search
             ? WorkspaceFileContextQueryHandler.ContentActionToken
             : WorkspaceFileContextQueryHandler.MetadataActionToken;
 
@@ -4391,11 +4470,15 @@ public static class FoldersDomainServiceEndpoints
     {
         if (result.AuthorizationDenial is not null)
         {
+            if (result.Code is not (WorkspaceFileContextResultCode.AuthenticationRequired or WorkspaceFileContextResultCode.ReadModelUnavailable))
+                return ContentProblem("resource_unavailable", correlationId, taskId);
             return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
         }
 
         switch (result.Code)
         {
+            case WorkspaceFileContextResultCode.PolicyUnavailable:
+                return ContentProblem("file_policy_unavailable", correlationId, taskId);
             case WorkspaceFileContextResultCode.Allowed:
                 AddFileContextSuccessHeaders(httpContext, result);
                 if (result.Kind == WorkspaceFileContextQueryKind.Range)
@@ -4450,13 +4533,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceFileContextResultCode.NotFoundSafe:
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status404NotFound,
-                    category: "not_found",
-                    code: "not_found",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId);
+                return ContentProblem("resource_unavailable", correlationId, taskId);
 
             case WorkspaceFileContextResultCode.ValidationFailed:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -4504,15 +4581,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceFileContextResultCode.Redacted:
-                return FolderProblemDetailsFactory.ForDomain(
-                    result.Kind == WorkspaceFileContextQueryKind.Range
-                        ? StatusCodes.Status416RangeNotSatisfiable
-                        : StatusCodes.Status404NotFound,
-                    category: "redacted",
-                    code: "redacted",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId);
+                return ContentProblem("resource_unavailable", correlationId, taskId);
 
             case WorkspaceFileContextResultCode.RangeUnsatisfiable:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -6082,6 +6151,7 @@ public static class FoldersDomainServiceEndpoints
         ValidationFailed,
         PathValidationFailed,
         InputLimitExceeded,
+        ContentLimitExceeded,
     }
 
     private sealed record FileMutationTransportValidation(
@@ -6212,7 +6282,12 @@ public static class FoldersDomainServiceEndpoints
         string? ContentHashReference,
         long? ByteLength,
         JsonElement? InlineContent,
-        JsonElement? StreamDescriptor);
+        JsonElement? StreamDescriptor)
+    {
+        public string? OwnerFileId { get; init; }
+        public long? ExpectedFileVersion { get; init; }
+        public long? ExpectedLockFence { get; init; }
+    }
 
     private sealed record CommitWorkspaceHttpRequest(
         string? RequestSchemaVersion,
@@ -6269,7 +6344,13 @@ public static class FoldersDomainServiceEndpoints
         string? MediaType,
         string? TransportEvidenceKind,
         long? ObservedByteLength,
-        string TaskId);
+        string TaskId)
+    {
+        public string? ContentReceiptId { get; init; }
+        public string? OwnerFileId { get; init; }
+        public long? ExpectedFileVersion { get; init; }
+        public long? ExpectedLockFence { get; init; }
+    }
 
     private sealed record CommitWorkspaceGatewayPayload(
         string? RequestSchemaVersion,

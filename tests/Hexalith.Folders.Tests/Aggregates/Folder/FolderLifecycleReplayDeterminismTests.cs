@@ -168,6 +168,7 @@ public sealed class FolderLifecycleReplayDeterminismTests
             typeof(WorkspaceLockAcquired),
             typeof(WorkspaceLockReleased),
             typeof(WorkspaceFileMutationAccepted),
+            typeof(WorkspaceContentErasureAuthorized),
             typeof(WorkspaceCommitSucceeded),
             typeof(WorkspaceCommitFailed),
             typeof(WorkspaceCommitOutcomeUnknown),

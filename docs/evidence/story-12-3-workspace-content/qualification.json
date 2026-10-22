@@ -1,0 +1,237 @@
+{
+  "story": "12.3",
+  "date": "2026-10-22",
+  "baseline_revision": "28513763ec5c0405ab942b1e5266a483573f451d",
+  "uncommitted_working_tree": true,
+  "eventstore_baseline_revision": "995117f9b899a2994e99257091b0ea35cfbe5090",
+  "upstream_qualification": "../../../references/Hexalith.EventStore/docs/evidence/story-12-3-content-authority/qualification.json",
+  "upstream_qualified_hashes_rechecked": 33,
+  "upstream_hash_mismatches": 0,
+  "execution_order": "Aspire baseline; EventStore implementation and protocol/live qualification; dependent Folders implementation; sequential validation; full Debug/source solution build",
+  "commands": [
+    {
+      "name": "core-tests",
+      "command": "dotnet tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-unit-all-final.log",
+      "full_log_sha256": "81081c90c5dadea8bb61db7e02deecead2d746cb3de22ff05fb4c7331ff14c80",
+      "retained_log": "core-tests.log"
+    },
+    {
+      "name": "server-tests",
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-server-all-final.log",
+      "full_log_sha256": "119d892816b2048b5a507f0a64ed8f5dbba3ad44e18f023d4b57917fe8e69f81",
+      "retained_log": "server-tests.log"
+    },
+    {
+      "name": "client-tests",
+      "command": "dotnet tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.Tests.dll",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-client-tests-rerun.log",
+      "full_log_sha256": "19ff683f81cad3799b76f0b0a8f532db1f5d3da7578c4ac92f5ecd7d2506a9cc",
+      "retained_log": "client-tests.log"
+    },
+    {
+      "name": "contracts-tests",
+      "command": "dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-contract-tests-final.log",
+      "full_log_sha256": "732f93d457ac0783588b315825eeed47dc5c971e0578d34e11689abeb48892f0",
+      "retained_log": "contracts-tests.log"
+    },
+    {
+      "name": "eventstore-tests",
+      "command": "dotnet tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-eventstore-host-tests-rerun.log",
+      "full_log_sha256": "78bbc22b1b072c07dd0d41adabdd892beb220420dd02d2879bd5a7a0ae8130cc",
+      "retained_log": "eventstore-tests.log"
+    },
+    {
+      "name": "process-wiring",
+      "command": "dotnet tests/Hexalith.Folders.Integration.Tests/bin/Debug/net10.0/Hexalith.Folders.Integration.Tests.dll -class Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-process-final.log",
+      "full_log_sha256": "9ffe7d9e72b18bc161a89e40f56e8c8d5553867a0bf230c33b05a732c6568dca",
+      "retained_log": "process-wiring.log"
+    },
+    {
+      "name": "grant-and-rejection-mapping",
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests -class Hexalith.Folders.Server.Tests.WorkspaceContentRejectionMappingTests",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-erasure-mapping-tests.log",
+      "full_log_sha256": "40cf84a4135a1ab0d8af90e1d96884049860ac2380f344b18a55e5cabf96c596",
+      "retained_log": "grant-and-rejection-mapping.log"
+    },
+    {
+      "name": "nfr-gate-regression",
+      "command": "dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll -class Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-nfr-gate-focused.log",
+      "full_log_sha256": "f5027b4e3563cf8f63e70464498453e7fb6b5dc573afaf94f4329d7e7905396c",
+      "retained_log": "nfr-gate-regression.log"
+    },
+    {
+      "name": "live-content",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true DOCKER_CONFIG=/tmp/story123-docker-anonymous UseHexalithProjectReferences=true UseNuGetDeps=false MinVerVersionOverride=2.30.3 dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.WorkspaceContentDurabilityAcceptanceTests -showLiveOutput -result-xml /tmp/story123-live-final.xml",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-live-final.log",
+      "full_log_sha256": "45dd6ab13d4d2fab1fdbe15140dd4097b395500bff04dd90f18ecf843a48e397",
+      "retained_log": "live-content.log"
+    },
+    {
+      "name": "core-build",
+      "command": "dotnet build tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-unit-build-final.log",
+      "full_log_sha256": "4e944ab66124a31a89f3fb11a2fcf4fe05fc91c0977265ec727038f7ce45bcb9",
+      "retained_log": "core-build.log"
+    },
+    {
+      "name": "server-build",
+      "command": "dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-server-build-final.log",
+      "full_log_sha256": "e5bc005e3140db42331fda794162719bb8c6679c1c83ffc9490ece12dd45b109",
+      "retained_log": "server-build.log"
+    },
+    {
+      "name": "contracts-build",
+      "command": "dotnet build tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-contract-build-final.log",
+      "full_log_sha256": "6acd633f473a6f2305d7f4a2d349feb549b75b5fa43027a687ae01abea64e654",
+      "retained_log": "contracts-build.log"
+    },
+    {
+      "name": "process-build",
+      "command": "dotnet build tests/Hexalith.Folders.Integration.Tests/Hexalith.Folders.Integration.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-integration-build-final.log",
+      "full_log_sha256": "563d2a422a19cf85b139352be31d7b730380114f273256e155bed7037f8ae6f7",
+      "retained_log": "process-build.log"
+    },
+    {
+      "name": "solution-restore",
+      "command": "dotnet restore Hexalith.Folders.slnx -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -m:1",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-solution-restore.log",
+      "full_log_sha256": "7ac4f6674543a662ef5dc44174cc5ae4c984b0679ef54e1c9652d3473e222215",
+      "retained_log": "solution-restore.log"
+    },
+    {
+      "name": "solution-build",
+      "command": "dotnet build Hexalith.Folders.slnx -c Debug --no-restore -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-solution-build.log",
+      "full_log_sha256": "535c7a484119a4c575c806d95f3b87fe9a19a7a4d2ec2062a1cdd2650a8e61f1",
+      "retained_log": "solution-build.log"
+    },
+    {
+      "name": "apphost-test-refresh",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -p:BuildProjectReferences=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-apphost-post-solution-test-build.log",
+      "full_log_sha256": "139360818ba6c3dd6ef40dcd3d8566dab75e79b996170265c61ebe4b5669af06",
+      "retained_log": "apphost-test-refresh.log"
+    }
+  ],
+  "live": {
+    "full_class_total": 1,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 241.744,
+    "serving_processes": {
+      "folders": [
+        {
+          "launcher_pid": 3722499,
+          "managed_serving_pid": 3723043,
+          "assembly_sha256": "AB717FC6F33D45E00C271585149EAC6862CC3E76B228EB694D90554BF8B3F8DA",
+          "mvid": "b8cbea87-f547-4a1e-88b7-1449472f45a4"
+        },
+        {
+          "launcher_pid": 3742121,
+          "managed_serving_pid": 3742165,
+          "assembly_sha256": "AB717FC6F33D45E00C271585149EAC6862CC3E76B228EB694D90554BF8B3F8DA",
+          "mvid": "b8cbea87-f547-4a1e-88b7-1449472f45a4"
+        }
+      ],
+      "folders-replica": [
+        {
+          "launcher_pid": 3722438,
+          "managed_serving_pid": 3723091,
+          "assembly_sha256": "AB717FC6F33D45E00C271585149EAC6862CC3E76B228EB694D90554BF8B3F8DA",
+          "mvid": "b8cbea87-f547-4a1e-88b7-1449472f45a4"
+        },
+        {
+          "launcher_pid": 3746080,
+          "managed_serving_pid": 3746273,
+          "assembly_sha256": "AB717FC6F33D45E00C271585149EAC6862CC3E76B228EB694D90554BF8B3F8DA",
+          "mvid": "b8cbea87-f547-4a1e-88b7-1449472f45a4"
+        }
+      ]
+    },
+    "serving_destinations": "SERVING-REPLICAS primary=3742121 endpoint=http://localhost:44345/; replica=3746080 endpoint=http://localhost:43989/",
+    "retained_race_code": "AppendConflict",
+    "canonical_file_content_outcome": {
+      "status": 409,
+      "category": "concurrency_conflict"
+    },
+    "race_http": [
+      202,
+      409
+    ],
+    "persisted_winner_versions": 1,
+    "winner_version_evidence": "Explicit version=1 assertion; exactly one retained mutation binding; actual Redis body bytes verified before the recorded metadata marker.",
+    "sdk_disposition_clock": "Only SDK P7D clock is advanced by a disposable test startup hook; source, JWT and lease clocks remain real.",
+    "body_bytes_in_evidence": false,
+    "runtime_binding_file": "live-runtime-bindings.jsonl",
+    "assertion_markers": "live-assertions.log",
+    "winner": {
+      "version": 1,
+      "receipt_id": "content_1bf35978ac9afb93d0d3429bb122956af6250d9734e01ea1e2ff173d70a481e5",
+      "byte_length": 25,
+      "sha256": "5658e777bdddcb895572e4603742e6a540ee0287dc6d81e5acc8901e9e1923de"
+    },
+    "xml_result": {
+      "path": "/tmp/story123-live-final.xml",
+      "sha256": "94540bfc2a1136c89e42295bd5a300a41bf2f9cbefc6a0dbf34b1215ae1b578c"
+    }
+  },
+  "immutable_artifacts": {
+    "docs/contract/file-context-contract-groups.md": "b7123536cc243c52e853980313ff8ebee5abb9936b331e71f30ad6d554975713",
+    "src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2"
+  },
+  "limits": [
+    "Two pre-existing Core Forgejo operator tests remain skipped; the opted-in live content class has zero skips.",
+    "In-process wiring uses the repository shared /process gateway harness, a source authority test seam and CAS persistence test double; production authority and physical Redis are qualified separately by the live class.",
+    "Production requires explicit immutable non-confidential policy configuration. Confidential cleartext execution remains rejected pending Story 12.7.",
+    "Historical metadata without a verified body binding does not manufacture readable bytes.",
+    "No package/Release qualification or production v2 exposure is claimed."
+  ],
+  "post_solution_build_runtime_binary_check": {
+    "distinct_paths": 30,
+    "mismatches": []
+  },
+  "aspire_baseline": {
+    "before_code_edits": true,
+    "first_command": "aspire start --non-interactive --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+    "first_result": "Exit 2, CS1704 mixed Commons.UniqueIds source/package identity.",
+    "source_pinned_command": "UseHexalithProjectReferences=true UseNuGetDeps=false MinVerVersionOverride=2.30.3 aspire start --non-interactive --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+    "result": "Started and inspected actual resources; baseline dependencies included unhealthy/waiting resources. Exact AppHost was stopped before prerequisite implementation. This is lifecycle baseline evidence, not feature acceptance."
+  },
+  "frozen_intent_sha256": "85b7f36c3ef508e9b18486ab9c14c13f674e65fd6a67cfb49fa0811ce41f7cfc",
+  "implementation_spec_sha256": "378fabc82c8eb1859018b364092f39ff5ef1f6dad911677c95513cf761ca7c51",
+  "implementation_spec_status": "in-progress; implementation complete; independent parent review pending",
+  "source_inventory_file": "source-inventory.json",
+  "generation": {
+    "client_command": "dotnet build src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj -c Debug -m:1 -p:NuGetAudit=false -t:GenerateHexalithFoldersIdempotencyHelpers",
+    "client_log": "/tmp/story123-generation.log",
+    "client_log_sha256": "f41512807c81406160460bc4b9543a4165449137d724ad7e7bd8358be74618d2",
+    "contract_reproducibility": "Final full Contracts 360/360 includes generated v2, runtime catalog, parity fixtures, historical baseline and pending source inventory byte-for-byte reproduction.",
+    "manifest_command": "python3 scripts/generate-pd10-v2-conformance-set.py --repository-root ."
+  },
+  "source_inventory_sha256": "d0d5ba6f6dc293bf843af61a9fa945f0b5e8a9e98af024eae7efd7b66ae32dbd"
+}

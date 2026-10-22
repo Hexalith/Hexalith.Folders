@@ -7,7 +7,7 @@ namespace Hexalith.Folders.Aggregates.Folder;
 
 public static partial class WorkspacePathPolicyValidator
 {
-    private const int MaxNormalizedPathLength = 512;
+    private const int MaxNormalizedPathLength = 500;
     private const int MaxDisplayNameLength = 128;
     private const int MaxPathPolicyClassLength = 80;
 

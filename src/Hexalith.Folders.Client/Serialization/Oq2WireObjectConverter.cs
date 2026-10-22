@@ -193,8 +193,8 @@ public sealed class Oq2WireObjectConverter : JsonConverter
     {
         RequireAllowedAndRequiredMembers(
             value,
-            ["requestSchemaVersion", "fileOperationKind", "transportOperation", "operationId", "pathMetadata", "contentHashReference", "byteLength", "inlineContent", "streamDescriptor"],
-            ["requestSchemaVersion", "fileOperationKind", "transportOperation", "operationId", "pathMetadata"],
+            ["requestSchemaVersion", "fileOperationKind", "transportOperation", "operationId", "pathMetadata", "contentHashReference", "byteLength", "inlineContent", "streamDescriptor", "ownerFileId", "expectedFileVersion", "expectedLockFence"],
+            ["requestSchemaVersion", "fileOperationKind", "transportOperation", "operationId", "pathMetadata", "expectedFileVersion", "expectedLockFence"],
             typeName);
         RequireValue(value, "requestSchemaVersion", "v2");
         string kind = RequireString(value, "fileOperationKind");
@@ -222,6 +222,8 @@ public sealed class Oq2WireObjectConverter : JsonConverter
         }
 
         ValidatePath(RequireObject(value, "pathMetadata"), "PathMetadata");
+        _ = RequireInteger(value, "expectedFileVersion", 0, long.MaxValue);
+        _ = RequireInteger(value, "expectedLockFence", 1, long.MaxValue);
 
         if (kind == "remove")
         {
@@ -350,11 +352,14 @@ public sealed class Oq2WireObjectConverter : JsonConverter
 
             RequireAllowedAndRequiredMembers(
                 item,
-                ["path", "kind", "byteLength", "sensitivity", "redaction"],
+                ["path", "kind", "byteLength", "sensitivity", "redaction", "fileId", "version"],
                 ["path", "kind", "byteLength", "sensitivity", "redaction"],
                 "ContentAllowedFileMetadataItem");
             ValidatePath(RequireObject(item, "path"), "ContentAllowedPathMetadata");
             RequireValue(item, "kind", "file");
+            if (item["fileId"] is not null && !OpaqueIdentifier.IsMatch(RequireString(item, "fileId")))
+                throw Invalid("fileId is not a bounded opaque identifier.");
+            if (item["version"] is not null) _ = RequireInteger(item, "version", 1, long.MaxValue);
             _ = RequireInteger(item, "byteLength", 0, 17592186044416);
 
             if (!new[] { "public_metadata", "tenant_sensitive", "credential_sensitive", "secret" }

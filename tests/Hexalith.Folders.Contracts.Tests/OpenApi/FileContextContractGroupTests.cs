@@ -198,6 +198,9 @@ public sealed class FileContextContractGroupTests
         pathPolicyClass.Children.ContainsKey(new YamlScalarNode("nullable")).ShouldBeFalse("policy class is required and never null");
 
         YamlMappingNode mutation = RequiredMapping(schemas, "FileMutationRequest");
+        RequiredSequence(mutation, "required").Children.Cast<YamlScalarNode>().Select(node => node.Value).ShouldContain("expectedFileVersion");
+        RequiredSequence(mutation, "required").Children.Cast<YamlScalarNode>().Select(node => node.Value).ShouldContain("expectedLockFence");
+        GetScalar(RequiredMapping(RequiredMapping(mutation, "properties"), "expectedLockFence"), "minimum").ShouldBe("1");
         GetScalar(RequiredMapping(RequiredMapping(mutation, "properties"), "byteLength"), "maximum").ShouldBe("1048576");
         GetScalar(RequiredMapping(RequiredMapping(schemas, "PutFileStream"), "properties").Children[new YamlScalarNode("declaredLength")].ShouldBeOfType<YamlMappingNode>(), "maximum").ShouldBe("1048576");
         GetScalar(RequiredMapping(RequiredMapping(schemas, "PutFileStream"), "properties").Children[new YamlScalarNode("observedLength")].ShouldBeOfType<YamlMappingNode>(), "maximum").ShouldBe("1048576");

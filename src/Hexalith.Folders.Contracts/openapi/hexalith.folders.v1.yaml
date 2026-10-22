@@ -2181,6 +2181,20 @@ paths:
             examples:
               inline:
                 $ref: "#/components/examples/AddFileInlineRequest"
+          multipart/form-data:
+            description: Actual bounded PutFileStream bytes. The metadata part is evaluated as the ordinary one-item request; stagingReference is replaced by a server-verified opaque receipt.
+            schema:
+              type: object
+              additionalProperties: false
+              required: [metadata, content]
+              properties:
+                metadata:
+                  type: string
+                  description: JSON FileMutationRequest metadata with PutFileStream, declared hash/length and expected file/lock fences.
+                content:
+                  type: string
+                  format: binary
+                  description: Exact bounded bytes; descriptor fields never establish observed content truth.
       responses:
         "202":
           description: File mutation accepted as metadata-only task work.
@@ -2341,6 +2355,20 @@ paths:
             examples:
               stream:
                 $ref: "#/components/examples/ChangeFileStreamRequest"
+          multipart/form-data:
+            description: Actual bounded PutFileStream bytes. The metadata part is evaluated as the ordinary one-item request; stagingReference is replaced by a server-verified opaque receipt.
+            schema:
+              type: object
+              additionalProperties: false
+              required: [metadata, content]
+              properties:
+                metadata:
+                  type: string
+                  description: JSON FileMutationRequest metadata with PutFileStream, declared hash/length and expected file/lock fences.
+                content:
+                  type: string
+                  format: binary
+                  description: Exact bounded bytes; descriptor fields never establish observed content truth.
       responses:
         "202":
           description: File mutation accepted as metadata-only task work.
@@ -6605,6 +6633,8 @@ components:
         requestSchemaVersion: v1
         fileOperationKind: add
         transportOperation: PutFileInline
+        expectedFileVersion: 0
+        expectedLockFence: 1
         operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD001
         pathMetadata:
           normalizedPath: docs/synthetic-add-001.md
@@ -6623,6 +6653,8 @@ components:
         requestSchemaVersion: v1
         fileOperationKind: change
         transportOperation: PutFileStream
+        expectedFileVersion: 1
+        expectedLockFence: 1
         operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CHG001
         pathMetadata:
           normalizedPath: docs/synthetic-change-002.bin
@@ -6644,6 +6676,8 @@ components:
         requestSchemaVersion: v1
         fileOperationKind: remove
         transportOperation: metadataOnlyRemoval
+        expectedFileVersion: 1
+        expectedLockFence: 1
         operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0REM001
         pathMetadata:
           normalizedPath: docs/synthetic-remove-003.md
@@ -8829,6 +8863,11 @@ components:
         - effectiveAt
         - expiresAt
       properties:
+        lockFence:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Monotonic source lock acquisition fence for file mutation admission.
         lockId:
           $ref: "#/components/schemas/OpaqueIdentifier"
         leaseStatus:
@@ -9070,7 +9109,23 @@ components:
         - transportOperation
         - operationId
         - pathMetadata
+        - expectedFileVersion
+        - expectedLockFence
       properties:
+        ownerFileId:
+          type: string
+          maxLength: 128
+          description: Optional explicit owner incarnation; an exact accepted path is resolved by the owner when omitted.
+        expectedFileVersion:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Caller-observed immutable version; zero for a new incarnation. Required by durable execution.
+        expectedLockFence:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Caller-observed lock acquisition fence. Required by durable execution.
         requestSchemaVersion:
           type: string
           const: v1
@@ -9809,6 +9864,15 @@ components:
         - sensitivity
         - redaction
       properties:
+        fileId:
+          type: string
+          maxLength: 128
+          description: Opaque owner incarnation for a currently visible authoritative file.
+        version:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Immutable authoritative version for subsequent fenced mutations.
         path:
           $ref: "#/components/schemas/VisiblePathMetadata"
         kind:

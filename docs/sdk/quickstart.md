@@ -104,6 +104,8 @@ var descriptor = new FileUploadDescriptor
     WorkspaceId = "workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001",
     OperationId = "01ARZ3NDEKTSV4RRFFQ69G5FAV",
     MediaType = "text/markdown",
+    ExpectedFileVersion = 0, // observed version; zero creates a new file
+    ExpectedLockFence = observedLockFence, // returned by the current lock acquisition
     PathMetadata = new PathMetadata
     {
         NormalizedPath = "docs/readme.md",
@@ -144,7 +146,8 @@ one-liner:
 
 ```csharp
 FileMutationRequest request = FileUpload.BuildInlineFileMutation(
-    content, descriptor.MediaType, descriptor.PathMetadata, descriptor.OperationId);
+    content, descriptor.MediaType, descriptor.PathMetadata, descriptor.OperationId,
+    expectedFileVersion: descriptor.ExpectedFileVersion, expectedLockFence: descriptor.ExpectedLockFence);
 
 string idempotencyKey = FileUpload.ComputeIdempotencyKey(request, descriptor.WorkspaceId, taskId);
 ```

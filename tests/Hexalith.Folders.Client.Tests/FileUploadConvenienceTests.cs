@@ -36,6 +36,9 @@ public sealed class FileUploadConvenienceTests
         "byteLength",
         "inlineContent",
         "streamDescriptor",
+        "ownerFileId",
+        "expectedFileVersion",
+        "expectedLockFence",
     };
 
     private static readonly HashSet<string> AllowedInlineFields = new(StringComparer.Ordinal)
@@ -72,7 +75,7 @@ public sealed class FileUploadConvenienceTests
             content,
             "text/plain",
             SamplePath(),
-            "01ARZ3NDEKTSV4RRFFQ69G5FAV");
+            "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1);
 
         request.TransportOperation.ShouldBe(FileMutationRequestTransportOperation.PutFileInline);
         request.FileOperationKind.ShouldBe(FileMutationRequestFileOperationKind.Add);
@@ -89,7 +92,7 @@ public sealed class FileUploadConvenienceTests
     {
         byte[] content = new byte[FileUpload.InlineTransportBoundaryBytes];
 
-        FileMutationRequest request = FileUpload.BuildInlineFileMutation(content, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV");
+        FileMutationRequest request = FileUpload.BuildInlineFileMutation(content, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1);
 
         request.TransportOperation.ShouldBe(FileMutationRequestTransportOperation.PutFileInline);
         request.ByteLength.ShouldBe(FileUpload.InlineTransportBoundaryBytes);
@@ -101,7 +104,7 @@ public sealed class FileUploadConvenienceTests
         byte[] content = new byte[FileUpload.InlineTransportBoundaryBytes + 1];
 
         _ = Should.Throw<FileUploadStreamingRequiredException>(
-            () => FileUpload.BuildInlineFileMutation(content, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV"));
+            () => FileUpload.BuildInlineFileMutation(content, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1));
     }
 
     [Fact]
@@ -109,7 +112,7 @@ public sealed class FileUploadConvenienceTests
     {
         byte[] content = Encoding.UTF8.GetBytes("synthetic authorized request body");
 
-        FileMutationRequest request = FileUpload.BuildInlineFileMutation(content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV");
+        FileMutationRequest request = FileUpload.BuildInlineFileMutation(content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1);
 
         request.ContentHashReference.ShouldNotBeNull();
         request.ContentHashReference.ShouldStartWith("hashref_");
@@ -125,7 +128,7 @@ public sealed class FileUploadConvenienceTests
         string explicitReference = "hashref_" + Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(content)).ToLowerInvariant();
 
         FileMutationRequest request = FileUpload.BuildInlineFileMutation(
-            content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", contentHashReference: explicitReference);
+            content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", contentHashReference: explicitReference, expectedFileVersion: 0, expectedLockFence: 1);
 
         request.ContentHashReference.ShouldBe(explicitReference);
 
@@ -134,13 +137,13 @@ public sealed class FileUploadConvenienceTests
             "text/plain",
             SamplePath(),
             "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-            contentHashReference: " "));
+            contentHashReference: " ", expectedFileVersion: 0, expectedLockFence: 1));
         _ = Should.Throw<ArgumentException>(() => FileUpload.BuildInlineFileMutation(
             content,
             "text/plain",
             SamplePath(),
             "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-            contentHashReference: "hashref_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+            contentHashReference: "hashref_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", expectedFileVersion: 0, expectedLockFence: 1));
     }
 
     [Fact]
@@ -152,7 +155,7 @@ public sealed class FileUploadConvenienceTests
             content,
             "application/octet-stream",
             SamplePath(),
-            "01ARZ3NDEKTSV4RRFFQ69G5FAV"));
+            "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1));
     }
 
     [Fact]
@@ -166,7 +169,7 @@ public sealed class FileUploadConvenienceTests
         };
 
         FileMutationRequest request = FileUpload.BuildStreamedFileMutation(
-            evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", FileMutationRequestFileOperationKind.Change);
+            evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", FileMutationRequestFileOperationKind.Change, expectedFileVersion: 0, expectedLockFence: 1);
 
         request.TransportOperation.ShouldBe(FileMutationRequestTransportOperation.PutFileStream);
         request.FileOperationKind.ShouldBe(FileMutationRequestFileOperationKind.Change);
@@ -191,7 +194,7 @@ public sealed class FileUploadConvenienceTests
         };
 
         _ = Should.Throw<ArgumentOutOfRangeException>(
-            () => FileUpload.BuildStreamedFileMutation(evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV"));
+            () => FileUpload.BuildStreamedFileMutation(evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1));
     }
 
     [Fact]
@@ -204,7 +207,7 @@ public sealed class FileUploadConvenienceTests
             ObservedLength = FileUpload.MaximumFileBytes,
         };
 
-        FileUpload.BuildStreamedFileMutation(evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV")
+        FileUpload.BuildStreamedFileMutation(evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1)
             .ByteLength.ShouldBe(FileUpload.MaximumFileBytes);
 
         evidence = new FileStreamStagingEvidence
@@ -214,7 +217,7 @@ public sealed class FileUploadConvenienceTests
             ObservedLength = FileUpload.MaximumFileBytes + 1,
         };
         _ = Should.Throw<ArgumentOutOfRangeException>(
-            () => FileUpload.BuildStreamedFileMutation(evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV"));
+            () => FileUpload.BuildStreamedFileMutation(evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1));
     }
 
     [Fact]
@@ -223,7 +226,7 @@ public sealed class FileUploadConvenienceTests
         byte[] content = Encoding.UTF8.GetBytes("synthetic");
 
         _ = Should.Throw<ArgumentOutOfRangeException>(
-            () => FileUpload.BuildInlineFileMutation(content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", (FileMutationRequestFileOperationKind)2));
+            () => FileUpload.BuildInlineFileMutation(content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", (FileMutationRequestFileOperationKind)2, expectedFileVersion: 0, expectedLockFence: 1));
     }
 
     [Fact]
@@ -232,7 +235,7 @@ public sealed class FileUploadConvenienceTests
         byte[] content = Encoding.UTF8.GetBytes("synthetic authorized request body");
 
         FileMutationRequest request = FileUpload.BuildInlineFileMutation(
-            content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", contentMediaType: "text/markdown");
+            content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", contentMediaType: "text/markdown", expectedFileVersion: 0, expectedLockFence: 1);
 
         JObject json = JObject.Parse(JsonConvert.SerializeObject(request));
         json.Properties().Select(p => p.Name).ShouldBeSubsetOf(AllowedRequestFields);
@@ -252,7 +255,7 @@ public sealed class FileUploadConvenienceTests
             ObservedLength = FileUpload.InlineTransportBoundaryBytes + 1,
         };
 
-        FileMutationRequest request = FileUpload.BuildStreamedFileMutation(evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV");
+        FileMutationRequest request = FileUpload.BuildStreamedFileMutation(evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1);
 
         JObject json = JObject.Parse(JsonConvert.SerializeObject(request));
         json.Properties().Select(p => p.Name).ShouldBeSubsetOf(AllowedRequestFields);
@@ -269,20 +272,20 @@ public sealed class FileUploadConvenienceTests
         const string workspaceId = "workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001";
         const string taskId = "task_01HZY7Z6N7J4Q2X8Y9V0TSK001";
 
-        FileMutationRequest request = FileUpload.BuildInlineFileMutation(content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV");
+        FileMutationRequest request = FileUpload.BuildInlineFileMutation(content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1);
 
         // The convenience never reimplements canonicalization: it returns exactly the generated hash.
         FileUpload.ComputeIdempotencyKey(request, workspaceId, taskId)
             .ShouldBe(request.ComputeIdempotencyHash(workspaceId, taskId));
 
         // Equivalent payload + same path => same key (replay path).
-        FileMutationRequest equivalent = FileUpload.BuildInlineFileMutation(content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV");
+        FileMutationRequest equivalent = FileUpload.BuildInlineFileMutation(content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1);
         FileUpload.ComputeIdempotencyKey(equivalent, workspaceId, taskId)
             .ShouldBe(FileUpload.ComputeIdempotencyKey(request, workspaceId, taskId));
 
         // Different content => different content-hash reference => different key (conflict path).
         FileMutationRequest differing = FileUpload.BuildInlineFileMutation(
-            Encoding.UTF8.GetBytes("a different synthetic body"), "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV");
+            Encoding.UTF8.GetBytes("a different synthetic body"), "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1);
         FileUpload.ComputeIdempotencyKey(differing, workspaceId, taskId)
             .ShouldNotBe(FileUpload.ComputeIdempotencyKey(request, workspaceId, taskId));
     }
@@ -296,6 +299,7 @@ public sealed class FileUploadConvenienceTests
         byte[] content = Encoding.UTF8.GetBytes("synthetic authorized request body");
         FileUploadDescriptor descriptor = new()
         {
+            ExpectedFileVersion = 0, ExpectedLockFence = 1,
             FolderId = "folder_01HZY7Z6N7J4Q2X8Y9V0FLD001",
             WorkspaceId = "workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001",
             OperationId = "01ARZ3NDEKTSV4RRFFQ69G5FAV",
@@ -317,6 +321,8 @@ public sealed class FileUploadConvenienceTests
         JObject body = JObject.Parse(handler.RequestBody!);
         body["transportOperation"]!.Value<string>().ShouldBe("PutFileInline");
         body["byteLength"]!.Value<int>().ShouldBe(content.Length);
+        body["expectedFileVersion"]!.Value<long>().ShouldBe(0);
+        body["expectedLockFence"]!.Value<long>().ShouldBe(1);
         body["inlineContent"]!["contentBytes"].ShouldNotBeNull();
         body.Properties().Select(p => p.Name).ShouldBeSubsetOf(AllowedRequestFields);
     }
@@ -330,6 +336,7 @@ public sealed class FileUploadConvenienceTests
         byte[] content = Encoding.UTF8.GetBytes("synthetic");
         FileUploadDescriptor descriptor = new()
         {
+            ExpectedFileVersion = 0, ExpectedLockFence = 1,
             FolderId = "folder_01HZY7Z6N7J4Q2X8Y9V0FLD001",
             WorkspaceId = "workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001",
             OperationId = "01ARZ3NDEKTSV4RRFFQ69G5FAV",
@@ -436,7 +443,7 @@ public sealed class FileUploadConvenienceTests
             SamplePath(),
             "01ARZ3NDEKTSV4RRFFQ69G5FAV",
             FileMutationRequestFileOperationKind.Change,
-            contentMediaType: "text/markdown");
+            contentMediaType: "text/markdown", expectedFileVersion: 0, expectedLockFence: 1);
 
         request.FileOperationKind.ShouldBe(FileMutationRequestFileOperationKind.Change);
         PutFileInline inline = request.InlineContent.ShouldNotBeNull();
@@ -447,7 +454,7 @@ public sealed class FileUploadConvenienceTests
     public void BuildInlineAcceptsEmptyContentAtZeroLength()
     {
         FileMutationRequest request = FileUpload.BuildInlineFileMutation(
-            ReadOnlyMemory<byte>.Empty, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV");
+            ReadOnlyMemory<byte>.Empty, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1);
 
         request.TransportOperation.ShouldBe(FileMutationRequestTransportOperation.PutFileInline);
         request.ByteLength.ShouldBe(0);
@@ -466,7 +473,7 @@ public sealed class FileUploadConvenienceTests
         };
 
         _ = Should.Throw<ArgumentOutOfRangeException>(
-            () => FileUpload.BuildStreamedFileMutation(evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", (FileMutationRequestFileOperationKind)2));
+            () => FileUpload.BuildStreamedFileMutation(evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", (FileMutationRequestFileOperationKind)2, expectedFileVersion: 0, expectedLockFence: 1));
     }
 
     [Fact]
@@ -475,18 +482,18 @@ public sealed class FileUploadConvenienceTests
         // Streamed transport requires observed staging evidence; blank references fail closed.
         _ = Should.Throw<ArgumentException>(() => FileUpload.BuildStreamedFileMutation(
             new FileStreamStagingEvidence { StagingReference = "  ", ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002", ObservedLength = FileUpload.InlineTransportBoundaryBytes + 1 },
-            "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV"));
+            "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1));
 
         _ = Should.Throw<ArgumentException>(() => FileUpload.BuildStreamedFileMutation(
             new FileStreamStagingEvidence { StagingReference = "staging_01HZY7Z6N7J4Q2X8Y9V0STG001", ObservedContentHashReference = "  ", ObservedLength = FileUpload.InlineTransportBoundaryBytes + 1 },
-            "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV"));
+            "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1));
     }
 
     [Fact]
     public void ComputeIdempotencyKeyValidatesArguments()
     {
         FileMutationRequest request = FileUpload.BuildInlineFileMutation(
-            Encoding.UTF8.GetBytes("synthetic"), "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV");
+            Encoding.UTF8.GetBytes("synthetic"), "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1);
 
         _ = Should.Throw<ArgumentNullException>(() => FileUpload.ComputeIdempotencyKey(null!, "workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001", "task_01HZY7Z6N7J4Q2X8Y9V0TSK001"));
         _ = Should.Throw<ArgumentException>(() => FileUpload.ComputeIdempotencyKey(request, "  ", "task_01HZY7Z6N7J4Q2X8Y9V0TSK001"));
@@ -608,8 +615,38 @@ public sealed class FileUploadConvenienceTests
         handler.Request.ShouldBeNull();
     }
 
+    [Theory]
+    [InlineData(null, 1L)]
+    [InlineData(-1L, 1L)]
+    [InlineData(0L, null)]
+    [InlineData(0L, 0L)]
+    [InlineData(0L, -1L)]
+    public async Task UploadHelpersRejectMissingOrInvalidObservationBeforeReadingOrSending(long? version, long? fence)
+    {
+        var handler = new CapturingHandler(HttpStatusCode.Accepted, AcceptedJson(false));
+        IClient client = NewClient(handler);
+        FileUploadDescriptor descriptor = InlineDescriptor() with { ExpectedFileVersion = version, ExpectedLockFence = fence };
+        using var stream = new System.IO.MemoryStream([1, 2, 3]);
+        await Should.ThrowAsync<ArgumentOutOfRangeException>(() => client.UploadFileAsync(descriptor, stream, "key", "correlation", "task"));
+        stream.Position.ShouldBe(0);
+        Should.Throw<ArgumentOutOfRangeException>(() => client.UploadFileAsync(descriptor, new byte[] { 1 }, "key", "correlation", "task"));
+        Should.Throw<ArgumentOutOfRangeException>(() => client.UploadStreamedFileAsync(descriptor,
+            new FileStreamStagingEvidence { StagingReference = "staging", ObservedContentHashReference = "hash", ObservedLength = 300000 }, "key", "correlation", "task"));
+        Should.Throw<ArgumentOutOfRangeException>(() => FileUpload.BuildInlineFileMutation(new byte[] { 1 }, "text/plain", SamplePath(), "operation", expectedFileVersion: version, expectedLockFence: fence));
+        handler.Request.ShouldBeNull();
+    }
+
+    [Fact]
+    public void BuildersRejectOmittedObservationRatherThanManufacturingAZeroFence()
+    {
+        Should.Throw<ArgumentOutOfRangeException>(() => FileUpload.BuildInlineFileMutation(new byte[] { 1 }, "text/plain", SamplePath(), "operation"));
+        Should.Throw<ArgumentOutOfRangeException>(() => FileUpload.BuildStreamedFileMutation(new FileStreamStagingEvidence
+            { StagingReference = "staging", ObservedContentHashReference = "hash", ObservedLength = 300000 }, "text/plain", SamplePath(), "operation"));
+    }
+
     private static FileUploadDescriptor InlineDescriptor() => new()
     {
+        ExpectedFileVersion = 0, ExpectedLockFence = 1,
         FolderId = "folder_01HZY7Z6N7J4Q2X8Y9V0FLD001",
         WorkspaceId = "workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001",
         OperationId = "01ARZ3NDEKTSV4RRFFQ69G5FAV",

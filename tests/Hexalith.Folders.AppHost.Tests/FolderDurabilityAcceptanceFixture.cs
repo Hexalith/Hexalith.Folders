@@ -33,8 +33,10 @@ namespace Hexalith.Folders.AppHost.Tests;
 /// Owns a disposable authenticated Folders topology and an isolated retained Redis store. An opted-in
 /// infrastructure or authorization failure fails acceptance; it never becomes an unavailable-fixture skip.
 /// </summary>
-public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
 {
+    /// <summary>Enables a distinct mutation-serving process only for content qualification.</summary>
+    protected virtual bool QualifyContentReplica => false;
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
     internal ConcurrentBag<double> CommandAcknowledgementMilliseconds { get; } = [];
     internal ConcurrentBag<double> OperationalDeliveryMilliseconds { get; } = [];
@@ -78,7 +80,10 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     /// <summary>Gets the isolated standalone Dapr namespace used for service and actor discovery.</summary>
     public string DaprNamespace => "folders-durability-" + _runId;
 
-    private string AppId(string name) => (name == "folders-workers-replica" ? "folders-workers" : name) + "-" + _runId;
+    private IEnumerable<string> OwningHosts => new[] { "folders", "folders-workers", "folders-workers-replica", "eventstore" }
+        .Concat(QualifyContentReplica ? ["folders-replica"] : Array.Empty<string>());
+
+    private string AppId(string name) => (name switch { "folders-workers-replica" => "folders-workers", "folders-replica" => "folders", _ => name }) + "-" + _runId;
 
     /// <summary>Gets the SDK store used only to inspect persisted derived rows.</summary>
     public IReadModelStore Store { get; private set; } = null!;
@@ -98,7 +103,14 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             return;
         }
 
+        string tenantsHost = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
+            "../../../../../references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.dll"));
+        if (!File.Exists(tenantsHost)) throw new InvalidOperationException(
+            "Build the independently composed root-declared Tenants host in Debug/source mode before durability acceptance.");
+
         Directory.CreateDirectory(_temporaryDirectory);
+        if (QualifyContentReplica)
+            await File.WriteAllTextAsync(Path.Combine(_temporaryDirectory, "content-clock-days"), "0", TestContext.Current.CancellationToken).ConfigureAwait(false);
         SetEnvironment("EnableKeycloak", "true");
         SetEnvironment("KeycloakPersistent", "false");
         SetEnvironment("ASPNETCORE_ENVIRONMENT", "Development");
@@ -129,6 +141,38 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         client.Timeout = TimeSpan.FromSeconds(40);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token ?? _humanToken);
         return client;
+    }
+
+    /// <summary>Targets a distinct discovered mutation-serving replica.</summary>
+    public HttpClient CreateContentReplicaClient()
+    {
+        if (!QualifyContentReplica) throw new InvalidOperationException("Content replica qualification is disabled.");
+        HttpClient client = App.CreateHttpClient("folders-replica", "http");
+        client.Timeout = TimeSpan.FromSeconds(40);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _humanToken);
+        return client;
+    }
+
+    /// <summary>Returns the actual distinct processes serving public mutations.</summary>
+    public (int Primary, int Replica) ContentServingProcessIds() => (ResourceProcessId("folders"), ResourceProcessId("folders-replica"));
+
+    /// <summary>Advances only the SDK disposition clock; source authority, JWTs and lease clocks remain real.</summary>
+    public Task AdvanceContentDispositionClockAsync(int days)
+        => QualifyContentReplica ? File.WriteAllTextAsync(Path.Combine(_temporaryDirectory, "content-clock-days"),
+            days.ToString(System.Globalization.CultureInfo.InvariantCulture), TestContext.Current.CancellationToken)
+            : throw new InvalidOperationException("Content qualification clock is unavailable.");
+
+    /// <summary>Checks actual body-key absence after governed physical deletion without reading content into diagnostics.</summary>
+    public async Task<bool> QualificationPersistedKeyExistsAsync(string key)
+        => (await FolderDurabilityProcess.RunAsync("docker", "exec", _redisName!, "redis-cli", "--raw", "EXISTS", key).ConfigureAwait(false)).Trim() == "1";
+
+    /// <summary>Introduces and restores bounded missing/corrupt-body faults inside the task-owned SDK Redis key, without outputting bytes.</summary>
+    public async Task SetContentBodyFaultAsync(string key, string fault)
+    {
+        const string script = "if ARGV[1]=='missing' then redis.call('RENAME',KEYS[1],KEYS[1]..':qualification-missing') "
+            + "elseif ARGV[1]=='corrupt' then local d=redis.call('HGET',KEYS[1],'data'); redis.call('HSET',KEYS[1],'qualification-original',d); local v=cjson.decode(d); v.bytes='AA=='; redis.call('HSET',KEYS[1],'data',cjson.encode(v)) "
+            + "elseif ARGV[1]=='restore' then if redis.call('EXISTS',KEYS[1]..':qualification-missing')==1 then redis.call('RENAME',KEYS[1]..':qualification-missing',KEYS[1]) else local d=redis.call('HGET',KEYS[1],'qualification-original'); if d then redis.call('HSET',KEYS[1],'data',d); redis.call('HDEL',KEYS[1],'qualification-original') end end else return redis.error_reply('unknown qualification fault') end; return 1";
+        _ = await FolderDurabilityProcess.RunAsync("docker", "exec", _redisName!, "redis-cli", "--raw", "EVAL", script, "1", key, fault).ConfigureAwait(false);
     }
 
     /// <summary>Sends a metadata-only public mutation with fresh request tracing.</summary>
@@ -183,9 +227,9 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     }
 
     /// <summary>Observes authorized current ACL and operational watermarks before the next positive mutation.</summary>
-    public async Task WaitForCurrentFolderEvidenceAsync(string folderId, string phase)
+    public async Task WaitForCurrentFolderEvidenceAsync(string folderId, string phase, bool replica = false)
     {
-        using HttpClient client = CreateFoldersClient();
+        using HttpClient client = replica ? CreateContentReplicaClient() : CreateFoldersClient();
         using HttpRequestMessage request = new(HttpMethod.Get, $"/api/v1/folders/{folderId}/effective-permissions");
         await FolderDurabilityHttp.WaitForCurrentFolderAsync(client, request, folderId, phase, async token =>
         {
@@ -199,6 +243,40 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     /// <summary>Reads complete retained bytes, bounding retries for authenticated gateway throttling/unavailability.</summary>
     public Task<StreamReadPage> ReadStreamAsync(string aggregateId)
         => ReadStreamWithDeadlineAsync(aggregateId, TestContext.Current.CancellationToken);
+
+    /// <summary>Creates a real rejected command without a body receipt, preserving Locked task state for orphan qualification.</summary>
+    public async Task SeedRejectedContentIntentAsync(string folder, string workspace, string task, long fence, string key)
+    {
+        using HttpClient client = App.CreateHttpClient("eventstore", "http");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _humanToken);
+        using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/commands")
+        {
+            Content = JsonContent.Create(new SubmitCommandRequest(NewId(), TenantId, "folders", folder,
+                "Hexalith.Folders.Commands.MutateFiles", JsonSerializer.SerializeToElement(new
+                {
+                    requestSchemaVersion = "v1", workspaceId = workspace, operationId = NewId(), fileOperationKind = "add",
+                    taskId = task,
+                    transportOperation = "PutFileInline", pathMetadata = new { normalizedPath = "docs/rejected.txt", displayName = "rejected.txt", pathPolicyClass = "content_allowed", unicodeNormalization = "NFC" },
+                    contentHashReference = "hashref_" + Convert.ToHexStringLower(SHA256.HashData(new byte[] { 1 })), byteLength = 1,
+                    mediaType = "application/octet-stream", transportEvidenceKind = "inline_decoded", observedByteLength = 1,
+                    expectedFileVersion = 0, expectedLockFence = fence,
+                }), Extensions: new Dictionary<string, string> { ["taskId"] = task }, IdempotencyKey: key)),
+        };
+        request.Headers.Add("X-Correlation-Id", NewId());
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(false);
+        await RequireStatusAsync(response, HttpStatusCode.UnprocessableEntity, "Real receipt-less command rejection").ConfigureAwait(false);
+    }
+
+    /// <summary>Submits the private metadata-only batch through the real authenticated EventStore admission/actor path.</summary>
+    public async Task<HttpResponseMessage> SubmitContentBatchAsync(string folder, string workspace, string task, object[] items)
+    {
+        using HttpClient client = App.CreateHttpClient("eventstore", "http");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _humanToken);
+        return await client.PostAsJsonAsync("/api/v1/commands", new SubmitCommandRequest(NewId(), TenantId, "folders", folder,
+            "Hexalith.Folders.Commands.MutateFiles", JsonSerializer.SerializeToElement(new
+            { requestSchemaVersion = "v1", workspaceId = workspace, taskId = task, items }),
+            Extensions: new Dictionary<string, string> { ["taskId"] = task }, IdempotencyKey: NewId()), TestContext.Current.CancellationToken).ConfigureAwait(false);
+    }
 
     internal async Task<CommandStatusQueryResponse?> ObserveCommandStatusAsync(string correlationId, CancellationToken cancellationToken)
     {
@@ -381,7 +459,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     public void RecordRuntimeBindings(Action<string> observe)
     {
         ArgumentNullException.ThrowIfNull(observe);
-        foreach (string resource in new[] { "folders", "folders-workers", "folders-workers-replica", "eventstore" })
+        foreach (string resource in OwningHosts)
             FolderDurabilityRuntimeBinding.Record(resource, ResourceProcessId(resource), observe);
     }
 
@@ -414,7 +492,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     public async Task<IReadOnlyDictionary<string, (int Before, int After)>> RestartHostsAsync()
     {
         Dictionary<string, (int Before, int After)> identities = [];
-        foreach (string resource in new[] { "folders", "folders-workers", "folders-workers-replica", "eventstore" })
+        foreach (string resource in OwningHosts)
         {
             int before = ResourceProcessId(resource);
             FolderDurabilityRuntimeBinding.Record(resource, before);
@@ -702,6 +780,9 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             .WithEnvironment("DOTNET_STARTUP_HOOKS", observer)
             .WithEnvironment("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES", "Task36FoldObserver")
             .WithEnvironment("FOLDERS_TASK36_FOLD_LOG", FoldObservationPath);
+        if (QualifyContentReplica)
+            _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
+                .WithEnvironment("FOLDERS_CONTENT_QUALIFICATION_CLOCK", Path.Combine(_temporaryDirectory, "content-clock-days"));
 
 
         _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "eventstore"))
@@ -835,9 +916,40 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             .WithEnvironment("EventStoreIntegration__CommandGateway__BaseAddress",
                 _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "eventstore")).GetEndpoint("http"));
         _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
+            .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development")
+            .WithEnvironment("DOTNET_ENVIRONMENT", "Development")
+            .WithEnvironment("Folders__WorkspaceFilePolicy__Version", "1.1.0")
+            .WithEnvironment("Folders__WorkspaceFilePolicy__Includes__0", "**")
+            .WithEnvironment("Folders__WorkspaceFilePolicy__Restricted__0", "private/**")
+            .WithEnvironment("Folders__WorkspaceFilePolicy__MetadataOnly__0", "metadata/**")
+            .WithEnvironment("Folders__WorkspaceFilePolicy__ProtectionMode", "non_confidential")
             .WithEnvironment("Authentication__HumanAuthorityReceipt__ExpectedWorkload", AppId("eventstore"))
             .WithEnvironment("Memories__BaseAddress",
                 _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "memories")).GetEndpoint("http"));
+
+        if (QualifyContentReplica)
+        {
+            ProjectResource primary = _builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders");
+            var contentReplica = _builder.AddProject<Projects.Hexalith_Folders_Server>("folders-replica");
+            // Environment annotations bind to one resource during composition. Reusing the
+            // same annotation instance transfers its resolved environment away from primary.
+            foreach (EnvironmentCallbackAnnotation annotation in primary.Annotations.OfType<EnvironmentCallbackAnnotation>())
+                contentReplica.Resource.Annotations.Add(new EnvironmentCallbackAnnotation(annotation.Callback));
+            foreach (WaitAnnotation annotation in primary.Annotations.OfType<WaitAnnotation>())
+                contentReplica.Resource.Annotations.Add(new WaitAnnotation(annotation.Resource, annotation.WaitType, annotation.ExitCode)
+                { WaitBehavior = annotation.WaitBehavior });
+            var originalSidecar = primary.Annotations.OfType<DaprSidecarAnnotation>().Single().Sidecar;
+            DaprSidecarOptions options = originalSidecar.Annotations.OfType<DaprSidecarOptionsAnnotation>().Single().Options;
+            contentReplica.WithDaprSidecar(sidecar =>
+            {
+                sidecar.WithOptions(options with { AppId = AppId("folders") });
+                sidecar.Resource.Annotations.Add(new EnvironmentCallbackAnnotation(context => context.EnvironmentVariables["NAMESPACE"] = DaprNamespace));
+                foreach (var component in originalSidecar.Annotations.OfType<DaprComponentReferenceAnnotation>())
+                    sidecar.WithReference(_builder.CreateResourceBuilder(component.Component));
+            }).WithGeneratedEventStoreAppChannelToken().WithHttpHealthCheck("/health")
+                .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development")
+                .WithEnvironment("DOTNET_ENVIRONMENT", "Development");
+        }
 
         IResource[] composedResources = [.. _builder.Resources,
             .. _builder.Resources.OfType<ProjectResource>().SelectMany(project => project.Annotations.OfType<DaprSidecarAnnotation>().Select(annotation => annotation.Sidecar))];
@@ -864,13 +976,14 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
 
         _app = await _builder.BuildAsync(timeout.Token).ConfigureAwait(false);
         await _app.StartAsync(timeout.Token).ConfigureAwait(false);
-        foreach (string name in new[] { "security", "eventstore", "tenants", "folders", "folders-workers", "folders-workers-replica", "folders-workers-proof-a", "folders-workers-proof-b" })
+        foreach (string name in new[] { "security", "eventstore", "tenants", "folders", "folders-workers", "folders-workers-replica", "folders-workers-proof-a", "folders-workers-proof-b" }.Concat(QualifyContentReplica ? ["folders-replica"] : Array.Empty<string>()))
         {
             await _app.ResourceNotifications.WaitForResourceHealthyAsync(name, timeout.Token).ConfigureAwait(false);
         }
 
-        foreach (string name in new[] { "eventstore", "tenants", "folders", "folders-workers", "folders-workers-replica", "folders-workers-proof-a", "folders-workers-proof-b" })
+        foreach (string name in new[] { "eventstore", "tenants", "folders", "folders-workers", "folders-workers-replica", "folders-workers-proof-a", "folders-workers-proof-b" }.Concat(QualifyContentReplica ? ["folders-replica"] : Array.Empty<string>()))
         {
+            Console.WriteLine("LIFECYCLE_PROBE sidecar=" + name);
             string sidecar = _builder.Resources.OfType<ProjectResource>().Single(project => project.Name == name)
                 .Annotations.OfType<DaprSidecarAnnotation>().Single().Sidecar.Name + "-cli";
             await App.ResourceNotifications.WaitForResourceAsync(sidecar, KnownResourceStates.Running, timeout.Token).ConfigureAwait(false);
@@ -887,6 +1000,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
                 {
                     await Task.Delay(200, timeout.Token).ConfigureAwait(false);
                 }
+                Console.WriteLine("LIFECYCLE_READY sidecar=" + name);
 
                 if (name == "folders-workers") { _dapr = client; client = null!; }
                 else if (name == "folders-workers-proof-a") { _proofDapr = client; client = null!; }
@@ -901,7 +1015,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         Store = new SelectedOperationalAcceptanceStore(RawStore, TenantId);
         ProofStore = new SelectedOperationalAcceptanceStore(new DaprReadModelStore(_proofDapr
             ?? throw new InvalidOperationException("Ordinary proof sidecar discovery did not complete.")), TenantId);
-        foreach (string resource in new[] { "folders", "folders-workers", "folders-workers-replica", "eventstore" })
+        foreach (string resource in OwningHosts)
             await FolderDurabilityRuntimeBinding.RecordWhenReadyAsync(resource, ResourceProcessId(resource), timeout.Token).ConfigureAwait(false);
     }
 
@@ -1019,7 +1133,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         user["attributes"] = new JsonObject
         {
             ["tenants"] = new JsonArray(TenantId),
-            ["permissions"] = new JsonArray("command:submit", "command:query", "command:replay", "create_folder", "manage_organization_acl", "read_metadata", "manage_folder_access",
+            ["permissions"] = new JsonArray("command:submit", "command:query", "command:replay", "create_folder", "manage_organization_acl", "read_metadata", "manage_folder_access", "mutate_files", "read_file_content",
                 "configure_provider_binding", "provider_readiness_read", "tenant-context-and-provider-binding-read", "bind_repository", "configure_branch_ref_policy",
                 "prepare_workspace", "lock_workspace", "read_workspace_lock", "read_workspace_status",
                 "read_workspace_cleanup_status", "read_task_status"),

@@ -2,12 +2,17 @@
 
 param(
     [Alias('NoRestore')]
-    [switch]$SkipRestoreBuild
+    [switch]$SkipRestoreBuild,
+    [string]$BuiltTestAssemblyPath = ''
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
+
+if ($BuiltTestAssemblyPath -and -not $SkipRestoreBuild) {
+    throw 'BuiltTestAssemblyPath requires SkipRestoreBuild; normal CI builds and executes the fixed Release artifact.'
+}
 
 if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
     Write-Error 'NFR-TRACEABILITY-PREREQUISITE-DRIFT: dotnet SDK not found on PATH. Install .NET SDK per global.json before running the NFR traceability gate.'
@@ -182,6 +187,11 @@ try {
     }
 
     $runnerPath = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll'
+    # Isolated runner-failure tests use their actual current assembly without manufacturing
+    # another configuration's output. Normal CI keeps the fixed Release/package lane above.
+    if ($BuiltTestAssemblyPath) {
+        $runnerPath = $BuiltTestAssemblyPath
+    }
     if (-not (Test-Path $runnerPath)) {
         Write-NfrTraceabilityReport -Status 'failed' -ExitCode 1
         Write-Error 'NFR-TRACEABILITY-GATE-VACUOUS: built xUnit v3 Contracts.Tests assembly is missing.'

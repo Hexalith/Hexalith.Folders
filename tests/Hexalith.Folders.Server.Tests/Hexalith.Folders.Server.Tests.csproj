@@ -3,6 +3,8 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj" />
+    <Compile Include="$(HexalithEventStoreRoot)/tests/Hexalith.EventStore.Client.Tests/Projections/RecordingDaprClient.cs" Link="Content/RecordingDaprClient.cs" />
     <!-- Reuse the pinned platform protocol harness; no package version changes. -->
     <ProjectReference Include="$(HexalithEventStoreRoot)/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
     <PackageReference Include="Hexalith.EventStore.Testing" Condition="'$(HexalithEventStoreFromSource)' != 'true'" />

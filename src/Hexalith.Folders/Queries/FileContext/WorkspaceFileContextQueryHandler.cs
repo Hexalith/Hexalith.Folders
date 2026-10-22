@@ -49,11 +49,11 @@ public sealed class WorkspaceFileContextQueryHandler(
             return SafeResult(WorkspaceFileContextResultCode.NotFoundSafe, query);
         }
 
-        string actionToken = query.Kind == WorkspaceFileContextQueryKind.Range
+        string actionToken = query.Kind is WorkspaceFileContextQueryKind.Range or WorkspaceFileContextQueryKind.Search
             ? ContentActionToken
             : MetadataActionToken;
 
-        LayeredFolderAuthorizationResult authorization = await authorizationService.AuthorizeAsync(
+        LayeredFolderAuthorizationResult authorization = await authorizationService.AuthorizeCurrentMetadataReadAsync(
             new LayeredFolderAuthorizationContext(
                 query.AuthoritativeTenantId,
                 query.PrincipalId,
@@ -70,6 +70,9 @@ public sealed class WorkspaceFileContextQueryHandler(
 
         if (!authorization.IsAllowed || authorization.AllowedContext is null)
         {
+            if (authorization.Decision.Retryable)
+                _logger.LogWarning("Workspace content authorization is unavailable. Layer={Layer}; Outcome={Outcome}.",
+                    authorization.Decision.TerminalLayer, authorization.Decision.OutcomeCode);
             return SafeResult(MapAuthorizationDenial(authorization), query, authorization);
         }
 
@@ -222,6 +225,7 @@ public sealed class WorkspaceFileContextQueryHandler(
             {
                 return WorkspaceFileContextResultCode.InputLimitExceeded;
             }
+            if (!WorkspaceFilePolicySnapshot.IsValidGlob(query.GlobPattern)) return WorkspaceFileContextResultCode.ValidationFailed;
         }
 
         if (query.Kind is WorkspaceFileContextQueryKind.Tree && query.Limit > MaxTreeResultCount)
@@ -269,6 +273,10 @@ public sealed class WorkspaceFileContextQueryHandler(
     {
         WorkspaceFileContextResultCode code = sourceResult.Status switch
         {
+            WorkspaceFileContextSourceStatus.PolicyUnavailable => WorkspaceFileContextResultCode.PolicyUnavailable,
+            WorkspaceFileContextSourceStatus.NotFoundSafe => WorkspaceFileContextResultCode.NotFoundSafe,
+            WorkspaceFileContextSourceStatus.ValidationFailed => WorkspaceFileContextResultCode.ValidationFailed,
+            WorkspaceFileContextSourceStatus.PathValidationFailed => WorkspaceFileContextResultCode.PathValidationFailed,
             WorkspaceFileContextSourceStatus.Available => WorkspaceFileContextResultCode.Allowed,
             WorkspaceFileContextSourceStatus.Stale => WorkspaceFileContextResultCode.ProjectionStale,
             WorkspaceFileContextSourceStatus.Timeout => WorkspaceFileContextResultCode.QueryTimeout,

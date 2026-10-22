@@ -45,6 +45,7 @@ public static class FoldersFileUploadExtensions
     {
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(descriptor);
+        FileUpload.ValidateDurableObservation(descriptor.ExpectedFileVersion, descriptor.ExpectedLockFence);
 
         FileMutationRequest request = FileUpload.BuildInlineFileMutation(
             content,
@@ -53,8 +54,9 @@ public static class FoldersFileUploadExtensions
             descriptor.OperationId,
             descriptor.FileOperationKind,
             descriptor.ContentMediaType,
-            descriptor.ContentHashReference);
+            descriptor.ContentHashReference, descriptor.ExpectedFileVersion, descriptor.ExpectedLockFence);
 
+        request.OwnerFileId = descriptor.OwnerFileId;
         return InvokeFileMutationAsync(client, descriptor, request, idempotencyKey, correlationId, taskId, cancellationToken);
     }
 
@@ -82,6 +84,7 @@ public static class FoldersFileUploadExtensions
     {
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(descriptor);
+        FileUpload.ValidateDurableObservation(descriptor.ExpectedFileVersion, descriptor.ExpectedLockFence);
         ArgumentNullException.ThrowIfNull(content);
 
         ReadOnlyMemory<byte> inlineContent = await ReadInlineCandidateAsync(content, cancellationToken).ConfigureAwait(false);
@@ -111,6 +114,7 @@ public static class FoldersFileUploadExtensions
     {
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(descriptor);
+        FileUpload.ValidateDurableObservation(descriptor.ExpectedFileVersion, descriptor.ExpectedLockFence);
         ArgumentNullException.ThrowIfNull(stagingEvidence);
 
         FileMutationRequest request = FileUpload.BuildStreamedFileMutation(
@@ -118,8 +122,9 @@ public static class FoldersFileUploadExtensions
             descriptor.MediaType,
             descriptor.PathMetadata,
             descriptor.OperationId,
-            descriptor.FileOperationKind);
+            descriptor.FileOperationKind, descriptor.ExpectedFileVersion, descriptor.ExpectedLockFence);
 
+        request.OwnerFileId = descriptor.OwnerFileId;
         return InvokeFileMutationAsync(client, descriptor, request, idempotencyKey, correlationId, taskId, cancellationToken);
     }
 
@@ -215,6 +220,8 @@ public static class FoldersFileUploadExtensions
             ByteLength = request.ByteLength,
             InlineContent = request.InlineContent,
             StreamDescriptor = request.StreamDescriptor,
+            ExpectedFileVersion = request.ExpectedFileVersion, ExpectedLockFence = request.ExpectedLockFence,
+            OwnerFileId = request.OwnerFileId,
             FileOperationKind = AddFileRequestFileOperationKind.Add,
         };
         ((FileMutationRequest)result).FileOperationKind = FileMutationRequestFileOperationKind.Add;
@@ -233,6 +240,8 @@ public static class FoldersFileUploadExtensions
             ByteLength = request.ByteLength,
             InlineContent = request.InlineContent,
             StreamDescriptor = request.StreamDescriptor,
+            ExpectedFileVersion = request.ExpectedFileVersion, ExpectedLockFence = request.ExpectedLockFence,
+            OwnerFileId = request.OwnerFileId,
             FileOperationKind = ChangeFileRequestFileOperationKind.Change,
         };
         ((FileMutationRequest)result).FileOperationKind = FileMutationRequestFileOperationKind.Change;

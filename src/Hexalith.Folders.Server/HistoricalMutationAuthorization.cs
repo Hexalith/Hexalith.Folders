@@ -7,6 +7,7 @@ using Hexalith.Folders.Server.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Hexalith.Folders.Server;
 
@@ -27,6 +28,12 @@ internal static class HistoricalMutationAuthorization
         ArgumentNullException.ThrowIfNull(app);
         return app.Use(async (context, next) =>
         {
+            if (Content.WorkspaceContentRetentionEndpoints.Matches(context))
+            {
+                // The SDK independently checks current administrator authority before any disposition observation/effect.
+                await next(context).ConfigureAwait(false);
+                return;
+            }
             if (Pd10V2CandidateCompatibilitySeam.IsHistoricalDispatch(context)
                 || !context.Request.Path.StartsWithSegments("/api/v1", StringComparison.OrdinalIgnoreCase)
                 || !(HttpMethods.IsPost(context.Request.Method)
@@ -95,8 +102,14 @@ internal static class HistoricalMutationAuthorization
                         : await authorizer.AuthorizeAsync(authorizationContext, context.RequestAborted).ConfigureAwait(false);
                 if (!authorization.IsAllowed)
                 {
-                    await FolderAuthorizationDenialMapper.ToHttpResult(authorization)
-                        .ExecuteAsync(context).ConfigureAwait(false);
+                    context.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("Hexalith.Folders.Server.MutationAuthorization")
+                        .LogWarning("Public mutation authorization denied. Layer={Layer}; Outcome={Outcome}; Retryable={Retryable}.",
+                            authorization.Decision.TerminalLayer, authorization.Decision.OutcomeCode, authorization.Decision.Retryable);
+                    IResult denial = context.Request.Path.Value?.Contains("/files/", StringComparison.Ordinal) == true
+                        && !authorization.Decision.Retryable && authorization.Decision.OutcomeCode != LayeredAuthorizationOutcomeCodes.AuthenticationDenied
+                            ? FoldersDomainServiceEndpoints.ContentProblem("resource_unavailable", correlationId, taskId)
+                            : FolderAuthorizationDenialMapper.ToHttpResult(authorization);
+                    await denial.ExecuteAsync(context).ConfigureAwait(false);
                     return;
                 }
 

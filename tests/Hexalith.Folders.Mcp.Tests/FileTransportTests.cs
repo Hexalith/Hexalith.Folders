@@ -46,6 +46,7 @@ public sealed class FileTransportTests
             path: "docs/readme.md",
             displayName: "readme.md",
             mediaType: "text/markdown",
+            expectedFileVersion: 0, expectedLockFence: 1,
             contentBase64: contentBase64,
             idempotencyKey: "idem-1",
             taskId: "task-1",
@@ -54,6 +55,7 @@ public sealed class FileTransportTests
 
         captured.ShouldNotBeNull();
         captured!.TransportOperation.ShouldBe(FileMutationRequestTransportOperation.PutFileInline);
+        captured.ExpectedFileVersion.ShouldBe(0); captured.ExpectedLockFence.ShouldBe(1);
         captured.PathMetadata.PathPolicyClass.ShouldBe(PathMetadataPathPolicyClass.Metadata_only);
         result.ShouldNotContain(content);
         result.ShouldNotContain(contentBase64);
@@ -77,6 +79,7 @@ public sealed class FileTransportTests
             path: "docs/big.bin",
             displayName: "big.bin",
             mediaType: "application/octet-stream",
+            expectedFileVersion: 0, expectedLockFence: 1,
             contentBase64: contentBase64,
             idempotencyKey: "idem-1",
             taskId: "task-1",
@@ -100,7 +103,7 @@ public sealed class FileTransportTests
 
         string result = await FileTools.AddFile(
             pipeline, "f", "w", "op-1", "docs/too-big.bin", "too-big.bin", "application/octet-stream", contentBase64,
-            "idem-1", "task-1", "corr-limit", cancellationToken: TestContext.Current.CancellationToken);
+            "idem-1", "task-1", 0, 1, "corr-limit", cancellationToken: TestContext.Current.CancellationToken);
 
         Newtonsoft.Json.Linq.JObject failure = TestSupport.Parse(result);
         TestSupport.Kind(result).ShouldBe("input_limit_exceeded");
@@ -120,7 +123,7 @@ public sealed class FileTransportTests
 
         string result = await FileTools.AddFile(
             pipeline, "f", "w", "op-1", "docs/readme.md", "readme.md", "text/plain", Convert.ToBase64String([1]),
-            "idem-1", "task-1", "corr-validation", cancellationToken: TestContext.Current.CancellationToken);
+            "idem-1", "task-1", 0, 1, "corr-validation", cancellationToken: TestContext.Current.CancellationToken);
 
         TestSupport.Kind(result).ShouldBe("usage_error");
         result.ShouldNotContain("synthetic validation");
@@ -140,6 +143,7 @@ public sealed class FileTransportTests
             path: "docs/x.md",
             displayName: "x.md",
             mediaType: "text/markdown",
+            expectedFileVersion: 0, expectedLockFence: 1,
             contentBase64: "not valid base64 !!!",
             idempotencyKey: "idem-1",
             taskId: "task-1",
@@ -186,6 +190,7 @@ public sealed class FileTransportTests
             path: "docs/x.md",
             displayName: "x.md",
             mediaType: "text/markdown",
+            expectedFileVersion: 0, expectedLockFence: 1,
             contentBase64: Convert.ToBase64String([1, 2, 3]),
             idempotencyKey: "idem-1",
             taskId: "task-1",
@@ -195,5 +200,24 @@ public sealed class FileTransportTests
 
         TestSupport.Kind(result).ShouldBe("usage_error");
         client.ReceivedCalls().Any(c => c.GetMethodInfo().Name == nameof(IClient.AddFileAsync)).ShouldBeFalse();
+    }
+    [Fact]
+    public void UploadToolMetadataRequiresCallerObservations()
+    {
+        foreach (string method in new[] { nameof(FileTools.AddFile), nameof(FileTools.ChangeFile) })
+        foreach (string parameter in new[] { "expectedFileVersion", "expectedLockFence" })
+            typeof(FileTools).GetMethod(method)!.GetParameters().Single(value => value.Name == parameter).HasDefaultValue.ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData(0L)]
+    [InlineData(-1L)]
+    public async Task InvalidObservedFenceIsSafeUsageFailureWithoutAdmission(long fence)
+    {
+        IClient client = Substitute.For<IClient>();
+        string result = await FileTools.AddFile(TestSupport.Pipeline(client), "f", "w", "op", "docs/sentinel.md", "sentinel.md", "text/plain",
+            Convert.ToBase64String([1, 2, 3]), "key", "task", 0, fence, cancellationToken: TestContext.Current.CancellationToken);
+        TestSupport.Kind(result).ShouldBe("usage_error"); result.ShouldNotContain("sentinel.md");
+        client.ReceivedCalls().Any(call => call.GetMethodInfo().Name == nameof(IClient.AddFileAsync)).ShouldBeFalse();
     }
 }

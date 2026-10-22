@@ -33,6 +33,7 @@ public static class FoldersIdempotencyIntentAdapterServiceCollectionExtensions
         _ = services.AddIdempotencyIntentAdapter<LockWorkspaceIdempotencyIntentAdapter>();
         _ = services.AddIdempotencyIntentAdapter<ReleaseWorkspaceLockIdempotencyIntentAdapter>();
         _ = services.AddIdempotencyIntentAdapter<MutateFilesIdempotencyIntentAdapter>();
+        _ = services.AddIdempotencyIntentAdapter<AuthorizeContentErasureIdempotencyIntentAdapter>();
         _ = services.AddIdempotencyIntentAdapter<CommitWorkspaceIdempotencyIntentAdapter>();
         _ = services.AddSingleton<IHostedService, FoldersIdempotencyIntentAdapterCatalog>();
         return services;

@@ -39,7 +39,7 @@ public sealed class FileUploadTransportTests : IDisposable
         CapturingHttpHandler handler = harness.UseRealClient(HttpStatusCode.Accepted, TestData.AcceptedJson());
 
         int exit = await harness.RunAsync(
-            "file", "add",
+            "file", "add", "--expected-file-version", "0", "--expected-lock-fence", "1",
             "--folder-id", "folder_1",
             "--workspace-id", "workspace_1",
             "--operation-id", "01ARZ3NDEKTSV4RRFFQ69G5FAV",
@@ -56,6 +56,35 @@ public sealed class FileUploadTransportTests : IDisposable
         handler.RequestBody.ShouldNotBeNull();
         handler.RequestBody!.ShouldContain("PutFileInline");
         handler.RequestBody.ShouldContain("\"pathPolicyClass\":\"metadata_only\"");
+        handler.RequestBody.ShouldContain("\"expectedFileVersion\":0"); handler.RequestBody.ShouldContain("\"expectedLockFence\":1");
+    }
+
+    [Theory]
+    [InlineData("--expected-file-version")]
+    [InlineData("--expected-lock-fence")]
+    public async Task UploadRequiresObservedStateBeforeOpeningFileOrCallingSdk(string omitted)
+    {
+        var harness = new CliTestHarness();
+        string[] arguments = ["file", "add", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--operation-id", "operation_0123456789",
+            "--file", "/missing/content-sentinel", "--path", "docs/a.md", "--display-name", "a.md", "--media-type", "text/plain",
+            omitted == "--expected-lock-fence" ? "--expected-file-version" : "--expected-lock-fence", "1",
+            "--base-address", BaseAddress, "--token", Token, "--task-id", "task_1", "--idempotency-key", "key_1"];
+        (await harness.RunAsync(arguments)).ShouldNotBe(0);
+        harness.ClientFactoryInvoked.ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData("0")]
+    [InlineData("-1")]
+    public async Task InvalidObservedFenceFailsSafelyBeforeOpeningContent(string fence)
+    {
+        var harness = new CliTestHarness();
+        harness.UseRealClient(HttpStatusCode.Accepted, TestData.AcceptedJson());
+        int exit = await harness.RunAsync("file", "add", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--operation-id", "operation_0123456789",
+            "--expected-file-version", "0", "--expected-lock-fence", fence, "--file", "/missing/content-sentinel", "--path", "docs/a.md",
+            "--display-name", "a.md", "--media-type", "text/plain", "--base-address", BaseAddress, "--token", Token, "--task-id", "task_1", "--idempotency-key", "key_1");
+        exit.ShouldNotBe(0); harness.Console.StdErr.ShouldContain("positive lock fence");
+        harness.Console.StdErr.ShouldNotContain("content-sentinel");
     }
 
     [Theory]
@@ -68,7 +97,7 @@ public sealed class FileUploadTransportTests : IDisposable
         CapturingHttpHandler handler = harness.UseRealClient(HttpStatusCode.Accepted, TestData.AcceptedJson());
 
         int exit = await harness.RunAsync(
-            "file", "add",
+            "file", "add", "--expected-file-version", "0", "--expected-lock-fence", "1",
             "--folder-id", "folder_1",
             "--workspace-id", "workspace_1",
             "--operation-id", "01ARZ3NDEKTSV4RRFFQ69G5FAV",
@@ -96,7 +125,7 @@ public sealed class FileUploadTransportTests : IDisposable
         _ = harness.UseRealClient(HttpStatusCode.Accepted, TestData.AcceptedJson());
 
         int exit = await harness.RunAsync(
-            "file", "add",
+            "file", "add", "--expected-file-version", "0", "--expected-lock-fence", "1",
             "--folder-id", "folder_1",
             "--workspace-id", "workspace_1",
             "--operation-id", "01ARZ3NDEKTSV4RRFFQ69G5FAV",
@@ -168,7 +197,7 @@ public sealed class FileUploadTransportTests : IDisposable
     }
 
     private async Task<int> RunAddAsync(CliTestHarness harness, string path, string displayName) => await harness.RunAsync(
-        "file", "add",
+        "file", "add", "--expected-file-version", "0", "--expected-lock-fence", "1",
         "--folder-id", "folder_1",
         "--workspace-id", "workspace_1",
         "--operation-id", "01ARZ3NDEKTSV4RRFFQ69G5FAV",

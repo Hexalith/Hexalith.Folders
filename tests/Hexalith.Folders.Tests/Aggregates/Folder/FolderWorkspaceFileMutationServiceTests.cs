@@ -12,6 +12,19 @@ public sealed class FolderWorkspaceFileMutationServiceTests
     private static readonly DateTimeOffset Now = new(2026, 5, 27, 22, 0, 0, TimeSpan.Zero);
 
     [Fact]
+    public async Task LeaseExpiryDuringFinalPathEvidencePreventsMetadataAppendAfterPreparation()
+    {
+        var repository = LockedRepository(); var clock = new WorkspaceFileMutationLeaseClock(Now);
+        var evidence = new WorkspaceFileMutationExpiringEvidence(clock);
+        var content = new WorkspaceFileMutationBindingContent();
+        var service = new WorkspaceFileMutationService(AuthorizationService(), repository, evidence, clock, content);
+        FolderResult result = await service.MutateAsync(Request(), TestContext.Current.CancellationToken);
+        content.Prepared.ShouldBeTrue(); evidence.Calls.ShouldBe(2);
+        result.Code.ShouldBe(FolderResultCode.LockExpired); result.Events.ShouldBeEmpty();
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task RetainedIdentityHistoryLimitRejectsNewIncarnationBeforeContentOrAppend()
     {
         var repository = LockedRepository();

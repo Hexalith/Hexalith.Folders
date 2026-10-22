@@ -126,6 +126,7 @@ public sealed class MutationEnvelopeEndpointMatrixTests
         {
             body["transportOperation"] = "PutFileStream";
             body["byteLength"] = 262145;
+            body["contentHashReference"] = WorkspaceContentTransportTestServices.Hash(new byte[262145]);
             body.Remove("inlineContent");
             body[transportProperty] = JsonSerializer.SerializeToNode(new
             {
@@ -133,7 +134,7 @@ public sealed class MutationEnvelopeEndpointMatrixTests
                 declaredLength = 262145,
                 observedLength = 262145,
                 stagingReference = "staging-a",
-                observedContentHashReference = "hashref-a",
+                observedContentHashReference = WorkspaceContentTransportTestServices.Hash(new byte[262145]),
                 uploadMode = "request_body_stream",
             });
         }
@@ -144,8 +145,13 @@ public sealed class MutationEnvelopeEndpointMatrixTests
         {
             ["classification"] = "metadata_only",
         });
+        HttpContent Wire(string json)
+        {
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            return streamTransport ? WorkspaceContentTransportTestServices.Multipart(content, new byte[262145]) : content;
+        }
         string unambiguousBody = body.ToJsonString();
-        valid.Content = new StringContent(unambiguousBody, Encoding.UTF8, "application/json");
+        valid.Content = Wire(unambiguousBody);
         using HttpResponseMessage accepted = await client.SendAsync(valid, TestContext.Current.CancellationToken);
         accepted.StatusCode.ShouldBe(HttpStatusCode.Accepted);
         gateway.Requests.ShouldHaveSingleItem();
@@ -153,13 +159,11 @@ public sealed class MutationEnvelopeEndpointMatrixTests
         foreach (string duplicateName in new[] { "classification", "CLASSIFICATION" })
         {
             using HttpRequestMessage ambiguous = CreateValidRequest("add_workspace_file");
-            ambiguous.Content = new StringContent(
+            ambiguous.Content = Wire(
                 unambiguousBody.Replace(
                     "\"classification\":",
                     $"\"{duplicateName}\":\"metadata_only\",\"classification\":",
-                    StringComparison.Ordinal),
-                Encoding.UTF8,
-                "application/json");
+                    StringComparison.Ordinal));
             using HttpResponseMessage response = await client.SendAsync(ambiguous, TestContext.Current.CancellationToken);
             string problem = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
@@ -262,7 +266,65 @@ public sealed class MutationEnvelopeEndpointMatrixTests
         submitted.Payload.GetProperty("commitMessageClassification").GetString().ShouldBe("generated_summary");
     }
 
-    private static WebApplication BuildApp(RecordingEventStoreGatewayClient gateway)
+    [Theory]
+    [InlineData("expectedLockFence", "omit")]
+    [InlineData("expectedLockFence", "null")]
+    [InlineData("expectedLockFence", "0")]
+    [InlineData("expectedLockFence", "-1")]
+    [InlineData("expectedFileVersion", "omit")]
+    [InlineData("expectedFileVersion", "null")]
+    [InlineData("expectedFileVersion", "-1")]
+    public async Task DurableObservationIsRequiredBeforePersistenceOrAdmission(string field, string invalid)
+    {
+        var gateway = new RecordingEventStoreGatewayClient();
+        await using WebApplication app = BuildApp(gateway);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using var client = app.GetTestClient();
+        using var request = CreateValidRequest("add_workspace_file");
+        var body = JsonNode.Parse(await request.Content!.ReadAsStringAsync(TestContext.Current.CancellationToken))!.AsObject();
+        if (invalid == "omit") body.Remove(field); else body[field] = JsonNode.Parse(invalid);
+        request.Content = JsonContent.Create(body);
+        using var response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        gateway.Requests.ShouldBeEmpty();
+        ((Hexalith.EventStore.Client.Tests.Projections.RecordingDaprClient)app.Services.GetRequiredService<Dapr.Client.DaprClient>()).TrySaveByteOperations.ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ConfiguredConfidentialCleartextFailsBeforePersistenceAndAdmission(bool streamed)
+    {
+        var gateway = new RecordingEventStoreGatewayClient();
+        await using WebApplication app = BuildApp(gateway, "confidential_cleartext_required");
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using var client = app.GetTestClient();
+        using var request = CreateValidRequest("add_workspace_file");
+        byte[] bytes = Encoding.UTF8.GetBytes("confidential-test-sentinel");
+        var body = JsonNode.Parse(await request.Content!.ReadAsStringAsync(TestContext.Current.CancellationToken))!.AsObject();
+        body["byteLength"] = bytes.Length;
+        body["contentHashReference"] = WorkspaceContentTransportTestServices.Hash(bytes);
+        body["inlineContent"]!["contentBytes"] = Convert.ToBase64String(bytes);
+        if (streamed)
+        {
+            bytes = Enumerable.Repeat((byte)65, 262145).ToArray();
+            body["byteLength"] = bytes.Length; body["contentHashReference"] = WorkspaceContentTransportTestServices.Hash(bytes);
+            body["transportOperation"] = "PutFileStream"; body.Remove("inlineContent");
+            body["streamDescriptor"] = JsonSerializer.SerializeToNode(new { mediaType = "application/octet-stream", declaredLength = bytes.Length,
+                observedLength = bytes.Length, stagingReference = "staged-content-a", observedContentHashReference = WorkspaceContentTransportTestServices.Hash(bytes), uploadMode = "request_body_stream" });
+        }
+        request.Content = streamed ? WorkspaceContentTransportTestServices.Multipart(JsonContent.Create(body), bytes) : JsonContent.Create(body);
+        using var response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+        string output = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        output.ShouldContain("confidential_operation_not_durable");
+        output.ShouldNotContain("confidential-test-sentinel"); output.ShouldNotContain(Convert.ToBase64String(bytes));
+        output.ShouldNotContain("docs/readme.md"); output.ShouldNotContain("hashref_"); output.ShouldNotContain("content_aaaaaaaa");
+        gateway.Requests.ShouldBeEmpty();
+        ((Hexalith.EventStore.Client.Tests.Projections.RecordingDaprClient)app.Services.GetRequiredService<Dapr.Client.DaprClient>()).TrySaveByteOperations.ShouldBeEmpty();
+    }
+
+    private static WebApplication BuildApp(RecordingEventStoreGatewayClient gateway, string protectionMode = "non_confidential")
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
@@ -272,12 +334,15 @@ public sealed class MutationEnvelopeEndpointMatrixTests
         builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
+        WorkspaceContentTransportTestServices.Add(builder);
+        builder.Configuration["Folders:WorkspaceFilePolicy:ProtectionMode"] = protectionMode;
         builder.Services.RemoveAll<IEventStoreGatewayClient>();
         builder.Services.AddSingleton<IEventStoreGatewayClient>(gateway);
         builder.Services.RemoveAll<ITenantContextAccessor>();
         builder.Services.AddSingleton<ITenantContextAccessor>(new StaticTenantContextAccessor("tenant-a", "user-a"));
 
         WebApplication app = builder.Build();
+        WorkspaceContentTransportTestServices.Authenticate(app);
         app.MapFoldersServerEndpoints();
         return app;
     }
@@ -420,6 +485,7 @@ public sealed class MutationEnvelopeEndpointMatrixTests
                     operationId = "operation-a",
                     fileOperationKind = "remove",
                     transportOperation = "metadataOnlyRemoval",
+                    expectedFileVersion = 0, expectedLockFence = 1,
                     pathMetadata = PathMetadata(),
                 }),
             },
@@ -476,8 +542,9 @@ public sealed class MutationEnvelopeEndpointMatrixTests
             operationId = "operation-a",
             fileOperationKind,
             transportOperation,
+            expectedFileVersion = 0, expectedLockFence = 1,
             pathMetadata = PathMetadata(),
-            contentHashReference = "hashref-a",
+            contentHashReference = WorkspaceContentTransportTestServices.Hash(Convert.FromBase64String("aGVsbG8gd29ybGQh")),
             byteLength = 12,
             inlineContent = new
             {
@@ -491,7 +558,7 @@ public sealed class MutationEnvelopeEndpointMatrixTests
         {
             normalizedPath = "docs/readme.md",
             displayName = "readme.md",
-            pathPolicyClass = "tenant_sensitive_document",
+            pathPolicyClass = "content_allowed",
             unicodeNormalization = "NFC",
         };
 

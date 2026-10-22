@@ -64,6 +64,20 @@ public sealed record FolderState(
     long AccessSequence,
     IReadOnlyDictionary<string, string> IdempotencyFingerprints)
 {
+    /// <summary>Gets irrevocable metadata-only receipt erasure reservations serialized by the source actor.</summary>
+    public IReadOnlyDictionary<string, long> ContentErasureGrants { get; init; }
+        = FrozenDictionary<string, long>.Empty;
+    /// <summary>Gets current committed body references independently of later staged versions.</summary>
+    public IReadOnlyDictionary<string, string> CommittedContentReferences { get; init; }
+        = FrozenDictionary<string, string>.Empty;
+
+    /// <summary>Gets monotonic lock acquisition fencing, independent of wall-clock regressions.</summary>
+    public long WorkspaceLockFence { get; init; }
+
+    /// <summary>Gets retained source publication bindings, including removal tombstones.</summary>
+    public IReadOnlyDictionary<string, WorkspaceContentBinding> ContentPublications { get; init; }
+        = FrozenDictionary<string, WorkspaceContentBinding>.Empty;
+
     /// <summary>Gets explicit owner File incarnations folded from native mutation events.</summary>
     public IReadOnlyDictionary<string, FolderFileIdentity> FileIdentities { get; init; }
         = FrozenDictionary<string, FolderFileIdentity>.Empty;

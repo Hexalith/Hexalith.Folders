@@ -95,6 +95,12 @@ internal static class GeneratedClientPostProcessor
         }
 
         source = RelaxGeneratedRequiredFields(source);
+        source = RequireJsonProperties(source, "FileMutationRequest", ["expectedFileVersion", "expectedLockFence"]);
+        string metadataBlock = ClassBlock(source, "FileMetadataItem");
+        source = ReplaceExactly(source, metadataBlock, metadataBlock.Replace(
+            "[Newtonsoft.Json.JsonProperty(\"version\", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]",
+            "[Newtonsoft.Json.JsonProperty(\"version\", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore, DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore)]",
+            StringComparison.Ordinal), expectedCount: 1);
         source = RequireClosedProblemFields(source);
         source = RequireClosedSuccessFields(source, contractPath);
         source = RestoreOperationUnavailableEnumUnions(source, contractPath);

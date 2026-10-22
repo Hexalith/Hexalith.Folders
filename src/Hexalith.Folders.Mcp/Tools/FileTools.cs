@@ -34,11 +34,13 @@ internal static class FileTools
         [Description("Base64-encoded file content (inline upload; never echoed in output).")] string contentBase64,
         [Description("Caller-sourced idempotency key (required; never MCP-generated).")] string idempotencyKey,
         [Description("Caller-provided task ID (required; never MCP-generated).")] string taskId,
+        [Description("Caller-observed nonnegative file version; zero for a new file.")] long expectedFileVersion,
+        [Description("Caller-observed positive lock acquisition fence.")] long expectedLockFence,
         [Description("Optional caller-provided correlation ID; a fresh ULID is generated when omitted.")] string? correlationId = null,
         [Description("Optional original media type when it differs from mediaType.")] string? contentMediaType = null,
         [Description("Path policy classification.")] string pathPolicyClass = "metadata_only",
         CancellationToken cancellationToken = default)
-        => Upload(pipeline, FileMutationRequestFileOperationKind.Add, folderId, workspaceId, operationId, path, displayName, mediaType, contentBase64, idempotencyKey, taskId, correlationId, contentMediaType, pathPolicyClass, cancellationToken);
+        => Upload(pipeline, FileMutationRequestFileOperationKind.Add, folderId, workspaceId, operationId, path, displayName, mediaType, contentBase64, idempotencyKey, taskId, expectedFileVersion, expectedLockFence, correlationId, contentMediaType, pathPolicyClass, cancellationToken);
 
     [McpServerTool(Name = "change-file")]
     [Description("Change a file in a locked workspace (mutating, task-scoped). Content is supplied as base64 and never echoed.")]
@@ -53,11 +55,13 @@ internal static class FileTools
         [Description("Base64-encoded file content (inline upload; never echoed in output).")] string contentBase64,
         [Description("Caller-sourced idempotency key (required; never MCP-generated).")] string idempotencyKey,
         [Description("Caller-provided task ID (required; never MCP-generated).")] string taskId,
+        [Description("Caller-observed nonnegative file version; zero for a new file.")] long expectedFileVersion,
+        [Description("Caller-observed positive lock acquisition fence.")] long expectedLockFence,
         [Description("Optional caller-provided correlation ID; a fresh ULID is generated when omitted.")] string? correlationId = null,
         [Description("Optional original media type when it differs from mediaType.")] string? contentMediaType = null,
         [Description("Path policy classification.")] string pathPolicyClass = "metadata_only",
         CancellationToken cancellationToken = default)
-        => Upload(pipeline, FileMutationRequestFileOperationKind.Change, folderId, workspaceId, operationId, path, displayName, mediaType, contentBase64, idempotencyKey, taskId, correlationId, contentMediaType, pathPolicyClass, cancellationToken);
+        => Upload(pipeline, FileMutationRequestFileOperationKind.Change, folderId, workspaceId, operationId, path, displayName, mediaType, contentBase64, idempotencyKey, taskId, expectedFileVersion, expectedLockFence, correlationId, contentMediaType, pathPolicyClass, cancellationToken);
 
     [McpServerTool(Name = "remove-file")]
     [Description("Remove a file from a locked workspace (mutating, task-scoped). Supply the metadata-only removal body as JSON.")]
@@ -85,15 +89,20 @@ internal static class FileTools
         string contentBase64,
         string idempotencyKey,
         string taskId,
+        long expectedFileVersion,
+        long expectedLockFence,
         string? correlationId,
         string? contentMediaType,
         string pathPolicyClass,
         CancellationToken cancellationToken)
         => pipeline.ExecuteMutationAsync(idempotencyKey, taskId, correlationId, (client, s, ct) =>
         {
+            if (expectedFileVersion < 0 || expectedLockFence <= 0)
+                throw new McpUsageException("File upload requires an observed nonnegative version and positive lock fence.");
             ReadOnlyMemory<byte> content = DecodeContent(contentBase64);
             FileUploadDescriptor descriptor = new()
             {
+                ExpectedFileVersion = expectedFileVersion, ExpectedLockFence = expectedLockFence,
                 FolderId = folderId,
                 WorkspaceId = workspaceId,
                 OperationId = operationId,

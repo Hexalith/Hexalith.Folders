@@ -89,6 +89,7 @@ public sealed class FoldersIdempotencyIntentAdapterCatalogTests
         FoldersServerModule.LockWorkspaceCommandType,
         FoldersServerModule.ReleaseWorkspaceLockCommandType,
         FoldersServerModule.MutateFilesCommandType,
+        FoldersServerModule.AuthorizeContentErasureCommandType,
         FoldersServerModule.CommitWorkspaceCommandType,
     ];
 }

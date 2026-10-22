@@ -35,7 +35,7 @@ public sealed class CommandSurfaceE2ETests : IDisposable
         { "provider", ["provider", "get-binding", "--provider-binding-ref", "pbr_1", "--base-address", BaseAddress, "--token", Token] },
         { "folder", ["folder", "status", "--folder-id", "folder_1", "--base-address", BaseAddress, "--token", Token] },
         { "workspace", ["workspace", "status", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--base-address", BaseAddress, "--token", Token] },
-        { "file", ["file", "remove", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--idempotency-key", "key_1", "--request", "{\"requestSchemaVersion\":\"v2\",\"fileOperationKind\":\"remove\",\"transportOperation\":\"metadataOnlyRemoval\",\"operationId\":\"operation_01HZY7Z6N7J4Q2X8\",\"pathMetadata\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"metadata_only\",\"unicodeNormalization\":\"NFC\"}}", "--base-address", BaseAddress, "--token", Token] },
+        { "file", ["file", "remove", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--idempotency-key", "key_1", "--request", "{\"requestSchemaVersion\":\"v2\",\"expectedFileVersion\":1,\"expectedLockFence\":1,\"fileOperationKind\":\"remove\",\"transportOperation\":\"metadataOnlyRemoval\",\"operationId\":\"operation_01HZY7Z6N7J4Q2X8\",\"pathMetadata\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"metadata_only\",\"unicodeNormalization\":\"NFC\"}}", "--base-address", BaseAddress, "--token", Token] },
         { "commit", ["commit", "reconciliation-status", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--reconciliation-id", "recon_1", "--base-address", BaseAddress, "--token", Token] },
         { "context", ["context", "list", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--base-address", BaseAddress, "--token", Token] },
         { "audit", ["audit", "list", "--folder-id", "folder_1", "--base-address", BaseAddress, "--token", Token] },
@@ -82,7 +82,7 @@ public sealed class CommandSurfaceE2ETests : IDisposable
         await RunStepAsync(client, correlation, "folder", "create-repo-backed", "--task-id", "task_1", "--idempotency-key", "key_folder", "--request", "{}");
         await RunStepAsync(client, correlation, "workspace", "prepare", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--idempotency-key", "key_prepare", "--request", "{}");
         await RunStepAsync(client, correlation, "workspace", "lock", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--idempotency-key", "key_lock", "--request", "{}");
-        await RunStepAsync(client, correlation, "file", "add", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--operation-id", "01ARZ3NDEKTSV4RRFFQ69G5FAV", "--file", _contentPath, "--path", "docs/readme.md", "--display-name", "readme.md", "--media-type", "text/plain", "--task-id", "task_1", "--idempotency-key", "key_file");
+        await RunStepAsync(client, correlation, "file", "add", "--expected-file-version", "0", "--expected-lock-fence", "1", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--operation-id", "01ARZ3NDEKTSV4RRFFQ69G5FAV", "--file", _contentPath, "--path", "docs/readme.md", "--display-name", "readme.md", "--media-type", "text/plain", "--task-id", "task_1", "--idempotency-key", "key_file");
         await RunStepAsync(client, correlation, "commit", "create", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--idempotency-key", "key_commit", "--request", "{}");
         await RunStepAsync(client, correlation, "context", "list", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1");
         await RunStepAsync(client, correlation, "workspace", "release", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--idempotency-key", "key_release", "--request", "{}");
@@ -106,7 +106,7 @@ public sealed class CommandSurfaceE2ETests : IDisposable
         CliTestHarness harness = new() { Client = client };
 
         int exit = await harness.RunAsync(
-            "file", "change",
+            "file", "change", "--expected-file-version", "1", "--expected-lock-fence", "1",
             "--folder-id", "folder_1",
             "--workspace-id", "workspace_1",
             "--operation-id", "01ARZ3NDEKTSV4RRFFQ69G5FAV",

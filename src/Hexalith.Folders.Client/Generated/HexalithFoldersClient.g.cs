@@ -11449,6 +11449,12 @@ namespace Hexalith.Folders.Client.Generated
     public partial class LockLeaseMetadata
     {
 
+        /// <summary>
+        /// Monotonic source lock acquisition fence for file mutation admission.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("lockFence", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long LockFence { get; set; }
+
         [Newtonsoft.Json.JsonProperty("lockId", Required = Newtonsoft.Json.Required.Always)]
         public string LockId { get; set; }
 
@@ -11692,6 +11698,24 @@ namespace Hexalith.Folders.Client.Generated
     [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FileMutationRequest : object
     {
+
+        /// <summary>
+        /// Optional explicit owner incarnation; an exact accepted path is resolved by the owner when omitted.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("ownerFileId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OwnerFileId { get; set; }
+
+        /// <summary>
+        /// Caller-observed immutable version; zero for a new incarnation. Required by durable execution.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("expectedFileVersion", Required = Newtonsoft.Json.Required.Always)]
+        public long ExpectedFileVersion { get; set; }
+
+        /// <summary>
+        /// Caller-observed lock acquisition fence. Required by durable execution.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("expectedLockFence", Required = Newtonsoft.Json.Required.Always)]
+        public long ExpectedLockFence { get; set; }
 
         [Newtonsoft.Json.JsonProperty("requestSchemaVersion", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string RequestSchemaVersion { get; set; }
@@ -12334,6 +12358,18 @@ namespace Hexalith.Folders.Client.Generated
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class FileMetadataItem : object
     {
+
+        /// <summary>
+        /// Opaque owner incarnation for a currently visible authoritative file.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("fileId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FileId { get; set; }
+
+        /// <summary>
+        /// Immutable authoritative version for subsequent fenced mutations.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("version", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore, DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore)]
+        public long Version { get; set; }
 
         [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.Always)]
         public VisiblePathMetadata Path { get; set; }

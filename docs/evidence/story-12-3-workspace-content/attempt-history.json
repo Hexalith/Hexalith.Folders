@@ -1,0 +1,151 @@
+[
+  {
+    "log": "/tmp/story123-live-readiness-failure.log",
+    "sha256": "5cf4c1b3b17d2f756530f8ad92cb1ce3dd2334b04d1077532565d53fd4d79b9a",
+    "summary": [
+      "    Hexalith.Folders.AppHost.Tests.WorkspaceContentDurabilityAcceptanceTests.ContentShouldSurviveProcessReplacementAndRemainSuppressedAfterRemoval [FAIL]",
+      "   Hexalith.Folders.AppHost.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 258.534s"
+    ],
+    "reason": "Initial live readiness failure before missing independently built Tenants host was diagnosed."
+  },
+  {
+    "log": "/tmp/story123-live-missing-tenants-host.log",
+    "sha256": "84b6fc899ceecbd198b93f9a3feb47e108225041f7df25992aa6b131d954309e",
+    "summary": [
+      "   Hexalith.Folders.AppHost.Tests  Total: 0"
+    ],
+    "reason": "Task-owned runner cancelled after missing Tenants host was diagnosed; no passing result."
+  },
+  {
+    "log": "/tmp/story123-live-first-range-failure.log",
+    "sha256": "c9a52fcf0464b183ef9c67af0e5876ff06e2e610b4e84136db8a891cfdc8633f",
+    "summary": [
+      "    Hexalith.Folders.AppHost.Tests.WorkspaceContentDurabilityAcceptanceTests.ContentShouldSurviveProcessReplacementAndRemainSuppressedAfterRemoval [FAIL]",
+      "   Hexalith.Folders.AppHost.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 219.331s"
+    ],
+    "reason": "Initial authoritative range qualification failure; later corrected."
+  },
+  {
+    "log": "/tmp/story123-live-placeholder-registration-failure.log",
+    "sha256": "d34ff79dc24cafca3b3e4bdb488cc24fdd1b3fce382a66b27029f394244e5a8a",
+    "summary": [
+      "    Hexalith.Folders.AppHost.Tests.WorkspaceContentDurabilityAcceptanceTests.ContentShouldSurviveProcessReplacementAndRemainSuppressedAfterRemoval [FAIL]",
+      "   Hexalith.Folders.AppHost.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 199.551s"
+    ],
+    "reason": "Unavailable core context source registration incorrectly survived TryAddScoped; production registration corrected."
+  },
+  {
+    "log": "/tmp/story123-live-removal-fixture-failure.log",
+    "sha256": "6ae927b915d7b400954f1e15b645954fe8d8b726bf7d74b3cd0459879c901b0a",
+    "summary": [
+      "    Hexalith.Folders.AppHost.Tests.WorkspaceContentDurabilityAcceptanceTests.ContentShouldSurviveProcessReplacementAndRemainSuppressedAfterRemoval [FAIL]",
+      "   Hexalith.Folders.AppHost.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 179.101s"
+    ],
+    "reason": "Partial transport/restart proof passed; removal fixture used obsolete transportOperation; corrected to metadataOnlyRemoval."
+  },
+  {
+    "log": "/tmp/story123-live-concurrent-client-failure.log",
+    "sha256": "883fbbc4fa64340a9977efc41672bb2b9ab47886b9f84b92fb976f55fcf9bd5f",
+    "summary": [
+      "    Hexalith.Folders.AppHost.Tests.WorkspaceContentDurabilityAcceptanceTests.ContentShouldSurviveProcessReplacementAndRemainSuppressedAfterRemoval [FAIL]",
+      "   Hexalith.Folders.AppHost.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 190.148s"
+    ],
+    "reason": "Partial single-server/concurrent-client run; generic gateway rejection lost domain conflict mapping. This is not serving-replica evidence."
+  },
+  {
+    "log": "/tmp/story123-live-replica-binding-fixture-failure.log",
+    "sha256": "7ac6b66de62f1089cca55ede87930cc9766d561c5455bb762b8990f527abd4e7",
+    "summary": [
+      "    Hexalith.Folders.AppHost.Tests.WorkspaceContentDurabilityAcceptanceTests.ContentShouldSurviveProcessReplacementAndRemainSuppressedAfterRemoval [FAIL]",
+      "   Hexalith.Folders.AppHost.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 266.440s"
+    ],
+    "reason": "New replica resource name incorrectly resolved to Workers assembly in runtime observer; fixed mapping."
+  },
+  {
+    "log": "/tmp/story123-live-primary-environment-fixture-failure.log",
+    "sha256": "f678a8cb5e2419cec68ccd79b0d70acb8862f4acb5288d85dc57444cd5a90fa5",
+    "summary": [
+      "    Hexalith.Folders.AppHost.Tests.WorkspaceContentDurabilityAcceptanceTests.ContentShouldSurviveProcessReplacementAndRemainSuppressedAfterRemoval [FAIL]",
+      "   Hexalith.Folders.AppHost.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 262.422s"
+    ],
+    "reason": "Primary environment loss prevented authentication startup; no content assertions."
+  },
+  {
+    "log": "/tmp/story123-live-shared-environment-annotation-failure.log",
+    "sha256": "4ff675604d72940ccfff55a09ac02fb2f538854a4241d0c3e21090379bddff06",
+    "summary": [
+      "    Hexalith.Folders.AppHost.Tests.WorkspaceContentDurabilityAcceptanceTests.ContentShouldSurviveProcessReplacementAndRemainSuppressedAfterRemoval [FAIL]",
+      "   Hexalith.Folders.AppHost.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 256.338s"
+    ],
+    "reason": "DCP primary env was empty while replica inherited callbacks; independent annotation instances fixed resource binding."
+  },
+  {
+    "log": "/tmp/story123-live-replica-race-authorization-failure.log",
+    "sha256": "64b27d0a3487caa08ee70be958fc2b2382f34235c33b739a515d6a4f1689c1dd",
+    "summary": [
+      "    Hexalith.Folders.AppHost.Tests.WorkspaceContentDurabilityAcceptanceTests.ContentShouldSurviveProcessReplacementAndRemainSuppressedAfterRemoval [FAIL]",
+      "   Hexalith.Folders.AppHost.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 171.005s"
+    ],
+    "reason": "Partial replaced-server/integrity evidence passed; replica mutation denied before endpoint while primary accepted. Added replica-specific current-authority readiness and bounded outcome logging."
+  },
+  {
+    "log": "/tmp/story123-live-complete-green.log",
+    "sha256": "b4f4273a28fb18fa2064d46723200a1a4c99ffa25bbe3e7b89bf52441d0dfd09",
+    "summary": [
+      "   Hexalith.Folders.AppHost.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 258.595s"
+    ],
+    "reason": "First complete green class; 258.595 seconds. Passing ITestOutputHelper markers were suppressed by default; final output-retaining class separately reran green."
+  },
+  {
+    "log": "/tmp/story123-contract-tests.log",
+    "sha256": "5317fa17b314ef1ae5e88249eb81708ab25078acd6b0906b4031c733a9011621",
+    "summary": [
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.GeneratorReproducesTheCommittedManifestByteForByte [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.ManifestBindsEveryListedCandidateArtifactAndOrderedSetDigest [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.CurrentSourceInventoryPreservesHistoricalEvidenceAndRequiresRequalification [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForMalformedScalarResponseKeys [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorOutputIsByteStableAndMetadataOnly [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2GeneratorTests.GeneratorReproducesTheCommittedCandidateByteForByte [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2ContractTests.PreviousSpinePreservesHistoricalV1DigestAndV2StatusAndErrorFingerprints [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForDanglingDeprecationApprovalSource [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForRemovedPreviousSpineOperationWithoutDeprecation [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2ContractTests.ConformanceSetBindsEveryCandidateArtifactWithoutChangingReleaseAuthority [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorValidatesRenderedRowsAgainstNestedSchemaTypes [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.BaselineInitializationRejectsDuplicateOperationIdsBeforeReplacingOutput [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityGatePreservesNativeFailureExitWithoutEchoingOutput [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForDuplicateIdempotencyFields [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorRejectsBaselineOperationAbsentFromHistoricalV1 [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorRequiresHistoricalFingerprintsForEveryCurrentOperation [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorValidatesEveryRequiredSchemaProperty [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForEmptyBaselineWithoutOverride [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.InitializeBaselineRejectsDuplicateOperationIdsBeforeWriting [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedWhenIdempotencyMatrixMetadataDrifts(before: \"        newKey: execute_once\", after: \"        newKey: omitted\", expected: \"five-cell idempotency behavior matrix\") [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedWhenIdempotencyMatrixMetadataDrifts(before: \"      x-hexalith-idempotency-ttl-tier: mutation\", after: \"      x-hexalith-idempotency-ttl-tier: omitted\", expected: \"fixed idempotency retention tier\") [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedWhenIdempotencyMatrixMetadataDrifts(before: \"      x-hexalith-read-idempotency-key: idempotency\"\u00b7\u00b7\u00b7, after: \"      x-hexalith-read-idempotency-key: omitted\", expected: \"canonical read-key rejection\") [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedWhenMutatingIdempotencyMetadataIsMissing [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForNonScalarResponseKeys [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorAcceptsApprovedDeprecationWithYamlBooleanLiteral [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.OperationAbsentFromHistoricalV1TakesTheDeclaredBranch [FAIL]",
+      "    Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForApprovedDeprecationWithoutEvidence [FAIL]",
+      "   Hexalith.Folders.Contracts.Tests  Total: 360, Errors: 0, Failed: 27, Skipped: 0, Not Run: 0, Time: 13.368s"
+    ],
+    "reason": "Initial 27 failures: missing parity generator executable, stale generated artifacts, and Release-only stub test prerequisite. All corrected and full Contracts final 360/360."
+  },
+  {
+    "log": "/tmp/story123-live-before-solution-green.log",
+    "sha256": "d678ce9ad56c022ac32a74dccaa7f3217a44ba354e6aacdf28cca87a576f3bca",
+    "summary": [
+      "   Hexalith.Folders.AppHost.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 254.841s"
+    ],
+    "reason": "Complete pre-solution output-retaining green run (254.841s). Broad build changed two upstream host module outputs; final live repeated against broad-build binaries and all 30 distinct loaded module paths now match."
+  },
+  {
+    "log": "/tmp/story123-live-post-solution-stop-failure.log",
+    "sha256": "3179c41fdd5bbda9bbdb0393901bdc03c274dd63d6744f8423169d9a87dcc331",
+    "summary": [
+      "    Hexalith.Folders.AppHost.Tests.WorkspaceContentDurabilityAcceptanceTests.ContentShouldSurviveProcessReplacementAndRemainSuppressedAfterRemoval [FAIL]",
+      "   Hexalith.Folders.AppHost.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 138.716s"
+    ],
+    "reason": "Task-owned Aspire EventStore stop returned failure during replacement (138.716s). Class cleanup completed. Unchanged rerun then replaced every host and completed green; retained as a lifecycle flake."
+  }
+]

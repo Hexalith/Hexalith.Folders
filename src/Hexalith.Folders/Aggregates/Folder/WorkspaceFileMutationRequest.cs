@@ -25,6 +25,15 @@ public sealed record WorkspaceFileMutationRequest(
     IReadOnlyDictionary<string, string?> ClientControlledTenantValues,
     IReadOnlyDictionary<string, string?> ClientControlledPrincipalValues)
 {
+    /// <summary>Gets the server-verified opaque upload receipt.</summary>
+    public string? ContentReceiptId { get; init; }
+
+    /// <summary>Gets the caller's expected incarnation version.</summary>
+    public long? ExpectedFileVersion { get; init; }
+
+    /// <summary>Gets the caller's expected lock acquisition fence.</summary>
+    public long? ExpectedLockFence { get; init; }
+
     /// <summary>Gets the explicit owner File identity; add operations allocate it at the owner boundary.</summary>
     public string? OwnerFileId { get; init; }
 

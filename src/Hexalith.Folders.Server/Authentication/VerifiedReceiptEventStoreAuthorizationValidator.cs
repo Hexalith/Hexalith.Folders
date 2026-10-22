@@ -32,7 +32,8 @@ public sealed class VerifiedReceiptEventStoreAuthorizationValidator(IHttpContext
                 && string.Equals(receipt.Tenant, request.SafeContext.AuthoritativeTenantId, StringComparison.Ordinal)
                 && string.Equals(receipt.Subject, request.SafeContext.PrincipalId, StringComparison.Ordinal)
                 && receipt.Permissions.Contains(request.SafeContext.ActionToken, StringComparer.Ordinal))
-                || (httpContext is not null && HistoricalMutationAuthorization.IsDirectPublicMutation(httpContext)
+                || (httpContext is not null && (HistoricalMutationAuthorization.IsDirectPublicMutation(httpContext)
+                    || Content.WorkspaceContentRetentionEndpoints.Matches(httpContext))
                     && MatchesValidatedHuman(httpContext, request)),
             "strict_read" or "bounded_diagnostic_read" => verifiedRead
                 || (httpContext is not null && MatchesValidatedHuman(httpContext, request)),

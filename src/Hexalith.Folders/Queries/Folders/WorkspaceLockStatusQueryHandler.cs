@@ -135,7 +135,7 @@ public sealed class WorkspaceLockStatusQueryHandler(
                 snapshot.AcquiredAt!.Value,
                 snapshot.EffectiveAt!.Value,
                 snapshot.ExpiresAt!.Value,
-                lockState == "locked" ? snapshot.HolderTaskId : null)
+                lockState == "locked" ? snapshot.HolderTaskId : null) { LockFence = snapshot.LockFence }
             : null;
 
         WorkspaceLockRetryEligibility retry = lockState switch

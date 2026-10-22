@@ -524,6 +524,8 @@ public static partial class FolderCommandValidator
         AppendField(hash, command.TaskId);
         AppendField(hash, command.WorkspaceId);
 
+        if (command.ExpectedLockFence is { } fence) AppendField(hash, fence.ToString(CultureInfo.InvariantCulture));
+        if (command.ExpectedFileVersion is { } version) AppendField(hash, version.ToString(CultureInfo.InvariantCulture));
         if (command.OwnerFileId is not null && command.FileOperationKind != "add") AppendField(hash, command.OwnerFileId);
         if (command.ProjectFileReferenceId is not null) AppendField(hash, command.ProjectFileReferenceId);
 

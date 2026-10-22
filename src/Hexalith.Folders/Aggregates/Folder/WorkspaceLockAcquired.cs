@@ -19,4 +19,9 @@ public sealed record WorkspaceLockAcquired(
     string TaskId,
     string IdempotencyKey,
     string IdempotencyFingerprint,
-    DateTimeOffset OccurredAt) : IFolderEvent;
+    DateTimeOffset OccurredAt) : IFolderEvent
+{
+    /// <summary>Gets the monotonic source fence; null preserves historical event bytes.</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public long? LockFence { get; init; }
+}

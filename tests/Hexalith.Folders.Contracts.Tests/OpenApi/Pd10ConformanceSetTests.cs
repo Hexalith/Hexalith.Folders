@@ -29,7 +29,7 @@ public sealed class Pd10ConformanceSetTests
         Scalar(current, "approval_status").ShouldBe("pending-a6b");
         Scalar(current, "production_exposure").ShouldBe("disabled");
         Sha256(Path.Combine(RepositoryRoot, "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml"))
-            .ShouldBe("ee9c7bddd0428d3809555c591af0b0bd760b0c88e336720e569c7d7b259807b0");
+            .ShouldBe("d417afd8454dac16824af17c2c0a787fe579c342a009e13b6985b147724d89a7");
     }
 
     [Fact]

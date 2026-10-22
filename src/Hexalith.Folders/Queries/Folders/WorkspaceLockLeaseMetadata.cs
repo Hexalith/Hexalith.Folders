@@ -6,4 +6,9 @@ public sealed record WorkspaceLockLeaseMetadata(
     DateTimeOffset AcquiredAt,
     DateTimeOffset EffectiveAt,
     DateTimeOffset ExpiresAt,
-    string? HolderRef);
+    string? HolderRef)
+{
+    /// <summary>Gets the monotonic lock acquisition fence for subsequent file mutations.</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public long? LockFence { get; init; }
+}

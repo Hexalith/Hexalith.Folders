@@ -12,6 +12,8 @@
           WorkingDirectory="$(MSBuildProjectDirectory)/../.." />
   </Target>
   <ItemGroup>
+    <!-- Reuse the SDK's byte/CAS persistence double; the production content protocol remains under test. -->
+    <Compile Include="../../references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/Projections/RecordingDaprClient.cs" Link="Content/RecordingDaprClient.cs" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj" />
     <!-- Story 9.1: the Aspire topology test drives the platform EventStore composition (gateway-only
          AddHexalithEventStore + AddEventStoreDomainModule) to assert the full five-sidecar topology. -->

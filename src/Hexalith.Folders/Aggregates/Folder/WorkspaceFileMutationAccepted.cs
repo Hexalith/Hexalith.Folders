@@ -23,6 +23,10 @@ public sealed record WorkspaceFileMutationAccepted(
     string IdempotencyFingerprint,
     DateTimeOffset OccurredAt) : IFolderEvent
 {
+    /// <summary>Gets the verified, body-free publication binding; absent on historical metadata-only events.</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public WorkspaceContentBinding? ContentBinding { get; init; }
+
     /// <summary>Gets the explicit owner File identity; add operations allocate it at the owner boundary.</summary>
     public string? OwnerFileId { get; init; }
 

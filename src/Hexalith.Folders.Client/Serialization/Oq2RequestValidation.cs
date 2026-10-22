@@ -54,6 +54,7 @@ internal static class Oq2RequestValidation
         if (!Enum.IsDefined(request.FileOperationKind)
             || !Enum.IsDefined(expectedKind)
             || request.FileOperationKind != expectedKind
+            || request.ExpectedFileVersion < 0 || request.ExpectedLockFence <= 0
             || request.RequestSchemaVersion != "v2"
             || !OpaqueIdentifier.IsMatch(request.OperationId ?? string.Empty))
         {

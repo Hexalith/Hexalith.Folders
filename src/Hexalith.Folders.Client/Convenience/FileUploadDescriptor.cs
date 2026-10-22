@@ -8,6 +8,13 @@ namespace Hexalith.Folders.Client.Convenience;
 /// </summary>
 public sealed record FileUploadDescriptor
 {
+    /// <summary>Gets the caller-observed lock acquisition fence required by durable staging.</summary>
+    public long? ExpectedLockFence { get; init; }
+    /// <summary>Gets the expected immutable file version; zero creates a new incarnation.</summary>
+    public long? ExpectedFileVersion { get; init; }
+    /// <summary>Gets an optional explicit owner incarnation for change operations.</summary>
+    public string? OwnerFileId { get; init; }
+
     /// <summary>Gets the opaque tenant-scoped folder identifier (resource reference, not tenant authority).</summary>
     public required string FolderId { get; init; }
 

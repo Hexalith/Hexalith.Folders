@@ -281,7 +281,7 @@ public sealed class FolderEventReplayTests
             .Order(StringComparer.Ordinal)
             .ToArray();
 
-        frozen.ShouldBe(current);
+        frozen.Append(typeof(WorkspaceContentErasureAuthorized).FullName!).Order(StringComparer.Ordinal).ShouldBe(current);
     }
 
     [Fact]
@@ -613,7 +613,7 @@ public sealed class FolderEventReplayTests
         string[] commandTypes = typeof(FoldersServerModule).GetFields()
             .Where(field => field.IsLiteral && field.Name.EndsWith("CommandType", StringComparison.Ordinal))
             .Select(field => (string)field.GetRawConstantValue()!).ToArray();
-        commandTypes.Length.ShouldBe(16);
+        commandTypes.Length.ShouldBe(17);
         foreach (string type in commandTypes)
         {
             CommandEnvelope command = new("message", "tenant-a", "folders", "folder-a", type,

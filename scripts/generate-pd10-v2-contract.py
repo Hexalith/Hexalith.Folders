@@ -1193,6 +1193,31 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
         "mcpFailureKinds": ["usage_error", "credential_missing", *post_sdk_mcp_failure_kinds],
     }
     contract["x-hexalith-runtime-problem-inventory"] = runtime_problem_inventory
+    # Story 12.3 adds fencing and opaque file identity to the shared generated
+    # consumer models. The historical v1 input remains immutable and v2 remains
+    # disabled; only these explicitly approved additive properties are copied.
+    active_v1 = yaml.safe_load(
+        Path(__file__).resolve().parents[1].joinpath(
+            "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"
+        ).read_text(encoding="utf-8")
+    )
+    additions = {
+        "LockLeaseMetadata": ["lockFence"],
+        "FileMutationRequest": ["ownerFileId", "expectedFileVersion", "expectedLockFence"],
+        "FileMetadataItem": ["fileId", "version"],
+    }
+    for schema_name, property_names in additions.items():
+        source_properties = active_v1["components"]["schemas"][schema_name]["properties"]
+        candidate_schema = components["schemas"][schema_name]
+        candidate_schema["properties"] = {
+            **{name: copy.deepcopy(source_properties[name]) for name in property_names},
+            **candidate_schema["properties"],
+        }
+    components["schemas"]["FileMutationRequest"]["required"].extend(["expectedFileVersion", "expectedLockFence"])
+    for example in components.get("examples", {}).values():
+        value = example.get("value", {})
+        if isinstance(value, dict) and value.get("transportOperation") in {"PutFileInline", "PutFileStream", "metadataOnlyRemoval"}:
+            value.update(expectedFileVersion=0 if value.get("fileOperationKind") == "add" else 1, expectedLockFence=1)
     return contract
 
 

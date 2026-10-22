@@ -339,6 +339,8 @@ public sealed partial class NfrTraceabilityConformanceTests
             "Pop-Location",
             "GATE-VACUOUS",
             "built xUnit v3 Contracts.Tests assembly",
+            "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+            "BuiltTestAssemblyPath requires SkipRestoreBuild",
             "$testExitCode = $LASTEXITCODE",
             "Hexalith.Folders.Contracts.Tests.dll",
             "& dotnet $runnerPath -noLogo -noColor -class $testClass",
@@ -397,9 +399,10 @@ public sealed partial class NfrTraceabilityConformanceTests
             startInfo.ArgumentList.Add("-Command");
             startInfo.ArgumentList.Add(
                 "$env:PATH = $env:NFR_TEST_STUB_PATH + [IO.Path]::PathSeparator + $env:PATH; "
-                + "& $env:NFR_TEST_GATE_PATH -SkipRestoreBuild; exit $LASTEXITCODE");
+                + "& $env:NFR_TEST_GATE_PATH -SkipRestoreBuild -BuiltTestAssemblyPath $env:NFR_TEST_ASSEMBLY_PATH; exit $LASTEXITCODE");
             startInfo.Environment["NFR_TEST_STUB_PATH"] = stubDirectory;
             startInfo.Environment["NFR_TEST_GATE_PATH"] = RepositoryPath(GateScriptPath);
+            startInfo.Environment["NFR_TEST_ASSEMBLY_PATH"] = typeof(NfrTraceabilityConformanceTests).Assembly.Location;
 
             using Process process = Process.Start(startInfo).ShouldNotBeNull();
             Task<string> outputTask = process.StandardOutput.ReadToEndAsync(TestContext.Current.CancellationToken);

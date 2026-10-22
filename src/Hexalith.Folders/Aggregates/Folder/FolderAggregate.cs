@@ -442,7 +442,10 @@ public static class FolderAggregate
             command.TaskId,
             command.IdempotencyKey,
             validation.IdempotencyFingerprint!,
-            occurredAt);
+            occurredAt)
+        {
+            LockFence = checked(state.WorkspaceLockFence + 1),
+        };
 
         return FolderResult.Accepted(command, [acquired]);
     }

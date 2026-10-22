@@ -1,3 +1,5 @@
+using Hexalith.EventStore.DomainService.Content;
+using Hexalith.Folders.Server.Content;
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Client.Registration;
 using Hexalith.EventStore.Client.Handlers;
@@ -49,6 +51,7 @@ public static class FoldersServerServiceCollectionExtensions
         services.AddKnownEventPayload<WorkspaceLockAcquired>();
         services.AddKnownEventPayload<WorkspaceLockReleased>();
         services.AddKnownEventPayload<WorkspaceFileMutationAccepted>();
+        services.AddKnownEventPayload<WorkspaceContentErasureAuthorized>();
         services.AddKnownEventPayload<WorkspaceCommitSucceeded>();
         services.AddKnownEventPayload<WorkspaceCommitFailed>();
         services.AddKnownEventPayload<WorkspaceCommitOutcomeUnknown>();
@@ -107,14 +110,29 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddScoped<WorkspacePreparationService>();
         services.TryAddScoped<WorkspaceLockAcquisitionService>();
         services.TryAddScoped<WorkspaceLockReleaseService>();
-        services.TryAddScoped<IWorkspacePathPolicyEvidenceProvider, UnavailableWorkspacePathPolicyEvidenceProvider>();
-        services.TryAddScoped<IWorkspaceFileContentStore, UnavailableWorkspaceFileContentStore>();
-        services.TryAddScoped<IWorkspaceFileDeleteOperationStore, UnavailableWorkspaceFileDeleteOperationStore>();
+        services.AddAuthoritativeContent<WorkspaceContentAuthority>(options => options.MaximumBodyBytes = 1048576);
+        services.TryAddScoped<IWorkspaceFilePolicySource, ConfigurationWorkspaceFilePolicySource>();
+        services.TryAddScoped<WorkspaceContentStateReader>();
+        services.TryAddScoped<WorkspaceContentRejectionReader>();
+        services.TryAddScoped<WorkspaceContentBatch>();
+        services.TryAddScoped<WorkspaceContentMutationAdapter>();
+        services.TryAddScoped<IWorkspacePathPolicyEvidenceProvider, WorkspaceContentPathEvidenceProvider>();
+        services.TryAddScoped<IWorkspaceFileContentStore>(provider => provider.GetRequiredService<WorkspaceContentMutationAdapter>());
+        services.TryAddScoped<IWorkspaceFileDeleteOperationStore>(provider => provider.GetRequiredService<WorkspaceContentMutationAdapter>());
         services.TryAddScoped<WorkspaceFileMutationService>();
         services.TryAddScoped<IWorkspaceCommitExecutor, UnavailableWorkspaceCommitExecutor>();
         services.TryAddScoped<WorkspaceCommitService>();
         services.TryAddScoped<IWorkspaceFileSensitivityClassifier, WorkspaceFileSensitivityClassifier>();
-        services.TryAddScoped<IWorkspaceFileContextSource, UnavailableWorkspaceFileContextSource>();
+        // The standalone core module intentionally provides an unavailable singleton. A server
+        // must replace that default and its singleton handler so the SDK authority stays scoped.
+        foreach (ServiceDescriptor descriptor in services.Where(descriptor =>
+            descriptor.ServiceType == typeof(IWorkspaceFileContextSource)
+                && descriptor.ImplementationType == typeof(UnavailableWorkspaceFileContextSource)
+            || descriptor.ServiceType == typeof(WorkspaceFileContextQueryHandler)
+                && descriptor.ImplementationType == typeof(WorkspaceFileContextQueryHandler)
+                && descriptor.Lifetime == ServiceLifetime.Singleton).ToArray())
+            services.Remove(descriptor);
+        services.TryAddScoped<IWorkspaceFileContextSource, AuthoritativeWorkspaceFileContextSource>();
         services.TryAddScoped<WorkspaceFileContextQueryHandler>();
         services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainProcessor, FolderDomainProcessor>());
         // Enroll the existing bespoke processor in the SDK's domain capability lookup.

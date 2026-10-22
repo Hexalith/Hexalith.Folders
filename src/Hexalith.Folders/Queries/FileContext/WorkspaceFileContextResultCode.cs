@@ -2,6 +2,7 @@ namespace Hexalith.Folders.Queries.FileContext;
 
 public enum WorkspaceFileContextResultCode
 {
+    PolicyUnavailable,
     Allowed,
     AuthenticationRequired,
     AuthorizationDenied,

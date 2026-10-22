@@ -15,4 +15,9 @@ public sealed record WorkspaceLockStatusReadModelSnapshot(
     string? CorrelationId,
     string? TaskId,
     FolderLifecycleFreshness Freshness,
-    FolderLifecycleEvidenceScope EvidenceScope);
+    FolderLifecycleEvidenceScope EvidenceScope)
+{
+    /// <summary>Gets the monotonic lock acquisition fence for subsequent file mutations.</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public long? LockFence { get; init; }
+}

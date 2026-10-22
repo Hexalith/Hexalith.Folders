@@ -1,20 +1,19 @@
 namespace Hexalith.Folders.Client.Convenience;
 
 /// <summary>
-/// Caller-supplied evidence describing content that has already been staged at the transient content
+/// Server-issued evidence describing exact bytes already persisted at the authoritative content
 /// staging boundary, used to build a streamed (<c>PutFileStream</c>) file mutation.
 /// </summary>
 /// <remarks>
-/// The SDK does not stage content; staging is a server/worker concern (Story 4.6). The streamed transport
-/// requires observed evidence — descriptor-only requests were rejected in review — so the caller obtains
-/// these values from the staging boundary and supplies them here. None of these values is a local path or
-/// raw content: <see cref="StagingReference"/> is a tenant-scoped opaque reference and
-/// <see cref="ObservedContentHashReference"/> is an opaque <c>hashref_</c> reference.
+/// These values must come from EventStore's authenticated content capability. A descriptor is never proof
+/// by itself: the server verifies persisted bytes, task/tenant scope, length, hash and media before admission.
+/// Use the raw-stream HTTP convenience when content has not already been ingested. None of these fields
+/// is a local path or raw content; receipt possession grants no read or mutation authority.
 /// </remarks>
 public sealed record FileStreamStagingEvidence
 {
     /// <summary>
-    /// Gets the tenant-scoped transient content staging reference (opaque identifier; never a local path).
+    /// Gets the tenant/task-scoped authoritative opaque receipt (opaque identifier; never a local path).
     /// </summary>
     public required string StagingReference { get; init; }
 

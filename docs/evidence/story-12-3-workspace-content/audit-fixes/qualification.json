@@ -1,0 +1,413 @@
+{
+  "story": "12.3",
+  "scope": "Current parent-audit corrections; ../qualification.json and its inventory/logs retain the pre-audit passing source snapshot.",
+  "baseline_revision": "28513763ec5c0405ab942b1e5266a483573f451d",
+  "eventstore_baseline_revision": "995117f9b899a2994e99257091b0ea35cfbe5090",
+  "execution_order": "All audit correction builds, generators and test lanes ran sequentially. Upstream protocol/persistence/helper qualification completed before dependent Folders edits. No lane/build/generator ran during the final live class. Some earlier pre-audit exploratory lanes overlapped; final pre-audit gates were sequential.",
+  "commands": [
+    {
+      "name": "sdk-build",
+      "working_directory": "references/Hexalith.EventStore",
+      "command": "dotnet build tests/Hexalith.EventStore.DomainService.Tests/Hexalith.EventStore.DomainService.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-sdk-build-fixed.log",
+      "full_log_sha256": "349131079507393e403ae1742e05a60cc8ad84123476ba1fed3bf843fc10e2b4",
+      "retained_log": "../../../../references/Hexalith.EventStore/docs/evidence/story-12-3-content-authority/audit-fixes/sdk-build.log",
+      "retained_log_sha256": "8cc4e28c2ed8e7cc4b37ec9cabdd1ac44b25d3417cb19c7b03747e850d71a46c"
+    },
+    {
+      "name": "sdk-protocol",
+      "working_directory": "references/Hexalith.EventStore",
+      "command": "dotnet tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.dll -class Hexalith.EventStore.DomainService.Tests.Content.AuthoritativeContentStoreTests",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-sdk-protocol-fixed.log",
+      "full_log_sha256": "22a08ac0006947673911eea089ac1cc814e563f363daa4eb4f9ac25f763894e1",
+      "retained_log": "../../../../references/Hexalith.EventStore/docs/evidence/story-12-3-content-authority/audit-fixes/sdk-protocol.log",
+      "retained_log_sha256": "42d69371cf2833adac39f47d21577190bf88401f95ad9f5af75c816a1cc1fb53",
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "sdk-persistence",
+      "working_directory": "references/Hexalith.EventStore",
+      "command": "EVENTSTORE_CONTENT_LIVE=1 dotnet tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.dll -class Hexalith.EventStore.DomainService.Tests.Content.ContentPersistenceQualificationTests",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-sdk-persistence.log",
+      "full_log_sha256": "412dcdc7ef01e0f92335d02ef3871f5c5e5b49a2d0a249d263445dfc216ec48a",
+      "retained_log": "../../../../references/Hexalith.EventStore/docs/evidence/story-12-3-content-authority/audit-fixes/sdk-persistence.log",
+      "retained_log_sha256": "9d341a720221dc58b772568ea60efa7bcb8a4c94863ac3d05639e81a5f069ae3",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "sdk-helper-build",
+      "working_directory": "references/Hexalith.EventStore",
+      "command": "dotnet build tests/Hexalith.EventStore.Client.Tests/Hexalith.EventStore.Client.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-sdk-helper-build.log",
+      "full_log_sha256": "17ab7dda31c1ae91f4b2f614a1905f20ce92ae193313b1e077f30b2dbe8f3f21",
+      "retained_log": "../../../../references/Hexalith.EventStore/docs/evidence/story-12-3-content-authority/audit-fixes/sdk-helper-build.log",
+      "retained_log_sha256": "a0cbf72665db1d1a476a5aad37646a690920a86eb79ac02855bd9506a15b953e"
+    },
+    {
+      "name": "sdk-helper-tests",
+      "working_directory": "references/Hexalith.EventStore",
+      "command": "dotnet tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll -class Hexalith.EventStore.Client.Tests.Projections.DaprReadModelStoreTests -class Hexalith.EventStore.Client.Tests.Projections.SharedProjectionExpiryAndScratchTests -class Hexalith.EventStore.Client.Tests.Projections.SharedProjectionReviewThreeMaintenanceTests",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-sdk-helper-tests.log",
+      "full_log_sha256": "6cfb8968e634a9fcb9a3576ddb6fe0574f07cb6909bc0b9aad2d10661b7c515a",
+      "retained_log": "../../../../references/Hexalith.EventStore/docs/evidence/story-12-3-content-authority/audit-fixes/sdk-helper-tests.log",
+      "retained_log_sha256": "3b9ccf438da7b0fb416adaf89d6f08cea2ef39d1a0f4123ca3dcad624aa4fd1d",
+      "passed": 49,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "client-build",
+      "working_directory": ".",
+      "command": "dotnet build tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-client-build-final.log",
+      "full_log_sha256": "12c43212419c1ad4cb092b701ab67a5f5c87be65717eef5cf901af1c3fe55249",
+      "retained_log": "client-build.log",
+      "retained_log_sha256": "ef08b7c1d896e642ecb2b7e315be65a2d8cf7269e07499e2f8607d1550d42a60"
+    },
+    {
+      "name": "cli-build",
+      "working_directory": ".",
+      "command": "dotnet build tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-cli-build-complete.log",
+      "full_log_sha256": "061d2f3f3b6fb2b191e6bae8b7f412b412968dad1f4a8d9f2fbe0319607d09af",
+      "retained_log": "cli-build.log",
+      "retained_log_sha256": "405508b71b750aeeff93ad5512721d9b3758d3597530086aab8e30146dbccf55"
+    },
+    {
+      "name": "mcp-build",
+      "working_directory": ".",
+      "command": "dotnet build tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-mcp-build-final.log",
+      "full_log_sha256": "59ea6ae87065d7fde81f346aeb8fee19c2dbb3e3316a7de7ae3b87145b45c6dd",
+      "retained_log": "mcp-build.log",
+      "retained_log_sha256": "f1c1c3b0f2f8c649c8ef25535867f72aa1f799ba2da626673eec5e1b30316d25"
+    },
+    {
+      "name": "contracts-build",
+      "working_directory": ".",
+      "command": "dotnet build tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-contracts-build.log",
+      "full_log_sha256": "be88653bdffa5bbf442cd71d5f1ac1a929420d4d85a44ec5655652ed4a477e2a",
+      "retained_log": "contracts-build.log",
+      "retained_log_sha256": "ad47dc9affd3ad5bbeecc7bb9580fe9f84163a237506b05279966b0e8396f440"
+    },
+    {
+      "name": "server-build",
+      "working_directory": ".",
+      "command": "dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-server-build-complete.log",
+      "full_log_sha256": "6ec6903c0feb795153404c33bc5a50184a984ff07bea19840b810c9791aca133",
+      "retained_log": "server-build.log",
+      "retained_log_sha256": "8e1893a57958586cc4792e29fdf012b97b2acc10eba0df1c08537afb5f729810"
+    },
+    {
+      "name": "integration-build",
+      "working_directory": ".",
+      "command": "dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-process-build.log",
+      "full_log_sha256": "4a723dc68dbbbf0f7b260a770d8a71533a58f09298864786cc99a2fe076747aa",
+      "retained_log": "integration-build.log",
+      "retained_log_sha256": "5a61652aebf1249b9fa8276941de06b30ba99babe026c228f316ef2419506952"
+    },
+    {
+      "name": "apphost-build",
+      "working_directory": ".",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:MinVerVersionOverride=2.30.3 -p:NuGetAudit=false -v:minimal",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-live-build.log",
+      "full_log_sha256": "a1ae6f88a9b2e593a497553520ca71f1f48d85c59ef6edbcfed55e010db3362f",
+      "retained_log": "apphost-build.log",
+      "retained_log_sha256": "e1e59dde29660edf12e04e305f3f76b2ae1d9001541ac33738b3ed166634f5f1"
+    },
+    {
+      "name": "client-tests",
+      "working_directory": ".",
+      "command": "dotnet tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.Tests.dll",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-client-tests-final.log",
+      "full_log_sha256": "a94f2197826b86c0797755271461d05537c6515733c098ad149a05fa32e8c242",
+      "retained_log": "client-tests.log",
+      "retained_log_sha256": "420b4d299a68f76f89a5392f0d2bf2a96a8986e8af0e00a1f8008073606b3703",
+      "passed": 342,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "cli-tests",
+      "working_directory": ".",
+      "command": "dotnet tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.Cli.Tests.dll -class Hexalith.Folders.Cli.Tests.FileUploadTransportTests -class Hexalith.Folders.Cli.Tests.CommandSurfaceE2ETests",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-cli-tests-final.log",
+      "full_log_sha256": "511ee7e16267a3321ee2fab2d4bc7530978fc83aee5a0a761180d115f268d2e0",
+      "retained_log": "cli-tests.log",
+      "retained_log_sha256": "e51ad4e9ae529fd538d0d5d40d7e6d7db4a3e2654c57e2a28e8ffbf91283e23f",
+      "passed": 31,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "mcp-tests",
+      "working_directory": ".",
+      "command": "dotnet tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.Mcp.Tests.dll -class Hexalith.Folders.Mcp.Tests.FileTransportTests -class Hexalith.Folders.Mcp.Tests.SourcingTests",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-mcp-tests-final.log",
+      "full_log_sha256": "682c17291f265e9f943547430ee4cc94264aa0514c5bc3eb17173530b533581c",
+      "retained_log": "mcp-tests.log",
+      "retained_log_sha256": "6f22253e9a20e9ad23ddab326860ae660c28d97420d3ccb31b4a41ff59cd1d32",
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "contracts-tests",
+      "working_directory": ".",
+      "command": "dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-contracts-tests.log",
+      "full_log_sha256": "60f8ca6d4864abef8bb8bc4a90709d529412f25a7d340d67a2d974f0030c1033",
+      "retained_log": "contracts-tests.log",
+      "retained_log_sha256": "9e20b0771bb290b79f6c775652bc04265c5652f6090841d337a327d6045fb8bc",
+      "passed": 360,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "server-tests",
+      "working_directory": ".",
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.MutationEnvelopeEndpointMatrixTests -class Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests -class Hexalith.Folders.Server.Tests.WorkspaceContentRejectionMappingTests",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-server-tests-complete.log",
+      "full_log_sha256": "a8c5b0f3b5826c0901efee7c74cf09466ffd6776963ecd0d4f1f497815f84325",
+      "retained_log": "server-tests.log",
+      "retained_log_sha256": "d323222f4694ca85b47a42c80089a0fa9b60e17ec48b85dff37a69d9c507ff85",
+      "passed": 58,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "process-tests",
+      "working_directory": ".",
+      "command": "dotnet tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll -class Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-process-tests.log",
+      "full_log_sha256": "e3a038d5292093f24c00f84cf24eb2057d9c0a8fc82c83de3d39bf1b0eaacc23",
+      "retained_log": "process-tests.log",
+      "retained_log_sha256": "dd665c49d9e8bae0515ef77924da7f395677fc15565ffc6ff8b6629c7cc2902a",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "v2-generation",
+      "working_directory": ".",
+      "command": "python3 scripts/generate-pd10-v2-contract.py --source src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml --matrix docs/contract/authorization-matrix.md --output src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-v2-generation-final.log",
+      "full_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retained_log": "v2-generation.log",
+      "retained_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "name": "client-generation",
+      "working_directory": ".",
+      "command": "dotnet build src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj -c Debug -m:1 -p:NuGetAudit=false -t:GenerateHexalithFoldersIdempotencyHelpers",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-client-generation-complete.log",
+      "full_log_sha256": "92d23256046d147b0824662150eb2d1673faec6b3618c41d3f655175814229f5",
+      "retained_log": "client-generation.log",
+      "retained_log_sha256": "786e2ad575dff11069cf12936aefdd8ccd221b238816127b7227c56b97bcea01"
+    },
+    {
+      "name": "parity-generator-build",
+      "working_directory": ".",
+      "command": "dotnet build tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj -c Debug -m:1 -p:NuGetAudit=false",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-parity-generator-build.log",
+      "full_log_sha256": "a1d493e98be9c305003dc3d6b4934b49811240f868df4fde35ebd1fa330d5f30",
+      "retained_log": "parity-generator-build.log",
+      "retained_log_sha256": "c18c2b03bbfd1172af5f50237f68663d6a3be43157428a99db22f7b51c15a4e0"
+    },
+    {
+      "name": "parity-baseline-generation",
+      "working_directory": ".",
+      "command": "dotnet tests/tools/parity-oracle-generator/bin/Debug/net10.0/Hexalith.Folders.ParityOracleGenerator.dll --repository-root . --contract src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml --initialize-baseline",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-parity-baseline-generation.log",
+      "full_log_sha256": "e9f186ba3c9ebb65200f02e4b2d35a1e45815573a01459ef23e051c3994dd29f",
+      "retained_log": "parity-baseline-generation.log",
+      "retained_log_sha256": "e9f186ba3c9ebb65200f02e4b2d35a1e45815573a01459ef23e051c3994dd29f"
+    },
+    {
+      "name": "parity-fixtures-generation",
+      "working_directory": ".",
+      "command": "dotnet tests/tools/parity-oracle-generator/bin/Debug/net10.0/Hexalith.Folders.ParityOracleGenerator.dll --repository-root . --output tests/fixtures/parity-contract.yaml",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-parity-fixtures-generation.log",
+      "full_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retained_log": "parity-fixtures-generation.log",
+      "retained_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "name": "conformance-generation",
+      "working_directory": ".",
+      "command": "python3 scripts/generate-pd10-v2-conformance-set.py --repository-root .",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-conformance-generation.log",
+      "full_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retained_log": "conformance-generation.log",
+      "retained_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "name": "live-tests",
+      "working_directory": ".",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true DOCKER_CONFIG=/tmp/story123-docker-anonymous UseHexalithProjectReferences=true UseNuGetDeps=false MinVerVersionOverride=2.30.3 dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.WorkspaceContentDurabilityAcceptanceTests -showLiveOutput -result-xml /tmp/story123-audit-live.xml > /tmp/story123-audit-live.log 2>&1",
+      "exit_code": 0,
+      "full_log": "/tmp/story123-audit-live.log",
+      "full_log_sha256": "a9f3f4dd970be6bdd3204ecacde79c85b1ee7d6b0841653d896b3eb3983ca870",
+      "retained_log": "live-tests.log",
+      "retained_log_sha256": "b2fa4000102c5cf35823779dc44a92c9dfb27d30800f05741f5ff85c53f4b307",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "upstream_qualification": "../../../../references/Hexalith.EventStore/docs/evidence/story-12-3-content-authority/audit-fixes/qualification.json",
+  "upstream_source_paths": 34,
+  "source_inventory": "source-inventory.json",
+  "source_paths": 118,
+  "changed_since_historical_snapshot": [
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml",
+    "docs/operations/retention-and-tenant-deletion.md",
+    "docs/sdk/quickstart.md",
+    "scripts/generate-pd10-v2-contract.py",
+    "src/Hexalith.Folders.Cli/Commands/File/FileCommand.cs",
+    "src/Hexalith.Folders.Client/Convenience/FileUpload.cs",
+    "src/Hexalith.Folders.Client/Convenience/FoldersFileUploadExtensions.cs",
+    "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs",
+    "src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs",
+    "src/Hexalith.Folders.Client/Generation/GeneratedClientPostProcessor.cs",
+    "src/Hexalith.Folders.Client/Serialization/Oq2RequestValidation.cs",
+    "src/Hexalith.Folders.Client/Serialization/Oq2WireObjectConverter.cs",
+    "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+    "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
+    "src/Hexalith.Folders.Mcp/Tools/FileTools.cs",
+    "src/Hexalith.Folders.Server/Content/WorkspaceContentAuthority.cs",
+    "src/Hexalith.Folders.Server/Content/WorkspaceContentErasure.cs",
+    "src/Hexalith.Folders.Server/FolderDomainProcessor.cs",
+    "tests/Hexalith.Folders.Cli.Tests/CommandSurfaceE2ETests.cs",
+    "tests/Hexalith.Folders.Cli.Tests/FileUploadTransportTests.cs",
+    "tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs",
+    "tests/Hexalith.Folders.Client.Tests/FileUploadConvenienceTests.cs",
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs",
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10ConformanceSetTests.cs",
+    "tests/Hexalith.Folders.Mcp.Tests/FileTransportTests.cs",
+    "tests/Hexalith.Folders.Server.Tests/MutationEnvelopeEndpointMatrixTests.cs",
+    "tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs",
+    "tests/fixtures/parity-contract.yaml",
+    "tests/fixtures/previous-spine.yaml"
+  ],
+  "live": {
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 258.288,
+    "result_xml": "/tmp/story123-audit-live.xml",
+    "result_xml_sha256": "38ca19c7378d10775d0d4f3f5cc845550b66d70bf053daa33dcb84143ec9901d",
+    "runtime_binding_records": 174,
+    "distinct_loaded_paths": 30,
+    "binary_mismatches": [],
+    "distinct_pdb_paths": 30,
+    "pdb_mismatches": [],
+    "serving_processes": {
+      "folders": [
+        {
+          "launcher_pid": 373949,
+          "managed_pid": 374836
+        },
+        {
+          "launcher_pid": 430637,
+          "managed_pid": 430972
+        }
+      ],
+      "folders-replica": [
+        {
+          "launcher_pid": 373953,
+          "managed_pid": 374945
+        },
+        {
+          "launcher_pid": 439185,
+          "managed_pid": 439553
+        }
+      ]
+    },
+    "destinations": {
+      "primary": "http://localhost:33901/",
+      "replica": "http://localhost:39367/"
+    },
+    "race_http_statuses": [
+      202,
+      409
+    ],
+    "winner_version": 1,
+    "winner_receipt": "content_7b73ec7a17200342e9e2d1fa711eba43b8943f90e810da8428c4c6f2ddbced07",
+    "winner_bytes": 25,
+    "winner_sha256": "5658e777bdddcb895572e4603742e6a540ee0287dc6d81e5acc8901e9e1923de",
+    "retained_race_domain_code": null,
+    "race_code_note": "Current race returned an early canonical HTTP409 without a retained FolderCommandRejected marker. Historical AppendConflict observation remains in the prior source snapshot; focused current mapping tests still pin that code and preserve unrelated outcomes.",
+    "assertions": [
+      "PASS stage/replay: bytes=66; sha256=eb03b04112f9d8b9eea38bcaccee9c83443930ed00e0b7b7594a97521181ce56; version=1",
+      "PASS process-replacement: folders 373949->430637",
+      "PASS process-replacement: folders-workers 373950->431768",
+      "PASS process-replacement: folders-workers-replica 362034->434583",
+      "PASS process-replacement: eventstore 373847->437507",
+      "PASS process-replacement: folders-replica 373953->439185",
+      "PASS multipart: bytes=262145; sha256=73fdb9210f8f6fb84fe16b76c9d7a2cf32ef0731d33e41fdc111b1a64dfb9eac",
+      "PASS integrity-faults: missing/corrupt physical bodies return unavailable; exact bytes recover after restoration",
+      "SERVING-REPLICAS primary=430637 endpoint=http://localhost:33901/; replica=439185 endpoint=http://localhost:39367/",
+      "RACE-RESPONSE contender=0; http=202",
+      "RACE-RESPONSE contender=1; http=409",
+      "PERSISTED-RACE-WINNER version=1; receipt=content_7b73ec7a17200342e9e2d1fa711eba43b8943f90e810da8428c4c6f2ddbced07; bytes=25; sha256=5658e777bdddcb895572e4603742e6a540ee0287dc6d81e5acc8901e9e1923de",
+      "PASS serving-replica-race: independent Folders processes; exactly one immutable version; persisted winner bytes; loser conflicts",
+      "PASS suppression/hold: tombstone denies reads immediately; hold and fresh epoch preserve physical bytes",
+      "PASS safe-failure: stale version, binary, hidden/missing paths, foreign tenant and unavailable persistence",
+      "PASS physical-erasure: verified orphan; terminal source tasks; hold/release and resumed work reset P7D; stale reacquired lock denied; actor grant; real Redis body absent",
+      "PASS atomic-batch: two pending receipts invisible; one real actor decision publishes both; invalid later item publishes neither change"
+    ]
+  },
+  "matrix": {
+    "Stage/read": "Current live exact inline/multipart bytes, host replacement and persisted body inspection; in-process process-wiring 1/1.",
+    "Replay/race": "Current live equivalent replay, stale fence/version, distinct serving replicas, 202/409 and one immutable persisted winner.",
+    "Delete": "Current live immediate suppression, hold/release, resumed work/fresh P7D epochs, serialized source grant and real Redis body absence; SDK concurrency/crash regressions.",
+    "Policy": "Current production endpoint tests ConfiguredConfidentialCleartextFailsBeforePersistenceAndAdmission (inline/multipart) assert safe 422, zero SDK body/metadata writes and zero gateway admission. Existing unchanged policy/glob/source checks retain original qualification.",
+    "Bytes": "Current Client342 suite covers helper omission/invalid observations, exact bytes, boundaries, cancellation and stream ownership; live binary content remains preserved and unreadable.",
+    "Fault": "Current SDK16 tests cover stale grant/claim races, irreversible deletion crash recovery and fresh source proof; current live missing/corrupt/paused persistence coverage.",
+    "Atomic change set": "Current live two pending receipts, one actor decision and invalid later item leaves both previous versions unchanged."
+  },
+  "frozen_intent_sha256": "85b7f36c3ef508e9b18486ab9c14c13f674e65fd6a67cfb49fa0811ce41f7cfc",
+  "oq2_sha256": "b7123536cc243c52e853980313ff8ebee5abb9936b331e71f30ad6d554975713",
+  "historical_v1_sha256": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+  "candidate_v2_sha256": "d417afd8454dac16824af17c2c0a787fe579c342a009e13b6985b147724d89a7",
+  "candidate_v2_operation_count": 49,
+  "public_v2_enabled": false,
+  "limitations": [
+    "No new full solution or blanket all-suite cycle; original broad build/Core/full-Server/host results remain historical. Affected project builds, focused Server/CLI/MCP, full Client/Contracts, process wiring and production live were refreshed.",
+    "No package publication, dependency change, VCS recording or remote operation.",
+    "Independent parent workflow review is pending."
+  ],
+  "command_list_order": "Grouped by prerequisite/build/test/generation for audit; execution was sequential, as stated above."
+}

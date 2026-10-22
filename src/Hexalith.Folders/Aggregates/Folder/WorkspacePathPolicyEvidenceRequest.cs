@@ -7,4 +7,8 @@ public sealed record WorkspacePathPolicyEvidenceRequest(
     string TaskId,
     string OperationId,
     string PathMetadataDigest,
-    string PathPolicyClass);
+    string PathPolicyClass)
+{
+    /// <summary>Gets the exact path for current server policy and namespace checks.</summary>
+    public PathMetadata? PathMetadata { get; init; }
+}

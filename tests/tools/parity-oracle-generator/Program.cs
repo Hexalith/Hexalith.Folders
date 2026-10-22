@@ -627,7 +627,7 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
     HashSet<string> currentIdentities = currentOperations.Select(o => o.Identity).ToHashSet(StringComparer.Ordinal);
     Dictionary<string, OperationModel> currentByRoute = currentOperations.ToDictionary(o => o.Method + " " + o.Path, o => o, StringComparer.Ordinal);
     Dictionary<string, OperationModel> currentByOperationId = currentOperations.ToDictionary(o => o.OperationId, o => o, StringComparer.Ordinal);
-    string historicalV1Path = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+    string historicalV1Path = HistoricalV1Path(Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi"));
     Dictionary<string, OperationModel> historicalV1ByOperationId = EnumerateOperations(LoadYaml(historicalV1Path), [])
         .ToDictionary(o => o.OperationId, StringComparer.Ordinal);
 
@@ -897,13 +897,19 @@ static void RenderRow(StringBuilder builder, OperationModel operation)
     builder.Append("    synthetic_data_only: true\n");
 }
 
+static string HistoricalV1Path(string directory)
+{
+    string retained = Path.Combine(directory, "baselines", "hexalith.folders.v1.pd10.yaml");
+    return File.Exists(retained) ? retained : Path.Combine(directory, "hexalith.folders.v1.yaml");
+}
+
 static string RenderBaseline(IReadOnlyList<OperationModel> operations, string contractPath)
 {
     StringBuilder builder = new();
     builder.Append("version: pd10-v2-candidate-baseline\n");
     builder.Append("source_marker: generated-from-pd10-v2-openapi\n");
     builder.Append("contract_sha256: ").Append(Sha256OfFile(contractPath)).Append('\n');
-    string historicalV1Path = Path.Combine(Path.GetDirectoryName(contractPath)!, "hexalith.folders.v1.yaml");
+    string historicalV1Path = HistoricalV1Path(Path.GetDirectoryName(contractPath)!);
     Dictionary<string, OperationModel> historicalByOperationId = [];
     if (File.Exists(historicalV1Path))
     {

@@ -11,7 +11,11 @@ internal sealed class FoldersGatewayHumanBearerHandler(IHttpContextAccessor acce
     {
         HttpContext? context = accessor.HttpContext;
         if (context?.User.Identity?.IsAuthenticated != true
-            || !HistoricalMutationAuthorization.IsDirectPublicMutation(context)
+            || !(HistoricalMutationAuthorization.IsDirectPublicMutation(context)
+                || context.Items.ContainsKey(Content.WorkspaceContentAuthority.ActionItem)
+                    && (request.RequestUri?.OriginalString.Contains("streams/read", StringComparison.Ordinal) == true
+                        || request.RequestUri?.OriginalString.Contains("commands/status/", StringComparison.Ordinal) == true)
+                || context.Items.ContainsKey("Folders:ContentRetentionAuthorized"))
             || !AuthenticationHeaderValue.TryParse(context.Request.Headers.Authorization, out AuthenticationHeaderValue? bearer)
             || !string.Equals(bearer.Scheme, "Bearer", StringComparison.OrdinalIgnoreCase)
             || string.IsNullOrWhiteSpace(bearer.Parameter))
