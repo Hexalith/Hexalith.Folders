@@ -37,7 +37,7 @@ public sealed class ConfigureProviderBindingService(
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        IReadOnlyDictionary<string, string?> clientTenantValues = WithPayloadTenant(
+        IReadOnlyDictionary<string, string?> clientTenantValues = ClientTenantValues.WithPayloadTenant(
             request.ClientControlledTenantValues,
             request.PayloadTenantId);
 
@@ -147,19 +147,6 @@ public sealed class ConfigureProviderBindingService(
             OrganizationAclAppendOutcome.FingerprintConflict => OrganizationProviderBindingResult.Rejected(command, OrganizationProviderBindingResultCode.IdempotencyConflict),
             _ => OrganizationProviderBindingResult.Rejected(command, OrganizationProviderBindingResultCode.MalformedEvidence),
         };
-    }
-
-    private static IReadOnlyDictionary<string, string?> WithPayloadTenant(
-        IReadOnlyDictionary<string, string?> values,
-        string? payloadTenantId)
-    {
-        Dictionary<string, string?> merged = new(values, StringComparer.Ordinal);
-        if (payloadTenantId is not null)
-        {
-            merged["payload_tenant_id"] = payloadTenantId;
-        }
-
-        return merged;
     }
 
     private static OrganizationProviderBindingResultCode MapAuthorization(string outcomeCode)

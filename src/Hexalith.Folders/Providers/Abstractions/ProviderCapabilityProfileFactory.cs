@@ -1,8 +1,9 @@
-using System.Buffers.Binary;
 using System.Globalization;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
+using System.Text;
+
+using Hexalith.Folders.Hashing;
 
 namespace Hexalith.Folders.Providers.Abstractions;
 
@@ -219,19 +220,19 @@ public static partial class ProviderCapabilityProfileFactory
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
-        AppendField(hash, request.ManagedTenantId);
-        AppendField(hash, request.OrganizationId);
-        AppendField(hash, request.ProviderBindingRef);
-        AppendField(hash, request.CredentialReferenceId);
-        AppendField(hash, providerFamily);
-        AppendField(hash, providerKey);
-        AppendField(hash, schemaVersion);
-        AppendField(hash, NormalizeVersion(request.TargetEvidence.Product));
-        AppendField(hash, NormalizeVersion(request.TargetEvidence.ProductVersion));
-        AppendField(hash, NormalizeVersion(request.TargetEvidence.ApiSurfaceVersion));
-        AppendField(hash, NormalizeVersion(request.TargetEvidence.EvidenceVersion));
+        LengthPrefixedHash.AppendField(hash, request.ManagedTenantId);
+        LengthPrefixedHash.AppendField(hash, request.OrganizationId);
+        LengthPrefixedHash.AppendField(hash, request.ProviderBindingRef);
+        LengthPrefixedHash.AppendField(hash, request.CredentialReferenceId);
+        LengthPrefixedHash.AppendField(hash, providerFamily);
+        LengthPrefixedHash.AppendField(hash, providerKey);
+        LengthPrefixedHash.AppendField(hash, schemaVersion);
+        LengthPrefixedHash.AppendField(hash, NormalizeVersion(request.TargetEvidence.Product));
+        LengthPrefixedHash.AppendField(hash, NormalizeVersion(request.TargetEvidence.ProductVersion));
+        LengthPrefixedHash.AppendField(hash, NormalizeVersion(request.TargetEvidence.ApiSurfaceVersion));
+        LengthPrefixedHash.AppendField(hash, NormalizeVersion(request.TargetEvidence.EvidenceVersion));
         AppendDictionary(hash, request.TargetEvidence.Metadata);
-        AppendField(hash, request.AuthorizationEvidence.Fingerprint);
+        LengthPrefixedHash.AppendField(hash, request.AuthorizationEvidence.Fingerprint);
         AppendCredentialModes(hash, request.CredentialModeRequirements);
         AppendOperations(hash, operations);
         AppendRateLimit(hash, rateLimit);
@@ -271,13 +272,13 @@ public static partial class ProviderCapabilityProfileFactory
 
     private static void AppendOperations(IncrementalHash hash, IReadOnlyList<ProviderOperationCapability> operations)
     {
-        AppendInt32(hash, operations.Count);
+        LengthPrefixedHash.AppendInt32(hash, operations.Count);
         foreach (ProviderOperationCapability operation in operations.OrderBy(static x => x.OperationId, StringComparer.Ordinal))
         {
-            AppendField(hash, operation.OperationId);
-            AppendField(hash, operation.Support.ToString());
-            AppendField(hash, operation.Retryable.ToString());
-            AppendField(hash, operation.FailureCategory?.ToCategoryCode());
+            LengthPrefixedHash.AppendField(hash, operation.OperationId);
+            LengthPrefixedHash.AppendField(hash, operation.Support.ToString());
+            LengthPrefixedHash.AppendField(hash, operation.Retryable.ToString());
+            LengthPrefixedHash.AppendField(hash, operation.FailureCategory?.ToCategoryCode());
             AppendDictionary(hash, operation.Limits);
             AppendDictionary(hash, operation.Constraints);
         }
@@ -285,45 +286,31 @@ public static partial class ProviderCapabilityProfileFactory
 
     private static void AppendRateLimit(IncrementalHash hash, ProviderRateLimitPosture rateLimit)
     {
-        AppendField(hash, NormalizeVersion(rateLimit.Classification));
-        AppendField(hash, rateLimit.Retryable.ToString());
-        AppendField(hash, rateLimit.RetryAfter?.TotalSeconds.ToString("F0", CultureInfo.InvariantCulture));
+        LengthPrefixedHash.AppendField(hash, NormalizeVersion(rateLimit.Classification));
+        LengthPrefixedHash.AppendField(hash, rateLimit.Retryable.ToString());
+        LengthPrefixedHash.AppendField(hash, rateLimit.RetryAfter?.TotalSeconds.ToString("F0", CultureInfo.InvariantCulture));
         AppendDictionary(hash, rateLimit.Metadata);
     }
 
     private static void AppendCredentialModes(IncrementalHash hash, IReadOnlyList<ProviderCredentialMode> credentialModes)
     {
         ProviderCredentialMode[] modes = credentialModes.Distinct().Order().ToArray();
-        AppendInt32(hash, modes.Length);
+        LengthPrefixedHash.AppendInt32(hash, modes.Length);
         foreach (ProviderCredentialMode mode in modes)
         {
-            AppendField(hash, mode.ToString());
+            LengthPrefixedHash.AppendField(hash, mode.ToString());
         }
     }
 
     private static void AppendDictionary(IncrementalHash hash, IReadOnlyDictionary<string, string> values)
     {
         KeyValuePair<string, string>[] entries = NormalizeDictionary(values).ToArray();
-        AppendInt32(hash, entries.Length);
+        LengthPrefixedHash.AppendInt32(hash, entries.Length);
         foreach (KeyValuePair<string, string> pair in entries)
         {
-            AppendField(hash, pair.Key);
-            AppendField(hash, pair.Value);
+            LengthPrefixedHash.AppendField(hash, pair.Key);
+            LengthPrefixedHash.AppendField(hash, pair.Value);
         }
-    }
-
-    private static void AppendField(IncrementalHash hash, string? value)
-    {
-        byte[] bytes = Encoding.UTF8.GetBytes(value ?? string.Empty);
-        AppendInt32(hash, bytes.Length);
-        hash.AppendData(bytes);
-    }
-
-    private static void AppendInt32(IncrementalHash hash, int value)
-    {
-        Span<byte> buffer = stackalloc byte[4];
-        BinaryPrimitives.WriteInt32LittleEndian(buffer, value);
-        hash.AppendData(buffer);
     }
 
     private static bool ContainsSensitiveMetadata(IReadOnlyDictionary<string, string> values)

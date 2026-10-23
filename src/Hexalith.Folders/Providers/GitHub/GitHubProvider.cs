@@ -1,3 +1,4 @@
+using Hexalith.Folders.Providers.Shared;
 using Hexalith.Folders.Providers.Abstractions;
 
 namespace Hexalith.Folders.Providers.GitHub;
@@ -550,7 +551,7 @@ public sealed partial class GitHubProvider : IGitProvider
     private static bool IsAdmissionWellFormed(ProviderIdempotencyAdmission? admission)
         => admission is not null
             && Enum.IsDefined(admission.Disposition)
-            && IsSafeOpaqueValue(admission.IntentFingerprint)
+            && ProviderAdapterGuards.IsSafeOpaqueValue(admission.IntentFingerprint)
             && (admission.Disposition == ProviderIdempotencyDisposition.EquivalentReplay
                 || HasNoPriorOutcomeFields(admission));
 
@@ -622,14 +623,14 @@ public sealed partial class GitHubProvider : IGitProvider
 
         if (admission.PriorOutcomeDisposition is null
             || !Enum.IsDefined(admission.PriorOutcomeDisposition.Value)
-            || !IsSafeOpaqueReference(admission.PriorOperationReference))
+            || !ProviderAdapterGuards.IsSafeOperationReference(admission.PriorOperationReference))
         {
             return false;
         }
 
         return admission.PriorOutcomeDisposition switch
         {
-            ProviderPriorOutcomeDisposition.Success => IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+            ProviderPriorOutcomeDisposition.Success => ProviderAdapterGuards.IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
                 && SafeCanonicalRepositoryId(admission.PriorCanonicalRepositoryId) is not null
                 && admission.PriorReconciliationReference is null
                 && admission.PriorFailureCategory == ProviderFailureCategory.None
@@ -637,11 +638,11 @@ public sealed partial class GitHubProvider : IGitProvider
                 && admission.PriorRemediationCode is null
                 && !admission.PriorRetryable
                 && admission.PriorRetryAfter is null,
-            ProviderPriorOutcomeDisposition.Unknown => IsSafeOpaqueReference(admission.PriorReconciliationReference)
+            ProviderPriorOutcomeDisposition.Unknown => ProviderAdapterGuards.IsSafeOperationReference(admission.PriorReconciliationReference)
                 && admission.PriorCanonicalRepositoryId is null,
             ProviderPriorOutcomeDisposition.KnownFailure => admission.PriorFailureCategory != ProviderFailureCategory.None
                 && Enum.IsDefined(admission.PriorFailureCategory)
-                && IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+                && ProviderAdapterGuards.IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
                 && admission.PriorCanonicalRepositoryId is null
                 && IsRepositoryReasonAllowed(admission.PriorReasonCode)
                 && (admission.PriorRemediationCode is null || AllowedOperationRemediationCodes.Contains(admission.PriorRemediationCode))
@@ -649,16 +650,6 @@ public sealed partial class GitHubProvider : IGitProvider
             _ => false,
         };
     }
-
-    /// <summary>
-    /// Determines whether an opaque admission value is safe to process at the provider boundary.
-    /// </summary>
-    private static bool IsSafeOpaqueValue(string? value)
-        => !string.IsNullOrWhiteSpace(value)
-            && value.Length <= 512
-            && ProviderGitOperationResolvedTarget.IsCanonicalUnicode(value)
-            && !value.Contains("://", StringComparison.Ordinal)
-            && !value.Any(char.IsControl);
 
     /// <summary>
     /// The reserved platform tenant must never own a managed folder stream, so it must never reach a
@@ -676,13 +667,6 @@ public sealed partial class GitHubProvider : IGitProvider
             && canonicalRepositoryId.All(char.IsAsciiDigit)
                 ? canonicalRepositoryId
                 : null;
-
-    /// <summary>
-    /// Determines whether a value is a canonical lowercase SHA-256 fingerprint.
-    /// </summary>
-    private static bool IsSafeFingerprint(string? value)
-        => value is { Length: 64 }
-            && value.All(static character => char.IsAsciiDigit(character) || character is >= 'a' and <= 'f');
 
     /// <summary>
     /// Enforces the caller-supplied durable idempotency admission before any target, credential,
@@ -819,8 +803,8 @@ public sealed partial class GitHubProvider : IGitProvider
             return RepositoryFailure(request, ProviderFailureCategory.ProviderValidationFailed, "provider_identity_malformed");
         }
 
-        if (!IsSafeOpaqueValue(request.ManagedTenantId)
-            || !IsSafeOpaqueValue(request.OrganizationId)
+        if (!ProviderAdapterGuards.IsSafeOpaqueValue(request.ManagedTenantId)
+            || !ProviderAdapterGuards.IsSafeOpaqueValue(request.OrganizationId)
             || IsReservedTenant(request.ManagedTenantId))
         {
             return RepositoryFailure(request, ProviderFailureCategory.ProviderValidationFailed, "github_operation_evidence_malformed");
@@ -865,8 +849,8 @@ public sealed partial class GitHubProvider : IGitProvider
             return RepositoryBindingFailure(request, ProviderFailureCategory.ProviderValidationFailed, "provider_identity_malformed");
         }
 
-        if (!IsSafeOpaqueValue(request.ManagedTenantId)
-            || !IsSafeOpaqueValue(request.OrganizationId)
+        if (!ProviderAdapterGuards.IsSafeOpaqueValue(request.ManagedTenantId)
+            || !ProviderAdapterGuards.IsSafeOpaqueValue(request.OrganizationId)
             || IsReservedTenant(request.ManagedTenantId))
         {
             return RepositoryBindingFailure(request, ProviderFailureCategory.ProviderValidationFailed, "github_operation_evidence_malformed");

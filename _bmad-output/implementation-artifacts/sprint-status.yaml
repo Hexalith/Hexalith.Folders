@@ -242,7 +242,7 @@ development_status:
   11-2-inventory-assign-and-pin-platform-prerequisites: done
   11-3-apply-wire-preserving-repository-hygiene: done
   11-4-consolidate-server-transport-envelope-and-route-helper-dupli: done
-  11-5-consolidate-domain-and-provider-helper-duplication: backlog
+  11-5-consolidate-domain-and-provider-helper-duplication: review
   11-6-consolidate-cli-mcp-adapter-core-and-secure-bearer-transport: backlog
   11-7-consolidate-deterministic-time-context-and-path-test-helpers: backlog
   11-8-adopt-commons-eventstore-primitives-in-the-folders-domain: backlog

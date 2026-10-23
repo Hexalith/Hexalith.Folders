@@ -1,13 +1,10 @@
-using System.Text.RegularExpressions;
-
-using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Aggregates.Organization;
 
 namespace Hexalith.Folders.Aggregates.Folder;
 
 public sealed partial record FolderStreamName(string Value)
 {
-    internal const int MaxSegmentLength = 256;
+    internal const int MaxSegmentLength = StreamNameSegment.MaxLength;
     public const string ReservedOrganizationPermissionScope = "organization_baseline";
 
     public static FolderStreamName Create(string managedTenantId, string folderId)
@@ -73,11 +70,5 @@ public sealed partial record FolderStreamName(string Value)
             && string.Equals(managedTenantId, "system", StringComparison.Ordinal);
 
     internal static bool IsValidSegment(string? value)
-        => !string.IsNullOrWhiteSpace(value)
-            && value.Length <= MaxSegmentLength
-            && (CanonicalSegmentPattern().IsMatch(value)
-                || PreauthorizedRequestContext.IsCandidateOpaqueIdentifier(value));
-
-    [GeneratedRegex("\\A[a-z0-9._-]+\\z", RegexOptions.CultureInvariant)]
-    private static partial Regex CanonicalSegmentPattern();
+        => StreamNameSegment.IsValid(value);
 }

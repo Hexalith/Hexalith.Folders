@@ -1,5 +1,4 @@
-using System.Security.Cryptography;
-using System.Text;
+using Hexalith.Folders.Providers.Shared;
 
 namespace Hexalith.Folders.Providers.GitHub;
 
@@ -28,40 +27,13 @@ internal static class GitHubProviderSafeOperationEvidence
             throw new ArgumentException("The evidence domain is invalid.", nameof(domain));
         }
 
-        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        hash.AppendData(Encoding.ASCII.GetBytes(domain));
-        using GitHubCanonicalEvidenceWriter writer = new(hash);
-        append(writer);
-        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+        return ProviderEvidenceHash.Compute(domain, hash =>
+        {
+            using GitHubCanonicalEvidenceWriter writer = new(hash);
+            append(writer);
+        });
     }
 
     public static bool FixedTimeEquals(string? expected, string? actual)
-    {
-        if (!TryDecode(expected, out byte[]? expectedBytes)
-            || !TryDecode(actual, out byte[]? actualBytes))
-        {
-            return false;
-        }
-
-        return CryptographicOperations.FixedTimeEquals(expectedBytes, actualBytes);
-    }
-
-    private static bool TryDecode(string? value, out byte[]? bytes)
-    {
-        bytes = null;
-        if (value is not { Length: 64 })
-        {
-            return false;
-        }
-
-        try
-        {
-            bytes = Convert.FromHexString(value);
-            return true;
-        }
-        catch (FormatException)
-        {
-            return false;
-        }
-    }
+        => ProviderEvidenceHash.FixedTimeEquals(expected, actual);
 }

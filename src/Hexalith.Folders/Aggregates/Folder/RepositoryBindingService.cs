@@ -35,7 +35,7 @@ public sealed class RepositoryBindingService(
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        IReadOnlyDictionary<string, string?> clientTenantValues = WithPayloadTenant(
+        IReadOnlyDictionary<string, string?> clientTenantValues = ClientTenantValues.WithPayloadTenant(
             request.ClientControlledTenantValues,
             request.PayloadTenantId);
 
@@ -58,7 +58,7 @@ public sealed class RepositoryBindingService(
         if (!authorization.IsAllowed || authorization.AllowedContext is null)
         {
             return FolderResult.Rejected(
-                MapAuthorization(authorization.Decision.OutcomeCode),
+                FolderAuthorizationResultMapper.Map(authorization.Decision.OutcomeCode),
                 managedTenantId: null,
                 organizationId: null,
                 folderId: null,
@@ -157,7 +157,7 @@ public sealed class RepositoryBindingService(
             .ConfigureAwait(false);
         if (!providerAuthorization.IsAllowed)
         {
-            return FolderResult.Rejected(command, MapAuthorization(providerAuthorization.Decision.OutcomeCode));
+            return FolderResult.Rejected(command, FolderAuthorizationResultMapper.Map(providerAuthorization.Decision.OutcomeCode));
         }
 
         ProviderRepositoryBindingResult providerResult = await provider.ValidateRepositoryBindingAsync(
@@ -196,7 +196,7 @@ public sealed class RepositoryBindingService(
             .ConfigureAwait(false);
         if (!persistenceAuthorization.IsAllowed)
         {
-            return FolderResult.Rejected(command, MapAuthorization(persistenceAuthorization.Decision.OutcomeCode));
+            return FolderResult.Rejected(command, FolderAuthorizationResultMapper.Map(persistenceAuthorization.Decision.OutcomeCode));
         }
 
         FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(
@@ -302,19 +302,6 @@ public sealed class RepositoryBindingService(
             fingerprint,
             occurredAt));
         return events;
-    }
-
-    private static IReadOnlyDictionary<string, string?> WithPayloadTenant(
-        IReadOnlyDictionary<string, string?> values,
-        string? payloadTenantId)
-    {
-        Dictionary<string, string?> merged = new(values, StringComparer.Ordinal);
-        if (payloadTenantId is not null)
-        {
-            merged["payload_tenant_id"] = payloadTenantId;
-        }
-
-        return merged;
     }
 
     private static ProviderTargetEvidence BuildTargetEvidence(OrganizationProviderBinding binding)
@@ -461,22 +448,6 @@ public sealed class RepositoryBindingService(
         => readiness.Code == ProviderReadinessResultCode.Allowed
         && string.Equals(readiness.Status, "ready", StringComparison.Ordinal)
         && readiness.FailureCategory == ProviderFailureCategory.None;
-
-    private static FolderResultCode MapAuthorization(string outcomeCode)
-        => outcomeCode switch
-        {
-            LayeredAuthorizationOutcomeCodes.AuthenticationDenied => FolderResultCode.MissingAuthoritativeTenant,
-            LayeredAuthorizationOutcomeCodes.ClaimTransformDenied => FolderResultCode.TenantAccessDenied,
-            LayeredAuthorizationOutcomeCodes.TenantProjectionStale => FolderResultCode.StaleProjection,
-            LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable => FolderResultCode.UnavailableProjection,
-            LayeredAuthorizationOutcomeCodes.FolderAclDenied or LayeredAuthorizationOutcomeCodes.SafeNotFound => FolderResultCode.FolderAclDenied,
-            LayeredAuthorizationOutcomeCodes.FolderAclStale => FolderResultCode.StaleProjection,
-            LayeredAuthorizationOutcomeCodes.FolderAclUnavailable => FolderResultCode.UnavailableProjection,
-            LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied => FolderResultCode.TenantAccessDenied,
-            LayeredAuthorizationOutcomeCodes.DaprPolicyDenied => FolderResultCode.PolicyEvidenceUnavailable,
-            LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed => FolderResultCode.MalformedEvidence,
-            _ => FolderResultCode.TenantAccessDenied,
-        };
 
     private static FolderResultCode MapReadiness(ProviderReadinessValidationResult readiness)
     {

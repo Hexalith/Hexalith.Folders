@@ -1,10 +1,10 @@
-# Epic 11 Context: Domain-Focus Platform Refactoring And Governance Closure
+# Epic 11 Context: Domain-Focus Platform Alignment
 
 <!-- Compiled from planning artifacts. Edit freely. Regenerate with compile-epic-context if planning docs change. -->
 
 ## Goal
 
-Epic 11 is a technical enabling workstream, not new product scope. Maintainers remove Folders-local copies of shared Hexalith capabilities, consume Commons, EventStore, FrontComposer, and Memories primitives, delete the local ServiceDefaults project, and keep REST, SDK, CLI, MCP, worker, and UI behavior equivalent through lockstep governance and verification. Folders keeps folder-specific policy, aggregates, provider ports, projections, and audit semantics. This workstream owns no Epic 4, 6, or 10 product projection and does not count toward product-capability completion.
+Remove Folders-local copies of shared Hexalith capabilities and consume Commons, EventStore, FrontComposer, and Memories primitives while preserving REST, SDK, CLI, MCP, worker, and UI behavior. This is technical alignment with verification and governance obligations, not new product scope or product-MVP completion. Durable source state and product projections remain owned by Epics 12, 4, 6, and 10.
 
 ## Stories
 
@@ -32,60 +32,30 @@ Epic 11 is a technical enabling workstream, not new product scope. Maintainers r
 
 ## Requirements & Constraints
 
-Preserve current tenant-isolation, metadata-only audit, parity, observability, accessibility, traceability, and maintainability conformance. Do not add product capabilities or claim product-MVP completion.
+Preserve tenant isolation, metadata-only evidence, parity, observability, accessibility, traceability, and maintainability. Authoritative tenant context comes from authentication and the EventStore envelope; payload tenant identifiers are comparison inputs only. Authentication precedes authority availability and permission evaluation, and authorization precedes protected-resource lookup or observation. Denials must not reveal existence. Fresh authorization applies before asynchronous effects.
 
-Wire contracts stay equivalent unless the matching contract, fixture, docs, and tests change together: routes, OpenAPI schemas, envelopes, ProblemDetails, status codes, parity-oracle expectations, CLI/MCP/SDK semantics, worker publication and search-client behavior, and the read-only console boundary.
+Preserve provider behavior, failure categories, deterministic identity, and contract equivalence. Events, logs, traces, metrics, diagnostics, and error responses exclude bodies, diffs, credentials, and secrets; tenant-sensitive metadata obeys C9 redaction. Provider features, correctness work, search optimization, and reserved-tenant decisions retain their separate owners.
 
-Cross-tenant access is denied before any file, workspace, credential, repository, lock, commit, provider, audit, or cache observation. Events, logs, traces, metrics, projections, audit, ProblemDetails, provider diagnostics, generated artifacts, and UI responses stay metadata-only — no file contents, diffs, tokens, credential material, secrets, or unauthorized existence.
+Capture baseline builds, focused tests, formatting, package/route inventories, governance pins, and known blockers before substantive changes. Preserve unrelated changes and retained evidence. Shared-capability adoption requires an owning repository, upstream reference, compatible release or full SHA, availability status, consuming story, and verification evidence. Inventory work does not authorize dependency changes or upstream implementation.
 
-Capture restore/build, focused tests, format checks, scaffold/contract/governance evidence, package inventories, route tables, workflow pins, and known blockers before substantive edits. Do not revert or hide unrelated submodule pointer changes.
+Canonical REST and SDK contracts govern CLI/MCP behavior. Generated clients, fixtures, and parity inventories remain generated; changes move contracts, documentation, and tests together. Client modernization targets the approved v2 spine after Story 1.17 acceptance, preserving ProblemDetails and idempotency vectors without silently selecting historical v1.
 
-Shared-platform adoption is gated by a pin inventory. Each required Commons, EventStore, FrontComposer, and Memories capability needs an owning repository, upstream reference, required release or SHA, availability status, consuming Folders story, and verification evidence. Recording pins does not implement upstream code or change dependency pins without separate authorization.
-
-Generated client and contract-derived artifacts stay generated. Do not hand-edit generated output or parity rows to hide drift. Newtonsoft may leave packable client surfaces only when System.Text.Json generation preserves canonical ProblemDetails parsing and idempotency hash regression vectors.
-
-Test counts change only when deleted local implementations no longer need local re-testing. Shared helpers and fakes live in `Hexalith.Folders.Testing`. Gateway doubles and provider/repository fakes are not production evidence and cannot satisfy real-path product acceptance.
-
-Governance and CI gates must keep rejecting unsafe behavioral counterexamples, use generated denominators where applicable, preserve named approvals and blocking full-lane coverage, and must not hard-code stale story or test counts. Do not remove, narrow, skip, or fail-open a gate.
-
-A DCP or live-sidecar lane records exact pins, composition, commands, results, persisted-state assertions, restart boundaries, and sanitized diagnostics. Silent mock or unavailable-seam fallback is forbidden. A blocked or degraded lane is an honest blocker, not completion evidence for Epics 4, 6, 10, or 12.
-
-Final verification records exact commands and results for boundaries, packages, generated contracts, focused tests, full E2E, WCAG 2.2 AA, governance, workflow-conformance, and docs. Failures and unavailable external lanes stay explicit. This enabling pass is not product-capability completion.
+Governance gates must reject unsafe counterexamples, retain named approvals and blocking full-lane coverage, and use generated inventories instead of stale counts. Do not narrow, skip, or fail open a gate. Test doubles provide deterministic unit evidence only and cannot satisfy real-provider, durable-state, or deployed-path acceptance. Blocked or degraded external lanes remain explicit blockers.
 
 ## Technical Decisions
 
-Folders is a bounded context on the Hexalith platform. Tenants remains authoritative for tenant facts. EventStore owns platform command, aggregate, event, projection, cursor, read-model, admission, and subscription-mapping mechanics. Commons owns shared helpers such as secrets, hashing, URLs, correlation, and service defaults. FrontComposer owns shell, user-context, token, and OIDC helpers. Memories owns search-index publication and query-client primitives. Folders owns folder ACLs, provider-binding references, workspace/file/commit facts, provider ports, and folder-specific policy. Product projections stay with Epics 4, 6, and 10; durable source events, content, Git persistence, and recoverable egress stay with Epic 12.
+Folders owns folder policy, aggregates, provider ports, authorization semantics, and product projections. Tenants supplies tenant authority; EventStore supplies durable events, admission, subscriptions, and shared domain-service mechanics; Commons supplies cross-cutting primitives and service defaults; FrontComposer supplies shell and identity helpers; Memories supplies publication and search-client primitives. Domain writes never bypass EventStore. Infrastructure dependencies in the domain require a documented boundary exception.
 
-Closure means no local `Hexalith.Folders.ServiceDefaults`; no local copies of shared TenantAccess, cursor, read-model, telemetry, secret, hash, URL, correlation, or secret-store helpers where shared APIs exist; no hand-rolled Dapr subscription mapping where EventStore mapping exists; and no UI shell, auth, or token duplication where FrontComposer provides the primitive.
+Platform-alignment closure removes the local ServiceDefaults project and obsolete shared helper copies where compatible shared APIs exist. Reuse shared admission and subscription mapping rather than local plumbing. Preserve publication identity, retryability, redaction, tenant routing, and search-client contracts. CLI/MCP bearer transport rejects non-HTTPS, non-loopback destinations before token emission.
 
-Domain adoption moves those platform-owned helpers onto shared abstractions. `Dapr.Client` and `Octokit` leave the core domain package unless an ADR records the exception. Folders-specific readiness checks move into the owning host or are deleted with ServiceDefaults; probe paths update in code, docs, tests, and deploy manifests together.
-
-Server consolidation shares transport helpers, envelope parsing, header/query readers, canonical-ID validation, result mapping, and one secret-filter detector without changing REST behavior. Server and Workers consume pinned EventStore admission (`IDomainServiceAdmissionStage` or the approved equivalent) and `MapEventStoreDomainEvents` or its pinned equivalent. Memories publication and search-client seams replace obsolete local wrappers only when publication identity, retryability, redaction, tenant routing, and query-client behavior stay contract-compatible.
-
-CLI and MCP share adapter-core plumbing. Bearer tokens are not emitted to non-HTTPS non-loopback endpoints.
-
-Provider adapters stay behind narrow ports. This workstream consolidates duplicated helper logic only; provider feature or correctness work, search optimization, and reserved-tenant decisions stay with their product or ADR owners.
-
-ADRs record AppHost/Aspire composition, ServiceDefaults deletion and adoption, query-handler conformance, and reserved-tenant semantics. An ADR does not manufacture implementation evidence, rewrite lifecycle history, or transfer product-projection ownership.
+Record AppHost composition, service-default adoption, query-handler conformance, and reserved-tenant semantics as explicit ADRs. ADRs cannot manufacture runtime evidence or rewrite lifecycle history. Cross-repository verification records exact pins, composition, commands, results, persisted-state assertions, restart boundaries, and sanitized diagnostics without mock fallback. Final closure includes Debug/project-reference and Release/NuGet builds, generated v2 contracts, package boundaries, focused tests, full E2E, accessibility, governance, and documentation consistency.
 
 ## UX & Interaction Patterns
 
-The operations console stays read-only, metadata-only, and FrontComposer-hosted, with `FrontComposerShell` as the Blazor Interactive Server layout. Reuse FrontComposer user-context, token relay, OIDC and test-auth helpers, loading, safe copy, banners, and icons where those primitives exist.
-
-Production pages use Fluent UI Blazor, including `FluentDataGrid` and approved Fluent inputs and buttons. Do not introduce raw interactive HTML controls, undefined shell classes, or a second component library. State labels, icons, tooltips, and accessibility names come from the same canonical vocabulary used by API, SDK, CLI, and MCP.
-
-Redacted, inaccessible, denied, unknown, missing, unavailable, stale, and failed states stay visually and semantically distinct. Status must not rely on color alone. Full E2E and WCAG 2.2 AA lanes stay blocking, including responsive layout and 125/150/200-percent zoom. Adoption must not add mutation, file-content, credential, or secret paths.
+Keep the operations console read-only, metadata-only, and FrontComposer-hosted. Reuse shared shell, user context, OIDC, token relay, and Fluent UI primitives. State labels and accessibility names share the canonical API/SDK/CLI/MCP vocabulary. Distinguish denied, redacted, inaccessible, unknown, stale, and failed states without relying on color alone. Preserve blocking WCAG 2.2 AA, responsive, and 125/150/200-percent zoom coverage; introduce no mutation, content, credential-reveal, or repair paths.
 
 ## Cross-Story Dependencies
 
-Story 11.2 unlocks Stories 11.8, 11.9, 11.10, 11.11, 11.12, and 11.14. Those stories must not delete local implementations until the matching shared APIs are pinned and behavior-equivalent.
+Baseline and prerequisite inventories precede consolidation and adoption. Story 11.2 gates shared-platform adoption; local implementations remain until compatible pinned APIs and equivalent behavior are established. Stories 11.3–11.7 consolidate local code; Stories 11.17–11.18 separately own gateway doubles and provider/repository fakes. Story 11.16 owns brittle-gate replacement.
 
-Stories 11.3 through 11.7 reduce local duplication after the baseline. Story 11.16 owns brittle-gate replacement. Stories 11.17 and 11.18 own EventStore gateway doubles and provider/repository fakes; Story 11.7 does not.
-
-Story 11.10 owns EventStore admission and subscription-mapping seams only. Story 11.14 owns Memories publication and search-client seams. Story 11.15 owns the DCP-capable verification lane. None of these own transition-evidence, diagnostic, or search-bridge projections, and none may claim FR58 complete.
-
-Story 11.11 adopts identity and shell helpers. Story 11.19 adopts Fluent visual primitives below the shell.
-
-Story 11.13 deletes obsolete local code after the applicable adoption stories and synchronizes maintenance and planning references without rewriting completed evidence. Story 11.20 records the ADRs. Story 11.21 closes the workstream after Stories 11.1 through 11.20.
-
-Epic 13 is a separate security and operations hardening workstream and must not duplicate this epic's platform-seam or adapter-consolidation work.
+Cleanup follows the applicable adoption stories; Story 11.20 follows service-default deletion and cleanup. Final verification follows Stories 11.1–11.20. Admission/subscription adoption, Memories seam adoption, and the DCP verification lane do not transfer product-projection or durable-egress ownership. Epic 13 remains a separate security and operations workstream.

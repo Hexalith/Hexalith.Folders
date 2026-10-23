@@ -1,11 +1,11 @@
-using System.Buffers.Binary;
 using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
+using System.Text;
 
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Hashing;
 
 namespace Hexalith.Folders.Aggregates.Folder;
 
@@ -269,20 +269,20 @@ public static partial class FolderCommandValidator
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
-        AppendField(hash, command.CommandType);
-        AppendField(hash, command.ManagedTenantId);
-        AppendField(hash, command.OrganizationId);
-        AppendField(hash, command.FolderId);
-        AppendField(hash, CanonicalMetadata(command.DisplayName));
-        AppendField(hash, CanonicalMetadata(command.Description));
-        AppendField(hash, CanonicalMetadata(command.PathLabel));
-        AppendInt32(hash, tags.Count);
+        LengthPrefixedHash.AppendField(hash, command.CommandType);
+        LengthPrefixedHash.AppendField(hash, command.ManagedTenantId);
+        LengthPrefixedHash.AppendField(hash, command.OrganizationId);
+        LengthPrefixedHash.AppendField(hash, command.FolderId);
+        LengthPrefixedHash.AppendField(hash, CanonicalMetadata(command.DisplayName));
+        LengthPrefixedHash.AppendField(hash, CanonicalMetadata(command.Description));
+        LengthPrefixedHash.AppendField(hash, CanonicalMetadata(command.PathLabel));
+        LengthPrefixedHash.AppendInt32(hash, tags.Count);
         foreach (string tag in tags)
         {
-            AppendField(hash, tag);
+            LengthPrefixedHash.AppendField(hash, tag);
         }
 
-        AppendField(hash, command.ActorPrincipalId);
+        LengthPrefixedHash.AppendField(hash, command.ActorPrincipalId);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
@@ -291,22 +291,22 @@ public static partial class FolderCommandValidator
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
-        AppendField(hash, command.CommandType);
-        AppendField(hash, command.ManagedTenantId);
-        AppendField(hash, command.OrganizationId);
-        AppendField(hash, command.FolderId);
-        AppendField(hash, command.RequestSchemaVersion);
-        AppendField(hash, ToContractValue(archiveReasonCode));
-        AppendField(hash, command.ActorPrincipalId);
-        AppendField(hash, command.CorrelationId);
-        AppendField(hash, command.TaskId);
-        AppendField(hash, command.IdempotencyKey);
-        AppendField(hash, command.PayloadTenantId);
-        AppendInt32(hash, command.ClientControlledTenantIds.Count);
+        LengthPrefixedHash.AppendField(hash, command.CommandType);
+        LengthPrefixedHash.AppendField(hash, command.ManagedTenantId);
+        LengthPrefixedHash.AppendField(hash, command.OrganizationId);
+        LengthPrefixedHash.AppendField(hash, command.FolderId);
+        LengthPrefixedHash.AppendField(hash, command.RequestSchemaVersion);
+        LengthPrefixedHash.AppendField(hash, ToContractValue(archiveReasonCode));
+        LengthPrefixedHash.AppendField(hash, command.ActorPrincipalId);
+        LengthPrefixedHash.AppendField(hash, command.CorrelationId);
+        LengthPrefixedHash.AppendField(hash, command.TaskId);
+        LengthPrefixedHash.AppendField(hash, command.IdempotencyKey);
+        LengthPrefixedHash.AppendField(hash, command.PayloadTenantId);
+        LengthPrefixedHash.AppendInt32(hash, command.ClientControlledTenantIds.Count);
         foreach (KeyValuePair<string, string?> tenantEntry in command.ClientControlledTenantIds.OrderBy(static x => x.Key, StringComparer.Ordinal))
         {
-            AppendField(hash, tenantEntry.Key);
-            AppendField(hash, tenantEntry.Value);
+            LengthPrefixedHash.AppendField(hash, tenantEntry.Key);
+            LengthPrefixedHash.AppendField(hash, tenantEntry.Value);
         }
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
@@ -322,11 +322,11 @@ public static partial class FolderCommandValidator
         ArgumentException.ThrowIfNullOrWhiteSpace(commandFingerprint);
 
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        AppendField(hash, "archive-decision-v1");
-        AppendField(hash, commandFingerprint);
-        AppendField(hash, command.IdempotencyKey);
-        AppendField(hash, policyVersion);
-        AppendField(hash, freshnessWatermark);
+        LengthPrefixedHash.AppendField(hash, "archive-decision-v1");
+        LengthPrefixedHash.AppendField(hash, commandFingerprint);
+        LengthPrefixedHash.AppendField(hash, command.IdempotencyKey);
+        LengthPrefixedHash.AppendField(hash, policyVersion);
+        LengthPrefixedHash.AppendField(hash, freshnessWatermark);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
@@ -335,17 +335,17 @@ public static partial class FolderCommandValidator
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
-        AppendField(hash, command.CommandType);
-        AppendField(hash, command.ManagedTenantId);
-        AppendField(hash, command.OrganizationId);
-        AppendField(hash, command.FolderId);
-        AppendField(hash, command.RequestSchemaVersion);
-        AppendField(hash, command.CredentialScopeClass);
-        AppendField(hash, CanonicalMetadata(command.FolderMetadataDisplayName));
-        AppendField(hash, command.ProviderBindingRef);
-        AppendField(hash, command.RepositoryBindingId);
-        AppendField(hash, command.RepositoryProfileRef);
-        AppendField(hash, command.BranchRefPolicyRef);
+        LengthPrefixedHash.AppendField(hash, command.CommandType);
+        LengthPrefixedHash.AppendField(hash, command.ManagedTenantId);
+        LengthPrefixedHash.AppendField(hash, command.OrganizationId);
+        LengthPrefixedHash.AppendField(hash, command.FolderId);
+        LengthPrefixedHash.AppendField(hash, command.RequestSchemaVersion);
+        LengthPrefixedHash.AppendField(hash, command.CredentialScopeClass);
+        LengthPrefixedHash.AppendField(hash, CanonicalMetadata(command.FolderMetadataDisplayName));
+        LengthPrefixedHash.AppendField(hash, command.ProviderBindingRef);
+        LengthPrefixedHash.AppendField(hash, command.RepositoryBindingId);
+        LengthPrefixedHash.AppendField(hash, command.RepositoryProfileRef);
+        LengthPrefixedHash.AppendField(hash, command.BranchRefPolicyRef);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
@@ -358,12 +358,12 @@ public static partial class FolderCommandValidator
         string branchRefPolicyRef)
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        AppendField(hash, "repository-binding-id-v1");
-        AppendField(hash, managedTenantId);
-        AppendField(hash, folderId);
-        AppendField(hash, providerBindingRef);
-        AppendField(hash, externalRepositoryRef);
-        AppendField(hash, branchRefPolicyRef);
+        LengthPrefixedHash.AppendField(hash, "repository-binding-id-v1");
+        LengthPrefixedHash.AppendField(hash, managedTenantId);
+        LengthPrefixedHash.AppendField(hash, folderId);
+        LengthPrefixedHash.AppendField(hash, providerBindingRef);
+        LengthPrefixedHash.AppendField(hash, externalRepositoryRef);
+        LengthPrefixedHash.AppendField(hash, branchRefPolicyRef);
 
         string digest = Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
         return $"repository_binding_{digest[..32]}";
@@ -378,10 +378,10 @@ public static partial class FolderCommandValidator
     internal static string ExternalRepositoryRefFingerprint(string tenantId, string bindingRef, string externalRef)
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        AppendField(hash, "external-repository-ref-v1");
-        AppendField(hash, tenantId);
-        AppendField(hash, bindingRef);
-        AppendField(hash, externalRef);
+        LengthPrefixedHash.AppendField(hash, "external-repository-ref-v1");
+        LengthPrefixedHash.AppendField(hash, tenantId);
+        LengthPrefixedHash.AppendField(hash, bindingRef);
+        LengthPrefixedHash.AppendField(hash, externalRef);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
@@ -390,16 +390,16 @@ public static partial class FolderCommandValidator
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
-        AppendField(hash, command.CommandType);
-        AppendField(hash, command.ManagedTenantId);
-        AppendField(hash, command.OrganizationId);
-        AppendField(hash, command.FolderId);
-        AppendField(hash, command.RequestSchemaVersion);
-        AppendField(hash, command.BranchRefPolicyRef);
-        AppendField(hash, command.CredentialScopeClass);
-        AppendField(hash, command.ExternalRepositoryRef);
-        AppendField(hash, command.ProviderBindingRef);
-        AppendField(hash, command.RepositoryBindingId);
+        LengthPrefixedHash.AppendField(hash, command.CommandType);
+        LengthPrefixedHash.AppendField(hash, command.ManagedTenantId);
+        LengthPrefixedHash.AppendField(hash, command.OrganizationId);
+        LengthPrefixedHash.AppendField(hash, command.FolderId);
+        LengthPrefixedHash.AppendField(hash, command.RequestSchemaVersion);
+        LengthPrefixedHash.AppendField(hash, command.BranchRefPolicyRef);
+        LengthPrefixedHash.AppendField(hash, command.CredentialScopeClass);
+        LengthPrefixedHash.AppendField(hash, command.ExternalRepositoryRef);
+        LengthPrefixedHash.AppendField(hash, command.ProviderBindingRef);
+        LengthPrefixedHash.AppendField(hash, command.RepositoryBindingId);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
@@ -408,25 +408,25 @@ public static partial class FolderCommandValidator
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
-        AppendInt32(hash, command.AllowedRefPatterns.Count);
+        LengthPrefixedHash.AppendInt32(hash, command.AllowedRefPatterns.Count);
         foreach (string pattern in command.AllowedRefPatterns)
         {
-            AppendField(hash, pattern);
+            LengthPrefixedHash.AppendField(hash, pattern);
         }
 
-        AppendField(hash, command.DefaultRef);
-        AppendField(hash, command.PolicyRef);
-        AppendInt32(hash, command.ProtectedRefPatterns?.Count ?? -1);
+        LengthPrefixedHash.AppendField(hash, command.DefaultRef);
+        LengthPrefixedHash.AppendField(hash, command.PolicyRef);
+        LengthPrefixedHash.AppendInt32(hash, command.ProtectedRefPatterns?.Count ?? -1);
         if (command.ProtectedRefPatterns is not null)
         {
             foreach (string pattern in command.ProtectedRefPatterns)
             {
-                AppendField(hash, pattern);
+                LengthPrefixedHash.AppendField(hash, pattern);
             }
         }
 
-        AppendField(hash, command.FolderId);
-        AppendField(hash, command.RepositoryBindingId);
+        LengthPrefixedHash.AppendField(hash, command.FolderId);
+        LengthPrefixedHash.AppendField(hash, command.RepositoryBindingId);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
@@ -435,12 +435,12 @@ public static partial class FolderCommandValidator
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
-        AppendField(hash, command.BranchRefPolicyRef);
-        AppendField(hash, command.FolderId);
-        AppendField(hash, command.RepositoryBindingId);
-        AppendField(hash, command.TaskId);
-        AppendField(hash, command.WorkspaceId);
-        AppendField(hash, command.WorkspacePolicyRef);
+        LengthPrefixedHash.AppendField(hash, command.BranchRefPolicyRef);
+        LengthPrefixedHash.AppendField(hash, command.FolderId);
+        LengthPrefixedHash.AppendField(hash, command.RepositoryBindingId);
+        LengthPrefixedHash.AppendField(hash, command.TaskId);
+        LengthPrefixedHash.AppendField(hash, command.WorkspaceId);
+        LengthPrefixedHash.AppendField(hash, command.WorkspacePolicyRef);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
@@ -449,11 +449,11 @@ public static partial class FolderCommandValidator
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
-        AppendField(hash, command.FolderId);
-        AppendField(hash, command.LockIntent);
-        AppendInt32(hash, command.RequestedLeaseSeconds);
-        AppendField(hash, command.TaskId);
-        AppendField(hash, command.WorkspaceId);
+        LengthPrefixedHash.AppendField(hash, command.FolderId);
+        LengthPrefixedHash.AppendField(hash, command.LockIntent);
+        LengthPrefixedHash.AppendInt32(hash, command.RequestedLeaseSeconds);
+        LengthPrefixedHash.AppendField(hash, command.TaskId);
+        LengthPrefixedHash.AppendField(hash, command.WorkspaceId);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
@@ -464,12 +464,12 @@ public static partial class FolderCommandValidator
         ArgumentException.ThrowIfNullOrWhiteSpace(idempotencyFingerprint);
 
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        AppendField(hash, "workspace-lock-id-v1");
-        AppendField(hash, command.ManagedTenantId);
-        AppendField(hash, command.FolderId);
-        AppendField(hash, command.WorkspaceId);
-        AppendField(hash, command.TaskId);
-        AppendField(hash, idempotencyFingerprint);
+        LengthPrefixedHash.AppendField(hash, "workspace-lock-id-v1");
+        LengthPrefixedHash.AppendField(hash, command.ManagedTenantId);
+        LengthPrefixedHash.AppendField(hash, command.FolderId);
+        LengthPrefixedHash.AppendField(hash, command.WorkspaceId);
+        LengthPrefixedHash.AppendField(hash, command.TaskId);
+        LengthPrefixedHash.AppendField(hash, idempotencyFingerprint);
 
         string digest = Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
         return $"workspace_lock_{digest[..32]}";
@@ -483,12 +483,12 @@ public static partial class FolderCommandValidator
         string lockId)
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        AppendField(hash, "workspace-lock-ownership-proof-v1");
-        AppendField(hash, managedTenantId);
-        AppendField(hash, folderId);
-        AppendField(hash, workspaceId);
-        AppendField(hash, taskId);
-        AppendField(hash, lockId);
+        LengthPrefixedHash.AppendField(hash, "workspace-lock-ownership-proof-v1");
+        LengthPrefixedHash.AppendField(hash, managedTenantId);
+        LengthPrefixedHash.AppendField(hash, folderId);
+        LengthPrefixedHash.AppendField(hash, workspaceId);
+        LengthPrefixedHash.AppendField(hash, taskId);
+        LengthPrefixedHash.AppendField(hash, lockId);
 
         string digest = Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
         return $"lock_proof_{digest[..32]}";
@@ -498,11 +498,11 @@ public static partial class FolderCommandValidator
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
-        AppendField(hash, command.FolderId);
-        AppendField(hash, command.LockId);
-        AppendField(hash, command.LockOwnershipProof);
-        AppendField(hash, command.TaskId);
-        AppendField(hash, command.WorkspaceId);
+        LengthPrefixedHash.AppendField(hash, command.FolderId);
+        LengthPrefixedHash.AppendField(hash, command.LockId);
+        LengthPrefixedHash.AppendField(hash, command.LockOwnershipProof);
+        LengthPrefixedHash.AppendField(hash, command.TaskId);
+        LengthPrefixedHash.AppendField(hash, command.WorkspaceId);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
@@ -511,23 +511,23 @@ public static partial class FolderCommandValidator
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
-        AppendField(hash, ToFileMutationOperationId(command.FileOperationKind));
+        LengthPrefixedHash.AppendField(hash, ToFileMutationOperationId(command.FileOperationKind));
         if (command.FileOperationKind is "add" or "change")
         {
-            AppendField(hash, command.ContentHashReference);
+            LengthPrefixedHash.AppendField(hash, command.ContentHashReference);
         }
 
-        AppendField(hash, command.FileOperationKind);
-        AppendField(hash, command.OperationId);
-        AppendField(hash, WorkspacePathPolicyValidator.CanonicalPathMetadataFingerprint(command.PathMetadata));
-        AppendField(hash, command.PathMetadata.PathPolicyClass);
-        AppendField(hash, command.TaskId);
-        AppendField(hash, command.WorkspaceId);
+        LengthPrefixedHash.AppendField(hash, command.FileOperationKind);
+        LengthPrefixedHash.AppendField(hash, command.OperationId);
+        LengthPrefixedHash.AppendField(hash, WorkspacePathPolicyValidator.CanonicalPathMetadataFingerprint(command.PathMetadata));
+        LengthPrefixedHash.AppendField(hash, command.PathMetadata.PathPolicyClass);
+        LengthPrefixedHash.AppendField(hash, command.TaskId);
+        LengthPrefixedHash.AppendField(hash, command.WorkspaceId);
 
-        if (command.ExpectedLockFence is { } fence) AppendField(hash, fence.ToString(CultureInfo.InvariantCulture));
-        if (command.ExpectedFileVersion is { } version) AppendField(hash, version.ToString(CultureInfo.InvariantCulture));
-        if (command.OwnerFileId is not null && command.FileOperationKind != "add") AppendField(hash, command.OwnerFileId);
-        if (command.ProjectFileReferenceId is not null) AppendField(hash, command.ProjectFileReferenceId);
+        if (command.ExpectedLockFence is { } fence) LengthPrefixedHash.AppendField(hash, fence.ToString(CultureInfo.InvariantCulture));
+        if (command.ExpectedFileVersion is { } version) LengthPrefixedHash.AppendField(hash, version.ToString(CultureInfo.InvariantCulture));
+        if (command.OwnerFileId is not null && command.FileOperationKind != "add") LengthPrefixedHash.AppendField(hash, command.OwnerFileId);
+        if (command.ProjectFileReferenceId is not null) LengthPrefixedHash.AppendField(hash, command.ProjectFileReferenceId);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
@@ -536,14 +536,14 @@ public static partial class FolderCommandValidator
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
-        AppendField(hash, command.CommandType);
-        AppendField(hash, command.AuthorMetadataReference);
-        AppendField(hash, command.BranchRefTarget);
-        AppendField(hash, command.ChangedPathMetadataDigest);
-        AppendField(hash, command.CommitMessageClassification);
-        AppendField(hash, command.OperationId);
-        AppendField(hash, command.TaskId);
-        AppendField(hash, command.WorkspaceId);
+        LengthPrefixedHash.AppendField(hash, command.CommandType);
+        LengthPrefixedHash.AppendField(hash, command.AuthorMetadataReference);
+        LengthPrefixedHash.AppendField(hash, command.BranchRefTarget);
+        LengthPrefixedHash.AppendField(hash, command.ChangedPathMetadataDigest);
+        LengthPrefixedHash.AppendField(hash, command.CommitMessageClassification);
+        LengthPrefixedHash.AppendField(hash, command.OperationId);
+        LengthPrefixedHash.AppendField(hash, command.TaskId);
+        LengthPrefixedHash.AppendField(hash, command.WorkspaceId);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
@@ -575,13 +575,13 @@ public static partial class FolderCommandValidator
         ArgumentNullException.ThrowIfNull(command);
 
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        AppendField(hash, "commit-reconciliation-v1");
-        AppendField(hash, command.ManagedTenantId);
-        AppendField(hash, command.FolderId);
-        AppendField(hash, command.WorkspaceId);
-        AppendField(hash, command.OperationId);
-        AppendField(hash, command.CorrelationId);
-        AppendField(hash, command.TaskId);
+        LengthPrefixedHash.AppendField(hash, "commit-reconciliation-v1");
+        LengthPrefixedHash.AppendField(hash, command.ManagedTenantId);
+        LengthPrefixedHash.AppendField(hash, command.FolderId);
+        LengthPrefixedHash.AppendField(hash, command.WorkspaceId);
+        LengthPrefixedHash.AppendField(hash, command.OperationId);
+        LengthPrefixedHash.AppendField(hash, command.CorrelationId);
+        LengthPrefixedHash.AppendField(hash, command.TaskId);
 
         string digest = Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
         return $"reconcile_{digest[..32]}";
@@ -702,12 +702,12 @@ public static partial class FolderCommandValidator
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
-        AppendField(hash, command.CommandType);
-        AppendField(hash, command.ManagedTenantId);
-        AppendField(hash, command.OrganizationId);
-        AppendField(hash, command.FolderId);
-        AppendField(hash, command.ActorPrincipalId);
-        AppendInt32(hash, operations.Count);
+        LengthPrefixedHash.AppendField(hash, command.CommandType);
+        LengthPrefixedHash.AppendField(hash, command.ManagedTenantId);
+        LengthPrefixedHash.AppendField(hash, command.OrganizationId);
+        LengthPrefixedHash.AppendField(hash, command.FolderId);
+        LengthPrefixedHash.AppendField(hash, command.ActorPrincipalId);
+        LengthPrefixedHash.AppendInt32(hash, operations.Count);
         foreach (FolderAccessOperation operation in operations)
         {
             FolderAccessEntryKey key = new(
@@ -716,27 +716,11 @@ public static partial class FolderCommandValidator
                 operation.PrincipalKind,
                 operation.PrincipalId,
                 operation.Action);
-            AppendField(hash, operation.Intent.ToString());
-            AppendField(hash, key.CanonicalValue);
+            LengthPrefixedHash.AppendField(hash, operation.Intent.ToString());
+            LengthPrefixedHash.AppendField(hash, key.CanonicalValue);
         }
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
-    }
-
-    private static void AppendField(IncrementalHash hash, string? value)
-    {
-        ReadOnlySpan<byte> bytes = value is null
-            ? ReadOnlySpan<byte>.Empty
-            : Encoding.UTF8.GetBytes(value);
-        AppendInt32(hash, bytes.Length);
-        hash.AppendData(bytes);
-    }
-
-    private static void AppendInt32(IncrementalHash hash, int value)
-    {
-        Span<byte> buffer = stackalloc byte[4];
-        BinaryPrimitives.WriteInt32LittleEndian(buffer, value);
-        hash.AppendData(buffer);
     }
 
     private static IReadOnlyList<string>? ValidateAndCanonicalizeTags(IReadOnlyList<string>? tags)

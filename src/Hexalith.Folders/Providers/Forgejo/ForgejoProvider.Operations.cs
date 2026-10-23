@@ -1,3 +1,4 @@
+using Hexalith.Folders.Providers.Shared;
 using Hexalith.Folders.Providers.Abstractions;
 
 namespace Hexalith.Folders.Providers.Forgejo;
@@ -753,18 +754,18 @@ public sealed partial class ForgejoProvider
         }
 
         if (!IsCurrentEvidence(request.FilePolicyEvidence?.CapturedAt, request.FilePolicyEvidence?.FreshnessClass)
-            || !IsSafeFingerprint(request.FilePolicyEvidence?.Fingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.FilePolicyEvidence?.Fingerprint)
             || request.FilePolicyEvidence!.MaximumFileBytes is <= 0 or > MaximumOperationFileBytes
             || request.FilePolicyEvidence.MaximumChangeCount is <= 0 or > MaximumOperationChangeCount)
         {
             return (ProviderFailureCategory.ReconciliationRequired, "forgejo_file_policy_evidence_stale_or_malformed");
         }
 
-        if (!IsSafeOperationReference(request.IdempotencyKey)
+        if (!ProviderAdapterGuards.IsSafeOperationReference(request.IdempotencyKey)
             || !IsOperationAdmissionWellFormed(request.IdempotencyAdmission)
-            || !IsSafeFingerprint(request.SafeResolvedTargetFingerprint)
-            || !IsSafeOperationReference(request.ChangeSetReference)
-            || !IsSafeFingerprint(request.SafeChangeSetFingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeResolvedTargetFingerprint)
+            || !ProviderAdapterGuards.IsSafeOperationReference(request.ChangeSetReference)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeChangeSetFingerprint)
             || request.Changes is null
             || request.Changes.Count is < 1 or > MaximumOperationChangeCount
             || request.Changes.Count > request.FilePolicyEvidence.MaximumChangeCount)
@@ -780,11 +781,11 @@ public sealed partial class ForgejoProvider
                 || change.Sequence != index
                 || !Enum.IsDefined(change.Kind)
                 || change.ContentType != ProviderFileContentType.RegularFile
-                || !IsSafeOperationReference(change.PathReference)
+                || !ProviderAdapterGuards.IsSafeOperationReference(change.PathReference)
                 || !pathReferences.Add(change.PathReference)
-                || !IsSafeFingerprint(change.SafePathFingerprint)
+                || !ProviderAdapterGuards.IsSafeFingerprint(change.SafePathFingerprint)
                 || change.Kind is ProviderFileChangeKind.Add or ProviderFileChangeKind.Change
-                    && (!IsSafeOperationReference(change.ContentReference) || !IsSafeFingerprint(change.SafeContentFingerprint))
+                    && (!ProviderAdapterGuards.IsSafeOperationReference(change.ContentReference) || !ProviderAdapterGuards.IsSafeFingerprint(change.SafeContentFingerprint))
                 || change.Kind == ProviderFileChangeKind.Remove
                     && (change.ContentReference is not null || change.SafeContentFingerprint is not null)
                 || !IsAllowedOperationChange(change.Kind, request.FilePolicyEvidence))
@@ -824,14 +825,14 @@ public sealed partial class ForgejoProvider
             return (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_commit_ref_policy_denied");
         }
 
-        return !IsSafeOperationReference(request.IdempotencyKey)
+        return !ProviderAdapterGuards.IsSafeOperationReference(request.IdempotencyKey)
             || !IsOperationAdmissionWellFormed(request.IdempotencyAdmission)
-            || !IsSafeFingerprint(request.SafeResolvedTargetFingerprint)
-            || !IsSafeOperationReference(request.StagedChangeSetReference)
-            || !IsSafeFingerprint(request.SafeStagedChangeSetFingerprint)
-            || !IsSafeOperationReference(request.CommitMessageReference)
-            || !IsSafeFingerprint(request.SafeCommitMessageFingerprint)
-            || !IsSafeFingerprint(request.SafeExpectedHeadFingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeResolvedTargetFingerprint)
+            || !ProviderAdapterGuards.IsSafeOperationReference(request.StagedChangeSetReference)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeStagedChangeSetFingerprint)
+            || !ProviderAdapterGuards.IsSafeOperationReference(request.CommitMessageReference)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeCommitMessageFingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeExpectedHeadFingerprint)
                 ? (ProviderFailureCategory.ProviderValidationFailed, "forgejo_commit_intent_malformed")
                 : null;
     }
@@ -864,12 +865,12 @@ public sealed partial class ForgejoProvider
             return (ProviderFailureCategory.ProviderValidationFailed, "idempotency_key_not_allowed");
         }
 
-        if (!IsSafeOperationReference(request.OperationReference)
-            || !IsSafeFingerprint(request.SafeResolvedTargetFingerprint)
-            || !IsSafeFingerprint(request.SafeFullRefFingerprint)
-            || !IsSafeFingerprint(request.SafeExpectedHeadFingerprint)
-            || !IsSafeFingerprint(request.SafeIntendedCommitFingerprint)
-            || !IsSafeFingerprint(request.SafeCheckWindowFingerprint))
+        if (!ProviderAdapterGuards.IsSafeOperationReference(request.OperationReference)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeResolvedTargetFingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeFullRefFingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeExpectedHeadFingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeIntendedCommitFingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeCheckWindowFingerprint))
         {
             return (ProviderFailureCategory.ProviderValidationFailed, "forgejo_status_evidence_malformed");
         }
@@ -921,15 +922,15 @@ public sealed partial class ForgejoProvider
             return (ProviderFailureCategory.ProviderValidationFailed, "provider_identity_malformed");
         }
 
-        if (!IsSafeOpaqueValue(managedTenantId)
+        if (!ProviderAdapterGuards.IsSafeOpaqueValue(managedTenantId)
             || IsReservedTenant(managedTenantId)
-            || !IsSafeOpaqueValue(organizationId)
-            || !IsSafeOpaqueValue(folderId)
-            || !IsSafeOpaqueValue(delegatedTaskId)
-            || !IsSafeOperationReference(providerBindingRef)
-            || !IsSafeOperationReference(credentialReferenceId)
-            || !IsSafeOperationReference(repositoryBindingId)
-            || !IsSafeOpaqueValue(correlationId)
+            || !ProviderAdapterGuards.IsSafeOpaqueValue(organizationId)
+            || !ProviderAdapterGuards.IsSafeOpaqueValue(folderId)
+            || !ProviderAdapterGuards.IsSafeOpaqueValue(delegatedTaskId)
+            || !ProviderAdapterGuards.IsSafeOperationReference(providerBindingRef)
+            || !ProviderAdapterGuards.IsSafeOperationReference(credentialReferenceId)
+            || !ProviderAdapterGuards.IsSafeOperationReference(repositoryBindingId)
+            || !ProviderAdapterGuards.IsSafeOpaqueValue(correlationId)
             || targetEvidence is null
             || authorizationEvidence is null
             || lockEvidence is null
@@ -947,7 +948,7 @@ public sealed partial class ForgejoProvider
         }
 
         if (!IsCurrentEvidence(lockEvidence.CapturedAt, lockEvidence.FreshnessClass)
-            || !IsSafeFingerprint(lockEvidence.Fingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(lockEvidence.Fingerprint)
             || !lockEvidence.IsOwnedByDelegatedTask
             || lockEvidence.IsRevoked)
         {
@@ -955,7 +956,7 @@ public sealed partial class ForgejoProvider
         }
 
         if (!IsCurrentEvidence(refPolicyEvidence.CapturedAt, refPolicyEvidence.FreshnessClass)
-            || !IsSafeFingerprint(refPolicyEvidence.Fingerprint))
+            || !ProviderAdapterGuards.IsSafeFingerprint(refPolicyEvidence.Fingerprint))
         {
             return (ProviderFailureCategory.ReconciliationRequired, "ref_policy_evidence_stale_or_malformed");
         }
@@ -1217,7 +1218,7 @@ public sealed partial class ForgejoProvider
                 || change.ContentType != ProviderFileContentType.RegularFile
                 || !IsSafeGitPath(change.Path)
                 || !paths.Add(change.Path)
-                || HasAncestorConflict(paths, change.Path)
+                || ProviderAdapterGuards.HasAncestorConflict(paths, change.Path)
                 || change.Content.Length > MaximumOperationFileBytes
                 || aggregateBytes > MaximumOperationAggregateContentBytes - change.Content.Length
                 || change.Kind == ProviderFileChangeKind.Add && change.SourceObjectId is not null
@@ -1723,7 +1724,7 @@ public sealed partial class ForgejoProvider
 
     private static bool IsOperationAdmissionWellFormed(ProviderIdempotencyAdmission? admission)
     {
-        if (admission is null || !Enum.IsDefined(admission.Disposition) || !IsSafeOpaqueValue(admission.IntentFingerprint))
+        if (admission is null || !Enum.IsDefined(admission.Disposition) || !ProviderAdapterGuards.IsSafeOpaqueValue(admission.IntentFingerprint))
         {
             return false;
         }
@@ -1735,14 +1736,14 @@ public sealed partial class ForgejoProvider
 
         if (admission.PriorOutcomeDisposition is null
             || !Enum.IsDefined(admission.PriorOutcomeDisposition.Value)
-            || !IsSafeOperationReference(admission.PriorOperationReference))
+            || !ProviderAdapterGuards.IsSafeOperationReference(admission.PriorOperationReference))
         {
             return false;
         }
 
         return admission.PriorOutcomeDisposition switch
         {
-            ProviderPriorOutcomeDisposition.Success => IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+            ProviderPriorOutcomeDisposition.Success => ProviderAdapterGuards.IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
                 && admission.PriorCanonicalRepositoryId is null
                 && admission.PriorReconciliationReference is null
                 && admission.PriorFailureCategory == ProviderFailureCategory.None
@@ -1752,13 +1753,13 @@ public sealed partial class ForgejoProvider
                 && admission.PriorRetryAfter is null,
             ProviderPriorOutcomeDisposition.Unknown => admission.PriorSafeOutcomeFingerprint is null
                 && admission.PriorCanonicalRepositoryId is null
-                && IsSafeOperationReference(admission.PriorReconciliationReference)
+                && ProviderAdapterGuards.IsSafeOperationReference(admission.PriorReconciliationReference)
                 && admission.PriorFailureCategory == ProviderFailureCategory.None
                 && admission.PriorReasonCode is null
                 && admission.PriorRemediationCode is null
                 && !admission.PriorRetryable
                 && admission.PriorRetryAfter is null,
-            ProviderPriorOutcomeDisposition.KnownFailure => IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+            ProviderPriorOutcomeDisposition.KnownFailure => ProviderAdapterGuards.IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
                 && admission.PriorCanonicalRepositoryId is null
                 && admission.PriorReconciliationReference is null
                 && IsCoherentKnownFailureTuple(
@@ -1778,21 +1779,21 @@ public sealed partial class ForgejoProvider
             return false;
         }
 
-        bool hasOperationReference = IsSafeOperationReference(reservation.OperationReference);
+        bool hasOperationReference = ProviderAdapterGuards.IsSafeOperationReference(reservation.OperationReference);
         return reservation.Disposition switch
         {
             ProviderOperationReservationDisposition.Acquired or ProviderOperationReservationDisposition.Pending
                 => hasOperationReference && reservation.Generation > 0 && HasNoReservationOutcome(reservation),
             ProviderOperationReservationDisposition.ReplaySuccess
-                => hasOperationReference && reservation.Generation == 0 && IsSafeFingerprint(reservation.SafeOutcomeFingerprint)
+                => hasOperationReference && reservation.Generation == 0 && ProviderAdapterGuards.IsSafeFingerprint(reservation.SafeOutcomeFingerprint)
                     && reservation.ReconciliationReference is null && reservation.FailureCategory == ProviderFailureCategory.None
                     && reservation.ReasonCode is null && reservation.RemediationCode is null && !reservation.Retryable && reservation.RetryAfter is null,
             ProviderOperationReservationDisposition.ReplayUnknown
                 => hasOperationReference && reservation.Generation == 0 && reservation.SafeOutcomeFingerprint is null
-                    && IsSafeOperationReference(reservation.ReconciliationReference) && reservation.FailureCategory == ProviderFailureCategory.None
+                    && ProviderAdapterGuards.IsSafeOperationReference(reservation.ReconciliationReference) && reservation.FailureCategory == ProviderFailureCategory.None
                     && reservation.ReasonCode is null && reservation.RemediationCode is null && !reservation.Retryable && reservation.RetryAfter is null,
             ProviderOperationReservationDisposition.ReplayKnownFailure
-                => hasOperationReference && reservation.Generation == 0 && IsSafeFingerprint(reservation.SafeOutcomeFingerprint)
+                => hasOperationReference && reservation.Generation == 0 && ProviderAdapterGuards.IsSafeFingerprint(reservation.SafeOutcomeFingerprint)
                     && reservation.ReconciliationReference is null
                     && IsCoherentKnownFailureTuple(
                         reservation.FailureCategory,
@@ -1991,14 +1992,14 @@ public sealed partial class ForgejoProvider
         string safeTargetFingerprint,
         string operationReference,
         string reasonCode)
-        => new(false, false, ProviderFailureCategory.UnknownProviderOutcome, ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(), SafeOperationReason(reasonCode, "forgejo_file_mutation_outcome_unknown"), "reconciliation_required_metadata_only", false, null, request.CorrelationId, safeTargetFingerprint, null, IsSafeOperationReference(operationReference) ? operationReference : null, IsSafeOperationReference(operationReference) ? operationReference : null);
+        => new(false, false, ProviderFailureCategory.UnknownProviderOutcome, ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(), SafeOperationReason(reasonCode, "forgejo_file_mutation_outcome_unknown"), "reconciliation_required_metadata_only", false, null, request.CorrelationId, safeTargetFingerprint, null, ProviderAdapterGuards.IsSafeOperationReference(operationReference) ? operationReference : null, ProviderAdapterGuards.IsSafeOperationReference(operationReference) ? operationReference : null);
 
     private static ProviderCommitResult CommitUnknown(
         ProviderCommitRequest request,
         string safeTargetFingerprint,
         string operationReference,
         string reasonCode)
-        => new(false, false, ProviderFailureCategory.UnknownProviderOutcome, ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(), SafeOperationReason(reasonCode, "forgejo_commit_outcome_unknown"), "reconciliation_required_metadata_only", false, null, request.CorrelationId, safeTargetFingerprint, null, IsSafeOperationReference(operationReference) ? operationReference : null, IsSafeOperationReference(operationReference) ? operationReference : null);
+        => new(false, false, ProviderFailureCategory.UnknownProviderOutcome, ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(), SafeOperationReason(reasonCode, "forgejo_commit_outcome_unknown"), "reconciliation_required_metadata_only", false, null, request.CorrelationId, safeTargetFingerprint, null, ProviderAdapterGuards.IsSafeOperationReference(operationReference) ? operationReference : null, ProviderAdapterGuards.IsSafeOperationReference(operationReference) ? operationReference : null);
 
     private static ProviderFileMutationResult FileMutationFailure(
         ProviderFileMutationRequest request,
@@ -2011,7 +2012,7 @@ public sealed partial class ForgejoProvider
         bool? retryable = null,
         string? safeTargetFingerprint = null,
         string? safeOutcomeFingerprint = null)
-        => new(false, equivalentReplay, category, category.ToCategoryCode(), SafeOperationReason(reasonCode, category.ToCategoryCode()), SafeOperationRemediation(remediationCode, category), retryable ?? category.IsRetryableByDefault(), SafeOperationRetryAfter(category, retryAfter), request.CorrelationId, IsSafeFingerprint(safeTargetFingerprint) ? safeTargetFingerprint : null, IsSafeFingerprint(safeOutcomeFingerprint) ? safeOutcomeFingerprint : null, IsSafeOperationReference(operationReference) ? operationReference : null, null);
+        => new(false, equivalentReplay, category, category.ToCategoryCode(), SafeOperationReason(reasonCode, category.ToCategoryCode()), SafeOperationRemediation(remediationCode, category), retryable ?? category.IsRetryableByDefault(), SafeOperationRetryAfter(category, retryAfter), request.CorrelationId, ProviderAdapterGuards.IsSafeFingerprint(safeTargetFingerprint) ? safeTargetFingerprint : null, ProviderAdapterGuards.IsSafeFingerprint(safeOutcomeFingerprint) ? safeOutcomeFingerprint : null, ProviderAdapterGuards.IsSafeOperationReference(operationReference) ? operationReference : null, null);
 
     private static ProviderCommitResult CommitFailure(
         ProviderCommitRequest request,
@@ -2024,7 +2025,7 @@ public sealed partial class ForgejoProvider
         bool? retryable = null,
         string? safeTargetFingerprint = null,
         string? safeOutcomeFingerprint = null)
-        => new(false, equivalentReplay, category, category.ToCategoryCode(), SafeOperationReason(reasonCode, category.ToCategoryCode()), SafeOperationRemediation(remediationCode, category), retryable ?? category.IsRetryableByDefault(), SafeOperationRetryAfter(category, retryAfter), request.CorrelationId, IsSafeFingerprint(safeTargetFingerprint) ? safeTargetFingerprint : null, IsSafeFingerprint(safeOutcomeFingerprint) ? safeOutcomeFingerprint : null, IsSafeOperationReference(operationReference) ? operationReference : null, null);
+        => new(false, equivalentReplay, category, category.ToCategoryCode(), SafeOperationReason(reasonCode, category.ToCategoryCode()), SafeOperationRemediation(remediationCode, category), retryable ?? category.IsRetryableByDefault(), SafeOperationRetryAfter(category, retryAfter), request.CorrelationId, ProviderAdapterGuards.IsSafeFingerprint(safeTargetFingerprint) ? safeTargetFingerprint : null, ProviderAdapterGuards.IsSafeFingerprint(safeOutcomeFingerprint) ? safeOutcomeFingerprint : null, ProviderAdapterGuards.IsSafeOperationReference(operationReference) ? operationReference : null, null);
 
     private static ProviderOperationStatusResult StatusUnavailable(
         ProviderOperationStatusRequest request,
@@ -2037,7 +2038,7 @@ public sealed partial class ForgejoProvider
         string reasonCode,
         TimeSpan? retryAfter = null,
         string? safeObservedFingerprint = null)
-        => new(false, ProviderOperationStatusKind.Unavailable, category, category.ToCategoryCode(), SafeOperationReason(reasonCode, category.ToCategoryCode()), SafeOperationRemediation(null, category), category.IsRetryableByDefault(), SafeOperationRetryAfter(category, retryAfter), request.CorrelationId, request.CheckNumber, IsSafeFingerprint(safeObservedFingerprint) ? safeObservedFingerprint : null, IsSafeOperationReference(request.OperationReference) ? request.OperationReference : null);
+        => new(false, ProviderOperationStatusKind.Unavailable, category, category.ToCategoryCode(), SafeOperationReason(reasonCode, category.ToCategoryCode()), SafeOperationRemediation(null, category), category.IsRetryableByDefault(), SafeOperationRetryAfter(category, retryAfter), request.CorrelationId, request.CheckNumber, ProviderAdapterGuards.IsSafeFingerprint(safeObservedFingerprint) ? safeObservedFingerprint : null, ProviderAdapterGuards.IsSafeOperationReference(request.OperationReference) ? request.OperationReference : null);
 
     private static bool IsAllowedOperationChange(ProviderFileChangeKind kind, ProviderFilePolicyEvidence policy)
         => kind switch
@@ -2057,11 +2058,6 @@ public sealed partial class ForgejoProvider
             && !path.Any(char.IsControl)
             && !path.Split('/').Any(static segment => segment is "" or "." or "..");
 
-    private static bool HasAncestorConflict(HashSet<string> paths, string candidate)
-        => paths.Any(path => !string.Equals(path, candidate, StringComparison.Ordinal)
-            && (path.StartsWith(candidate + "/", StringComparison.Ordinal)
-                || candidate.StartsWith(path + "/", StringComparison.Ordinal)));
-
     private static bool IsOperationTargetWithinBounds(ProviderGitOperationResolvedTarget target)
         => target.RefName["heads/".Length..].Length <= MaximumOperationBranchCharacters;
 
@@ -2070,11 +2066,6 @@ public sealed partial class ForgejoProvider
         IReadOnlyList<ProviderResolvedFileChange> changes)
         => changes.All(change => change.Kind == ProviderFileChangeKind.Add
             || change.SourceObjectId?.Length == target.ExpectedHeadSha.Length);
-
-    private static bool IsSafeOperationReference(string? value)
-        => value is { Length: > 0 and <= 128 }
-            && ProviderGitOperationResolvedTarget.IsCanonicalUnicode(value)
-            && value.All(static character => char.IsAsciiLetterOrDigit(character) || character is '-' or '_' or '.' or ':');
 
     private static string NormalizeCommitMessage(string value) => value.Trim();
 

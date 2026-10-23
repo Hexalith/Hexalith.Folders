@@ -1,5 +1,7 @@
 using System.Globalization;
+
 using Hexalith.Folders.Providers.Abstractions;
+using Hexalith.Folders.Providers.Shared;
 
 namespace Hexalith.Folders.Providers.Forgejo;
 
@@ -896,7 +898,7 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
     private static bool IsAdmissionWellFormed(ProviderIdempotencyAdmission? admission)
         => admission is not null
             && Enum.IsDefined(admission.Disposition)
-            && IsSafeOpaqueValue(admission.IntentFingerprint)
+            && ProviderAdapterGuards.IsSafeOpaqueValue(admission.IntentFingerprint)
             && (admission.Disposition == ProviderIdempotencyDisposition.EquivalentReplay
                 || HasNoPriorOutcomeFields(admission));
 
@@ -909,14 +911,14 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
 
         if (admission.PriorOutcomeDisposition is null
             || !Enum.IsDefined(admission.PriorOutcomeDisposition.Value)
-            || !IsSafeOpaqueValue(admission.PriorOperationReference))
+            || !ProviderAdapterGuards.IsSafeOpaqueValue(admission.PriorOperationReference))
         {
             return false;
         }
 
         return admission.PriorOutcomeDisposition switch
         {
-            ProviderPriorOutcomeDisposition.Success => IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+            ProviderPriorOutcomeDisposition.Success => ProviderAdapterGuards.IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
                 && SafeCanonicalRepositoryId(admission.PriorCanonicalRepositoryId) is not null
                 && admission.PriorReconciliationReference is null
                 && admission.PriorFailureCategory == ProviderFailureCategory.None
@@ -924,9 +926,9 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
                 && admission.PriorRemediationCode is null
                 && !admission.PriorRetryable
                 && admission.PriorRetryAfter is null,
-            ProviderPriorOutcomeDisposition.Unknown => IsSafeOpaqueValue(admission.PriorReconciliationReference)
+            ProviderPriorOutcomeDisposition.Unknown => ProviderAdapterGuards.IsSafeOpaqueValue(admission.PriorReconciliationReference)
                 && admission.PriorCanonicalRepositoryId is null
-                && (admission.PriorSafeOutcomeFingerprint is null || IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint))
+                && (admission.PriorSafeOutcomeFingerprint is null || ProviderAdapterGuards.IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint))
                 && admission.PriorFailureCategory == ProviderFailureCategory.None
                 && admission.PriorReasonCode is null
                 && admission.PriorRemediationCode is null
@@ -934,7 +936,7 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
                 && admission.PriorRetryAfter is null,
             ProviderPriorOutcomeDisposition.KnownFailure => admission.PriorFailureCategory is not (ProviderFailureCategory.None or ProviderFailureCategory.UnknownProviderOutcome)
                 && Enum.IsDefined(admission.PriorFailureCategory)
-                && IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+                && ProviderAdapterGuards.IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
                 && admission.PriorCanonicalRepositoryId is null
                 && admission.PriorReconciliationReference is null
                 && IsRepositoryReasonAllowed(admission.PriorReasonCode)
@@ -1096,19 +1098,8 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
                     ? TimeSpan.FromHours(24)
                     : retryAfter;
 
-    private static bool IsSafeOpaqueValue(string? value)
-        => !string.IsNullOrWhiteSpace(value)
-            && value.Length <= 512
-            && ProviderGitOperationResolvedTarget.IsCanonicalUnicode(value)
-            && !value.Contains("://", StringComparison.Ordinal)
-            && !value.Any(char.IsControl);
-
     private static bool IsReservedTenant(string? managedTenantId)
         => string.Equals(managedTenantId?.Trim(), "system", StringComparison.OrdinalIgnoreCase);
-
-    private static bool IsSafeFingerprint(string? value)
-        => value is { Length: 64 }
-            && value.All(static character => char.IsAsciiDigit(character) || character is >= 'a' and <= 'f');
 
     private static string? SafeCanonicalRepositoryId(string? canonicalRepositoryId)
     {
@@ -1136,7 +1127,7 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
                 && result.RetryAfter is null
             : result.FailureCategory != ProviderFailureCategory.None
                 && Enum.IsDefined(result.FailureCategory)
-                && IsSafeOpaqueValue(result.ReasonCode);
+                && ProviderAdapterGuards.IsSafeOpaqueValue(result.ReasonCode);
 
     private static bool IsCoherentReadiness(ForgejoReadinessResult result)
         => result.IsSuccess
@@ -1263,8 +1254,8 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
             return RepositoryFailure(request, ProviderFailureCategory.ProviderValidationFailed, "provider_identity_malformed");
         }
 
-        if (!IsSafeOpaqueValue(request.ManagedTenantId)
-            || !IsSafeOpaqueValue(request.OrganizationId)
+        if (!ProviderAdapterGuards.IsSafeOpaqueValue(request.ManagedTenantId)
+            || !ProviderAdapterGuards.IsSafeOpaqueValue(request.OrganizationId)
             || IsReservedTenant(request.ManagedTenantId))
         {
             return RepositoryFailure(request, ProviderFailureCategory.ProviderValidationFailed, "forgejo_operation_evidence_malformed");
@@ -1319,8 +1310,8 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
             return RepositoryBindingFailure(request, ProviderFailureCategory.ProviderValidationFailed, "provider_identity_malformed");
         }
 
-        if (!IsSafeOpaqueValue(request.ManagedTenantId)
-            || !IsSafeOpaqueValue(request.OrganizationId)
+        if (!ProviderAdapterGuards.IsSafeOpaqueValue(request.ManagedTenantId)
+            || !ProviderAdapterGuards.IsSafeOpaqueValue(request.OrganizationId)
             || IsReservedTenant(request.ManagedTenantId))
         {
             return RepositoryBindingFailure(request, ProviderFailureCategory.ProviderValidationFailed, "forgejo_operation_evidence_malformed");
@@ -1364,7 +1355,7 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
         string requiredScope)
     {
         DateTimeOffset now = _timeProvider.GetUtcNow();
-        if (!IsSafeOpaqueValue(authorizationEvidence.Fingerprint)
+        if (!ProviderAdapterGuards.IsSafeOpaqueValue(authorizationEvidence.Fingerprint)
             || authorizationEvidence.CapturedAt == default
             || authorizationEvidence.CapturedAt > now)
         {

@@ -20,7 +20,7 @@ public sealed class WorkspaceLockReleaseService(
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        IReadOnlyDictionary<string, string?> clientTenantValues = WithPayloadTenant(
+        IReadOnlyDictionary<string, string?> clientTenantValues = ClientTenantValues.WithPayloadTenant(
             request.ClientControlledTenantValues,
             request.PayloadTenantId);
 
@@ -43,7 +43,7 @@ public sealed class WorkspaceLockReleaseService(
         if (!authorization.IsAllowed || authorization.AllowedContext is null)
         {
             return FolderResult.Rejected(
-                MapAuthorization(authorization.Decision.OutcomeCode),
+                FolderAuthorizationResultMapper.Map(authorization.Decision.OutcomeCode),
                 managedTenantId: null,
                 organizationId: null,
                 folderId: null,
@@ -100,7 +100,7 @@ public sealed class WorkspaceLockReleaseService(
             .ReauthorizeTaskMutationAsync(authorizationContext, cancellationToken).ConfigureAwait(false);
         if (!finalAuthorization.IsAllowed)
         {
-            return FolderResult.Rejected(command, MapAuthorization(finalAuthorization.Decision.OutcomeCode));
+            return FolderResult.Rejected(command, FolderAuthorizationResultMapper.Map(finalAuthorization.Decision.OutcomeCode));
         }
 
         FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(
@@ -128,32 +128,4 @@ public sealed class WorkspaceLockReleaseService(
             : FolderResult.Rejected(command, FolderResultCode.AppendConflict);
     }
 
-    private static IReadOnlyDictionary<string, string?> WithPayloadTenant(
-        IReadOnlyDictionary<string, string?> values,
-        string? payloadTenantId)
-    {
-        Dictionary<string, string?> merged = new(values, StringComparer.Ordinal);
-        if (payloadTenantId is not null)
-        {
-            merged["payload_tenant_id"] = payloadTenantId;
-        }
-
-        return merged;
-    }
-
-    private static FolderResultCode MapAuthorization(string outcomeCode)
-        => outcomeCode switch
-        {
-            LayeredAuthorizationOutcomeCodes.AuthenticationDenied => FolderResultCode.MissingAuthoritativeTenant,
-            LayeredAuthorizationOutcomeCodes.ClaimTransformDenied => FolderResultCode.TenantAccessDenied,
-            LayeredAuthorizationOutcomeCodes.TenantProjectionStale => FolderResultCode.StaleProjection,
-            LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable => FolderResultCode.UnavailableProjection,
-            LayeredAuthorizationOutcomeCodes.FolderAclDenied or LayeredAuthorizationOutcomeCodes.SafeNotFound => FolderResultCode.FolderAclDenied,
-            LayeredAuthorizationOutcomeCodes.FolderAclStale => FolderResultCode.StaleProjection,
-            LayeredAuthorizationOutcomeCodes.FolderAclUnavailable => FolderResultCode.UnavailableProjection,
-            LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied => FolderResultCode.TenantAccessDenied,
-            LayeredAuthorizationOutcomeCodes.DaprPolicyDenied => FolderResultCode.PolicyEvidenceUnavailable,
-            LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed => FolderResultCode.MalformedEvidence,
-            _ => FolderResultCode.TenantAccessDenied,
-        };
 }

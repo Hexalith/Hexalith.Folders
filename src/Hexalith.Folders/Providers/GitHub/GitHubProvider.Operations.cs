@@ -1,3 +1,4 @@
+using Hexalith.Folders.Providers.Shared;
 using Hexalith.Folders.Providers.Abstractions;
 
 namespace Hexalith.Folders.Providers.GitHub;
@@ -964,18 +965,18 @@ public sealed partial class GitHubProvider
 
         if (request.FilePolicyEvidence is null
             || !IsFresh(request.FilePolicyEvidence.FreshnessClass)
-            || !IsSafeFingerprint(request.FilePolicyEvidence.Fingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.FilePolicyEvidence.Fingerprint)
             || request.FilePolicyEvidence.MaximumFileBytes is <= 0 or > MaximumFileBytes
             || request.FilePolicyEvidence.MaximumChangeCount is <= 0 or > MaximumChangeCount)
         {
             return (ProviderFailureCategory.ReconciliationRequired, "github_file_policy_evidence_stale_or_malformed");
         }
 
-        if (!IsSafeOpaqueValue(request.IdempotencyKey)
+        if (!ProviderAdapterGuards.IsSafeOpaqueValue(request.IdempotencyKey)
             || !IsOperationAdmissionWellFormed(request.IdempotencyAdmission)
-            || !IsSafeFingerprint(request.SafeResolvedTargetFingerprint)
-            || !IsSafeOpaqueReference(request.ChangeSetReference)
-            || !IsSafeFingerprint(request.SafeChangeSetFingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeResolvedTargetFingerprint)
+            || !ProviderAdapterGuards.IsSafeOperationReference(request.ChangeSetReference)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeChangeSetFingerprint)
             || request.Changes is null
             || request.Changes.Count is < 1 or > MaximumChangeCount
             || request.Changes.Count > request.FilePolicyEvidence.MaximumChangeCount)
@@ -991,11 +992,11 @@ public sealed partial class GitHubProvider
                 || change.Sequence != index
                 || !Enum.IsDefined(change.Kind)
                 || change.ContentType != ProviderFileContentType.RegularFile
-                || !IsSafeOpaqueReference(change.PathReference)
+                || !ProviderAdapterGuards.IsSafeOperationReference(change.PathReference)
                 || !opaquePaths.Add(change.PathReference)
-                || !IsSafeFingerprint(change.SafePathFingerprint)
+                || !ProviderAdapterGuards.IsSafeFingerprint(change.SafePathFingerprint)
                 || (change.Kind is ProviderFileChangeKind.Add or ProviderFileChangeKind.Change
-                    && (!IsSafeOpaqueReference(change.ContentReference) || !IsSafeFingerprint(change.SafeContentFingerprint)))
+                    && (!ProviderAdapterGuards.IsSafeOperationReference(change.ContentReference) || !ProviderAdapterGuards.IsSafeFingerprint(change.SafeContentFingerprint)))
                 || (change.Kind == ProviderFileChangeKind.Remove && (change.ContentReference is not null || change.SafeContentFingerprint is not null))
                 || !IsAllowedByPolicy(change.Kind, request.FilePolicyEvidence))
             {
@@ -1022,14 +1023,14 @@ public sealed partial class GitHubProvider
             return (ProviderFailureCategory.ProviderPermissionInsufficient, "github_commit_ref_policy_denied");
         }
 
-        if (!IsSafeOpaqueValue(request.IdempotencyKey)
+        if (!ProviderAdapterGuards.IsSafeOpaqueValue(request.IdempotencyKey)
             || !IsOperationAdmissionWellFormed(request.IdempotencyAdmission)
-            || !IsSafeFingerprint(request.SafeResolvedTargetFingerprint)
-            || !IsSafeOpaqueReference(request.StagedChangeSetReference)
-            || !IsSafeFingerprint(request.SafeStagedChangeSetFingerprint)
-            || !IsSafeOpaqueReference(request.CommitMessageReference)
-            || !IsSafeFingerprint(request.SafeCommitMessageFingerprint)
-            || !IsSafeFingerprint(request.SafeExpectedHeadFingerprint))
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeResolvedTargetFingerprint)
+            || !ProviderAdapterGuards.IsSafeOperationReference(request.StagedChangeSetReference)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeStagedChangeSetFingerprint)
+            || !ProviderAdapterGuards.IsSafeOperationReference(request.CommitMessageReference)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeCommitMessageFingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeExpectedHeadFingerprint))
         {
             return (ProviderFailureCategory.ProviderValidationFailed, "github_commit_intent_malformed");
         }
@@ -1053,12 +1054,12 @@ public sealed partial class GitHubProvider
             return (ProviderFailureCategory.ProviderValidationFailed, "idempotency_key_not_allowed");
         }
 
-        if (!IsSafeOpaqueReference(request.OperationReference)
-            || !IsSafeFingerprint(request.SafeResolvedTargetFingerprint)
-            || !IsSafeFingerprint(request.SafeFullRefFingerprint)
-            || !IsSafeFingerprint(request.SafeExpectedHeadFingerprint)
-            || !IsSafeFingerprint(request.SafeIntendedCommitFingerprint)
-            || !IsSafeFingerprint(request.SafeCheckWindowFingerprint))
+        if (!ProviderAdapterGuards.IsSafeOperationReference(request.OperationReference)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeResolvedTargetFingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeFullRefFingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeExpectedHeadFingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeIntendedCommitFingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(request.SafeCheckWindowFingerprint))
         {
             return (ProviderFailureCategory.ProviderValidationFailed, "github_status_evidence_malformed");
         }
@@ -1110,14 +1111,14 @@ public sealed partial class GitHubProvider
             return (ProviderFailureCategory.ProviderValidationFailed, "provider_identity_malformed");
         }
 
-        if (!IsSafeOpaqueValue(managedTenantId)
+        if (!ProviderAdapterGuards.IsSafeOpaqueValue(managedTenantId)
             || IsReservedTenant(managedTenantId)
-            || !IsSafeOpaqueValue(organizationId)
-            || !IsSafeOpaqueValue(folderId)
-            || !IsSafeOpaqueValue(delegatedTaskId)
-            || !IsSafeOpaqueReference(providerBindingRef)
-            || !IsSafeOpaqueReference(credentialReferenceId)
-            || !IsSafeOpaqueReference(repositoryBindingId)
+            || !ProviderAdapterGuards.IsSafeOpaqueValue(organizationId)
+            || !ProviderAdapterGuards.IsSafeOpaqueValue(folderId)
+            || !ProviderAdapterGuards.IsSafeOpaqueValue(delegatedTaskId)
+            || !ProviderAdapterGuards.IsSafeOperationReference(providerBindingRef)
+            || !ProviderAdapterGuards.IsSafeOperationReference(credentialReferenceId)
+            || !ProviderAdapterGuards.IsSafeOperationReference(repositoryBindingId)
             || !IsCanonicalUlid(correlationId)
             || targetEvidence is null
             || authorizationEvidence is null
@@ -1127,7 +1128,7 @@ public sealed partial class GitHubProvider
             return (ProviderFailureCategory.ProviderValidationFailed, "github_operation_evidence_malformed");
         }
 
-        if (!IsFresh(authorizationEvidence.FreshnessClass) || !IsSafeOpaqueValue(authorizationEvidence.Fingerprint))
+        if (!IsFresh(authorizationEvidence.FreshnessClass) || !ProviderAdapterGuards.IsSafeOpaqueValue(authorizationEvidence.Fingerprint))
         {
             return (ProviderFailureCategory.ReconciliationRequired, "authorization_evidence_stale");
         }
@@ -1138,14 +1139,14 @@ public sealed partial class GitHubProvider
         }
 
         if (!IsFresh(lockEvidence.FreshnessClass)
-            || !IsSafeFingerprint(lockEvidence.Fingerprint)
+            || !ProviderAdapterGuards.IsSafeFingerprint(lockEvidence.Fingerprint)
             || !lockEvidence.IsOwnedByDelegatedTask
             || lockEvidence.IsRevoked)
         {
             return (ProviderFailureCategory.ProviderConflict, "canonical_lock_evidence_invalid");
         }
 
-        if (!IsFresh(refPolicyEvidence.FreshnessClass) || !IsSafeFingerprint(refPolicyEvidence.Fingerprint))
+        if (!IsFresh(refPolicyEvidence.FreshnessClass) || !ProviderAdapterGuards.IsSafeFingerprint(refPolicyEvidence.Fingerprint))
         {
             return (ProviderFailureCategory.ReconciliationRequired, "ref_policy_evidence_stale_or_malformed");
         }
@@ -1262,7 +1263,7 @@ public sealed partial class GitHubProvider
                 || resolved.ContentType != declared.ContentType
                 || !IsSafeGitPath(resolved.Path)
                 || !paths.Add(resolved.Path)
-                || HasAncestorConflict(paths, resolved.Path)
+                || ProviderAdapterGuards.HasAncestorConflict(paths, resolved.Path)
                 || resolved.Content.Length > request.FilePolicyEvidence.MaximumFileBytes
                 || resolved.Content.Length > MaximumFileBytes
                 || (resolved.Kind == ProviderFileChangeKind.Remove && !resolved.Content.IsEmpty))
@@ -1496,7 +1497,7 @@ public sealed partial class GitHubProvider
         }
 
         if (reservation.Disposition == ProviderOperationReservationDisposition.Acquired
-            && IsSafeOpaqueReference(reservation.OperationReference)
+            && ProviderAdapterGuards.IsSafeOperationReference(reservation.OperationReference)
             && reservation.Generation > 0)
         {
             return null;
@@ -1531,7 +1532,7 @@ public sealed partial class GitHubProvider
         }
 
         if (reservation.Disposition == ProviderOperationReservationDisposition.Acquired
-            && IsSafeOpaqueReference(reservation.OperationReference)
+            && ProviderAdapterGuards.IsSafeOperationReference(reservation.OperationReference)
             && reservation.Generation > 0)
         {
             return null;
@@ -1558,26 +1559,26 @@ public sealed partial class GitHubProvider
         => StatusFailure(request, resolution?.GetSafeFailureCategory(ProviderFailureCategory.ProviderUnavailable) ?? ProviderFailureCategory.ProviderUnavailable, resolution?.GetSafeReasonCode(fallback) ?? fallback, resolution?.SafeRetryAfter);
 
     private static ProviderFileMutationResult FileMutationUnknown(ProviderFileMutationRequest request, string safeTargetFingerprint, string operationReference, string reasonCode)
-        => new(false, false, ProviderFailureCategory.UnknownProviderOutcome, ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(), SafeReason(reasonCode, "github_mutation_outcome_unknown"), "reconciliation_required_metadata_only", false, null, request.CorrelationId, safeTargetFingerprint, null, IsSafeOpaqueReference(operationReference) ? operationReference : null, IsSafeOpaqueReference(operationReference) ? operationReference : null);
+        => new(false, false, ProviderFailureCategory.UnknownProviderOutcome, ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(), SafeReason(reasonCode, "github_mutation_outcome_unknown"), "reconciliation_required_metadata_only", false, null, request.CorrelationId, safeTargetFingerprint, null, ProviderAdapterGuards.IsSafeOperationReference(operationReference) ? operationReference : null, ProviderAdapterGuards.IsSafeOperationReference(operationReference) ? operationReference : null);
 
     private static ProviderCommitResult CommitUnknown(ProviderCommitRequest request, string safeTargetFingerprint, string operationReference, string reasonCode)
-        => new(false, false, ProviderFailureCategory.UnknownProviderOutcome, ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(), SafeReason(reasonCode, "github_commit_outcome_unknown"), "reconciliation_required_metadata_only", false, null, request.CorrelationId, safeTargetFingerprint, null, IsSafeOpaqueReference(operationReference) ? operationReference : null, IsSafeOpaqueReference(operationReference) ? operationReference : null);
+        => new(false, false, ProviderFailureCategory.UnknownProviderOutcome, ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(), SafeReason(reasonCode, "github_commit_outcome_unknown"), "reconciliation_required_metadata_only", false, null, request.CorrelationId, safeTargetFingerprint, null, ProviderAdapterGuards.IsSafeOperationReference(operationReference) ? operationReference : null, ProviderAdapterGuards.IsSafeOperationReference(operationReference) ? operationReference : null);
 
     private static ProviderFileMutationResult FileMutationFailure(ProviderFileMutationRequest request, ProviderFailureCategory category, string reasonCode, TimeSpan? retryAfter = null, string? operationReference = null, bool equivalentReplay = false, string? remediationCode = null, bool? retryable = null, string? safeTargetFingerprint = null, string? safeOutcomeFingerprint = null)
-        => new(false, equivalentReplay, category, category.ToCategoryCode(), SafeReason(reasonCode, category.ToCategoryCode()), SafeRemediation(remediationCode, category), retryable ?? category.IsRetryableByDefault(), SafeRetryAfter(retryAfter), request.CorrelationId, IsSafeFingerprint(safeTargetFingerprint) ? safeTargetFingerprint : null, IsSafeFingerprint(safeOutcomeFingerprint) ? safeOutcomeFingerprint : null, IsSafeOpaqueReference(operationReference) ? operationReference : null, null);
+        => new(false, equivalentReplay, category, category.ToCategoryCode(), SafeReason(reasonCode, category.ToCategoryCode()), SafeRemediation(remediationCode, category), retryable ?? category.IsRetryableByDefault(), SafeRetryAfter(retryAfter), request.CorrelationId, ProviderAdapterGuards.IsSafeFingerprint(safeTargetFingerprint) ? safeTargetFingerprint : null, ProviderAdapterGuards.IsSafeFingerprint(safeOutcomeFingerprint) ? safeOutcomeFingerprint : null, ProviderAdapterGuards.IsSafeOperationReference(operationReference) ? operationReference : null, null);
 
     private static ProviderCommitResult CommitFailure(ProviderCommitRequest request, ProviderFailureCategory category, string reasonCode, TimeSpan? retryAfter = null, string? operationReference = null, bool equivalentReplay = false, string? remediationCode = null, bool? retryable = null, string? safeTargetFingerprint = null, string? safeOutcomeFingerprint = null)
-        => new(false, equivalentReplay, category, category.ToCategoryCode(), SafeReason(reasonCode, category.ToCategoryCode()), SafeRemediation(remediationCode, category), retryable ?? category.IsRetryableByDefault(), SafeRetryAfter(retryAfter), request.CorrelationId, IsSafeFingerprint(safeTargetFingerprint) ? safeTargetFingerprint : null, IsSafeFingerprint(safeOutcomeFingerprint) ? safeOutcomeFingerprint : null, IsSafeOpaqueReference(operationReference) ? operationReference : null, null);
+        => new(false, equivalentReplay, category, category.ToCategoryCode(), SafeReason(reasonCode, category.ToCategoryCode()), SafeRemediation(remediationCode, category), retryable ?? category.IsRetryableByDefault(), SafeRetryAfter(retryAfter), request.CorrelationId, ProviderAdapterGuards.IsSafeFingerprint(safeTargetFingerprint) ? safeTargetFingerprint : null, ProviderAdapterGuards.IsSafeFingerprint(safeOutcomeFingerprint) ? safeOutcomeFingerprint : null, ProviderAdapterGuards.IsSafeOperationReference(operationReference) ? operationReference : null, null);
 
     private static ProviderOperationStatusResult StatusUnavailable(ProviderOperationStatusRequest request, TimeSpan? retryAfter)
         => new(false, ProviderOperationStatusKind.Unavailable, ProviderFailureCategory.ProviderUnavailable, ProviderFailureCategory.ProviderUnavailable.ToCategoryCode(), "github_status_evidence_unavailable", ProviderFailureCategory.ProviderUnavailable.ToCategoryCode() + "_remediation", true, SafeRetryAfter(retryAfter), request.CorrelationId, request.CheckNumber, null, request.OperationReference);
 
     private static ProviderOperationStatusResult StatusFailure(ProviderOperationStatusRequest request, ProviderFailureCategory category, string reasonCode, TimeSpan? retryAfter = null, string? safeObservedFingerprint = null)
-        => new(false, ProviderOperationStatusKind.Unavailable, category, category.ToCategoryCode(), SafeReason(reasonCode, category.ToCategoryCode()), SafeRemediation(null, category), category.IsRetryableByDefault(), SafeRetryAfter(retryAfter), request.CorrelationId, request.CheckNumber, safeObservedFingerprint, IsSafeOpaqueReference(request.OperationReference) ? request.OperationReference : null);
+        => new(false, ProviderOperationStatusKind.Unavailable, category, category.ToCategoryCode(), SafeReason(reasonCode, category.ToCategoryCode()), SafeRemediation(null, category), category.IsRetryableByDefault(), SafeRetryAfter(retryAfter), request.CorrelationId, request.CheckNumber, safeObservedFingerprint, ProviderAdapterGuards.IsSafeOperationReference(request.OperationReference) ? request.OperationReference : null);
 
     private static bool IsOperationAdmissionWellFormed(ProviderIdempotencyAdmission? admission)
     {
-        if (admission is null || !Enum.IsDefined(admission.Disposition) || !IsSafeOpaqueValue(admission.IntentFingerprint))
+        if (admission is null || !Enum.IsDefined(admission.Disposition) || !ProviderAdapterGuards.IsSafeOpaqueValue(admission.IntentFingerprint))
         {
             return false;
         }
@@ -1589,14 +1590,14 @@ public sealed partial class GitHubProvider
 
         if (admission.PriorOutcomeDisposition is null
             || !Enum.IsDefined(admission.PriorOutcomeDisposition.Value)
-            || !IsSafeOpaqueReference(admission.PriorOperationReference))
+            || !ProviderAdapterGuards.IsSafeOperationReference(admission.PriorOperationReference))
         {
             return false;
         }
 
         return admission.PriorOutcomeDisposition switch
         {
-            ProviderPriorOutcomeDisposition.Success => IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+            ProviderPriorOutcomeDisposition.Success => ProviderAdapterGuards.IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
                 && admission.PriorCanonicalRepositoryId is null
                 && admission.PriorReconciliationReference is null
                 && admission.PriorFailureCategory == ProviderFailureCategory.None
@@ -1606,7 +1607,7 @@ public sealed partial class GitHubProvider
                 && admission.PriorRetryAfter is null,
             ProviderPriorOutcomeDisposition.Unknown => admission.PriorSafeOutcomeFingerprint is null
                 && admission.PriorCanonicalRepositoryId is null
-                && IsSafeOpaqueReference(admission.PriorReconciliationReference)
+                && ProviderAdapterGuards.IsSafeOperationReference(admission.PriorReconciliationReference)
                 && admission.PriorFailureCategory == ProviderFailureCategory.None
                 && admission.PriorReasonCode is null
                 && admission.PriorRemediationCode is null
@@ -1616,7 +1617,7 @@ public sealed partial class GitHubProvider
                 && admission.PriorCanonicalRepositoryId is null
                 && admission.PriorFailureCategory != ProviderFailureCategory.UnknownProviderOutcome
                 && Enum.IsDefined(admission.PriorFailureCategory)
-                && IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+                && ProviderAdapterGuards.IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
                 && admission.PriorReconciliationReference is null
                 && AllowedOperationReasonCodes.Contains(admission.PriorReasonCode ?? string.Empty)
                 && admission.PriorRemediationCode is not null
@@ -1646,7 +1647,7 @@ public sealed partial class GitHubProvider
             return false;
         }
 
-        bool hasOperationIdentity = IsSafeOpaqueReference(reservation.OperationReference);
+        bool hasOperationIdentity = ProviderAdapterGuards.IsSafeOperationReference(reservation.OperationReference);
         return reservation.Disposition switch
         {
             ProviderOperationReservationDisposition.Acquired or ProviderOperationReservationDisposition.Pending
@@ -1656,7 +1657,7 @@ public sealed partial class GitHubProvider
             ProviderOperationReservationDisposition.ReplaySuccess
                 => hasOperationIdentity
                     && reservation.Generation == 0
-                    && IsSafeFingerprint(reservation.SafeOutcomeFingerprint)
+                    && ProviderAdapterGuards.IsSafeFingerprint(reservation.SafeOutcomeFingerprint)
                     && reservation.ReconciliationReference is null
                     && reservation.FailureCategory == ProviderFailureCategory.None
                     && reservation.ReasonCode is null
@@ -1667,7 +1668,7 @@ public sealed partial class GitHubProvider
                 => hasOperationIdentity
                     && reservation.Generation == 0
                     && reservation.SafeOutcomeFingerprint is null
-                    && IsSafeOpaqueReference(reservation.ReconciliationReference)
+                    && ProviderAdapterGuards.IsSafeOperationReference(reservation.ReconciliationReference)
                     && reservation.FailureCategory == ProviderFailureCategory.None
                     && reservation.ReasonCode is null
                     && reservation.RemediationCode is null
@@ -1679,7 +1680,7 @@ public sealed partial class GitHubProvider
                     && reservation.FailureCategory != ProviderFailureCategory.None
                     && reservation.FailureCategory != ProviderFailureCategory.UnknownProviderOutcome
                     && Enum.IsDefined(reservation.FailureCategory)
-                    && IsSafeFingerprint(reservation.SafeOutcomeFingerprint)
+                    && ProviderAdapterGuards.IsSafeFingerprint(reservation.SafeOutcomeFingerprint)
                     && reservation.ReconciliationReference is null
                     && AllowedOperationReasonCodes.Contains(reservation.ReasonCode ?? string.Empty)
                     && reservation.RemediationCode is not null
@@ -1740,16 +1741,6 @@ public sealed partial class GitHubProvider
             && !path.Contains("\\", StringComparison.Ordinal)
             && !path.Any(char.IsControl)
             && !path.Split('/').Any(static segment => segment is "" or "." or "..");
-
-    private static bool HasAncestorConflict(HashSet<string> paths, string candidate)
-        => paths.Any(path => !string.Equals(path, candidate, StringComparison.Ordinal)
-            && (path.StartsWith(candidate + "/", StringComparison.Ordinal)
-                || candidate.StartsWith(path + "/", StringComparison.Ordinal)));
-
-    private static bool IsSafeOpaqueReference(string? value)
-        => value is { Length: > 0 and <= 128 }
-            && ProviderGitOperationResolvedTarget.IsCanonicalUnicode(value)
-            && value.All(static character => char.IsAsciiLetterOrDigit(character) || character is '-' or '_' or '.' or ':');
 
     private static TimeSpan? SafeRetryAfter(ProviderFailureCategory category, TimeSpan? retryAfter)
         => category.IsRetryableByDefault() ? SafeRetryAfter(retryAfter) : null;

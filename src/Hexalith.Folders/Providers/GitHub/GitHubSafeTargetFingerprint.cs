@@ -1,6 +1,6 @@
-using System.Buffers.Binary;
 using System.Security.Cryptography;
-using System.Text;
+
+using Hexalith.Folders.Hashing;
 using Hexalith.Folders.Providers.Abstractions;
 
 namespace Hexalith.Folders.Providers.GitHub;
@@ -328,22 +328,22 @@ internal static class GitHubSafeTargetFingerprint
         string? declaredFingerprint)
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        AppendField(hash, request.ManagedTenantId);
-        AppendField(hash, request.OrganizationId);
-        AppendField(hash, request.ProviderBindingRef);
-        AppendField(hash, request.ProviderFamily);
-        AppendField(hash, request.ProviderKey);
-        AppendField(hash, GitHubProviderConstants.RestApiVersion);
-        AppendField(hash, credentialMode.ToString());
-        AppendField(hash, request.AuthorizationEvidence.Fingerprint);
-        AppendField(hash, request.AuthorizationEvidence.FreshnessClass);
-        AppendField(hash, declaredFingerprint);
+        LengthPrefixedHash.AppendField(hash, request.ManagedTenantId);
+        LengthPrefixedHash.AppendField(hash, request.OrganizationId);
+        LengthPrefixedHash.AppendField(hash, request.ProviderBindingRef);
+        LengthPrefixedHash.AppendField(hash, request.ProviderFamily);
+        LengthPrefixedHash.AppendField(hash, request.ProviderKey);
+        LengthPrefixedHash.AppendField(hash, GitHubProviderConstants.RestApiVersion);
+        LengthPrefixedHash.AppendField(hash, credentialMode.ToString());
+        LengthPrefixedHash.AppendField(hash, request.AuthorizationEvidence.Fingerprint);
+        LengthPrefixedHash.AppendField(hash, request.AuthorizationEvidence.FreshnessClass);
+        LengthPrefixedHash.AppendField(hash, declaredFingerprint);
         foreach (KeyValuePair<string, string> pair in request.TargetEvidence.Metadata.OrderBy(static x => x.Key, StringComparer.Ordinal))
         {
             if (IsSafeMetadataValue(pair.Key) && IsSafeMetadataValue(pair.Value))
             {
-                AppendField(hash, pair.Key);
-                AppendField(hash, pair.Value);
+                LengthPrefixedHash.AppendField(hash, pair.Key);
+                LengthPrefixedHash.AppendField(hash, pair.Value);
             }
         }
 
@@ -356,25 +356,25 @@ internal static class GitHubSafeTargetFingerprint
         string? declaredFingerprint)
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        AppendField(hash, request.ManagedTenantId);
-        AppendField(hash, request.OrganizationId);
-        AppendField(hash, request.ProviderBindingRef);
-        AppendField(hash, request.RepositoryBindingId);
-        AppendField(hash, request.RepositoryProfileRef);
-        AppendField(hash, request.ProviderFamily);
-        AppendField(hash, request.ProviderKey);
-        AppendField(hash, GitHubProviderConstants.RestApiVersion);
-        AppendField(hash, credentialMode.ToString());
-        AppendField(hash, request.AuthorizationEvidence.Fingerprint);
-        AppendField(hash, request.AuthorizationEvidence.FreshnessClass);
-        AppendField(hash, request.IdempotencyKey);
-        AppendField(hash, declaredFingerprint);
+        LengthPrefixedHash.AppendField(hash, request.ManagedTenantId);
+        LengthPrefixedHash.AppendField(hash, request.OrganizationId);
+        LengthPrefixedHash.AppendField(hash, request.ProviderBindingRef);
+        LengthPrefixedHash.AppendField(hash, request.RepositoryBindingId);
+        LengthPrefixedHash.AppendField(hash, request.RepositoryProfileRef);
+        LengthPrefixedHash.AppendField(hash, request.ProviderFamily);
+        LengthPrefixedHash.AppendField(hash, request.ProviderKey);
+        LengthPrefixedHash.AppendField(hash, GitHubProviderConstants.RestApiVersion);
+        LengthPrefixedHash.AppendField(hash, credentialMode.ToString());
+        LengthPrefixedHash.AppendField(hash, request.AuthorizationEvidence.Fingerprint);
+        LengthPrefixedHash.AppendField(hash, request.AuthorizationEvidence.FreshnessClass);
+        LengthPrefixedHash.AppendField(hash, request.IdempotencyKey);
+        LengthPrefixedHash.AppendField(hash, declaredFingerprint);
         foreach (KeyValuePair<string, string> pair in request.TargetEvidence.Metadata.OrderBy(static x => x.Key, StringComparer.Ordinal))
         {
             if (IsSafeMetadataValue(pair.Key) && IsSafeMetadataValue(pair.Value))
             {
-                AppendField(hash, pair.Key);
-                AppendField(hash, pair.Value);
+                LengthPrefixedHash.AppendField(hash, pair.Key);
+                LengthPrefixedHash.AppendField(hash, pair.Value);
             }
         }
 
@@ -387,26 +387,26 @@ internal static class GitHubSafeTargetFingerprint
         string? declaredFingerprint)
     {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        AppendField(hash, request.ManagedTenantId);
-        AppendField(hash, request.OrganizationId);
-        AppendField(hash, request.ProviderBindingRef);
-        AppendField(hash, request.RepositoryBindingId);
-        AppendField(hash, request.ExternalRepositoryRefFingerprint);
-        AppendField(hash, request.BranchRefPolicyRef);
-        AppendField(hash, request.ProviderFamily);
-        AppendField(hash, request.ProviderKey);
-        AppendField(hash, GitHubProviderConstants.RestApiVersion);
-        AppendField(hash, credentialMode.ToString());
-        AppendField(hash, request.AuthorizationEvidence.Fingerprint);
-        AppendField(hash, request.AuthorizationEvidence.FreshnessClass);
-        AppendField(hash, request.IdempotencyKey);
-        AppendField(hash, declaredFingerprint);
+        LengthPrefixedHash.AppendField(hash, request.ManagedTenantId);
+        LengthPrefixedHash.AppendField(hash, request.OrganizationId);
+        LengthPrefixedHash.AppendField(hash, request.ProviderBindingRef);
+        LengthPrefixedHash.AppendField(hash, request.RepositoryBindingId);
+        LengthPrefixedHash.AppendField(hash, request.ExternalRepositoryRefFingerprint);
+        LengthPrefixedHash.AppendField(hash, request.BranchRefPolicyRef);
+        LengthPrefixedHash.AppendField(hash, request.ProviderFamily);
+        LengthPrefixedHash.AppendField(hash, request.ProviderKey);
+        LengthPrefixedHash.AppendField(hash, GitHubProviderConstants.RestApiVersion);
+        LengthPrefixedHash.AppendField(hash, credentialMode.ToString());
+        LengthPrefixedHash.AppendField(hash, request.AuthorizationEvidence.Fingerprint);
+        LengthPrefixedHash.AppendField(hash, request.AuthorizationEvidence.FreshnessClass);
+        LengthPrefixedHash.AppendField(hash, request.IdempotencyKey);
+        LengthPrefixedHash.AppendField(hash, declaredFingerprint);
         foreach (KeyValuePair<string, string> pair in request.TargetEvidence.Metadata.OrderBy(static x => x.Key, StringComparer.Ordinal))
         {
             if (IsSafeMetadataValue(pair.Key) && IsSafeMetadataValue(pair.Value))
             {
-                AppendField(hash, pair.Key);
-                AppendField(hash, pair.Value);
+                LengthPrefixedHash.AppendField(hash, pair.Key);
+                LengthPrefixedHash.AppendField(hash, pair.Value);
             }
         }
 
@@ -427,12 +427,4 @@ internal static class GitHubSafeTargetFingerprint
         => value is { Length: > 0 and <= 128 }
             && value.All(static character => char.IsAsciiLetterOrDigit(character) || character is '_' or '-');
 
-    private static void AppendField(IncrementalHash hash, string? value)
-    {
-        byte[] bytes = Encoding.UTF8.GetBytes(value ?? string.Empty);
-        Span<byte> length = stackalloc byte[4];
-        BinaryPrimitives.WriteInt32LittleEndian(length, bytes.Length);
-        hash.AppendData(length);
-        hash.AppendData(bytes);
-    }
 }
