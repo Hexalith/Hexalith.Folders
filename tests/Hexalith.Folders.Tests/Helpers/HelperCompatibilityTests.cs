@@ -51,8 +51,10 @@ public sealed class HelperCompatibilityTests
     }
 
     [Theory]
+    [InlineData(LayeredAuthorizationOutcomeCodes.Allowed, FolderResultCode.TenantAccessDenied)]
     [InlineData(LayeredAuthorizationOutcomeCodes.AuthenticationDenied, FolderResultCode.MissingAuthoritativeTenant)]
     [InlineData(LayeredAuthorizationOutcomeCodes.ClaimTransformDenied, FolderResultCode.TenantAccessDenied)]
+    [InlineData(LayeredAuthorizationOutcomeCodes.TenantAccessDenied, FolderResultCode.TenantAccessDenied)]
     [InlineData(LayeredAuthorizationOutcomeCodes.TenantProjectionStale, FolderResultCode.StaleProjection)]
     [InlineData(LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable, FolderResultCode.UnavailableProjection)]
     [InlineData(LayeredAuthorizationOutcomeCodes.FolderAclDenied, FolderResultCode.FolderAclDenied)]
@@ -67,9 +69,20 @@ public sealed class HelperCompatibilityTests
         => FolderAuthorizationResultMapper.Map(outcome).ShouldBe(expected);
 
     [Theory]
+    [InlineData(LayeredAuthorizationOutcomeCodes.Allowed, OrganizationProviderBindingResultCode.TenantAccessDenied)]
+    [InlineData(LayeredAuthorizationOutcomeCodes.AuthenticationDenied, OrganizationProviderBindingResultCode.MissingAuthoritativeTenant)]
+    [InlineData(LayeredAuthorizationOutcomeCodes.ClaimTransformDenied, OrganizationProviderBindingResultCode.TenantAccessDenied)]
+    [InlineData(LayeredAuthorizationOutcomeCodes.TenantAccessDenied, OrganizationProviderBindingResultCode.TenantAccessDenied)]
+    [InlineData(LayeredAuthorizationOutcomeCodes.TenantProjectionStale, OrganizationProviderBindingResultCode.StaleProjection)]
+    [InlineData(LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable, OrganizationProviderBindingResultCode.UnavailableProjection)]
     [InlineData(LayeredAuthorizationOutcomeCodes.FolderAclDenied, OrganizationProviderBindingResultCode.MissingPermission)]
+    [InlineData(LayeredAuthorizationOutcomeCodes.FolderAclStale, OrganizationProviderBindingResultCode.StaleProjection)]
+    [InlineData(LayeredAuthorizationOutcomeCodes.FolderAclUnavailable, OrganizationProviderBindingResultCode.UnavailableProjection)]
+    [InlineData(LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied, OrganizationProviderBindingResultCode.TenantAccessDenied)]
     [InlineData(LayeredAuthorizationOutcomeCodes.SafeNotFound, OrganizationProviderBindingResultCode.MissingPermission)]
     [InlineData(LayeredAuthorizationOutcomeCodes.DaprPolicyDenied, OrganizationProviderBindingResultCode.UnavailableProjection)]
+    [InlineData(LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed, OrganizationProviderBindingResultCode.MalformedEvidence)]
+    [InlineData("unknown", OrganizationProviderBindingResultCode.TenantAccessDenied)]
     public void OrganizationAuthorizationRetainsItsDistinctPolicy(string outcome, OrganizationProviderBindingResultCode expected)
         => Method<Func<string, OrganizationProviderBindingResultCode>>(typeof(ConfigureProviderBindingService), "MapAuthorization")(outcome).ShouldBe(expected);
 
@@ -82,6 +95,29 @@ public sealed class HelperCompatibilityTests
     [InlineData("folder\n", false)]
     [InlineData("folder/a", false)]
     public void StreamSegmentsKeepTheirGrammar(string? value, bool expected)
+    {
+        FolderStreamName.IsValidSegment(value).ShouldBe(expected);
+        OrganizationStreamName.IsValidSegment(value).ShouldBe(expected);
+    }
+
+    [Theory]
+    [InlineData(15, false)]
+    [InlineData(16, true)]
+    [InlineData(128, true)]
+    [InlineData(129, false)]
+    public void StreamSegmentsKeepOpaqueIdentifierLengthBounds(int length, bool expected)
+    {
+        string opaque = new('A', length);
+        FolderStreamName.IsValidSegment(opaque).ShouldBe(expected);
+        OrganizationStreamName.IsValidSegment(opaque).ShouldBe(expected);
+    }
+
+    [Theory]
+    [InlineData("Aopaque_123456789", true)]
+    [InlineData("1OPAQUE_123456789", true)]
+    [InlineData("_OPAQUE1234567890", false)]
+    [InlineData("-OPAQUE1234567890", false)]
+    public void StreamSegmentsKeepOpaqueIdentifierLeadingCharacterRules(string value, bool expected)
     {
         FolderStreamName.IsValidSegment(value).ShouldBe(expected);
         OrganizationStreamName.IsValidSegment(value).ShouldBe(expected);
@@ -120,7 +156,7 @@ public sealed class HelperCompatibilityTests
 
         Func<string?, bool> fingerprint = ProviderAdapterGuards.IsSafeFingerprint;
         fingerprint(new string('a', 64)).ShouldBeTrue();
-        foreach (string? value in new[] { null, new string('a', 63), new string('a', 65), new string('A', 64), new string('g', 64) })
+        foreach (string? value in new[] { null, new string('a', 63), new string('a', 65), new string('A', 64), new string('g', 64), new string('\u0661', 64) })
         {
             fingerprint(value).ShouldBeFalse();
         }
@@ -138,6 +174,8 @@ public sealed class HelperCompatibilityTests
         ancestor(paths, "dir/file").ShouldBeFalse();
         ancestor(paths, "dir").ShouldBeTrue();
         ancestor(paths, "dir/file/child").ShouldBeTrue();
+        ancestor(paths, "dir/filex").ShouldBeFalse();
+        ancestor(new HashSet<string>(StringComparer.Ordinal) { "dir/filex" }, "dir/file").ShouldBeFalse();
         ancestor(paths, "di").ShouldBeFalse();
         ancestor(paths, "DIR").ShouldBeFalse();
     }
@@ -165,6 +203,18 @@ public sealed class HelperCompatibilityTests
         LengthPrefixedHash.AppendInt32(hash, 0);
         LengthPrefixedHash.AppendInt32(hash, int.MaxValue);
         Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant().ShouldBe("01934b958b7325445e336fba43fd6440479c7bccfe7b1a98d45b0b0ad18b1587");
+    }
+
+    [Fact]
+    public void LegacyEncodingReplacesMalformedUnicodeWithReplacementCharacter()
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        LengthPrefixedHash.AppendField(hash, "\ud800");
+        Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant()
+            .ShouldBe("cef3e1da829424c9c203c1f4ff66d46568370e9441f8dd669b319bbd0450ac48");
+        LengthPrefixedHash.AppendField(hash, "\ufffd");
+        Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant()
+            .ShouldBe("cef3e1da829424c9c203c1f4ff66d46568370e9441f8dd669b319bbd0450ac48");
     }
 
     [Fact]
@@ -207,11 +257,11 @@ public sealed class HelperCompatibilityTests
             "correlation-a");
 
         GitHubSafeTargetFingerprint.TryCreate(request, ProviderCredentialMode.AppInstallationReference,
-            out ProviderTargetEvidence github, out _).ShouldBeTrue();
+            out ProviderTargetEvidence github, out string? githubReason).ShouldBeTrue(githubReason);
         github.Metadata["safe_target_fingerprint"].ShouldBe("88927c3fc879e7b1f4d5ce2846d4f724ce9bc5a8f09a5e4786577352cf86719b");
         ForgejoSafeTargetFingerprint.TryCreate(request with { ProviderFamily = "forgejo", ProviderKey = "forgejo" },
             ProviderCredentialMode.AppInstallationReference, new Uri("https://forgejo.example/"), "9.0.3",
-            out ProviderTargetEvidence forgejo, out _).ShouldBeTrue();
+            out ProviderTargetEvidence forgejo, out string? forgejoReason).ShouldBeTrue(forgejoReason);
         forgejo.Metadata["safe_target_fingerprint"].ShouldBe("027daa2ba80f90853aba0a061790b2a94f75d912a6e208a5c7dcacb19b88903a");
         ProviderCapabilityDiscoveryResult profile = ProviderCapabilityProfileFactory.Create(
             request, "github", "github", [], new ProviderRateLimitPosture("bounded", false, null, new Dictionary<string, string>()),
@@ -227,11 +277,11 @@ public sealed class HelperCompatibilityTests
             },
         };
         GitHubSafeTargetFingerprint.TryCreate(reordered, ProviderCredentialMode.AppInstallationReference,
-            out ProviderTargetEvidence reorderedGithub, out _).ShouldBeTrue();
+            out ProviderTargetEvidence reorderedGithub, out string? reorderedGithubReason).ShouldBeTrue(reorderedGithubReason);
         reorderedGithub.Metadata["safe_target_fingerprint"].ShouldBe(github.Metadata["safe_target_fingerprint"]);
         ForgejoSafeTargetFingerprint.TryCreate(reordered with { ProviderFamily = "forgejo", ProviderKey = "forgejo" },
             ProviderCredentialMode.AppInstallationReference, new Uri("https://forgejo.example/"), "9.0.3",
-            out ProviderTargetEvidence reorderedForgejo, out _).ShouldBeTrue();
+            out ProviderTargetEvidence reorderedForgejo, out string? reorderedForgejoReason).ShouldBeTrue(reorderedForgejoReason);
         reorderedForgejo.Metadata["safe_target_fingerprint"].ShouldBe(forgejo.Metadata["safe_target_fingerprint"]);
     }
 
@@ -245,6 +295,8 @@ public sealed class HelperCompatibilityTests
             compare(fingerprint, fingerprint.ToUpperInvariant()).ShouldBeTrue();
             compare(fingerprint, new string('0', 64)).ShouldBeFalse();
             compare(null, fingerprint).ShouldBeFalse();
+            compare(fingerprint, null).ShouldBeFalse();
+            compare(null, null).ShouldBeFalse();
             compare(fingerprint, new string('g', 64)).ShouldBeFalse();
             compare(fingerprint, "ab").ShouldBeFalse();
         }
@@ -279,6 +331,31 @@ public sealed class HelperCompatibilityTests
         forgejoException.ParamName.ShouldBe("count");
         forgejoException.ActualValue.ShouldBe(-1);
         hash.GetCurrentHash().ShouldBe(appendedDigest);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" \t")]
+    [InlineData("HXF-GITHUB:v1:test")]
+    [InlineData("HXF-FORGEJO:v1:test")]
+    public void ProviderEvidenceRejectsMissingAndCaseVariantDomains(string? domain)
+    {
+        Should.Throw<ArgumentException>(() => GitHubProviderSafeOperationEvidence.Create(domain!, ["A"]))
+            .ParamName.ShouldBe("domain");
+        Should.Throw<ArgumentException>(() => ForgejoProviderSafeOperationEvidence.Create(domain!, ["A"]))
+            .ParamName.ShouldBe("domain");
+        Should.Throw<ArgumentException>(() => GitHubProviderSafeOperationEvidence.Compute(domain!, _ => { }))
+            .ParamName.ShouldBe("domain");
+        Should.Throw<ArgumentException>(() => ForgejoProviderSafeOperationEvidence.Compute(domain!, _ => { }))
+            .ParamName.ShouldBe("domain");
+    }
+
+    [Fact]
+    public void ProviderEvidenceWritersRejectNullDestinationHashes()
+    {
+        Should.Throw<ArgumentNullException>(() => new GitHubCanonicalEvidenceWriter(null!)).ParamName.ShouldBe("hash");
+        Should.Throw<ArgumentNullException>(() => new ForgejoCanonicalEvidenceWriter(null!)).ParamName.ShouldBe("hash");
     }
 
     private static T Method<T>(Type type, string name)

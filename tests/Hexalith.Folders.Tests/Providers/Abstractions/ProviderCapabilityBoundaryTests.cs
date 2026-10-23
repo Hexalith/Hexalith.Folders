@@ -120,11 +120,12 @@ public sealed class ProviderCapabilityBoundaryTests
     public void ProviderAbstractionsShouldNotReferenceOutOfScopeRuntimeOrAdapterDependencies()
     {
         string root = FindRepositoryRoot();
-        string abstractionRoot = Path.Combine(root, "src", "Hexalith.Folders", "Providers", "Abstractions");
-        string combined = string.Join(
-            Environment.NewLine,
-            Directory.EnumerateFiles(abstractionRoot, "*.cs", SearchOption.AllDirectories)
-                .Select(File.ReadAllText));
+        // The profile factory's encoder moved out of Abstractions in story 11.5.
+        string[] sourceRoots =
+        [
+            Path.Combine(root, "src", "Hexalith.Folders", "Providers", "Abstractions"),
+            Path.Combine(root, "src", "Hexalith.Folders", "Hashing"),
+        ];
 
         string[] forbiddenTerms =
         [
@@ -146,9 +147,13 @@ public sealed class ProviderCapabilityBoundaryTests
             "Process",
         ];
 
-        foreach (string forbidden in forbiddenTerms)
+        foreach (string sourceFile in sourceRoots.SelectMany(sourceRoot => Directory.EnumerateFiles(sourceRoot, "*.cs", SearchOption.AllDirectories)))
         {
-            combined.ShouldNotContain(forbidden, Case.Sensitive);
+            string source = File.ReadAllText(sourceFile);
+            foreach (string forbidden in forbiddenTerms)
+            {
+                source.ShouldNotContain(forbidden, Case.Sensitive, $"Forbidden dependency in {Path.GetRelativePath(root, sourceFile)}");
+            }
         }
     }
 
