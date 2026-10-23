@@ -71,7 +71,18 @@ internal static class FolderCanonicalErrorMapper
         };
 
     public static int StatusFor(string category)
-        => category switch
+        => TryGetStatus(category, out int statusCode) ? statusCode : StatusCodes.Status403Forbidden;
+
+    /// <summary>
+    /// Looks up an explicit Domain REST status-table row for <paramref name="category"/>.
+    /// Unlike <see cref="StatusFor"/>, an unmapped category returns <see langword="false"/> instead of the 403 default.
+    /// </summary>
+    /// <param name="category">The canonical reason category.</param>
+    /// <param name="statusCode">The mapped HTTP status, or 0 when the category has no explicit row.</param>
+    /// <returns><see langword="true"/> when the category has an explicit row.</returns>
+    public static bool TryGetStatus(string category, out int statusCode)
+    {
+        statusCode = category switch
         {
             "authentication_failure" => StatusCodes.Status401Unauthorized,
             "not_found" or "not_found_to_caller" => StatusCodes.Status404NotFound,
@@ -101,8 +112,13 @@ internal static class FolderCanonicalErrorMapper
                 or "projection_unavailable"
                 or "idempotency_admission_unavailable"
                 or "internal_error" => StatusCodes.Status503ServiceUnavailable,
-            _ => StatusCodes.Status403Forbidden,
+
+            // Story 8.3: explicit so the gateway 403 folder_acl_denied surface (CLI exit 66) never rests on a default.
+            "folder_acl_denied" => StatusCodes.Status403Forbidden,
+            _ => 0,
         };
+        return statusCode != 0;
+    }
 
     public static bool RetryableFor(string category)
         => category switch

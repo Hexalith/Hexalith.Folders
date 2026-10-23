@@ -113,6 +113,38 @@ public sealed class FolderProblemDetailsFactoryTests
         problem.ProblemDetails.Title.ShouldBe("Read model unavailable.");
     }
 
+    [Theory]
+    [InlineData(StatusCodes.Status503ServiceUnavailable, "unknown_provider_outcome")]
+    [InlineData(StatusCodes.Status409Conflict, "reconciliation_required")]
+    public void DomainUnresolvedOutcomeShouldCarryFinalStateDetail(int statusCode, string category)
+    {
+        // The client OQ2 projection requires details.finalState on exactly these two tuples.
+        ProblemHttpResult problem = FolderProblemDetailsFactory.ForDomain(
+            statusCode,
+            category,
+            category,
+            retryable: false,
+            correlationId: "corr-a",
+            taskId: null).ShouldBeOfType<ProblemHttpResult>();
+
+        Details(problem)["finalState"].ShouldBe(category);
+        problem.ProblemDetails.Extensions["clientAction"].ShouldBe("wait_for_reconciliation");
+    }
+
+    [Fact]
+    public void DomainResolvedOutcomeShouldOmitFinalStateDetail()
+    {
+        ProblemHttpResult problem = FolderProblemDetailsFactory.ForDomain(
+            StatusCodes.Status422UnprocessableEntity,
+            "commit_failed",
+            "commit_failed",
+            retryable: false,
+            correlationId: "corr-a",
+            taskId: null).ShouldBeOfType<ProblemHttpResult>();
+
+        Details(problem).ShouldNotContainKey("finalState");
+    }
+
     private static IDictionary<string, object?> Details(ProblemHttpResult problem)
         => problem.ProblemDetails.Extensions["details"].ShouldBeAssignableTo<IDictionary<string, object?>>()!;
 

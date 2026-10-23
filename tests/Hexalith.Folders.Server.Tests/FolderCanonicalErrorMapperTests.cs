@@ -61,4 +61,22 @@ public sealed class FolderCanonicalErrorMapperTests
         FolderCanonicalErrorMapper.ClientActionFor("idempotency_admission_unavailable", true)
             .ShouldBe("retry_later");
     }
+
+    [Fact]
+    public void FolderAclDeniedShouldHaveAnExplicitForbiddenRow()
+    {
+        FolderCanonicalErrorMapper.TryGetStatus("folder_acl_denied", out int statusCode).ShouldBeTrue();
+        statusCode.ShouldBe(StatusCodes.Status403Forbidden);
+    }
+
+    [Theory]
+    [InlineData("commit_failed")]
+    [InlineData("provider_failure_known")]
+    [InlineData("tenant_access_denied")]
+    public void UnmappedCategoryShouldMissTheTableButKeepTheForbiddenDefault(string category)
+    {
+        FolderCanonicalErrorMapper.TryGetStatus(category, out int statusCode).ShouldBeFalse();
+        statusCode.ShouldBe(0);
+        FolderCanonicalErrorMapper.StatusFor(category).ShouldBe(StatusCodes.Status403Forbidden);
+    }
 }

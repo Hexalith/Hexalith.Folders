@@ -12,7 +12,7 @@ public sealed class FolderSensitiveDiagnosticDetectorTests
     [InlineData("diff --git a/file b/file")]
     [InlineData("installation-123")]
     [InlineData("providerpayload")]
-    [InlineData("repo-secret-name")]
+    [InlineData("repo-name")]
     [InlineData("bearer-token")]
     [InlineData("client-secret")]
     [InlineData("password-reset")]
@@ -22,6 +22,14 @@ public sealed class FolderSensitiveDiagnosticDetectorTests
     [InlineData("privatekey")]
     [InlineData("private key")]
     public void DetectorShouldMarkProviderHttpSensitiveTokens(string value)
+        => FolderSensitiveDiagnosticDetector.IsSensitive(value).ShouldBeTrue();
+
+    [Theory]
+    [InlineData("OWNER-REPOSITORY-NAME")]
+    [InlineData("Installation-123")]
+    [InlineData("Repo-Name")]
+    [InlineData("ProviderPayload")]
+    public void DetectorShouldMatchSensitiveTokensRegardlessOfCase(string value)
         => FolderSensitiveDiagnosticDetector.IsSensitive(value).ShouldBeTrue();
 
     [Theory]
@@ -35,6 +43,7 @@ public sealed class FolderSensitiveDiagnosticDetectorTests
     [InlineData("corr-a")]
     [InlineData("folder-a")]
     [InlineData("workspace_1")]
+    [InlineData("report-1")]
     public void DetectorShouldAllowMetadataOnlyIdentifiers(string value)
         => FolderSensitiveDiagnosticDetector.IsSensitive(value).ShouldBeFalse();
 }

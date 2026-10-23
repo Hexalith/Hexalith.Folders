@@ -4022,12 +4022,13 @@ public static partial class FoldersDomainServiceEndpoints
             : correlationId;
         string? reasonCode = SafeGatewayReasonCode(exception.ReasonCode);
 
-        // Domain FolderResultCode / category status lives in FolderCanonicalErrorMapper.
-        // Match only when the gateway status equals the Domain table so Audit/OpsConsole
-        // 409 stale mapping is not retargeted and unmapped categories (commit_failed,
-        // provider_failure_known) keep their existing 422 handling.
+        // Domain category status lives in FolderCanonicalErrorMapper. Match only an explicit
+        // table row whose status equals the gateway status: allowlisted reasons without a row
+        // (commit_failed, provider_failure_known) must not ride StatusFor's 403 default, so a
+        // 403 carrying them still collapses to denied_safe and only the 422 arm below surfaces them.
         if (reasonCode is not null
-            && exception.StatusCode == FolderCanonicalErrorMapper.StatusFor(reasonCode))
+            && FolderCanonicalErrorMapper.TryGetStatus(reasonCode, out int tableStatus)
+            && exception.StatusCode == tableStatus)
         {
             return FolderProblemDetailsFactory.ForDomain(
                 exception.StatusCode,

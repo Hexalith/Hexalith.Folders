@@ -2632,6 +2632,8 @@ archived: 2026-09-18
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: Unverified medium — gateway 403 plus commit_failed or provider_failure_known may now echo those codes instead of denied_safe.
   evidence: maybe-false. ToArchiveGatewayProblem now treats any allowlisted reason whose StatusFor equals the gateway status as a table hit; StatusFor defaults to 403. The 422 arms are unchanged. Settle by showing a live gateway 403 with those reasons, or by proving the gateway never emits that pairing.
+  status: resolved 2026-10-23
+  resolution: Verified by the Story 11.4 code review (2026-10-23) and fixed. `ToArchiveGatewayProblem` now matches only explicit `FolderCanonicalErrorMapper.TryGetStatus` rows. `folder_acl_denied` → 403 is an explicit row, and `StatusFor` values are unchanged. A gateway 403 carrying `commit_failed` / `provider_failure_known` collapses to `denied_safe` again. `ArchiveFolderEndpointShouldSurfaceKnownFinalOutcomesOnlyAtTheirOwnStatus` pins the 422 and 403 rows.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-9-authorized-body-content-materialization-c9-gated.md`
   summary: Story 11.4 spec status, sprint-status, and the in-progress-only task disagree (`done` vs `review`).
@@ -2644,6 +2646,8 @@ archived: 2026-09-18
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-9-authorized-body-content-materialization-c9-gated.md`
   summary: Gateway 403 plus commit_failed or provider_failure_known now echoes those codes instead of denied_safe.
   evidence: ToArchiveGatewayProblem matches StatusFor (default 403) before the 422 arms. CLI maps Tenant_access_denied to exit 66 and Commit_failed to 70. Caused by 11.4, not 10.9.
+  status: resolved 2026-10-23
+  resolution: Verified by the Story 11.4 code review (2026-10-23) and fixed. `ToArchiveGatewayProblem` now matches only explicit `FolderCanonicalErrorMapper.TryGetStatus` rows. `folder_acl_denied` → 403 is an explicit row, and `StatusFor` values are unchanged. A gateway 403 carrying `commit_failed` / `provider_failure_known` collapses to `denied_safe` again. `ArchiveFolderEndpointShouldSurfaceKnownFinalOutcomesOnlyAtTheirOwnStatus` pins the 422 and 403 rows.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-9-authorized-body-content-materialization-c9-gated.md`
   summary: FolderCanonicalIdentifierTests omit IsSafeDiagnosticId and SanitizeCorrelationId.
@@ -3041,3 +3045,21 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-rejection-metadata.md`
   summary: Map null event collections and null event entries in the shared parity gateway to bounded malformed evidence.
   evidence: Blind Hunter review found that JSON events:null reaches result.Events.Count and events:[null] reaches the sole event Payload without a guard. DomainServiceWireResult/DomainServiceWireEvent are positional records without null-input guards. Both dereferences already exist at baseline 41358c834c19796bc5017cdc1726eff5c7eb5bfe (Count and Events.Single().Payload), independently of DW-315's explicit zero/multiple-event decision. Add wire-level null-shape regression coverage in a separate test-support correction.
+
+## Deferred from: code review of spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md (2026-10-23)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
+  summary: Domain ProblemDetails title 410 `lock_expired` and 429 `provider_rate_limited` as "Authorization denied.", and Provider titles 404 `not_found` the same way.
+  evidence: Pre-existing. The titles were copied verbatim into `FolderProblemDetailsFactory.DomainTitleFor` (`src/Hexalith.Folders.Server/FolderProblemDetailsFactory.cs:235`) and the Provider title switch. Callers that read `title` instead of `category` see a denial label. Changing a title is a REST wire change. The sibling 409 "Idempotency conflict." row from the Story 12.6 review covers the conflict titles.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
+  summary: The `idempotency_key_not_allowed` rejection on read endpoints echoes the raw correlation and task headers before canonical validation, and the factory writes `extensions.taskId` without validating it.
+  evidence: Pre-existing. In `ValidateEvidenceQueryEnvelope` and the inline read handlers (`src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:350`, `:421`, ...), the Idempotency-Key check runs before the canonical-ID check and passes `correlationId` / `taskId` unchanged. `FolderProblemDetailsFactory.ForDomain` validates `details.taskId` but not `extensions.taskId`. The values are free of control characters and go back only to the caller that sent them.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
+  summary: The shared detector misses fine-grained GitHub PATs (`github_pat_…`) and GitLab `glpat-…` tokens.
+  evidence: Pre-existing Provider HTTP filter (`src/Hexalith.Folders.Server/FolderSensitiveDiagnosticDetector.cs:15`). `github_pat_` tokens match `^[A-Za-z0-9][A-Za-z0-9_-]{0,255}$`, so Provider and OpsConsole would accept such a value as a correlation ID and echo it. Story 11.4 required the shared detector to equal the Provider filter, and widening it changes Provider wire behaviour.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
+  summary: Server validation duplication remains beyond the 11.4 extraction list: the correlation-header readers and the inline read-envelope checks.
+  evidence: Pre-existing. OpsConsole `TryReadCorrelation` (`OpsConsoleDiagnosticsEndpoints.cs:436`) and Provider `TryReadSupportEvidenceCorrelation` (`ProviderReadinessEndpoints.cs:595`) differ only in name. About ten Domain read handlers, plus the Audit, Provider and OpsConsole envelopes, inline the Idempotency-Key, canonical-ID and freshness checks. The `ClientTenantIds` / `ClientPrincipalIds` copies are tracked by the 10.9 review row. This is a candidate for Story 11.13 cleanup.

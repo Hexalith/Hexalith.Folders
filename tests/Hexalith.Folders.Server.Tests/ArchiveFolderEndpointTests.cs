@@ -382,6 +382,55 @@ public sealed class ArchiveFolderEndpointTests
         }
     }
 
+    [Theory]
+    [InlineData(422, "commit_failed", "commit_failed", "commit_failed")]
+    [InlineData(422, "CommitFailed", "commit_failed", "commit_failed")]
+    [InlineData(422, "provider_failure_known", "provider_failure_known", "provider_failure_known")]
+    [InlineData(403, "commit_failed", "tenant_access_denied", "denied_safe")]
+    [InlineData(403, "provider-failure-known", "tenant_access_denied", "denied_safe")]
+    public async Task ArchiveFolderEndpointShouldSurfaceKnownFinalOutcomesOnlyAtTheirOwnStatus(
+        int gatewayStatus,
+        string reasonCode,
+        string expectedCategory,
+        string expectedCode)
+    {
+        // An allowlisted reason with no explicit status-table row surfaces only on its own 422 arm;
+        // at any other status it must collapse to the safe fallback, never ride the table's 403 default.
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            Exception = new EventStoreGatewayException(
+                gatewayStatus,
+                "Gateway rejection",
+                type: "https://hexalith.dev/errors/internal-detail",
+                detail: "folder folder-a rejected by internal gateway",
+                correlationId: "correlation-gateway",
+                reasonCode: reasonCode),
+        };
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe((HttpStatusCode)gatewayStatus);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            document.RootElement.GetProperty("category").GetString().ShouldBe(expectedCategory);
+            document.RootElement.GetProperty("code").GetString().ShouldBe(expectedCode);
+            document.RootElement.GetProperty("retryable").GetBoolean().ShouldBeFalse();
+            document.RootElement.GetProperty("correlationId").GetString().ShouldBe("correlation-gateway");
+            json.ShouldNotContain("folder folder-a rejected");
+            gateway.Requests.Count.ShouldBe(1);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
     [Fact]
     public async Task ArchiveFolderEndpointShouldReturnSchemaVersionHintWithoutGatewaySubmit()
     {
