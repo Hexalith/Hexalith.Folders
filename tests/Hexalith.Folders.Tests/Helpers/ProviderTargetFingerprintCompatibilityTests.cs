@@ -11,6 +11,23 @@ public sealed class ProviderTargetFingerprintCompatibilityTests
     // Expected hashes come from the original provider sources at
     // 591194c7766c72d8bd51398d66f814a6a1fca922, before helper extraction.
     [Theory]
+    [InlineData(false, "609c44f0aaa53636b7e93a7412410cb22a97e9ec7edc73d5908eb1e3b6468796")]
+    [InlineData(true, "539deb5f60f5f09d5e995fee60d39ce9cb8c5f190a15c66d856346bb7ec9324e")]
+    public void DiscoveryTargetFingerprintKeepsItsBaselineFieldOrder(bool forgejo, string expected)
+    {
+        ProviderCapabilityDiscoveryRequest request = DiscoveryRequest(forgejo);
+        bool created = forgejo
+            ? ForgejoSafeTargetFingerprint.TryCreate(request, ProviderCredentialMode.AppInstallationReference,
+                new Uri("https://forgejo.example/authorized/"), "9.0.3",
+                out ProviderTargetEvidence target, out string? reason)
+            : GitHubSafeTargetFingerprint.TryCreate(request, ProviderCredentialMode.AppInstallationReference,
+                out target, out reason);
+
+        created.ShouldBeTrue(reason);
+        target.Metadata["safe_target_fingerprint"].ShouldBe(expected);
+    }
+
+    [Theory]
     [InlineData(false, "138ce4b8e19512328a48bf01a0e74a28c654737544a0d5b32a736e482b47928c")]
     [InlineData(true, "ed22d98412e7a4f79952ff239b9729be820f8bb2e0f2d8bd602d413f220baad3")]
     public void RepositoryCreationTargetFingerprintKeepsItsBaselineFieldOrder(bool forgejo, string expected)
@@ -94,6 +111,12 @@ public sealed class ProviderTargetFingerprintCompatibilityTests
         created.ShouldBeTrue(reason);
         target.Metadata["safe_target_fingerprint"].ShouldBe(expected);
     }
+
+    private static ProviderCapabilityDiscoveryRequest DiscoveryRequest(bool forgejo)
+        => new(
+            "tenant-a", "organization-b", "provider-binding-c", "credential-d", Family(forgejo), Family(forgejo) + "-instance",
+            "v1", Target(forgejo, ProviderOperationCatalog.ReadinessValidation), [ProviderCredentialMode.AppInstallationReference],
+            Authorization(), "correlation-e");
 
     private static ProviderRepositoryCreationRequest CreationRequest(bool forgejo)
         => new(

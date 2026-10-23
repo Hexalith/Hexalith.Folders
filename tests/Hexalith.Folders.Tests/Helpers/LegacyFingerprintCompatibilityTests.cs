@@ -23,12 +23,27 @@ public sealed class LegacyFingerprintCompatibilityTests
     }
 
     [Fact]
+    public void CreateFolderValidationFingerprintsDeduplicatedOrdinalTags()
+    {
+        CreateFolder canonical = new(
+            "tenant-a", "tenant-a", "folder-c", "Folder C", "Description", "folder-c",
+            ["alpha", "zeta"], "actor-d", "correlation-e", "task-f", "idempotency-g", "payload-h");
+
+        FolderCommandValidationResult result = FolderCommandValidator.Validate(canonical with { Tags = ["zeta", "alpha", "zeta"] });
+
+        result.IsAccepted.ShouldBeTrue(result.Code.ToString());
+        result.CanonicalTags.ShouldBe(["alpha", "zeta"], ignoreOrder: false);
+        result.IdempotencyFingerprint.ShouldBe("3027ec500b36e39624272f522951041a108dd3af54c42bb19146295fc3dc99de");
+        FolderCommandValidator.Validate(canonical).IdempotencyFingerprint.ShouldBe(result.IdempotencyFingerprint);
+    }
+
+    [Fact]
     public void ArchiveFolderFingerprintKeepsOrderedClientTenantEntries()
     {
         ArchiveFolder command = ArchiveCommand();
 
         Fingerprint(command, typeof(ArchiveFolder), [typeof(FolderArchiveReasonCode)], [FolderArchiveReasonCode.PolicyRetention])
-            .ShouldBe("aa3be702ee0cfe8d302dc7de015392e8ea250f8fc58bec57f3af57d974c0ac4a");
+            .ShouldBe("de5f070e1c413a2ed24eaa0d63dfc0bc1921d607c88e87f1fd9eb9e36cdcb9c0");
     }
 
     [Fact]
@@ -44,11 +59,14 @@ public sealed class LegacyFingerprintCompatibilityTests
     [Fact]
     public void RepositoryBindingFingerprintKeepsItsFieldOrder()
     {
-        BindRepository command = new(
-            "tenant-a", "organization-b", "folder-c", "v1", "binding-d", "provider-e", "external-f", "policy-g",
-            "scope-h", "actor-i", "correlation-j", "task-k", "idempotency-l", "payload-m");
+        Fingerprint(BindCommand(), typeof(BindRepository)).ShouldBe("4961bd2ba48b7873a5e33f661df1dd010874b3392c82cca791f122967a8085d2");
+    }
 
-        Fingerprint(command, typeof(BindRepository)).ShouldBe("4961bd2ba48b7873a5e33f661df1dd010874b3392c82cca791f122967a8085d2");
+    [Fact]
+    public void ExternalRepositoryReferenceFingerprintKeepsItsCommandFieldMapping()
+    {
+        FolderCommandValidator.ExternalRepositoryRefFingerprint(BindCommand())
+            .ShouldBe("63d0dc2178d2f589794e28f518234d6c7b4753553eccc91457351fe4b5c59f7e");
     }
 
     [Fact]
@@ -127,6 +145,22 @@ public sealed class LegacyFingerprintCompatibilityTests
     }
 
     [Fact]
+    public void FingerprintReflectsPostDedupOperations()
+    {
+        FolderAccessOperation group = new(FolderAccessOperationIntent.Grant, FolderAccessPrincipalKind.Group, "principal-d", "query_status");
+        FolderAccessOperation user = new(FolderAccessOperationIntent.Grant, FolderAccessPrincipalKind.User, "principal-e", "read_metadata");
+        GrantFolderAccess canonical = new(
+            "tenant-a", "tenant-a", "folder-c", [group, user], "actor-f", "correlation-g", "task-h", "idempotency-i", "payload-j");
+
+        FolderCommandValidationResult result = FolderCommandValidator.Validate(canonical with { Operations = [user, group, user] });
+
+        result.IsAccepted.ShouldBeTrue(result.Code.ToString());
+        result.AccessOperations.ShouldBe([group, user], ignoreOrder: false);
+        result.IdempotencyFingerprint.ShouldBe("20a0b53fee3e8d24b7cf3606bd443c5eb29089d4aace9cd26596f557194a3808");
+        FolderCommandValidator.Validate(canonical).IdempotencyFingerprint.ShouldBe(result.IdempotencyFingerprint);
+    }
+
+    [Fact]
     public void ArchiveDecisionFingerprintKeepsItsDomainAndPolicyFields()
     {
         FolderCommandValidator.BindArchiveDecisionFingerprint(ArchiveCommand(), "command-fingerprint-i", "policy-j", "watermark-k")
@@ -194,7 +228,12 @@ public sealed class LegacyFingerprintCompatibilityTests
     private static ArchiveFolder ArchiveCommand()
         => new(
             "tenant-a", "organization-b", "folder-c", "v1", "policy_retention", "actor-d", "correlation-e", "task-f",
-            "idempotency-g", "payload-h", new Dictionary<string, string?> { ["zeta"] = null, ["alpha"] = "comparison-tenant" });
+            "idempotency-g", "payload-h", new Dictionary<string, string?> { ["Zeta"] = null, ["alpha"] = "comparison-tenant" });
+
+    private static BindRepository BindCommand()
+        => new(
+            "tenant-a", "organization-b", "folder-c", "v1", "binding-d", "provider-e", "external-f", "policy-g",
+            "scope-h", "actor-i", "correlation-j", "task-k", "idempotency-l", "payload-m");
 
     private static LockWorkspace LockCommand()
         => new(

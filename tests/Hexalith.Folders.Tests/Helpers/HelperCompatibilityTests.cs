@@ -117,7 +117,11 @@ public sealed class HelperCompatibilityTests
     [InlineData("1OPAQUE_123456789", true)]
     [InlineData("_OPAQUE1234567890", false)]
     [InlineData("-OPAQUE1234567890", false)]
-    public void StreamSegmentsKeepOpaqueIdentifierLeadingCharacterRules(string value, bool expected)
+    [InlineData("ÉOPAQUE1234567890", false)]
+    [InlineData("AOPAQUEÉ1234567890", false)]
+    [InlineData("AOPAQUE١1234567890", false)]
+    [InlineData("AOPAQUE.1234567890", false)]
+    public void StreamSegmentsKeepOpaqueIdentifierCharacterRules(string value, bool expected)
     {
         FolderStreamName.IsValidSegment(value).ShouldBe(expected);
         OrganizationStreamName.IsValidSegment(value).ShouldBe(expected);
@@ -299,6 +303,8 @@ public sealed class HelperCompatibilityTests
             compare(null, null).ShouldBeFalse();
             compare(fingerprint, new string('g', 64)).ShouldBeFalse();
             compare(fingerprint, "ab").ShouldBeFalse();
+            compare(new string('g', 64), fingerprint).ShouldBeFalse();
+            compare("ab", fingerprint).ShouldBeFalse();
         }
 
         Should.Throw<ArgumentException>(() => GitHubProviderSafeOperationEvidence.Create("hxf-forgejo:v1:test", ["A"])).ParamName.ShouldBe("domain");
