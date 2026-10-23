@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using System.Text;
+using System.Text.RegularExpressions;
 
 using Hexalith.Folders.Hashing;
 

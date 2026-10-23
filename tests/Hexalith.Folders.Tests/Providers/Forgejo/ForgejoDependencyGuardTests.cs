@@ -12,7 +12,13 @@ public sealed class ForgejoDependencyGuardTests
     public void ForgejoProviderImplementationDoesNotReferenceForbiddenIntegrationStacks()
     {
         string root = FindRepositoryRoot();
-        string providerRoot = Path.Combine(root, "src", "Hexalith.Folders", "Providers", "Forgejo");
+        // Story 11.5 moved helpers that Forgejo executes into Providers/Shared and Hashing; keep them under the guard.
+        string[] inspectedRoots =
+        [
+            Path.Combine(root, "src", "Hexalith.Folders", "Providers", "Forgejo"),
+            Path.Combine(root, "src", "Hexalith.Folders", "Providers", "Shared"),
+            Path.Combine(root, "src", "Hexalith.Folders", "Hashing"),
+        ];
         string[] forbiddenTerms =
         [
             "O" + "ctokit",
@@ -27,8 +33,8 @@ public sealed class ForgejoDependencyGuardTests
             "EventStore",
         ];
 
-        string[] violations = Directory
-            .EnumerateFiles(providerRoot, "*.cs", SearchOption.AllDirectories)
+        string[] violations = inspectedRoots
+            .SelectMany(path => Directory.EnumerateFiles(path, "*.cs", SearchOption.AllDirectories))
             .Select(path => (Path: path, Text: File.ReadAllText(path)))
             .SelectMany(file => forbiddenTerms
                 .Where(term => file.Text.Contains(term, StringComparison.Ordinal))

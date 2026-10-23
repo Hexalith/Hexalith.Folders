@@ -2,7 +2,7 @@ using Hexalith.Folders.Aggregates.Organization;
 
 namespace Hexalith.Folders.Aggregates.Folder;
 
-public sealed partial record FolderStreamName(string Value)
+public sealed record FolderStreamName(string Value)
 {
     internal const int MaxSegmentLength = StreamNameSegment.MaxLength;
     public const string ReservedOrganizationPermissionScope = "organization_baseline";

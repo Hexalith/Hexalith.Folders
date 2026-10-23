@@ -2,10 +2,8 @@ using Hexalith.Folders.Aggregates.Folder;
 
 namespace Hexalith.Folders.Aggregates.Organization;
 
-public sealed partial record OrganizationStreamName(string Value)
+public sealed record OrganizationStreamName(string Value)
 {
-    internal const int MaxSegmentLength = StreamNameSegment.MaxLength;
-
     public static OrganizationStreamName Create(string managedTenantId, string organizationId)
     {
         if (!TryCreate(managedTenantId, organizationId, out OrganizationStreamName? streamName, out OrganizationAclResultCode code))
