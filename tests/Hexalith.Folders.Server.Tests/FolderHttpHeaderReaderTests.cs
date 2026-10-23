@@ -9,6 +9,20 @@ namespace Hexalith.Folders.Server.Tests;
 
 public sealed class FolderHttpHeaderReaderTests
 {
+    [Theory]
+    [InlineData("cursor_1\n", "cursor_1")]
+    [InlineData("cursor_1\r\n", "cursor_1")]
+    [InlineData("cur\nsor_1", null)]
+    public void DecodedQueryShouldPreserveOuterTrimmingAndRejectEmbeddedLf(string raw, string? expected)
+    {
+        DefaultHttpContext context = new();
+        context.Request.Query = new QueryCollection(new Dictionary<string, StringValues>
+        {
+            ["cursor"] = raw,
+        });
+        FolderHttpHeaderReader.ReadQuery(context, "cursor").ShouldBe(expected);
+    }
+
     [Fact]
     public void ReadHeaderShouldReturnFirstNonEmptySafeValue()
     {

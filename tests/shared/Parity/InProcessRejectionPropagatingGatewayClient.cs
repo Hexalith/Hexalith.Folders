@@ -136,8 +136,10 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
 
     private static EventStoreGatewayException ToGatewayException(DomainServiceWireResult result, string correlationId)
     {
-        DomainServiceWireEvent rejection = result.Events.Single();
-        FolderResultCode resultCode = ParseRejectionCode(rejection.Payload);
+        // Zero or multiple events cannot unambiguously identify the rejection evidence.
+        FolderResultCode resultCode = result.Events.Count == 1
+            ? ParseRejectionCode(result.Events[0].Payload)
+            : FolderResultCode.MalformedEvidence;
         string category = FolderCanonicalErrorMapper.CategoryFor(resultCode);
         int status = FolderCanonicalErrorMapper.StatusFor(category);
 

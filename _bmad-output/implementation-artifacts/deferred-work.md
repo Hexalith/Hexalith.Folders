@@ -2192,7 +2192,8 @@ location: src/Hexalith.Folders.Server/FolderCommandRejected.cs:97
 source_spec: `spec-archive-gateway-canonical-mapping.md`
 severity: medium
 reason: The production factory calls Enum.TryParse<FolderResultCode>(code, out _) without an exact ordinal round-trip or Enum.IsDefined check, despite its strict-whitelist comment. The parity gateway now defends its own wire boundary, but changing the production event factory is outside DW-15.
-status: open
+status: done 2026-10-23
+resolution: spec-five-deferred-rejection-metadata.md — FolderCommandRejected.Create now requires a defined enum value and an exact ordinal name round-trip. FolderRejectionEventTests rejects numeric, padded, case-mismatched and composite spellings and preserves every declared name; invalid-code exceptions contain no caller value.
 
 ### DW-315: Rejection conversion assumes DomainServiceWireResult contains exactly one event and throws when a rejected result contains zero or multiple events.
 origin: spec-deferred 3d92cf7432ed
@@ -2200,7 +2201,8 @@ location: tests/shared/Parity/InProcessRejectionPropagatingGatewayClient.cs:134
 source_spec: `spec-archive-gateway-canonical-mapping.md`
 severity: medium
 reason: ToGatewayException still selects result.Events.Single(), while the wire result contract represents Events as a collection. Defining multi-event rejection semantics is broader than replacing the duplicated canonical mapping requested by DW-15.
-status: open
+status: done 2026-10-23
+resolution: spec-five-deferred-rejection-metadata.md — The shared parity gateway validates rejection event count explicitly. Zero and multiple events use canonical MalformedEvidence (400 validation_error); HTTP integration tests prove bounded messages, correlation preservation and observed wire counts for 0/2/3 events, alongside existing single-event mappings.
 decision: 2026-09-02 Fail closed — Validate exactly one rejection event and convert zero or multiple events into a bounded MalformedEvidence gateway failure, with focused tests.
 
 ### DW-316: The Hexalith.Folders.IntegrationTests project has no unfiltered CI lane, so most of its classes -- including this story's gateway-boundary suite and the pre-existing ArchiveFolderProcessWiringTests --
@@ -2275,7 +2277,8 @@ location: tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLe
 source_spec: `spec-archive-leakage-regression-coverage.md`
 severity: low
 reason: The [Fact] builds its subject with an explicit '|'-join that omits `IdempotencyFingerprint` and `OccurredAt`, unlike the corpus theories which serialize the whole record. Pre-existing and untouched by this story.
-status: open
+status: done 2026-10-23
+resolution: spec-five-deferred-rejection-metadata.md — AcceptedArchiveEventShouldCarryOnlyMetadataEvidence now scans the complete JSON-serialized FolderArchived event, including fingerprint, timestamp and future properties. Boolean-only assertions report a fixed rule without rendering event values.
 
 ### DW-325: A trailing bare LF defeats every canonical-identifier gate in the repository, because .NET's `$` matches before a final newline unless `RegexOptions.Multiline` is set.
 origin: spec-deferred 97e78371a3e9
@@ -2283,7 +2286,8 @@ location: src/Hexalith.Folders.Server/FolderCommandRejected.cs:30 and src/Hexali
 source_spec: `spec-archive-leakage-regression-coverage.md`
 severity: high
 reason: Verified: `^[a-z0-9._-]+$` accepts "safe-identifier\n" (it rejects "safe-identifier\r\n" and "safe\nidentifier"). So `FolderCommandRejected.CanonicalIdentifierOrNull("safe-identifier\n")` returns the value with the newline intact, and `FolderCommandValidator.IsSafeEvidenceIdentifier` / `FolderStreamName.IsValidSegment` accept a trailing newline too. That is a live log-injection vector on exactly the surfaces these canonical gates exist to protect. Pre-existing and out of scope here: the Intent's Block-If forbids changing production canonicalization. Fix shape: anchor with `\A...\z` instead of `^...$`.
-status: open
+status: done 2026-10-23
+resolution: spec-five-deferred-rejection-metadata.md — All 51 whole-value regex gates across 24 Folders domain, Server and Client files use absolute start/end anchors. Prefix/search patterns, charsets, bounds and explicit trimming policies are preserved. Behavioral regressions cover LF/CRLF on stream identities, evidence, archive commands, path policy, indexing keys, server identifiers, process envelopes, gateway correlations and client request/wire values.
 
 ### DW-326: Sibling corpus sweeps still assert leakage with value-printing `ShouldNotContain`, the exact idiom these two files ban, and they are the sites that drive sentinels through production.
 origin: spec-deferred 3be07b46afe5
@@ -2331,7 +2335,8 @@ location: src/Hexalith.Folders.Server/FolderDomainProcessor.cs:1292-1330
 source_spec: `spec-archive-leakage-regression-coverage.md`
 severity: medium
 reason: `grep -rn "DuplicateWorkspaceLockRejected\|WorkspaceTransitionInvalidRejected" tests/` returns nothing, as does `grep -rn "IRejectionEvent" tests/`. Both records re-invoke `FolderCommandRejected.CanonicalIdentifierOrNull` / `NormalizeCommandTypeForRejection` inline (src/Hexalith.Folders.Server/DuplicateWorkspaceLockRejected.cs:22-46 and WorkspaceTransitionInvalidRejected.cs:22-46) and are emitted from FolderDomainProcessor.CreateRejectionEvent:1301,1325. Separately, that method sources its arguments from `result?.ActorPrincipalId`, `envelope.CorrelationId`, `envelope.MessageId` and `TryReadCanonicalExtension(...)`, none of which any test drives -- so a regression that echoed an envelope-supplied raw actor instead of the aggregate-nulled one leaves every new row green. Pre-existing; this story's rows call the factory directly, as the Intent's matrix specifies.
-status: open
+status: done 2026-10-23
+resolution: spec-five-deferred-rejection-metadata.md — New FolderRejectionEventTests cover canonical and unsafe evidence, fixed codes and null command types for both specialized factories. FolderDomainProcessorRejectionTests drives public processing for duplicate locks, invalid lock/release transitions, unowned/expired release, aggregate-sanitized actors and envelope fallback, requiring one correct rejection and unchanged repository state. Existing replay/classification tests predated this resolution; the historical zero-coverage wording is retained above.
 
 ### DW-332: The leakage detector and its fixture readers are now duplicated verbatim across the story's two test files, so a hardening applied to one copy silently does not apply to the other.
 origin: spec-deferred bf02dc3614f3
@@ -3032,3 +3037,7 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-callback-boundaries.md`
   summary: Preserve InvalidPage when the EventStore gateway receives an HTTP 400 domain-query result.
   evidence: At selected EventStore revision 995117f9b899a2994e99257091b0ea35cfbe5090, src/Hexalith.EventStore/Queries/DaprDomainQueryInvoker.cs:54-57 preserves only InvalidEnvelope/InvalidCursor and remaps InvalidPage to ActorException. The Folders callback now correctly returns 400; correcting this separate existing transport behavior belongs to EventStore and must preserve its input-error expectations. The dependency's pre-existing local edits were preserved.
+
+- source_spec: `spec-five-deferred-rejection-metadata.md`
+  summary: Map null event collections and null event entries in the shared parity gateway to bounded malformed evidence.
+  evidence: Blind Hunter review found that JSON events:null reaches result.Events.Count and events:[null] reaches the sole event Payload without a guard. DomainServiceWireResult/DomainServiceWireEvent are positional records without null-input guards. Both dereferences already exist at baseline 41358c834c19796bc5017cdc1726eff5c7eb5bfe (Count and Events.Single().Payload), independently of DW-315's explicit zero/multiple-event decision. Add wire-level null-shape regression coverage in a separate test-support correction.

@@ -39,6 +39,8 @@ public sealed class FolderStreamShapeTests
     [InlineData("system", "folder-a", FolderResultCode.ReservedTenant)]
     [InlineData("System", "folder-a", FolderResultCode.InvalidTenant)] // uppercase fails canonical-segment regex before reserved-name check
     [InlineData(" system ", "folder-a", FolderResultCode.InvalidTenant)] // whitespace fails canonical-segment regex; consistent rejection code with non-reserved-but-whitespaced inputs
+    [InlineData("tenant-a\n", "folder-a", FolderResultCode.InvalidTenant)]
+    [InlineData("tenant-a", "folder-a\n", FolderResultCode.InvalidFolderId)]
     [InlineData("tenant:a", "folder-a", FolderResultCode.InvalidTenant)]
     [InlineData("Tenant-A", "folder-a", FolderResultCode.InvalidTenant)]
     [InlineData("organization_baseline", "folder-a", FolderResultCode.InvalidTenant)]
@@ -49,9 +51,10 @@ public sealed class FolderStreamShapeTests
         string folderId,
         FolderResultCode expectedCode)
     {
-        bool created = FolderStreamName.TryCreate(managedTenantId, folderId, out FolderStreamName? _, out FolderResultCode code);
+        bool created = FolderStreamName.TryCreate(managedTenantId, folderId, out FolderStreamName? streamName, out FolderResultCode code);
 
         created.ShouldBeFalse();
+        streamName.ShouldBeNull();
         code.ShouldBe(expectedCode);
     }
 

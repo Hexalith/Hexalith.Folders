@@ -10,9 +10,9 @@ namespace Hexalith.Folders.Client.Serialization;
 /// <summary>Validates constructed OQ2 request objects immediately before wire serialization.</summary>
 internal static class Oq2RequestValidation
 {
-    private static readonly Regex OpaqueIdentifier = new("^[A-Za-z0-9][A-Za-z0-9_-]{15,127}$", RegexOptions.CultureInvariant);
-    private static readonly Regex HashReference = new("^hashref_[A-Za-z0-9]{32,96}$", RegexOptions.CultureInvariant);
-    private static readonly Regex MediaType = new("^[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]*/[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]*$", RegexOptions.CultureInvariant);
+    private static readonly Regex OpaqueIdentifier = new("\\A[A-Za-z0-9][A-Za-z0-9_-]{15,127}\\z", RegexOptions.CultureInvariant);
+    private static readonly Regex HashReference = new("\\Ahashref_[A-Za-z0-9]{32,96}\\z", RegexOptions.CultureInvariant);
+    private static readonly Regex MediaType = new("\\A[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]*/[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]*\\z", RegexOptions.CultureInvariant);
     private const int MaximumBase64Characters = 349528;
 
     public static void ValidatePath(PathMetadata? path)

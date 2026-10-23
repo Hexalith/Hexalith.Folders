@@ -101,6 +101,23 @@ public sealed class FolderBranchRefPolicyAggregateTests
         result.Events.ShouldBeEmpty();
     }
 
+    [Theory]
+    [InlineData("default")]
+    [InlineData("allowed")]
+    [InlineData("protected")]
+    public void BranchPolicyReferencesShouldRejectTrailingLf(string field)
+    {
+        ConfigureBranchRefPolicy command = Command();
+        FolderCommandValidator.Validate(command).IsAccepted.ShouldBeTrue();
+        command = field switch
+        {
+            "default" => command with { DefaultRef = "branch_ref_primary\n" },
+            "allowed" => command with { AllowedRefPatterns = ["branch_ref_feature\n"] },
+            _ => command with { ProtectedRefPatterns = ["branch_ref_release\n"] },
+        };
+        FolderCommandValidator.Validate(command).IsAccepted.ShouldBeFalse();
+    }
+
     private static ConfigureBranchRefPolicy Command(
         string repositoryBindingId = "repository-binding-a",
         string defaultRef = "branch_ref_primary",

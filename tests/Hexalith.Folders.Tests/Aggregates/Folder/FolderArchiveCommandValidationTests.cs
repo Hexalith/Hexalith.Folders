@@ -71,6 +71,27 @@ public sealed class FolderArchiveCommandValidationTests
         callerRequested.IdempotencyFingerprint.ShouldNotBe(operatorReview.IdempotencyFingerprint);
     }
 
+    [Theory]
+    [InlineData("actor")]
+    [InlineData("correlation")]
+    [InlineData("task")]
+    [InlineData("idempotency")]
+    public void ArchiveEvidenceWithTrailingLfShouldRejectWithoutEvents(string field)
+    {
+        ArchiveFolder command = FolderCommandFactory.Archive();
+        command = field switch
+        {
+            "actor" => command with { ActorPrincipalId = command.ActorPrincipalId + "\n" },
+            "correlation" => command with { CorrelationId = command.CorrelationId + "\n" },
+            "task" => command with { TaskId = command.TaskId + "\n" },
+            _ => command with { IdempotencyKey = command.IdempotencyKey + "\n" },
+        };
+        FolderResult result = FolderAggregate.Handle(CreatedState(), command);
+
+        result.Code.ShouldBe(FolderResultCode.MalformedEvidence);
+        result.Events.ShouldBeEmpty();
+    }
+
     private static FolderState CreatedState()
     {
         FolderResult created = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());

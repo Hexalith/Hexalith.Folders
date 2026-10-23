@@ -20,6 +20,9 @@ public sealed class FolderCanonicalIdentifierTests
     [Theory]
     [InlineData("Folder_1")]
     [InlineData("folder/1")]
+    [InlineData("folder-a\n")]
+    [InlineData("folder-a\r\n")]
+    [InlineData("folder\na")]
     [InlineData("")]
     [InlineData(" ")]
     public void SegmentIdentifierShouldRejectCaseCharsetAndBlankValues(string value)
@@ -43,6 +46,9 @@ public sealed class FolderCanonicalIdentifierTests
     [Theory]
     [InlineData("_invalid")]
     [InlineData("folder.1")]
+    [InlineData("Folder_A\n")]
+    [InlineData("Folder_A\r\n")]
+    [InlineData("Folder\nA")]
     [InlineData("")]
     [InlineData(" ")]
     public void PathIdentifierShouldRejectInvalidCharsetAndBlankValues(string value)

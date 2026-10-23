@@ -19,6 +19,6 @@ internal static partial class FolderCanonicalSegmentIdentifier
         && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
         && (Pattern().IsMatch(value) || PreauthorizedRequestContext.IsCandidateOpaqueIdentifier(value));
 
-    [GeneratedRegex("^[a-z0-9._-]+$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[a-z0-9._-]+\\z", RegexOptions.CultureInvariant)]
     private static partial Regex Pattern();
 }

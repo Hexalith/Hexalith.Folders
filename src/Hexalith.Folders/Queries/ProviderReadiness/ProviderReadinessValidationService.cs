@@ -939,10 +939,10 @@ public sealed partial class ProviderReadinessValidationService(
     private static string Sha256(string value)
         => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value))).ToLowerInvariant();
 
-    [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9_-]{0,255}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[A-Za-z0-9][A-Za-z0-9_-]{0,255}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex CanonicalIdentifierPattern();
 
-    [GeneratedRegex("^[a-z0-9][a-z0-9._:/-]{0,255}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[a-z0-9][a-z0-9._:/-]{0,255}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex SafeMetadataTokenPattern();
 
     [GeneratedRegex("gh[pousr]_[a-zA-Z0-9_]{20,}", RegexOptions.CultureInvariant)]

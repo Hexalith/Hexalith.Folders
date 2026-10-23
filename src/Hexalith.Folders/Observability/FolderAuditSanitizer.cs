@@ -129,15 +129,15 @@ public static partial class FolderAuditSanitizer
             || canonical.Contains("installation", StringComparison.Ordinal);
     }
 
-    [GeneratedRegex("^[A-Za-z0-9._:-]+$", RegexOptions.Compiled)]
+    [GeneratedRegex("\\A[A-Za-z0-9._:-]+\\z", RegexOptions.Compiled)]
     private static partial Regex IdentifierPattern();
 
-    [GeneratedRegex("^[a-z][a-z0-9_]{0,95}$", RegexOptions.Compiled)]
+    [GeneratedRegex("\\A[a-z][a-z0-9_]{0,95}\\z", RegexOptions.Compiled)]
     private static partial Regex CategoryPattern();
 
-    [GeneratedRegex("^[a-z][a-z0-9_.-]{0,95}$", RegexOptions.Compiled)]
+    [GeneratedRegex("\\A[a-z][a-z0-9_.-]{0,95}\\z", RegexOptions.Compiled)]
     private static partial Regex ClassificationKeyPattern();
 
-    [GeneratedRegex("^[a-z][a-z0-9_]{0,47}->[a-z][a-z0-9_]{0,47}$", RegexOptions.Compiled)]
+    [GeneratedRegex("\\A[a-z][a-z0-9_]{0,47}->[a-z][a-z0-9_]{0,47}\\z", RegexOptions.Compiled)]
     private static partial Regex StateTransitionPattern();
 }

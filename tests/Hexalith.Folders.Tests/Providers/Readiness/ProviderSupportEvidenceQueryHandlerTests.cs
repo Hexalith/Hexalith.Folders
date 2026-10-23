@@ -12,6 +12,16 @@ public sealed class ProviderSupportEvidenceQueryHandlerTests
     private static readonly DateTimeOffset Now = new(2026, 5, 27, 12, 0, 0, TimeSpan.Zero);
 
     [Fact]
+    public async Task CorrelationShouldRetainExplicitWhitespaceTrimming()
+    {
+        InMemoryProviderReadinessEvidenceStore store = new(new FixedUtcClock(Now));
+        ProviderSupportEvidenceQueryResult result = await Handler(store).HandleAsync(
+            Query() with { CorrelationId = " correlation-a\n" }, TestContext.Current.CancellationToken);
+        result.Code.ShouldBe(ProviderSupportEvidenceQueryResultCode.Allowed);
+        result.CorrelationId.ShouldBe("correlation-a");
+    }
+
+    [Fact]
     public async Task HandleAsync_ShouldReturnTenantScopedProviderRowsWithDeterministicOrdering()
     {
         InMemoryProviderReadinessEvidenceStore store = new(new FixedUtcClock(Now));

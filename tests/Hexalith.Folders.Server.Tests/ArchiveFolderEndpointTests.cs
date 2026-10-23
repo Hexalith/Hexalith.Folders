@@ -632,6 +632,8 @@ public sealed class ArchiveFolderEndpointTests
         => new()
         {
             "correlation gateway",
+            "correlation-a\n",
+            "CORRELATION-A\n",
             new string('a', 129),
             "correlation\rheader",
             "correlation\nheader",

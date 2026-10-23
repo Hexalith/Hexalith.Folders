@@ -231,6 +231,9 @@ public sealed partial class FolderCommandRejectedLeakageTests
         // twelve other production sites that share FoldersServerModule.MaxCanonicalIdentifierLength.
         FolderCommandRejected.MaxCanonicalIdentifierLength.ShouldBe(128);
 
+        AssertEveryIdentifierIsNull(CreateWithIdentifier("safe-identifier\n"));
+        AssertEveryIdentifierIsNull(CreateWithIdentifier("safe-identifier\r\n"));
+
         string crLfInjected = "safe-identifier\r\ninjected-log-line";
         string overLength = new('a', FolderCommandRejected.MaxCanonicalIdentifierLength + 1);
 
@@ -331,7 +334,7 @@ public sealed partial class FolderCommandRejectedLeakageTests
     // purpose: this suite characterizes the documented pass-through policy, so a production
     // change that diverges from this shape must surface as a failing row rather than pass
     // silently through a shared constant.
-    [GeneratedRegex("^[A-Za-z0-9._-]+$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[A-Za-z0-9._-]+\\z", RegexOptions.CultureInvariant)]
     private static partial Regex RelaxedCommandTypeShape();
 
     private static FolderCommandRejected CreateWithIdentifier(string identifier)

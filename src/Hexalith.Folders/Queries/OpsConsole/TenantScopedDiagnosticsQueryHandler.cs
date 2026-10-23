@@ -184,7 +184,7 @@ public sealed partial class TenantScopedDiagnosticsQueryHandler(
             ? value.Trim()
             : $"correlation_{Guid.NewGuid():N}";
 
-    [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9_-]{0,255}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[A-Za-z0-9][A-Za-z0-9_-]{0,255}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex CanonicalIdentifierPattern();
 
     private readonly record struct DiagnosticAuthorization(bool Allowed, DiagnosticReadResultCode DeniedCode, string ManagedTenantId)

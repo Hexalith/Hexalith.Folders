@@ -188,6 +188,34 @@ public sealed class FolderWorkspaceCommitAggregateTests
         result.Events.ShouldBeEmpty();
     }
 
+    [Theory]
+    [InlineData("author")]
+    [InlineData("branch")]
+    [InlineData("digest")]
+    [InlineData("classification")]
+    public void CommitMetadataWithTrailingLfShouldFailValidation(string field)
+    {
+        CommitWorkspace command = Commit();
+        FolderCommandValidator.Validate(command).IsAccepted.ShouldBeTrue();
+        command = field switch
+        {
+            "author" => command with { AuthorMetadataReference = command.AuthorMetadataReference + "\n" },
+            "branch" => command with { BranchRefTarget = command.BranchRefTarget + "\n" },
+            "digest" => command with { ChangedPathMetadataDigest = command.ChangedPathMetadataDigest + "\n" },
+            _ => command with { CommitMessageClassification = command.CommitMessageClassification + "\n" },
+        };
+        FolderCommandValidator.Validate(command).IsAccepted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void CommitOutcomeReferencesShouldRejectTrailingLf()
+    {
+        FolderCommandValidator.IsValidCommitReference("commitref_abcdef123456").ShouldBeTrue();
+        FolderCommandValidator.IsValidCommitReference("commitref_abcdef123456\n").ShouldBeFalse();
+        FolderCommandValidator.IsValidCommitReconciliationReference("reconcile_abcdef123456").ShouldBeTrue();
+        FolderCommandValidator.IsValidCommitReconciliationReference("reconcile_abcdef123456\n").ShouldBeFalse();
+    }
+
     private static CommitWorkspace Commit(
         string workspaceId = "workspace-a",
         string operationId = "operation-a",

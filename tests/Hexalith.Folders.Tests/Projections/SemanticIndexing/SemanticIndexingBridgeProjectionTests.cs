@@ -13,6 +13,13 @@ public sealed class SemanticIndexingBridgeProjectionTests
 {
     private static readonly DateTimeOffset OccurredAt = new(2026, 6, 23, 11, 0, 0, TimeSpan.Zero);
 
+    [Theory]
+    [InlineData("tenant-a\n", "folder-a", "version-a")]
+    [InlineData("tenant-a", "folder-a\n", "version-a")]
+    [InlineData("tenant-a", "folder-a", "version-a\n")]
+    public void BridgeKeysShouldRejectTrailingLfInEverySegment(string tenant, string folder, string version)
+        => Should.Throw<ArgumentException>(() => SemanticIndexingBridgeKeys.FileVersion(tenant, folder, version));
+
     [Fact]
     public void AddOrChangeMutationShouldCreateTenantPrefixedMetadataOnlyStaleEntry()
     {

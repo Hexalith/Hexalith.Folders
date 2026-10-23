@@ -148,6 +148,6 @@ public static partial class OrganizationProviderBindingCommandValidator
     private static bool ContainsForbidden(string? value)
         => OrganizationProviderBindingSecretDetector.ContainsForbiddenValue(value);
 
-    [GeneratedRegex("^[a-z0-9._/*:-]+$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[a-z0-9._/*:-]+\\z", RegexOptions.CultureInvariant)]
     private static partial Regex SafePolicyValuePattern();
 }

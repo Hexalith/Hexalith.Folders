@@ -8,6 +8,17 @@ namespace Hexalith.Folders.Tests.Aggregates.Organization;
 
 public sealed class OrganizationAclStreamShapeTests
 {
+    [Theory]
+    [InlineData("organization-a\n")]
+    [InlineData("organization-a\r\n")]
+    public void StreamNameShouldRejectControlCharactersInOrganizationId(string organizationId)
+    {
+        OrganizationStreamName.TryCreate("tenant-a", organizationId, out OrganizationStreamName? streamName,
+            out OrganizationAclResultCode code).ShouldBeFalse();
+        streamName.ShouldBeNull();
+        code.ShouldBe(OrganizationAclResultCode.InvalidOrganization);
+    }
+
     [Fact]
     public void StreamNameShouldUseManagedTenantOrganizationShape()
     {
@@ -20,6 +31,8 @@ public sealed class OrganizationAclStreamShapeTests
     [InlineData("")]
     [InlineData(" ")]
     [InlineData("tenant:a")]
+    [InlineData("tenant-a\n")]
+    [InlineData("tenant-a\r\n")]
     [InlineData("tenant\u0001a")]
     [InlineData("Tenant-A")]
     [InlineData("provider-binding-0123456789abcdef")]

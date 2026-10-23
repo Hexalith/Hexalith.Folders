@@ -977,27 +977,27 @@ public static partial class FolderCommandValidator
             || c == '‍' // zero-width joiner
             || c == '﻿'; // BOM / zero-width no-break space
 
-    [GeneratedRegex("^[a-z0-9._-]+$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[a-z0-9._-]+\\z", RegexOptions.CultureInvariant)]
     private static partial Regex CanonicalIdentifierPattern();
 
-    [GeneratedRegex("^branch_ref_[a-z0-9_]{3,80}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\Abranch_ref_[a-z0-9_]{3,80}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex BranchRefTokenPattern();
 
-    [GeneratedRegex("^authorref_[A-Za-z0-9_-]{6,118}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\Aauthorref_[A-Za-z0-9_-]{6,118}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex AuthorMetadataReferencePattern();
 
-    [GeneratedRegex("^branchref_[A-Za-z0-9_-]{6,118}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\Abranchref_[A-Za-z0-9_-]{6,118}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex BranchRefTargetPattern();
 
-    [GeneratedRegex("^digest_[A-Za-z0-9_-]{9,121}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\Adigest_[A-Za-z0-9_-]{9,121}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex ChangedPathMetadataDigestPattern();
 
-    [GeneratedRegex("^[a-z][a-z0-9_]{0,79}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[a-z][a-z0-9_]{0,79}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex LowerSnakeMetadataPattern();
 
-    [GeneratedRegex("^commitref_[A-Za-z0-9_-]{6,118}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\Acommitref_[A-Za-z0-9_-]{6,118}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex CommitReferencePattern();
 
-    [GeneratedRegex("^reconcile_[A-Za-z0-9_-]{6,118}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\Areconcile_[A-Za-z0-9_-]{6,118}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex CommitReconciliationReferencePattern();
 }

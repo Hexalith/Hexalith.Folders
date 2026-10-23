@@ -560,9 +560,9 @@ public static partial class AuditEndpoints
             ["forwarded_principal_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Forwarded-Principal"),
         };
 
-    [GeneratedRegex("^cursor_[A-Za-z0-9_-]{8,247}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\Acursor_[A-Za-z0-9_-]{8,247}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex CursorPattern();
 
-    [GeneratedRegex(@"^[a-z][A-Za-z0-9_=.,*\- ]{0,255}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"\A[a-z][A-Za-z0-9_=.,*\- ]{0,255}\z", RegexOptions.CultureInvariant)]
     private static partial Regex FilterPattern();
 }

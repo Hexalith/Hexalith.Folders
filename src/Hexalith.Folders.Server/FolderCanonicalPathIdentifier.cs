@@ -43,6 +43,6 @@ internal static partial class FolderCanonicalPathIdentifier
         return $"correlation_{Guid.NewGuid():N}";
     }
 
-    [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9_-]{0,255}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[A-Za-z0-9][A-Za-z0-9_-]{0,255}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex Pattern();
 }

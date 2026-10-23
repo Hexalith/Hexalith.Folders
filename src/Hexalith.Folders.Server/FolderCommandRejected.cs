@@ -27,7 +27,7 @@ public sealed partial record FolderCommandRejected : IRejectionEvent
     // and FoldersDomainServiceEndpoints. The gateway-corrected echo at the REST surface is
     // allowed to be uppercase (ULID-friendly) via IsSafeGatewayCorrelationId, but rejection
     // event payloads must not weaken the canonical contract.
-    [GeneratedRegex("^[a-z0-9._-]+$", RegexOptions.Compiled)]
+    [GeneratedRegex("\\A[a-z0-9._-]+\\z", RegexOptions.Compiled)]
     private static partial Regex SafeIdentifierRegex();
 
     private FolderCommandRejected(
@@ -93,10 +93,12 @@ public sealed partial record FolderCommandRejected : IRejectionEvent
         // log/alert systems see only known canonical values. This is a strict invariant —
         // every rejection emit-site passes `enumValue.ToString()` so a non-roundtripping
         // value here means a programming bug.
-        if (!Enum.TryParse<FolderResultCode>(code, out _))
+        if (!Enum.TryParse(code, ignoreCase: false, out FolderResultCode resultCode)
+            || !Enum.IsDefined(resultCode)
+            || !string.Equals(code, resultCode.ToString(), StringComparison.Ordinal))
         {
             throw new ArgumentException(
-                $"Unknown FolderResultCode '{code}'. Rejection events must carry a code that round-trips through FolderResultCode.",
+                "Rejection events must carry an exact declared FolderResultCode name.",
                 nameof(code));
         }
 
@@ -172,7 +174,7 @@ public sealed partial record FolderCommandRejected : IRejectionEvent
         return UnknownCommandTypeSentinel;
     }
 
-    [GeneratedRegex("^[A-Za-z0-9._-]+$", RegexOptions.Compiled)]
+    [GeneratedRegex("\\A[A-Za-z0-9._-]+\\z", RegexOptions.Compiled)]
     private static partial Regex CommandTypeRegex();
 
     internal static string? CanonicalIdentifierOrNull(string? value)

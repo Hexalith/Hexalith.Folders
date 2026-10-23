@@ -306,7 +306,7 @@ public sealed partial class InMemoryProviderReadinessEvidenceStore : IProviderRe
             _ => 99,
         };
 
-    [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9_-]{15,127}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[A-Za-z0-9][A-Za-z0-9_-]{15,127}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex OpaqueIdentifierPattern();
 
     [GeneratedRegex("gh[pousr]_[a-zA-Z0-9_]{20,}", RegexOptions.CultureInvariant)]

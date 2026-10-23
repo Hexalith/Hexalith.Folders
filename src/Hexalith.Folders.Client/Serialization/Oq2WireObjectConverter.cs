@@ -13,10 +13,10 @@ namespace Hexalith.Folders.Client.Serialization;
 /// </summary>
 public sealed class Oq2WireObjectConverter : JsonConverter
 {
-    private static readonly Regex OpaqueIdentifier = new("^[A-Za-z0-9][A-Za-z0-9_-]{15,127}$", RegexOptions.CultureInvariant);
-    private static readonly Regex HashReference = new("^hashref_[A-Za-z0-9]{32,96}$", RegexOptions.CultureInvariant);
-    private static readonly Regex MediaType = new("^[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]*/[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]*$", RegexOptions.CultureInvariant);
-    private static readonly Regex UtcDateTime = new("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-]00:00)$", RegexOptions.CultureInvariant);
+    private static readonly Regex OpaqueIdentifier = new("\\A[A-Za-z0-9][A-Za-z0-9_-]{15,127}\\z", RegexOptions.CultureInvariant);
+    private static readonly Regex HashReference = new("\\Ahashref_[A-Za-z0-9]{32,96}\\z", RegexOptions.CultureInvariant);
+    private static readonly Regex MediaType = new("\\A[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]*/[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]*\\z", RegexOptions.CultureInvariant);
+    private static readonly Regex UtcDateTime = new("\\A[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-]00:00)\\z", RegexOptions.CultureInvariant);
     private const int MaximumBase64Characters = 349528;
 
     private static readonly HashSet<string> SupportedTypes =
@@ -480,7 +480,7 @@ public sealed class Oq2WireObjectConverter : JsonConverter
         string message = RequireStringToken(value, "message");
         if ((exact && (title.Length is < 1 or > 128 || message.Length is < 1 or > 512))
             || code.Length > 128
-            || !Regex.IsMatch(code, "^[a-z0-9][a-z0-9_:-]{0,127}$", RegexOptions.CultureInvariant))
+            || !Regex.IsMatch(code, "\\A[a-z0-9][a-z0-9_:-]{0,127}\\z", RegexOptions.CultureInvariant))
         {
             throw Invalid("Problem identity fields exceed their canonical bounds.");
         }

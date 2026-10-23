@@ -7,6 +7,16 @@ namespace Hexalith.Folders.Tests.Aggregates.Folder;
 
 public sealed class WorkspacePathPolicyValidatorTests
 {
+    [Theory]
+    [InlineData("metadata_only\n")]
+    [InlineData("metadata_only\r\n")]
+    public void PathPolicyClassShouldRejectTrailingControlCharacters(string pathPolicyClass)
+    {
+        WorkspacePathPolicyResult result = WorkspacePathPolicyValidator.Validate(
+            new PathMetadata("docs/readme.md", "readme.md", pathPolicyClass, "NFC"));
+        result.IsAccepted.ShouldBeFalse();
+    }
+
     [Fact]
     public void CanonicalWorkspaceRelativePathShouldBeAcceptedWithDigestEvidence()
     {

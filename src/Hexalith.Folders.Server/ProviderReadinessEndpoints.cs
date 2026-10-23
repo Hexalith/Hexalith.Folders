@@ -654,6 +654,6 @@ public static partial class ProviderReadinessEndpoints
         string Redaction,
         ProviderReadinessFreshness Freshness);
 
-    [GeneratedRegex("^cursor_[0-9]{1,6}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\Acursor_[0-9]{1,6}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex CursorPattern();
 }

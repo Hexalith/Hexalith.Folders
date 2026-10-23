@@ -58,6 +58,6 @@ internal static partial class SemanticIndexingBridgeValidation
     [GeneratedRegex("^[A-Za-z]:/", RegexOptions.CultureInvariant)]
     private static partial Regex DrivePathPattern();
 
-    [GeneratedRegex("^[a-zA-Z0-9._:-]+$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[a-zA-Z0-9._:-]+\\z", RegexOptions.CultureInvariant)]
     private static partial Regex SegmentPattern();
 }

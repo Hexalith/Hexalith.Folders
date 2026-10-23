@@ -16,6 +16,22 @@ namespace Hexalith.Folders.Tests.Observability;
 
 public sealed class FolderAuditObservationTests
 {
+    [Theory]
+    [InlineData(" correlation-a\n", "correlation-a")]
+    [InlineData("correlation\na", null)]
+    public void AuditSanitizerShouldPreserveExplicitTrimmingPolicy(string value, string? expected)
+    {
+        FolderAuditObservation observation = new FolderAuditObservationBuilder
+        {
+            TenantId = "tenant-a",
+            CorrelationId = value,
+        }.Build();
+        observation.CorrelationId.ShouldBe(expected);
+        FolderAuditSanitizer.TrySanitizeCategory(" completed\n", out string? category).ShouldBeTrue();
+        category.ShouldBe("completed");
+        FolderAuditSanitizer.TrySanitizeCategory("com\npleted", out _).ShouldBeFalse();
+    }
+
     [Fact]
     public void ApprovedMetadataFieldsShouldBePreserved()
     {

@@ -128,25 +128,33 @@ public sealed class FolderArchiveMetadataLeakageTests
         FolderResult result = FolderAggregate.Handle(CreatedState(), FolderCommandFactory.Archive());
 
         FolderArchived archived = result.Events.OfType<FolderArchived>().Single();
-        string serialized = string.Join(
-            '|',
-            archived.ManagedTenantId,
-            archived.OrganizationId,
-            archived.FolderId,
-            archived.ArchiveReasonCode,
-            archived.ActorPrincipalId,
-            archived.CorrelationId,
-            archived.TaskId,
-            archived.IdempotencyKey);
+        AssertArchiveMetadataOnly(archived);
+    }
 
-        serialized.ShouldNotContain("token", Case.Insensitive);
-        serialized.ShouldNotContain("secret", Case.Insensitive);
-        serialized.ShouldNotContain("credential", Case.Insensitive);
-        serialized.ShouldNotContain("repository", Case.Insensitive);
-        serialized.ShouldNotContain("diff --git", Case.Insensitive);
-        serialized.ShouldNotContain("://", Case.Sensitive);
-        serialized.ShouldNotContain("\\", Case.Sensitive);
-        serialized.ShouldNotContain("/", Case.Sensitive);
+    [Fact]
+    public void ArchiveMetadataScanShouldDetectContaminatedFingerprintWithoutPrintingIt()
+    {
+        FolderResult result = FolderAggregate.Handle(CreatedState(), FolderCommandFactory.Archive());
+        FolderArchived archived = result.Events.OfType<FolderArchived>().Single() with
+        {
+            IdempotencyFingerprint = "secret-fingerprint-control",
+        };
+        ShouldAssertException exception = Should.Throw<ShouldAssertException>(() => AssertArchiveMetadataOnly(archived));
+        exception.Message.Contains(archived.IdempotencyFingerprint, StringComparison.Ordinal).ShouldBeFalse(
+            "Negative-control assertions must not print the contaminated fingerprint.");
+    }
+
+    private static void AssertArchiveMetadataOnly(FolderArchived archived)
+    {
+        string serialized = JsonSerializer.Serialize(archived);
+        string[] forbiddenTerms = ["token", "secret", "credential", "repository", "diff --git", "://", "\\", "/"];
+        foreach (string term in forbiddenTerms)
+        {
+            // Scan every serialized property, including future event members. Report only the
+            // fixed rule, so a failing assertion never prints the contaminated event.
+            serialized.Contains(term, StringComparison.OrdinalIgnoreCase).ShouldBeFalse(
+                "Serialized archive event must contain only safe metadata.");
+        }
     }
 
     [Theory]

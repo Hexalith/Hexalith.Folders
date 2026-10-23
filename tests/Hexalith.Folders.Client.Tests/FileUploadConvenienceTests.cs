@@ -66,6 +66,40 @@ public sealed class FileUploadConvenienceTests
         UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
     };
 
+    [Theory]
+    [InlineData("operation")]
+    [InlineData("hash")]
+    [InlineData("media")]
+    public void ConstructedMutationWithTrailingLfShouldFailWireSerialization(string field)
+    {
+        FileMutationRequest request = FileUpload.BuildInlineFileMutation(
+            Encoding.UTF8.GetBytes("synthetic"), "text/plain", SamplePath(),
+            "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1);
+        if (field == "operation") request.OperationId += "\n";
+        else if (field == "hash") request.ContentHashReference += "\n";
+        else request.InlineContent!.MediaType += "\n";
+
+        System.Reflection.TargetInvocationException exception = Should.Throw<System.Reflection.TargetInvocationException>(
+            () => JsonConvert.SerializeObject(request));
+        exception.InnerException.ShouldBeOfType<JsonSerializationException>();
+    }
+
+    [Theory]
+    [InlineData("operationId")]
+    [InlineData("contentHashReference")]
+    [InlineData("mediaType")]
+    public void MutationWireValuesWithTrailingLfShouldFailDeserialization(string field)
+    {
+        FileMutationRequest request = FileUpload.BuildInlineFileMutation(
+            Encoding.UTF8.GetBytes("synthetic"), "text/plain", SamplePath(),
+            "01ARZ3NDEKTSV4RRFFQ69G5FAV", expectedFileVersion: 0, expectedLockFence: 1);
+        JObject json = JObject.Parse(JsonConvert.SerializeObject(request));
+        JObject target = field == "mediaType" ? (JObject)json["inlineContent"]! : json;
+        target[field] = target[field]!.Value<string>() + "\n";
+
+        _ = Should.Throw<JsonSerializationException>(() => JsonConvert.DeserializeObject<FileMutationRequest>(json.ToString()));
+    }
+
     [Fact]
     public void BuildInlineSelectsInlineTransportAtOrBelowBoundary()
     {
@@ -299,7 +333,8 @@ public sealed class FileUploadConvenienceTests
         byte[] content = Encoding.UTF8.GetBytes("synthetic authorized request body");
         FileUploadDescriptor descriptor = new()
         {
-            ExpectedFileVersion = 0, ExpectedLockFence = 1,
+            ExpectedFileVersion = 0,
+            ExpectedLockFence = 1,
             FolderId = "folder_01HZY7Z6N7J4Q2X8Y9V0FLD001",
             WorkspaceId = "workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001",
             OperationId = "01ARZ3NDEKTSV4RRFFQ69G5FAV",
@@ -336,7 +371,8 @@ public sealed class FileUploadConvenienceTests
         byte[] content = Encoding.UTF8.GetBytes("synthetic");
         FileUploadDescriptor descriptor = new()
         {
-            ExpectedFileVersion = 0, ExpectedLockFence = 1,
+            ExpectedFileVersion = 0,
+            ExpectedLockFence = 1,
             FolderId = "folder_01HZY7Z6N7J4Q2X8Y9V0FLD001",
             WorkspaceId = "workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001",
             OperationId = "01ARZ3NDEKTSV4RRFFQ69G5FAV",
@@ -641,12 +677,13 @@ public sealed class FileUploadConvenienceTests
     {
         Should.Throw<ArgumentOutOfRangeException>(() => FileUpload.BuildInlineFileMutation(new byte[] { 1 }, "text/plain", SamplePath(), "operation"));
         Should.Throw<ArgumentOutOfRangeException>(() => FileUpload.BuildStreamedFileMutation(new FileStreamStagingEvidence
-            { StagingReference = "staging", ObservedContentHashReference = "hash", ObservedLength = 300000 }, "text/plain", SamplePath(), "operation"));
+        { StagingReference = "staging", ObservedContentHashReference = "hash", ObservedLength = 300000 }, "text/plain", SamplePath(), "operation"));
     }
 
     private static FileUploadDescriptor InlineDescriptor() => new()
     {
-        ExpectedFileVersion = 0, ExpectedLockFence = 1,
+        ExpectedFileVersion = 0,
+        ExpectedLockFence = 1,
         FolderId = "folder_01HZY7Z6N7J4Q2X8Y9V0FLD001",
         WorkspaceId = "workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001",
         OperationId = "01ARZ3NDEKTSV4RRFFQ69G5FAV",

@@ -69,25 +69,25 @@ public static partial class FoldersDomainServiceEndpoints
     // preserve safe-comparison invariants; the gateway-corrected echo is validated against
     // this broader shape so traces remain joinable across hops.
     private static readonly System.Text.RegularExpressions.Regex GatewayCorrelationRegex =
-        new("^[A-Za-z0-9._-]+$", System.Text.RegularExpressions.RegexOptions.Compiled);
+        new("\\A[A-Za-z0-9._-]+\\z", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     private static readonly System.Text.RegularExpressions.Regex BranchRefPolicyRegex =
-        new("^branch_ref_[a-z0-9_]{3,80}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+        new("\\Abranch_ref_[a-z0-9_]{3,80}\\z", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     private static readonly System.Text.RegularExpressions.Regex CommitAuthorMetadataReferenceRegex =
-        new("^authorref_[A-Za-z0-9_-]{6,118}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+        new("\\Aauthorref_[A-Za-z0-9_-]{6,118}\\z", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     private static readonly System.Text.RegularExpressions.Regex CommitBranchRefTargetRegex =
-        new("^branchref_[A-Za-z0-9_-]{6,118}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+        new("\\Abranchref_[A-Za-z0-9_-]{6,118}\\z", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     private static readonly System.Text.RegularExpressions.Regex CommitChangedPathMetadataDigestRegex =
-        new("^digest_[A-Za-z0-9_-]{9,121}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+        new("\\Adigest_[A-Za-z0-9_-]{9,121}\\z", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     private static readonly System.Text.RegularExpressions.Regex CommitMessageClassificationRegex =
-        new("^[a-z][a-z0-9_]{0,79}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+        new("\\A[a-z][a-z0-9_]{0,79}\\z", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     private static readonly System.Text.RegularExpressions.Regex MetadataFilterRegex =
-        new("^[a-z][A-Za-z0-9_=.,*\\- ]{0,255}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+        new("\\A[a-z][A-Za-z0-9_=.,*\\- ]{0,255}\\z", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     public static IEndpointRouteBuilder MapFoldersDomainServiceEndpoints(this IEndpointRouteBuilder endpoints)
     {

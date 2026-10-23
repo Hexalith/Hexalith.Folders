@@ -25,7 +25,7 @@ public sealed class FoldersDomainServiceRequestHandler(
     private const string OrganizationBaselineScope = FolderStreamName.ReservedOrganizationPermissionScope;
 
     private static readonly Regex CanonicalIdentifierRegex =
-        new("^[a-z0-9._-]+$", RegexOptions.Compiled);
+        new("\\A[a-z0-9._-]+\\z", RegexOptions.Compiled);
 
     public async Task<IResult> ProcessAsync(DomainServiceRequest request, CancellationToken cancellationToken = default)
     {

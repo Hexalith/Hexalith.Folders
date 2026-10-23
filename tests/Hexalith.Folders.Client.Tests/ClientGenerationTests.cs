@@ -758,6 +758,31 @@ Workspace_preparation_failed=50
         AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileContentEvidenceInvalidOrValidationProblem>(duplicateExact));
     }
 
+    [Theory]
+    [InlineData("code")]
+    [InlineData("correlationId")]
+    public void Oq2ProblemMetadataShouldRejectTrailingLf(string field)
+    {
+        JObject problem = JObject.Parse(ProblemJson(503, "read_model_unavailable", "projection_unavailable", true, "retry"));
+        JsonConvert.DeserializeObject<FileContextUnavailableProblem>(problem.ToString()).ShouldNotBeNull();
+        problem[field] = problem[field]!.Value<string>() + "\n";
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileContextUnavailableProblem>(problem.ToString()));
+    }
+
+    [Theory]
+    [InlineData("2026-09-14T00:00:00Z")]
+    [InlineData("2026-09-14T00:00:00+00:00")]
+    [InlineData("2026-09-14T00:00:00-00:00")]
+    public void Oq2FreshnessShouldAcceptCanonicalUtcAndRejectTrailingLf(string observedAt)
+    {
+        JObject result = JObject.Parse("{\"items\":[],\"page\":{\"limit\":500,\"isTruncated\":false},\"limits\":{\"queryFamily\":\"search\",\"configuredLimit\":500,\"actualCount\":0,\"actualBytes\":0,\"elapsedMilliseconds\":1,\"isTruncated\":false,\"truncatedReason\":\"not_truncated\"},\"freshness\":{\"readConsistency\":\"snapshot_per_task\",\"observedAt\":\"2026-09-14T00:00:00Z\"}}");
+        JObject freshness = (JObject)result["freshness"]!;
+        freshness["observedAt"] = observedAt;
+        JsonConvert.DeserializeObject<FileSearchResult>(result.ToString()).ShouldNotBeNull();
+        freshness["observedAt"] = observedAt + "\n";
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(result.ToString()));
+    }
+
     [Fact]
     public void Oq2WireValidationRejectsCoercionAndCompleteShapeDrift()
     {
@@ -811,7 +836,8 @@ Workspace_preparation_failed=50
         RemoveFileRequest remove = new()
         {
             RequestSchemaVersion = "v2",
-            ExpectedFileVersion = 1, ExpectedLockFence = 1,
+            ExpectedFileVersion = 1,
+            ExpectedLockFence = 1,
             FileOperationKind = RemoveFileRequestFileOperationKind.Remove,
             TransportOperation = FileMutationRequestTransportOperation.MetadataOnlyRemoval,
             OperationId = "operation_01HZY7Z6N7J4Q2X8",
@@ -847,7 +873,8 @@ Workspace_preparation_failed=50
         const string hash = "hashref_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         AddFileRequest request = new()
         {
-            ExpectedFileVersion = 0, ExpectedLockFence = 1,
+            ExpectedFileVersion = 0,
+            ExpectedLockFence = 1,
             RequestSchemaVersion = "v2",
             FileOperationKind = AddFileRequestFileOperationKind.Add,
             TransportOperation = FileMutationRequestTransportOperation.PutFileStream,
@@ -1488,7 +1515,8 @@ Workspace_preparation_failed=50
     private static FileMutationRequest CreateFileMutation(FileMutationRequestFileOperationKind kind, FileMutationRequestTransportOperation transportOperation) =>
         new()
         {
-            ExpectedFileVersion = 0, ExpectedLockFence = 1,
+            ExpectedFileVersion = 0,
+            ExpectedLockFence = 1,
             FileOperationKind = kind,
             TransportOperation = transportOperation,
             OperationId = "01ARZ3NDEKTSV4RRFFQ69G5FAV",

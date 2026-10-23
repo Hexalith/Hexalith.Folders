@@ -6,6 +6,13 @@ namespace Hexalith.Folders.Tests.Aggregates.Folder;
 
 public sealed class FolderAccessCommandValidationTests
 {
+    [Theory]
+    [InlineData("safe-identifier\n")]
+    [InlineData("safe-identifier\r\n")]
+    [InlineData("safe\nidentifier")]
+    public void EvidenceIdentifierShouldRejectControlCharacters(string value)
+        => FolderCommandValidator.IsSafeEvidenceIdentifier(value).ShouldBeFalse();
+
     [Fact]
     public void GrantFolderAccessShouldEmitMetadataOnlyGrantEvent()
     {

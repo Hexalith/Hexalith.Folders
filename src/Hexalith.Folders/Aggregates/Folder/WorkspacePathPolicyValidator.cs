@@ -221,7 +221,7 @@ public static partial class WorkspacePathPolicyValidator
         hash.AppendData(bytes);
     }
 
-    [GeneratedRegex("^[A-Za-z0-9._/-]+$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[A-Za-z0-9._/-]+\\z", RegexOptions.CultureInvariant)]
     private static partial Regex AllowedPathPattern();
 
     [GeneratedRegex("^[A-Za-z]:/", RegexOptions.CultureInvariant)]
@@ -230,10 +230,10 @@ public static partial class WorkspacePathPolicyValidator
     [GeneratedRegex("^(?://|/\\\\|\\\\\\\\|\\\\\\?|\\\\\\.)", RegexOptions.CultureInvariant)]
     private static partial Regex DevicePathPattern();
 
-    [GeneratedRegex(@"^(?:CON|NUL|PRN|AUX|COM[1-9]|LPT[1-9])(?:\..*)?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"\A(?:CON|NUL|PRN|AUX|COM[1-9]|LPT[1-9])(?:\..*)?\z", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex ReservedWindowsBaseNamePattern();
 
-    [GeneratedRegex("^[a-z][a-z0-9_]{0,79}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[a-z][a-z0-9_]{0,79}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex PathPolicyClassPattern();
 
     [GeneratedRegex("%(?:2e|2E)(?:%(?:2e|2E))?", RegexOptions.CultureInvariant)]

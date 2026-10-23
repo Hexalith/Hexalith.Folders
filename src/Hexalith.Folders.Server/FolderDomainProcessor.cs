@@ -50,7 +50,7 @@ public sealed partial class FolderDomainProcessor(
     // Mirrors FoldersDomainServiceEndpoints.CanonicalSegmentRegex. Extension values
     // arriving on the /process boundary are not validated by the REST endpoint, so the
     // processor re-validates before propagating them into command/event metadata.
-    [GeneratedRegex("^[a-z0-9._-]+$", RegexOptions.Compiled)]
+    [GeneratedRegex("\\A[a-z0-9._-]+\\z", RegexOptions.Compiled)]
     private static partial Regex CanonicalSegmentRegex();
 
     private readonly FolderArchiveTenantGate _archiveGate = archiveGate ?? throw new ArgumentNullException(nameof(archiveGate));
@@ -1296,7 +1296,8 @@ public sealed partial class FolderDomainProcessor(
         {
             OwnerFileId = payload.OwnerFileId,
             ProjectFileReferenceId = payload.ProjectFileReferenceId,
-            ContentReceiptId = payload.ContentReceiptId, ExpectedFileVersion = payload.ExpectedFileVersion,
+            ContentReceiptId = payload.ContentReceiptId,
+            ExpectedFileVersion = payload.ExpectedFileVersion,
             ExpectedLockFence = payload.ExpectedLockFence,
         };
 
