@@ -1,5 +1,6 @@
 using System;
 
+using Hexalith.Folders.AdapterCore;
 using Hexalith.Folders.Client;
 using Hexalith.Folders.Client.Generated;
 
@@ -20,17 +21,26 @@ internal static class FoldersClientFactory
     /// <returns>A configured typed client.</returns>
     public static IClient Create(Uri baseAddress, string token)
     {
-        ArgumentNullException.ThrowIfNull(baseAddress);
-        ArgumentException.ThrowIfNullOrWhiteSpace(token);
-
         ServiceCollection services = new();
-        _ = services
-            .AddFoldersClient(options => options.BaseAddress = baseAddress)
-            .AddHttpMessageHandler(() => new BearerTokenHandler(token));
+        _ = Register(services, baseAddress, token);
 
         // The provider lives for the duration of the process (one command per invocation); the OS reclaims
         // the HttpClient on exit. Disposing here would dispose the client before the awaited call completes.
         ServiceProvider provider = services.BuildServiceProvider();
         return provider.GetRequiredService<IClient>();
     }
+
+    /// <summary>Registers the production adapter pipeline without destination-bearing factory logging.</summary>
+    public static IHttpClientBuilder Register(IServiceCollection services, Uri baseAddress, string token)
+    {
+        BearerTransportPolicy.Validate(baseAddress);
+        ArgumentException.ThrowIfNullOrWhiteSpace(token);
+
+        return services
+            .AddFoldersClient(options => options.BaseAddress = baseAddress)
+            .RemoveAllLoggers()
+            .ConfigurePrimaryHttpMessageHandler(BearerTransportPolicy.CreatePrimaryHandler)
+            .AddHttpMessageHandler(() => new BearerTokenHandler(token));
+    }
+
 }

@@ -45,6 +45,26 @@ public sealed class CrossAdapterBehavioralParityTests
     /// </summary>
     private static readonly HashSet<string> McpFailureKindVocabulary = BuildMcpVocabulary();
 
+    [Fact]
+    public void SharedCoreRetainsTheSameMetadataAndBodyValuesAcrossBothSurfaces()
+    {
+        object value = new
+        {
+            CorrelationId = "corr-core-parity",
+            Missing = (string?)null,
+            Nested = new { CONTENTBYTES = "excluded", InlineContent = "excluded", StreamDescriptor = "excluded", Count = 3 },
+        };
+
+        string cli = Cli.Infrastructure.MetadataOnlyJson.Serialize(value);
+        string mcp = Mcp.Infrastructure.MetadataOnlyJson.Serialize(value);
+        cli.ShouldBe(mcp);
+        cli.ShouldBe("{\n  \"correlationId\": \"corr-core-parity\",\n  \"nested\": {\n    \"count\": 3\n  }\n}".Replace("\n", Environment.NewLine, StringComparison.Ordinal));
+
+        const string body = "{\"key\":\" value \"}";
+        Cli.Commands.CommandOptions.ReadBody<Dictionary<string, string>>(body)["key"]
+            .ShouldBe(Mcp.Tooling.RequestBody.Read<Dictionary<string, string>>(body)["key"]);
+    }
+
     [Theory]
     [MemberData(nameof(CrossAdapterOutcomeTuples))]
     public void OracleRowProjectsToTheSameExitCodeOnCliAndTheSameKindOnMcp(

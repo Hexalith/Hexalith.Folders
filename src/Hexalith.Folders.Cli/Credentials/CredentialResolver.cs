@@ -1,5 +1,7 @@
 using System;
 
+using Hexalith.Folders.AdapterCore;
+
 namespace Hexalith.Folders.Cli.Credentials;
 
 /// <summary>
@@ -33,24 +35,16 @@ internal sealed class CredentialResolver
     /// <returns>The resolved bearer token, or <see langword="null"/> when no source provided one.</returns>
     public string? ResolveToken(string? tokenOption)
     {
-        // Layer 1: HEXALITH_TOKEN environment variable.
-        string? fromEnvironment = _environment("HEXALITH_TOKEN");
-        if (!string.IsNullOrWhiteSpace(fromEnvironment))
-        {
-            return fromEnvironment;
-        }
-
-        // Layer 2: per-tenant section of the credentials file.
-        string tenantSection = _environment("HEXALITH_TENANT") is { } tenant && !string.IsNullOrWhiteSpace(tenant)
-            ? tenant
-            : "default";
-        string? fromFile = _store.TryReadToken(tenantSection);
-        if (!string.IsNullOrWhiteSpace(fromFile))
-        {
-            return fromFile;
-        }
-
-        // Layer 3: explicit --token flag.
-        return string.IsNullOrWhiteSpace(tokenOption) ? null : tokenOption;
+        return CredentialSources.FirstNonBlank(
+            trim: false,
+            () => _environment("HEXALITH_TOKEN"),
+            () =>
+            {
+                string tenantSection = _environment("HEXALITH_TENANT") is { } tenant && !string.IsNullOrWhiteSpace(tenant)
+                    ? tenant
+                    : "default";
+                return _store.TryReadToken(tenantSection);
+            },
+            () => tokenOption);
     }
 }

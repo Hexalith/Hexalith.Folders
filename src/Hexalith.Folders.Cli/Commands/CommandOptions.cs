@@ -2,6 +2,7 @@ using System;
 using System.CommandLine;
 using System.IO;
 
+using Hexalith.Folders.AdapterCore;
 using Hexalith.Folders.Cli.Errors;
 using Hexalith.Folders.Client.Generated;
 using Hexalith.Folders.Client.Serialization;
@@ -128,7 +129,7 @@ internal static class CommandOptions
 
         try
         {
-            return JsonConvert.DeserializeObject<T>(json) ?? new T();
+            return RequestBodyParser.Read<T>(json);
         }
         catch (JsonException)
         {

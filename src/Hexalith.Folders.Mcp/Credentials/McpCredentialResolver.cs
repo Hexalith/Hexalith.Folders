@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 
+using Hexalith.Folders.AdapterCore;
 using Hexalith.Folders.Mcp.Configuration;
 
 namespace Hexalith.Folders.Mcp.Credentials;
@@ -49,33 +50,17 @@ internal sealed class McpCredentialResolver
     /// <returns>The resolved, non-blank bearer token, or <see langword="null"/> when no source provided one.</returns>
     public string? ResolveToken()
     {
-        // Layer 1: HEXALITH_TOKEN environment variable.
-        string? fromEnvironment = _environment(TokenEnvironmentVariable);
-        if (!string.IsNullOrWhiteSpace(fromEnvironment))
-        {
-            return fromEnvironment.Trim();
-        }
-
-        // Layer 2: inline auth.token configuration value.
-        if (!string.IsNullOrWhiteSpace(_auth.Token))
-        {
-            return _auth.Token.Trim();
-        }
-
-        // Layer 3: token file (env path wins over the configured path).
-        string? tokenFilePath = _environment(TokenFileEnvironmentVariable) is { } envPath && !string.IsNullOrWhiteSpace(envPath)
-            ? envPath
-            : _auth.TokenFile;
-        if (!string.IsNullOrWhiteSpace(tokenFilePath))
-        {
-            string? contents = _fileReader(tokenFilePath);
-            if (!string.IsNullOrWhiteSpace(contents))
+        return CredentialSources.FirstNonBlank(
+            trim: true,
+            () => _environment(TokenEnvironmentVariable),
+            () => _auth.Token,
+            () =>
             {
-                return contents.Trim();
-            }
-        }
-
-        return null;
+                string? tokenFilePath = _environment(TokenFileEnvironmentVariable) is { } envPath && !string.IsNullOrWhiteSpace(envPath)
+                    ? envPath
+                    : _auth.TokenFile;
+                return string.IsNullOrWhiteSpace(tokenFilePath) ? null : _fileReader(tokenFilePath);
+            });
     }
 
     private static string? ReadFileOrNull(string path)

@@ -24,6 +24,27 @@ See also: [API & SDK reference](./api-reference.md) · [CLI reference](./cli-ref
 ([workspace](../diagrams/workspace-lifecycle.md), [file→commit](../diagrams/file-commit-flow.md),
 [auth/ACL](../diagrams/auth-acl-decision-flow.md)).
 
+## Legacy adapter safety and bearer transport
+
+The proprietary CLI and MCP adapters are retained for bounded safety and continuity work.
+`Hexalith.McpCli` remains the target Hexalith CLI/MCP owner. This local consolidation does not
+authorize enrollment, deployment, adapter retirement, Story 11.6 closure, or removal of the Story 1.17
+prerequisite and delivery hold.
+
+Bearer destinations must be absolute HTTPS URLs, or HTTP URLs whose host is exactly `localhost`
+(case-insensitive) or a literal loopback IP address (`127/8` or `::1`, as classified by
+`IPAddress.IsLoopback`). DNS lookalikes, remote HTTP, other schemes, and relative or missing
+addresses are rejected before transport credential acquisition or attachment. The guard checks each
+actual request URI as well as startup/base-address configuration, so an unsafe absolute request cannot
+override a safe base. Automatic HTTP redirects are disabled; redirect responses follow the existing
+SDK response projection without forwarding the token.
+
+Rejection uses the constant diagnostic `Bearer transport requires HTTPS or HTTP loopback.` It never
+includes the destination, query, credentials, or a local path. The CLI returns configuration exit code
+64; MCP exits 1 for invalid startup configuration or returns per-call `usage_error`, retaining an
+available correlation ID. Credential precedence and whitespace behavior remain surface-specific, and
+lower-priority sources remain unread after a credential is found.
+
 ## Transport and discovery
 
 - **Transport: stdio.** `stdout` carries the JSON-RPC channel; **all logging goes to `stderr` only**. Never

@@ -1,28 +1,15 @@
 using System;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Hexalith.Folders.AdapterCore;
 using Hexalith.Folders.Cli.Composition;
 using Hexalith.Folders.Cli.Errors;
 using Hexalith.Folders.Cli.Rendering;
 using Hexalith.Folders.Client.Convenience;
 using Hexalith.Folders.Client.Generated;
 
-using Newtonsoft.Json;
-
 namespace Hexalith.Folders.Cli.Commands;
-
-/// <summary>Resolved sourcing values threaded into a mutating <see cref="IClient"/> call.</summary>
-/// <param name="IdempotencyKey">The caller-sourced or opt-in auto-generated idempotency key.</param>
-/// <param name="CorrelationId">The per-invocation correlation ID.</param>
-/// <param name="TaskId">The caller-provided task ID (never CLI-generated).</param>
-internal readonly record struct MutationSourcing(string IdempotencyKey, string CorrelationId, string TaskId);
-
-/// <summary>Resolved sourcing values threaded into a query <see cref="IClient"/> call.</summary>
-/// <param name="CorrelationId">The per-invocation correlation ID.</param>
-/// <param name="TaskId">The task ID, present only when the operation signature requires it.</param>
-internal readonly record struct QuerySourcing(string CorrelationId, string? TaskId);
 
 /// <summary>
 /// Centralizes the Adapter Parity Contract behavioral flow shared by every command: per-invocation
@@ -63,42 +50,32 @@ internal sealed class CommandPipeline
         ArgumentNullException.ThrowIfNull(invoke);
 
         // One fresh correlation ID per invocation, always observable to the caller (stderr).
-        string correlationId = CorrelationAndTaskId.ResolveCorrelationId(global.CorrelationId);
+        string correlationId = AdapterInvocation.ResolveCorrelationId(global.CorrelationId);
         EmitCorrelation(correlationId);
 
         // Task ID: fail-closed and pre-SDK. ResolveTaskId throws when blank; the CLI never generates one.
-        string taskId;
-        try
-        {
-            taskId = CorrelationAndTaskId.ResolveTaskId(taskIdOption);
-        }
-        catch (InvalidOperationException)
+        if (!AdapterInvocation.TryResolveTaskId(taskIdOption, out string taskId))
         {
             return UsageError(global, correlationId, "A task ID is required for this command; supply --task-id <id>.");
         }
 
         // Idempotency key: explicit value, else opt-in auto-key (echoed to stderr), else pre-SDK error.
-        string idempotencyKey;
-        if (!string.IsNullOrWhiteSpace(idempotencyKeyOption))
+        string? idempotencyKey = AdapterInvocation.ResolveIdempotencyKey(
+            idempotencyKeyOption,
+            allowAutoKey ? _dependencies.IdempotencyKeyGenerator : null);
+        if (idempotencyKey is null)
         {
-            idempotencyKey = idempotencyKeyOption;
+            return UsageError(global, correlationId, "A mutating command requires --idempotency-key <key> or --allow-auto-key.");
         }
-        else if (allowAutoKey)
+
+        if (string.IsNullOrWhiteSpace(idempotencyKeyOption) && allowAutoKey)
         {
-            idempotencyKey = _dependencies.IdempotencyKeyGenerator();
             _dependencies.Console.Error.WriteLine($"idempotency-key: {idempotencyKey}");
-        }
-        else
-        {
-            return UsageError(
-                global,
-                correlationId,
-                "A mutating command requires --idempotency-key <key> or --allow-auto-key.");
         }
 
         if (!TryResolveBaseAddress(global, out Uri? baseAddress))
         {
-            return UsageError(global, correlationId, "A valid absolute --base-address (or HEXALITH_FOLDERS_BASE_ADDRESS) is required.");
+            return UsageError(global, correlationId, BearerTransportPolicy.RejectionMessage);
         }
 
         if (!TryResolveToken(global, correlationId, out string? token, out int credentialFailureCode))
@@ -131,29 +108,19 @@ internal sealed class CommandPipeline
         ArgumentNullException.ThrowIfNull(global);
         ArgumentNullException.ThrowIfNull(invoke);
 
-        string correlationId = CorrelationAndTaskId.ResolveCorrelationId(global.CorrelationId);
+        string correlationId = AdapterInvocation.ResolveCorrelationId(global.CorrelationId);
         EmitCorrelation(correlationId);
 
-        string? taskId = null;
-        if (taskIdSupplied)
+        if (!AdapterInvocation.TryResolveQueryTaskId(taskIdOption, taskIdSupplied, taskIdRequired, out string? taskId))
         {
-            try
-            {
-                taskId = CorrelationAndTaskId.ResolveTaskId(taskIdOption);
-            }
-            catch (InvalidOperationException)
-            {
-                return UsageError(global, correlationId, "The supplied --task-id is invalid.");
-            }
-        }
-        else if (taskIdRequired)
-        {
-            return UsageError(global, correlationId, "A task ID is required for this query; supply --task-id <id>.");
+            return UsageError(global, correlationId, taskIdSupplied
+                ? "The supplied --task-id is invalid."
+                : "A task ID is required for this query; supply --task-id <id>.");
         }
 
         if (!TryResolveBaseAddress(global, out Uri? baseAddress))
         {
-            return UsageError(global, correlationId, "A valid absolute --base-address (or HEXALITH_FOLDERS_BASE_ADDRESS) is required.");
+            return UsageError(global, correlationId, BearerTransportPolicy.RejectionMessage);
         }
 
         if (!TryResolveToken(global, correlationId, out string? token, out int credentialFailureCode))
@@ -171,7 +138,8 @@ internal sealed class CommandPipeline
     {
         baseAddress = null;
         return !string.IsNullOrWhiteSpace(global.BaseAddress)
-            && Uri.TryCreate(global.BaseAddress, UriKind.Absolute, out baseAddress);
+            && Uri.TryCreate(global.BaseAddress, UriKind.Absolute, out baseAddress)
+            && BearerTransportPolicy.IsAllowed(baseAddress);
     }
 
     private async Task<int> InvokeAndRenderAsync(GlobalOptions global, string correlationId, Func<Task<object?>> invoke)
@@ -181,6 +149,10 @@ internal sealed class CommandPipeline
             object? result = await invoke().ConfigureAwait(false);
             ResultRenderer.RenderSuccess(_dependencies.Console, global.Output, result);
             return FoldersExitCodes.Success;
+        }
+        catch (UnsafeBearerTransportException)
+        {
+            return UsageError(global, correlationId, BearerTransportPolicy.RejectionMessage);
         }
         catch (CliUsageException usage)
         {
@@ -215,7 +187,7 @@ internal sealed class CommandPipeline
                 clientAction: "revise_request");
             return FoldersExitCodes.ValidationError;
         }
-        catch (Exception exception) when (IsRequestValidationFailure(exception))
+        catch (Exception exception) when (AdapterInvocation.IsRequestValidationFailure(exception))
         {
             return UsageError(global, correlationId, "The request body is not valid for this operation.");
         }
@@ -268,8 +240,4 @@ internal sealed class CommandPipeline
     private void EmitCorrelation(string correlationId)
         => _dependencies.Console.Error.WriteLine($"correlation-id: {correlationId}");
 
-    private static bool IsRequestValidationFailure(Exception exception) =>
-        exception is JsonSerializationException
-        || (exception is TargetInvocationException { InnerException: { } inner }
-            && IsRequestValidationFailure(inner));
 }

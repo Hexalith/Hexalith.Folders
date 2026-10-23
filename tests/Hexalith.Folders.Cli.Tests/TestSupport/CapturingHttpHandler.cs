@@ -13,8 +13,11 @@ namespace Hexalith.Folders.Cli.Tests.TestSupport;
 /// Used with the real generated client to assert wire-level behavior (header propagation, transport shape)
 /// without a live server, mirroring the Story 5.1 sample tests.
 /// </summary>
-internal sealed class CapturingHttpHandler(HttpStatusCode statusCode, string responseJson) : HttpMessageHandler
+internal sealed class CapturingHttpHandler(HttpStatusCode statusCode, string responseJson, System.Uri? location = null) : HttpMessageHandler
 {
+    /// <summary>Gets the number of requests passed to the inner transport.</summary>
+    public int SendCount { get; private set; }
+
     /// <summary>Gets the captured request, if any.</summary>
     public HttpRequestMessage? Request { get; private set; }
 
@@ -32,16 +35,19 @@ internal sealed class CapturingHttpHandler(HttpStatusCode statusCode, string res
     /// <inheritdoc/>
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
+        SendCount++;
         Request = request;
         if (request.Content is not null)
         {
             RequestBody = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        return new HttpResponseMessage(statusCode)
+        HttpResponseMessage response = new(statusCode)
         {
             Content = new StringContent(responseJson, Encoding.UTF8, "application/json"),
             RequestMessage = request,
         };
+        response.Headers.Location = location;
+        return response;
     }
 }

@@ -1,28 +1,16 @@
 using System;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Hexalith.Folders.AdapterCore;
 using Hexalith.Folders.Client.Convenience;
 using Hexalith.Folders.Client.Generated;
 using Hexalith.Folders.Mcp.Credentials;
 using Hexalith.Folders.Mcp.Errors;
-using Hexalith.Folders.Mcp.Infrastructure;
 
-using Newtonsoft.Json;
+using MetadataOnlyJson = Hexalith.Folders.Mcp.Infrastructure.MetadataOnlyJson;
 
 namespace Hexalith.Folders.Mcp.Tooling;
-
-/// <summary>Resolved sourcing values threaded into a mutating <see cref="IClient"/> call.</summary>
-/// <param name="IdempotencyKey">The caller-sourced idempotency key (never MCP-generated).</param>
-/// <param name="CorrelationId">The per-call correlation ID.</param>
-/// <param name="TaskId">The caller-provided task ID (never MCP-generated).</param>
-internal readonly record struct MutationSourcing(string IdempotencyKey, string CorrelationId, string TaskId);
-
-/// <summary>Resolved sourcing values threaded into a query <see cref="IClient"/> call.</summary>
-/// <param name="CorrelationId">The per-call correlation ID.</param>
-/// <param name="TaskId">The task ID, present only when the operation signature requires it.</param>
-internal readonly record struct QuerySourcing(string CorrelationId, string? TaskId);
 
 /// <summary>
 /// Centralizes the Adapter Parity Contract behavioral flow shared by every tool and resource:
@@ -69,21 +57,17 @@ internal sealed class ToolPipeline
     {
         ArgumentNullException.ThrowIfNull(invoke);
 
-        string correlation = CorrelationAndTaskId.ResolveCorrelationId(correlationId);
+        string correlation = AdapterInvocation.ResolveCorrelationId(correlationId);
 
         // Task ID: fail-closed and pre-SDK. ResolveTaskId throws when blank; MCP never generates one.
-        string resolvedTaskId;
-        try
-        {
-            resolvedTaskId = CorrelationAndTaskId.ResolveTaskId(taskId);
-        }
-        catch (InvalidOperationException)
+        if (!AdapterInvocation.TryResolveTaskId(taskId, out string resolvedTaskId))
         {
             return Failure(McpFailure.UsageError(correlation, "A task ID is required for this tool; supply taskId."));
         }
 
         // Idempotency key: caller-sourced only. No auto-key path exists for MCP.
-        if (string.IsNullOrWhiteSpace(idempotencyKey))
+        string? resolvedKey = AdapterInvocation.ResolveIdempotencyKey(idempotencyKey);
+        if (resolvedKey is null)
         {
             return Failure(McpFailure.UsageError(correlation, "A mutating tool requires a caller-supplied idempotencyKey."));
         }
@@ -93,7 +77,7 @@ internal sealed class ToolPipeline
             return failure;
         }
 
-        MutationSourcing sourcing = new(idempotencyKey, correlation, resolvedTaskId);
+        MutationSourcing sourcing = new(resolvedKey, correlation, resolvedTaskId);
         return await InvokeAsync(correlation, () => invoke(_client, sourcing, cancellationToken)).ConfigureAwait(false);
     }
 
@@ -113,23 +97,13 @@ internal sealed class ToolPipeline
     {
         ArgumentNullException.ThrowIfNull(invoke);
 
-        string correlation = CorrelationAndTaskId.ResolveCorrelationId(correlationId);
+        string correlation = AdapterInvocation.ResolveCorrelationId(correlationId);
 
-        string? resolvedTaskId = null;
-        if (taskId is not null)
+        if (!AdapterInvocation.TryResolveQueryTaskId(taskId, taskId is not null, taskIdRequired, out string? resolvedTaskId))
         {
-            try
-            {
-                resolvedTaskId = CorrelationAndTaskId.ResolveTaskId(taskId);
-            }
-            catch (InvalidOperationException)
-            {
-                return Failure(McpFailure.UsageError(correlation, "The supplied taskId is invalid."));
-            }
-        }
-        else if (taskIdRequired)
-        {
-            return Failure(McpFailure.UsageError(correlation, "A task ID is required for this query tool; supply taskId."));
+            return Failure(McpFailure.UsageError(correlation, taskId is not null
+                ? "The supplied taskId is invalid."
+                : "A task ID is required for this query tool; supply taskId."));
         }
 
         if (!TryResolveCredential(correlation, out string failure))
@@ -163,6 +137,10 @@ internal sealed class ToolPipeline
             // Success envelope: the correlation ID used is always echoed alongside the metadata-only result.
             return MetadataOnlyJson.Serialize(new { correlationId = correlation, result });
         }
+        catch (UnsafeBearerTransportException)
+        {
+            return Failure(McpFailure.UsageError(correlation, BearerTransportPolicy.RejectionMessage));
+        }
         catch (McpUsageException usage)
         {
             // Body-shape validation that ran before the HTTP call: pre-SDK usage error.
@@ -177,7 +155,7 @@ internal sealed class ToolPipeline
         {
             return Failure(McpFailure.FileContentLimitExceeded(correlation));
         }
-        catch (Exception exception) when (IsRequestValidationFailure(exception))
+        catch (Exception exception) when (AdapterInvocation.IsRequestValidationFailure(exception))
         {
             return Failure(McpFailure.UsageError(correlation, "The request body is not valid for this operation."));
         }
@@ -195,11 +173,6 @@ internal sealed class ToolPipeline
     }
 
     private static string Failure(McpFailure failure) => MetadataOnlyJson.Serialize(failure);
-
-    private static bool IsRequestValidationFailure(Exception exception) =>
-        exception is JsonSerializationException
-        || (exception is TargetInvocationException { InnerException: { } inner }
-            && IsRequestValidationFailure(inner));
 
     /// <summary>Adapts a typed <see cref="Task{T}"/> SDK call to the pipeline's <c>Task&lt;object?&gt;</c> shape.</summary>
     /// <typeparam name="T">The SDK result type.</typeparam>

@@ -18,4 +18,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Hexalith.Folders.Client\Hexalith.Folders.Client.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\shared\AdapterCore\*.cs" Link="AdapterCore\%(Filename)%(Extension)" />
+    <Using Include="Hexalith.Folders.AdapterCore.MutationSourcing" Alias="MutationSourcing" />
+    <Using Include="Hexalith.Folders.AdapterCore.QuerySourcing" Alias="QuerySourcing" />
+  </ItemGroup>
 </Project>

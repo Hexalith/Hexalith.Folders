@@ -1,6 +1,6 @@
 using System.Reflection;
 
-using Hexalith.Folders.Client;
+using Hexalith.Folders.AdapterCore;
 using Hexalith.Folders.Mcp.Composition;
 using Hexalith.Folders.Mcp.Configuration;
 using Hexalith.Folders.Mcp.Credentials;
@@ -25,11 +25,10 @@ string? baseAddress = Environment.GetEnvironmentVariable("HEXALITH_FOLDERS_BASE_
 
 if (string.IsNullOrWhiteSpace(baseAddress)
     || !Uri.TryCreate(baseAddress, UriKind.Absolute, out Uri? baseUri)
-    || (baseUri.Scheme != Uri.UriSchemeHttp && baseUri.Scheme != Uri.UriSchemeHttps))
+    || !BearerTransportPolicy.IsAllowed(baseUri))
 {
     await Console.Error.WriteLineAsync(
-        "Error: a valid absolute Folders base address is required.\n"
-        + "Set HEXALITH_FOLDERS_BASE_ADDRESS (e.g., https://folders.internal/) or folders:baseAddress.")
+        BearerTransportPolicy.RejectionMessage)
         .ConfigureAwait(false);
     return 1;
 }
@@ -44,9 +43,7 @@ builder.Services.AddSingleton(new McpCredentialResolver(auth));
 
 // Typed SDK client over the configured endpoint, with the bearer token attached by a DelegatingHandler
 // (the module never owns auth — Story 5.1/5.2 pattern). Dependency direction stays MCP → Client → Contracts.
-builder.Services
-    .AddFoldersClient(options => options.BaseAddress = baseUri)
-    .AddHttpMessageHandler(static serviceProvider => new BearerTokenHandler(serviceProvider.GetRequiredService<McpCredentialResolver>()));
+FoldersClientRegistration.Register(builder.Services, baseUri);
 
 builder.Services.AddTransient<ToolPipeline>();
 

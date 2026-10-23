@@ -1,4 +1,4 @@
-using Hexalith.Folders.Client.Generated;
+using Hexalith.Folders.AdapterCore;
 
 using Newtonsoft.Json;
 
@@ -23,14 +23,9 @@ internal static class RequestBody
     public static T Read<T>(string? requestJson)
         where T : new()
     {
-        if (string.IsNullOrWhiteSpace(requestJson))
-        {
-            return new T();
-        }
-
         try
         {
-            return JsonConvert.DeserializeObject<T>(requestJson) ?? new T();
+            return RequestBodyParser.Read<T>(requestJson);
         }
         catch (JsonException)
         {

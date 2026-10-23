@@ -82,16 +82,19 @@ internal static class TestSupport
         private readonly HttpStatusCode _status;
         private readonly string _body;
         private readonly string _contentType;
+        private readonly Uri? _location;
 
         /// <summary>Initializes a new instance of the <see cref="CapturingHandler"/> class.</summary>
         /// <param name="status">The canned response status.</param>
         /// <param name="body">The canned response body.</param>
         /// <param name="contentType">The canned response content type.</param>
-        public CapturingHandler(HttpStatusCode status, string body, string contentType = "application/json")
+        /// <param name="location">An optional redirect destination.</param>
+        public CapturingHandler(HttpStatusCode status, string body, string contentType = "application/json", Uri? location = null)
         {
             _status = status;
             _body = body;
             _contentType = contentType;
+            _location = location;
         }
 
         /// <summary>Gets the captured requests in order.</summary>
@@ -111,10 +114,12 @@ internal static class TestSupport
                 request.Headers.TryGetValues("X-Hexalith-Freshness", out IEnumerable<string>? f) ? f.FirstOrDefault() : null,
                 request.Headers.TryGetValues("Idempotency-Key", out IEnumerable<string>? i) ? i.FirstOrDefault() : null));
 
-            return new HttpResponseMessage(_status)
+            HttpResponseMessage response = new(_status)
             {
                 Content = new StringContent(_body, System.Text.Encoding.UTF8, _contentType),
             };
+            response.Headers.Location = _location;
+            return response;
         }
     }
 

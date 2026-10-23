@@ -13,6 +13,28 @@ tokens, credential material, or local absolute paths here.
 See also: [API & SDK reference](./api-reference.md) · [CLI reference](./cli-reference.md) ·
 [MCP reference](./mcp-reference.md) · [auth/ACL decision flow](../diagrams/auth-acl-decision-flow.md).
 
+## Legacy adapter safety and bearer transport
+
+The proprietary CLI and MCP adapters are retained for bounded safety and continuity work.
+`Hexalith.McpCli` remains the target Hexalith CLI/MCP owner. This local consolidation does not
+authorize enrollment, deployment, adapter retirement, Story 11.6 closure, or removal of the Story 1.17
+prerequisite and delivery hold.
+
+Bearer destinations must be absolute HTTPS URLs, or HTTP URLs whose host is exactly `localhost`
+(case-insensitive) or a literal loopback IP address (`127/8` or `::1`, as classified by
+`IPAddress.IsLoopback`). DNS lookalikes, remote HTTP, other schemes, and relative or missing
+addresses are rejected before transport credential acquisition or attachment. The guard checks each
+actual request URI as well as startup/base-address configuration, so an unsafe absolute request cannot
+override a safe base. Automatic HTTP redirects are disabled; redirect responses follow the existing
+SDK response projection without forwarding the token.
+HTTP loopback requests bypass configured proxies; HTTPS requests retain ordinary proxy behavior.
+
+Rejection uses the constant diagnostic `Bearer transport requires HTTPS or HTTP loopback.` It never
+includes the destination, query, credentials, or a local path. The CLI returns configuration exit code
+64; MCP exits 1 for invalid startup configuration or returns per-call `usage_error`, retaining an
+available correlation ID. Credential precedence and whitespace behavior remain surface-specific, and
+lower-priority sources remain unread after a credential is found.
+
 ## Bearer-token handler pattern
 
 Authentication is intentionally **outside** the SDK. `AddFoldersClient` registers the typed `IClient` as a
@@ -85,10 +107,11 @@ The CLI and MCP adapters resolve the bearer token without you hand-coding a hand
 
 - **CLI** — three-layer precedence (highest first): `HEXALITH_TOKEN` environment variable →
   `~/.hexalith/credentials.json` per-tenant section (selected by `HEXALITH_TENANT`, else `default`) →
-  `--token` / `-t` flag. See the [CLI reference](./cli-reference.md#credential-precedence-three-layers).
+  `--token` / `-t` flag. Values are preserved without trimming. See the [CLI reference](./cli-reference.md#credential-precedence-three-layers).
 - **MCP** — the stdio server resolves its token through its own
-  `Composition/BearerTokenHandler.cs`; supply credentials through the server's configured environment, never
-  on the JSON-RPC channel.
+  `Composition/BearerTokenHandler.cs`: `HEXALITH_TOKEN` → inline `folders:auth:token` → token file
+  (environment path `HEXALITH_FOLDERS_AUTH_TOKENFILE` takes precedence over `folders:auth:tokenFile`).
+  Selected token values are trimmed. Supply credentials through server configuration, never on the JSON-RPC channel.
 
 In every adapter, the resolved token only sets the `Authorization` header; tenant and principal authority
 still come exclusively from the validated claims described above.
