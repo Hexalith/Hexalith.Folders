@@ -1,0 +1,1712 @@
+{
+  "schema_version": 1,
+  "title": "Story 1.17 published content package and golden lifecycle prerequisite",
+  "story_key": "1-17-publish-the-pd10-v2-authorization-contract-spine",
+  "evidence_date": "2026-10-24",
+  "artifact_name_date": "2026-10-23 (spec-prescribed filename)",
+  "created_at": "2026-10-24T02:30:56.169776+00:00",
+  "status": "local-prerequisite-checks-passed-with-missing-pre-edit-aspire-baseline",
+  "baseline_commit": "4403ef17f76edf055d4a7b520abb340730df5592",
+  "observed_revisions": {
+    "folders": "abde15e6fb74c79071131a53d570eaf7395a3803",
+    "builds": "70ead608ac01f66dfcd80c13bb71152dac6c128e",
+    "projects": "0247ccb999d788a6d92984362e5717955d58caa8"
+  },
+  "implementation_spec_snapshot": {
+    "captured_at": "2026-10-24T01:57:07.307032+00:00",
+    "source_path": "_bmad-output/implementation-artifacts/spec-1-17-restore-published-content-package-and-golden-lifecycle.md",
+    "snapshot_path": "implementation-spec-snapshot.md",
+    "snapshot_sha256": "721a08a1f0f3dd3414fd93d7fd5ddf0e71525c3976e96077bf1730ee2cdcfcf0",
+    "scope": "Point-in-time implementation input. Workflow status, checkboxes and notes can change later; this full-file digest is not a permanent preservation requirement.",
+    "approved_frozen_block_path": "approved-frozen-block.md",
+    "approved_frozen_block_sha256": "ff19a4b1630c11217d4ff596f747183d73264eecf2e40939e5f6d18f4867ce9a",
+    "frozen_block_hash_definition": "SHA-256 of exact bytes from the opening <frozen-after-approval tag through its closing </frozen-after-approval> tag inclusive; surrounding line breaks excluded."
+  },
+  "packages": [
+    {
+      "id": "Hexalith.EventStore.Admin.Abstractions",
+      "version": "3.127.0",
+      "sha256": "728089584e18897bb4834ac232e5913b80b647090c32b6d178fe95a1a708686b",
+      "sha512": "204caf91cb3b9e3397c209fdca4cfecc35959c7da83ebdbbc41f561b821f9928ef166e0367953f12143050c1f7ffa23d00122bb1a5b85af8ad8f30bb559fdff6",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.EventStore",
+        "commit": "e1d8b17160202761ab5c9606cafbcf4d1a4b92c3"
+      },
+      "signature_exit_code": 0,
+      "signature_log": "hexalith.eventstore.admin.abstractions-signature.log",
+      "retained_archive": "packages/hexalith.eventstore.admin.abstractions.3.127.0.nupkg"
+    },
+    {
+      "id": "Hexalith.EventStore.Aspire",
+      "version": "3.127.0",
+      "sha256": "b742dca375db5c256ce1cba49d4de716d75ca09fc378e98abfbaec9cba346558",
+      "sha512": "b61cc88f9370e18f8c0dc4a6eb932112cabcdb2bb36d467dbe711fe3b0b68978e6934313dfa3ff775b20f0d54270490343a76cd91370ed5b5cf756dd5bb9b306",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.EventStore",
+        "commit": "e1d8b17160202761ab5c9606cafbcf4d1a4b92c3"
+      },
+      "signature_exit_code": 0,
+      "signature_log": "hexalith.eventstore.aspire-signature.log",
+      "retained_archive": "packages/hexalith.eventstore.aspire.3.127.0.nupkg"
+    },
+    {
+      "id": "Hexalith.EventStore.Client",
+      "version": "3.127.0",
+      "sha256": "7b70f3da61e55f1987160dbdcdbe151e80abd92201ede8c5e5613926d56e8684",
+      "sha512": "d4954abde3a38a50c1a47739b879ad576b4e6e0adb4106063a4564471bdd3635e2d3304692c257cea69971250109b47eefaba5f83fdf77000fb2c8768ff9244a",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.EventStore",
+        "commit": "e1d8b17160202761ab5c9606cafbcf4d1a4b92c3"
+      },
+      "signature_exit_code": 0,
+      "signature_log": "hexalith.eventstore.client-signature.log",
+      "retained_archive": "packages/hexalith.eventstore.client.3.127.0.nupkg"
+    },
+    {
+      "id": "Hexalith.EventStore.Contracts",
+      "version": "3.127.0",
+      "sha256": "0c71fabfb8f1dad3acadb752f67c68138a347785e2203f77ed22dfa819dfc678",
+      "sha512": "2a8dae96dcb417ed22371887efae6758ee77442ee345b68274f37cba88c70106e3ccb228003decaa90cd77eada4cc1a274a283619ebb3b3e58e89de37dc9dd08",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.EventStore",
+        "commit": "e1d8b17160202761ab5c9606cafbcf4d1a4b92c3"
+      },
+      "signature_exit_code": 0,
+      "signature_log": "hexalith.eventstore.contracts-signature.log",
+      "retained_archive": "packages/hexalith.eventstore.contracts.3.127.0.nupkg"
+    },
+    {
+      "id": "Hexalith.EventStore.DomainService",
+      "version": "3.127.0",
+      "sha256": "d84ea5f5e3d78829c69ac271a876a9f2d21fbf55e9cdc7a74c62b2fff193c5ff",
+      "sha512": "fb09313c9619b9a5326f2118f17aca57a08ba56c244d09c1e6d757b1f4c47de32fc55c12565774e45a0a8a395ac290d03352346799529627778cbfb0bbb525e9",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.EventStore",
+        "commit": "e1d8b17160202761ab5c9606cafbcf4d1a4b92c3"
+      },
+      "signature_exit_code": 0,
+      "signature_log": "hexalith.eventstore.domainservice-signature.log",
+      "retained_archive": "packages/hexalith.eventstore.domainservice.3.127.0.nupkg"
+    },
+    {
+      "id": "Hexalith.EventStore.Gateway",
+      "version": "3.127.0",
+      "sha256": "9f3c86dadc0bb59c0ba2d74d7a277ba4f5f094717ab41e20d8c17016e4523cdf",
+      "sha512": "6d7149f18c71e49696bbc496c53771671ee994dc5c44fb842c7b968d0a294114fd3c3006d51adb8584bd1d4b0f0a31c96440794dec539e285c19d830f5be0ebf",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.EventStore",
+        "commit": "e1d8b17160202761ab5c9606cafbcf4d1a4b92c3"
+      },
+      "signature_exit_code": 0,
+      "signature_log": "hexalith.eventstore.gateway-signature.log",
+      "retained_archive": "packages/hexalith.eventstore.gateway.3.127.0.nupkg"
+    },
+    {
+      "id": "Hexalith.EventStore.RestApi.Generators",
+      "version": "3.127.0",
+      "sha256": "cd24bf737863ea93a460c3bc4965efee20ea98e59b0285d0962ff5910d2b5d6f",
+      "sha512": "16defe2e5e900e8b556acdc68ab1e0e0e21df6ca91d6bbe0100ccf73b8296c9a30ff6f26cabd0a8dd794a36f694c8283dc70b88e28af69caa3205e64ffc9554b",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.EventStore",
+        "commit": "e1d8b17160202761ab5c9606cafbcf4d1a4b92c3"
+      },
+      "signature_exit_code": 0,
+      "signature_log": "hexalith.eventstore.restapi.generators-signature.log",
+      "retained_archive": "packages/hexalith.eventstore.restapi.generators.3.127.0.nupkg"
+    },
+    {
+      "id": "Hexalith.EventStore.Server",
+      "version": "3.127.0",
+      "sha256": "57c523ae6855dd351c13775ca7736f872eaea5e88b361ade6b8f56b48036f936",
+      "sha512": "9316925864babe056b1b13f56adf211ee00ca217addd104027034fccdadb800da10790cb41a5d74148a76aef3473f3ffaa9e1824dda6b8cccbc9fc6a2ba2dbf2",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.EventStore",
+        "commit": "e1d8b17160202761ab5c9606cafbcf4d1a4b92c3"
+      },
+      "signature_exit_code": 0,
+      "signature_log": "hexalith.eventstore.server-signature.log",
+      "retained_archive": "packages/hexalith.eventstore.server.3.127.0.nupkg"
+    },
+    {
+      "id": "Hexalith.EventStore.ServiceDefaults",
+      "version": "3.127.0",
+      "sha256": "fd0ecab7c8b5bec7a540cc35a02358f98b1a0d7d9949a5e52f8d0b21c87b5bde",
+      "sha512": "9e449c6791537ed734c86c71a04c92684aa7a614a1a3c48e52e10291be0a8baa292aec5c29b020c4ad503cf0fc0a908a7ab02809354bbf2e515912429f2e702f",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.EventStore",
+        "commit": "e1d8b17160202761ab5c9606cafbcf4d1a4b92c3"
+      },
+      "signature_exit_code": 0,
+      "signature_log": "hexalith.eventstore.servicedefaults-signature.log",
+      "retained_archive": "packages/hexalith.eventstore.servicedefaults.3.127.0.nupkg"
+    },
+    {
+      "id": "Hexalith.EventStore.SignalR",
+      "version": "3.127.0",
+      "sha256": "7db31e4ccf5fa49b5dc67e4e3fe34a778c86a0f51993f96546369ead5a82ef60",
+      "sha512": "4819a2f422b26f2246a19d3606f5a9605a6295b9a99438374ae86eea6dffedd650de283eefccbe348841b20bde8e82ac85db29c105d4a7b2d9f66d1c2a552d8c",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.EventStore",
+        "commit": "e1d8b17160202761ab5c9606cafbcf4d1a4b92c3"
+      },
+      "signature_exit_code": 0,
+      "signature_log": "hexalith.eventstore.signalr-signature.log",
+      "retained_archive": "packages/hexalith.eventstore.signalr.3.127.0.nupkg"
+    },
+    {
+      "id": "Hexalith.EventStore.Testing",
+      "version": "3.127.0",
+      "sha256": "4129b05fa272863cc6ad0e20f55d53d9f3e26ff9414876e0be580d6e3b52ee54",
+      "sha512": "11eb16801cc8eac382e6300536a6ebd646f8216e4c2a9b3b255052488d8b49bbb338257495a4c4b942b9074c4be733a97bd41d32953a43c842505c919687ac97",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.EventStore",
+        "commit": "e1d8b17160202761ab5c9606cafbcf4d1a4b92c3"
+      },
+      "signature_exit_code": 0,
+      "signature_log": "hexalith.eventstore.testing-signature.log",
+      "retained_archive": "packages/hexalith.eventstore.testing.3.127.0.nupkg"
+    }
+  ],
+  "commands": [
+    {
+      "label": "package-content-api",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dnx",
+        "dotnet-inspect",
+        "-y",
+        "--",
+        "member",
+        "IAuthoritativeContentStore",
+        "--package",
+        "Hexalith.EventStore.DomainService@3.127.0",
+        "--oneline"
+      ],
+      "started_at": "2026-10-24T01:42:39.324358+00:00",
+      "finished_at": "2026-10-24T01:42:39.856867+00:00",
+      "exit_code": 1,
+      "log": "package-content-api.log",
+      "log_sha256": "805c1f0ce4e7416b355e5a06a4276116e7828a3291d464173ef53399ce8f9c05",
+      "kind": "diagnostic_probe"
+    },
+    {
+      "label": "package-content-api-direct",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dnx",
+        "dotnet-inspect",
+        "-y",
+        "--",
+        "member",
+        "IAuthoritativeContentStore",
+        "--package",
+        "Hexalith.EventStore.DomainService@3.127.0"
+      ],
+      "started_at": "2026-10-24T01:42:46.133323+00:00",
+      "finished_at": "2026-10-24T01:42:47.398181+00:00",
+      "exit_code": 0,
+      "log": "package-content-api-direct.log",
+      "log_sha256": "c37286781fa964a14a653facac8a4c6515e7b6e4d0d768b3985529f378becfd9",
+      "kind": "diagnostic_probe"
+    },
+    {
+      "label": "package-content-authority-api",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dnx",
+        "dotnet-inspect",
+        "-y",
+        "--",
+        "member",
+        "IContentAuthority",
+        "--package",
+        "Hexalith.EventStore.DomainService@3.127.0"
+      ],
+      "started_at": "2026-10-24T01:43:37.515302+00:00",
+      "finished_at": "2026-10-24T01:43:38.487957+00:00",
+      "exit_code": 0,
+      "log": "package-content-authority-api.log",
+      "log_sha256": "6e0262bad11147dd5bc7a927a9e4505ad504b9d32d6171cdb5296e898c2a586a",
+      "kind": "diagnostic_probe"
+    },
+    {
+      "label": "folders-release-package-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T01:44:42.778830+00:00",
+      "finished_at": "2026-10-24T01:45:08.114587+00:00",
+      "exit_code": 0,
+      "log": "folders-release-package-build.log",
+      "log_sha256": "34bf9c6bd10262dbbc37aef9cfa8da20b01cef226ccdf6b8b88cd7fda8cc06de",
+      "kind": "default_audited_release_package_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "projects-release-package-build",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "argv": [
+        "dotnet",
+        "build",
+        "Hexalith.Projects.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T01:44:56.208050+00:00",
+      "finished_at": "2026-10-24T01:45:18.623881+00:00",
+      "exit_code": 0,
+      "log": "projects-release-package-build.log",
+      "log_sha256": "c68456513d8f5bef58e8c9aeb0147f0efaf072b27e6af580fed458ce3c70eabc",
+      "kind": "default_audited_release_package_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "package-content",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests"
+      ],
+      "started_at": "2026-10-24T01:45:43.482710+00:00",
+      "finished_at": "2026-10-24T01:45:44.561727+00:00",
+      "exit_code": 0,
+      "log": "package-content.log",
+      "log_sha256": "a4667b986ddbfc5cda5312936e7dd89947eb43906e7354e798b08b286d714ca4",
+      "kind": "validation",
+      "tests": {
+        "total": 1,
+        "passed": 1,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "package-golden",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests"
+      ],
+      "started_at": "2026-10-24T01:45:43.480992+00:00",
+      "finished_at": "2026-10-24T01:45:48.356840+00:00",
+      "exit_code": 1,
+      "log": "package-golden.log",
+      "log_sha256": "c644d0857169810a95bd9c31cff3c4e4f6a6f84d1aec7a2b8a5516b5f368c9d3",
+      "kind": "validation",
+      "tests": {
+        "total": 96,
+        "passed": 95,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "projects-package-server",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.Tests.dll"
+      ],
+      "started_at": "2026-10-24T01:45:43.570154+00:00",
+      "finished_at": "2026-10-24T01:45:56.119824+00:00",
+      "exit_code": 0,
+      "log": "projects-package-server.log",
+      "log_sha256": "cd2ab92ecce8ca54a419fb5422055141bac2a7fa66f1f5c34198b38337ed2295",
+      "kind": "validation",
+      "tests": {
+        "total": 1034,
+        "passed": 1033,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 1,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "package-routing",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests"
+      ],
+      "started_at": "2026-10-24T01:45:43.485675+00:00",
+      "finished_at": "2026-10-24T01:46:12.087561+00:00",
+      "exit_code": 0,
+      "log": "package-routing.log",
+      "log_sha256": "3b84a4d41373083ff847d3d904398f8c2e2cf8e9464b3546ee292e2c20501940",
+      "kind": "validation",
+      "tests": {
+        "total": 18,
+        "passed": 18,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "folders-package-integration-rebuild",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T01:46:09.958132+00:00",
+      "finished_at": "2026-10-24T01:46:13.006886+00:00",
+      "exit_code": 0,
+      "log": "folders-package-integration-rebuild.log",
+      "log_sha256": "106ea8a5842a55f84924703c8130716005a15c1f752926d592392e72f662d1a2",
+      "kind": "focused_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "package-golden-corrected",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests"
+      ],
+      "started_at": "2026-10-24T01:46:47.738069+00:00",
+      "finished_at": "2026-10-24T01:46:51.995273+00:00",
+      "exit_code": 1,
+      "log": "package-golden-corrected.log",
+      "log_sha256": "c671fa8c4cc8f2b9d790738f71bd1a8c4e23cab3fbf4a5fda3f5357adedfd73a",
+      "kind": "validation",
+      "tests": {
+        "total": 96,
+        "passed": 95,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "folders-package-server",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll"
+      ],
+      "started_at": "2026-10-24T01:45:43.538841+00:00",
+      "finished_at": "2026-10-24T01:47:17.997625+00:00",
+      "exit_code": 0,
+      "log": "folders-package-server.log",
+      "log_sha256": "a6619f73b7b23a9d7350c34a35944b2f1b26c7ba407c91720a281b3598eca556",
+      "raw_log_sha256": "e07b789011980e735e1093ac5256f07195fec46457729ecfcae88edad9aab78a",
+      "log_redaction": {
+        "count": 1,
+        "reason": "synthetic token-shaped correlation emitted by existing ProviderReadiness server test; no product code changed"
+      },
+      "kind": "validation",
+      "tests": {
+        "total": 1216,
+        "passed": 1216,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "folders-package-integration-current-authority",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T01:47:39.534202+00:00",
+      "finished_at": "2026-10-24T01:47:42.957729+00:00",
+      "exit_code": 0,
+      "log": "folders-package-integration-current-authority.log",
+      "log_sha256": "d9b5118e1971b6ea851a59f95b69010efbbbe3c1700ebdc36fff3cd855192616",
+      "kind": "focused_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "package-golden-current-authority",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests"
+      ],
+      "started_at": "2026-10-24T01:47:51.955219+00:00",
+      "finished_at": "2026-10-24T01:47:56.398532+00:00",
+      "exit_code": 0,
+      "log": "package-golden-current-authority.log",
+      "log_sha256": "82a1f1b0680383536d310a0e2517e0928eb75a19e34137e640d9389e5a02c82d",
+      "kind": "validation",
+      "tests": {
+        "total": 96,
+        "passed": 96,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "folders-debug-source-integration-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--configuration",
+        "Debug",
+        "-p:UseNuGetDeps=false",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T01:47:58.096137+00:00",
+      "finished_at": "2026-10-24T01:48:12.096043+00:00",
+      "exit_code": 0,
+      "log": "folders-debug-source-integration-build.log",
+      "log_sha256": "7bbb32e76b701c8fdb42005f0a81dd39f029a4892b50fa2ef930b6b7e398b00d",
+      "kind": "focused_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "builds-diff-check",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "started_at": "2026-10-24T01:48:19.905830+00:00",
+      "finished_at": "2026-10-24T01:48:19.910649+00:00",
+      "exit_code": 0,
+      "log": "builds-diff-check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "validation"
+    },
+    {
+      "label": "folders-diff-check",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "started_at": "2026-10-24T01:48:19.906043+00:00",
+      "finished_at": "2026-10-24T01:48:20.023219+00:00",
+      "exit_code": 0,
+      "log": "folders-diff-check.log",
+      "log_sha256": "991d11b48f6f4c47f24adba53c69547fa8db7b0bf93a6e47039be53b80b0ead0",
+      "kind": "validation"
+    },
+    {
+      "label": "dotnet-toolchain",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "--info"
+      ],
+      "started_at": "2026-10-24T01:48:19.904557+00:00",
+      "finished_at": "2026-10-24T01:48:20.138783+00:00",
+      "exit_code": 0,
+      "log": "dotnet-toolchain.log",
+      "log_sha256": "d58af8760feb675c55bcfeff5c51a43be7f55b9713dbf716ff709272afea2b38",
+      "kind": "diagnostic_probe"
+    },
+    {
+      "label": "package-content-upload-signature",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dnx",
+        "dotnet-inspect",
+        "-y",
+        "--",
+        "member",
+        "-m",
+        "IAuthoritativeContentStore.UploadAsync",
+        "--package",
+        "Hexalith.EventStore.DomainService@3.127.0"
+      ],
+      "started_at": "2026-10-24T01:48:19.903518+00:00",
+      "finished_at": "2026-10-24T01:48:20.933091+00:00",
+      "exit_code": 0,
+      "log": "package-content-upload-signature.log",
+      "log_sha256": "9ba29b14448f581153f1690e328610267c2529cd1e0d432b3aa71ca16497b1ed",
+      "kind": "diagnostic_probe"
+    },
+    {
+      "label": "package-content-api-diff",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dnx",
+        "dotnet-inspect",
+        "-y",
+        "--",
+        "diff",
+        "--package",
+        "Hexalith.EventStore.DomainService@3.126.1..3.127.0",
+        "--oneline",
+        "-100"
+      ],
+      "started_at": "2026-10-24T01:48:19.905207+00:00",
+      "finished_at": "2026-10-24T01:48:21.075406+00:00",
+      "exit_code": 1,
+      "log": "package-content-api-diff.log",
+      "log_sha256": "631b322cf61dd468d97817ff59b12277df44c745cda1cf652fb43654e312582a",
+      "kind": "diagnostic_probe"
+    },
+    {
+      "label": "source-content",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests"
+      ],
+      "started_at": "2026-10-24T01:48:29.701160+00:00",
+      "finished_at": "2026-10-24T01:48:30.747811+00:00",
+      "exit_code": 0,
+      "log": "source-content.log",
+      "log_sha256": "cd10a8e647dfa832ef3737f25f3a1104eb9356653cf3e653603d35dfa11a8d5d",
+      "kind": "validation",
+      "tests": {
+        "total": 1,
+        "passed": 1,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "source-golden",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests"
+      ],
+      "started_at": "2026-10-24T01:48:29.697661+00:00",
+      "finished_at": "2026-10-24T01:48:34.189247+00:00",
+      "exit_code": 0,
+      "log": "source-golden.log",
+      "log_sha256": "bfad6170b26593534b907282105e4c0b5ac15bd402ee981b2a8731307267be9a",
+      "kind": "validation",
+      "tests": {
+        "total": 96,
+        "passed": 96,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "source-routing",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests"
+      ],
+      "started_at": "2026-10-24T01:48:29.700986+00:00",
+      "finished_at": "2026-10-24T01:48:57.383914+00:00",
+      "exit_code": 0,
+      "log": "source-routing.log",
+      "log_sha256": "79f758059fd92b1d3e50f0f47d93e312f1f46b3afa59dcfbc8b61298151fa857",
+      "kind": "validation",
+      "tests": {
+        "total": 18,
+        "passed": 18,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "folders-release-package-fresh-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T01:49:03.297116+00:00",
+      "finished_at": "2026-10-24T01:49:12.448235+00:00",
+      "exit_code": 0,
+      "log": "folders-release-package-fresh-build.log",
+      "log_sha256": "dbf69a4589adf2953aaca6d192e6dc5bf3bddd33433de7972aaf31955e0a23fe",
+      "kind": "default_audited_release_package_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "projects-release-package-fresh-build",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "argv": [
+        "dotnet",
+        "build",
+        "Hexalith.Projects.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T01:49:03.297127+00:00",
+      "finished_at": "2026-10-24T01:49:13.706404+00:00",
+      "exit_code": 0,
+      "log": "projects-release-package-fresh-build.log",
+      "log_sha256": "41f1a5da1d77ea567acf36b36e668fb280a94c068fe3330d7621fedcf36e53fa",
+      "kind": "default_audited_release_package_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "package-fresh-focused",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests"
+      ],
+      "started_at": "2026-10-24T01:49:37.836904+00:00",
+      "finished_at": "2026-10-24T01:50:02.740907+00:00",
+      "exit_code": 0,
+      "log": "package-fresh-focused.log",
+      "log_sha256": "34b3855e8379a2014898c4f911643e7e76b774804b9a5b7eeebe4f789ef5d14a",
+      "kind": "validation",
+      "tests": {
+        "total": 115,
+        "passed": 115,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "folders-release-package-after-aspire-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T01:52:15.474891+00:00",
+      "finished_at": "2026-10-24T01:52:32.754420+00:00",
+      "exit_code": 0,
+      "log": "folders-release-package-after-aspire-build.log",
+      "log_sha256": "235473c6b05c5a0eee25e781d94b168dcd790333dc7c8e3d766c5b032279b5a9",
+      "kind": "default_audited_release_package_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "post-review-whitespace-check",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--no-restore",
+        "--verify-no-changes",
+        "--include",
+        "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs"
+      ],
+      "started_at": "2026-10-24T01:57:07.897008+00:00",
+      "finished_at": "2026-10-24T01:57:32.047229+00:00",
+      "exit_code": 0,
+      "log": "post-review-whitespace-check.log",
+      "log_sha256": "239c224f01960886368326d9ef5ebdcce071dcd0996d157bef6a963fc1eaa49c",
+      "kind": "validation"
+    },
+    {
+      "label": "post-review-source-integration-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--configuration",
+        "Debug",
+        "-p:UseNuGetDeps=false",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T01:57:15.319628+00:00",
+      "finished_at": "2026-10-24T01:58:25.347032+00:00",
+      "exit_code": 0,
+      "log": "post-review-source-integration-build.log",
+      "log_sha256": "3e6295a436a601b70c19ef2bd154377e0eda4474af766b9780444f3554922565",
+      "kind": "focused_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "post-review-source-focused",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests"
+      ],
+      "started_at": "2026-10-24T01:58:48.231676+00:00",
+      "finished_at": "2026-10-24T02:00:11.114906+00:00",
+      "exit_code": 0,
+      "log": "post-review-source-focused.log",
+      "log_sha256": "f0e46eb6e0b7fc4594d7c94bc9e86c397772d390f797b9b18fc136296b6702db",
+      "kind": "validation",
+      "tests": {
+        "total": 115,
+        "passed": 115,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "post-review-package-integration-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T02:00:22.957892+00:00",
+      "finished_at": "2026-10-24T02:00:29.646203+00:00",
+      "exit_code": 0,
+      "log": "post-review-package-integration-build.log",
+      "log_sha256": "6f76242591a0f5dfc41581d665177033cf556520c98ea7a6a60c50de4b01ce2e",
+      "kind": "focused_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "post-review-package-focused",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests"
+      ],
+      "started_at": "2026-10-24T02:00:54.192970+00:00",
+      "finished_at": "2026-10-24T02:01:42.041736+00:00",
+      "exit_code": 0,
+      "log": "post-review-package-focused.log",
+      "log_sha256": "7dcb0f2f630af981824c96b9c64e45f6f67619df3fb8f48c704be809f9b6f372",
+      "kind": "validation",
+      "tests": {
+        "total": 115,
+        "passed": 115,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "post-review-builds-diff-check",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "started_at": "2026-10-24T02:01:48.779529+00:00",
+      "finished_at": "2026-10-24T02:01:48.787762+00:00",
+      "exit_code": 0,
+      "log": "post-review-builds-diff-check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "validation"
+    },
+    {
+      "label": "post-review-folders-diff-check",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "started_at": "2026-10-24T02:01:48.812855+00:00",
+      "finished_at": "2026-10-24T02:01:49.091542+00:00",
+      "exit_code": 0,
+      "log": "post-review-folders-diff-check.log",
+      "log_sha256": "991d11b48f6f4c47f24adba53c69547fa8db7b0bf93a6e47039be53b80b0ead0",
+      "kind": "validation"
+    },
+    {
+      "label": "post-review-final-whitespace-check",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--no-restore",
+        "--verify-no-changes",
+        "--include",
+        "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs"
+      ],
+      "started_at": "2026-10-24T02:01:47.618082+00:00",
+      "finished_at": "2026-10-24T02:02:01.714844+00:00",
+      "exit_code": 0,
+      "log": "post-review-final-whitespace-check.log",
+      "log_sha256": "239c224f01960886368326d9ef5ebdcce071dcd0996d157bef6a963fc1eaa49c",
+      "kind": "validation"
+    },
+    {
+      "label": "review-fixes-package-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T02:16:35.979501+00:00",
+      "finished_at": "2026-10-24T02:16:38.713563+00:00",
+      "exit_code": 0,
+      "log": "review-fixes-package-build.log",
+      "log_sha256": "09fa8929fc04928ae30f28d14c884614a62a432405c9f4211c9cf7d0acf32ba0",
+      "kind": "focused_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "review-fixes-package-golden-first",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-method",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.GoldenLifecycleAllNineStepsDriveOverRealRestTransportToTransportTerminalClass"
+      ],
+      "started_at": "2026-10-24T02:16:47.595826+00:00",
+      "finished_at": "2026-10-24T02:16:48.746061+00:00",
+      "exit_code": 1,
+      "log": "review-fixes-package-golden-first.log",
+      "log_sha256": "dedc4dd796df26f2856fa15039841706f98f91862f2f4f76d7dfb41bf28320df",
+      "kind": "validation",
+      "tests": {
+        "total": 1,
+        "passed": 0,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "review-fixes-package-actor-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T02:17:52.064254+00:00",
+      "finished_at": "2026-10-24T02:17:54.760318+00:00",
+      "exit_code": 0,
+      "log": "review-fixes-package-actor-build.log",
+      "log_sha256": "a74c3471ad2708c08124c90774d3d0c4d658d0bca6528b47f925644a71c7a3ee",
+      "kind": "focused_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "review-fixes-package-golden",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-method",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.GoldenLifecycleAllNineStepsDriveOverRealRestTransportToTransportTerminalClass",
+        "-method",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.SdkValidateProviderReadinessBindsAuthorizedOperatorAudience"
+      ],
+      "started_at": "2026-10-24T02:18:33.164982+00:00",
+      "finished_at": "2026-10-24T02:18:34.463622+00:00",
+      "exit_code": 1,
+      "log": "review-fixes-package-golden.log",
+      "log_sha256": "52031410ff9e5cd1f5a8774c96a4cb74a9b5d7c23ac24b2cdb6ac14777743331",
+      "kind": "validation",
+      "tests": {
+        "total": 2,
+        "passed": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "review-fixes-package-wire-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T02:19:01.915562+00:00",
+      "finished_at": "2026-10-24T02:19:04.741916+00:00",
+      "exit_code": 0,
+      "log": "review-fixes-package-wire-build.log",
+      "log_sha256": "2bcbcc48a103b184ccddbb711b04ade646d2e0a96d66341ffe8e8171cf58910c",
+      "kind": "focused_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "review-fixes-package-golden-final",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-method",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.GoldenLifecycleAllNineStepsDriveOverRealRestTransportToTransportTerminalClass",
+        "-method",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.SdkValidateProviderReadinessBindsAuthorizedOperatorAudience"
+      ],
+      "started_at": "2026-10-24T02:19:19.079652+00:00",
+      "finished_at": "2026-10-24T02:19:20.367476+00:00",
+      "exit_code": 1,
+      "log": "review-fixes-package-golden-final.log",
+      "log_sha256": "88e3c1aed5fea4ac980749b0e2d8bca50bb3f4f675de98d137eb3982f76eae43",
+      "kind": "validation",
+      "tests": {
+        "total": 2,
+        "passed": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "review-fixes-package-denial-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T02:19:45.987262+00:00",
+      "finished_at": "2026-10-24T02:19:48.653558+00:00",
+      "exit_code": 0,
+      "log": "review-fixes-package-denial-build.log",
+      "log_sha256": "efb4a0587190b603456e76b3fb485904b36fc9577753e2e2220fa1b26cc368b7",
+      "kind": "focused_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "review-fixes-package-golden-complete",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-method",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.GoldenLifecycleAllNineStepsDriveOverRealRestTransportToTransportTerminalClass",
+        "-method",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.SdkValidateProviderReadinessBindsAuthorizedOperatorAudience"
+      ],
+      "started_at": "2026-10-24T02:20:07.096553+00:00",
+      "finished_at": "2026-10-24T02:20:08.473993+00:00",
+      "exit_code": 0,
+      "log": "review-fixes-package-golden-complete.log",
+      "log_sha256": "4537780a5c035d7334005c3c53eafdd68ab366cac897871b403ade1f1779385b",
+      "kind": "validation",
+      "tests": {
+        "total": 2,
+        "passed": 2,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      }
+    },
+    {
+      "label": "review-fixes-whitespace-check",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--no-restore",
+        "--verify-no-changes",
+        "--include",
+        "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs"
+      ],
+      "started_at": "2026-10-24T02:20:15.671229+00:00",
+      "finished_at": "2026-10-24T02:20:21.103402+00:00",
+      "exit_code": 0,
+      "log": "review-fixes-whitespace-check.log",
+      "log_sha256": "239c224f01960886368326d9ef5ebdcce071dcd0996d157bef6a963fc1eaa49c",
+      "kind": "validation"
+    },
+    {
+      "label": "parent-final-source-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--configuration",
+        "Debug",
+        "-p:UseNuGetDeps=false",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T02:22:39.455491+00:00",
+      "finished_at": "2026-10-24T02:22:49.905139+00:00",
+      "exit_code": 0,
+      "log": "parent-final-verification/parent-final-source-build.log",
+      "log_sha256": "3b6c749f954c4d04c33133d0aa8447019402503ef87469f7c90f91c454eafce5",
+      "kind": "parent_final_validation",
+      "capture_origin": "parent",
+      "original_record_path": "parent-final-verification/parent-final-command-records.json",
+      "original_log_path": "/tmp/story117-content-20261024-p23zx585/parent-final-source-build.log",
+      "validation_role": "focused_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "parent-final-source-tests",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests",
+        "-xml",
+        "/tmp/story117-content-20261024-p23zx585/parent-final-source-tests.xml"
+      ],
+      "started_at": "2026-10-24T02:22:49.905695+00:00",
+      "finished_at": "2026-10-24T02:23:14.179807+00:00",
+      "exit_code": 0,
+      "log": "parent-final-verification/parent-final-source-tests.log",
+      "log_sha256": "dcc702e63c75d28fd61d8c2a2bf2f550705b2ebd4aa344b70c7469bce05a85df",
+      "kind": "parent_final_validation",
+      "tests": {
+        "total": 115,
+        "passed": 115,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      },
+      "xml": {
+        "path": "/tmp/story117-content-20261024-p23zx585/parent-final-source-tests.xml",
+        "sha256": "81c528b06e28a09a7d3b13a16b8ef3e8034cba20a657e65323f130cbb968ef94",
+        "retained_path": "parent-final-verification/parent-final-source-tests.xml"
+      },
+      "capture_origin": "parent",
+      "original_record_path": "parent-final-verification/parent-final-command-records.json",
+      "original_log_path": "/tmp/story117-content-20261024-p23zx585/parent-final-source-tests.log"
+    },
+    {
+      "label": "parent-final-folders-release-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T02:23:14.180820+00:00",
+      "finished_at": "2026-10-24T02:23:22.583034+00:00",
+      "exit_code": 0,
+      "log": "parent-final-verification/parent-final-folders-release-build.log",
+      "log_sha256": "1dda1aff98777022e09618c4f1f11b1d96900b34811ef132ede2852cf667a68b",
+      "kind": "parent_final_validation",
+      "capture_origin": "parent",
+      "original_record_path": "parent-final-verification/parent-final-command-records.json",
+      "original_log_path": "/tmp/story117-content-20261024-p23zx585/parent-final-folders-release-build.log",
+      "validation_role": "default_audited_release_package_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "parent-final-projects-release-build",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "argv": [
+        "dotnet",
+        "build",
+        "Hexalith.Projects.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "started_at": "2026-10-24T02:23:22.583329+00:00",
+      "finished_at": "2026-10-24T02:23:32.389770+00:00",
+      "exit_code": 0,
+      "log": "parent-final-verification/parent-final-projects-release-build.log",
+      "log_sha256": "69d32255a427525fef8d0a1f1019994f43fdf66f0d6d3584f9cd31e45f6681f5",
+      "kind": "parent_final_validation",
+      "capture_origin": "parent",
+      "original_record_path": "parent-final-verification/parent-final-command-records.json",
+      "original_log_path": "/tmp/story117-content-20261024-p23zx585/parent-final-projects-release-build.log",
+      "validation_role": "default_audited_release_package_build",
+      "version_override_used": false,
+      "nuget_audit_disabled": false
+    },
+    {
+      "label": "parent-final-package-tests",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests",
+        "-xml",
+        "/tmp/story117-content-20261024-p23zx585/parent-final-package-tests.xml"
+      ],
+      "started_at": "2026-10-24T02:23:32.390113+00:00",
+      "finished_at": "2026-10-24T02:23:57.161879+00:00",
+      "exit_code": 0,
+      "log": "parent-final-verification/parent-final-package-tests.log",
+      "log_sha256": "c6d7701e655691841ff54e9186c8711d159e39d3b720d5fc4a921e2c387008c0",
+      "kind": "parent_final_validation",
+      "tests": {
+        "total": 115,
+        "passed": 115,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      },
+      "xml": {
+        "path": "/tmp/story117-content-20261024-p23zx585/parent-final-package-tests.xml",
+        "sha256": "a31ace6898b11ed688778b06ad45158da71bbfc377ee3d061675a5c2efc6c72b",
+        "retained_path": "parent-final-verification/parent-final-package-tests.xml"
+      },
+      "capture_origin": "parent",
+      "original_record_path": "parent-final-verification/parent-final-command-records.json",
+      "original_log_path": "/tmp/story117-content-20261024-p23zx585/parent-final-package-tests.log"
+    },
+    {
+      "label": "parent-final-format",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--no-restore",
+        "--verify-no-changes",
+        "--include",
+        "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs"
+      ],
+      "started_at": "2026-10-24T02:23:57.162514+00:00",
+      "finished_at": "2026-10-24T02:24:02.143504+00:00",
+      "exit_code": 0,
+      "log": "parent-final-verification/parent-final-format.log",
+      "log_sha256": "239c224f01960886368326d9ef5ebdcce071dcd0996d157bef6a963fc1eaa49c",
+      "kind": "parent_final_validation",
+      "capture_origin": "parent",
+      "original_record_path": "parent-final-verification/parent-final-command-records.json",
+      "original_log_path": "/tmp/story117-content-20261024-p23zx585/parent-final-format.log"
+    }
+  ],
+  "runtime_evidence": {
+    "final_package": "final-package-runtime.json",
+    "debug_source": "debug-source-runtime.json",
+    "initial_package": "initial-package-runtime.json",
+    "pre_format_package": "prior-implementation-observations/final-package-runtime.json",
+    "pre_format_source": "prior-implementation-observations/debug-source-runtime.json",
+    "historical_post_review_source_command": "post-review-source-focused",
+    "historical_post_review_package_command": "post-review-package-focused",
+    "historical_pre_review_fix_package": "phase-before-review-fixes/final-package-runtime.json",
+    "historical_pre_review_fix_source": "phase-before-review-fixes/debug-source-runtime.json",
+    "final_parent_source_command": "parent-final-source-tests",
+    "final_parent_package_command": "parent-final-package-tests",
+    "all_final_package_runtime_dlls_match_signed_archives": true,
+    "all_debug_source_integration_eventstore_dlls_match_retained_verified_source_payloads": true,
+    "all_debug_dependencies_are_projects": true,
+    "current_direct_source_outputs_match_all_tested_debug_copies": false,
+    "ci_owner_assets_checked": 56,
+    "all_ci_owner_eventstore_asset_entries_are_package_3_127_0": true,
+    "phase_note": "Snapshots are bound to each validation phase. The post-edit Aspire probe temporarily changed six Folders assets; an exact audited Release solution command restored them. After the final production-authority/denial/state fixes, six exact parent commands passed and final runtime snapshots were refreshed without rerunning validation. Original observations remain retained under prior-implementation-observations/ and phase-before-review-fixes/.",
+    "server_test_assembly_bindings": [
+      {
+        "path": "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0",
+        "test_assembly_sha256": "de27757ac961184cc886012a2653a1ee0f147d8f476ac4433d9411920b7cc37e",
+        "unchanged_since_server_suite_execution": true
+      },
+      {
+        "path": "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0",
+        "test_assembly_sha256": "a050d2aa024fe47618bcba9cf978e668fd4fa483a1e0740e6e0fe4b78228cf0e",
+        "unchanged_since_server_suite_execution": true
+      }
+    ]
+  },
+  "final_change_bindings": {
+    "catalogs": [
+      {
+        "owner": "folders",
+        "path": "Directory.Packages.props",
+        "baseline_worktree_sha256": "612e9a06c31014393fcafe21d653b762ce89b1d265b61c070d58bf1bdc67116f",
+        "baseline_git_blob_sha256": "612e9a06c31014393fcafe21d653b762ce89b1d265b61c070d58bf1bdc67116f",
+        "current_sha256": "07287d602e3d782505a4b203b7f0c3e035add66febbe7d59720b13a6b5ac77a0",
+        "checkout_normalization": "unchanged",
+        "version": "3.127.0",
+        "only_eventstore_catalog_xml_delta": true
+      },
+      {
+        "owner": "builds",
+        "path": "references/Hexalith.Builds/Props/Directory.Packages.props",
+        "baseline_worktree_sha256": "222160c944b6609c3fe7c76bff6b39885f9029de143f5d1d3a4bc82220fa17b4",
+        "baseline_git_blob_sha256": "a2f64d1d66e7d471c8f17b75dc21dcfb34a72d662329aea615c316a5747f0df6",
+        "current_sha256": "3699f1f2a53f9be7e87fc3a771702e3f3ffbb748663232fc5ebdb438c4f741e4",
+        "checkout_normalization": "CRLF per Builds .gitattributes",
+        "version": "3.127.0",
+        "only_eventstore_catalog_xml_delta": true
+      }
+    ],
+    "fixture": {
+      "path": "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs",
+      "current_sha256": "0a2f75dc3a83db6476bdd5ce48fc528fc0bb167684914c57d37fdb06ad656cf2",
+      "patch_baseline_commit": "abde15e6fb74c79071131a53d570eaf7395a3803",
+      "patch_baseline_sha256": "b7b1a1707d6e10fd67c5daecbb7aa1f7e7828418c7043e0fb1777e767dc62f91",
+      "original_spec_baseline_commit": "4403ef17f76edf055d4a7b520abb340730df5592",
+      "original_spec_baseline_fixture_sha256": "b7b1a1707d6e10fd67c5daecbb7aa1f7e7828418c7043e0fb1777e767dc62f91",
+      "patch_path": "folders.patch"
+    }
+  },
+  "review_fixes_resolved": {
+    "status": "resolved and independently verified by parent final commands",
+    "source_file": "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs",
+    "source_sha256": "0a2f75dc3a83db6476bdd5ce48fc528fc0bb167684914c57d37fdb06ad656cf2",
+    "resolutions": {
+      "B4": "Mutate-files-only v2 context request asserts safe redacted 404/resource_unavailable and zero context-source calls before legitimate read_metadata grants; REST and SDK success checks retained.",
+      "B5": "Removed IContentAuthority authorization substitute; registered production WorkspaceContentAuthority now enforces current principal/resource/task/policy checks.",
+      "B6/E1": "Removed CommandId-only publication matcher; production authority performs complete scope/task/fence/version/receipt/metadata matching.",
+      "B8": "Immediately after accepted AddFile, its own folder must remain ChangesStaged before publication/byte checks and unrelated commit."
+    },
+    "actor_snapshot": "Golden host supplies its legitimate seeded in-memory actor snapshot to /process using web JSON casing, and supplies null snapshot for an uncreated aggregate. Shared gateway and product code unchanged.",
+    "diagnostics": "review-fixes-observations.json",
+    "final_parent_records": "parent-final-verification/parent-final-command-records.json",
+    "parent_full_focused_results": {
+      "Debug/source": 115,
+      "Release/package": 115
+    },
+    "new_parent_commands_executed_by_implementation_agent": 0
+  },
+  "parent_final_verification": {
+    "records": "parent-final-verification/parent-final-command-records.json",
+    "exact_parent_commands": 6,
+    "all_exit_codes": 0,
+    "focused_source_tests_passed": 115,
+    "focused_package_tests_passed": 115,
+    "xml_results_retained": 2,
+    "default_audited_release_ci_solutions_passed": 2,
+    "focused_formatter_passed": true,
+    "reexecuted_during_finalization": false
+  },
+  "preservation": {
+    "folders": {
+      "head": "abde15e6fb74c79071131a53d570eaf7395a3803",
+      "head_unchanged": true,
+      "refs_unchanged": true,
+      "index_unchanged": true,
+      "tracked_files_compared": 12024,
+      "changed_tracked_files": [
+        "Directory.Packages.props",
+        "_bmad-output/implementation-artifacts/deferred-work.md",
+        "_bmad-output/implementation-artifacts/spec-1-17-restore-published-content-package-and-golden-lifecycle.md",
+        "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs"
+      ],
+      "unexpected_changes": [],
+      "preserved_files": 12020
+    },
+    "builds": {
+      "head": "70ead608ac01f66dfcd80c13bb71152dac6c128e",
+      "head_unchanged": true,
+      "refs_unchanged": true,
+      "index_unchanged": true,
+      "tracked_files_compared": 2035,
+      "changed_tracked_files": [
+        "Props/Directory.Packages.props"
+      ],
+      "unexpected_changes": [],
+      "preserved_files": 2034
+    },
+    "projects": {
+      "head": "0247ccb999d788a6d92984362e5717955d58caa8",
+      "head_unchanged": true,
+      "refs_unchanged": true,
+      "index_unchanged": true,
+      "tracked_files_compared": 6234,
+      "changed_tracked_files": [],
+      "unexpected_changes": [],
+      "preserved_files": 6234
+    },
+    "root_submodule_revisions_unchanged": true,
+    "user_spec_bytes_unchanged_at_implementation_snapshot": true,
+    "parent_workflow_bookkeeping": {
+      "captured_at": "2026-10-24T02:27:10.192593+00:00",
+      "owner": "parent workflow, Step 4",
+      "scope": "Mutable spec status/checklists/implementation notes/review triage and one grouped context-only append to deferred-work.md; not a tracker transition or frozen-intent amendment.",
+      "paths": [
+        "_bmad-output/implementation-artifacts/spec-1-17-restore-published-content-package-and-golden-lifecycle.md",
+        "_bmad-output/implementation-artifacts/deferred-work.md"
+      ],
+      "spec_snapshot": {
+        "path": "workflow-spec-after-review.md",
+        "sha256": "f3447f3de13a3a93a2416d0fd957fc0e079df9dcfbac3257bf2f940e9cd04848",
+        "historical_implementation_snapshot_sha256": "721a08a1f0f3dd3414fd93d7fd5ddf0e71525c3976e96077bf1730ee2cdcfcf0",
+        "approved_frozen_block_sha256": "ff19a4b1630c11217d4ff596f747183d73264eecf2e40939e5f6d18f4867ce9a",
+        "approved_frozen_block_unchanged": true
+      },
+      "deferred_work": {
+        "baseline_sha256": "494a326404e958520e02387c42e93f2972cd152a5d864614e3fab9818457f656",
+        "current_sha256": "b1f92e9551f9351809942429ad452b407eaf3fcc8c212be2a6da18fae04d1b84",
+        "append_path": "deferred-context-only-append.md",
+        "append_sha256": "eaec874cd8a6af9448231bcb3ae9f8ca1413af5f4e1d7194a96cb9c0ae8783e3",
+        "baseline_prefix_preserved": true,
+        "new_grouped_entries": 1
+      },
+      "original_archive_sha256": "b91b0bda120dad904a15102e1277e80a6da9d14fc67c237b490be79f07566f51",
+      "original_observations_manifest": "phase-before-review-fixes/artifact-manifest.json",
+      "original_observations_count": 229
+    },
+    "capture_phase": "Refreshed after parent final review-fix validation; original implementation audits retained in prior phase observations.",
+    "spec_preservation_scope": "Refreshed audit permits only the approved implementation paths plus parent-owned mutable workflow spec updates and the single append-only context deferral. The original point-in-time implementation observations remain retained; approved frozen intent and sprint/history controls remain unchanged."
+  },
+  "notes": {
+    "classification": "local prerequisite evidence only; no hosted acceptance, parent conformance closure, exposure, publication or operational qualification",
+    "original_spec_baseline_commit": "4403ef17f76edf055d4a7b520abb340730df5592",
+    "implementation_first_observed_head": "abde15e6fb74c79071131a53d570eaf7395a3803",
+    "external_head_advancement": {
+      "reported_by": "orchestrating agent",
+      "from": "4403ef17f76edf055d4a7b520abb340730df5592",
+      "to": "abde15e6fb74c79071131a53d570eaf7395a3803",
+      "observation": "advancement preceded implementation first status/snapshot; not performed by implementation agent"
+    },
+    "aspire_pre_edit_baseline": {
+      "status": "not_run",
+      "detail": "The loaded Hexalith guidance requires an Aspire baseline before code edits. It was omitted before this implementation; no before-edit observation or execution blocker is claimed. Any later probe is explicitly post-edit."
+    },
+    "projects_apphost_graph": "Existing AppHost executable resources build EventStore/Tenants in isolated Debug outputs in every mode. All 56 owning CI project assets have only EventStore package entries at 3.127.0; tested Release runtime DLLs match signed archives. No source assembly substitution in tested package runtimes.",
+    "fixture_diagnostics": [
+      {
+        "label": "package-golden",
+        "result": "95 passed / 1 failed",
+        "cause": "Current real path policy safely rejected obsolete tenant_sensitive_document pathPolicyClass with 404. Positive fixture corrected to content_allowed."
+      },
+      {
+        "label": "package-golden-corrected",
+        "result": "95 passed / 1 failed",
+        "cause": "AddFile passed persistence assertions; continuing the nine-step lifecycle exposed context-read seed lacking current read_metadata authority. Positive fixture seed/comment/helper corrected; product code, transport assertions and negatives unchanged."
+      }
+    ],
+    "api_probe_limitations": [
+      "dotnet-inspect full version diff could not bind Microsoft.AspNetCore.Http.Abstractions generic constraint metadata; this diagnostic is not counted as a passing API diff. Direct published IAuthoritativeContentStore/IContentAuthority inspection and UploadAsync signature succeeded, as did all required compilations.",
+      "Installed dotnet-inspect member command rejected --oneline; direct member invocation succeeded."
+    ],
+    "existing_projects_skip": {
+      "test": "Hexalith.Projects.Server.Tests.Queries.SupportedProjectReadHttpTests.ProtectedSdkDispatchAndReadsSurviveHostAndStoreClientRestart",
+      "reason": "Requires the isolated Story 6.1 Dapr persistence lane.",
+      "new_skips": 0
+    },
+    "preserved_open_work": [
+      "PD10 inventory semantic reconciliation (32 stale rows)",
+      "qualification packet semantic reconciliation (six stale bindings)",
+      "parent Story 1.17 conformance closure",
+      "hosted deployment/operational gates; V1Only, unset T0, accepted rollout branches, original baseline and seven-day limit remain unchanged"
+    ],
+    "validation_scope": "Folders/Projects CI solution builds, both package server suites and the three focused Folders integration classes in Debug/source and fresh Release/package; other catalog consumers were not tested.",
+    "no_git_mutation": true,
+    "no_publish_or_deploy": true,
+    "tracker_transition": "none",
+    "review_correction": {
+      "classification": "parent review observation before formatting correction",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--no-restore",
+        "--verify-no-changes",
+        "--include",
+        "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs"
+      ],
+      "exit_code": 2,
+      "log": "parent-format-check.log",
+      "log_sha256": "04f74a0e1bad2e67777c02773bf91723409c04711afb5778589e03b1013a818f",
+      "finding": "WHITESPACE at GoldenLifecycleParityTests.cs(4293,36): initializer opening brace requires new line.",
+      "resolution": "Whitespace-only initializer layout change; affected integration assemblies rebuilt and focused classes replayed in both dependency modes. Unchanged server suites are not rerun."
+    },
+    "spec_binding_scope": "Exact implementation input snapshot retained; full-file hash is historical, not a permanent restriction on workflow status/checklists/notes. Approved frozen block is independently hashed.",
+    "aspire_post_edit_probe": {
+      "phase": "post-edit; not a pre-edit baseline",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "commands": [
+        {
+          "argv": [
+            "aspire",
+            "start",
+            "--non-interactive",
+            "--apphost",
+            "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+          ],
+          "exit_code": 2,
+          "log": "post-edit-aspire/aspire-start-post-edit.log",
+          "result": "CS1704 duplicate Hexalith.Commons.UniqueIds; previously known baseline blocker; no host/dependency repair attempted",
+          "log_sha256": "bc38b0d8825c49e570c1f8fdde36fea06f4953fdc9c48b8b6ebc9e29a69b560b"
+        },
+        {
+          "argv": [
+            "aspire",
+            "describe",
+            "--apphost",
+            "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+            "--format",
+            "Json",
+            "--non-interactive"
+          ],
+          "exit_code": 0,
+          "log": "post-edit-aspire/aspire-describe-post-edit.log",
+          "result": "No matching running target; pre-existing Tenants process identity/state preserved",
+          "log_sha256": "3708797686d2d0c45420270ab6024bd8ed04562b7b08287f1d48cfc3a3810369"
+        }
+      ],
+      "unrelated_tenants_state_unchanged": true,
+      "captured_by": "orchestrating agent",
+      "safe_observations": {
+        "aspire-describe-post-edit.log": {
+          "path": "post-edit-aspire/aspire-describe-post-edit.log",
+          "sha256": "3708797686d2d0c45420270ab6024bd8ed04562b7b08287f1d48cfc3a3810369"
+        },
+        "aspire-ps-after.json": {
+          "path": "post-edit-aspire/aspire-ps-after.json",
+          "sha256": "23b365c8dd96e0aa92445f6b4c1ac26e90cf3462eee7f0d09e1e1670eb2fc374"
+        },
+        "aspire-ps-before.json": {
+          "path": "post-edit-aspire/aspire-ps-before.json",
+          "sha256": "23b365c8dd96e0aa92445f6b4c1ac26e90cf3462eee7f0d09e1e1670eb2fc374"
+        },
+        "aspire-start-post-edit.log": {
+          "path": "post-edit-aspire/aspire-start-post-edit.log",
+          "sha256": "bc38b0d8825c49e570c1f8fdde36fea06f4953fdc9c48b8b6ebc9e29a69b560b"
+        }
+      }
+    },
+    "review_fixes_resolved": {
+      "status": "resolved and independently verified by parent final commands",
+      "source_file": "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs",
+      "source_sha256": "0a2f75dc3a83db6476bdd5ce48fc528fc0bb167684914c57d37fdb06ad656cf2",
+      "resolutions": {
+        "B4": "Mutate-files-only v2 context request asserts safe redacted 404/resource_unavailable and zero context-source calls before legitimate read_metadata grants; REST and SDK success checks retained.",
+        "B5": "Removed IContentAuthority authorization substitute; registered production WorkspaceContentAuthority now enforces current principal/resource/task/policy checks.",
+        "B6/E1": "Removed CommandId-only publication matcher; production authority performs complete scope/task/fence/version/receipt/metadata matching.",
+        "B8": "Immediately after accepted AddFile, its own folder must remain ChangesStaged before publication/byte checks and unrelated commit."
+      },
+      "actor_snapshot": "Golden host supplies its legitimate seeded in-memory actor snapshot to /process using web JSON casing, and supplies null snapshot for an uncreated aggregate. Shared gateway and product code unchanged.",
+      "diagnostics": "review-fixes-observations.json",
+      "final_parent_records": "parent-final-verification/parent-final-command-records.json",
+      "parent_full_focused_results": {
+        "Debug/source": 115,
+        "Release/package": 115
+      },
+      "new_parent_commands_executed_by_implementation_agent": 0
+    },
+    "parent_final_verification": {
+      "records": "parent-final-verification/parent-final-command-records.json",
+      "exact_parent_commands": 6,
+      "all_exit_codes": 0,
+      "focused_source_tests_passed": 115,
+      "focused_package_tests_passed": 115,
+      "xml_results_retained": 2,
+      "default_audited_release_ci_solutions_passed": 2,
+      "focused_formatter_passed": true,
+      "reexecuted_during_finalization": false
+    },
+    "final_change_bindings": {
+      "catalogs": [
+        {
+          "owner": "folders",
+          "path": "Directory.Packages.props",
+          "baseline_worktree_sha256": "612e9a06c31014393fcafe21d653b762ce89b1d265b61c070d58bf1bdc67116f",
+          "baseline_git_blob_sha256": "612e9a06c31014393fcafe21d653b762ce89b1d265b61c070d58bf1bdc67116f",
+          "current_sha256": "07287d602e3d782505a4b203b7f0c3e035add66febbe7d59720b13a6b5ac77a0",
+          "checkout_normalization": "unchanged",
+          "version": "3.127.0",
+          "only_eventstore_catalog_xml_delta": true
+        },
+        {
+          "owner": "builds",
+          "path": "references/Hexalith.Builds/Props/Directory.Packages.props",
+          "baseline_worktree_sha256": "222160c944b6609c3fe7c76bff6b39885f9029de143f5d1d3a4bc82220fa17b4",
+          "baseline_git_blob_sha256": "a2f64d1d66e7d471c8f17b75dc21dcfb34a72d662329aea615c316a5747f0df6",
+          "current_sha256": "3699f1f2a53f9be7e87fc3a771702e3f3ffbb748663232fc5ebdb438c4f741e4",
+          "checkout_normalization": "CRLF per Builds .gitattributes",
+          "version": "3.127.0",
+          "only_eventstore_catalog_xml_delta": true
+        }
+      ],
+      "fixture": {
+        "path": "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs",
+        "current_sha256": "0a2f75dc3a83db6476bdd5ce48fc528fc0bb167684914c57d37fdb06ad656cf2",
+        "patch_baseline_commit": "abde15e6fb74c79071131a53d570eaf7395a3803",
+        "patch_baseline_sha256": "b7b1a1707d6e10fd67c5daecbb7aa1f7e7828418c7043e0fb1777e767dc62f91",
+        "original_spec_baseline_commit": "4403ef17f76edf055d4a7b520abb340730df5592",
+        "original_spec_baseline_fixture_sha256": "b7b1a1707d6e10fd67c5daecbb7aa1f7e7828418c7043e0fb1777e767dc62f91",
+        "patch_path": "folders.patch"
+      }
+    },
+    "workflow_bookkeeping": {
+      "captured_at": "2026-10-24T02:27:10.192593+00:00",
+      "owner": "parent workflow, Step 4",
+      "scope": "Mutable spec status/checklists/implementation notes/review triage and one grouped context-only append to deferred-work.md; not a tracker transition or frozen-intent amendment.",
+      "paths": [
+        "_bmad-output/implementation-artifacts/spec-1-17-restore-published-content-package-and-golden-lifecycle.md",
+        "_bmad-output/implementation-artifacts/deferred-work.md"
+      ],
+      "spec_snapshot": {
+        "path": "workflow-spec-after-review.md",
+        "sha256": "f3447f3de13a3a93a2416d0fd957fc0e079df9dcfbac3257bf2f940e9cd04848",
+        "historical_implementation_snapshot_sha256": "721a08a1f0f3dd3414fd93d7fd5ddf0e71525c3976e96077bf1730ee2cdcfcf0",
+        "approved_frozen_block_sha256": "ff19a4b1630c11217d4ff596f747183d73264eecf2e40939e5f6d18f4867ce9a",
+        "approved_frozen_block_unchanged": true
+      },
+      "deferred_work": {
+        "baseline_sha256": "494a326404e958520e02387c42e93f2972cd152a5d864614e3fab9818457f656",
+        "current_sha256": "b1f92e9551f9351809942429ad452b407eaf3fcc8c212be2a6da18fae04d1b84",
+        "append_path": "deferred-context-only-append.md",
+        "append_sha256": "eaec874cd8a6af9448231bcb3ae9f8ca1413af5f4e1d7194a96cb9c0ae8783e3",
+        "baseline_prefix_preserved": true,
+        "new_grouped_entries": 1
+      },
+      "original_archive_sha256": "b91b0bda120dad904a15102e1277e80a6da9d14fc67c237b490be79f07566f51",
+      "original_observations_manifest": "phase-before-review-fixes/artifact-manifest.json",
+      "original_observations_count": 229
+    },
+    "source_phase_provenance": "Debug tests use project libraries and all five tested EventStore copies match retained source-verified payloads. Later Projects AppHost builds replaced four direct source outputs; exact phase hashes are recorded without claiming those later outputs were the Debug validation inputs."
+  },
+  "artifacts": {
+    "path": "story-1-17-content-package-2026-10-23.artifacts.tar.gz",
+    "sha256": "edf339d8958dcd354728b57d4afe6c3d24c037791878609194f05c41747171d5",
+    "size_bytes": 28312258,
+    "manifest_sha256": "6b7d9c38e44332aa58da6aefbaa40ef65c1fcc0d76340f828414e5dd05d390ad"
+  }
+}

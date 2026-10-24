@@ -3,13 +3,19 @@ using System.Net.Http.Json;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
+using Dapr.Client;
+
 using Hexalith.EventStore.Client.Gateway;
+using Hexalith.EventStore.Client.Handlers;
+using Hexalith.EventStore.Client.Tests.Projections;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.Contracts.Streams;
+using Hexalith.EventStore.DomainService.Content;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
@@ -25,6 +31,7 @@ using Hexalith.Folders.Testing;
 using Hexalith.Folders.Testing.Providers;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
+using Hexalith.Folders.Server.Content;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -3155,6 +3162,9 @@ public sealed class GoldenLifecycleParityTests
             // AddFile requires workspace = Locked with the lock held by this task and unexpired; seed that state.
             host.SeedWorkspacePermissions("tenant-a", "tenant-a", "folder-addfile", "user-a", "mutate_files");
             host.SeedLockedWorkspace("tenant-a", "tenant-a", "folder-addfile", holderTaskId: "task-addfile");
+            byte[] fileBytes = Encoding.UTF8.GetBytes("hello world!");
+            string contentHashReference = "hashref_" + Convert.ToHexStringLower(SHA256.HashData(fileBytes));
+            int processCallsBeforeAddFile = host.Gateway.ProcessCalls;
             using (HttpRequestMessage addFileRequest = new(HttpMethod.Post, "/api/v1/folders/folder-addfile/workspaces/workspace-a/files/add")
             {
                 Content = JsonContent.Create(new
@@ -3167,15 +3177,17 @@ public sealed class GoldenLifecycleParityTests
                     {
                         normalizedPath = "docs/readme.md",
                         displayName = "readme.md",
-                        pathPolicyClass = "tenant_sensitive_document",
+                        pathPolicyClass = "content_allowed",
                         unicodeNormalization = "NFC",
                     },
-                    contentHashReference = "hashref-a",
-                    byteLength = 12,
+                    contentHashReference,
+                    byteLength = fileBytes.Length,
+                    expectedFileVersion = 0,
+                    expectedLockFence = 1,
                     inlineContent = new
                     {
                         mediaType = "text/plain",
-                        contentBytes = "aGVsbG8gd29ybGQh",
+                        contentBytes = Convert.ToBase64String(fileBytes),
                     },
                 }),
             })
@@ -3186,6 +3198,30 @@ public sealed class GoldenLifecycleParityTests
                 response.StatusCode.ShouldBe(HttpStatusCode.Accepted, "Step 5 AddFile must reach 'accepted' (202).");
                 response.Headers.GetValues("X-Correlation-Id").Single().ShouldBe("corr-addfile");
                 reachedTerminalClass.Add("add_file");
+            }
+
+            host.Gateway.ProcessCalls.ShouldBe(processCallsBeforeAddFile + 1);
+            host.Gateway.LastWireEventCount.ShouldBe(1);
+            FolderState contentState = host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-addfile"));
+            contentState.WorkspaceLifecycleState.ShouldBe(FolderWorkspaceLifecycleState.ChangesStaged);
+            WorkspaceContentBinding publication = contentState.ContentPublications.Values.ShouldHaveSingleItem();
+            publication.OperationId.ShouldBe("operation-add-a");
+            publication.TaskId.ShouldBe("task-addfile");
+            publication.ContentHashReference.ShouldBe(contentHashReference);
+            publication.ByteLength.ShouldBe(fileBytes.Length);
+            publication.Version.ShouldBe(1);
+            publication.LockFence.ShouldBe(1);
+            publication.ReceiptId.ShouldNotBeNullOrWhiteSpace();
+            host.SeedWorkspacePermissions("tenant-a", "tenant-a", "folder-addfile", "user-a", "read_file_content");
+            using (IServiceScope contentScope = host.Services.CreateScope())
+            {
+                IAuthoritativeContentStore contentStore = contentScope.ServiceProvider.GetRequiredService<IAuthoritativeContentStore>();
+                ContentReadResult persisted = await contentStore.ReadAsync(
+                    new ClaimsPrincipal(new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, "user-a")], "integration")),
+                    new ContentReadRequest(new ContentScope("tenant-a", "folders", "folder-addfile", "workspace-a"),
+                        publication.FileId, publication.FileId, publication.Version, 1048576),
+                    TestContext.Current.CancellationToken).ConfigureAwait(true);
+                persisted.Bytes.ShouldBe(fileBytes);
             }
 
             // ---- Step 6: CommitWorkspace — mutating_command → 202 ----
@@ -3217,11 +3253,31 @@ public sealed class GoldenLifecycleParityTests
             }
 
             // ---- Step 7: ListFolderFiles (context query) — query → 200 (REST + SDK equivalence) ----
-            // The candidate intentionally requires mutate_files while the historical handler requires
-            // read_metadata. Grant only the candidate token: both the raw v2 surface and generated SDK must
-            // still reach the handler through the single preauthorization decision, with no legacy re-check.
+            // The candidate requires mutate_files and the content handler independently rechecks current
+            // read_metadata authority. Seed both grants so REST and SDK reach the authorized content source.
             const string contextFolder = "folder_context_001";
-            host.SeedCandidateOnlyWorkspacePermissions("tenant-a", "tenant-a", contextFolder, "user-a", "mutate_files");
+            SeedPermissionsForAction(host.Permissions, "tenant-a", "tenant-a", contextFolder, "user-a", "mutate_files");
+            using (HttpRequestMessage deniedListRequest = new(HttpMethod.Get, $"/api/v2/folders/{contextFolder}/workspaces/{CandidateWorkspace}/context/tree?limit=10"))
+            {
+                deniedListRequest.Headers.Add("X-Correlation-Id", "correlation_context_denied");
+                deniedListRequest.Headers.Add("X-Hexalith-Task-Id", "task_context_0001");
+                deniedListRequest.Headers.Add("X-Hexalith-Freshness", "snapshot_per_task");
+                using HttpResponseMessage deniedResponse = await host.HttpClient
+                    .SendAsync(deniedListRequest, TestContext.Current.CancellationToken).ConfigureAwait(true);
+                deniedResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+                using JsonDocument deniedDocument = JsonDocument.Parse(
+                    await deniedResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+                JsonElement deniedProblem = deniedDocument.RootElement;
+                deniedProblem.GetProperty("correlationId").GetString().ShouldBe("correlation_context_denied");
+                deniedProblem.GetProperty("category").GetString().ShouldBe("tenant_access_denied");
+                deniedProblem.GetProperty("code").GetString().ShouldBe("resource_unavailable");
+                deniedProblem.GetProperty("retryable").GetBoolean().ShouldBeFalse();
+                deniedProblem.GetProperty("details").EnumerateObject().Select(static property => property.Name).ShouldBe(["visibility"]);
+                deniedProblem.GetProperty("details").GetProperty("visibility").GetString().ShouldBe("redacted");
+                host.ContextSourceCalls.ShouldBe(0, "mutate_files alone must be denied before the context source is called.");
+            }
+
+            host.SeedContextReadPermissions("tenant-a", "tenant-a", contextFolder, "user-a", "mutate_files");
             using (HttpRequestMessage listRequest = new(HttpMethod.Get, $"/api/v2/folders/{contextFolder}/workspaces/{CandidateWorkspace}/context/tree?limit=10"))
             {
                 listRequest.Headers.Add("X-Correlation-Id", "correlation_context_001");
@@ -3777,7 +3833,9 @@ public sealed class GoldenLifecycleParityTests
             InMemoryFolderTenantAccessProjectionStore tenantStore,
             InMemoryEffectivePermissionsReadModel permissions,
             InMemoryFolderLifecycleStatusReadModel lifecycleReadModel,
-            InMemoryWorkspaceStatusReadModel workspaceStatusReadModel)
+            InMemoryWorkspaceStatusReadModel workspaceStatusReadModel,
+            InProcessRejectionPropagatingGatewayClient gateway,
+            RecordingDaprClient dapr)
         {
             App = app;
             HttpClient = httpClient;
@@ -3787,6 +3845,8 @@ public sealed class GoldenLifecycleParityTests
             Permissions = permissions;
             LifecycleReadModel = lifecycleReadModel;
             WorkspaceStatusReadModel = workspaceStatusReadModel;
+            Gateway = gateway;
+            Dapr = dapr;
         }
 
         private WebApplication App { get; }
@@ -3795,11 +3855,19 @@ public sealed class GoldenLifecycleParityTests
 
         public IClient SdkClient { get; }
 
-        private InMemoryFolderRepository Repository { get; }
+        public InMemoryFolderRepository Repository { get; }
+
+        public InProcessRejectionPropagatingGatewayClient Gateway { get; }
+
+        public IServiceProvider Services => App.Services;
+
+        public int ContextSourceCalls => ((RecordingContextSource)Services.GetRequiredService<IWorkspaceFileContextSource>()).Calls;
+
+        private RecordingDaprClient Dapr { get; }
 
         private InMemoryFolderTenantAccessProjectionStore TenantStore { get; }
 
-        private InMemoryEffectivePermissionsReadModel Permissions { get; }
+        public InMemoryEffectivePermissionsReadModel Permissions { get; }
 
         private InMemoryFolderLifecycleStatusReadModel LifecycleReadModel { get; }
 
@@ -3849,6 +3917,9 @@ public sealed class GoldenLifecycleParityTests
                 EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
             });
             builder.WebHost.UseTestServer();
+            builder.Configuration["Folders:WorkspaceFilePolicy:Version"] = "1.1.0";
+            builder.Configuration["Folders:WorkspaceFilePolicy:ProtectionMode"] = "non_confidential";
+            builder.Configuration["Folders:WorkspaceFilePolicy:Includes:0"] = "**";
             builder.Services.AddFoldersServerTestDefaults();
             builder.Services.AddFoldersServer();
             builder.Services.RemoveAll<IEventStoreGatewayClient>();
@@ -3885,13 +3956,23 @@ public sealed class GoldenLifecycleParityTests
             builder.Services.RemoveAll<IWorkspaceCommitExecutor>();
             builder.Services.AddSingleton<IWorkspaceCommitExecutor>(new SucceedingWorkspaceCommitExecutor());
 
-            // AddFile (mutate_files) stages content through a path-policy evidence provider and a content
-            // store; the production defaults are Unavailable (→ 503). Override both to succeed so the
-            // mutate_files gate reaches 202.
-            builder.Services.RemoveAll<IWorkspacePathPolicyEvidenceProvider>();
-            builder.Services.AddSingleton<IWorkspacePathPolicyEvidenceProvider>(new NoEscapePathPolicyEvidenceProvider());
-            builder.Services.RemoveAll<IWorkspaceFileContentStore>();
-            builder.Services.AddSingleton<IWorkspaceFileContentStore>(new SucceedingWorkspaceFileContentStore());
+            // Keep the production content authority, store, path-policy evidence and mutation adapter.
+            // The Dapr byte/CAS transport and source-folded actor state remain hermetic.
+            RecordingDaprClient dapr = new() { PersistTypedState = true };
+            builder.Services.RemoveAll<DaprClient>();
+            builder.Services.AddSingleton<DaprClient>(dapr);
+            builder.Services.RemoveAll<WorkspaceContentStateReader>();
+            builder.Services.AddScoped(services =>
+            {
+                FolderEventReplay replay = services.GetRequiredService<FolderEventReplay>();
+                ActorFoldedFolderRepository folded = new(replay);
+                FolderState state = repository.Load(FolderStreamName.Create("tenant-a", "folder-addfile"));
+                long head = state.IdempotencyFingerprints.Count;
+                folded.Begin("tenant-a", "folder-addfile", state.IsCreated
+                    ? new DomainServiceCurrentState(JsonSerializer.SerializeToElement(state), [], head, head)
+                    : null);
+                return new WorkspaceContentStateReader(folded, gateway, replay, timeProvider);
+            });
 
             // Metadata-only recording context source for the ListFolderFiles step (the default is
             // UnavailableWorkspaceFileContextSource which would surface a safe 503).
@@ -3909,6 +3990,30 @@ public sealed class GoldenLifecycleParityTests
             builder.Services.AddSingleton<IProviderCapabilityEvidenceStore, RecordingProviderCapabilityEvidenceStore>();
 
             WebApplication app = builder.Build();
+            app.Use(async (http, next) =>
+            {
+                http.User = new ClaimsPrincipal(new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, "user-a")], "integration"));
+                // Supply the current actor snapshot normally provided by EventStore's /process invocation.
+                if (http.Request.Path == FoldersServerModule.ProcessRoute)
+                {
+                    DomainServiceRequest process = (await http.Request.ReadFromJsonAsync<DomainServiceRequest>(
+                        TestContext.Current.CancellationToken).ConfigureAwait(false))!;
+                    FolderState state = repository.Load(FolderStreamName.Create(process.Command.TenantId, process.Command.AggregateId));
+                    long head = state.IdempotencyFingerprints.Count;
+                    using MemoryStream body = new(JsonSerializer.SerializeToUtf8Bytes(process with
+                    {
+                        CurrentState = state.IsCreated
+                            ? new DomainServiceCurrentState(JsonSerializer.SerializeToElement(state), [], head, head)
+                            : null,
+                    }, new JsonSerializerOptions(JsonSerializerDefaults.Web)));
+                    http.Request.Body = body;
+                    http.Request.ContentLength = body.Length;
+                    await next(http).ConfigureAwait(false);
+                    return;
+                }
+
+                await next(http).ConfigureAwait(false);
+            });
             app.UsePd10V2CandidateCompatibilitySeam();
             app.UseRouting();
             app.MapFoldersServerEndpoints();
@@ -3926,7 +4031,9 @@ public sealed class GoldenLifecycleParityTests
                 tenantStore,
                 permissions,
                 lifecycleReadModel,
-                workspaceStatusReadModel);
+                workspaceStatusReadModel,
+                gateway,
+                dapr);
         }
 
         public void SeedTenant(string tenantId, string principalId)
@@ -3974,7 +4081,7 @@ public sealed class GoldenLifecycleParityTests
                 RevocationFreshnessEstablished: true,
                 TaskScope: null));
 
-        public void SeedCandidateOnlyWorkspacePermissions(
+        public void SeedContextReadPermissions(
             string tenantId,
             string organizationId,
             string folderId,
@@ -3987,6 +4094,7 @@ public sealed class GoldenLifecycleParityTests
                 EffectivePermissionsFolderLifecycleState.Active,
                 [
                     new(EffectivePermissionEvidenceSource.FolderOverrideGrant, EffectivePermissionPrincipal.User(principalId), actionToken, Sequence: 1, EffectiveAt: Now.AddMinutes(-1)),
+                    new(EffectivePermissionEvidenceSource.FolderOverrideGrant, EffectivePermissionPrincipal.User(principalId), "read_metadata", Sequence: 2, EffectiveAt: Now.AddMinutes(-1)),
                 ],
                 new EffectivePermissionsFreshness("read_your_writes", Now, "permission-watermark-candidate-only", Stale: false, ReasonCode: null),
                 RevocationFreshnessEstablished: true,
@@ -4096,6 +4204,7 @@ public sealed class GoldenLifecycleParityTests
             HttpClient.Dispose();
             await App.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
             await App.DisposeAsync().ConfigureAwait(true);
+            Dapr.Dispose();
         }
 
         private static FolderLifecycleFreshness WorkspaceFreshness()
@@ -4203,7 +4312,10 @@ public sealed class GoldenLifecycleParityTests
                 holderTaskId,
                 "seed-key-locked",
                 "seed-fingerprint-locked",
-                Now.AddMinutes(-2));
+                Now.AddMinutes(-2))
+            {
+                LockFence = 1
+            };
 
         private static IFolderEvent FileMutatedEvent(string tenantId, string organizationId, string folderId, string holderTaskId)
             => new WorkspaceFileMutationAccepted(
@@ -4261,22 +4373,6 @@ public sealed class GoldenLifecycleParityTests
                 => Task.FromResult(WorkspaceCommitExecutionResult.Succeeded("commitref_golden"));
         }
 
-        private sealed class NoEscapePathPolicyEvidenceProvider : IWorkspacePathPolicyEvidenceProvider
-        {
-            public Task<WorkspacePathPolicyEvidenceResult> GetEvidenceAsync(
-                WorkspacePathPolicyEvidenceRequest request,
-                CancellationToken cancellationToken = default)
-                => Task.FromResult(new WorkspacePathPolicyEvidenceResult(WorkspacePathPolicyEvidenceDecision.NoEscape));
-        }
-
-        private sealed class SucceedingWorkspaceFileContentStore : IWorkspaceFileContentStore
-        {
-            public Task<WorkspaceFileContentStoreResult> StageAsync(
-                WorkspaceFileContentStoreRequest request,
-                CancellationToken cancellationToken = default)
-                => Task.FromResult(WorkspaceFileContentStoreResult.Succeeded);
-        }
-
         private sealed class SeedableProviderReadinessBindingReader(OrganizationProviderBinding binding)
             : IProviderReadinessBindingReader
         {
@@ -4293,11 +4389,14 @@ public sealed class GoldenLifecycleParityTests
         // file-tree entry and never surfaces content bytes, so ListFolderFiles reaches 200.
         private sealed class RecordingContextSource : IWorkspaceFileContextSource
         {
+            public int Calls { get; private set; }
+
             public Task<WorkspaceFileContextSourceResult> QueryAsync(
                 WorkspaceFileContextSourceRequest request,
                 CancellationToken cancellationToken = default)
             {
                 ArgumentNullException.ThrowIfNull(request);
+                Calls++;
                 WorkspaceFileContextLimits limits = new("tree", request.Limit, 1, 128, 1, false, "not_truncated");
                 FolderLifecycleFreshness freshness = new("snapshot_per_task", Now, "context_watermark_v1", Stale: false, null);
                 return Task.FromResult(new WorkspaceFileContextSourceResult(

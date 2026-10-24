@@ -3115,3 +3115,7 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-6-consolidate-cli-mcp-adapter-core-and-secure-bearer-transport.md`
   summary: Investigate metadata-only serialization of dictionary and JToken entries in legacy adapter results.
   evidence: Story 11.6 review reproduced contentBytes/inlineContent dictionary keys surviving both the original reflected-property filters and the shared resolver. This inherited representation gap needs reachable-result analysis and an explicit compatibility decision before broadening filtering; no serializer policy is changed by the extraction.
+
+- source_spec: `spec-1-17-restore-published-content-package-and-golden-lifecycle.md`
+  summary: Restore explicit checked-in generation equality, canonical CLI/MCP error mappings and metadata-only evidence guidance in the compiled Epic 1 context.
+  evidence: Review B1/B2/B3 verified these concrete constraints were omitted during cache regeneration while canonical contracts and gates remain intact; workflow routes agent-context changes to deferred work.
