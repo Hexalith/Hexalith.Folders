@@ -4,7 +4,7 @@
 
 ## Goal
 
-Give API consumers and adapter implementers one versioned OpenAPI v2 Contract Spine driving REST, SDK, CLI, MCP, schemas, errors, and parity evidence. Generation and conformance gates prevent drift before downstream features consume the contract. Candidate generation, story acceptance, and production exposure remain separate decisions.
+Give API consumers and adapter implementers one versioned OpenAPI v2 Contract Spine governing REST, SDK, CLI, MCP, schemas, errors, and parity evidence. Generation and conformance gates prevent drift before downstream features consume the contract. Candidate generation, story acceptance, and production exposure require distinct evidence and authority.
 
 ## Stories
 
@@ -28,34 +28,30 @@ Give API consumers and adapter implementers one versioned OpenAPI v2 Contract Sp
 
 ## Requirements & Constraints
 
-The spine owns operation and schema identities; product decisions own scope, actors, safety, and user-visible outcomes. Reconcile conflicts before release. `Hexalith.McpCli` is the target CLI/MCP surface. Retiring proprietary module adapters requires an owner-approved operation inventory, accepted replacement or withdrawal, and behavior/parity evidence; historical adapter completion is compatibility evidence.
+The spine owns operation and schema identities; product decisions own scope, actors, safety, and user-visible outcomes. Reconcile conflicts before release. `Hexalith.McpCli` is the target CLI/MCP surface. Proprietary adapters retire only after an owner-approved operation inventory, accepted replacement or withdrawal, and authorization/parity evidence. Historical completion does not establish replacement readiness.
 
-Authorize before protected lookup or effects: authenticate, establish available and fresh tenant authority, prove folder ACL and derived scope, then enforce EventStore validation and Dapr deny-by-default policy. Raw locators and payload tenant values confer no authority. Use `401` for unauthenticated requests, one byte-equivalent non-enumerating `404` for fresh negative authority, and one non-disclosing retryable `503` for stale, unavailable, conflicting, or incomplete authority. Protected v2 excludes `403`, `not_found`, `cross_tenant_access_denied`, and `audit_access_denied`.
+Authorize before protected lookup, counts, filtering, provider calls, content reads, audit access, or search egress. Authenticate, establish fresh tenant authority and folder ACL, derive resource/task scope, then enforce EventStore validation and Dapr policy. Raw locators and payload tenant values confer no authority. Unauthenticated requests receive `401`; fresh negative authority receives one byte-equivalent non-enumerating `404`; stale, unavailable, conflicting, or incomplete authority receives one non-disclosing retryable `503`. Protected v2 excludes caller-visible `403`, `not_found`, `cross_tenant_access_denied`, and `audit_access_denied`.
 
-Errors preserve category, code, safe message, correlation, retryability, client action, visibility, and closed metadata-only details across surfaces. Lifecycle, lock state, operation disposition, freshness, and disclosure remain separate dimensions with canonical vocabularies.
+Errors preserve category, code, safe message, correlation, retryability, client action, visibility, and closed metadata-only details across surfaces. Lifecycle, lock state, operation disposition, freshness, and disclosure remain separate dimensions. Exclude content, diffs, generated context, credentials, raw provider payloads, and unauthorized existence from metadata, telemetry, diagnostics, errors, and console output.
 
-Classify every operation as mutation or read. Mutations require idempotency; reads reject keys before source execution. Equivalence excludes transport/retry metadata. Replay rechecks authorization; changed intent conflicts without exposing earlier intent; expired keys never execute. File mutation never auto-commits.
-
-Exclude content, diffs, generated context, secrets, credentials, raw provider payloads, and unauthorized existence from metadata, telemetry, errors, console output, and evidence. Context queries remain bounded and subject to current authorization and path policy.
+Every operation declares mutation or read semantics. Mutations require idempotency; reads reject keys before source execution. Intent equivalence excludes transport and retry metadata. Replay rechecks authorization; changed intent conflicts without revealing earlier intent; expired keys never re-execute. File mutation never auto-commits. Context queries remain bounded and subject to current authorization and path policy.
 
 ## Technical Decisions
 
-Use .NET 10, `.slnx`, central package management, and warnings as errors. Development/Debug uses sibling project references; Release/CI uses published NuGet packages. Both modes must build. Reuse platform capabilities rather than duplicating hosting or subscription boilerplate; initialize only root-declared submodules. Approval-bound provider/native pins need compatibility evidence before change.
+Use .NET 10, modern solution format, central package management, and warnings as errors. Development/Debug consumes project references; Release/CI consumes published NuGet packages. Both modes must build. Reuse platform hosting, persistence, and subscription capabilities; initialize only root-declared submodules. Approval-bound provider/native pins require compatibility evidence before change.
 
-OpenAPI 3.1 drives NSwag SDK generation and idempotency helpers using the ordered equivalence fields. Reads have no helper, and the SDK never invents mutation keys. Golden regeneration must be diff-free; emitted REST schemas must match the spine. Extensions cannot weaken safety.
+OpenAPI 3.1 drives NSwag SDK generation and idempotency helpers from ordered equivalence fields. Reads have no key helper; the SDK never invents mutation keys. Golden regeneration must be reproducible and emitted REST schemas must match the spine. CLI and MCP wrap the SDK; REST remains the parallel transport. Adapter parameter sourcing and error projections still need independent behavioral checks.
 
-C13 generates its denominator from operations and proves SDK/REST transport parity plus per-adapter behavioral parity. Diagnostic exceptions require approved rationale; removals require deprecation evidence. Previous-spine fingerprints include status/error vocabulary. `read_model_unavailable` maps to CLI exit `73`; `concurrency_conflict` maps to CLI exit `77` and matching MCP kind.
+C13 derives its denominator from operations and proves SDK/REST transport parity plus per-adapter behavior with zero material deltas. Exceptions require approved rationale; removals require deprecation evidence. Previous-spine fingerprints cover status and error vocabularies. V2 server, SDK, adapter/UI consumption, drift, previous-spine, and parity artifacts regenerate together. Authorization coverage includes fourteen canonical access states and every protected operation family, including explicit folder/task binding and zero protected reads before denial.
 
-EventStore owns durable idempotency admission after authorization and validation. Authorization coverage includes all fourteen canonical access states and every protected operation family once. Diagnostic/task queries carry explicit folder scope; task lookup proves that binding. Gates prove zero protected reads before denial.
+Consumer discovery examines deployed consumers and package feeds. A deployed external v1 consumer blocks exposure until an explicit migration decision is accepted. Historical v1 remains evidence rather than the supported production contract. Technical checks cannot substitute for deployment qualification or operational acceptance.
 
-Regenerate v2 server, SDK, adapter/UI consumption, parity, drift, and previous-spine artifacts together. Consumer discovery examines deployment inventories and package feeds; an external deployed v1 consumer blocks release pending an explicit migration decision. Preserve `V1Only` and unset `T0` until migration entry gates pass.
-
-The manifest records hold removal while withholding ordinary execution and v2 exposure; Story 1.17 has scoped authorization and remains open. Preserve historical exact-digest approvals and bound artifacts. Jerome's current single-owner policy requires technical rechecks when bytes change and a new decision for material behavior, scope, risk, exposure, or rollback changes. Passing verification does not grant acceptance.
+The execution manifest records removal of the general planning hold while withholding ordinary execution, v2 exposure, and automatic tracker regeneration. Scoped Story 1.17 authorization is not closure. Preserve historical exact-digest approvals. Jerome's single-owner policy governs new decisions; changed bytes require current technical rechecks, while material behavior, scope, exposure, risk, or rollback changes require a new decision.
 
 ## UX & Interaction Patterns
 
-Preserve the vocabulary consumed by the read-only, metadata-only operations console. Safe denial is terminal for the caller; authority unavailability invites retry. Both retain safe correlation without confirming resource existence. Disclosure states remain distinct from availability.
+Preserve vocabulary consumed by the read-only, metadata-only operations console. Safe denial is terminal for the caller; authority unavailability invites retry. Both provide safe correlation without confirming resource existence. Disclosure remains distinct from availability; withheld, redacted, unavailable, and absent values must not collapse into one presentation.
 
 ## Cross-Story Dependencies
 
-Scaffold and root policy precede fixtures, normative decisions, equivalence, operation groups, generation, parity, gates, and publication. The manifest's strict execution ranks and exact prerequisite edges govern order. Story 1.17 closes only when its bounded slices and combined conformance/authorization evidence satisfy the accepted decision scope; downstream stories consume the accepted contract. Story 4.23 adds canonical lock identity/timing and v2 renewal after 1.17 closure; that amendment leaves the bound 1.17 candidate unchanged.
+Scaffold and root policy precede normative fixtures, decisions, equivalence, operation groups, generation, parity, gates, and publication. Strict manifest execution ranks and prerequisite edges govern delivery. Story 1.17 closes only when bounded implementation slices and current conformance/authorization evidence satisfy the accepted scope. Downstream stories consume the accepted contract. Lock identity/timing and renewal work follows 1.17 closure and must preserve its bound candidate until the later amendment is authorized.
