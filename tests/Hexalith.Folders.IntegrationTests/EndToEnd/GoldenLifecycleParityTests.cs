@@ -11,8 +11,10 @@ using Dapr.Client;
 
 using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Client.Handlers;
+using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Client.Tests.Projections;
 using Hexalith.EventStore.Contracts.Commands;
+using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.Contracts.Streams;
 using Hexalith.EventStore.DomainService.Content;
@@ -21,6 +23,7 @@ using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Client.Generated;
 using Hexalith.Folders.Parity.Testing;
+using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Queries.FileContext;
@@ -294,7 +297,19 @@ public sealed class GoldenLifecycleParityTests
     [Fact]
     public async Task CandidateTaskStatusRejectsBindingAndEvidenceScopeMismatchAndEmitsClosedWireShape()
     {
-        TestHost host = await TestHost.StartAsync().ConfigureAwait(true);
+        ITaskStatusReadModel taskReader = Substitute.For<ITaskStatusReadModel>();
+        List<TaskStatusReadModelRequest> taskReads = [];
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            taskStatusOverride: taskReader).ConfigureAwait(true);
+        taskReader.GetAsync(Arg.Any<TaskStatusReadModelRequest>(), Arg.Any<CancellationToken>())
+            .Returns(call =>
+            {
+                TaskStatusReadModelRequest request = call.Arg<TaskStatusReadModelRequest>();
+                taskReads.Add(request);
+                return host.TaskStatusReadModel.GetAsync(request, call.Arg<CancellationToken>());
+            });
         try
         {
             const string correlationId = "correlation-task-status";
@@ -339,6 +354,38 @@ public sealed class GoldenLifecycleParityTests
                 TestContext.Current.CancellationToken).ConfigureAwait(true);
             malformed.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
 
+            foreach (string invalidWatermark in new[] { "0", "-1", "1.5", " 6", "6 ", "01" })
+            {
+                host.TaskStatusReadModel.Save(TaskSnapshot(CandidateFolderA) with
+                {
+                    Freshness = TaskSnapshot(CandidateFolderA).Freshness with { ProjectionWatermark = invalidWatermark },
+                });
+                using HttpRequestMessage invalidWatermarkRequest = new(
+                    HttpMethod.Get,
+                    $"/api/v2/folders/{CandidateFolderA}/tasks/{CandidateTaskStatus}/status");
+                invalidWatermarkRequest.Headers.Add("X-Correlation-Id", correlationId);
+                using HttpResponseMessage invalidWatermarkResponse = await host.HttpClient.SendAsync(
+                    invalidWatermarkRequest, TestContext.Current.CancellationToken).ConfigureAwait(true);
+                invalidWatermarkResponse.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            }
+
+            host.TaskStatusReadModel.Save(TaskSnapshot(CandidateFolderA) with
+            {
+                Freshness = TaskSnapshot(CandidateFolderA).Freshness with { Stale = true, ReasonCode = "projection_stale" },
+            });
+            using HttpRequestMessage staleRequest = new(
+                HttpMethod.Get,
+                $"/api/v2/folders/{CandidateFolderA}/tasks/{CandidateTaskStatus}/status");
+            staleRequest.Headers.Add("X-Correlation-Id", correlationId);
+            using HttpResponseMessage stale = await host.HttpClient.SendAsync(
+                staleRequest,
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            stale.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            using JsonDocument staleProblem = JsonDocument.Parse(
+                await stale.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+            staleProblem.RootElement.GetProperty("category").GetString().ShouldBe("read_model_unavailable");
+
+            SeedTaskStatusPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a", "permission-watermark-b");
             host.TaskStatusReadModel.Save(TaskSnapshot(CandidateFolderA));
             using HttpRequestMessage successRequest = new(
                 HttpMethod.Get,
@@ -360,6 +407,20 @@ public sealed class GoldenLifecycleParityTests
             root.GetProperty("retryEligibility").GetProperty("advisoryOnly").GetBoolean().ShouldBeTrue();
             root.GetProperty("freshness").EnumerateObject().Select(static property => property.Name).ShouldBe(
                 ["readConsistency", "observedAt", "stale"]);
+
+            taskReads.Count.ShouldBe(11);
+            foreach (TaskStatusReadModelRequest taskRead in taskReads)
+            {
+                taskRead.ManagedTenantId.ShouldBe("tenant-a");
+                taskRead.PrincipalId.ShouldBe("user-a");
+                taskRead.TaskId.ShouldBe(CandidateTaskStatus);
+                taskRead.ActionToken.ShouldBe(TaskStatusQueryHandler.ActionToken);
+                taskRead.AuthorizedFolderId.ShouldBe(CandidateFolderA);
+                taskRead.ReadConsistency.ShouldBe("eventually_consistent");
+            }
+            taskReads.Take(10).ShouldAllBe(request => request.AuthorizationWatermark == "permission-watermark-a");
+            taskReads[^1].AuthorizationWatermark.ShouldBe("permission-watermark-b");
+            taskReads.Skip(1).ShouldAllBe(request => request.CorrelationId == correlationId);
         }
         finally
         {
@@ -390,6 +451,100 @@ public sealed class GoldenLifecycleParityTests
                     CorrelationId: null,
                     AuthorizationWatermark: null),
                 FolderId: folderId);
+    }
+
+    [Fact]
+    public async Task CandidateTaskStatusReadsPersistedFolderScopedProjectionWithoutChangingItsContents()
+    {
+        using RecordingDaprClient dapr = new() { PersistTypedState = true };
+        FixedUtcClock clock = new(Now);
+        FixedTimeProvider timeProvider = new(Now);
+        DaprReadModelStore store = new(dapr, Microsoft.Extensions.Options.Options.Create(
+            new ReadModelBatchOptions { TimeProvider = timeProvider }));
+        SharedProjectionEpochCoordinator coordinator = new(store, store, timeProvider);
+        IOrganizationStreamSequenceReader sequenceReader = Substitute.For<IOrganizationStreamSequenceReader>();
+        IFolderEvent[] history =
+        [
+            new FolderCreated("tenant-a", "tenant-a", CandidateFolderA, "Folder", null, null, [],
+                FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound, "user-a", "correlation-a",
+                CandidateTaskStatus, "create-key", "create-fingerprint", Now),
+            new RepositoryBindingRequested("tenant-a", "tenant-a", CandidateFolderA, "binding-a", "provider-a", "profile-a", "branch-policy-a",
+                "user-a", "correlation-a", CandidateTaskStatus, "binding-key", "binding-fingerprint", Now),
+            new RepositoryBound("tenant-a", "tenant-a", CandidateFolderA, "binding-a", "provider-a", "correlation-a",
+                CandidateTaskStatus, "bound-key", "bound-fingerprint", Now),
+            new BranchRefPolicyConfigured("tenant-a", "tenant-a", CandidateFolderA, "binding-a", "branch-policy-a", "branch_ref_primary", [], [],
+                "user-a", "correlation-a", CandidateTaskStatus, "policy-key", "policy-fingerprint", Now),
+            new WorkspacePreparationRequested("tenant-a", "tenant-a", CandidateFolderA, "workspace-a", "binding-a", "branch-policy-a", "workspace-policy-a",
+                "user-a", "correlation-a", CandidateTaskStatus, "prepare-key", "prepare-fingerprint", Now),
+            new FolderWorkspaceLifecycleEventRecorded("tenant-a", "tenant-a", CandidateFolderA, "workspace-a", FolderWorkspaceLifecycleEvent.WorkspacePrepared,
+                null, "prepare-operation", "correlation-a", CandidateTaskStatus, "prepared-key", "prepared-fingerprint", Now),
+        ];
+        OperationalStatusEvent[] events = history.Select((value, index) => OperationalStatusEventReader.ReadStored(
+            new ProjectionEventDto(value.GetType().FullName!, JsonSerializer.SerializeToUtf8Bytes(value, value.GetType()),
+                "json", index + 1, Now, value.CorrelationId, "message-" + index)
+            { MetadataVersion = 1, GlobalPosition = index + 1 })).ToArray();
+        sequenceReader.GetCurrentSequenceAsync("tenant-a", CandidateFolderA, Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult((long)events.Length));
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        (await writer.ApplyAsync("tenant-a", CandidateFolderA, "delivery-a", events,
+            TestContext.Current.CancellationToken).ConfigureAwait(true)).IsSuccess.ShouldBeTrue();
+        string taskKey = OperationalStatusKeys.Task("tenant-a", CandidateFolderA, CandidateTaskStatus);
+        SharedProjectionReadResult<TaskStatusReadModelSnapshot> persisted = await coordinator.ReadAsync<TaskStatusReadModelSnapshot>(
+            OperationalStatusGeneration.Scope("tenant-a"), taskKey, TestContext.Current.CancellationToken).ConfigureAwait(true);
+        persisted.Value.ShouldNotBeNull().CurrentState.ShouldBe("ready");
+        persisted.Value.FolderId.ShouldBe(CandidateFolderA);
+        persisted.Value.TaskId.ShouldBe(CandidateTaskStatus);
+        string retained = JsonSerializer.Serialize(persisted.Value);
+
+        EventStoreOperationalStatusReadModel reader = new(new(store, store, timeProvider), clock, sequenceReader);
+        TaskStatusReadModelResult direct = await reader.GetAsync(new TaskStatusReadModelRequest(
+            "tenant-a", CandidateTaskStatus, "user-a", TaskStatusQueryHandler.ActionToken, "correlation-a", "eventually_consistent")
+        {
+            AuthorizedFolderId = CandidateFolderA,
+            AuthorizationWatermark = "permission-watermark-a",
+        }, TestContext.Current.CancellationToken).ConfigureAwait(true);
+        direct.Status.ShouldBe(TaskStatusReadModelStatus.Available, direct.Freshness.ReasonCode);
+        direct.Freshness.ProjectionWatermark.ShouldBe("6");
+        TestHost host = await TestHost.StartAsync("tenant-a", "user-a", taskStatusOverride: reader).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedTaskStatusPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
+            using HttpResponseMessage success = await host.HttpClient.GetAsync(
+                $"/api/v2/folders/{CandidateFolderA}/tasks/{CandidateTaskStatus}/status",
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            success.StatusCode.ShouldBe(HttpStatusCode.OK);
+            using JsonDocument response = JsonDocument.Parse(
+                await success.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+            response.RootElement.GetProperty("taskId").GetString().ShouldBe(CandidateTaskStatus);
+            response.RootElement.GetProperty("currentState").GetString().ShouldBe("ready");
+            string watermark = response.RootElement.GetProperty("freshness").GetProperty("projectionWatermark").GetString()!;
+            watermark.ShouldMatch("^[A-Za-z0-9][A-Za-z0-9_-]{15,127}$");
+            using HttpResponseMessage repeated = await host.HttpClient.GetAsync(
+                $"/api/v2/folders/{CandidateFolderA}/tasks/{CandidateTaskStatus}/status",
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            repeated.StatusCode.ShouldBe(HttpStatusCode.OK);
+            using JsonDocument repeatedResponse = JsonDocument.Parse(
+                await repeated.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+            repeatedResponse.RootElement.GetProperty("freshness").GetProperty("projectionWatermark").GetString().ShouldBe(watermark);
+
+            using HttpResponseMessage absent = await host.HttpClient.GetAsync(
+                $"/api/v2/folders/{CandidateFolderA}/tasks/task-status-absent/status",
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            absent.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+            using JsonDocument absentProblem = JsonDocument.Parse(
+                await absent.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+            absentProblem.RootElement.GetProperty("category").GetString().ShouldBe("tenant_access_denied");
+            absentProblem.RootElement.GetProperty("code").GetString().ShouldBe("resource_unavailable");
+
+            SharedProjectionReadResult<TaskStatusReadModelSnapshot> after = await coordinator.ReadAsync<TaskStatusReadModelSnapshot>(
+                OperationalStatusGeneration.Scope("tenant-a"), taskKey, TestContext.Current.CancellationToken).ConfigureAwait(true);
+            JsonSerializer.Serialize(after.Value).ShouldBe(retained);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
     }
 
     [Fact]
@@ -2894,7 +3049,8 @@ public sealed class GoldenLifecycleParityTests
         string tenantId,
         string organizationId,
         string folderId,
-        string principalId)
+        string principalId,
+        string watermark = "permission-watermark-a")
         => readModel.Save(new EffectivePermissionsReadModelSnapshot(
             tenantId,
             organizationId,
@@ -2903,7 +3059,7 @@ public sealed class GoldenLifecycleParityTests
             [
                 new(EffectivePermissionEvidenceSource.FolderOverrideGrant, EffectivePermissionPrincipal.User(principalId), "query_status", Sequence: 1, EffectiveAt: Now.AddMinutes(-1)),
             ],
-            new EffectivePermissionsFreshness("read_your_writes", Now, "permission-watermark-a", Stale: false, ReasonCode: null),
+            new EffectivePermissionsFreshness("read_your_writes", Now, watermark, Stale: false, ReasonCode: null),
             RevocationFreshnessEstablished: true,
             TaskScope: null));
 

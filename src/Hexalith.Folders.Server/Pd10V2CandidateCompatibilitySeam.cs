@@ -1,10 +1,13 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Globalization;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Net.Http.Headers;
 
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Hashing;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server.Authentication;
@@ -595,7 +598,11 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                     tenant.PrincipalId,
                     TaskStatusQueryHandler.ActionToken,
                     CorrelationId(context),
-                    "eventually_consistent"),
+                    "eventually_consistent")
+                {
+                    AuthorizedFolderId = context.Items[AuthorizedFolderItem] as string,
+                    AuthorizationWatermark = context.Items[AuthorizedWatermarkItem] as string,
+                },
                 cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
@@ -644,13 +651,37 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             && result.Snapshot.EvidenceScope.PrincipalId == tenant.PrincipalId
             && result.Snapshot.EvidenceScope.ActionToken == TaskStatusQueryHandler.ActionToken
             && result.Snapshot.EvidenceScope.TaskId == taskId;
-        if (!hasCompatibleEvidence || !IsTaskStatusContractShaped(result.Snapshot))
+        TaskStatusReadModelSnapshot projected = ProjectTaskWatermark(result.Snapshot);
+        if (!hasCompatibleEvidence || !IsTaskStatusContractShaped(projected))
         {
             return Pd10TaskFolderBindingState.Unavailable;
         }
 
-        context.Items[TaskSnapshotItem] = result.Snapshot;
+        context.Items[TaskSnapshotItem] = projected;
         return Pd10TaskFolderBindingState.Bound;
+    }
+
+    private static TaskStatusReadModelSnapshot ProjectTaskWatermark(TaskStatusReadModelSnapshot snapshot)
+    {
+        string? watermark = snapshot.Freshness.ProjectionWatermark;
+        if (watermark is null || Pd10OpaqueIdentifier.IsValid(watermark)
+            || !long.TryParse(watermark, NumberStyles.None, CultureInfo.InvariantCulture, out long sequence)
+            || sequence <= 0 || watermark != sequence.ToString(CultureInfo.InvariantCulture))
+        {
+            return snapshot;
+        }
+
+        // Native sequence evidence remains intact for integrity checks and persistence.
+        // Only its public v2 representation needs the contract's opaque identifier shape.
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        foreach (string? field in new[] { "pd10-v2-task-projection", snapshot.ManagedTenantId, snapshot.FolderId, snapshot.TaskId, watermark })
+        {
+            LengthPrefixedHash.AppendField(hash, field);
+        }
+        return snapshot with
+        {
+            Freshness = snapshot.Freshness with { ProjectionWatermark = Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant() },
+        };
     }
 
     private static async ValueTask<bool> ValidateCandidateEnvelopeAsync(
