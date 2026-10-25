@@ -97,6 +97,7 @@ context:
 
 ## Spec Change Log
 
+- **2026-10-24 resumed recheck:** Updated the non-frozen verification expectations to the current EventStore `3.127.0` build result and the failing PD10 parity category. Recorded the released `1.3.1` Projects consumer result and the unsealed candidate drift. Frozen intent, tasks, original baseline and tracker remain unchanged.
 - **2026-10-14 source/package recheck:** Corrected superseded source-registration status, retained both new package-profile blockers, rechecked Projects adapters in an isolated released-pair probe, refreshed only permitted current provenance and resealed final evidence. Operational entry and closure remain open.
 - **2026-10-09 published-pair check:** Recorded exact `v1.2.1` release identity and signed NuGet package hashes, updated the Projects-owned central pin in its working tree, and verified the released pair with an isolated NuGet.org restore, Release builds, and 39/39 adapter tests. Production entry, deployment, observation, retirement, and closure remain open.
 - **2026-10-09 committed-consumer recheck:** Recorded the committed Projects gitlink and renewed its Release/package build and 39/39 focused adapter tests. The production entry and exit gates remain open.
@@ -110,8 +111,8 @@ context:
 ## Verification
 
 **Commands:**
-- `dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true -warnaserror -m:1` -- the current October 18 recheck fails on owner-query APIs absent from EventStore `3.124.0`; see the dated result below.
-- `pwsh tests/tools/run-contract-parity-ci-gates.ps1 -NoRestore` -- all twelve categories pass.
+- `dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true -warnaserror -m:1` -- the October 24 recheck passes with zero warnings/errors on EventStore `3.127.0`; see the dated result below.
+- `pwsh tests/tools/run-contract-parity-ci-gates.ps1 -NoRestore` -- all twelve categories must pass; on October 24, eleven pass and the PD10 conformance-set category fails on the stale pending inventory.
 - `pwsh tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild` -- current-input provenance passes.
 - Run the affected Folders and Projects test projects individually, then reproduce the conformance manifest twice to exact bytes.
 
@@ -151,3 +152,17 @@ Platform's recorded Stories 1.8/1.9 and accepted tool `4.33.0` supersede their o
 ## 2026-10-18 owner-authorized rollout scope amendment
 
 Jerome instructed `apply recommended` after the conditional first-install recommendation. The current frozen intent and applicable-branch acceptance criteria now reflect [that decision](story-1-17-first-install-decision-2026-10-18.md), as expressly authorized human renegotiation. The original baseline and all dated implementation/approval evidence remain intact. First installation no longer waits for another scope approval; target/data checks and common gates remain execution requirements. An existing v1 installation retains its original migration clocks, retirement and restoration rules. No runtime, package version, deployment, activation authority or tracker transition is changed by this amendment.
+
+## 2026-10-24 resumed implementation result
+
+The [October 24 readiness addendum](story-1-17-current-candidate-technical-readiness-2026-09-24.md#addendum-2026-10-24-eventstore-31270-package-gates-released-131-consumer-and-candidate-drift) and [local record](evidence/story-1-17-resume-2026-10-24.json) bind clean Folders `445660bfe25722a4ce10a8dc59d4a60d2b6b25e1`, Projects `5325ad18443f4085b5cc97685e7420a4eee7a286` and all root gitlinks. EventStore `3.127.0` resolves the October 18 package blocker. Both default audited Release/package solution builds pass with zero warnings/errors.
+
+Projects resolves the signed, released Client/Contracts `1.3.1` pair (release source `72dff26e2ecc042afe76c10046576a2424d0d85b`, [run 39689645765](https://github.com/Hexalith/Hexalith.Folders/actions/runs/39689645765)), and its runtime DLLs equal the archive payloads. Its full Server suite passes 1218/1219 with the existing skip. That covers the direct lifecycle, permissions and metadata reads and the delegated refresh, with v2 paths, 401/404 denial and 503 unavailability. Its source has no periodic Folders caller.
+
+Folders Server passes 1216/1216 and routing/golden/content wiring 116/116; governance and all 20 planning bindings pass. The pending 229-path inventory has 34 stale rows from eight post-`d6fda13a` commits. Focused Contracts pass 48/51, parity passes 11/12 categories, and GitHub CI on this commit is red. `v1.3.1` predates the Story 12.2 v2 contract change, so it is not the current candidate's release.
+
+The inventory and discovery document were not resealed. Stories 12.2 and 12.3 are still changing owned paths, and the coverage and context-read authority reconciliation remain open.
+
+Task 2 is satisfied locally for `1.3.1` only. It needs the final released pair and an immutable Projects deployment artifact. Task 3 is satisfied only for `v1.3.1` identity, not the current candidate. Tasks 4 and 5 still require operational records. The first-install branch also still requires target/data disposition under the attempt lock, hosted identity/delegation, staging, production verification/observation, recovery evidence and an authorized closure/tracker decision. No unchecked task is complete.
+
+Keep this spec `in-progress`, runtime `V1Only`, T0 unset, activation authority null, the original frozen scope/baseline and Story 1.17 `backlog`. No runtime source, dependency, candidate, approval, tracker, Git, publication or deployment change was made.

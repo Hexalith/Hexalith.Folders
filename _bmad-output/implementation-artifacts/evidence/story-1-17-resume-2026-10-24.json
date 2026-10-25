@@ -1,0 +1,538 @@
+{
+  "record_id": "story-1-17-resume-2026-10-24",
+  "recorded_at_utc": "2026-10-24T04:10:00Z",
+  "scope": "Local resumed implementation recheck of spec-1-17-complete-pd10-v2-migration-and-closure.md. Read-only GitHub/NuGet observations only; no publication, deployment, route change, T0, observation, reversal, retirement, Git write or tracker transition.",
+  "source": {
+    "folders_head": "445660bfe25722a4ce10a8dc59d4a60d2b6b25e1",
+    "folders_origin_main": "445660bfe25722a4ce10a8dc59d4a60d2b6b25e1",
+    "folders_worktree_clean_at_start": true,
+    "root_gitlinks": {
+      "references/Hexalith.AI.Tools": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "references/Hexalith.Builds": "dd3b4cd2f76cc6455cadf48fd458358834763852",
+      "references/Hexalith.Commons": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "references/Hexalith.EventStore": "849f069ebbb0860e890fdce8e4ab659ac10509f4",
+      "references/Hexalith.FrontComposer": "494169c7818109b90aa136c4d9d8a2ecd917d7c9",
+      "references/Hexalith.McpCli": "3b1738881a3484da51cf64c8ca3b24a8f65227df",
+      "references/Hexalith.Memories": "5a852389327bf45df7d59b2c2e29c7adbe353f19",
+      "references/Hexalith.Platform": "53818818483935d1d90d334e511848335563213f",
+      "references/Hexalith.PolymorphicSerializations": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "references/Hexalith.Projects": "5325ad18443f4085b5cc97685e7420a4eee7a286",
+      "references/Hexalith.Tenants": "c157c394b8fca5f392b5f8a6a5ff1f51f4ac77a0"
+    },
+    "submodule_worktrees_match_gitlinks_and_clean": true,
+    "projects_head": "5325ad18443f4085b5cc97685e7420a4eee7a286",
+    "builds_catalog_sha256": "c8efba903924130cdcb286066bb3a9e97dd3dcb9155ccc3f852c65329ea2a0bf",
+    "root_directory_packages_sha256": "07287d602e3d782505a4b203b7f0c3e035add66febbe7d59720b13a6b5ac77a0",
+    "eventstore_package_version": "3.127.0",
+    "folders_package_version_selected_by_builds_catalog": "1.3.1",
+    "routing_default": "V1Only (FoldersApiRouting resolves an absent setting to V1Only; no appsettings override found)"
+  },
+  "released_pair": {
+    "tag": "v1.3.1",
+    "source_commit": "72dff26e2ecc042afe76c10046576a2424d0d85b",
+    "release_run": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/39689645765",
+    "release_run_event": "workflow_dispatch",
+    "release_run_conclusion": "success",
+    "published_at": "2026-10-21T22:58:36Z",
+    "current_head_commits_after_release_source": 26,
+    "client": {
+      "github_asset_sha256": "ff77c118d1f0732104893ad5ac2e359c61238ef3bbb69dde1ac97244e101ec17",
+      "nuget_signed_sha256": "c495d0f700c8cea577280e35ab85e63444af937a10fb0cebf3d173d6b64e0dac",
+      "nuget_cache_sha256": "c495d0f700c8cea577280e35ab85e63444af937a10fb0cebf3d173d6b64e0dac",
+      "lib_dll_sha256": "6ca839fe4b40c61322d3e49d253744ac4d85ceae73f22d0c53ae8b7c56ba1ac7",
+      "nuspec_commit": "72dff26e2ecc042afe76c10046576a2424d0d85b",
+      "github_and_nuget_lib_payload_equal": true,
+      "dotnet_nuget_verify_all_exit": 0,
+      "signature_type": "Repository"
+    },
+    "contracts": {
+      "github_asset_sha256": "767ed2c26b7c5a47e5888c87a5000dff9e5f88cd66264833662b15dd9291d7d0",
+      "nuget_signed_sha256": "0df2ef9ea194f25b25a6c3fc2aade5347ab1524384d439384c7fa42c2f038714",
+      "nuget_cache_sha256": "0df2ef9ea194f25b25a6c3fc2aade5347ab1524384d439384c7fa42c2f038714",
+      "lib_dll_sha256": "ad81d60e79ddcee548eec74549506106465dec63a9a11fb7d77c2d409c8a3121",
+      "nuspec_commit": "72dff26e2ecc042afe76c10046576a2424d0d85b",
+      "github_and_nuget_lib_payload_equal": true,
+      "dotnet_nuget_verify_all_exit": 0,
+      "signature_type": "Repository"
+    },
+    "limit": "v1.3.1 predates the current candidate: commit d6fda13a (Story 12.2) changed hexalith.folders.v2.yaml (fenced file-mutation request fields, lockFence, optional fileId/version on FileMetadataItem) and Client sources changed after 72dff26e. The released pair is not an exact package of the current candidate."
+  },
+  "checks": [
+    {
+      "id": "folders-release-package-build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "utc": [
+        "2026-10-24T04:00:57Z",
+        "2026-10-24T04:01:20Z"
+      ],
+      "exit": 0,
+      "result": "0 warnings, 0 errors; incremental with implicit restore; EventStore 3.127.0 packages",
+      "log": "folders-release-build.log"
+    },
+    {
+      "id": "projects-release-package-build",
+      "cwd": "references/Hexalith.Projects",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Projects.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseHexalithProjectReferences=false",
+        "-m:1",
+        "-warnaserror"
+      ],
+      "utc": [
+        "2026-10-24T04:01:31Z",
+        "2026-10-24T04:01:52Z"
+      ],
+      "exit": 0,
+      "result": "0 warnings, 0 errors; Server assets resolve Hexalith.Folders.Client/1.3.1 and Hexalith.Folders.Contracts/1.3.1 packages and EventStore 3.127.0; runtime DLLs in Server and Server.Tests output equal the signed archive payloads",
+      "log": "projects-release-build.log"
+    },
+    {
+      "id": "projects-server-suite",
+      "cwd": "references/Hexalith.Projects",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.Tests.dll",
+        "-xml",
+        "projects-server-tests.xml"
+      ],
+      "utc": [
+        "2026-10-24T04:02:26Z",
+        "2026-10-24T04:02:38Z"
+      ],
+      "exit": 0,
+      "result": "1219 total, 1218 passed, 0 failed, 1 existing skip (SupportedProjectReadHttpTests.ProtectedSdkDispatchAndReadsSurviveHostAndStoreClientRestart), 0 errors; includes ProjectFolderDirectoryTests 47/47, ProjectFileReferenceDirectoryTests 34/34, DelegatedProjectAdvisoryConversationDirectoryTests 13/13, DelegatedProjectDirectoryRegistrationTests 4/4",
+      "log": "projects-server-tests.log",
+      "xml": "projects-server-tests.xml"
+    },
+    {
+      "id": "folders-integration-focused",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests"
+      ],
+      "exit": 0,
+      "result": "116/116 pass: routing/attribution 18, golden lifecycle 97, content process wiring 1",
+      "log": "integration-focused.log",
+      "xml": "integration-focused.xml"
+    },
+    {
+      "id": "folders-server-suite",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll"
+      ],
+      "exit": 0,
+      "result": "1216/1216 pass",
+      "log": "server-full.log",
+      "xml": "server-full.xml"
+    },
+    {
+      "id": "contracts-focused",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2ContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests"
+      ],
+      "exit": 1,
+      "result": "48/51 pass; 3 fail on the stale pending candidate inventory: Pd10ConformanceSetTests.ManifestBindsEveryListedCandidateArtifactAndOrderedSetDigest, Pd10ConformanceSetTests.GeneratorReproducesTheCommittedManifestByteForByte, Pd10V2ContractTests.ConformanceSetBindsEveryCandidateArtifactWithoutChangingReleaseAuthority",
+      "log": "contracts-focused.log",
+      "xml": "contracts-focused.xml"
+    },
+    {
+      "id": "contracts-full",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll"
+      ],
+      "exit": 1,
+      "result": "355/360 pass; the 3 PD10 inventory failures above plus 2 Story 11.5 negative-scope failures (CommitStatusContractGroupTests.CommitStatusContractNotes_RecordDeferredOwnersAndNegativeScope and AuditOpsConsoleContractGroupTests.AuditOpsConsoleNegativeScope_DoesNotAddRuntimeAdaptersGeneratedClientsUiOrCi) caused by new src/Hexalith.Folders/Aggregates/StreamNameSegment.cs from b79223a0",
+      "log": "contracts-full.log",
+      "xml": "contracts-full.xml"
+    },
+    {
+      "id": "governance",
+      "command": [
+        "pwsh",
+        "tests/tools/run-governance-completeness-gates.ps1",
+        "-SkipRestoreBuild"
+      ],
+      "exit": 0,
+      "result": "23/23 + 7/7 + 3/3",
+      "log": "governance.log"
+    },
+    {
+      "id": "parity",
+      "command": [
+        "pwsh",
+        "tests/tools/run-contract-parity-ci-gates.ps1",
+        "-NoRestore"
+      ],
+      "exit": 1,
+      "result": "11/12 categories pass against freshly rebuilt Release outputs; pd10-v2-conformance-set fails 2/4 on the stale inventory. The script's tracked _bmad-output/gates/contract-parity-ci/latest.json rewrite was captured as parity-latest.json and the tracked file restored.",
+      "log": "parity.log"
+    },
+    {
+      "id": "platform-packet-diagnostic",
+      "command": [
+        "env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "python3",
+        "eng/story117-platform-qualification-current/verify.py"
+      ],
+      "exit": 1,
+      "result": "FAIL: packet consistency: source changed: src/Hexalith.Folders.Server/FoldersServerHostComposition.cs; operational qualification remains HOLD",
+      "log": "packet-verify.log"
+    },
+    {
+      "id": "planning-manifest-provenance",
+      "result": "20/20 current top-level provenance bindings match current bytes"
+    }
+  ],
+  "candidate": {
+    "pending_inventory_path": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml",
+    "pending_inventory_sha256": "4d46a8a08427cdec76cf1a86d718762475d489a1fb3f55baf61062a954ad5899",
+    "pending_candidate_set_sha256": "75122b7eaa6ada34b9fd95feb887ce17088d0893af2b12d1dff3696e23940070",
+    "artifact_count": 229,
+    "stale_rows": 34,
+    "stale_paths": [
+      {
+        "path": "docs/sdk/cli-reference.md",
+        "commits_since_d6fda13a": [
+          "4403ef17"
+        ]
+      },
+      {
+        "path": "docs/sdk/mcp-reference.md",
+        "commits_since_d6fda13a": [
+          "4403ef17"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders.Cli/Commands/CommandOptions.cs",
+        "commits_since_d6fda13a": [
+          "4403ef17"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders.Cli/Commands/CommandPipeline.cs",
+        "commits_since_d6fda13a": [
+          "4403ef17"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders.Client/Serialization/Oq2RequestValidation.cs",
+        "commits_since_d6fda13a": [
+          "58f1f7f9"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders.Client/Serialization/Oq2WireObjectConverter.cs",
+        "commits_since_d6fda13a": [
+          "58f1f7f9"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders.Mcp/Tooling/ToolPipeline.cs",
+        "commits_since_d6fda13a": [
+          "4403ef17"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders.Server/FolderCanonicalSegmentIdentifier.cs",
+        "commits_since_d6fda13a": [
+          "58f1f7f9"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders.Server/FolderDomainProcessor.cs",
+        "commits_since_d6fda13a": [
+          "58f1f7f9"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs",
+        "commits_since_d6fda13a": [
+          "591194c7",
+          "58f1f7f9",
+          "a9f5d9b2"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders.Server/Pd10V2CandidateCompatibilitySeam.cs",
+        "commits_since_d6fda13a": [
+          "cc0b486d"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/BranchRefPolicyConfigurationService.cs",
+        "commits_since_d6fda13a": [
+          "b79223a0"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/FolderAccessMutationService.cs",
+        "commits_since_d6fda13a": [
+          "b79223a0"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs",
+        "commits_since_d6fda13a": [
+          "b1a25ea8",
+          "b79223a0",
+          "58f1f7f9"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/FolderCreationService.cs",
+        "commits_since_d6fda13a": [
+          "b79223a0"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/FolderStreamName.cs",
+        "commits_since_d6fda13a": [
+          "b1a25ea8",
+          "b79223a0",
+          "58f1f7f9"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/RepositoryBackedFolderCreationService.cs",
+        "commits_since_d6fda13a": [
+          "b79223a0"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/RepositoryBindingService.cs",
+        "commits_since_d6fda13a": [
+          "b79223a0"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/WorkspaceCommitService.cs",
+        "commits_since_d6fda13a": [
+          "b79223a0"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/WorkspaceFileMutationService.cs",
+        "commits_since_d6fda13a": [
+          "b79223a0"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/WorkspaceLockAcquisitionService.cs",
+        "commits_since_d6fda13a": [
+          "b79223a0"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/WorkspaceLockReleaseService.cs",
+        "commits_since_d6fda13a": [
+          "b79223a0"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/WorkspacePreparationService.cs",
+        "commits_since_d6fda13a": [
+          "b79223a0"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Organization/ConfigureProviderBindingService.cs",
+        "commits_since_d6fda13a": [
+          "b79223a0"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs",
+        "commits_since_d6fda13a": [
+          "58f1f7f9"
+        ]
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Organization/OrganizationStreamName.cs",
+        "commits_since_d6fda13a": [
+          "b1a25ea8",
+          "b79223a0",
+          "58f1f7f9"
+        ]
+      },
+      {
+        "path": "tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs",
+        "commits_since_d6fda13a": [
+          "58f1f7f9"
+        ]
+      },
+      {
+        "path": "tests/Hexalith.Folders.Client.Tests/FileUploadConvenienceTests.cs",
+        "commits_since_d6fda13a": [
+          "58f1f7f9"
+        ]
+      },
+      {
+        "path": "tests/Hexalith.Folders.IntegrationTests/AdapterParity/CrossAdapterBehavioralParityTests.cs",
+        "commits_since_d6fda13a": [
+          "4403ef17"
+        ]
+      },
+      {
+        "path": "tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs",
+        "commits_since_d6fda13a": [
+          "a9f5d9b2"
+        ]
+      },
+      {
+        "path": "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs",
+        "commits_since_d6fda13a": [
+          "cc0b486d",
+          "c901c8be"
+        ]
+      },
+      {
+        "path": "tests/Hexalith.Folders.IntegrationTests/RecordingArchivePrincipalEvidenceProvider.cs",
+        "commits_since_d6fda13a": [
+          "a9f5d9b2"
+        ]
+      },
+      {
+        "path": "tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderStreamShapeTests.cs",
+        "commits_since_d6fda13a": [
+          "58f1f7f9"
+        ]
+      },
+      {
+        "path": "tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclStreamShapeTests.cs",
+        "commits_since_d6fda13a": [
+          "58f1f7f9"
+        ]
+      }
+    ],
+    "scratch_regeneration": {
+      "generations": 2,
+      "identical": true,
+      "file_sha256": "836316a5b2581aada129d27c1a55d55df7863e95d94c90424f94a7b7cc3a9dce",
+      "candidate_set_sha256": "3c06533eaf7c8a299a80456e93c691a01381b88311465583a7ecc47e21e9b2d9",
+      "written_to_repository": false
+    },
+    "reseal_decision": "Not resealed. The drift comes from eight commits after the last regeneration at d6fda13a: Story 11.5 refactors (b79223a0, b1a25ea8), deferred-item fixes (a9f5d9b2, 58f1f7f9), a sync commit (591194c7), the CLI/MCP consolidation (4403ef17) and two bounded Story 1.17 child fixes (c901c8be, cc0b486d); Stories 12.2 (in-progress) and 12.3 (review) still change owned paths. Requalification also needs the coverage reconciliation (helpers extracted from owned files are not listed) and the context-read authority semantic reconciliation recorded by the 2026-10-24 task-status spec. Refreshing hashes alone would only silence drift."
+  },
+  "github_main_ci_observation": {
+    "commit": "445660bfe25722a4ce10a8dc59d4a60d2b6b25e1",
+    "ci_run": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/40059838558",
+    "ci_conclusion": "failure",
+    "ci_failure": "ci / build-and-test Build step reports WHITESPACE format errors in 26 files (mostly content-store sources/tests); folders-specialized-gates also failed",
+    "contract_spine_run": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/40059838404",
+    "contract_spine_conclusion": "failure",
+    "contract_spine_failure": "same five Contracts failures as the local full run"
+  },
+  "projects_inventory": {
+    "direct_generated_client_reads": [
+      "GetFolderLifecycleStatusAsync",
+      "GetEffectivePermissionsAsync",
+      "GetFolderFileMetadataAsync"
+    ],
+    "delegated": "DelegatedProjectFolderDirectory.RefreshFolderReferenceAsync submits FolderOwnerReadQuery through EventStore DelegatedOwnerQueryClient when a verified workload caller is present; otherwise the direct adapter is used",
+    "route_family": "/api/v2 (tests assert v2 request paths)",
+    "canonical_outcomes_tested": "401 and 404 map to Denied; 503 maps to Unavailable; metadata reads exercised",
+    "periodic_callers_in_source": "none found (no IHostedService, BackgroundService, PeriodicTimer or Timer in Projects src)",
+    "deployed_schedule": "unknown; no deployed Projects artifact exists",
+    "compatibility_note": "Current v2 adds optional fileId/version to FileMetadataItem; the 1.3.1 generated Newtonsoft client leaves MissingMemberHandling at its default, so additive response members are ignored. Not exercised against a current-candidate server."
+  },
+  "operational_control": {
+    "runtime_mode": "V1Only",
+    "t0": null,
+    "activation_authority": null,
+    "tracker_row": "1-17-publish-the-pd10-v2-authorization-contract-spine: backlog",
+    "entry_decision": "HOLD",
+    "open": [
+      "exact current-candidate release (requalified inventory, then release lane) and matching Projects pin/build",
+      "immutable Folders/Projects deployment artifacts and composed Platform release",
+      "Platform intake, hosted identity/delegation, environment isolation, numeric thresholds, operators and UTC attempt slots",
+      "target/consumer/retained-data disposition under the attempt lock",
+      "isolated staging qualification",
+      "production install, five-minute verification/observation and applicable recovery evidence (or, for a discovered v1 installation, the original migration evidence)",
+      "closure decision and authorized tracker delta"
+    ]
+  },
+  "protected_hashes": {
+    "docs/contract/authorization-matrix.md": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420",
+    "src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+    "_bmad-output/planning-artifacts/planning-story-manifest.yaml": "ba04ee232dcf74da85127af481336c8a17539cf7b0a17e4b1e95bba7aab84837",
+    "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff",
+    "_bmad-output/implementation-artifacts/sprint-status.yaml": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40",
+    "_bmad-output/implementation-artifacts/story-1-17-first-install-decision-2026-10-18.md": "f658c26f4939e2c6ef3217c30cde96e5fda17c985623338be4191957c1809d42",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml": "4d46a8a08427cdec76cf1a86d718762475d489a1fb3f55baf61062a954ad5899",
+    "docs/contract/pd10-v2-consumer-discovery.md": "b2e41c5ad9b57f66a7c7a1d3d7764cec54cf668470f1cfd3886263a83d248b59",
+    "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml": "d417afd8454dac16824af17c2c0a787fe579c342a009e13b6985b147724d89a7"
+  },
+  "archive": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-resume-2026-10-24.logs.tar.gz",
+    "sha256": "712ca24a8d20497df462308e3e245de4528c1fef84f426960f2c93d2764456eb",
+    "members": {
+      "contracts-focused.log": "4483e96e64dd3eb916bb0480e8f85e3219c83d892d4af24a40021cd936bdab8d",
+      "contracts-focused.xml": "d2be8e7403be0ebf2be20c05969cdeb0d7cd34aa0135cc76a59fc5e0c41df17d",
+      "contracts-full.log": "d16d2bd36e54b1430ff1488aa8069edd452a8b1c83d10e86522c670f4e77300b",
+      "contracts-full.xml": "c8b594824426d2396b0fde1d10932ebcabc060b2db87440d18be6537ac1f66c0",
+      "folders-release-build.log": "bbc05571c9ba05b0e2b3e185812e84e2cc08cfb7c1a4e98d0045cd3202f2a129",
+      "github-ci-40059838558-failed-steps.log": "a9be8b6e35ec5fdf99cd5ca356cb892ed4a7c3cef7def60462f1c65549a38be8",
+      "governance.log": "fd95f82bd434aafe3350af166e55e7f292545f37eaecaca3eece865046765237",
+      "integration-focused.log": "a001e04c7e313e1bf7e03fe7f0291042576754e041118d8f53da87ea97605a3a",
+      "integration-focused.xml": "3086049edd4f2b712152027d7698222106de897cc573c4a06e38bfb2db4d075f",
+      "packet-verify.log": "20519c965ad169e4618b47cf7fed27ecee1a317f424fc6f372af1364c90a3ff8",
+      "parity-latest.json": "df7a94a4e4869d0b89498b7d4fdd7b87e8253898140d419e434f6b495eae9168",
+      "parity.log": "f6f11a24bceea4f3183723271025a4e697143275971e2c866a6bda1966a5d476",
+      "pending-regen.yaml": "836316a5b2581aada129d27c1a55d55df7863e95d94c90424f94a7b7cc3a9dce",
+      "projects-release-build.log": "a91d5413373b4cea69423c9323ea88ca3529a2432f651ba102223aca1a39c30d",
+      "projects-server-tests.log": "136b8b648b764c040df273dcc9e3ab42836d2eadf403af511e6d61cfd3f37b38",
+      "projects-server-tests.xml": "e3e07e1ac4ec3a636ecb8104b1519b9b032343dc90be5400ff55768858203685",
+      "server-full.log": "29d6c69c15ddae9fe85f61e85f192c08ea2c3dc619ab627896784c9324595d35",
+      "server-full.xml": "a85c33f4b97fd8752e423fcb0be2f4a05eefdf5b64cdc841c5ba51238d81239b",
+      "stale-paths.txt": "cc4a6b029aeb8c94f3c94de031486e8cb9f2709bf764ddb2095289bdf1c32d52",
+      "verify-client.log": "66a662f60005a3e19170b93bf5cca9bbcce7c6ae7904eb54cfa68a023f3c4879",
+      "verify-contracts.log": "6db163d2b1043a327cfe5c43c520888f65a27f0479c18fba7ffc139c2493623e"
+    }
+  },
+  "not_performed": [
+    "Aspire AppHost baseline (no code change in this run)",
+    "Debug/source rebuild",
+    "remote target or data-store lookup",
+    "publication",
+    "deployment",
+    "route change",
+    "Git staging/commit/push",
+    "tracker edit"
+  ]
+}
