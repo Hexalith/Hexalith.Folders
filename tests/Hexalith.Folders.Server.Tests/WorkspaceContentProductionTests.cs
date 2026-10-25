@@ -146,6 +146,120 @@ public sealed class WorkspaceContentProductionTests
         }
     }
 
+    /// <summary>Fences every awaited namespace classification against current complete authorization.</summary>
+    /// <param name="incompleteEvidence">Whether the current permission watermark is lost instead of access being revoked.</param>
+    /// <param name="sensitivity">The classification returned after authority changes.</param>
+    [Theory]
+    [InlineData(false, WorkspaceFileSensitivityDecision.Allowed)]
+    [InlineData(false, WorkspaceFileSensitivityDecision.Redacted)]
+    [InlineData(false, WorkspaceFileSensitivityDecision.Unavailable)]
+    [InlineData(true, WorkspaceFileSensitivityDecision.Allowed)]
+    [InlineData(true, WorkspaceFileSensitivityDecision.Redacted)]
+    [InlineData(true, WorkspaceFileSensitivityDecision.Unavailable)]
+    public async Task NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(
+        bool incompleteEvidence, WorkspaceFileSensitivityDecision sensitivity)
+    {
+        var fixture = await WorkspaceContentProductionFixture.CreateAsync().ConfigureAwait(true);
+        await using var cleanup = fixture.ConfigureAwait(true);
+        var first = await fixture.PublishAsync("docs/a.txt", "alpha").ConfigureAwait(true);
+        var second = await fixture.PublishAsync("docs/b.txt", "beta").ConfigureAwait(true);
+        string persistedBefore = SnapshotPersistedContent(fixture);
+        fixture.Sensitivity.Decision = sensitivity;
+        fixture.Sensitivity.After = () =>
+        {
+            if (incompleteEvidence) fixture.Permissions.Watermark = null;
+            else fixture.Permissions.Allowed = false;
+            return Task.CompletedTask;
+        };
+        using var scope = fixture.Scope();
+        var request = fixture.RangeRequest(0, 1) with
+        {
+            Kind = WorkspaceFileContextQueryKind.Tree,
+            Paths = [],
+            Limit = 10,
+            StartOffset = null,
+            EndOffset = null,
+        };
+        var result = await scope.ServiceProvider.GetRequiredService<IWorkspaceFileContextSource>()
+            .QueryAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+        result.Status.ShouldBe(incompleteEvidence
+            ? WorkspaceFileContextSourceStatus.Unavailable : WorkspaceFileContextSourceStatus.NotFoundSafe);
+        fixture.Sensitivity.Calls.ShouldBe(1);
+        result.Items.ShouldBeEmpty(); result.ContentBytes.ShouldBeNull(); result.Range.ShouldBeNull();
+        fixture.State.ContentPublications.ShouldContain(pair => pair.Value.ReceiptId == first.ContentBinding!.ReceiptId);
+        fixture.State.ContentPublications.ShouldContain(pair => pair.Value.ReceiptId == second.ContentBinding!.ReceiptId);
+        fixture.State.FileIdentities[first.OwnerFileId!].Active.ShouldBeTrue();
+        fixture.State.FileIdentities[second.OwnerFileId!].Active.ShouldBeTrue();
+        SnapshotPersistedContent(fixture).ShouldBe(persistedBefore);
+    }
+
+    /// <summary>Discards accumulated namespace output when authority changes during a later pending classification.</summary>
+    /// <param name="incompleteEvidence">Whether the permission watermark is removed instead of access being revoked.</param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PendingSecondClassificationRechecksAuthorityBeforeObservingThirdEntry(bool incompleteEvidence)
+    {
+        var fixture = await WorkspaceContentProductionFixture.CreateAsync().ConfigureAwait(true);
+        await using var cleanup = fixture.ConfigureAwait(true);
+        var first = await fixture.PublishAsync("docs/a.txt", "alpha").ConfigureAwait(true);
+        var second = await fixture.PublishAsync("docs/b.txt", "beta").ConfigureAwait(true);
+        var third = await fixture.PublishAsync("docs/c.txt", "gamma").ConfigureAwait(true);
+        string persistedBefore = SnapshotPersistedContent(fixture);
+        TaskCompletionSource secondPending = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        TaskCompletionSource releaseSecond = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        fixture.Sensitivity.BeforeResult = (call, cancellationToken) =>
+        {
+            if (call != 2) return Task.CompletedTask;
+            secondPending.SetResult();
+            return releaseSecond.Task.WaitAsync(cancellationToken);
+        };
+        using var scope = fixture.Scope();
+        var request = fixture.RangeRequest(0, 1) with
+        {
+            Kind = WorkspaceFileContextQueryKind.Tree,
+            Paths = [],
+            Limit = 10,
+            StartOffset = null,
+            EndOffset = null,
+        };
+        Task<WorkspaceFileContextSourceResult> pending = scope.ServiceProvider.GetRequiredService<IWorkspaceFileContextSource>()
+            .QueryAsync(request, TestContext.Current.CancellationToken);
+        try
+        {
+            await secondPending.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            pending.IsCompleted.ShouldBeFalse();
+            fixture.Sensitivity.Calls.ShouldBe(2);
+            if (incompleteEvidence) fixture.Permissions.Watermark = null;
+            else fixture.Permissions.Allowed = false;
+        }
+        finally
+        {
+            releaseSecond.TrySetResult();
+        }
+
+        var result = await pending.ConfigureAwait(true);
+        result.Status.ShouldBe(incompleteEvidence
+            ? WorkspaceFileContextSourceStatus.Unavailable : WorkspaceFileContextSourceStatus.NotFoundSafe);
+        fixture.Sensitivity.Calls.ShouldBe(2);
+        result.Items.ShouldBeEmpty(); result.ContentBytes.ShouldBeNull(); result.Range.ShouldBeNull();
+        foreach (var accepted in new[] { first, second, third })
+        {
+            fixture.State.ContentPublications.ShouldContain(pair => pair.Value.ReceiptId == accepted.ContentBinding!.ReceiptId);
+            fixture.State.FileIdentities[accepted.OwnerFileId!].Active.ShouldBeTrue();
+        }
+        SnapshotPersistedContent(fixture).ShouldBe(persistedBefore);
+    }
+
+    private static string SnapshotPersistedContent(WorkspaceContentProductionFixture fixture)
+        => JsonSerializer.Serialize(new
+        {
+            Folder = fixture.State,
+            Content = fixture.Dapr.TrySaveByteOperations.Select(operation => operation.Key)
+                .Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal)
+                .ToDictionary(key => key, key => fixture.Dapr.ByteStoreValue(key), StringComparer.Ordinal),
+        });
+
     [Fact]
     public async Task DirectLegacyContentReauthorizationPreservesTheRequestTaskInValidatorContexts()
     {

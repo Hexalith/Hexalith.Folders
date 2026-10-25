@@ -55,6 +55,9 @@ internal sealed class AuthoritativeWorkspaceFileContextSource(IAuthoritativeCont
                 string classification = policy.Classify(path);
                 if (classification is "excluded" or "restricted") continue;
                 var sensitivity = await sensitivities.ClassifyAsync(path, token).ConfigureAwait(false);
+                // A classifier await can outlive authority. Fence its result before consuming it
+                // or observing the next namespace entry, including early redaction/unavailability.
+                await authority.AuthorizeAsync(http.HttpContext.User, scope, ContentOperation.Read, scope, token).ConfigureAwait(false);
                 if (sensitivity.Decision == WorkspaceFileSensitivityDecision.Unavailable) throw new ContentUnavailableException();
                 if (sensitivity.Decision == WorkspaceFileSensitivityDecision.Redacted) continue;
                 if (!current.State.FileIdentities.TryGetValue(binding.Change.FileId, out var identity) || !identity.Active

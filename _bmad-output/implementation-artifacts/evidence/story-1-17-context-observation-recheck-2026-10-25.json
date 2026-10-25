@@ -1,0 +1,1431 @@
+{
+  "record_id": "story-1-17-context-observation-recheck-2026-10-25",
+  "recorded_at_utc": "2026-10-25T09:34:03.822120+00:00",
+  "scope": "Bounded local context-read observation fencing and source-profile verification; no rollout or closure authority.",
+  "source": {
+    "folders_commit": "3287af1d5d0befb4a288bab2f35eafbaa10de0ec",
+    "initial_worktree_status": "",
+    "original_parent_baseline": "37d348945b35620da6ba4e524a09bee202712460",
+    "root_gitlinks": {
+      "references/Hexalith.AI.Tools": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "references/Hexalith.Builds": "dd3b4cd2f76cc6455cadf48fd458358834763852",
+      "references/Hexalith.Commons": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "references/Hexalith.EventStore": "849f069ebbb0860e890fdce8e4ab659ac10509f4",
+      "references/Hexalith.FrontComposer": "494169c7818109b90aa136c4d9d8a2ecd917d7c9",
+      "references/Hexalith.McpCli": "3b1738881a3484da51cf64c8ca3b24a8f65227df",
+      "references/Hexalith.Memories": "5a852389327bf45df7d59b2c2e29c7adbe353f19",
+      "references/Hexalith.Platform": "53818818483935d1d90d334e511848335563213f",
+      "references/Hexalith.PolymorphicSerializations": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "references/Hexalith.Projects": "5325ad18443f4085b5cc97685e7420a4eee7a286",
+      "references/Hexalith.Tenants": "c157c394b8fca5f392b5f8a6a5ff1f51f4ac77a0"
+    },
+    "changed_input_hashes": {
+      "src/Hexalith.Folders.Server/Content/AuthoritativeWorkspaceFileContextSource.cs": "b572efde3c88873111bc3a51a679905833444647f76b186e636389a8864e0120",
+      "tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs": "cf71a6fe8d351cc0529755c5ab4a184201fc18ba851da93269ca42fc94535cee",
+      "tests/Hexalith.Folders.Server.Tests/WorkspaceContentProductionSensitivityClassifier.cs": "1ada792f4d269c78cc9721542f3c0b25e1b20f2983ef0e6cd21a4e525fd11c31",
+      "tests/Hexalith.Folders.Server.Tests/WorkspaceContentProductionTests.cs": "91e22e9da05db30dcdc62172700efa7822661311aedbd8462dc8064486cfea15"
+    }
+  },
+  "prior_evidence": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-candidate-blockers-2026-10-25.json",
+    "sha256": "c9baed7af275eb6e42ff1d6f5ce0cf6d15a74e3430e28e1f1b10e03f647d2e09",
+    "initial_integrity_audit": {
+      "candidate_count": 1425,
+      "candidate_sha256": "df535d850214c8bce9f0127d5f80d15b8e550e31041458ec0597aa98df193642",
+      "candidate_set_sha256": "4ca1e15b2acf09f4e302c35a8a960fdb0abf90d74210184b93b54df8ff92bba6",
+      "candidate_mismatches": [],
+      "protected_count": 193,
+      "protected_mismatches": [],
+      "prior_archive_verified": true,
+      "prior_archive_members": 107
+    },
+    "prior_broad_domain_result": "69/69 retained as dated evidence; unchanged domain inputs, not rerun or a new result."
+  },
+  "changes": [
+    "Production namespace classification obtains current complete WRITE authority after every sensitivity await, before consuming its outcome or observing another namespace path.",
+    "Six production-source regressions cover revoked grants or missing watermark with allowed/redacted/unavailable classifier outcomes; assert one classification, no output and unchanged persisted publication/file state.",
+    "Two callback InlineData cases preserve exact wire strings while avoiding obsolete aliases absent from the pinned package replacement API.",
+    "Only four current pending inventory artifact rows change; complete existing 1425-path coverage and pending controls remain intact."
+  ],
+  "checks": [
+    {
+      "id": "contracts-source-build",
+      "command": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+        "--configuration",
+        "Debug",
+        "-p:UseNuGetDeps=false",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:22:18.239606+00:00",
+      "finished_utc": "2026-10-25T09:22:28.334190+00:00",
+      "exit": 0,
+      "log": "contracts-source-build.log",
+      "sha256": "c381a5a3eafccb40882ead2f97d8d2da798efa01f000af404675e1ff3d577d2a"
+    },
+    {
+      "id": "contracts-source-tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2ContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests",
+        "-xml",
+        "/tmp/story117-committed-recheck-20261025-cwy_5yzx/contracts-source-tests.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:22:46.265414+00:00",
+      "finished_utc": "2026-10-25T09:22:53.635836+00:00",
+      "exit": 0,
+      "log": "contracts-source-tests.log",
+      "sha256": "ea372aa173e0855ff11cd72f51e78a4b17e9fbca6ea8a0c581bc28670621e1f7",
+      "counts": {
+        "total": 63,
+        "passed": 63,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0
+      },
+      "xml": "contracts-source-tests.xml",
+      "xml_sha256": "a5781ad525185f322ac6a9c9a5c51298e9169c645b0dc354bf896a14bacb0ead"
+    },
+    {
+      "id": "authorization-source-build",
+      "command": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "--configuration",
+        "Debug",
+        "-p:UseNuGetDeps=false",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:22:57.817458+00:00",
+      "finished_utc": "2026-10-25T09:24:04.514643+00:00",
+      "exit": 0,
+      "log": "authorization-source-build.log",
+      "sha256": "c3b7230c49c4e9514f329bdf8992a1b1c1b9c506b94026d94165f24836516548"
+    },
+    {
+      "id": "production-regression-build",
+      "command": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:24:09.584588+00:00",
+      "finished_utc": "2026-10-25T09:25:08.912074+00:00",
+      "exit": 0,
+      "log": "production-regression-build.log",
+      "sha256": "d21ee385f43dcca6d52f46377c81066c3a55e1056487d35e5ef988abc36739ca"
+    },
+    {
+      "id": "production-regression-red",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "-method",
+        "*NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult",
+        "-xml",
+        "/tmp/story117-committed-recheck-20261025-cwy_5yzx/production-regression-red.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:25:22.303261+00:00",
+      "finished_utc": "2026-10-25T09:25:23.565793+00:00",
+      "exit": 1,
+      "log": "production-regression-red.log",
+      "sha256": "3a23b17c146d53dde5fe20f257e189b93ef888c0450060443087b0068386a33b",
+      "counts": {
+        "total": 6,
+        "passed": 1,
+        "failed": 5,
+        "skipped": 0,
+        "errors": 0
+      },
+      "xml": "production-regression-red.xml",
+      "xml_sha256": "aeb8f8172f02a5dd289afc5a29cc76a65e8569a1f77bee18959c8fde5d417f69"
+    },
+    {
+      "id": "aspire-explicit-source-start",
+      "command": [
+        "env",
+        "UseNuGetDeps=false",
+        "aspire",
+        "start",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:26:23.212587+00:00",
+      "finished_utc": "2026-10-25T09:27:11.759022+00:00",
+      "exit": 2,
+      "log": "aspire-explicit-source-start.log",
+      "sha256": "4f6814a8f6cddfd5a4f8a003c438d209dab7f54c955d6a6a62f8206549ffeb1f"
+    },
+    {
+      "id": "aspire-explicit-source-describe",
+      "command": [
+        "aspire",
+        "describe",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+        "--format",
+        "Json"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:27:30.422876+00:00",
+      "finished_utc": "2026-10-25T09:27:30.694202+00:00",
+      "exit": 0,
+      "log": "aspire-explicit-source-describe.log",
+      "sha256": "3708797686d2d0c45420270ab6024bd8ed04562b7b08287f1d48cfc3a3810369"
+    },
+    {
+      "id": "server-source-build",
+      "command": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+        "--configuration",
+        "Debug",
+        "-p:UseNuGetDeps=false",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:27:30.753809+00:00",
+      "finished_utc": "2026-10-25T09:28:30.503305+00:00",
+      "exit": 0,
+      "log": "server-source-build.log",
+      "sha256": "7e7cf1b1d00d8771af1badad80ca205ee3acb07e63e7251343d9eae44f485773"
+    },
+    {
+      "id": "server-source-tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Server.Tests.FileContextEndpointTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.Pd10ProtectedOperationCatalogTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.HttpContextEventStoreClaimTransformEvidenceAccessorTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests",
+        "-xml",
+        "/tmp/story117-committed-recheck-20261025-cwy_5yzx/server-source-tests.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:28:40.973188+00:00",
+      "finished_utc": "2026-10-25T09:29:58.826437+00:00",
+      "exit": 0,
+      "log": "server-source-tests.log",
+      "sha256": "32bd155d56253cb46e1a3f4ca2d70beb27e3e848fef879a827d2b2fa7be530a7",
+      "counts": {
+        "total": 79,
+        "passed": 79,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0
+      },
+      "xml": "server-source-tests.xml",
+      "xml_sha256": "bfc1aa0f558ec3d5f6c1c313fb314590084dd0d0b5433e8180a9320949a8a081"
+    },
+    {
+      "id": "release-final-build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:29:11.967818+00:00",
+      "finished_utc": "2026-10-25T09:30:23.355564+00:00",
+      "exit": 0,
+      "log": "release-final-build.log",
+      "sha256": "189c9534a4bacbcf75c888a3c5c3e7d5a3deafbe30eec1e171c2463325dc8825"
+    },
+    {
+      "id": "candidate-generation-one",
+      "command": [
+        "python3",
+        "scripts/generate-pd10-v2-conformance-set.py",
+        "--repository-root",
+        "/home/administrator/projects/hexalith/folders",
+        "--output",
+        "/tmp/story117-committed-recheck-20261025-cwy_5yzx/candidate-one.yaml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:30:26.202200+00:00",
+      "finished_utc": "2026-10-25T09:30:26.321334+00:00",
+      "exit": 0,
+      "log": "candidate-generation-one.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "candidate-generation-two",
+      "command": [
+        "python3",
+        "scripts/generate-pd10-v2-conformance-set.py",
+        "--repository-root",
+        "/home/administrator/projects/hexalith/folders",
+        "--output",
+        "/tmp/story117-committed-recheck-20261025-cwy_5yzx/candidate-two.yaml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:30:26.348049+00:00",
+      "finished_utc": "2026-10-25T09:30:26.466510+00:00",
+      "exit": 0,
+      "log": "candidate-generation-two.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "authorization-final",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Authorization.ContextReadAuthorityTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Authorization.ContextReadFreshTenantTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+        "-xml",
+        "/tmp/story117-committed-recheck-20261025-cwy_5yzx/authorization-final.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:30:46.110481+00:00",
+      "finished_utc": "2026-10-25T09:31:15.363486+00:00",
+      "exit": 0,
+      "log": "authorization-final.log",
+      "sha256": "3ad1280dece0ea42ce891d3819f877f8711f9059ce7ddc92f4bbf39802f58268",
+      "counts": {
+        "total": 71,
+        "passed": 71,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0
+      },
+      "xml": "authorization-final.xml",
+      "xml_sha256": "f1342ced76b1aa92e9cfcb6bba7859a161e547e81fe20bf9d41a7f327e5ea475"
+    },
+    {
+      "id": "server-final",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Server.Tests.FileContextEndpointTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.Pd10ProtectedOperationCatalogTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.HttpContextEventStoreClaimTransformEvidenceAccessorTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests",
+        "-xml",
+        "/tmp/story117-committed-recheck-20261025-cwy_5yzx/server-final.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:30:46.114932+00:00",
+      "finished_utc": "2026-10-25T09:32:03.928301+00:00",
+      "exit": 0,
+      "log": "server-final.log",
+      "sha256": "6bd4a70b6832b2793ca43a3f1a5d1dbf4c3a50b7b5d4b920a2b4d817fd2ea4b6",
+      "counts": {
+        "total": 79,
+        "passed": 79,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0
+      },
+      "xml": "server-final.xml",
+      "xml_sha256": "7903b2935598d46012aa2fa88f5bb4aee295fd194abdffc01975e207e527ac1e"
+    },
+    {
+      "id": "contracts-final",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2ContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests",
+        "-xml",
+        "/tmp/story117-committed-recheck-20261025-cwy_5yzx/contracts-final.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:30:46.116445+00:00",
+      "finished_utc": "2026-10-25T09:30:51.700304+00:00",
+      "exit": 0,
+      "log": "contracts-final.log",
+      "sha256": "f4a9dc524e18e60da6e26cea49c4d14d0048aa5f422dc54f73eaeb15828ed28c",
+      "counts": {
+        "total": 63,
+        "passed": 63,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0
+      },
+      "xml": "contracts-final.xml",
+      "xml_sha256": "e4552740f67ca8d125288d165cb36ee65307c9ca84afeba8e3ac2aa5ec7b0bbd"
+    },
+    {
+      "id": "parity-final",
+      "command": [
+        "pwsh",
+        "tests/tools/run-contract-parity-ci-gates.ps1",
+        "-NoRestore",
+        "-OutputReportPath",
+        "/tmp/story117-committed-recheck-20261025-cwy_5yzx/parity-report.json"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:31:26.920805+00:00",
+      "finished_utc": "2026-10-25T09:32:28.035868+00:00",
+      "exit": 0,
+      "log": "parity-final.log",
+      "sha256": "82f5825fe9d47dc0936fd145c0bdbb878e092067a27cd4eb0f59e5ac4b07a6df"
+    },
+    {
+      "id": "governance-final",
+      "command": [
+        "pwsh",
+        "tests/tools/run-governance-completeness-gates.ps1",
+        "-SkipRestoreBuild"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:31:26.920818+00:00",
+      "finished_utc": "2026-10-25T09:31:31.197419+00:00",
+      "exit": 0,
+      "log": "governance-final.log",
+      "sha256": "f41d22735575889b875f33f2fdd36ffb71686e075ff5099dc6e2273c099dc3ce"
+    }
+  ],
+  "final_results": {
+    "source_server": {
+      "total": 79,
+      "passed": 79
+    },
+    "release_server": {
+      "total": 79,
+      "passed": 79
+    },
+    "release_authorization_routing": {
+      "total": 71,
+      "passed": 71
+    },
+    "contracts": {
+      "total": 63,
+      "passed": 63
+    },
+    "parity_categories": {
+      "total": 12,
+      "passed": 12
+    },
+    "governance": [
+      {
+        "total": 23,
+        "passed": 23
+      },
+      {
+        "total": 7,
+        "passed": 7
+      },
+      {
+        "total": 3,
+        "passed": 3
+      }
+    ],
+    "release_build": "Passed with default auditing and zero warnings/errors"
+  },
+  "candidate": {
+    "artifact_count": 1425,
+    "raw_sha256": "f42dda65580a07878947b257af333d5b825e99c5b73d3279290ba5378a568d4d",
+    "candidate_set_sha256": "574e5f0e1edf3c60ebd15aa3586782b948eeb35effbb62990504dcdd100435fc",
+    "reproductions": 2,
+    "all_sizes_and_hashes_match": true,
+    "changed_paths": [
+      "src/Hexalith.Folders.Server/Content/AuthoritativeWorkspaceFileContextSource.cs",
+      "tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs",
+      "tests/Hexalith.Folders.Server.Tests/WorkspaceContentProductionSensitivityClassifier.cs",
+      "tests/Hexalith.Folders.Server.Tests/WorkspaceContentProductionTests.cs"
+    ],
+    "pending_authority_fields_preserved": true
+  },
+  "preservation": {
+    "protected_inputs": {
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-resume-2026-10-25.json": {
+        "before": "0ec4d2ce0ad7f5ab23c76c76be6ad76a11971f52d49127c0ee166a0f35e1197f",
+        "after": "0ec4d2ce0ad7f5ab23c76c76be6ad76a11971f52d49127c0ee166a0f35e1197f"
+      },
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-resume-2026-10-25.logs.tar.gz": {
+        "before": "9182786b2ed298853ca298e1539ddb9a3ab2dc5ed5ae568d4852bfe7756d9b1d",
+        "after": "9182786b2ed298853ca298e1539ddb9a3ab2dc5ed5ae568d4852bfe7756d9b1d"
+      },
+      "_bmad-output/implementation-artifacts/sprint-status.yaml": {
+        "before": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40",
+        "after": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40"
+      },
+      "_bmad-output/planning-artifacts/.memlog.md": {
+        "before": "d2ab52c2ede5e18e7c4a64e3a3a31ba22e99b773dc350630bdc016dc2bc8279b",
+        "after": "d2ab52c2ede5e18e7c4a64e3a3a31ba22e99b773dc350630bdc016dc2bc8279b"
+      },
+      "_bmad-output/planning-artifacts/architecture.md": {
+        "before": "7ee56ec9d991ee91ef0557c8f7d99b7c5bb98e5f1476adb865fb9a8781ac5eaa",
+        "after": "7ee56ec9d991ee91ef0557c8f7d99b7c5bb98e5f1476adb865fb9a8781ac5eaa"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/.memlog.md": {
+        "before": "332827c09567d138872d28d0bc3e45c38bb113976beef7f44f3cd5d6c3c81cb4",
+        "after": "332827c09567d138872d28d0bc3e45c38bb113976beef7f44f3cd5d6c3c81cb4"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-adversarial-2026-09-15.md": {
+        "before": "fa0734915ea6d9f739edf99553f23caf866b60b9d4ae0a491003aca1fa800772",
+        "after": "fa0734915ea6d9f739edf99553f23caf866b60b9d4ae0a491003aca1fa800772"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-adversarial-2026-09-16.md": {
+        "before": "a806270bb11e19a04b9ca123e4f84035701ee3029f770ae8afbe4dd94b43f080",
+        "after": "a806270bb11e19a04b9ca123e4f84035701ee3029f770ae8afbe4dd94b43f080"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-adversarial-2026-09-17.md": {
+        "before": "45307442db5f524f6465f64a133a8a2eeb68873df92f7c55b4c4c546e5050980",
+        "after": "45307442db5f524f6465f64a133a8a2eeb68873df92f7c55b4c4c546e5050980"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-adversarial-regate-2026-09-16.md": {
+        "before": "c81599e30198f8f6e3bd7661301f2d006a1df545de3579d0e71a26c1e38ab584",
+        "after": "c81599e30198f8f6e3bd7661301f2d006a1df545de3579d0e71a26c1e38ab584"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-adversarial-update-2026-09-16.md": {
+        "before": "ddd86abd7b2d2c9c9d39be88c8b3d7a472ab4a2ae9d524a671e673e349654bb6",
+        "after": "ddd86abd7b2d2c9c9d39be88c8b3d7a472ab4a2ae9d524a671e673e349654bb6"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-authority-conformance-2026-09-15.md": {
+        "before": "d3d3dea1dd87f2a6de281c2822c2ec48a98d2708bc21f7b8657675a05e6f2dbc",
+        "after": "d3d3dea1dd87f2a6de281c2822c2ec48a98d2708bc21f7b8657675a05e6f2dbc"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-authority-conformance-2026-09-16.md": {
+        "before": "caba8f4d83f082e3f07520262046b458972a7949743ee61470207eeee3053892",
+        "after": "caba8f4d83f082e3f07520262046b458972a7949743ee61470207eeee3053892"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-authority-conformance-regate-2026-09-16.md": {
+        "before": "ce72f5201ee0406433ab5f1621a3aa166a0595e989fd790da9f3e9781612d923",
+        "after": "ce72f5201ee0406433ab5f1621a3aa166a0595e989fd790da9f3e9781612d923"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-authority-conformance-update-2026-09-16.md": {
+        "before": "a4339e38da77845eefa51cba0f04c50f10ff40efd171d5e1f8879bf173cf9e06",
+        "after": "a4339e38da77845eefa51cba0f04c50f10ff40efd171d5e1f8879bf173cf9e06"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-code-reality-2026-09-16.md": {
+        "before": "d00997362b9fa34310c93f75880bf87b7932733e123fba7ec04eed50738926c5",
+        "after": "d00997362b9fa34310c93f75880bf87b7932733e123fba7ec04eed50738926c5"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-code-reality-regate-2026-09-16.md": {
+        "before": "09cc409e9f4afbcfb6cebf26dd20bd9c6f3b0d0b5fd17792e732da81deeb2d17",
+        "after": "09cc409e9f4afbcfb6cebf26dd20bd9c6f3b0d0b5fd17792e732da81deeb2d17"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-code-reality-update-2026-09-16.md": {
+        "before": "9a1ff638e49becb6aabc4abd443d501725ad0294792efebe5f888ea0eab5c633",
+        "after": "9a1ff638e49becb6aabc4abd443d501725ad0294792efebe5f888ea0eab5c633"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-rubric-2026-09-15.md": {
+        "before": "0a1ca7e094e28b75c7eb286c225b2f669930e158d99266b665aa4c7146057ed7",
+        "after": "0a1ca7e094e28b75c7eb286c225b2f669930e158d99266b665aa4c7146057ed7"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-rubric-2026-09-16.md": {
+        "before": "18b31715d16c722bf26e14c1a8147b1fcc82cb6e6db33efbe6829dc0f04b5dbf",
+        "after": "18b31715d16c722bf26e14c1a8147b1fcc82cb6e6db33efbe6829dc0f04b5dbf"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-rubric-2026-09-17.md": {
+        "before": "f4a9d192e274d96d80fc03c6e0036a3a48dfb93491621a3a4aa3df1f82409254",
+        "after": "f4a9d192e274d96d80fc03c6e0036a3a48dfb93491621a3a4aa3df1f82409254"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-rubric-regate-2026-09-16.md": {
+        "before": "fbabcd753fea36d546c208ea16d28aa1b893e14866d0ffafcf9c286b35c255c5",
+        "after": "fbabcd753fea36d546c208ea16d28aa1b893e14866d0ffafcf9c286b35c255c5"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-rubric-update-2026-09-16.md": {
+        "before": "3f5d71640347949e364c54aff9cefe88f5fc96c0fc4734ed69d3c994f2ec3939",
+        "after": "3f5d71640347949e364c54aff9cefe88f5fc96c0fc4734ed69d3c994f2ec3939"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-security-2026-09-16.md": {
+        "before": "135266a87e4e23506ecaf6d2e423ff8ada2b91531ce4bcc347e1194d3db8628b",
+        "after": "135266a87e4e23506ecaf6d2e423ff8ada2b91531ce4bcc347e1194d3db8628b"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-security-regate-2026-09-16.md": {
+        "before": "a4ec9acfd9015f0c3696b6ee549fe81c7fa7c928f117b2c7e04c20bbad99a7d8",
+        "after": "a4ec9acfd9015f0c3696b6ee549fe81c7fa7c928f117b2c7e04c20bbad99a7d8"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-security-update-2026-09-16.md": {
+        "before": "b568fbeaa94d1a1dc8f555f04a84f33285e2f1a53b781edf461c28d9500b3ec8",
+        "after": "b568fbeaa94d1a1dc8f555f04a84f33285e2f1a53b781edf461c28d9500b3ec8"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-technology-2026-09-15.md": {
+        "before": "e8ecede4ef64617fd87fa89cb6909cae3531a06e205fdcd18050cca7500c04ec",
+        "after": "e8ecede4ef64617fd87fa89cb6909cae3531a06e205fdcd18050cca7500c04ec"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-technology-2026-09-16.md": {
+        "before": "de753913f66e08a70abc5aee10c4c9429ac070c557a1ae9f16af20f6d7a97403",
+        "after": "de753913f66e08a70abc5aee10c4c9429ac070c557a1ae9f16af20f6d7a97403"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-technology-2026-09-17.md": {
+        "before": "1151c19ed86297f321c345df7127300014343c53b894732bdf1b6afd25ea8028",
+        "after": "1151c19ed86297f321c345df7127300014343c53b894732bdf1b6afd25ea8028"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-technology-regate-2026-09-16.md": {
+        "before": "5613866189db2f3b02c1da057ee825c78726b111e344565bcf6fe04e242bc241",
+        "after": "5613866189db2f3b02c1da057ee825c78726b111e344565bcf6fe04e242bc241"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/reviews/review-technology-update-2026-09-16.md": {
+        "before": "ed8a1cf6c54e106c865a3b230a6296fbfd942dd282ec414df8b701e4caf6bcae",
+        "after": "ed8a1cf6c54e106c865a3b230a6296fbfd942dd282ec414df8b701e4caf6bcae"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/validation-report-2026-09-16.html": {
+        "before": "cb64951a70f90f96509ef98871002cb66c338fe6496a8b7ced0061dcd246ed25",
+        "after": "cb64951a70f90f96509ef98871002cb66c338fe6496a8b7ced0061dcd246ed25"
+      },
+      "_bmad-output/planning-artifacts/architecture/architecture-folders-2026-07-19/validation-report-2026-09-16.md": {
+        "before": "b67c066c65688b0bd9c1c9ca503eb462db13b6e2863821d0d50a011044a97d34",
+        "after": "b67c066c65688b0bd9c1c9ca503eb462db13b6e2863821d0d50a011044a97d34"
+      },
+      "_bmad-output/planning-artifacts/architecture/validation-2026-09-08/reviews/review-adversarial.md": {
+        "before": "64fdb90c785fe5cd57274fbcb8e58e1869077bb7dfbdec772cee9240203afc80",
+        "after": "64fdb90c785fe5cd57274fbcb8e58e1869077bb7dfbdec772cee9240203afc80"
+      },
+      "_bmad-output/planning-artifacts/architecture/validation-2026-09-08/reviews/review-mechanical.md": {
+        "before": "4849462b6128f1c4157fbca84b7bb29bfccc0a8bab9e9be32dd55ca3ff6388e3",
+        "after": "4849462b6128f1c4157fbca84b7bb29bfccc0a8bab9e9be32dd55ca3ff6388e3"
+      },
+      "_bmad-output/planning-artifacts/architecture/validation-2026-09-08/reviews/review-rubric.md": {
+        "before": "185535e99c747e165bbc6f640d8c190c3deea1334833707d8d108596ce1469ff",
+        "after": "185535e99c747e165bbc6f640d8c190c3deea1334833707d8d108596ce1469ff"
+      },
+      "_bmad-output/planning-artifacts/architecture/validation-2026-09-08/reviews/review-technology.md": {
+        "before": "306dc34d58cbc28e2c8bb2b41f062db59c460f036190d31aa3ac42af4a0da1ca",
+        "after": "306dc34d58cbc28e2c8bb2b41f062db59c460f036190d31aa3ac42af4a0da1ca"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A1-PD1-OQ11.md": {
+        "before": "a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd",
+        "after": "a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2-PD3.md": {
+        "before": "81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435",
+        "after": "81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2B-PD6.md": {
+        "before": "0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257",
+        "after": "0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A3-PD4.md": {
+        "before": "a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e",
+        "after": "a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A4-PD5.md": {
+        "before": "114f78d614943f60e6984398f041ef08485754177f5c53bada367c18e73b22ce",
+        "after": "114f78d614943f60e6984398f041ef08485754177f5c53bada367c18e73b22ce"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md": {
+        "before": "fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489",
+        "after": "fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6-PD10.md": {
+        "before": "0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355",
+        "after": "0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml": {
+        "before": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558",
+        "after": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml": {
+        "before": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d",
+        "after": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml": {
+        "before": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40",
+        "after": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md": {
+        "before": "2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375",
+        "after": "2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7-C6-PD11.md": {
+        "before": "b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f",
+        "after": "b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7B-C3.md": {
+        "before": "1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1",
+        "after": "1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md": {
+        "before": "6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57",
+        "after": "6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml": {
+        "before": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c",
+        "after": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml": {
+        "before": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390",
+        "after": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml": {
+        "before": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab",
+        "after": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml": {
+        "before": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d",
+        "after": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml": {
+        "before": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492",
+        "after": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml": {
+        "before": "471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972",
+        "after": "471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml": {
+        "before": "05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973",
+        "after": "05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md": {
+        "before": "886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca",
+        "after": "886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml": {
+        "before": "fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750",
+        "after": "fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-APPROVAL-2026-09-23.yaml": {
+        "before": "45ad4fc46f7e74aacae3a9c90d1ec535d97fb5ff615d513c1d588aed16df52be",
+        "after": "45ad4fc46f7e74aacae3a9c90d1ec535d97fb5ff615d513c1d588aed16df52be"
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-PREPARATION-2026-09-23.yaml": {
+        "before": "4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443",
+        "after": "4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443"
+      },
+      "_bmad-output/planning-artifacts/epics.md": {
+        "before": "da39584ed822f30bfd618eec6f00d6b17d420a1d407ce65464ea804dc8e780de",
+        "after": "da39584ed822f30bfd618eec6f00d6b17d420a1d407ce65464ea804dc8e780de"
+      },
+      "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": {
+        "before": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+        "after": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286"
+      },
+      "_bmad-output/planning-artifacts/implementation-readiness-report-2026-05-10.md": {
+        "before": "370199522f8682b9a86122cd91a59e50737499c36d254137c74848194e4e270c",
+        "after": "370199522f8682b9a86122cd91a59e50737499c36d254137c74848194e4e270c"
+      },
+      "_bmad-output/planning-artifacts/implementation-readiness-report-2026-05-11.md": {
+        "before": "32ae6c1d8ab4a22cbdc3ff811f7ee25da39144b41fb71b7e66228e10b7ec28da",
+        "after": "32ae6c1d8ab4a22cbdc3ff811f7ee25da39144b41fb71b7e66228e10b7ec28da"
+      },
+      "_bmad-output/planning-artifacts/implementation-readiness-report-2026-05-12.md": {
+        "before": "c0f5bfaf1ab2ca5f51980764683083d57942f472b3b15762541385ef4150f046",
+        "after": "c0f5bfaf1ab2ca5f51980764683083d57942f472b3b15762541385ef4150f046"
+      },
+      "_bmad-output/planning-artifacts/implementation-readiness-report-2026-06-22.md": {
+        "before": "7686dc1b4ecdd1171fd92f707fc8c589538344dea725868ec6bd775a1c22e79b",
+        "after": "7686dc1b4ecdd1171fd92f707fc8c589538344dea725868ec6bd775a1c22e79b"
+      },
+      "_bmad-output/planning-artifacts/implementation-readiness-report-2026-06-27.md": {
+        "before": "e70f96cb0b690d066254cdac5744e21045e3055773bc063664eeaf796672bb07",
+        "after": "e70f96cb0b690d066254cdac5744e21045e3055773bc063664eeaf796672bb07"
+      },
+      "_bmad-output/planning-artifacts/implementation-readiness-report-2026-07-07.md": {
+        "before": "c0e4d31b6ff71172963afdaadd58e60290157ee5d464d8f401ce706ecad64027",
+        "after": "c0e4d31b6ff71172963afdaadd58e60290157ee5d464d8f401ce706ecad64027"
+      },
+      "_bmad-output/planning-artifacts/implementation-readiness-report-2026-07-14-rerun-before-structural-correction.md": {
+        "before": "d7a0c0ce1de4d16e9d6905f9a181715a93358386b9bf911f30d4a790bab75e3b",
+        "after": "d7a0c0ce1de4d16e9d6905f9a181715a93358386b9bf911f30d4a790bab75e3b"
+      },
+      "_bmad-output/planning-artifacts/implementation-readiness-report-2026-07-14.md": {
+        "before": "5ed7363c94701a7fe4654ce06bdedf2075ef32704c86856d401fbb7affa5e1a8",
+        "after": "5ed7363c94701a7fe4654ce06bdedf2075ef32704c86856d401fbb7affa5e1a8"
+      },
+      "_bmad-output/planning-artifacts/implementation-readiness-report-2026-07-15-pre-rerun.md": {
+        "before": "33772186f3a3869b43d7877b396df33fbfa783d98047b662713fa5d7854d216e",
+        "after": "33772186f3a3869b43d7877b396df33fbfa783d98047b662713fa5d7854d216e"
+      },
+      "_bmad-output/planning-artifacts/implementation-readiness-report-2026-07-15.md": {
+        "before": "78e0eb20658beeea6d59792262ff7378b4f8f6a4d282d270d1632b28be3ed15e",
+        "after": "78e0eb20658beeea6d59792262ff7378b4f8f6a4d282d270d1632b28be3ed15e"
+      },
+      "_bmad-output/planning-artifacts/implementation-readiness-report-2026-07-19.md": {
+        "before": "66317ae45a5e47cf451c5a166a82cbf582ee676fffec97bd7dde845769dfafbe",
+        "after": "66317ae45a5e47cf451c5a166a82cbf582ee676fffec97bd7dde845769dfafbe"
+      },
+      "_bmad-output/planning-artifacts/implementation-readiness-report-2026-08-04.md": {
+        "before": "df3cd86344effc1481b37698c37fae0a981c80603a246ff2f676cb9167a3a4a0",
+        "after": "df3cd86344effc1481b37698c37fae0a981c80603a246ff2f676cb9167a3a4a0"
+      },
+      "_bmad-output/planning-artifacts/implementation-readiness.md": {
+        "before": "1cd954f81ba2551e400c4bbddcc5df48a9961835f5da2dbbef076aca254db690",
+        "after": "1cd954f81ba2551e400c4bbddcc5df48a9961835f5da2dbbef076aca254db690"
+      },
+      "_bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml": {
+        "before": "08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec",
+        "after": "08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec"
+      },
+      "_bmad-output/planning-artifacts/memories-search-index-handoff-2026-06-23.md": {
+        "before": "2695de7c20b285f97cfb4caf8a5655fbfaa5f18d8cded8cbba9a9e8451bb2f6b",
+        "after": "2695de7c20b285f97cfb4caf8a5655fbfaa5f18d8cded8cbba9a9e8451bb2f6b"
+      },
+      "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml": {
+        "before": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff",
+        "after": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff"
+      },
+      "_bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml": {
+        "before": "3e869bcc1d543d71254ef0a3848976fea0ee62ed3c5be37583fec2f9e8862ebf",
+        "after": "3e869bcc1d543d71254ef0a3848976fea0ee62ed3c5be37583fec2f9e8862ebf"
+      },
+      "_bmad-output/planning-artifacts/planning-story-manifest.yaml": {
+        "before": "ba04ee232dcf74da85127af481336c8a17539cf7b0a17e4b1e95bba7aab84837",
+        "after": "ba04ee232dcf74da85127af481336c8a17539cf7b0a17e4b1e95bba7aab84837"
+      },
+      "_bmad-output/planning-artifacts/polish-prose.md": {
+        "before": "1a3f2a2f63442f83a7483ce60fb8cbf75c1e46c52536111ea976b07bd3e13178",
+        "after": "1a3f2a2f63442f83a7483ce60fb8cbf75c1e46c52536111ea976b07bd3e13178"
+      },
+      "_bmad-output/planning-artifacts/polish-structure.md": {
+        "before": "a553924be064b0d4f4e866d97a76b09ed8200051e7d9b697ecf90d3218216bfe",
+        "after": "a553924be064b0d4f4e866d97a76b09ed8200051e7d9b697ecf90d3218216bfe"
+      },
+      "_bmad-output/planning-artifacts/prd-validation-report.md": {
+        "before": "d60372e310005d98f9cdbf8ae45ddafadefbb04182d1c4a9a021510d23e79917",
+        "after": "d60372e310005d98f9cdbf8ae45ddafadefbb04182d1c4a9a021510d23e79917"
+      },
+      "_bmad-output/planning-artifacts/prd.md": {
+        "before": "b08c5bb51a8d07b0a452837304486b69a1ce5c1f63ca4e7b2a360393b0c45608",
+        "after": "b08c5bb51a8d07b0a452837304486b69a1ce5c1f63ca4e7b2a360393b0c45608"
+      },
+      "_bmad-output/planning-artifacts/product-brief-Hexalith.Folders.md": {
+        "before": "f9c68b25daa10bee656d2ab8c7148133936bc282ff5138b75326f23f2b4f1490",
+        "after": "f9c68b25daa10bee656d2ab8c7148133936bc282ff5138b75326f23f2b4f1490"
+      },
+      "_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-07-19.md": {
+        "before": "9bb209a2c44415af86696ae9555147a349f315c094f4205649ea7d628e656a6e",
+        "after": "9bb209a2c44415af86696ae9555147a349f315c094f4205649ea7d628e656a6e"
+      },
+      "_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-15.md": {
+        "before": "803a201896fb6a3e8b4e24602244cb01ca2ed893095e7776cb9d462989df84ec",
+        "after": "803a201896fb6a3e8b4e24602244cb01ca2ed893095e7776cb9d462989df84ec"
+      },
+      "_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-16.md": {
+        "before": "1b751e65af6f07e984771b2fd9296d34565f05428a7cd34718404a1e536e5da4",
+        "after": "1b751e65af6f07e984771b2fd9296d34565f05428a7cd34718404a1e536e5da4"
+      },
+      "_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-17.md": {
+        "before": "788b79be90c9c17606af23d6c436ef67cc272757937bbc47e57d61f1aa63a8cd",
+        "after": "788b79be90c9c17606af23d6c436ef67cc272757937bbc47e57d61f1aa63a8cd"
+      },
+      "_bmad-output/planning-artifacts/reconcile-architecture.md": {
+        "before": "0083729754137d07759bf4380f6b619a35fbfd5fe3f1f8d78e1335fc7c7699b7",
+        "after": "0083729754137d07759bf4380f6b619a35fbfd5fe3f1f8d78e1335fc7c7699b7"
+      },
+      "_bmad-output/planning-artifacts/reconcile-brainstorming.md": {
+        "before": "e74525e97d05ddb7eea0539339e8681137a44636c835d3475a68e059130ea0e7",
+        "after": "e74525e97d05ddb7eea0539339e8681137a44636c835d3475a68e059130ea0e7"
+      },
+      "_bmad-output/planning-artifacts/reconcile-eventstore-research.md": {
+        "before": "e2c60276923f8fd7ffa26bad9e77eb3f77e953a5ac53d0857112be7dd24e6736",
+        "after": "e2c60276923f8fd7ffa26bad9e77eb3f77e953a5ac53d0857112be7dd24e6736"
+      },
+      "_bmad-output/planning-artifacts/reconcile-implementation-readiness-report-2026-07-07.md": {
+        "before": "aa21fd500907b74a75a3e6cce10c2f1ef27f02459f4cf080cd5aeda9e522e50b",
+        "after": "aa21fd500907b74a75a3e6cce10c2f1ef27f02459f4cf080cd5aeda9e522e50b"
+      },
+      "_bmad-output/planning-artifacts/reconcile-implementation-readiness-report-2026-07-14-rerun-before-structural-correction.md": {
+        "before": "3928a01c1f47aa78acdceb2a7ee3ad45f119071fb6f7048f51e56bcefb58ceec",
+        "after": "3928a01c1f47aa78acdceb2a7ee3ad45f119071fb6f7048f51e56bcefb58ceec"
+      },
+      "_bmad-output/planning-artifacts/reconcile-implementation-readiness-report-2026-07-14.md": {
+        "before": "2ec6f46941bbe04726e75dd8cede643e762ea8c3a2afa7bac504b2dc0e9c8ac7",
+        "after": "2ec6f46941bbe04726e75dd8cede643e762ea8c3a2afa7bac504b2dc0e9c8ac7"
+      },
+      "_bmad-output/planning-artifacts/reconcile-implementation-readiness-report-2026-07-15-pre-rerun.md": {
+        "before": "31b9eabe52dac1f4337842f6ea8797447862de921ca9b0b26c380ba22907c767",
+        "after": "31b9eabe52dac1f4337842f6ea8797447862de921ca9b0b26c380ba22907c767"
+      },
+      "_bmad-output/planning-artifacts/reconcile-implementation-readiness-report-2026-07-15.md": {
+        "before": "02fddc4c0ca02c18cecea2799f0bdfe039ef4f0bdb15a35ba27c9f735cbc5b27",
+        "after": "02fddc4c0ca02c18cecea2799f0bdfe039ef4f0bdb15a35ba27c9f735cbc5b27"
+      },
+      "_bmad-output/planning-artifacts/reconcile-july-2026-delta-review.md": {
+        "before": "e2b39c38138b4e1d62720c2485d3169716a9a07076cff168516f7f233e12bb39",
+        "after": "e2b39c38138b4e1d62720c2485d3169716a9a07076cff168516f7f233e12bb39"
+      },
+      "_bmad-output/planning-artifacts/reconcile-july-2026-synthesis.md": {
+        "before": "462bbbc07d3d4bb419db65658062586d62d572cca14bd076be6902e0d38ae93b",
+        "after": "462bbbc07d3d4bb419db65658062586d62d572cca14bd076be6902e0d38ae93b"
+      },
+      "_bmad-output/planning-artifacts/reconcile-product-brief.md": {
+        "before": "fded67e5d948ab4b4f85ea936a7d061d660d43a5045088959933cb1504d720ba",
+        "after": "fded67e5d948ab4b4f85ea936a7d061d660d43a5045088959933cb1504d720ba"
+      },
+      "_bmad-output/planning-artifacts/reconcile-provider-research.md": {
+        "before": "ae18b363f76145aea3c0597ac5f95164478f340518b1da4ecd3638cc2dbad2d8",
+        "after": "ae18b363f76145aea3c0597ac5f95164478f340518b1da4ecd3638cc2dbad2d8"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-06-builds-package-version-centralization.md": {
+        "before": "57684375fc97bd08994027ac8a78caadc02f5cd9076f7b661516ed547b8e177e",
+        "after": "57684375fc97bd08994027ac8a78caadc02f5cd9076f7b661516ed547b8e177e"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-07-081620.md": {
+        "before": "2f96a691a26cbc97a5925508e41ad46f699435d20fc982d923ed7637521795cb",
+        "after": "2f96a691a26cbc97a5925508e41ad46f699435d20fc982d923ed7637521795cb"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-07-090742.md": {
+        "before": "b02406beee349f7d199e057e6f2b3a1453e0308f9e69059901c9c83c1458447b",
+        "after": "b02406beee349f7d199e057e6f2b3a1453e0308f9e69059901c9c83c1458447b"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-07-190839.md": {
+        "before": "f9fcfbd8f1f9dd697371f105fdda996ac90f7d2fff71f6f6f28e4fcf05b77751",
+        "after": "f9fcfbd8f1f9dd697371f105fdda996ac90f7d2fff71f6f6f28e4fcf05b77751"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-07-193110.md": {
+        "before": "3d854baccea4528e7e5e52becb08f2db631cc6b25342914af9579ff317289e83",
+        "after": "3d854baccea4528e7e5e52becb08f2db631cc6b25342914af9579ff317289e83"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-07-content-materializer.md": {
+        "before": "d312c4e45aa44c73da90e6466605c91e6162b210f34b3605b5c488cb65d09b8b",
+        "after": "d312c4e45aa44c73da90e6466605c91e6162b210f34b3605b5c488cb65d09b8b"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-07-dcp-lane-standup.md": {
+        "before": "72c6d4ee17b6e51e5dec16df2018b637b07bc0f0c29f516a909023f8dc2bbbd8",
+        "after": "72c6d4ee17b6e51e5dec16df2018b637b07bc0f0c29f516a909023f8dc2bbbd8"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-07-governance-approval-freshness.md": {
+        "before": "5ac64cfa80b37f6543e05921c9144334ae6d3635b3b762043227e3e280d97214",
+        "after": "5ac64cfa80b37f6543e05921c9144334ae6d3635b3b762043227e3e280d97214"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-07-honest-green-gate-baseline.md": {
+        "before": "4526931f652551370493153210a6e5284ab0a8b8d491fd0f879d294fda4ac807",
+        "after": "4526931f652551370493153210a6e5284ab0a8b8d491fd0f879d294fda4ac807"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-07-idempotency-key-canonicalization.md": {
+        "before": "2a69fac7b7cc32e1a1617e1d1c0aa2f9c0c63804d6c563de5e31cddaa1ecfae3",
+        "after": "2a69fac7b7cc32e1a1617e1d1c0aa2f9c0c63804d6c563de5e31cddaa1ecfae3"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-07-memories-facade-dapr-egress.md": {
+        "before": "370c12128e62e7b97fe069145c73ed94f717500d1bc24a702af604099be991d3",
+        "after": "370c12128e62e7b97fe069145c73ed94f717500d1bc24a702af604099be991d3"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-07-nfr-traceability-decoupling.md": {
+        "before": "a055c01a90119f2b3df1047f8801d9d4f48cff874a895cad4bf9b84c42a71484",
+        "after": "a055c01a90119f2b3df1047f8801d9d4f48cff874a895cad4bf9b84c42a71484"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-07-seed-backed-read-models.md": {
+        "before": "884d1935d7198a8d1f746452c50ba99176d57623a99ae3ed9b442fa4e6b2dda6",
+        "after": "884d1935d7198a8d1f746452c50ba99176d57623a99ae3ed9b442fa4e6b2dda6"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-07.md": {
+        "before": "483374dcfca1b931003f8eb66f5216c9683786d42e813949003c3d62f1f7a05d",
+        "after": "483374dcfca1b931003f8eb66f5216c9683786d42e813949003c3d62f1f7a05d"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-08-rest-negative-path-coverage.md": {
+        "before": "6eeb6cea3dfebc23271d1c6ae755e9b16c609632aece60c3588cbc74b08fa80e",
+        "after": "6eeb6cea3dfebc23271d1c6ae755e9b16c609632aece60c3588cbc74b08fa80e"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-14-implementation-readiness-incremental-review.md": {
+        "before": "8399aad2fb82a11038b9d3e86ee2ea5be9611093ce398dd28a213f1c5813c4a5",
+        "after": "8399aad2fb82a11038b9d3e86ee2ea5be9611093ce398dd28a213f1c5813c4a5"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-14-implementation-readiness-structural-correction.md": {
+        "before": "409c116b1b91130a6f11dd654b207523468943f3402ff2de84be3dd3aebe7d19",
+        "after": "409c116b1b91130a6f11dd654b207523468943f3402ff2de84be3dd3aebe7d19"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-14.md": {
+        "before": "6744db141f0d2731a9aa7b459d2dab3952b3d1a08efa05da1463f8a401d598a5",
+        "after": "6744db141f0d2731a9aa7b459d2dab3952b3d1a08efa05da1463f8a401d598a5"
+      },
+      "_bmad-output/planning-artifacts/reconcile-sprint-change-proposal-2026-07-15.md": {
+        "before": "43d08763365baccfda60252643a6b548b3e8cd7f8a3a36e9c0353a33bbafb9b1",
+        "after": "43d08763365baccfda60252643a6b548b3e8cd7f8a3a36e9c0353a33bbafb9b1"
+      },
+      "_bmad-output/planning-artifacts/reconcile-tenants-research.md": {
+        "before": "d7c692a9e69f8c610cffdc4d70d4ce3e0216099101a363ef585e91c25ed57c2f",
+        "after": "d7c692a9e69f8c610cffdc4d70d4ce3e0216099101a363ef585e91c25ed57c2f"
+      },
+      "_bmad-output/planning-artifacts/reconcile-validation-fixes.md": {
+        "before": "1686e822f8ffa7f5b1f86fe4ed258bcb482d064476b42ecda7f5a938722db841",
+        "after": "1686e822f8ffa7f5b1f86fe4ed258bcb482d064476b42ecda7f5a938722db841"
+      },
+      "_bmad-output/planning-artifacts/relock-section9-result-2026-09-17.yaml": {
+        "before": "247b197c772df185af9710257c1042714ddb2d04a6836ed43ba4a0e3745c92bc",
+        "after": "247b197c772df185af9710257c1042714ddb2d04a6836ed43ba4a0e3745c92bc"
+      },
+      "_bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8-corrective.yaml": {
+        "before": "d27e48651659b3cf1480227d35c6fce72bafa6c5396fb2354a6d956ee681e07f",
+        "after": "d27e48651659b3cf1480227d35c6fce72bafa6c5396fb2354a6d956ee681e07f"
+      },
+      "_bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8.yaml": {
+        "before": "6465abac629c269ce341c84e0d6ce38b062669951616999c2817f4e4cd310302",
+        "after": "6465abac629c269ce341c84e0d6ce38b062669951616999c2817f4e4cd310302"
+      },
+      "_bmad-output/planning-artifacts/relock-section9-result-2026-09-22-post-a8-corrective.yaml": {
+        "before": "fdb6221639c1500c2619a3665d796c7daa7d30e580dbde68554ef79f30fe8d14",
+        "after": "fdb6221639c1500c2619a3665d796c7daa7d30e580dbde68554ef79f30fe8d14"
+      },
+      "_bmad-output/planning-artifacts/research/technical-forgejo-and-github-api-research-2026-05-05.md": {
+        "before": "f9a0ac4934c5d711cec2b8c141ae2bdc2fb2cdf499e8c2e68c7afcc5a6242861",
+        "after": "f9a0ac4934c5d711cec2b8c141ae2bdc2fb2cdf499e8c2e68c7afcc5a6242861"
+      },
+      "_bmad-output/planning-artifacts/research/technical-frontcomposer-integration-for-hexalith-folders-ui-research-2026-05-11.md": {
+        "before": "578884f114155972e96fac31cf9e23ae477c454512d7954610646844d3e627b2",
+        "after": "578884f114155972e96fac31cf9e23ae477c454512d7954610646844d3e627b2"
+      },
+      "_bmad-output/planning-artifacts/research/technical-hexalith-eventstore-domain-aggregates-research-2026-05-05.md": {
+        "before": "b60ef303ea4b063be9297cd6f6c50db2d763ee2bea16e727db7e613978e3cd9b",
+        "after": "b60ef303ea4b063be9297cd6f6c50db2d763ee2bea16e727db7e613978e3cd9b"
+      },
+      "_bmad-output/planning-artifacts/research/technical-hexalith-memories-semantic-indexing-rag-research-2026-05-11.md": {
+        "before": "15ae0d5d3baeb7962ba043ae1758b4583f52f2760dd5efca01ba4b904d875b63",
+        "after": "15ae0d5d3baeb7962ba043ae1758b4583f52f2760dd5efca01ba4b904d875b63"
+      },
+      "_bmad-output/planning-artifacts/research/technical-hexalith-tenants-integration-for-folder-management-application-research-2026-05-05.md": {
+        "before": "7c39cc782467c19a1ac957a46b4c8015661faf0bbbbb108c37a838d63717fd8c",
+        "after": "7c39cc782467c19a1ac957a46b4c8015661faf0bbbbb108c37a838d63717fd8c"
+      },
+      "_bmad-output/planning-artifacts/review-adversarial-general.md": {
+        "before": "c5b9472999863977966dec572870cad91085d3dc6d4481f091366261ec425d71",
+        "after": "c5b9472999863977966dec572870cad91085d3dc6d4481f091366261ec425d71"
+      },
+      "_bmad-output/planning-artifacts/review-authority-supersession.md": {
+        "before": "46b3fda748703575052da948621c1847ca583de724451909057eadca12cacdab",
+        "after": "46b3fda748703575052da948621c1847ca583de724451909057eadca12cacdab"
+      },
+      "_bmad-output/planning-artifacts/review-post-finalization-drift.md": {
+        "before": "fa8bba397de5820325cbc17bf6fe18f8d9cf942932a6211c0c145c7e9e687471",
+        "after": "fa8bba397de5820325cbc17bf6fe18f8d9cf942932a6211c0c145c7e9e687471"
+      },
+      "_bmad-output/planning-artifacts/review-proposal-drift-2026-09-15.md": {
+        "before": "40ce6890ee8bcc82850226a7f2722c2707f16da94ce976d8c74076809ae0440b",
+        "after": "40ce6890ee8bcc82850226a7f2722c2707f16da94ce976d8c74076809ae0440b"
+      },
+      "_bmad-output/planning-artifacts/review-rubric-2026-09-15.md": {
+        "before": "08d3b8746aec53ac142e43db5533e2059f39f3fd41424091279dc1651291d191",
+        "after": "08d3b8746aec53ac142e43db5533e2059f39f3fd41424091279dc1651291d191"
+      },
+      "_bmad-output/planning-artifacts/review-rubric.md": {
+        "before": "b0802be1bd7cf048c1cd226f9e07cea48f4ec293381c2ef347c1a903c69db708",
+        "after": "b0802be1bd7cf048c1cd226f9e07cea48f4ec293381c2ef347c1a903c69db708"
+      },
+      "_bmad-output/planning-artifacts/review-ux-rubric-2026-09-16.md": {
+        "before": "84e0a16847257937eab0a6c2016b261b71ca5cfadb9f35aa60537c1d521c4ada",
+        "after": "84e0a16847257937eab0a6c2016b261b71ca5cfadb9f35aa60537c1d521c4ada"
+      },
+      "_bmad-output/planning-artifacts/review-ux-structure-prose-2026-09-16.md": {
+        "before": "17e8a4c6e36d91bcf2fa5dba126af350ddb4b46215725a696b91873f03838539",
+        "after": "17e8a4c6e36d91bcf2fa5dba126af350ddb4b46215725a696b91873f03838539"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-10-post-readiness-backlog-cleanup.md": {
+        "before": "dd5e37ad11d6e817a4c2581e32ec84bd482a47cccba7632dac66ea19113a30fa",
+        "after": "dd5e37ad11d6e817a4c2581e32ec84bd482a47cccba7632dac66ea19113a30fa"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-10-readiness-correction.md": {
+        "before": "34d1cb91e1810b7649de647ac6479376d64914c09947c907db6a6c8dc276f027",
+        "after": "34d1cb91e1810b7649de647ac6479376d64914c09947c907db6a6c8dc276f027"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-10-readiness-story-split.md": {
+        "before": "617c68e46ac1c30c84370f3a4ac28ab96947494d1682236032f9f0e190184f33",
+        "after": "617c68e46ac1c30c84370f3a4ac28ab96947494d1682236032f9f0e190184f33"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-10.md": {
+        "before": "9b2005544229dfa8bcf781a6d5b0b7e996e68e2693477a0c291aaf014011ff06",
+        "after": "9b2005544229dfa8bcf781a6d5b0b7e996e68e2693477a0c291aaf014011ff06"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-11-memories-frontcomposer-alignment.md": {
+        "before": "63463d54ade78d2458f124d0eaa51d867ebe393337ec99b5a122248be544d254",
+        "after": "63463d54ade78d2458f124d0eaa51d867ebe393337ec99b5a122248be544d254"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-12-readiness-artifact-patch.md": {
+        "before": "b28aa535ddf4ee33c867009ed17e1fd1c6bcd2c2d224cd623cab7cff4230b9eb",
+        "after": "b28aa535ddf4ee33c867009ed17e1fd1c6bcd2c2d224cd623cab7cff4230b9eb"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-18-latest-dotnet.md": {
+        "before": "9ce0d31a8d1ba645690e2ea63f0d192eccf952c02c35bc09501628584581d39d",
+        "after": "9ce0d31a8d1ba645690e2ea63f0d192eccf952c02c35bc09501628584581d39d"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-18-story-2-4-readiness-drift.md": {
+        "before": "d5e26f2bb3eb6914f34a560e9ac86434f2f30480494ba4e35c950a367ad06efc",
+        "after": "d5e26f2bb3eb6914f34a560e9ac86434f2f30480494ba4e35c950a367ad06efc"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-31-post-verification-observations.md": {
+        "before": "8d46ff5fe5e3f233e8191fe8547d7ea6a6b18349815937c254b3777a642640c3",
+        "after": "8d46ff5fe5e3f233e8191fe8547d7ea6a6b18349815937c254b3777a642640c3"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-31-test-host-composition-baseline.md": {
+        "before": "cadd72cf11d29069ec9b4cda0c0b00e3313a7860636aa511dab476327f227a78",
+        "after": "cadd72cf11d29069ec9b4cda0c0b00e3313a7860636aa511dab476327f227a78"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-06-09-package-currency-update.md": {
+        "before": "301d898154ad85d0e89fa98057b8440fd85cfbc69dcb239615b67ad3b936f3cc",
+        "after": "301d898154ad85d0e89fa98057b8440fd85cfbc69dcb239615b67ad3b936f3cc"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-06-22-apphost-memories-platform-alignment.md": {
+        "before": "bee66bf062df0a0dc9ba8f7e00f62e8f714d6d2f22863becd8548fa04316ffdb",
+        "after": "bee66bf062df0a0dc9ba8f7e00f62e8f714d6d2f22863becd8548fa04316ffdb"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-06-22.md": {
+        "before": "87ffdb132634a7be1474102ff161afb392d8c210cd127cf64338a1fe0dc04af9",
+        "after": "87ffdb132634a7be1474102ff161afb392d8c210cd127cf64338a1fe0dc04af9"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-06-23-story-10-3-searchindexentrychanged-mechanism.md": {
+        "before": "3814995cb3d0373339556688de6a3849445fe93970895bb0d4da0bc81ff3f2e8",
+        "after": "3814995cb3d0373339556688de6a3849445fe93970895bb0d4da0bc81ff3f2e8"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-06-23-story-8-5-legal-blocker-split.md": {
+        "before": "70f7cb02b3bfb87968f55d584108aa19c0d1f1a1ee42ba53c3e464dcb8e8c434",
+        "after": "70f7cb02b3bfb87968f55d584108aa19c0d1f1a1ee42ba53c3e464dcb8e8c434"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-06-26-eventstore-security-apphost.md": {
+        "before": "bef4826da9ed2a025416eb86f65bf3115800ce918a289b4b805f4315a203c44d",
+        "after": "bef4826da9ed2a025416eb86f65bf3115800ce918a289b4b805f4315a203c44d"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-06-27.md": {
+        "before": "1575a5aff20302644890d3d9d7f1bcbb69ebc8d5ac542e9caaa9f25b27cb7e54",
+        "after": "1575a5aff20302644890d3d9d7f1bcbb69ebc8d5ac542e9caaa9f25b27cb7e54"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-06-builds-package-version-centralization.md": {
+        "before": "9fae62ad21c5f8b1abbbcf4b5f56f3f955837b002d4847ca010765d86dac2127",
+        "after": "9fae62ad21c5f8b1abbbcf4b5f56f3f955837b002d4847ca010765d86dac2127"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-081620.md": {
+        "before": "7f429aeb7a9b168ea910b4938c8a5166e1a3d240b8dbc7b007d8f724d737e6ba",
+        "after": "7f429aeb7a9b168ea910b4938c8a5166e1a3d240b8dbc7b007d8f724d737e6ba"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-090742.md": {
+        "before": "59ec26345f5367660567d20271773efec8922bf63fe63abe369e64b46ea1eb4a",
+        "after": "59ec26345f5367660567d20271773efec8922bf63fe63abe369e64b46ea1eb4a"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-190839.md": {
+        "before": "8c90f0a3729f12f9d0d6a7fbff9a4857835c865f995a674db299b5b228ee727f",
+        "after": "8c90f0a3729f12f9d0d6a7fbff9a4857835c865f995a674db299b5b228ee727f"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-193110.md": {
+        "before": "7818d94ecc8f025c352d5674e1223b7e82e3c6b73edc0c762e0da56983e2e5d8",
+        "after": "7818d94ecc8f025c352d5674e1223b7e82e3c6b73edc0c762e0da56983e2e5d8"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-content-materializer.md": {
+        "before": "b24557d925be7a7df337b5dc3f471716ccfbf146881c4239947052bac3943b2f",
+        "after": "b24557d925be7a7df337b5dc3f471716ccfbf146881c4239947052bac3943b2f"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-dcp-lane-standup.md": {
+        "before": "167686567199ce1d0b74a478eb7a5071f9fcf41d031df609f4563a7ebe9624b9",
+        "after": "167686567199ce1d0b74a478eb7a5071f9fcf41d031df609f4563a7ebe9624b9"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-governance-approval-freshness.md": {
+        "before": "ca902f7e6ed4d9e26bec557e5657cab34e8c7e5e06f9aee6f81feeb33b02e8c4",
+        "after": "ca902f7e6ed4d9e26bec557e5657cab34e8c7e5e06f9aee6f81feeb33b02e8c4"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-honest-green-gate-baseline.md": {
+        "before": "0f7f502e117abbe0caee361dc4897206b353f969f5ff4d77f681b5dbcf5cfc31",
+        "after": "0f7f502e117abbe0caee361dc4897206b353f969f5ff4d77f681b5dbcf5cfc31"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-idempotency-key-canonicalization.md": {
+        "before": "5ca9498a05f5ad1dffbf481f467f436f080e5ad1fc656fc746665e3eb3dc56c5",
+        "after": "5ca9498a05f5ad1dffbf481f467f436f080e5ad1fc656fc746665e3eb3dc56c5"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-memories-facade-dapr-egress.md": {
+        "before": "3b589621d8bdd9a4bdb9e2ee9485e8b246532b0fbda71703b25211936526095f",
+        "after": "3b589621d8bdd9a4bdb9e2ee9485e8b246532b0fbda71703b25211936526095f"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-nfr-traceability-decoupling.md": {
+        "before": "7b7c69ce1ac214238a3431443fef47b6fe23d8b1c0db3d6b1c978aef44dd9007",
+        "after": "7b7c69ce1ac214238a3431443fef47b6fe23d8b1c0db3d6b1c978aef44dd9007"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-seed-backed-read-models.md": {
+        "before": "ac94d4455723021d0b600e0035d0a47d59607979b433a228e18857917586bbc9",
+        "after": "ac94d4455723021d0b600e0035d0a47d59607979b433a228e18857917586bbc9"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07.md": {
+        "before": "cb06dfb6184b8edde5da6f8ab467ada2f33672831e0147bc9901585ad8ef03a6",
+        "after": "cb06dfb6184b8edde5da6f8ab467ada2f33672831e0147bc9901585ad8ef03a6"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-08-rest-negative-path-coverage.md": {
+        "before": "b18be0be433c38a97ff80ba3d2948709bfc60572d01af602cb9a5a8cb7e82bb3",
+        "after": "b18be0be433c38a97ff80ba3d2948709bfc60572d01af602cb9a5a8cb7e82bb3"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-14-implementation-readiness-incremental-review.md": {
+        "before": "5bee2346df47a7865c0ca6d18dc34e97f8914ac9be8a2918876b1e73b0525ccc",
+        "after": "5bee2346df47a7865c0ca6d18dc34e97f8914ac9be8a2918876b1e73b0525ccc"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-14-implementation-readiness-structural-correction.md": {
+        "before": "98a6aaa51dafb192f8a1c121a80fde943c8aab35ab0e2fad0f19664b579f4632",
+        "after": "98a6aaa51dafb192f8a1c121a80fde943c8aab35ab0e2fad0f19664b579f4632"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-14.md": {
+        "before": "19b0fc448ba734887818cf816ba80efdf3fb245c0f26b5c72b66bf092e70430d",
+        "after": "19b0fc448ba734887818cf816ba80efdf3fb245c0f26b5c72b66bf092e70430d"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-15.md": {
+        "before": "d64e18d44e97dd06ca1c4dbae9622909468bba77500901042d2992107a0a2e36",
+        "after": "d64e18d44e97dd06ca1c4dbae9622909468bba77500901042d2992107a0a2e36"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-19.md": {
+        "before": "89fac1b5b51201a004d9c9e248a12d0f0291fb3364c430a9bc8ae04257694dfb",
+        "after": "89fac1b5b51201a004d9c9e248a12d0f0291fb3364c430a9bc8ae04257694dfb"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-08-04.md": {
+        "before": "973bf9c91fc8b4a14991cf4d5defadf1a382e47966879b7ddcb16b2c06b44252",
+        "after": "973bf9c91fc8b4a14991cf4d5defadf1a382e47966879b7ddcb16b2c06b44252"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-08-24.md": {
+        "before": "8e1902dc28b7d5b9e47edaab732a66837d3ba5e961095dde5b234b46f2b271a0",
+        "after": "8e1902dc28b7d5b9e47edaab732a66837d3ba5e961095dde5b234b46f2b271a0"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md": {
+        "before": "5d12ae4dd4e8f306b8dde5caf8f187d13e40c1fabc6d8e56c0757e24f2004104",
+        "after": "5d12ae4dd4e8f306b8dde5caf8f187d13e40c1fabc6d8e56c0757e24f2004104"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-17.md": {
+        "before": "dafeb5ea8757a1a02ce156017e99a7f6fb7d6f52837fb038e5914a14ebefee37",
+        "after": "dafeb5ea8757a1a02ce156017e99a7f6fb7d6f52837fb038e5914a14ebefee37"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-20.md": {
+        "before": "f2d3c626d1868c0a52080797d8c380187d9a7fbc85352a3ddac302df6fab5311",
+        "after": "f2d3c626d1868c0a52080797d8c380187d9a7fbc85352a3ddac302df6fab5311"
+      },
+      "_bmad-output/planning-artifacts/sprint-change-proposal-2026-10-06.md": {
+        "before": "bb4f2ddb9e8b58321ef67a41fc9c68d41f67ff0be437fd5329cb45e343feee12",
+        "after": "bb4f2ddb9e8b58321ef67a41fc9c68d41f67ff0be437fd5329cb45e343feee12"
+      },
+      "_bmad-output/planning-artifacts/story-3-14-lifecycle-reconciliation-2026-09-20.yaml": {
+        "before": "c04325dc7b4958675f91441482a1d6a025dad6ba68a94774aa86518ae4bb9fda",
+        "after": "c04325dc7b4958675f91441482a1d6a025dad6ba68a94774aa86518ae4bb9fda"
+      },
+      "_bmad-output/planning-artifacts/ux-design-directions.html": {
+        "before": "93bd47640001e4671f39fc28fb2433e50ba15d8500dae914ece4de569cf652fa",
+        "after": "93bd47640001e4671f39fc28fb2433e50ba15d8500dae914ece4de569cf652fa"
+      },
+      "_bmad-output/planning-artifacts/ux-design-specification.md": {
+        "before": "d6a72eb0eb60dc60086d57725188cca35da910eb7cdde3333f17253d8014a17b",
+        "after": "d6a72eb0eb60dc60086d57725188cca35da910eb7cdde3333f17253d8014a17b"
+      },
+      "_bmad-output/planning-artifacts/ux-validation-report-2026-09-16.html": {
+        "before": "17080e0e8644f73bf01f10797299e99cf07c3b610f8d0870e569d6b7fb7fbea3",
+        "after": "17080e0e8644f73bf01f10797299e99cf07c3b610f8d0870e569d6b7fb7fbea3"
+      },
+      "_bmad-output/planning-artifacts/ux-validation-report-2026-09-16.md": {
+        "before": "ad775dbfba8c9601eeb3f7d3adb465d37bc764d4ac12e34183c898ceceff8979",
+        "after": "ad775dbfba8c9601eeb3f7d3adb465d37bc764d4ac12e34183c898ceceff8979"
+      },
+      "_bmad-output/planning-artifacts/validation-report.html": {
+        "before": "81a799e0a5a30b7343b50ec11e507d544cc924b6e441d1b1632634de9083b410",
+        "after": "81a799e0a5a30b7343b50ec11e507d544cc924b6e441d1b1632634de9083b410"
+      },
+      "_bmad-output/planning-artifacts/validation-report.md": {
+        "before": "0a097f714e4b330383ea50c24944e1974c05998bf420e5be20ab0067ea433a5b",
+        "after": "0a097f714e4b330383ea50c24944e1974c05998bf420e5be20ab0067ea433a5b"
+      },
+      "docs/contract/authorization-matrix.md": {
+        "before": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420",
+        "after": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420"
+      },
+      "src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml": {
+        "before": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+        "after": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2"
+      }
+    },
+    "planning_bindings": [
+      {
+        "path": "_bmad-output/planning-artifacts/prd.md",
+        "sha256": "b08c5bb51a8d07b0a452837304486b69a1ce5c1f63ca4e7b2a360393b0c45608"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/architecture.md",
+        "sha256": "7ee56ec9d991ee91ef0557c8f7d99b7c5bb98e5f1476adb865fb9a8781ac5eaa"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/ux-design-specification.md",
+        "sha256": "d6a72eb0eb60dc60086d57725188cca35da910eb7cdde3333f17253d8014a17b"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/epics.md",
+        "sha256": "da39584ed822f30bfd618eec6f00d6b17d420a1d407ce65464ea804dc8e780de"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-17.md",
+        "sha256": "dafeb5ea8757a1a02ce156017e99a7f6fb7d6f52837fb038e5914a14ebefee37"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml",
+        "sha256": "3e869bcc1d543d71254ef0a3848976fea0ee62ed3c5be37583fec2f9e8862ebf"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml",
+        "sha256": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff"
+      },
+      {
+        "path": "docs/exit-criteria/nfr-traceability.md",
+        "sha256": "7e3065a226339a78875f0687f39711f31ac8d21a0160f6e8af5ffb061f97423c"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml",
+        "sha256": "08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md",
+        "sha256": "6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml",
+        "sha256": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml",
+        "sha256": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml",
+        "sha256": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml",
+        "sha256": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c"
+      },
+      {
+        "path": "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs",
+        "sha256": "0d2558f147bb1c51e395cb00fc5157e881c32c1afd721b998e631f398588f5b8"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml",
+        "sha256": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml",
+        "sha256": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml",
+        "sha256": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml",
+        "sha256": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml",
+        "sha256": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390"
+      }
+    ],
+    "index_diff": "",
+    "original_spec_and_readiness_bytes_preserved_as_prefix": true,
+    "all_original_frontmatter_frozen_intent_and_task_values_preserved": true,
+    "git_diff_check_passed": true,
+    "all_protected_hashes_reverified_after_addenda": true
+  },
+  "remaining_failures": [
+    {
+      "id": "aspire-explicit-source-start",
+      "exit": 2,
+      "result": "MSB4166: child nodes 11 and 12 exited prematurely. No MSBuild_*.failure.txt files present at advertised /tmp/MSBuildTempX5tjs4 path. Exact-target describe exits 0 and confirms no AppHost running.",
+      "limit": "Default-profile CS1704 retained as historical evidence; neither default startup nor full AppHost health is qualified by this run."
+    }
+  ],
+  "operational_control": {
+    "runtime_mode": "V1Only",
+    "t0": null,
+    "activation_authority": null,
+    "tracker": "backlog",
+    "entry_decision": "HOLD",
+    "parent_spec_status": "in-progress",
+    "open_tasks": "Exact-current-candidate release, accepted deployment artifacts and Platform qualification, target/data disposition, staging, observation, recovery and authorized closure remain pending."
+  },
+  "archive": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-context-observation-recheck-2026-10-25.logs.tar.gz",
+    "sha256": "26c804fa2061420ad2c442729f6bfbc77de22c1ae8b13f8c50621091bb645fa1",
+    "members": {
+      "aspire-explicit-source-describe.json": "ea0fc69809b158cda0e3e422cb97786a4051c9703960870df6b5fa93066bb2bb",
+      "aspire-explicit-source-describe.log": "3708797686d2d0c45420270ab6024bd8ed04562b7b08287f1d48cfc3a3810369",
+      "aspire-explicit-source-start.json": "9eedb55be81b091f65b610648d85ba9d02f8b938a841df5310e5bef203081c15",
+      "aspire-explicit-source-start.log": "4f6814a8f6cddfd5a4f8a003c438d209dab7f54c955d6a6a62f8206549ffeb1f",
+      "authorization-final.json": "13be611677dd2d8dc013cefe06e4b0b6212078fc4c532f3e9596a7a9e3cf72e9",
+      "authorization-final.log": "3ad1280dece0ea42ce891d3819f877f8711f9059ce7ddc92f4bbf39802f58268",
+      "authorization-final.xml": "f1342ced76b1aa92e9cfcb6bba7859a161e547e81fe20bf9d41a7f327e5ea475",
+      "authorization-source-build.json": "297cb7add59b71bfe2c5d7e2d61b3f8896bc1537eea79442259d9deca882f0a7",
+      "authorization-source-build.log": "c3b7230c49c4e9514f329bdf8992a1b1c1b9c506b94026d94165f24836516548",
+      "candidate-audit.json": "da7f849e48258a160db589f94546161aa7e833601135c44d4dc04d732dcdc4ae",
+      "candidate-generation-one.json": "773b4fa3eb0b88694126f22071c50f285f899adddec5fcbb49eba340182fa3a6",
+      "candidate-generation-one.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "candidate-generation-two.json": "e5037f4d0624a7730e1e5049635b324f0f2f16f7ba2ca5f7d41e135ba92bbf50",
+      "candidate-generation-two.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "candidate-one.yaml": "f42dda65580a07878947b257af333d5b825e99c5b73d3279290ba5378a568d4d",
+      "candidate-two.yaml": "f42dda65580a07878947b257af333d5b825e99c5b73d3279290ba5378a568d4d",
+      "code.diff": "c9ae0125542612f16e9813713b08a86e8c9fa3f9173d9f8a5bd8a13e8562d74a",
+      "contracts-final.json": "2b410f9547d57f0a143d4a3c584c38d79497aa10d5a7e1983cc0bd87402e787a",
+      "contracts-final.log": "f4a9dc524e18e60da6e26cea49c4d14d0048aa5f422dc54f73eaeb15828ed28c",
+      "contracts-final.xml": "e4552740f67ca8d125288d165cb36ee65307c9ca84afeba8e3ac2aa5ec7b0bbd",
+      "contracts-source-build.json": "3bc034f2dd53b89933eab12e618ea3f145a425604dedc9817fa871e3fe1c1df5",
+      "contracts-source-build.log": "c381a5a3eafccb40882ead2f97d8d2da798efa01f000af404675e1ff3d577d2a",
+      "contracts-source-tests.json": "37b1d4a344e5212e7db401f0840fe8ef0c1bc2af8e0aff9afb23e0347130359e",
+      "contracts-source-tests.log": "ea372aa173e0855ff11cd72f51e78a4b17e9fbca6ea8a0c581bc28670621e1f7",
+      "contracts-source-tests.xml": "a5781ad525185f322ac6a9c9a5c51298e9169c645b0dc354bf896a14bacb0ead",
+      "governance-final.json": "726cf978d27c6c4639f9af81a173c669f75e303b333b3a22233426c1c0b4f430",
+      "governance-final.log": "f41d22735575889b875f33f2fdd36ffb71686e075ff5099dc6e2273c099dc3ce",
+      "governance-report.json": "5f18ede6f3d772c51a6c69baed5770e9d43e4d159f3a721c0f81069cb827ccbb",
+      "initial.json": "4bd0f9577f041be06b49960f2b66c479a720c32d1672af1ac535ae146b37d060",
+      "integrity.json": "1aec7f8f5fe0bffbf7e171a32b7d129a780b311d014d7527c90c0fe3e4cf5bfb",
+      "parity-final.json": "2c0a4373d89ac5f7eff8594ae9126f25080908419ec4d3d483ec860ba8fff718",
+      "parity-final.log": "82f5825fe9d47dc0936fd145c0bdbb878e092067a27cd4eb0f59e5ac4b07a6df",
+      "parity-report.json": "594d289cd18838dc7aa3590b9778307b193e919bdd0268cb63a81a96937606df",
+      "preservation.json": "0f179bcbf1260fdcef97a48b1bddf79dafafe2ec12041057b9e029380ef1010a",
+      "production-regression-build.json": "543cdf8208630a97e6c9b2bc46323c051d9de6beeb4bfd1ab4366a444e014779",
+      "production-regression-build.log": "d21ee385f43dcca6d52f46377c81066c3a55e1056487d35e5ef988abc36739ca",
+      "production-regression-red.json": "44f30e03960b6fb7ff64fa9c8bafd52c4afa901a3c1b8878a0e3ea175707743b",
+      "production-regression-red.log": "3a23b17c146d53dde5fe20f257e189b93ef888c0450060443087b0068386a33b",
+      "production-regression-red.xml": "aeb8f8172f02a5dd289afc5a29cc76a65e8569a1f77bee18959c8fde5d417f69",
+      "release-final-build.json": "8e9c3a40b70170a7502f3ba2ca1c55d631c104e850eaf1971d00f735fca8b9c1",
+      "release-final-build.log": "189c9534a4bacbcf75c888a3c5c3e7d5a3deafbe30eec1e171c2463325dc8825",
+      "review.diff": "1a6bc90cfc69bb1907788d387f97b5479388ecff81d57d9d023d633bdfeb0835",
+      "run.py": "6f54f6fd9cf21356c0a51a7b433edd8cdaa8fb729f3fe4af61e989d0f4b41d4e",
+      "server-final.json": "5d04d779d259a8d19546d2525fa46e7fdebc9ee68c0b851157671f15b8137ac9",
+      "server-final.log": "6bd4a70b6832b2793ca43a3f1a5d1dbf4c3a50b7b5d4b920a2b4d817fd2ea4b6",
+      "server-final.xml": "7903b2935598d46012aa2fa88f5bb4aee295fd194abdffc01975e207e527ac1e",
+      "server-source-build.json": "45a46b72b7f141f3894ea81b9b5d52563d768615c0bf21303de272286fee5dac",
+      "server-source-build.log": "7e7cf1b1d00d8771af1badad80ca205ee3acb07e63e7251343d9eae44f485773",
+      "server-source-tests.json": "3e977c8af362c2c5d8884cc6459f273448fb1d545b704d1618017243b51fc496",
+      "server-source-tests.log": "32bd155d56253cb46e1a3f4ca2d70beb27e3e848fef879a827d2b2fa7be530a7",
+      "server-source-tests.xml": "bfc1aa0f558ec3d5f6c1c313fb314590084dd0d0b5433e8180a9320949a8a081"
+    }
+  }
+}

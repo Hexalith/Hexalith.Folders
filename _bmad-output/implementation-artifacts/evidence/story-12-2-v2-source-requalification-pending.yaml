@@ -16,7 +16,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 4ca1e15b2acf09f4e302c35a8a960fdb0abf90d74210184b93b54df8ff92bba6
+candidate_set_sha256: 54247b6318336c190d527a43143550ae0587e91d426043ed88901b32df5b12bc
 artifact_count: 1425
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -721,8 +721,8 @@ artifacts:
     sha256: c2ccbede8d2e5901f7740d045616521f40d9e14688f07eb9d34be8a2a4dfabc5
   - path: "src/Hexalith.Folders.Server/Content/AuthoritativeWorkspaceFileContextSource.cs"
     kind: file
-    bytes: 12678
-    sha256: fd2a5ebea6dacb5dc295ecc3783be87661a711743a2e7f71d37a9e79bfeab87c
+    bytes: 13013
+    sha256: b572efde3c88873111bc3a51a679905833444647f76b186e636389a8864e0120
   - path: "src/Hexalith.Folders.Server/Content/ConfigurationWorkspaceFilePolicySource.cs"
     kind: file
     bytes: 1383
@@ -4605,8 +4605,8 @@ artifacts:
     sha256: 26776fde9ddf6529112de197ec14968011036109ee78cdcb0621781ae642b683
   - path: "tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs"
     kind: file
-    bytes: 14167
-    sha256: 3c3f2f71757ba00957e50260c2fee1e5473f8110ad0fe9a9a9683246ed1a9639
+    bytes: 14207
+    sha256: cf71a6fe8d351cc0529755c5ab4a184201fc18ba851da93269ca42fc94535cee
   - path: "tests/Hexalith.Folders.Server.Tests/FoldersContextSearchFacadeRegistrationTests.cs"
     kind: file
     bytes: 4358
@@ -4841,12 +4841,12 @@ artifacts:
     sha256: ebc1b2ae9c26478f603d115107f22ce2646ba9b0f10a1cad05e304e96ba27286
   - path: "tests/Hexalith.Folders.Server.Tests/WorkspaceContentProductionSensitivityClassifier.cs"
     kind: file
-    bytes: 1722
-    sha256: 300ade6b80f94fb0afab17f96c8009ace13f66a49b40d75775aa741007a06f1e
+    bytes: 2173
+    sha256: 25027101a0db0e8fc96eea4f1a604e6b5d2266e17d69d555f19f3a502ba8c6b1
   - path: "tests/Hexalith.Folders.Server.Tests/WorkspaceContentProductionTests.cs"
     kind: file
-    bytes: 14012
-    sha256: a4a2ad9644e1bfa6095adfae48b783a86a3792b6fe3d194f4bb786fceefb0222
+    bytes: 20485
+    sha256: f4a679819153ba14794e5118d4fc08a1210ac443f79accb94729c863cbb4b681
   - path: "tests/Hexalith.Folders.Server.Tests/WorkspaceContentProductionValidator.cs"
     kind: file
     bytes: 783

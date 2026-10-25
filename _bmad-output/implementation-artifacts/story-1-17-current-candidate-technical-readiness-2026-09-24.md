@@ -967,3 +967,34 @@ The inventory expands **229 → 1425 paths**. Complete compilation coverage incl
 Two separate environment/source-lane failures remain: `aspire start --non-interactive --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj` exits2 with the existing duplicate `Hexalith.Commons.UniqueIds` CS1704; the exact-target `aspire describe ... --format Json` exits0 and confirms no AppHost running. `dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj --configuration Debug -p:UseNuGetDeps=false -warnaserror -m:1` exits1 on existing CS0618 obsolete aliases at `FoldersCallbackBoundaryTests.cs:99-100`. No dependency, warning policy or host configuration was changed to suppress these failures. The required Release/package build and affected tests pass.
 
 All **193 protected inputs**, all20 planning bindings, original parent frontmatter/baseline, frozen scope and seven task checkboxes are unchanged. This local qualification supplies no exact current-candidate release/deployment artifact, approved Platform source-identity tuple, target/data disposition, staging, observation, recovery or closure evidence. The old Platform packet remains untouched; its retained failed diagnostic is explicitly dated prior evidence, not a new execution claim. Keep the parent story `in-progress`, tracker `backlog`, **V1Only**, **T0 unset**, null activation authority and operational **HOLD**. No staging, commit, push, dependency/submodule update, publication or deployment occurred.
+
+## Addendum 2026-10-25: production namespace observation fence verified
+
+The [follow-up receipt](evidence/story-1-17-context-observation-recheck-2026-10-25.json) starts from clean Folders `3287af1d5d0befb4a288bab2f35eafbaa10de0ec` and preserves the preceding repair record. Its initial audit matches all 1425 candidate paths, 193 protected hashes and 107 prior archive members. A subsequent real-source regression exposes a remaining production namespace-loop race: authority may change during sensitivity classification, yet another namespace entry can be classified before the final authorization fence. Five of six new cases fail before the correction. The production source now refreshes authority immediately after each classifier await, before consuming the result or advancing. Tests cover revoked grants and missing watermarks combined with allowed, redacted and unavailable classifications, enforce exactly one classification, and verify retained persisted publication/file state.
+
+The callback fixture uses the same two stable failure wire strings instead of obsolete API aliases. This makes the affected Debug/source checks executable while retaining compatibility with published EventStore `3.127.0`; no package pin or warning policy changes.
+
+| Final check | Result |
+| --- | --- |
+| Debug/source Server build and affected Server/callback classes | Zero warnings/errors; 79/79 pass, including all six new regressions. |
+| Audited Release/package CI solution build | Zero warnings/errors. |
+| Rebuilt Release affected Server/callback classes | 79/79 pass. |
+| Rebuilt Release authorization/routing | 71/71 pass. |
+| Focused Contracts after pending inventory generation | 63/63 pass. |
+| Contract parity and governance | 12/12 categories; 23/23 + 7/7 + 3/3 tests pass. |
+| Independent inventory and preservation audit | Two identical generations, all 1425 path sizes/hashes, 193 protected inputs and 20 planning bindings match. |
+
+The pending manifest now has raw SHA-256 `f42dda65580a07878947b257af333d5b825e99c5b73d3279290ba5378a568d4d` and ordered-set SHA-256 `574e5f0e1edf3c60ebd15aa3586782b948eeb35effbb62990504dcdd100435fc`. Only the production source, its test class/classifier and the callback test rows changed. Its pending A6b, disabled exposure and incomplete source-identity qualification fields remain unchanged. Historical manifests and approvals are preserved.
+
+Explicit source-mode startup (`env UseNuGetDeps=false aspire start --non-interactive --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj`) fails with exit 2/MSB4166 after build worker termination; no diagnostic files exist at the reported failure-file path. Exact-target `aspire describe ... --format Json` exits 0 and confirms no running AppHost. The previous default-profile CS1704 remains dated evidence; no host configuration, dependency or nested submodule was changed. The former Debug Server CS0618 blocker is resolved by the passing source build above.
+
+This follow-up establishes local behavior only. No release, hosted artifact, target/data disposition, staging, production observation/recovery or closure evidence is added. Preserve the original spec and seven task values, **V1Only**, unset T0, null activation authority, `backlog` and operational **HOLD**. No staging, commit, push, publication, deployment or tracker transition occurred.
+
+
+## Addendum 2026-10-25: final local review verification
+
+The [final review receipt](evidence/story-1-17-context-observation-review-final-2026-10-25.json) records the reviewed code and test bytes, .NET SDK/runtime, assembly/dependency hashes before and after execution, and portable logs. The two later-entry cases use actual asynchronous suspension; all eight new namespace race cases pass, including full folder and content-store snapshot equality. The current production source still has only the one additional post-classifier authority fence.
+
+Final Debug/source production tests pass 20/20 after review. The full audited Release CI build has zero warnings/errors; affected Release Server/callback tests pass 81/81, authorization/routing 71/71, Contracts 63/63, parity 12/12 and governance 23/23 + 7/7 + 3/3. The earlier Debug 79/79 and Release 79/79 are retained pre-review evidence, not the final post-review suite counts. After final Release authorization completed, two inventory generations again matched across all 1425 paths at raw SHA-256 `65b672e9a5fbf7843926fed93e1cd484d0c7474a4d82ac1cdcf59965a2c1c8c2` and ordered-set SHA-256 `54247b6318336c190d527a43143550ae0587e91d426043ed88901b32df5b12bc`. All 193 protected input hashes and 20 planning bindings still match.
+
+The three review test concerns were patched; gate chronology and full revision references are clarified. One production-latency concern remains explicitly unverified and is recorded in `deferred-work.md`; no measured performance regression is claimed. Aspire startup remains unverified after the retained MSB4166 failure, and the default-profile CS1704 is historical evidence. Exact current-candidate release, hosted source/artifact qualification, target/data disposition, staging, observation, recovery and authorized closure remain incomplete. Preserve the parent `in-progress` status, original baseline/frozen scope/task checkboxes, `V1Only`, unset T0, null activation authority and tracker `backlog`. No Git mutation, dependency change or rollout was performed.

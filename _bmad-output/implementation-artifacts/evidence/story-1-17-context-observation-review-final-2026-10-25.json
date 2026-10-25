@@ -1,0 +1,468 @@
+{
+  "record_id": "story-1-17-context-observation-review-final-2026-10-25",
+  "recorded_at_utc": "2026-10-25T09:46:05.655871+00:00",
+  "scope": "Final reviewed local qualification only; broader Story 1.17 rollout is incomplete.",
+  "source": {
+    "commit": "3287af1d5d0befb4a288bab2f35eafbaa10de0ec",
+    "original_baseline": "37d348945b35620da6ba4e524a09bee202712460",
+    "root_gitlinks": {
+      "references/Hexalith.AI.Tools": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "references/Hexalith.Builds": "dd3b4cd2f76cc6455cadf48fd458358834763852",
+      "references/Hexalith.Commons": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "references/Hexalith.EventStore": "849f069ebbb0860e890fdce8e4ab659ac10509f4",
+      "references/Hexalith.FrontComposer": "494169c7818109b90aa136c4d9d8a2ecd917d7c9",
+      "references/Hexalith.McpCli": "3b1738881a3484da51cf64c8ca3b24a8f65227df",
+      "references/Hexalith.Memories": "5a852389327bf45df7d59b2c2e29c7adbe353f19",
+      "references/Hexalith.Platform": "53818818483935d1d90d334e511848335563213f",
+      "references/Hexalith.PolymorphicSerializations": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "references/Hexalith.Projects": "5325ad18443f4085b5cc97685e7420a4eee7a286",
+      "references/Hexalith.Tenants": "c157c394b8fca5f392b5f8a6a5ff1f51f4ac77a0"
+    },
+    "changed_input_hashes": {
+      "src/Hexalith.Folders.Server/Content/AuthoritativeWorkspaceFileContextSource.cs": "b572efde3c88873111bc3a51a679905833444647f76b186e636389a8864e0120",
+      "tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs": "cf71a6fe8d351cc0529755c5ab4a184201fc18ba851da93269ca42fc94535cee",
+      "tests/Hexalith.Folders.Server.Tests/WorkspaceContentProductionSensitivityClassifier.cs": "25027101a0db0e8fc96eea4f1a604e6b5d2266e17d69d555f19f3a502ba8c6b1",
+      "tests/Hexalith.Folders.Server.Tests/WorkspaceContentProductionTests.cs": "f4a679819153ba14794e5118d4fc08a1210ac443f79accb94729c863cbb4b681"
+    }
+  },
+  "prior_receipt": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-context-observation-recheck-2026-10-25.json",
+    "sha256": "6503723c0dadfd42801047a83af2aa2d8361772e60bb1e6c1ed97c74f3dad12c"
+  },
+  "checks": [
+    {
+      "id": "review-production-source-build",
+      "command": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+        "--configuration",
+        "Debug",
+        "-p:UseNuGetDeps=false",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:40:32.625788+00:00",
+      "finished_utc": "2026-10-25T09:41:38.862540+00:00",
+      "exit": 0,
+      "log": "review-production-source-build.log",
+      "sha256": "bf014a91150e2f086e86834a337d7d66e15b671d6ac1bc702783b2abc48e3d95"
+    },
+    {
+      "id": "review-production-source-tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests",
+        "-xml",
+        "/tmp/story117-committed-recheck-20261025-cwy_5yzx/review-production-source-tests.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:41:45.774177+00:00",
+      "finished_utc": "2026-10-25T09:41:48.298140+00:00",
+      "exit": 0,
+      "log": "review-production-source-tests.log",
+      "sha256": "fda2f6a475c2c98cfc7f2e308500c0ffdd07a8111ad756872355498844c9f30e",
+      "counts": {
+        "total": 20,
+        "passed": 20,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0
+      },
+      "xml": "review-production-source-tests.xml",
+      "xml_sha256": "5166c9493c401c13b1cd581d3de1349fb84db490a97f1cbc91d006ce8e5b1714"
+    },
+    {
+      "id": "release-build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:42:12.107441+00:00",
+      "finished_utc": "2026-10-25T09:42:33.200865+00:00",
+      "exit": 0,
+      "log": "release-build.log",
+      "sha256": "d4fb416d2fb6ad7edfd92ea09b6029e821167162de661c77beca207ff1b0ea47"
+    },
+    {
+      "id": "server-final",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Server.Tests.FileContextEndpointTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.Pd10ProtectedOperationCatalogTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.HttpContextEventStoreClaimTransformEvidenceAccessorTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests",
+        "-xml",
+        "/tmp/story117-parent-review-hqpcz9bt/validation/server-final.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:43:02.783424+00:00",
+      "finished_utc": "2026-10-25T09:44:12.667025+00:00",
+      "exit": 0,
+      "log": "server-final.log",
+      "sha256": "4078bfd7d1989cff7eb5964f47b9b2ba7d693a95b6dc062eb513321175753980",
+      "counts": {
+        "total": 81,
+        "passed": 81,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0
+      },
+      "xml": "server-final.xml",
+      "xml_sha256": "0013697361297adf621a8d4c85eb8d7dad0aeef5591f06974c786ec292536303"
+    },
+    {
+      "id": "authorization-final",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Authorization.ContextReadAuthorityTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Authorization.ContextReadFreshTenantTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+        "-xml",
+        "/tmp/story117-parent-review-hqpcz9bt/validation/authorization-final.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:44:12.693178+00:00",
+      "finished_utc": "2026-10-25T09:44:37.936796+00:00",
+      "exit": 0,
+      "log": "authorization-final.log",
+      "sha256": "ca1b8642ed2158099d18d1795cb057a0b916c6341b23cef649ccadd9722d4a0e",
+      "counts": {
+        "total": 71,
+        "passed": 71,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0
+      },
+      "xml": "authorization-final.xml",
+      "xml_sha256": "efe0d54b1ed0524fb2f251555ecc4a0b778548cefbba7c2440629faebc216965"
+    },
+    {
+      "id": "candidate-generation-one",
+      "command": [
+        "python3",
+        "scripts/generate-pd10-v2-conformance-set.py",
+        "--repository-root",
+        "/home/administrator/projects/hexalith/folders",
+        "--output",
+        "/tmp/story117-parent-review-hqpcz9bt/validation/candidate-one.yaml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:44:37.964081+00:00",
+      "finished_utc": "2026-10-25T09:44:38.081037+00:00",
+      "exit": 0,
+      "log": "candidate-generation-one.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "candidate-generation-two",
+      "command": [
+        "python3",
+        "scripts/generate-pd10-v2-conformance-set.py",
+        "--repository-root",
+        "/home/administrator/projects/hexalith/folders",
+        "--output",
+        "/tmp/story117-parent-review-hqpcz9bt/validation/candidate-two.yaml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:44:38.105748+00:00",
+      "finished_utc": "2026-10-25T09:44:38.219009+00:00",
+      "exit": 0,
+      "log": "candidate-generation-two.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "contracts-final",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2ContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests",
+        "-xml",
+        "/tmp/story117-parent-review-hqpcz9bt/validation/contracts-final.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:44:38.559973+00:00",
+      "finished_utc": "2026-10-25T09:44:42.978278+00:00",
+      "exit": 0,
+      "log": "contracts-final.log",
+      "sha256": "8d55a2a321ee16722e932b22c863109e31db18c7ad72a6e3f7f59e5dd7507408",
+      "counts": {
+        "total": 63,
+        "passed": 63,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0
+      },
+      "xml": "contracts-final.xml",
+      "xml_sha256": "6643aa2144a8883c0790db8cd202323ae429a54782c5894136b87d0d98c2b248"
+    },
+    {
+      "id": "parity-final",
+      "command": [
+        "pwsh",
+        "tests/tools/run-contract-parity-ci-gates.ps1",
+        "-NoRestore",
+        "-OutputReportPath",
+        "/tmp/story117-parent-review-hqpcz9bt/validation/parity-report.json"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:44:43.007510+00:00",
+      "finished_utc": "2026-10-25T09:45:33.980951+00:00",
+      "exit": 0,
+      "log": "parity-final.log",
+      "sha256": "b81066aa7e31d647d6ea0da6c493413fd39e91343c87771c58218af8094703aa"
+    },
+    {
+      "id": "governance-final",
+      "command": [
+        "pwsh",
+        "tests/tools/run-governance-completeness-gates.ps1",
+        "-SkipRestoreBuild"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T09:45:34.005688+00:00",
+      "finished_utc": "2026-10-25T09:45:37.450556+00:00",
+      "exit": 0,
+      "log": "governance-final.log",
+      "sha256": "e7532f215931363571b62e244be0ff9c8158b0ab7a8a6aa633c0f6ee139d16db"
+    }
+  ],
+  "toolchain": {
+    "sdk": "10.0.402",
+    "host_runtime": "10.0.13",
+    "details": "dotnet-info.txt"
+  },
+  "binary_identity_observations": {
+    "before": {
+      "observed_utc": "2026-10-25T09:43:02.764503+00:00",
+      "files": {
+        "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll": {
+          "sha256": "c845bb01ba561843defa5d1dc8f77e51d06ea98b59c50187d1c5f2aeaf38693d",
+          "bytes": 1788416
+        },
+        "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.deps.json": {
+          "sha256": "72d1fbfa05e39dae2c07ab7a602cc955da010cedbc384dcdd42eabab655fb36a",
+          "bytes": 89325
+        },
+        "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.runtimeconfig.json": {
+          "sha256": "4761a312947a31a30aec259d9ee6f10407d89806d812cd102f3b3aec250dc8b4",
+          "bytes": 416
+        },
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll": {
+          "sha256": "e94cddbacd7f3daecc7842f1a5afc768af205c179c4300cddb06648546ac7186",
+          "bytes": 1601024
+        },
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.deps.json": {
+          "sha256": "d83c377b35686d7915f10b93193ddfe9ec4e32b3a7641e67e1855a272c5c908b",
+          "bytes": 96430
+        },
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.runtimeconfig.json": {
+          "sha256": "4cb0ce0c1f14265c82f2307976900c3347e3fd624d20f5a1580246644768cc70",
+          "bytes": 487
+        },
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll": {
+          "sha256": "a4d077c32e8706e6c4788587f9019fa461228a9f3a1265edb895b71b15b6a758",
+          "bytes": 740352
+        },
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.deps.json": {
+          "sha256": "bda52401a0d8f0eb29e942bbcf689eee4cd249f582c326f89a6157f41be1ba9e",
+          "bytes": 128732
+        },
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.runtimeconfig.json": {
+          "sha256": "4cb0ce0c1f14265c82f2307976900c3347e3fd624d20f5a1580246644768cc70",
+          "bytes": 487
+        },
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll": {
+          "sha256": "dbbf7f6aa50b96c1b9ca991ee9caa8eed3a010bd86326224a84da3cb222afa3b",
+          "bytes": 1172992
+        },
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.deps.json": {
+          "sha256": "49fa4fc90433aa6670967a3f3fe1fe6e4834252b8bc4bddd59402132f7b4ace8",
+          "bytes": 77487
+        },
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.runtimeconfig.json": {
+          "sha256": "4cb0ce0c1f14265c82f2307976900c3347e3fd624d20f5a1580246644768cc70",
+          "bytes": 487
+        }
+      }
+    },
+    "after": {
+      "observed_utc": "2026-10-25T09:45:37.459666+00:00",
+      "files": {
+        "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll": {
+          "sha256": "c845bb01ba561843defa5d1dc8f77e51d06ea98b59c50187d1c5f2aeaf38693d",
+          "bytes": 1788416
+        },
+        "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.deps.json": {
+          "sha256": "72d1fbfa05e39dae2c07ab7a602cc955da010cedbc384dcdd42eabab655fb36a",
+          "bytes": 89325
+        },
+        "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.runtimeconfig.json": {
+          "sha256": "4761a312947a31a30aec259d9ee6f10407d89806d812cd102f3b3aec250dc8b4",
+          "bytes": 416
+        },
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll": {
+          "sha256": "e94cddbacd7f3daecc7842f1a5afc768af205c179c4300cddb06648546ac7186",
+          "bytes": 1601024
+        },
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.deps.json": {
+          "sha256": "d83c377b35686d7915f10b93193ddfe9ec4e32b3a7641e67e1855a272c5c908b",
+          "bytes": 96430
+        },
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.runtimeconfig.json": {
+          "sha256": "4cb0ce0c1f14265c82f2307976900c3347e3fd624d20f5a1580246644768cc70",
+          "bytes": 487
+        },
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll": {
+          "sha256": "a4d077c32e8706e6c4788587f9019fa461228a9f3a1265edb895b71b15b6a758",
+          "bytes": 740352
+        },
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.deps.json": {
+          "sha256": "bda52401a0d8f0eb29e942bbcf689eee4cd249f582c326f89a6157f41be1ba9e",
+          "bytes": 128732
+        },
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.runtimeconfig.json": {
+          "sha256": "4cb0ce0c1f14265c82f2307976900c3347e3fd624d20f5a1580246644768cc70",
+          "bytes": 487
+        },
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll": {
+          "sha256": "dbbf7f6aa50b96c1b9ca991ee9caa8eed3a010bd86326224a84da3cb222afa3b",
+          "bytes": 1172992
+        },
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.deps.json": {
+          "sha256": "49fa4fc90433aa6670967a3f3fe1fe6e4834252b8bc4bddd59402132f7b4ace8",
+          "bytes": 77487
+        },
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.runtimeconfig.json": {
+          "sha256": "4cb0ce0c1f14265c82f2307976900c3347e3fd624d20f5a1580246644768cc70",
+          "bytes": 487
+        }
+      },
+      "unchanged_during_checks": true
+    },
+    "debug_note": "Debug source suite completed before the parent identity snapshot; Release identities were captured before execution and verified afterward."
+  },
+  "regressions": {
+    "new_namespace_cases": 8,
+    "all_pass": true,
+    "suspended_later_entry_cases": 2,
+    "full_persisted_state_asserted": true
+  },
+  "candidate": {
+    "artifact_count": 1425,
+    "raw_sha256": "65b672e9a5fbf7843926fed93e1cd484d0c7474a4d82ac1cdcf59965a2c1c8c2",
+    "set_sha256": "54247b6318336c190d527a43143550ae0587e91d426043ed88901b32df5b12bc",
+    "all_sizes_and_hashes_match": true,
+    "pending_authority_fields_preserved": true
+  },
+  "preservation": {
+    "protected_inputs": 193,
+    "planning_bindings": 20,
+    "original_spec_and_readiness_prefix_preserved": true,
+    "original_frontmatter_frozen_intent_and_task_values_preserved": true,
+    "index_unchanged": true,
+    "details": "preservation-final.json"
+  },
+  "review": {
+    "layers": [
+      "blind hunter",
+      "edge-case hunter",
+      "verification gap"
+    ],
+    "triage": "review-triage.md",
+    "patches": "Later-entry pending classifier and complete persisted-state regressions.",
+    "deferred": "Production namespace latency assessment: medium impact, unverified."
+  },
+  "remaining_startup_failure": [
+    {
+      "id": "aspire-explicit-source-start",
+      "exit": 2,
+      "result": "MSB4166: child nodes 11 and 12 exited prematurely. No MSBuild_*.failure.txt files present at advertised /tmp/MSBuildTempX5tjs4 path. Exact-target describe exits 0 and confirms no AppHost running.",
+      "limit": "Default-profile CS1704 retained as historical evidence; neither default startup nor full AppHost health is qualified by this run."
+    }
+  ],
+  "operational_control": {
+    "runtime_mode": "V1Only",
+    "t0": null,
+    "activation_authority": null,
+    "tracker": "backlog",
+    "entry_decision": "HOLD",
+    "parent_spec_status": "in-progress",
+    "open_tasks": "Exact-current-candidate release, accepted deployment artifacts and Platform qualification, target/data disposition, staging, observation, recovery and authorized closure remain pending."
+  },
+  "archive": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-context-observation-review-final-2026-10-25.logs.tar.gz",
+    "sha256": "50c8a3662d99a16c41383efec4c626a3db98d8b412d5322aa3d14f7ccc6917ff",
+    "members": {
+      "authorization-final.json": "237034bc55dc52f842f23e0e6787b16d28b87744064bc58949a497eb15382b4d",
+      "authorization-final.log": "ca1b8642ed2158099d18d1795cb057a0b916c6341b23cef649ccadd9722d4a0e",
+      "authorization-final.xml": "efe0d54b1ed0524fb2f251555ecc4a0b778548cefbba7c2440629faebc216965",
+      "binary-identities-after.json": "9e055c36516677d542d6df7d1e95ea85ee861c53a5392040c185a8755a0c4d53",
+      "binary-identities-before.json": "25608c34e1771cb0c7e2e0296f1c10d8a03005e563953d863c1ec1c09b095c9e",
+      "candidate-audit.json": "a76e677d7f06b04cec3174df90057a25ef74387c783fc12c76b6e3c5ff5d6357",
+      "candidate-generation-one.json": "15be5e9a8abf4b0037f325bcc467f4972bbf51485a94ccec6cec2265ee28b5c7",
+      "candidate-generation-one.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "candidate-generation-two.json": "d6635a58f034d9a4fc3311a5aa65a4b1d91cb444b32161b9e38a61136b3b487d",
+      "candidate-generation-two.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "candidate-one.yaml": "65b672e9a5fbf7843926fed93e1cd484d0c7474a4d82ac1cdcf59965a2c1c8c2",
+      "candidate-two.yaml": "65b672e9a5fbf7843926fed93e1cd484d0c7474a4d82ac1cdcf59965a2c1c8c2",
+      "contracts-final.json": "9362e450f1ca23963af6eb5fc6a442a7284a8fc53be03e90123898c84da272be",
+      "contracts-final.log": "8d55a2a321ee16722e932b22c863109e31db18c7ad72a6e3f7f59e5dd7507408",
+      "contracts-final.xml": "6643aa2144a8883c0790db8cd202323ae429a54782c5894136b87d0d98c2b248",
+      "dotnet-info.txt": "d58af8760feb675c55bcfeff5c51a43be7f55b9713dbf716ff709272afea2b38",
+      "final-tracked.diff": "e96598fcc994350ac840bb0d3e5352f1d4fed6e0285d8e466d8e94b5fd77b881",
+      "finalize.py": "01de9bfe6093c6fe8bb7bca4a0d84514c631d3b2c74952d6dafbbd7228ef6faa",
+      "governance-final.json": "b0996d8ab5a1466d9b31ff7dda9b21091f39b15c302184ce43380adf83d5752f",
+      "governance-final.log": "e7532f215931363571b62e244be0ff9c8158b0ab7a8a6aa633c0f6ee139d16db",
+      "parity-final.json": "0c94b3ff6fa4fff17c359d36b660b1c7d6c5382b1f4ae38b8c8a2238377c284b",
+      "parity-final.log": "b81066aa7e31d647d6ea0da6c493413fd39e91343c87771c58218af8094703aa",
+      "parity-report.json": "8f7b47fd4045fa39504f786dfd23b7f8a45e08a962882466d49f1464e4878ec1",
+      "preservation-final.json": "d7483593b5b33b1567885997b1fb434b5c3c907b63affdbcb4adfbb4b6252b3e",
+      "release-build.json": "5e1b9d9956057dcb163a3a4a5e020eaf16db93a049b2a08ddb7c76fdcad6388f",
+      "release-build.log": "d4fb416d2fb6ad7edfd92ea09b6029e821167162de661c77beca207ff1b0ea47",
+      "review-production-source-build.json": "afa871a09858d2914ac0464c92b74a620e701252e62e46a7c263ca627f3c50df",
+      "review-production-source-build.log": "bf014a91150e2f086e86834a337d7d66e15b671d6ac1bc702783b2abc48e3d95",
+      "review-production-source-tests.json": "70d034c35d1e8b54d1018f82c63f8898751af44c3d4a4e9217b5de7d26f8ea1b",
+      "review-production-source-tests.log": "fda2f6a475c2c98cfc7f2e308500c0ffdd07a8111ad756872355498844c9f30e",
+      "review-production-source-tests.xml": "5166c9493c401c13b1cd581d3de1349fb84db490a97f1cbc91d006ce8e5b1714",
+      "review-triage.md": "4e6b85d2d34cb97778ffd168119b94ea37c2880fc50df231681dbbceedc28fe5",
+      "run-final.py": "48e6d823569df55c122345f7ccdf9c5f8e97c2d081854b39663fbe83a3a15a87",
+      "run.py": "6f54f6fd9cf21356c0a51a7b433edd8cdaa8fb729f3fe4af61e989d0f4b41d4e",
+      "server-final.json": "811cab1094a76db16e1721630a74dc75187c112c732bdc29e31714dde0775cbc",
+      "server-final.log": "4078bfd7d1989cff7eb5964f47b9b2ba7d693a95b6dc062eb513321175753980",
+      "server-final.xml": "0013697361297adf621a8d4c85eb8d7dad0aeef5591f06974c786ec292536303"
+    }
+  }
+}

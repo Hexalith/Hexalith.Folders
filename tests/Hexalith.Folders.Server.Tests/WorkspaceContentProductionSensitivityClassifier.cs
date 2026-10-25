@@ -33,7 +33,16 @@ namespace Hexalith.Folders.Server.Tests;
 internal sealed class WorkspaceContentProductionSensitivityClassifier : IWorkspaceFileSensitivityClassifier
 {
     internal WorkspaceFileSensitivityDecision Decision = WorkspaceFileSensitivityDecision.Allowed;
+    /// <summary>Counts classifications so authority loss can prove subsequent paths remain unobserved.</summary>
+    internal int Calls;
     internal Func<Task>? After;
+    /// <summary>Optionally suspends a selected call before returning its classification.</summary>
+    internal Func<int, CancellationToken, Task>? BeforeResult;
     public async Task<WorkspacePathSensitivityResult> ClassifyAsync(PathMetadata path, CancellationToken cancellationToken = default)
-    { if (After is { } callback) { After = null; await callback().ConfigureAwait(true); } return new(Decision, "tenant_sensitive", Decision == WorkspaceFileSensitivityDecision.Allowed ? "not_redacted" : "redacted"); }
+    {
+        Calls++;
+        if (After is { } callback) { After = null; await callback().ConfigureAwait(true); }
+        if (BeforeResult is { } beforeResult) await beforeResult(Calls, cancellationToken).ConfigureAwait(true);
+        return new(Decision, "tenant_sensitive", Decision == WorkspaceFileSensitivityDecision.Allowed ? "not_redacted" : "redacted");
+    }
 }
