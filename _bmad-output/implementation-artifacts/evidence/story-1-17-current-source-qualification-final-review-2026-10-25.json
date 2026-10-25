@@ -1,0 +1,213 @@
+{
+  "recordId": "STORY-1-17-CURRENT-SOURCE-QUALIFICATION-FINAL-REVIEW-2026-10-25",
+  "recordedAtUtc": "2026-10-25T11:52:59.532633+00:00",
+  "scope": "Review correction of offline packet only. No full candidate, released/hosted artifact, staging, operational or story qualification.",
+  "baselineCommit": "67630d3be75a4f5f9b1a5598809efebca4d82c47",
+  "packetSha256": {
+    "configuration.proposed.json": {
+      "preReview": "29360427d70f4fb7ae956c0504df4e937d54e21622c0d7f7f9d20bfb9d6b92a7",
+      "finalReview": "c0b8697672e7ea27370bbb9b0078c9e922042945467be0e7a7fa7d33c28b8d1c"
+    },
+    "staging-checks.json": {
+      "preReview": "6e6459c7a7cde18b38487efbfbb4700c94e50de55be31ca84d0a2d16f940a500",
+      "finalReview": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51"
+    },
+    "verify.py": {
+      "preReview": "97ca2a77e4d10efc44c69255f69d578f60454a156860061b84a9efac5b1e0cd6",
+      "finalReview": "37f044925443e48bbf0af703b44a378a4236479a46a0e7ab519166ebbb9bf75e"
+    },
+    "test_verify.py": {
+      "preReview": "836ad80dde001a7b5a8a0cd71f36064fe9c17d30358c264d5dca1d35fc0dc0ea",
+      "finalReview": "13f043380faab7744a120bc301fea133a4bc91d09c79ae31733f92c2bf48f4b1"
+    },
+    "README.md": {
+      "preReview": "d3820fb25e87418a5ac27a697455c246622a363a47e31ba110c173ebecc17369",
+      "finalReview": "f3276965e2544eb468d40ab8cb4710604483cafcae0323637743745e451ad284"
+    }
+  },
+  "sourceBindingsUnchanged": {
+    "count": 52,
+    "note": "Exact existing reviewed source bindings retained; only proposal/verifier/tests/staging/README changed."
+  },
+  "reviewCorrections": [
+    "Fixed metadata-only absence checks at 32 nearer consumer project ancestors; no substituted catalog reads.",
+    "Bound build props reject relevant dependency-version/package overrides and unsupported Import/Choose indirection.",
+    "Catalog supports inspected scalar properties and Include/Version items only, exact relevant attributes, no children, Update/Remove/Exclude/Import/Choose, and a unique unconditional true import sentinel.",
+    "Every owning declaration precedes its first import; direct source/transport guards have operation-by-operation mutations.",
+    "Delegated anchors are documented and tested as lexical only; reviewed exact source bytes and separate runtime/hosted qualification remain necessary.",
+    "Projects consuming configuration keys/defaults/owners inventoried with unresolved environment and secret bindings; gateway target distinguishes mutation receipt issuance from stream/status/retention operations.",
+    "Recorded tool acceptance requires actual successful CI/release conclusions, exact manifest/restored-package bindings and passing kit evidence. Expected module diagnostic rejections and absent SM-2 remain limitations.",
+    "Check 2 explicitly requires an already-qualified acquired lock and current epoch at entry.",
+    "Separate final-review capsule retains three compared Git blobs, normalized/raw comparisons, parent probes and explicit replay checks with optimized-Python corruption refusal."
+  ],
+  "catalogComparisons": {
+    "gitBlobs": {
+      "direct": {
+        "revision": "142b06e6d05c94b55ac35e587450c35fcac87590",
+        "gitNormalizedSha256": "553796eef36f2789f60bb47bc8902b5fb9f1df5b3a942cde7f0523768bf1d2a1",
+        "bytes": 30088,
+        "member": "catalog-blobs/direct.Directory.Packages.props"
+      },
+      "platform-gitlink": {
+        "revision": "0ade5ec2b4f9b81fcd3a4bbb1672c11b0131a274",
+        "gitNormalizedSha256": "553796eef36f2789f60bb47bc8902b5fb9f1df5b3a942cde7f0523768bf1d2a1",
+        "bytes": 30088,
+        "member": "catalog-blobs/platform-gitlink.Directory.Packages.props"
+      },
+      "accepted-tool": {
+        "revision": "4248b8c70cb35ba79fdd7e4dd63049d4c73211a0",
+        "gitNormalizedSha256": "f10372ba382108f8c35b3ee922c76fe8608dbec336c399278709345ae255078d",
+        "bytes": 29609,
+        "member": "catalog-blobs/accepted-tool.Directory.Packages.props"
+      }
+    },
+    "checkout": {
+      "source": "inspected-sources/references/Hexalith.Builds/Props/Directory.Packages.props",
+      "rawSha256": "c43f62b33c765e28519b6c72058c6317649ec53963d7cbe7f0d0ddabb3898375",
+      "rawBytes": 30450,
+      "normalization": "Replace CRLF with LF only, preserving UTF-8 BOM and every other byte. Result must equal the retained direct Git blob.",
+      "gitNormalizedSha256": "553796eef36f2789f60bb47bc8902b5fb9f1df5b3a942cde7f0523768bf1d2a1"
+    },
+    "currentDirectAndPlatformCatalogBytesEqual": true,
+    "acceptedToolCatalogBytesEqualCurrent": false
+  },
+  "commands": [
+    {
+      "label": "current-verifier",
+      "command": [
+        "python3",
+        "eng/story117-platform-qualification-current/verify.py"
+      ],
+      "workingDirectory": "<workspace>",
+      "startedAtUtc": "2026-10-25T11:51:35.573261+00:00",
+      "completedAtUtc": "2026-10-25T11:51:35.609951+00:00",
+      "exitCode": 0,
+      "log": "current-verifier.txt"
+    },
+    {
+      "label": "packet-tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-platform-qualification-current",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "workingDirectory": "<workspace>",
+      "startedAtUtc": "2026-10-25T11:51:35.609974+00:00",
+      "completedAtUtc": "2026-10-25T11:51:44.945358+00:00",
+      "exitCode": 0,
+      "log": "packet-tests.txt"
+    },
+    {
+      "label": "packet-diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "eng/story117-platform-qualification-current"
+      ],
+      "workingDirectory": "<workspace>",
+      "startedAtUtc": "2026-10-25T11:51:44.945388+00:00",
+      "completedAtUtc": "2026-10-25T11:51:44.969705+00:00",
+      "exitCode": 0,
+      "log": "packet-diff-check.txt"
+    },
+    {
+      "label": "replay-optimization-and-corruption-tests",
+      "command": [
+        "python3",
+        "test_replay.py"
+      ],
+      "workingDirectory": "<disposable-payload>",
+      "startedAtUtc": "2026-10-25T11:52:59.129285+00:00",
+      "completedAtUtc": "2026-10-25T11:52:59.481580+00:00",
+      "exitCode": 0,
+      "log": "checks/replay-tests.txt",
+      "coveredCases": [
+        "normal replay passes",
+        "optimized replay passes",
+        "corrupted member rejected under python -O",
+        "unsafe outcome rejected after member rebind under python -O"
+      ]
+    }
+  ],
+  "targetedResults": {
+    "currentVerifierExitCode": 0,
+    "packetTests": {
+      "total": 66,
+      "failed": 0,
+      "exitCode": 0
+    },
+    "replayTests": {
+      "total": 3,
+      "failed": 0,
+      "exitCode": 0,
+      "optimizationAndCorruptedEvidenceRefusalProved": true
+    },
+    "scope": "Only packet and new portable evidence checks ran; broader verification belongs to parent."
+  },
+  "preservedPreReviewEvidenceAndParentText": {
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-current-source-qualification-2026-10-25.members.json": {
+      "sha256": "1ec3daa2b55251664a790898032b161b2e050c4ec88580bc198099330e8bb8fd",
+      "unchanged": true
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-current-source-qualification-2026-10-25.artifacts.tar.gz": {
+      "sha256": "16147f8820c34dde9a352fc6d4f2835254400fe8457d512b93399963b94bffa2",
+      "unchanged": true
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-current-source-qualification-2026-10-25.json": {
+      "sha256": "18f637ad7c981456bec7bb488b9e3efe54d26b229fa2ff729faa01eee2444e5d",
+      "unchanged": true
+    },
+    "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": {
+      "sha256": "60518e6c9d7a54be1d22af7ee1a42d13fbfd75ea6ea6b8ce30d7e89da764a00f",
+      "unchanged": true
+    },
+    "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md": {
+      "sha256": "e794e140056cb30e6f0567f956fabcf819b20c88fa2b1ed81276a10f0bacad1c",
+      "unchanged": true
+    }
+  },
+  "existingImplementationEvidence": "The original implementation receipt, member manifest and archive remain byte-identical pre-review evidence; their dated claims are not rewritten.",
+  "parentReviewProbes": {
+    "path": "parent/parent-review-probes.json",
+    "sha256": "dd82653cfa34664783a148d0fe6658c3f8ebab607e0e42aa161770ccb7927bd0",
+    "note": "Unchanged pre-review observations. Each structural/acceptance case now has targeted mutation coverage. The delegated lexical-only case remains an explicitly documented limitation, not C# control-flow verification."
+  },
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "deploymentAuthorized": false,
+    "publicationAuthorized": false,
+    "trackerTransitionAuthorized": false
+  },
+  "allStagingChecks": {
+    "count": 14,
+    "status": "unexecuted",
+    "result": null,
+    "observedEvidence": []
+  },
+  "remainingPrerequisites": [
+    "Exact candidate release and immutable composed/module artifacts, actual tool/catalog/composition acceptance and intake.",
+    "Hosted identity/delegation, scoped grant/proof key/secret delivery and consumer attribution.",
+    "Attempt-locked target/data disposition, exact-release staging, verification/observation and applicable first-install recovery or original migration clocks/traffic/retirement.",
+    "Production latency evidence and authorized closure/tracker change."
+  ],
+  "limitations": "No subprocess/network added to verifier. Lexical anchors do not establish C# behavior. Dated source/release/tool observations do not qualify changed hosted inputs; no runtime test/build/startup or production lookup ran.",
+  "portableEvidence": {
+    "archivePath": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-source-qualification-final-review-2026-10-25.artifacts.tar.gz",
+    "archiveSha256": "040086d1d0a7be37bdf8047bcbd69ef03d52e298c2fd379fb318e2ace373b84a",
+    "archiveBytes": 312993,
+    "memberCount": 80,
+    "memberManifestPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-source-qualification-final-review-2026-10-25.members.json",
+    "memberManifestSha256": "02377c78ecbde38504a546531b75a3bb4a9ffcd1ffd19f64b16860594ddc60a6",
+    "replay": "Extract into a disposable directory, then run python3 replay.py, python3 -O replay.py and python3 test_replay.py. Explicit integrity/outcome checks remain active under optimization."
+  }
+}

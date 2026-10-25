@@ -17,11 +17,11 @@
             "maxDurationSeconds": 1200,
             "preconditions": [
                 "Separately authorized owners have supplied the exact release tuple and acceptance prerequisites; no preceding check or execution authority is assumed.",
-                "Platform must resolve the recorded Builds gitlink mismatch (83850cc62e7855ca64dee70e33f2e5c9bab1bc7c versus direct 4f53d9f37c5b86cfd43fbcc8fa5dd4df19b84c77); local source snapshots, Story 12.1 completion and Builds publication grant no acceptance."
+                "Retain Platform-recorded accepted tool 4.35.2 and done Stories 1.8/1.9, then qualify this exact tool/catalog/composition tuple. Current direct/Platform Builds catalog content matches despite distinct revisions; the accepted-tool catalog differs. Source equality or dated acceptance alone supplies no current application release."
             ],
             "procedure": [
                 "Resolve immutable Folders Server/Workers/UI and Projects artifacts plus exact Client/Contracts content identities, composed EventStore extensions, retained application package, catalog, check-suite and profile digests.",
-                "Verify protected-ref source, signer workflow/digest, Build Config URI and pinned workflow closure. Distinguish published Builds 4.32.0 source/catalog (EventStore 3.123.0) from the current local catalog (3.124.0); refuse substituted inputs. Obtain Platform Story 1.8 qualification, Story 1.9 accepted tool pin/range, coherent Builds gitlink and completed module intake."
+                "Verify protected-ref source, signer workflow/digest, Build Config URI and pinned workflow closure. Keep historical Builds 4.32.0 publication/catalog, Platform-recorded tool 4.35.2 acceptance/catalog and current local catalog 3.127.0 separate; refuse substitution. Complete actual module intake and exact-release hosted qualification."
             ],
             "requiredEvidence": [
                 "Signed release record and image/package attestations binding full canonical source revisions, content digests and exact successful CI; source snapshots alone are insufficient.",
@@ -39,14 +39,15 @@
             "owner": "Platform deployment owner with Administrator",
             "maxDurationSeconds": 600,
             "preconditions": [
-                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none.",
+                "Before entry, the environment attempt lock and its fencing/epoch contract are already qualified, and the scoped executor has acquired that lock and current epoch for this exact attempt. Check 4 later verifies remaining attempt controls; it does not retroactively authorize check 2 or supply its lock."
             ],
             "procedure": [
-                "Reconfirm exact target and whether any working baseline or retained application data exists; current single-context absence is insufficient for global absence.",
-                "If no production working baseline exists, select the Platform fresh-install-plus-candidate staging branch. A discovered existing installation returns to the original migration branch; retained data requires compatible rehearsal or separately named restore."
+                "After acquiring the environment attempt lock and before mutation, refresh exact target/consumer coverage and retained-data disposition bound to that attempt and epoch; prior single-context inventory nonmatches are not data/global-absence evidence. Unknown disposition blocks execution.",
+                "The October 18 conditional scope is accepted. Verified absence of an existing installation selects first installation; retained data also requires a usable post-lock recovery point and compatibility evidence or named approved recovery. A discovered existing v1 installation selects the original coexistence branch with exact prior artifacts and real traffic/schedules."
             ],
             "requiredEvidence": [
-                "Scoped observation time/target identity and data inventory, plus Administrator-owned first-install scope disposition.",
+                "Attempt/epoch-bound target and consumer/data disposition recorded by Administrator; retain the accepted conditional scope decision without inventing empty-data proof or requiring reapproval of the same scope.",
                 "Explicit selected branch and baseline/data disposition; no invented prior v1 deployment, ordinary traffic or periodic-call schedule."
             ],
             "status": "unexecuted",
@@ -136,10 +137,10 @@
                 "Bind the actual EventStore gateway address, dedicated workload JWT contract or absent-section fallback, receipt signing secret and expected eventstore workload; resource-bound requests need separately qualified authority enrollment and grants. EnableResourceBindingRequests defaults false and enabling it alone grants nothing."
             ],
             "procedure": [
-                "Qualify real environment OIDC and confidential UI/workload client integration with actor, audience, originating surface and scoped token exchange; resolve Projects missing client auth handler before success cases.",
+                "Qualify real environment OIDC, confidential UI and both Projects transport branches with actor, own audience, originating surface and scoped delegation. The direct SDK has bearer forwarding; that source mechanism does not establish downscoped hosted authentication. The verified owner-query branch requires separately qualified workload issuer, proof key and scoped gateway/owner grants.",
                 "Test missing/expired/wrong-issuer/wrong-audience tokens, cross-tenant/permission denials, spoofed actor/client attribution, direct app-channel access, bad workload assertion and missing/altered/expired command-bound human receipt.",
                 "Test every client surface directly and through a cross-module hop; agent/service origins never gain UI-only authority. No fixture auth or raw user-token forwarding serves as qualification.",
-                "Verify authenticated direct public mutations alone relay a nonempty parsed Bearer through FoldersGatewayHumanBearerHandler to the gateway for command-bound human receipt issuance; unauthenticated, non-mutation and missing/malformed bearer cases fail before submission. This scoped submission does not qualify general raw-token downstream delegation.",
+                "Verify the actual FoldersGatewayHumanBearerHandler alternatives: authenticated direct public mutation, content-authority marker with stream-read/command-status target, or content-retention marker, each with a nonempty parsed Bearer. Reject absent authentication, absent qualifying context and malformed bearer before submission. Qualify each source path against hosted actor/workload/receipt and own-audience requirements; no general downstream-delegation claim follows.",
                 "Verify Process, Project, Query and Metadata workload policies independently. Bind Authentication:WorkloadJwtBearer, falling back to Authentication:JwtBearer only when the dedicated section is absent; partial dedicated settings fail closed without inheriting public issuer or signing credentials.",
                 "Verify Authentication:HumanAuthorityReceipt:ExpectedWorkload defaults to eventstore and reject absent/mismatched authenticated workload, blank/control/whitespace workload configuration and missing/altered/expired/command-mismatched receipts. Resource-binding requests stay disabled until the actual authority authorization_details profile, scoped credentials and grants are qualified.",
                 "Within this check's existing 1200-second limit, execute the finite four-by-four Process/Project/Query/Metadata matrix: each correctly scoped operation is the matching positive, and all twelve off-diagonal operation-token/endpoint pairs must reject before protected effects. Each case has a 30-second deadline; abort on timeout or unexpected authorization.",
@@ -189,12 +190,14 @@
                 "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
             ],
             "procedure": [
-                "Exercise GetFolderLifecycleStatusAsync through the deployed Projects adapter in staging Coexistence/V2Only rehearsals; prove accessible, archived, stale and inaccessible states.",
-                "For this read family record raw Folders 401 authentication failure, 404 concealed denial/not-found, and 503 dependency/read-model unavailability separately; Projects maps 401/404 to Denied and 503 to Unavailable, never a fabricated success."
+                "Exercise GetFolderLifecycleStatusAsync through the deployed Projects adapter in the selected branch: V2Only for verified first installation, or Coexistence/V2Only under the original existing-v1 migration gates. Prove accessible, archived, stale and inaccessible states.",
+                "For this read family record raw Folders 401 authentication failure, 404 concealed denial/not-found, and 503 dependency/read-model unavailability separately; Projects maps 401/404 to Denied and 503 to Unavailable, never a fabricated success.",
+                "Exercise RefreshFolderReferenceAsync with and without VerifiedQueryCaller: verified workload queries use FolderOwnerReadQuery via the signed bound-owner gateway and folders /query; direct fallback and ValidateSetProjectFolderAsync retain the SDK reads. Prove Allowed/Accepted, Stale, safe-denial/Denied, unknown/malformed/failed/Unavailable and caller cancellation without protected payloads."
             ],
             "requiredEvidence": [
                 "Exact SDK operation/artifact identity and safe HTTP status/category, Projects result and trace linkage for each 401/404/503 case and allowed/archived/stale cases.",
-                "Read-only effects confirmed and no dependency failure reclassified as authorization success."
+                "Read-only effects confirmed and no dependency failure reclassified as authorization success.",
+                "Exact direct and delegated transport/query identities, metadata-only outcome/trace linkage and qualified issuer/proof/grant bindings; no raw credential or originating-assertion dump."
             ],
             "status": "unexecuted",
             "result": null,
@@ -259,7 +262,7 @@
                 "Capture api.version, consumer, http.status_code, counts, error rate and latency with trace linkage; qualify exporter/sink/retention for each host. Keep staged synthetic traffic separate from ordinary production traffic."
             ],
             "requiredEvidence": [
-                "Exact-release staged metrics/traces across all three read families with projects attribution and separate 401/404/503 outcomes, plus negative attribution results.",
+                "Exact-release staged metrics/traces across all three direct read families and delegated owner refresh, with authenticated projects attribution and distinct authentication/denial/unavailability outcomes. Local source inventories do not prove deployed call schedules or absence.",
                 "Owner-supplied numeric thresholds and evaluation intervals; production ordinary traffic, deployed-consumer census and every periodic call schedule remain separate missing migration evidence."
             ],
             "status": "unexecuted",
@@ -277,12 +280,12 @@
                 "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
             ],
             "procedure": [
-                "Rehearse V1Only, Coexistence and V2Only only in isolated staging, restarting/redeploying for every startup-read route change. Confirm all three read families and v1 retirement behavior.",
-                "When a verified prior Projects v1 artifact exists, ordinary reversal retains v1, restores it, verifies all three v1 reads, then restarts Folders V1Only; incident reversal disables v2 first, restores Projects v1 and verifies. Without it record that migration reversal remains unqualified.",
-                "Time restarts and final V1Only restoration. Reversal never undoes completed writes; retain read-only caller scope. Do not start production T0, extend its seven-day exception or rewrite historical approvals."
+                "For the verified first-install branch, rehearse planned V2Only with restart, external v1 canonical 404s and all direct/delegated v2 outcomes; current runtime remains V1Only. For a discovered existing-v1 installation, rehearse V1Only/Coexistence/V2Only and retirement only under the original migration gates.",
+                "For existing-v1 migration with verified prior artifacts, ordinary reversal keeps v1, restores Projects v1, verifies reads, then restarts Folders V1Only; incident reversal disables v2 first and restores Projects. First-install failure instead closes ingress, stops promotion, fences admission/execution, drains effects and removes only candidate workloads, retaining data/shared objects.",
+                "Time every staging step and applicable final safe state. No removal/route reversal undoes writes. Existing-v1 T0/24-hour deployment/24-hour ordinary traffic plus all periodic calls/T0+168-hour expiry remain unchanged; first install records real activation separately and fabricates no migration clock or retirement."
             ],
             "requiredEvidence": [
-                "Per-step exact artifacts/configuration IDs, route modes, UTC times, counts/status/duration/trace IDs and final restored staging V1Only proof.",
+                "Per-step exact artifacts/configuration IDs, route modes, UTC times and safe status/duration/trace metadata, plus the applicable final safe-state proof: restored V1Only for migration reversal, or closed ingress, verified fencing and candidate workload removal with retained data/shared objects for first-install failure.",
                 "Verified prior v1 artifacts and exact-artifact restoration results when applicable; fresh-install failure-path evidence is explicitly separate from a completed migration rollback."
             ],
             "status": "unexecuted",
@@ -300,7 +303,7 @@
                 "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
             ],
             "procedure": [
-                "For first install without retained application data, prove failed candidate workload removal keeps ingress closed and preserves persistent objects; never invent an automatic old-baseline rollback.",
+                "For verified first install without retained application data, close ingress and stop promotion; the qualified executor fences candidate public/internal/delegated admission and candidate workers/queued/shared-EventStore execution under the attempt epoch, drains/quiesces effects, verifies fencing, then removes only candidate application workloads. Preserve persistent objects and unrelated shared infrastructure; no fictional v1 restore.",
                 "For retained data, prove baseline compatibility/AD-15 rollback set or name a separately approved data-restore recovery, cut a usable post-lock recovery point, close ingress, quiesce effects and retain data on candidate failure.",
                 "Rehearse isolated restore/quarantine, deletion/hold/revocation and erased-key/tombstone continuity, current admission reconciliation, empty-broker catch-up, external-operation reconciliation and old-credential denial before reopening; unknown provider outcomes never repeat blindly."
             ],
@@ -326,11 +329,11 @@
             "procedure": [
                 "Require every external exact-release staging check and critical-flow mapping for all included modules, including unchanged modules and McpCli; skipped/failed/stale/wrong-release evidence blocks qualification.",
                 "Qualify retained-suite production verification policy separately: five-minute window after readiness, <=10s availability samples, 60s continuous unavailability threshold, repeated smoke failure at 30s and passing latest results at deadline.",
-                "Keep this proposal HOLD until release/provider/hosting evidence and material scope approval exist. Operational qualification is an external signed decision, never an offline verifier success."
+                "Keep this proposal HOLD until exact release/provider/hosting, attempt-bound target/data disposition and all applicable entry evidence pass. Conditional first-install scope is already accepted; materially changed target or recovery risk needs its own owner decision. Operational qualification is an external signed decision, never offline success."
             ],
             "requiredEvidence": [
                 "Complete exact-artifact flow-to-test matrix, current suite/profile/configuration digests, evidence age policy and all failure/rerun history, owned signed qualification/attempt records and notification proof.",
-                "Production entry remains V1Only with T0 null and no packet activation authority; original migration execution record, owners, schedule/expiry, ordinary attributed traffic and consumer census are not fabricated by first-install evidence."
+                "Production remains V1Only with T0 null and no packet activation authority. First install records actual activation and five-minute Platform verification/observation with required boundary samples and latest passing checks, plus applicable recovery; a discovered existing-v1 migration separately requires real owners/UTC clocks/expiry, 24-hour ordinary attributed traffic, all periodic calls, census and retirement. Neither supplies automatic closure."
             ],
             "status": "unexecuted",
             "result": null,

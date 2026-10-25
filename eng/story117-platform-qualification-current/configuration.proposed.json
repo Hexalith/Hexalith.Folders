@@ -17,7 +17,7 @@
         "retainedApplicationData": null,
         "owner": "Platform and Administrator",
         "observationScope": "One context at capture time; no global or historical absence claim.",
-        "branchRule": "Confirm target and retained data before staging. A discovered installation returns to the original migration branch; never infer a prior deployment from package releases."
+        "branchRule": "Jerome conditionally accepted first installation on 2026-10-18. Confirm target/consumer coverage and retained-data disposition under the actual attempt lock before mutation. Unknown disposition blocks execution; retained data requires a usable post-lock recovery point and compatibility evidence or named approved recovery. A discovered existing v1 installation uses the original approved migration with real T0/24-hour/168-hour and ordinary-traffic/periodic-call gates; no new approval of the same conditional scope is required."
     },
     "acceptedEnvelope": {
         "topology": "single-node",
@@ -30,37 +30,86 @@
     },
     "sourceSnapshots": {
         "Folders": {
-            "revision": "65f34e7c4b2bd41805aaa1c3b8d87ee3b65363f1",
+            "revision": "67630d3be75a4f5f9b1a5598809efebca4d82c47",
             "scope": "local-checkout",
             "state": "dirty",
             "dirtyInputs": [
-                "The supplied post-12.1 reconciliation spec is untracked; the current packet, candidate provenance and readiness evidence are uncommitted local preparation."
+                "The user-owned source-qualification continuation and this current proposal/evidence refresh are uncommitted local preparation."
             ],
             "artifactProvenance": null
         },
         "Projects": {
-            "revision": "a8059addf27261c0f2bddd23d2b266ebcfa00660",
+            "revision": "94f6ad1f6854df62c8cd15e47d65dc72985f4e79",
             "scope": "local-checkout",
             "state": "clean",
             "dirtyInputs": [],
             "artifactProvenance": null
         },
         "Platform": {
-            "revision": "2749ad8abdafc038ded44f6154d7182c2fd71422",
+            "revision": "31b9cdbac61e691ab7d76bfbf3758569be542355",
             "scope": "local-checkout",
             "state": "clean",
             "dirtyInputs": [],
             "artifactProvenance": null
         },
         "EventStore": {
-            "revision": "269b20d58236f07228bc2afd54807b94bd96f37b",
+            "revision": "245ded36b78b960b57728f845f9a8aae62275908",
             "scope": "local-checkout",
             "state": "clean",
             "dirtyInputs": [],
             "artifactProvenance": null
         },
         "Builds": {
-            "revision": "4f53d9f37c5b86cfd43fbcc8fa5dd4df19b84c77",
+            "revision": "142b06e6d05c94b55ac35e587450c35fcac87590",
+            "scope": "local-checkout",
+            "state": "clean",
+            "dirtyInputs": [],
+            "artifactProvenance": null
+        },
+        "Tenants": {
+            "revision": "14133e96d2c5efb13270580f920133079707398b",
+            "scope": "local-checkout",
+            "state": "clean",
+            "dirtyInputs": [],
+            "artifactProvenance": null
+        },
+        "AI.Tools": {
+            "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+            "scope": "local-checkout",
+            "state": "clean",
+            "dirtyInputs": [],
+            "artifactProvenance": null
+        },
+        "FrontComposer": {
+            "revision": "80782afc7fc2fd33ee365d4601cb6b5e91d215fa",
+            "scope": "local-checkout",
+            "state": "clean",
+            "dirtyInputs": [],
+            "artifactProvenance": null
+        },
+        "Memories": {
+            "revision": "78657969f4d7d6ccd82c99766296b99ee55bd895",
+            "scope": "local-checkout",
+            "state": "clean",
+            "dirtyInputs": [],
+            "artifactProvenance": null
+        },
+        "Commons": {
+            "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+            "scope": "local-checkout",
+            "state": "clean",
+            "dirtyInputs": [],
+            "artifactProvenance": null
+        },
+        "PolymorphicSerializations": {
+            "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+            "scope": "local-checkout",
+            "state": "clean",
+            "dirtyInputs": [],
+            "artifactProvenance": null
+        },
+        "McpCli": {
+            "revision": "8962e2f2570459dbea2976f789b468aa5c6353c6",
             "scope": "local-checkout",
             "state": "clean",
             "dirtyInputs": [],
@@ -69,7 +118,7 @@
     },
     "sourceInputs": {
         "src/Hexalith.Folders.Server/FoldersApiRouting.cs": "5eaf1a36aaebd3039cba6279bb3d94396b2202801407036d2b3bd5caba0d89ce",
-        "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs": "75784c67efbf1be8fa5ebc270659afc09c020def941f2a21a9cc6f9499fb5676",
+        "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs": "c085ae16fe4d566b46278885c51746462e2578470899f9010188f8080c4d4352",
         "src/Hexalith.Folders.Server/Authentication/FoldersOidcOptions.cs": "af14f6338f85f5741a4d1879691c3c855204779fe9fc33b357dc8e7cb9c66ae2",
         "src/Hexalith.Folders.Server/Authentication/FoldersAuthenticationServiceCollectionExtensions.cs": "fbd504afe0d7728a9fa371afcb37b949b8c97162b6cda3e3b6f54a1240ca6a4d",
         "src/Hexalith.Folders.Server/Authentication/HumanAuthorityReceiptVerifier.cs": "76ea41e92e628875b13a4dbb9708d68a7ea8e6a17c3d1516eab86be91fdac9d9",
@@ -79,26 +128,47 @@
         "src/Hexalith.Folders.UI/Configuration/FoldersAuthenticationOptions.cs": "8dc9e92b967189714f7e082e7e14363abf3fd221d9c7dd474b692f5866199473",
         "src/Hexalith.Folders.UI/CompositionRoot.cs": "0f801450a0f43a610e6ac3f3936d9be573b476000c7940a66e4a079773e5083a",
         "src/Hexalith.Folders.Client/FoldersClientOptions.cs": "176d153139af1f0ea0943c82cac3f98bd246d54ead96b9708df687e8e9580cb1",
-        "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs": "dbc41081169dc3562d91bfa2133f9655b2fa5a68843aa9737197c522e476d2b5",
+        "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs": "a17db79206935c2f837e9e08a9799a11b8a90d213d2f4ce0dcdc4d6e1fe1816f",
         "src/Hexalith.Folders.ServiceDefaults/Extensions.cs": "0b7d96d99283d114b16e245c9412cfb3ba8aa8213ebfdb07fc5de723d37f8944",
         "src/Hexalith.Folders/Projections/TenantAccess/EventStoreFolderTenantAccessProjectionStore.cs": "33fced4544ad8b3e382c1ab57018bad2927e7a9d08d4fd26da2e2434dad15c11",
         "src/Hexalith.Folders.AppHost/DaprComponents/statestore.yaml": "011e2a9fdf4c7f1788024dc506934494e715e9f998b935f01fd604540bca7803",
         "deploy/dapr/production/sidecar-config-bindings.yaml": "7949ab56f5e1b43ee0d847df2a7c55077b44824a5670c92bdc9e11b89a5a5e24",
         "docs/operations/container-images-and-dapr-app-ids.md": "6fc6869b078e759ec6e79958bb286ed21d78410ede43b2f5853a77fe0f51e9f1",
-        "docs/runbooks/rollback.md": "b127688e1199b0d15f15d66cfd26854ca0ed78d095828646c54d9adbf7747192",
-        "references/Hexalith.Projects/src/Hexalith.Projects.Server/ProjectsServerServiceCollectionExtensions.cs": "46a3dfc12d83a62051f77a498c517b49f908b1bb0fe57d3a996f3e128392c6af",
-        "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFolderDirectory.cs": "dcea1de00934076e26e33b4ac902685ab4dc44eafbb2aafc1a80b084ea6e580b",
-        "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFileReferenceDirectory.cs": "dc24eb9dedc6452d57c4cab8e432154d1b544ddf9d5b5162c364f11e99108269",
+        "docs/runbooks/rollback.md": "191121ca0f52a1facb67750955035b33938983639876303ca41e6363e38b8f7f",
+        "references/Hexalith.Projects/src/Hexalith.Projects.Server/ProjectsServerServiceCollectionExtensions.cs": "8f9bbf440fb0ed536e2e1638a51ae2eff4ee20071b7029e03045cbacf2af3346",
+        "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFolderDirectory.cs": "06648237244f0adf67590d81a3950a53fdaae36478ecea20f053413004a8f10c",
+        "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFileReferenceDirectory.cs": "48292b6d2d91df8600e5fc53f626f2c619df275084ae23ac89e853cf963041e9",
         "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/WorkloadAuthenticationOptions.cs": "6657d76484574922e569428848356063e0d2bee3ac3e8dd813e5fe1f45b03055",
         "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/WorkloadAssertionIssuerOptions.cs": "f1a014638a20e2ef9c3bfbd7480b7165ea233a8d0b12fd68ac341e33ce824b21",
-        "references/Hexalith.Builds/Props/Directory.Packages.props": "1a9fcfe7360e4b756db11173ef9bbc4f6dc49dd983c297b7fc27d42bd7f31dcd",
+        "references/Hexalith.Builds/Props/Directory.Packages.props": "c43f62b33c765e28519b6c72058c6317649ec53963d7cbe7f0d0ddabb3898375",
         "references/Hexalith.Platform/_bmad-output/planning-artifacts/architecture/architecture-platform-2026-09-27/ARCHITECTURE-SPINE.md": "cc95a53ab85becee18f924cc9a1a915a2a05fcce8caed3a3d46643ee1051e936",
-        "src/Hexalith.Folders.Server/Authentication/FoldersGatewayHumanBearerHandler.cs": "2b9e05ea6e86646051fe4bcfdc74f02ba3345a77b932f3aff29d71e22530a763",
+        "src/Hexalith.Folders.Server/Authentication/FoldersGatewayHumanBearerHandler.cs": "7fc9d6c8877cdbab43ec834f3fe6a4405d5bf968a0c2b9cf972eeb7db1ae7ff9",
         "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreWorkloadAuthenticationExtensions.cs": "3ec0bdd770539634d72f76207c2a796428bfd2ad61a506a48c7e0862433000eb",
         "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/ConfigureWorkloadJwtBearerOptions.cs": "7bb0693d6f4eb9c01783c7281a7762e970a45b03cd06ad8d3cb1d4a133ae27e2",
         "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/JwtWorkloadAssertionIssuer.cs": "6b9206c966d03dac17cee1aa71d78d895f36f8160c12aee1a23d2ba4126d987b",
         "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/JwtBearerAuthenticationContract.cs": "bed9bdd1669248ad0b5ba89656bcb788c40498818c415a2cfcee6cee812d98d9",
-        "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/JwtBearerAuthenticationOptions.cs": "37df1d79fad5785caa286cdc30f88599c82eb5100e1a02b210282cfe1e33c112"
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/JwtBearerAuthenticationOptions.cs": "37df1d79fad5785caa286cdc30f88599c82eb5100e1a02b210282cfe1e33c112",
+        "Directory.Packages.props": "07287d602e3d782505a4b203b7f0c3e035add66febbe7d59720b13a6b5ac77a0",
+        "Directory.Build.props": "c29f98146c92a4a182cab16b393bf4760540f7180bb00277350ca3f2b6f612ea",
+        "references/Hexalith.Projects/Directory.Packages.props": "db026ea147622209d4280cc35d27de75f3c2c5f480e8502272a2376ea0f07d5e",
+        "references/Hexalith.Projects/Directory.Build.props": "dd28973111bdb352af15b6e46c0793fe4137d94a6c68c122e0ecdce8fb27ca67",
+        "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/DelegatedProjectFolderDirectory.cs": "194230edcee11c1a842c1ff8274457e0083c8019af3a49afc1a04e94559209d4",
+        "references/Hexalith.Projects/src/Hexalith.Projects.Server/EventStoreGatewayTokenForwardingHandler.cs": "c820387b535bbffab06c16e5f89fb04343a03613a3f192f342853e91a2374d99",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/DelegatedOwnerQueryClient.cs": "cccb04219984dfed7d735f979d1af85847dfba76092da7e9d33c9320b6831b41",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/VerifiedQueryCaller.cs": "b799b9b224ed6c9119608a0c79139f10b62e2460ee1f929c6c5140dc6fc8fa1a",
+        "src/Hexalith.Folders.Contracts/FolderOwnerReadQuery.cs": "d45ed8b9042d7d4c84c6c71f431de874b8c43028f38d4ef233f9527b07759ee7",
+        "src/Hexalith.Folders.Server/Queries/FolderOwnerReadQueryHandler.cs": "ec11a3196e7752ae973e1919b4bb629a5a64f5010b0b6bfb796437b0cabfd463",
+        "src/Hexalith.Folders.Server/Queries/FolderOwnerQueryBinding.cs": "6758d25a6e60d6ec9a45243f3b5b863f59c6c8b5cc752f01f8fe0608b22408e5",
+        "src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs": "a45a6c90caaee2bc0183998e8e2d949c54cf90d52a22e32071840955043bdc13",
+        "src/Hexalith.Folders.Server/Content/WorkspaceContentAuthority.cs": "8cd50f322613be8a0ef50fe4e59b02a00c057562c1c53feae901ce558b8782ec",
+        "src/Hexalith.Folders.Server/Content/AuthoritativeWorkspaceFileContextSource.cs": "b572efde3c88873111bc3a51a679905833444647f76b186e636389a8864e0120",
+        "src/Hexalith.Folders.Server/Content/WorkspaceContentErasure.cs": "262512785f92fa56a55e2a402e68e952d0b5a516f61d4dbf2da17ce366712971",
+        "src/Hexalith.Folders.Server/Content/WorkspaceContentRetentionEndpoints.cs": "be11bb6afbbf545367812ef56ec37663e65a2d3304c605ad99d65f74d63590ef",
+        "references/Hexalith.Platform/.config/dotnet-tools.json": "5d72a022a9416cb753da75cda1b0f1945fd938c065521fd9946aaa525fe048da",
+        "references/Hexalith.Platform/hexalith-platform.json": "3ba6c30a8d602bbc3216f0a4f9f90fb9e1f2e11ea985b4fb5058c3611149fb23",
+        "references/Hexalith.Platform/_bmad-output/implementation-artifacts/sprint-status.yaml": "21f381f64d2c6803cde2d59d3814a8b3272aadf1873910192460a82c76d72b9a",
+        "references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/1-13/pass-5/release/accepted-identities.json": "3c65702098e93254d1a9c13497749811bfd67b231341ec0b136b852b605a3f4a",
+        "_bmad-output/implementation-artifacts/story-1-17-first-install-decision-2026-10-18.md": "f658c26f4939e2c6ef3217c30cde96e5fda17c985623338be4191957c1809d42"
     },
     "releaseIdentity": {
         "owner": "Platform publication owner with Builds and module owners",
@@ -110,7 +180,7 @@
         "releaseRecord": null,
         "successfulExactRevisionCI": null,
         "priorV1Deployment": null,
-        "boundary": "Clean local dependency working trees and current source fingerprints are observations only, not clean-build or published/deployed artifact provenance, accepted tool/range or Platform acceptance. Published Builds 4.32.0 retains its separate release identity; local EventStore 3.124.0 is not substituted into its 3.123.0 catalog."
+        "boundary": "Local source revisions and fingerprints are observations only. The retained released Client/Contracts 1.3.1 pair predates the current candidate; no exact current-candidate release or deployed artifact is established. Historical Builds 4.32.0 publication and Platform-recorded 4.35.2 acceptance remain separate dated records. Catalog content equality alone grants no current composed-release acceptance."
     },
     "moduleConfiguration": {
         "folders-server": {
@@ -140,7 +210,7 @@
                 "Authentication:WorkloadJwtBearer:RequireHttpsMetadata": true,
                 "Authentication:WorkloadJwtBearer:AllowInsecureSymmetricKey": false
             },
-            "boundary": "Folders OIDC validates public bearers. EventStore:Gateway:BaseAddress defaults to http://eventstore; the registered FoldersGatewayHumanBearerHandler relays a bearer only for an authenticated direct public mutation to the gateway that issues its command-bound receipt. This is not general downstream delegation. Workload validation prefers Authentication:WorkloadJwtBearer and falls back to Authentication:JwtBearer only when the dedicated section is absent; partial dedicated configuration fails closed. /process verifies the separate human receipt and expected eventstore workload. Query and Metadata policies are registered alongside Process and Project; registration grants no authority enrollment. Credentials and environment bindings remain external and unresolved."
+            "boundary": "Current source registers actor-folded persistence, operational status and provider bindings, plus Process/Project/Query/Metadata policies and projection endpoints. The gateway bearer handler requires an authenticated principal and nonempty parsed Bearer; its actual alternatives are direct public mutation, content-authority marker with a stream-read/command-status target, or content-retention marker. These are source conditions, not hosted delegation proof. WorkloadJwtBearer falls back to JwtBearer only when absent; partial configuration fails closed. /process also requires the command-bound human receipt and expected eventstore workload. All environment/credential bindings remain unresolved."
         },
         "folders-workers": {
             "owner": "Folders; Platform binds the isolated inbound broker component",
@@ -196,13 +266,26 @@
                 "OTEL_EXPORTER_OTLP_ENDPOINT": null
             },
             "boundary": "Server and Workers wire this exporter seam. UI does not call AddServiceDefaults in its current entry point; Platform/FrontComposer must qualify UI telemetry rather than assume the key alone enables it."
+        },
+        "projects-delegated-owner-query": {
+            "owner": "Projects hosting and Platform identity owners with EventStore workload-issuer and bound-owner proof owners",
+            "source": "references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/DelegatedOwnerQueryClient.cs",
+            "consumingHost": "projects-server",
+            "values": {
+                "Authentication:WorkloadIssuer:Workload": null,
+                "Authentication:BoundStreamRead:PrivateKey": null,
+                "Authentication:QueryAuthority:GatewayWorkloadId": "eventstore"
+            },
+            "environmentBindings": null,
+            "secretBindings": null,
+            "boundary": "These are the exact configuration reads made by DelegatedOwnerQueryClient in the consuming Projects Server host. Workload and PrivateKey have no source fallback and must be nonblank for the query hop; both environment bindings remain unresolved. GatewayWorkloadId defaults to eventstore only when absent. The private key signs the bound-owner proof; no secret name, key material, issuer enrollment, workload grant or hosted authority is supplied. Owners must qualify the actual identity, secret delivery and gateway route/grants before execution."
         }
     },
     "platformBindings": {
         "release-and-hosting": {
             "value": null,
             "owner": "Platform with Builds and EventStore",
-            "reason": "The historical receipt records Builds 4.32.0 publication, but its full current replay refuses pre-existing Platform snapshot drift. No accepted tool/range, coherent Platform catalog binding, retained Platform release or qualified hosted composition is supplied. Current clean Platform source 2749ad8abdafc038ded44f6154d7182c2fd71422 binds Builds 83850cc62e7855ca64dee70e33f2e5c9bab1bc7c, which differs from direct Builds 4f53d9f37c5b86cfd43fbcc8fa5dd4df19b84c77; this mismatch is recorded, not repaired.",
+            "reason": "Platform records completed startup/tool stories and accepted tool 4.35.2, separately from this attempt. Its current Builds gitlink differs from direct Builds but their Git-normalized catalog blobs match; both differ in catalog content from the accepted-tool source. No current exact composed release, intake or hosted acceptance is supplied. Owners must qualify the actual tool/catalog/composition tuple without treating revision inequality alone as catalog drift.",
             "contract": "One retained application package and one Platform-composed eventstore host; existing module wrappers are inputs only."
         },
         "profile": {
@@ -238,8 +321,8 @@
         "projects-client-delegation": {
             "value": null,
             "owner": "Projects hosting owner with Platform and EventStore",
-            "reason": "Projects explicit AddFoldersClient has a hard-coded URI and no auth handler; no qualified authenticated transport is supplied.",
-            "contract": "Read-only SDK operations only; qualify downscoped delegation with original actor and surface, and authenticated client_id/azp attribution. Do not invent an endpoint/config key or token issuer."
+            "reason": "Current Projects attaches EventStoreGatewayTokenForwardingHandler to the direct SDK at hard-coded http://folders; this forwards an inbound Bearer when outbound authorization is absent and does not itself validate/downscope it. Verified delegated folder refresh instead uses DelegatedOwnerQueryClient and its signed bound-owner gateway request. No hosted credentials, grant or attribution is qualified.",
+            "contract": "Qualify the three direct SDK reads and verified delegated FolderOwnerReadQuery refresh, preserving original actor/surface, own-audience validation, scoped delegation and authenticated consumer attribution. Read-only POSTs do not add mutation scope. No caller-supplied identity, raw bearer forwarding or local health result establishes compliant hosted delegation."
         },
         "ui-confidential-client": {
             "value": null,
@@ -387,7 +470,7 @@
     "dependencies": {
         "eventstore": {
             "appId": "eventstore",
-            "catalogInputPin": "3.124.0",
+            "catalogInputPin": "3.127.0",
             "qualifiedArtifact": null,
             "owner": "Platform intake owner with module owner",
             "catalogProperty": "HexalithEventStoreVersion",
@@ -395,7 +478,7 @@
         },
         "tenants": {
             "appId": "tenants",
-            "catalogInputPin": "5.8.0",
+            "catalogInputPin": "5.10.1",
             "qualifiedArtifact": null,
             "owner": "Platform intake owner with module owner",
             "catalogProperty": "HexalithTenantsVersion",
@@ -403,7 +486,7 @@
         },
         "memories": {
             "appId": "memories",
-            "catalogInputPin": "2.27.1",
+            "catalogInputPin": "2.29.9",
             "qualifiedArtifact": null,
             "owner": "Platform intake owner with module owner",
             "catalogProperty": "HexalithMemoriesVersion",
@@ -411,7 +494,7 @@
         },
         "folders-server": {
             "appId": "folders",
-            "catalogInputPin": "1.2.1",
+            "catalogInputPin": "1.3.1",
             "qualifiedArtifact": null,
             "owner": "Platform intake owner with module owner",
             "catalogProperty": "HexalithFoldersVersion",
@@ -419,7 +502,7 @@
         },
         "folders-workers": {
             "appId": "folders-workers",
-            "catalogInputPin": "1.2.1",
+            "catalogInputPin": "1.3.1",
             "qualifiedArtifact": null,
             "owner": "Platform intake owner with module owner",
             "catalogProperty": "HexalithFoldersVersion",
@@ -427,7 +510,7 @@
         },
         "folders-ui": {
             "appId": "folders-ui",
-            "catalogInputPin": "1.2.1",
+            "catalogInputPin": "1.3.1",
             "qualifiedArtifact": null,
             "owner": "Platform intake owner with module owner",
             "catalogProperty": "HexalithFoldersVersion",
@@ -435,7 +518,7 @@
         },
         "projects-server": {
             "appId": "projects",
-            "catalogInputPin": "1.0.0",
+            "catalogInputPin": "1.2.0",
             "qualifiedArtifact": null,
             "owner": "Platform intake owner with module owner",
             "catalogProperty": "HexalithProjectsVersion",
@@ -443,7 +526,7 @@
         },
         "frontcomposer": {
             "appId": null,
-            "catalogInputPin": "4.6.0",
+            "catalogInputPin": "4.7.0",
             "qualifiedArtifact": null,
             "owner": "Platform intake owner with module owner",
             "catalogProperty": "HexalithFrontComposerVersion",
@@ -455,19 +538,25 @@
             "operation": "GetFolderLifecycleStatusAsync",
             "method": "GET",
             "path": "/api/v2/folders/{folderId}/lifecycle-status",
-            "mutates": false
+            "mutates": false,
+            "transport": "direct-sdk",
+            "source": "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFolderDirectory.cs"
         },
         {
             "operation": "GetEffectivePermissionsAsync",
             "method": "GET",
             "path": "/api/v2/folders/{folderId}/effective-permissions",
-            "mutates": false
+            "mutates": false,
+            "transport": "direct-sdk",
+            "source": "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFolderDirectory.cs"
         },
         {
             "operation": "GetFolderFileMetadataAsync",
             "method": "POST",
             "path": "/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/metadata",
-            "mutates": false
+            "mutates": false,
+            "transport": "direct-sdk",
+            "source": "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFileReferenceDirectory.cs"
         }
     ],
     "publishedBuildsObservation": {
@@ -486,18 +575,18 @@
             "eventStorePin": "3.123.0",
             "scope": "retained-local-git-object-observation"
         },
-        "boundary": "The receipt records historical successful Builds publication; its unchanged full verifier must run separately and currently refuses drift in its historical Platform snapshot. The catalog above was read from that release revision in the local Git object store, not from a new artifact attestation. Local EventStore 3.124.0 never replaces published catalog 3.123.0. No accepted tool/range or Platform admission is inferred."
+        "boundary": "Historical Builds 4.32.0 publication remains unchanged, including its 3.123.0 source-catalog observation and the preserved full-verifier refusal against later Platform source. Current source catalog 3.127.0 and Platform-recorded accepted tool 4.35.2 are distinct observations; neither substitutes for that signed publication record or grants current composed-release qualification."
     },
     "admissionPrerequisites": {
         "platform-startup-story-1-8": {
             "owner": "Platform",
             "value": null,
-            "requirement": "Qualify current Story 1.8 readiness-aware startup and useful diagnostics for the exact accepted tool/composition; local implementation or fixture success is insufficient. The current local Platform tracker is in-progress; no operational acceptance is supplied."
+            "requirement": "Platform tracker records Story 1.8 done. Retain that owner result; qualify readiness/startup and useful diagnostics for the actual exact released composition and this attempt. Source implementation or local Folders resource health does not supply hosted acceptance."
         },
         "platform-tool-story-1-9": {
             "owner": "Platform with Builds",
             "value": null,
-            "requirement": "Story 1.9 must accept the exact released tool version, accepted toolVersionRange, .config/dotnet-tools.json pin and coherent Builds catalog gitlink. Builds 4.32.0 publication alone grants none. The current local Platform tracker is backlog and its Builds gitlink 83850cc62e7855ca64dee70e33f2e5c9bab1bc7c differs from direct Builds 4f53d9f37c5b86cfd43fbcc8fa5dd4df19b84c77; reconcile and qualify the tuple with the owning repositories before acceptance."
+            "requirement": "Platform tracker records Story 1.9 done and its current manifest/range records accepted 4.35.2 with [4.35.2, 5.0.0-0). The retained October 22 owner receipt binds accepted-tool source 4248b8c70cb35ba79fdd7e4dd63049d4c73211a0. Current direct/Platform Builds revisions have equal catalog content but differ from the accepted-tool catalog. Qualify the actual tool/catalog/composition tuple and retain recorded acceptance without transferring it to changed composed inputs."
         },
         "module-intake": {
             "owner": "Platform with every module owner",
@@ -512,7 +601,7 @@
         "operational-entry-and-scope": {
             "owner": "Administrator with Platform and module owners",
             "value": null,
-            "requirement": "Confirm target and retained data, approve any material first-install scope change, and supply operators/UTC slots, thresholds, deployed inventory, attributed baseline/census, periodic schedules, reversal, observation and retirement evidence under the unchanged migration scope."
+            "requirement": "The conditional first-install scope is accepted. Administrator must establish attempt-bound target/consumer/retained-data disposition, operators/UTC slots, thresholds, exact deployed artifacts, hosted identity/delegation, staging, verification/observation and applicable recovery. A discovered existing v1 installation uses the original baseline/census, all periodic calls, T0/24-hour/168-hour, reversal and retirement rules. Closure and tracker authority remain separate."
         }
     },
     "runtimeConstraints": {
@@ -538,10 +627,15 @@
         "gatewaySubmission": {
             "source": "src/Hexalith.Folders.Server/Authentication/FoldersGatewayHumanBearerHandler.cs",
             "requiresAuthenticatedPrincipal": true,
-            "requiresDirectPublicMutation": true,
             "requiresNonemptyBearer": true,
-            "target": "EventStore gateway for command-bound human receipt issuance",
-            "generalDelegationEstablished": false
+            "target": "EventStore gateway operations for the listed source contexts; direct public mutation submission obtains its command-bound human receipt, while content stream-read/status and retention contexts also use gateway operations and are not all receipt issuance.",
+            "generalDelegationEstablished": false,
+            "allowedSourceContexts": [
+                "direct-public-mutation",
+                "content-authority-marker-with-stream-read-or-command-status-target",
+                "content-retention-authorized-marker"
+            ],
+            "hostedQualification": null
         },
         "workloadPolicies": [
             "DomainServiceProcess",
@@ -571,12 +665,61 @@
         }
     },
     "catalogCoherenceObservation": {
-        "scope": "retained-local-git-tree-observation",
-        "directBuildsRevision": "4f53d9f37c5b86cfd43fbcc8fa5dd4df19b84c77",
-        "platformBuildsGitlinkRevision": "83850cc62e7855ca64dee70e33f2e5c9bab1bc7c",
+        "scope": "retained-local-git-tree-and-owner-record-observation",
+        "directBuildsRevision": "142b06e6d05c94b55ac35e587450c35fcac87590",
+        "platformBuildsGitlinkRevision": "0ade5ec2b4f9b81fcd3a4bbb1672c11b0131a274",
         "matches": false,
-        "platformStartupStoryStatus": "in-progress",
-        "platformToolStoryStatus": "backlog",
-        "acceptanceEvidence": null
-    }
+        "currentCatalogContentMatches": true,
+        "currentCatalogGitNormalizedSha256": "553796eef36f2789f60bb47bc8902b5fb9f1df5b3a942cde7f0523768bf1d2a1",
+        "acceptedToolSourceRevision": "4248b8c70cb35ba79fdd7e4dd63049d4c73211a0",
+        "acceptedToolCatalogGitNormalizedSha256": "f10372ba382108f8c35b3ee922c76fe8608dbec336c399278709345ae255078d",
+        "acceptedToolCatalogContentMatchesCurrent": false,
+        "platformStartupStoryStatus": "done",
+        "platformToolStoryStatus": "done",
+        "recordedToolPin": "4.35.2",
+        "recordedToolRange": "[4.35.2, 5.0.0-0)",
+        "recordedAcceptanceSource": "references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/1-13/pass-5/release/accepted-identities.json",
+        "acceptanceEvidence": null,
+        "boundary": "Recorded owner tool acceptance is retained; current revisions/catalog content are source observations. No renewed acceptance of this changed exact tool/catalog/composition tuple is inferred."
+    },
+    "effectiveCatalogSelections": {
+        "Folders": {
+            "owningCatalog": "Directory.Packages.props",
+            "importedCatalog": "references/Hexalith.Builds/Props/Directory.Packages.props",
+            "scope": "inspected-default-Release-package-inputs",
+            "propertyOverrides": {
+                "HexalithEventStoreVersion": "3.127.0"
+            },
+            "packageOverrides": {},
+            "foldersClientContractsSelection": "1.3.1",
+            "boundary": "Observed local defaults after owning overrides and the existing guarded import chain; external MSBuild overrides and actual restore/runtime/released/hosted identities require separate qualification. This bounded offline check does not evaluate arbitrary MSBuild."
+        },
+        "Projects": {
+            "owningCatalog": "references/Hexalith.Projects/Directory.Packages.props",
+            "importedCatalog": "references/Hexalith.Builds/Props/Directory.Packages.props",
+            "scope": "inspected-default-Release-package-inputs",
+            "propertyOverrides": {},
+            "packageOverrides": {},
+            "foldersClientContractsSelection": "1.3.1",
+            "boundary": "Observed local defaults after owning overrides and the existing guarded import chain; external MSBuild overrides and actual restore/runtime/released/hosted identities require separate qualification. This bounded offline check does not evaluate arbitrary MSBuild."
+        }
+    },
+    "projectsDelegatedReadOperations": [
+        {
+            "operation": "RefreshFolderReferenceAsync",
+            "queryType": "Hexalith.Folders.Queries.AuthorizeFolderRead.v1",
+            "method": "POST",
+            "gatewayPath": "api/v1/queries/owner-authority/workload",
+            "ownerPath": "/query",
+            "ownerDomain": "folders",
+            "mutates": false,
+            "source": "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/DelegatedProjectFolderDirectory.cs",
+            "transportSource": "references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/DelegatedOwnerQueryClient.cs",
+            "queryContractSource": "src/Hexalith.Folders.Contracts/FolderOwnerReadQuery.cs",
+            "ownerHandlerSource": "src/Hexalith.Folders.Server/Queries/FolderOwnerReadQueryHandler.cs",
+            "selection": "VerifiedQueryCaller present; otherwise direct SDK refresh. ValidateSetProjectFolderAsync remains direct.",
+            "outcomes": "safe-denial -> Denied; Allowed -> Accepted; Stale -> Stale; other/failed/malformed/unknown -> Unavailable; caller cancellation propagates.",
+            "hostedQualification": null
+        }
+    ]
 }

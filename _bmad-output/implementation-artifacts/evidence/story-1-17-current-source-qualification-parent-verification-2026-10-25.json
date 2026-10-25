@@ -1,0 +1,175 @@
+{
+  "recordId": "STORY-1-17-CURRENT-SOURCE-QUALIFICATION-PARENT-VERIFICATION-2026-10-25",
+  "recordedAtUtc": "2026-10-25T11:54:05.150093+00:00",
+  "baselineCommit": "67630d3be75a4f5f9b1a5598809efebca4d82c47",
+  "finalReviewReceipt": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-source-qualification-final-review-2026-10-25.json",
+    "sha256": "1fae9db5450f374aa8d7b2dd18c9ff4f03dda61f27503f0b1f575df5347986e9"
+  },
+  "archiveVerified": {
+    "sha256": "040086d1d0a7be37bdf8047bcbd69ef03d52e298c2fd379fb318e2ace373b84a",
+    "memberCount": 80,
+    "fileMembersRehashed": 79
+  },
+  "packetSha256": {
+    "configuration.proposed.json": "c0b8697672e7ea27370bbb9b0078c9e922042945467be0e7a7fa7d33c28b8d1c",
+    "staging-checks.json": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51",
+    "verify.py": "37f044925443e48bbf0af703b44a378a4236479a46a0e7ab519166ebbb9bf75e",
+    "test_verify.py": "13f043380faab7744a120bc301fea133a4bc91d09c79ae31733f92c2bf48f4b1",
+    "README.md": "f3276965e2544eb468d40ab8cb4710604483cafcae0323637743745e451ad284"
+  },
+  "commands": [
+    {
+      "label": "current-verifier",
+      "command": [
+        "python3",
+        "eng/story117-platform-qualification-current/verify.py"
+      ],
+      "startedAtUtc": "2026-10-25T11:53:56.195098+00:00",
+      "completedAtUtc": "2026-10-25T11:53:56.244972+00:00",
+      "exitCode": 0,
+      "outputSha256": "ca0d5f23604bb0e4bfe5427ac5a41ed54788771d6b5b82bd6335f3aca18bd969",
+      "tail": [
+        "PASS: packet consistency only; operational qualification remains HOLD; staging checks executed: 0; V1Only; T0 unset; no activation authority."
+      ]
+    },
+    {
+      "label": "packet-tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-platform-qualification-current",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "startedAtUtc": "2026-10-25T11:53:56.245497+00:00",
+      "completedAtUtc": "2026-10-25T11:54:03.494867+00:00",
+      "exitCode": 0,
+      "outputSha256": "748386b4ba3cab078d07f2d935305f0e4ada980613426ff29a021050b7230046",
+      "tail": [
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 66 tests in 7.087s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "label": "final-replay",
+      "command": [
+        "python3",
+        "replay.py"
+      ],
+      "startedAtUtc": "2026-10-25T11:54:03.495095+00:00",
+      "completedAtUtc": "2026-10-25T11:54:03.549207+00:00",
+      "exitCode": 0,
+      "outputSha256": "10744cdd60562df846bbc533a2cfafa341c8b49710a2c303ceac53fbd28cce10",
+      "tail": [
+        "PASS: retained member integrity and catalog comparisons; current packet consistency only; HOLD; 0 staging checks executed."
+      ]
+    },
+    {
+      "label": "optimized-replay",
+      "command": [
+        "python3",
+        "-O",
+        "replay.py"
+      ],
+      "startedAtUtc": "2026-10-25T11:54:03.549440+00:00",
+      "completedAtUtc": "2026-10-25T11:54:03.657659+00:00",
+      "exitCode": 0,
+      "outputSha256": "10744cdd60562df846bbc533a2cfafa341c8b49710a2c303ceac53fbd28cce10",
+      "tail": [
+        "PASS: retained member integrity and catalog comparisons; current packet consistency only; HOLD; 0 staging checks executed."
+      ]
+    },
+    {
+      "label": "replay-corruption-tests",
+      "command": [
+        "python3",
+        "test_replay.py"
+      ],
+      "startedAtUtc": "2026-10-25T11:54:03.657887+00:00",
+      "completedAtUtc": "2026-10-25T11:54:04.071721+00:00",
+      "exitCode": 0,
+      "outputSha256": "d67c93de9c61a284c4ec4cf124445286c0c576b586a47a431be0aaca9cb6eb2a",
+      "tail": [
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 3 tests in 0.371s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "label": "preservation-audit",
+      "command": [
+        "python3",
+        "<extracted-original-archive>/run/audit.py"
+      ],
+      "startedAtUtc": "2026-10-25T11:54:04.071946+00:00",
+      "completedAtUtc": "2026-10-25T11:54:05.071874+00:00",
+      "exitCode": 0,
+      "outputSha256": "27af57e3ffb00a9078cc3e5da8d49850ada005bcd23909d546d0b10f02c9dcb3",
+      "tail": [
+        "    \"publicationAuthorized\": false,",
+        "    \"trackerTransitionAuthorized\": false",
+        "  },",
+        "  \"stagingChecksUnexecuted\": 14",
+        "}"
+      ]
+    },
+    {
+      "label": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "startedAtUtc": "2026-10-25T11:54:05.072035+00:00",
+      "completedAtUtc": "2026-10-25T11:54:05.146662+00:00",
+      "exitCode": 0,
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tail": []
+    }
+  ],
+  "preservationAudit": {
+    "sourceBindingsMatched": 52,
+    "pendingCandidate": {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml",
+      "entriesMatched": 1425,
+      "rawSha256": "65b672e9a5fbf7843926fed93e1cd484d0c7474a4d82ac1cdcf59965a2c1c8c2",
+      "orderedSetSha256": "54247b6318336c190d527a43143550ae0587e91d426043ed88901b32df5b12bc",
+      "unchanged": true
+    },
+    "planningBindingsMatched": 20,
+    "planningManifestSha256": "ba04ee232dcf74da85127af481336c8a17539cf7b0a17e4b1e95bba7aab84837",
+    "protectedInputsMatched": 7507,
+    "repositoryRevisionsAndIndexDigestsMatched": 12,
+    "specReadinessPrefixesPreserved": true,
+    "operationalControl": {
+      "routeMode": "V1Only",
+      "T0": null,
+      "activationAuthority": null,
+      "deploymentAuthorized": false,
+      "publicationAuthorized": false,
+      "trackerTransitionAuthorized": false
+    },
+    "stagingChecksUnexecuted": 14
+  },
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "deploymentAuthorized": false,
+    "publicationAuthorized": false,
+    "trackerTransitionAuthorized": false
+  },
+  "unexecutedStagingChecks": 14,
+  "reviewDisposition": "All 18 findings corrected; delegated lexical anchors remain explicitly limited to declarations, with no runtime-control-flow qualification.",
+  "scope": "Current offline proposal only; parent story remains in-progress and tracker backlog. Runtime/source/dependency/release/deployment evidence is not renewed."
+}

@@ -46,14 +46,57 @@ class DisposablePacket(unittest.TestCase):
         for name, (prop, package) in verify.CATALOG_BINDINGS.items():
             properties[prop] = config["dependencies"][name]["catalogInputPin"]
             packages[package] = prop
+        packages["Hexalith.Folders.Client"] = "HexalithFoldersVersion"
         self.source_bodies[CATALOG] = (
-            "<Project><PropertyGroup>"
-            + "".join(f"<{key}>{value}</{key}>" for key, value in properties.items())
+            "<Project><PropertyGroup><HexalithVersionsLoaded>true</HexalithVersionsLoaded>"
+            + "".join(f'<{key} Condition="\'$(' + key + f')\' == \'\'">{value}</{key}>' for key, value in properties.items())
             + "</PropertyGroup><ItemGroup>"
             + "".join(f'<PackageVersion Include="{name}" Version="$({prop})" />'
                       for name, prop in packages.items())
             + "</ItemGroup></Project>"
         ).encode()
+        for owner, (relative, overrides) in verify.OWNER_CATALOGS.items():
+            self.source_bodies[relative] = (
+                "<Project><PropertyGroup><ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally><CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>"
+                + "".join(f"<{key}>{value}</{key}>" for key, value in verify.IMPORT_PATHS.items())
+                + "".join(f"<{key}>{value}</{key}>" for key, value in overrides.items())
+                + "</PropertyGroup>"
+                + "".join('<Import Project="' + row["Project"] + '" Condition="' + row["Condition"] + '" />'
+                          for row in verify.IMPORTS)
+                + "</Project>"
+            ).encode()
+        for relative in verify.BUILD_PROPS:
+            self.source_bodies[relative] = b"<Project />"
+        self.source_bodies[verify.TOOL_MANIFEST] = json.dumps({"version": 1, "isRoot": True, "tools": {
+            "hexalith.builds.module.cli": {"version": "4.35.2", "commands": ["hexalith-module"], "rollForward": False}}}).encode()
+        self.source_bodies[verify.TOOL_RANGE] = json.dumps({"toolVersionRange": "[4.35.2, 5.0.0-0)"}).encode()
+        self.source_bodies[verify.TOOL_RECEIPT] = json.dumps({"version": "4.35.2", "rollForward": False,
+            "supportedToolRange": "[4.35.2, 5.0.0-0)",
+            "buildsSourceCommit": "4248b8c70cb35ba79fdd7e4dd63049d4c73211a0",
+            "buildsReleaseTag": "v4.35.2",
+            "platformRecordedBuildsGitlink": "4248b8c70cb35ba79fdd7e4dd63049d4c73211a0",
+            "platformToolManifestSha256": hashlib.sha256(self.source_bodies[verify.TOOL_MANIFEST]).hexdigest(),
+            "restoredVersion": "4.35.2+4248b8c70cb35ba79fdd7e4dd63049d4c73211a0",
+            "ciRunId": 39736790198, "ciConclusion": "success",
+            "releaseRunId": 39741376261, "releaseConclusion": "success",
+            "packageHashes": verify.TOOL_PACKAGE_HASHES,
+            "freshNuGetOnlyAcceptance": {"emptyCliHomeAndPackageCache": True, "commands": 4,
+                "unchanged": True, "restoredPackageSha256": verify.TOOL_PACKAGE_HASHES["Hexalith.Builds.Module.Cli"]["publishedSignedArchiveSha256"]},
+            "platformKitTests": {"class": "Hexalith.Platform.Composition.Tests.DomainEnrollmentKitTests", "total": 5, "failed": 0},
+            "publishedBinaryRealModuleAcceptance": [{"exitCode": 1, "unchanged": True}],
+            "runtimeInputsUnchanged": False,
+            "humanSm2": "Not performed; owner-led demonstration remains unverified."}).encode()
+        self.source_bodies[verify.PLATFORM_TRACKER] = (
+            "  1-8-run-and-debug-with-readiness-aware-startup-and-useful-diagno: done\n"
+            "  1-9-ratify-and-pin-the-first-platform-accepted-tool-version: done\n").encode()
+        delegated = verify.DELEGATED_OPERATIONS[0]
+        for field, body in {
+            "source": "VerifiedQueryCaller.Get FolderOwnerReadQuery.QueryType client().InvokeAsync",
+            "transportSource": delegated["gatewayPath"] + " BoundOwnerQueryProof.Issue OriginatingAssertion",
+            "queryContractSource": '"' + delegated["queryType"] + '"',
+            "ownerHandlerSource": 'AuthorizeCurrentMetadataReadAsync "delegated-owner-query"',
+        }.items():
+            self.source_bodies[delegated[field]] = body.encode()
         config["sourceInputs"] = {
             relative: hashlib.sha256(body).hexdigest()
             for relative, body in self.source_bodies.items()
@@ -320,8 +363,9 @@ class PacketMutationTests(DisposablePacket):
     def test_authentication_semantics_cannot_claim_fallback_delegation_or_enrollment(self):
         mutations = (
             lambda a: a["gatewaySubmission"].update(requiresAuthenticatedPrincipal=False),
-            lambda a: a["gatewaySubmission"].update(requiresDirectPublicMutation=False),
+            lambda a: a["gatewaySubmission"].update(allowedSourceContexts=["any-public-read"]),
             lambda a: a["gatewaySubmission"].update(requiresNonemptyBearer=False),
+            lambda a: a["gatewaySubmission"].update(target="All forwarding issues a command receipt"),
             lambda a: a["gatewaySubmission"].update(source=verify.SOURCES[0]),
             lambda a: a["gatewaySubmission"].update(generalDelegationEstablished=True),
             lambda a: a["workloadPolicies"].remove("DomainServiceQuery"),
@@ -376,8 +420,11 @@ class PacketMutationTests(DisposablePacket):
         for field, value in (
             ("directBuildsRevision", "0" * 40),
             ("platformBuildsGitlinkRevision", verify.SNAPSHOTS["Builds"]),
+            ("currentCatalogContentMatches", False),
+            ("acceptedToolCatalogContentMatchesCurrent", True),
+            ("recordedToolPin", "4.32.0"),
             ("matches", True), ("acceptanceEvidence", "invented-acceptance"),
-            ("platformStartupStoryStatus", "done"), ("platformToolStoryStatus", "done"),
+            ("platformStartupStoryStatus", "backlog"), ("platformToolStoryStatus", "backlog"),
         ):
             with self.subTest(field=field), self.case():
                 self.edit(CONFIG, lambda d: d["catalogCoherenceObservation"].update({field: value}))
@@ -528,8 +575,8 @@ class PacketMutationTests(DisposablePacket):
     def test_catalog_inconsistency_fails_after_matching_fingerprint(self):
         original = self.source_bodies[CATALOG]
         for body, message in (
-            (original.replace(b"3.124.0", b"3.123.0"), "observed catalog selection"),
-            (original.replace(b'Version="$(HexalithEventStoreVersion)"', b'Version="3.124.0"'),
+            (original.replace(b"3.127.0", b"3.126.1"), "observed catalog selection"),
+            (original.replace(b'Version="$(HexalithEventStoreVersion)"', b'Version="3.127.0"'),
              "catalog package binding"),
             (b"<invalid", "invalid XML"),
         ):
@@ -563,6 +610,273 @@ class PacketMutationTests(DisposablePacket):
                 with self.subTest(index=index, field=field), self.case():
                     self.edit(CONFIG, lambda d: d["projectsReadOnlyOperations"][index].update({field: value}))
                     self.rejected("Projects operation")
+
+    def replace_source(self, relative, body):
+        """Rebind fixtures to reach structural checks and lexical anchors independently."""
+        (self.sources / relative).write_bytes(body)
+        self.edit(CONFIG, lambda d: d["sourceInputs"].update({relative: hashlib.sha256(body).hexdigest()}))
+
+    def test_nearer_consumer_catalog_appearance_is_refused_without_reading_or_hash_changes(self):
+        for relative in verify.NEARER_CATALOGS:
+            with self.subTest(relative=relative), self.case():
+                original_config = (self.packet / CONFIG).read_bytes()
+                alternate = self.sources / relative
+                alternate.parent.mkdir(parents=True, exist_ok=True)
+                alternate.write_bytes(b"PRIVATE-NEARER-CATALOG")
+                original_read = Path.read_bytes
+                def bounded_read(candidate):
+                    self.assertNotEqual(alternate, candidate, "nearer unreviewed catalog must never be read")
+                    return original_read(candidate)
+                try:
+                    with patch.object(Path, "read_bytes", bounded_read):
+                        code, output, errors = self.cli()
+                    self.assertEqual(1, code)
+                    self.assertIn("nearer consumer catalog substitution refused: " + relative, errors)
+                    self.assertNotIn("PRIVATE-NEARER-CATALOG", output + errors)
+                    self.assertEqual(original_config, (self.packet / CONFIG).read_bytes())
+                finally:
+                    alternate.unlink()
+
+    def test_build_props_version_and_package_overrides_are_refused_after_rebinding(self):
+        for relative in verify.BUILD_PROPS:
+            for body in (
+                b"<Project><PropertyGroup><HexalithFoldersVersion>99.0.0</HexalithFoldersVersion></PropertyGroup></Project>",
+                b"<Project><PropertyGroup><HexalithEventStoreVersion>99.0.0</HexalithEventStoreVersion></PropertyGroup></Project>",
+                b'<Project><ItemGroup><PackageVersion Update="Hexalith.Folders.Client" Version="99.0.0" /></ItemGroup></Project>',
+                b'<Project><ItemGroup><PackageReference Update="Hexalith.Folders.Client"><VersionOverride>99.0.0</VersionOverride></PackageReference></ItemGroup></Project>',
+                b'<Project><Import Project="unreviewed.props" /></Project>',
+                b'<Project><Choose><When Condition="true" /></Choose></Project>',
+            ):
+                with self.subTest(relative=relative, body=body), self.case():
+                    self.replace_source(relative, body)
+                    self.rejected("consumer build props: .*refused")
+
+    def test_catalog_rejects_updates_removals_indirection_excludes_and_child_metadata(self):
+        original = self.source_bodies[CATALOG]
+        for fragment in (
+            b'<ItemGroup><PackageVersion Update="Hexalith.Folders.Client" Version="99.0.0" /></ItemGroup>',
+            b'<ItemGroup><PackageVersion Remove="Hexalith.Folders.Client" /></ItemGroup>',
+            b'<Import Project="unreviewed.props" />',
+            b'<Choose><When Condition="true"><PropertyGroup><HexalithFoldersVersion>99.0.0</HexalithFoldersVersion></PropertyGroup></When></Choose>',
+        ):
+            with self.subTest(fragment=fragment), self.case():
+                self.replace_source(CATALOG, original.replace(b"</Project>", fragment + b"</Project>"))
+                self.rejected("Builds catalog: unsupported")
+        for package in ("Hexalith.Folders.Client", "Hexalith.Folders.Contracts"):
+            declaration = ('<PackageVersion Include="' + package + '" Version="$(HexalithFoldersVersion)" />').encode()
+            for replacement in (declaration.replace(b" />", b' Exclude="' + package.encode() + b'" />'),
+                                declaration.replace(b" />", b"><Version>99.0.0</Version></PackageVersion>")):
+                with self.subTest(package=package, replacement=replacement), self.case():
+                    self.replace_source(CATALOG, original.replace(declaration, replacement))
+                    self.rejected("Builds catalog: unsupported package construct")
+
+    def test_catalog_requires_true_unconditional_unique_import_sentinel(self):
+        original = self.source_bodies[CATALOG]
+        sentinel = b"<HexalithVersionsLoaded>true</HexalithVersionsLoaded>"
+        for replacement in (b"", sentinel.replace(b"true", b"false"),
+                            sentinel.replace(b"<HexalithVersionsLoaded>", b'<HexalithVersionsLoaded Condition="false">'),
+                            sentinel + sentinel):
+            with self.subTest(replacement=replacement), self.case():
+                self.replace_source(CATALOG, original.replace(sentinel, replacement))
+                self.rejected("unconditional HexalithVersionsLoaded=true required")
+
+    def test_owning_import_paths_and_overrides_must_precede_first_import(self):
+        for owner, (relative, overrides) in verify.OWNER_CATALOGS.items():
+            for key, value in dict(verify.IMPORT_PATHS, **overrides).items():
+                declaration = f"<{key}>{value}</{key}>".encode()
+                original = self.source_bodies[relative]
+                shifted = original.replace(declaration, b"").replace(
+                    b"</Project>", b"<PropertyGroup>" + declaration + b"</PropertyGroup></Project>")
+                with self.subTest(owner=owner, key=key), self.case():
+                    self.replace_source(relative, shifted)
+                    self.rejected("owning declaration order changed")
+
+    def test_every_direct_operation_refuses_source_and_transport_substitution(self):
+        for index in range(3):
+            for field, value in (("source", verify.SOURCES[0]), ("transport", "delegated-owner-query")):
+                with self.subTest(index=index, field=field), self.case():
+                    self.edit(CONFIG, lambda d: d["projectsReadOnlyOperations"][index].update({field: value}))
+                    self.rejected(r"Projects operation .*\." + field)
+
+    def test_delegated_lexical_anchors_do_not_claim_csharp_control_flow_proof(self):
+        # A comment-only fixture satisfies lexical anchors. Exact reviewed live
+        # source fingerprints and separately qualified behavior remain essential.
+        row = verify.DELEGATED_OPERATIONS[0]
+        for field in ("source", "transportSource", "queryContractSource", "ownerHandlerSource"):
+            self.replace_source(row[field], b"// " + self.source_bodies[row[field]])
+        self.validate()
+
+    def test_delegated_consuming_configuration_keeps_exact_defaults_and_unresolved_bindings(self):
+        name = "projects-delegated-owner-query"
+        for field, value in (("consumingHost", "folders-server"),
+                             ("environmentBindings", "invented-environment"), ("secretBindings", "invented-secret")):
+            with self.subTest(field=field), self.case():
+                self.edit(CONFIG, lambda d: d["moduleConfiguration"][name].update({field: value}))
+                self.rejected("Projects delegated")
+        for key in verify.MODULE_KEYS[name]:
+            for missing in (False, True):
+                with self.subTest(key=key, missing=missing), self.case():
+                    self.edit(CONFIG, lambda d: d["moduleConfiguration"][name]["values"].pop(key)
+                              if missing else d["moduleConfiguration"][name]["values"].update({key: "UNQUALIFIED-PRIVATE-BINDING"}))
+                    code, output, errors = self.cli()
+                    self.assertEqual(1, code)
+                    self.assertNotIn("UNQUALIFIED-PRIVATE-BINDING", output + errors)
+
+    def test_recorded_tool_receipt_requires_acceptance_conclusions_and_manifest_package_bindings(self):
+        baseline = json.loads(self.source_bodies[verify.TOOL_RECEIPT])
+        paths = [
+            ("ciConclusion",), ("releaseConclusion",), ("ciRunId",), ("releaseRunId",),
+            ("rollForward",), ("buildsReleaseTag",), ("platformRecordedBuildsGitlink",),
+            ("platformToolManifestSha256",), ("restoredVersion",),
+            ("freshNuGetOnlyAcceptance", "emptyCliHomeAndPackageCache"),
+            ("freshNuGetOnlyAcceptance", "commands"), ("freshNuGetOnlyAcceptance", "unchanged"),
+            ("freshNuGetOnlyAcceptance", "restoredPackageSha256"),
+            ("platformKitTests", "class"), ("platformKitTests", "total"), ("platformKitTests", "failed"),
+        ]
+        for package, hashes in verify.TOOL_PACKAGE_HASHES.items():
+            paths.extend(("packageHashes", package, field) for field in hashes)
+        for path in paths:
+            for missing in (False, True):
+                with self.subTest(path=path, missing=missing), self.case():
+                    data = json.loads(json.dumps(baseline))
+                    parent = data
+                    for key in path[:-1]:
+                        parent = parent[key]
+                    if missing:
+                        parent.pop(path[-1])
+                    else:
+                        parent[path[-1]] = "failed-or-substituted"
+                    self.replace_source(verify.TOOL_RECEIPT, json.dumps(data).encode())
+                    self.rejected("recorded tool acceptance")
+        # Expected diagnostic rejections and an unperformed human SM-2 stay
+        # limitations; they do not negate the recorded tool-release acceptance.
+        self.validate()
+
+    def test_tool_manifest_command_binding_cannot_be_substituted_after_rebinding(self):
+        data = json.loads(self.source_bodies[verify.TOOL_MANIFEST])
+        data["tools"]["hexalith.builds.module.cli"]["commands"] = ["another-command"]
+        self.replace_source(verify.TOOL_MANIFEST, json.dumps(data).encode())
+        self.rejected("recorded tool command binding")
+
+    def test_attempt_lock_is_a_sealed_entry_precondition_of_branch_selection(self):
+        plan = json.loads(self.packet_bodies[PLAN])
+        self.assertIn("already qualified", plan["checks"][1]["preconditions"][-1])
+        self.assertIn("acquired", plan["checks"][1]["preconditions"][-1])
+        self.edit(PLAN, lambda d: d["checks"][1]["preconditions"].pop())
+        self.rejected("staging safeguards")
+
+    def test_effective_catalog_proposal_cannot_hide_override_or_owner_substitution(self):
+        for owner in verify.OWNER_CATALOGS:
+            for field, value in (("propertyOverrides", {"HexalithFoldersVersion": "99.0.0"}),
+                                 ("packageOverrides", {"Hexalith.Folders.Client": "99.0.0"}),
+                                 ("owningCatalog", CATALOG),
+                                 ("importedCatalog", "unreviewed.props"),
+                                 ("foldersClientContractsSelection", "1.2.1")):
+                with self.subTest(owner=owner, field=field), self.case():
+                    self.edit(CONFIG, lambda d: d["effectiveCatalogSelections"][owner].update({field: value}))
+                    self.rejected("effective catalog " + owner)
+
+    def test_effective_catalog_source_changes_fail_even_with_matching_fingerprints(self):
+        for owner, (relative, _) in verify.OWNER_CATALOGS.items():
+            original = self.source_bodies[relative]
+            for body, message in (
+                (original.replace(b"</PropertyGroup>", b"<HexalithFoldersVersion>1.2.1</HexalithFoldersVersion></PropertyGroup>"), "reviewed local properties|unsupported or duplicate local property|observed overrides"),
+                (original.replace(b"</Project>", b'<ItemGroup><PackageVersion Update="Hexalith.Folders.Client" Version="1.2.1" /></ItemGroup></Project>'), "unsupported local catalog construct"),
+                (original.replace(b"../Hexalith.Builds/", b"../Other.Builds/"), "reviewed local properties|import path changed"),
+                (original.replace(b"$(Hexalith1BuildPackageProps)", b"$(Hexalith3BuildPackageProps)", 1), "guarded imports"),
+                (original.replace(b" And ", b" Or "), "guarded imports"),
+            ):
+                with self.subTest(owner=owner, message=message), self.case():
+                    self.replace_source(relative, body)
+                    self.rejected(message)
+        relative = verify.OWNER_CATALOGS["Folders"][0]
+        original = self.source_bodies[relative]
+        for body in (original.replace(b"<HexalithEventStoreVersion>3.127.0</HexalithEventStoreVersion>", b""),
+                     original.replace(b"<HexalithEventStoreVersion>3.127.0", b"<HexalithEventStoreVersion>3.126.1")):
+            with self.subTest(folders_override=body), self.case():
+                self.replace_source(relative, body)
+                self.rejected("reviewed local properties|unsupported or duplicate local property|observed overrides")
+
+    def test_nested_catalog_appearance_is_refused_before_reading_its_contents(self):
+        alternate = self.sources / "references/Hexalith.Projects/references/Hexalith.Builds/Props/Directory.Packages.props"
+        alternate.parent.mkdir(parents=True)
+        alternate.write_bytes(b"PRIVATE-ALTERNATE-CATALOG")
+        original_read = Path.read_bytes
+        def bounded_read(candidate):
+            self.assertNotEqual(alternate, candidate, "unreviewed alternate catalog must never be read")
+            return original_read(candidate)
+        with patch.object(Path, "read_bytes", bounded_read):
+            code, output, errors = self.cli()
+        self.assertEqual(1, code)
+        self.assertIn("earlier nested catalog substitution refused", errors)
+        self.assertNotIn("PRIVATE-ALTERNATE-CATALOG", output + errors)
+
+    def test_conditional_duplicate_and_import_suppression_properties_are_refused(self):
+        for owner, (relative, _) in verify.OWNER_CATALOGS.items():
+            original = self.source_bodies[relative]
+            for body in (
+                original.replace(b"<PropertyGroup>", b'<PropertyGroup Condition="false">'),
+                original.replace(b"</PropertyGroup>", b"<HexalithVersionsLoaded>true</HexalithVersionsLoaded></PropertyGroup>"),
+                original.replace(b"</PropertyGroup>", b"<ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally></PropertyGroup>"),
+            ):
+                with self.subTest(owner=owner, body=body), self.case():
+                    self.replace_source(relative, body)
+                    self.rejected("conditional property group refused|unsupported or duplicate local property")
+
+    def test_catalog_enclosing_conditions_cannot_hide_effective_default_or_package_pair(self):
+        original = self.source_bodies[CATALOG]
+        for body, message in (
+            (original.replace(b"<PropertyGroup>", b'<PropertyGroup Condition="false">'), "unsupported or conditional catalog group"),
+            (original.replace(b"<ItemGroup>", b'<ItemGroup Condition="false">'), "unsupported or conditional catalog group"),
+            (original.replace(b'Include="Hexalith.Folders.Contracts"', b'Include="Hexalith.Folders.Contracts" Condition="false"'), "unconditional catalog package binding"),
+        ):
+            with self.subTest(message=message), self.case():
+                self.replace_source(CATALOG, body)
+                self.rejected(message)
+
+    def test_effective_client_contracts_pair_requires_shared_catalog_property(self):
+        for package in ("Hexalith.Folders.Client", "Hexalith.Folders.Contracts"):
+            with self.subTest(package=package), self.case():
+                original = self.source_bodies[CATALOG]
+                old = ('Include="' + package + '" Version="$(HexalithFoldersVersion)"').encode()
+                new = ('Include="' + package + '" Version="1.3.1"').encode()
+                self.replace_source(CATALOG, original.replace(old, new))
+                self.rejected("catalog package binding|Client exact package binding|Client/Contracts pair binding changed")
+
+    def test_delegated_operation_declaration_cannot_be_removed_replaced_or_made_mutating(self):
+        for field, value in (("operation", "InvokeAny"), ("queryType", "UnreviewedQuery"),
+                             ("gatewayPath", "/commands"), ("ownerPath", "/admin"),
+                             ("ownerDomain", "projects"), ("method", "DELETE"), ("mutates", True),
+                             ("source", verify.SOURCES[0]), ("transportSource", verify.SOURCES[0]),
+                             ("queryContractSource", verify.SOURCES[0]), ("ownerHandlerSource", verify.SOURCES[0]),
+                             ("selection", "Every caller can use delegated authority"),
+                             ("outcomes", "Failures are successful"), ("hostedQualification", "accepted")):
+            with self.subTest(field=field), self.case():
+                self.edit(CONFIG, lambda d: d["projectsDelegatedReadOperations"][0].update({field: value}))
+                self.rejected("Projects delegated operation")
+        for value in ([], verify.DELEGATED_OPERATIONS * 2):
+            with self.subTest(value=value), self.case():
+                self.edit(CONFIG, lambda d: d.update(projectsDelegatedReadOperations=value))
+                self.rejected("Projects delegated operation")
+
+    def test_delegated_lexical_anchors_are_checked_independently_of_fingerprints(self):
+        row = verify.DELEGATED_OPERATIONS[0]
+        for field in ("source", "transportSource", "queryContractSource", "ownerHandlerSource"):
+            with self.subTest(field=field), self.case():
+                self.replace_source(row[field], b"An unrelated read-only implementation")
+                self.rejected("Projects delegated source declaration changed")
+
+    def test_recorded_tool_and_story_inputs_cannot_fabricate_current_acceptance(self):
+        for relative in (verify.TOOL_MANIFEST, verify.TOOL_RANGE, verify.TOOL_RECEIPT):
+            with self.subTest(relative=relative), self.case():
+                self.replace_source(relative, self.source_bodies[relative].replace(b"4.35.2", b"4.32.0"))
+                self.rejected("recorded tool")
+        with self.case():
+            self.replace_source(verify.PLATFORM_TRACKER, self.source_bodies[verify.PLATFORM_TRACKER].replace(b"done", b"backlog"))
+            self.rejected("recorded Platform story status changed")
+        with self.case():
+            self.edit(CONFIG, lambda d: d["catalogCoherenceObservation"].update(acceptanceEvidence="hosted-qualified"))
+            self.rejected("configuration requirements")
 
     def test_missing_module_key_preserves_hold_in_cli_failure(self):
         self.edit(CONFIG, lambda d: d["moduleConfiguration"]["folders-workers"]["values"].pop("APP_API_TOKEN"))
@@ -657,9 +971,9 @@ class PacketMutationTests(DisposablePacket):
 class CurrentSourceBindingTests(unittest.TestCase):
     """Real checkout binding is a separate gate from synthetic safety mutations."""
 
-    def test_current_proposal_binds_all_31_real_sources(self):
+    def test_current_proposal_binds_all_52_real_sources(self):
         config = json.loads((DIRECTORY / CONFIG).read_bytes())
-        self.assertEqual(31, len(verify.SOURCES))
+        self.assertEqual(52, len(verify.SOURCES))
         self.assertEqual(set(verify.SOURCES), set(config["sourceInputs"]))
         for relative in verify.SOURCES:
             with self.subTest(relative=relative):
@@ -693,7 +1007,7 @@ class CurrentSourceBindingTests(unittest.TestCase):
                             self.assertNotIn(str(root), str(raised.exception))
                         finally:
                             path.write_bytes(original)
-            self.assertEqual(31, len(config["sourceInputs"]))
+            self.assertEqual(52, len(config["sourceInputs"]))
 
 
 if __name__ == "__main__":

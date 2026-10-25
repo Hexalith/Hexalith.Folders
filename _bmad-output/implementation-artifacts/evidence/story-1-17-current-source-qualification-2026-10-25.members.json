@@ -1,0 +1,399 @@
+{
+  "archivePath": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-source-qualification-2026-10-25.artifacts.tar.gz",
+  "archiveSha256": "16147f8820c34dde9a352fc6d4f2835254400fe8457d512b93399963b94bffa2",
+  "members": {
+    "baseline/before.json": {
+      "bytes": 1543,
+      "sha256": "a18f77a91555972ac6fbca8ad138a455e2ed14e7325a42c6e0d53e7cd12de9df"
+    },
+    "current-packet/README.md": {
+      "bytes": 7874,
+      "sha256": "d3820fb25e87418a5ac27a697455c246622a363a47e31ba110c173ebecc17369"
+    },
+    "current-packet/configuration.proposed.json": {
+      "bytes": 47752,
+      "sha256": "29360427d70f4fb7ae956c0504df4e937d54e21622c0d7f7f9d20bfb9d6b92a7"
+    },
+    "current-packet/staging-checks.json": {
+      "bytes": 29833,
+      "sha256": "6e6459c7a7cde18b38487efbfbb4700c94e50de55be31ca84d0a2d16f940a500"
+    },
+    "current-packet/test_verify.py": {
+      "bytes": 49013,
+      "sha256": "836ad80dde001a7b5a8a0cd71f36064fe9c17d30358c264d5dca1d35fc0dc0ea"
+    },
+    "current-packet/verify.py": {
+      "bytes": 42989,
+      "sha256": "97ca2a77e4d10efc44c69255f69d578f60454a156860061b84a9efac5b1e0cd6"
+    },
+    "inspected-sources/Directory.Build.props": {
+      "bytes": 6861,
+      "sha256": "c29f98146c92a4a182cab16b393bf4760540f7180bb00277350ca3f2b6f612ea"
+    },
+    "inspected-sources/Directory.Packages.props": {
+      "bytes": 1314,
+      "sha256": "07287d602e3d782505a4b203b7f0c3e035add66febbe7d59720b13a6b5ac77a0"
+    },
+    "inspected-sources/_bmad-output/implementation-artifacts/story-1-17-first-install-decision-2026-10-18.md": {
+      "bytes": 8789,
+      "sha256": "f658c26f4939e2c6ef3217c30cde96e5fda17c985623338be4191957c1809d42"
+    },
+    "inspected-sources/deploy/dapr/production/sidecar-config-bindings.yaml": {
+      "bytes": 5573,
+      "sha256": "7949ab56f5e1b43ee0d847df2a7c55077b44824a5670c92bdc9e11b89a5a5e24"
+    },
+    "inspected-sources/docs/operations/container-images-and-dapr-app-ids.md": {
+      "bytes": 9913,
+      "sha256": "6fc6869b078e759ec6e79958bb286ed21d78410ede43b2f5853a77fe0f51e9f1"
+    },
+    "inspected-sources/docs/runbooks/rollback.md": {
+      "bytes": 21596,
+      "sha256": "191121ca0f52a1facb67750955035b33938983639876303ca41e6363e38b8f7f"
+    },
+    "inspected-sources/references/Hexalith.Builds/Props/Directory.Packages.props": {
+      "bytes": 30450,
+      "sha256": "c43f62b33c765e28519b6c72058c6317649ec53963d7cbe7f0d0ddabb3898375"
+    },
+    "inspected-sources/references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/DelegatedOwnerQueryClient.cs": {
+      "bytes": 3507,
+      "sha256": "cccb04219984dfed7d735f979d1af85847dfba76092da7e9d33c9320b6831b41"
+    },
+    "inspected-sources/references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/VerifiedQueryCaller.cs": {
+      "bytes": 2348,
+      "sha256": "b799b9b224ed6c9119608a0c79139f10b62e2460ee1f929c6c5140dc6fc8fa1a"
+    },
+    "inspected-sources/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/ConfigureWorkloadJwtBearerOptions.cs": {
+      "bytes": 3984,
+      "sha256": "7bb0693d6f4eb9c01783c7281a7762e970a45b03cd06ad8d3cb1d4a133ae27e2"
+    },
+    "inspected-sources/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreWorkloadAuthenticationExtensions.cs": {
+      "bytes": 13545,
+      "sha256": "3ec0bdd770539634d72f76207c2a796428bfd2ad61a506a48c7e0862433000eb"
+    },
+    "inspected-sources/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/JwtBearerAuthenticationContract.cs": {
+      "bytes": 11871,
+      "sha256": "bed9bdd1669248ad0b5ba89656bcb788c40498818c415a2cfcee6cee812d98d9"
+    },
+    "inspected-sources/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/JwtBearerAuthenticationOptions.cs": {
+      "bytes": 1491,
+      "sha256": "37df1d79fad5785caa286cdc30f88599c82eb5100e1a02b210282cfe1e33c112"
+    },
+    "inspected-sources/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/JwtWorkloadAssertionIssuer.cs": {
+      "bytes": 20922,
+      "sha256": "6b9206c966d03dac17cee1aa71d78d895f36f8160c12aee1a23d2ba4126d987b"
+    },
+    "inspected-sources/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/WorkloadAssertionIssuerOptions.cs": {
+      "bytes": 4956,
+      "sha256": "f1a014638a20e2ef9c3bfbd7480b7165ea233a8d0b12fd68ac341e33ce824b21"
+    },
+    "inspected-sources/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/WorkloadAuthenticationOptions.cs": {
+      "bytes": 2841,
+      "sha256": "6657d76484574922e569428848356063e0d2bee3ac3e8dd813e5fe1f45b03055"
+    },
+    "inspected-sources/references/Hexalith.Platform/.config/dotnet-tools.json": {
+      "bytes": 206,
+      "sha256": "5d72a022a9416cb753da75cda1b0f1945fd938c065521fd9946aaa525fe048da"
+    },
+    "inspected-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/1-13/pass-5/release/accepted-identities.json": {
+      "bytes": 4092,
+      "sha256": "3c65702098e93254d1a9c13497749811bfd67b231341ec0b136b852b605a3f4a"
+    },
+    "inspected-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/sprint-status.yaml": {
+      "bytes": 14609,
+      "sha256": "21f381f64d2c6803cde2d59d3814a8b3272aadf1873910192460a82c76d72b9a"
+    },
+    "inspected-sources/references/Hexalith.Platform/_bmad-output/planning-artifacts/architecture/architecture-platform-2026-09-27/ARCHITECTURE-SPINE.md": {
+      "bytes": 136030,
+      "sha256": "cc95a53ab85becee18f924cc9a1a915a2a05fcce8caed3a3d46643ee1051e936"
+    },
+    "inspected-sources/references/Hexalith.Platform/hexalith-platform.json": {
+      "bytes": 68,
+      "sha256": "3ba6c30a8d602bbc3216f0a4f9f90fb9e1f2e11ea985b4fb5058c3611149fb23"
+    },
+    "inspected-sources/references/Hexalith.Projects/Directory.Build.props": {
+      "bytes": 8708,
+      "sha256": "dd28973111bdb352af15b6e46c0793fe4137d94a6c68c122e0ecdce8fb27ca67"
+    },
+    "inspected-sources/references/Hexalith.Projects/Directory.Packages.props": {
+      "bytes": 1264,
+      "sha256": "db026ea147622209d4280cc35d27de75f3c2c5f480e8502272a2376ea0f07d5e"
+    },
+    "inspected-sources/references/Hexalith.Projects/src/Hexalith.Projects.Server/EventStoreGatewayTokenForwardingHandler.cs": {
+      "bytes": 2247,
+      "sha256": "c820387b535bbffab06c16e5f89fb04343a03613a3f192f342853e91a2374d99"
+    },
+    "inspected-sources/references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/DelegatedProjectFolderDirectory.cs": {
+      "bytes": 3181,
+      "sha256": "194230edcee11c1a842c1ff8274457e0083c8019af3a49afc1a04e94559209d4"
+    },
+    "inspected-sources/references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFileReferenceDirectory.cs": {
+      "bytes": 8773,
+      "sha256": "48292b6d2d91df8600e5fc53f626f2c619df275084ae23ac89e853cf963041e9"
+    },
+    "inspected-sources/references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFolderDirectory.cs": {
+      "bytes": 6220,
+      "sha256": "06648237244f0adf67590d81a3950a53fdaae36478ecea20f053413004a8f10c"
+    },
+    "inspected-sources/references/Hexalith.Projects/src/Hexalith.Projects.Server/ProjectsServerServiceCollectionExtensions.cs": {
+      "bytes": 21412,
+      "sha256": "8f9bbf440fb0ed536e2e1638a51ae2eff4ee20071b7029e03045cbacf2af3346"
+    },
+    "inspected-sources/src/Hexalith.Folders.AppHost/DaprComponents/statestore.yaml": {
+      "bytes": 1511,
+      "sha256": "011e2a9fdf4c7f1788024dc506934494e715e9f998b935f01fd604540bca7803"
+    },
+    "inspected-sources/src/Hexalith.Folders.Client/FoldersClientOptions.cs": {
+      "bytes": 1275,
+      "sha256": "176d153139af1f0ea0943c82cac3f98bd246d54ead96b9708df687e8e9580cb1"
+    },
+    "inspected-sources/src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs": {
+      "bytes": 1397690,
+      "sha256": "a17db79206935c2f837e9e08a9799a11b8a90d213d2f4ce0dcdc4d6e1fe1816f"
+    },
+    "inspected-sources/src/Hexalith.Folders.Contracts/FolderOwnerReadQuery.cs": {
+      "bytes": 373,
+      "sha256": "d45ed8b9042d7d4c84c6c71f431de874b8c43028f38d4ef233f9527b07759ee7"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/Authentication/FoldersAuthenticationServiceCollectionExtensions.cs": {
+      "bytes": 7373,
+      "sha256": "fbd504afe0d7728a9fa371afcb37b949b8c97162b6cda3e3b6f54a1240ca6a4d"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/Authentication/FoldersGatewayHumanBearerHandler.cs": {
+      "bytes": 1624,
+      "sha256": "7fc9d6c8877cdbab43ec834f3fe6a4405d5bf968a0c2b9cf972eeb7db1ae7ff9"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/Authentication/FoldersOidcOptions.cs": {
+      "bytes": 401,
+      "sha256": "af14f6338f85f5741a4d1879691c3c855204779fe9fc33b357dc8e7cb9c66ae2"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/Authentication/HumanAuthorityReceiptVerifier.cs": {
+      "bytes": 2963,
+      "sha256": "76ea41e92e628875b13a4dbb9708d68a7ea8e6a17c3d1516eab86be91fdac9d9"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/Content/AuthoritativeWorkspaceFileContextSource.cs": {
+      "bytes": 13013,
+      "sha256": "b572efde3c88873111bc3a51a679905833444647f76b186e636389a8864e0120"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/Content/WorkspaceContentAuthority.cs": {
+      "bytes": 15283,
+      "sha256": "8cd50f322613be8a0ef50fe4e59b02a00c057562c1c53feae901ce558b8782ec"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/Content/WorkspaceContentErasure.cs": {
+      "bytes": 4211,
+      "sha256": "262512785f92fa56a55e2a402e68e952d0b5a516f61d4dbf2da17ce366712971"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/Content/WorkspaceContentRetentionEndpoints.cs": {
+      "bytes": 4626,
+      "sha256": "be11bb6afbbf545367812ef56ec37663e65a2d3304c605ad99d65f74d63590ef"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/FoldersApiRouteTelemetry.cs": {
+      "bytes": 3225,
+      "sha256": "52d5588cd38c2d5ae0c3815fa0226eb4594ddc91475977d86cff6a9534294737"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/FoldersApiRouting.cs": {
+      "bytes": 1608,
+      "sha256": "5eaf1a36aaebd3039cba6279bb3d94396b2202801407036d2b3bd5caba0d89ce"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/FoldersServerHostComposition.cs": {
+      "bytes": 7692,
+      "sha256": "c085ae16fe4d566b46278885c51746462e2578470899f9010188f8080c4d4352"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs": {
+      "bytes": 13715,
+      "sha256": "a45a6c90caaee2bc0183998e8e2d949c54cf90d52a22e32071840955043bdc13"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/Queries/FolderOwnerQueryBinding.cs": {
+      "bytes": 1733,
+      "sha256": "6758d25a6e60d6ec9a45243f3b5b863f59c6c8b5cc752f01f8fe0608b22408e5"
+    },
+    "inspected-sources/src/Hexalith.Folders.Server/Queries/FolderOwnerReadQueryHandler.cs": {
+      "bytes": 5177,
+      "sha256": "ec11a3196e7752ae973e1919b4bb629a5a64f5010b0b6bfb796437b0cabfd463"
+    },
+    "inspected-sources/src/Hexalith.Folders.ServiceDefaults/Extensions.cs": {
+      "bytes": 5361,
+      "sha256": "0b7d96d99283d114b16e245c9412cfb3ba8aa8213ebfdb07fc5de723d37f8944"
+    },
+    "inspected-sources/src/Hexalith.Folders.UI/CompositionRoot.cs": {
+      "bytes": 9733,
+      "sha256": "0f801450a0f43a610e6ac3f3936d9be573b476000c7940a66e4a079773e5083a"
+    },
+    "inspected-sources/src/Hexalith.Folders.UI/Configuration/FoldersAuthenticationOptions.cs": {
+      "bytes": 478,
+      "sha256": "8dc9e92b967189714f7e082e7e14363abf3fd221d9c7dd474b692f5866199473"
+    },
+    "inspected-sources/src/Hexalith.Folders.Workers/FoldersTenantEventSubscriptionOptionsValidator.cs": {
+      "bytes": 2162,
+      "sha256": "74af7e9311da8dc6f881afc5631df3546613e8a4c8cf7adc02b9eecc69b7b3e6"
+    },
+    "inspected-sources/src/Hexalith.Folders.Workers/FoldersWorkersHostComposition.cs": {
+      "bytes": 1033,
+      "sha256": "e313c3aff1f644bf94117962973d962dd8cca08a7f969fa4f92020f4f78ac3bb"
+    },
+    "inspected-sources/src/Hexalith.Folders/Projections/TenantAccess/EventStoreFolderTenantAccessProjectionStore.cs": {
+      "bytes": 2751,
+      "sha256": "33fced4544ad8b3e382c1ab57018bad2927e7a9d08d4fd26da2e2434dad15c11"
+    },
+    "original-packet/README.md": {
+      "bytes": 14554,
+      "sha256": "916b5be04848fe08b349bd1bae320a964ffb094b5e1e27f769ea36552857adc6"
+    },
+    "original-packet/configuration.proposed.json": {
+      "bytes": 37719,
+      "sha256": "1815b9f171608a03cfc2d781877c63040c59f42f829a38bf9937aa43a21a7876"
+    },
+    "original-packet/staging-checks.json": {
+      "bytes": 27225,
+      "sha256": "8d44045e8e94fabb6d23c9d7d4be6d38a57ee2b5e591aa397fbbb3690b7a33f6"
+    },
+    "original-packet/test_verify.py": {
+      "bytes": 38214,
+      "sha256": "77ef2a3315301474eab716cfb443880af7e92fb9f824c863096ee49eef50561a"
+    },
+    "original-packet/verify.py": {
+      "bytes": 29481,
+      "sha256": "ee9569ec67d9cd017851823bbce650ba3b758c3ab4a3c542859bcb706dd6cac2"
+    },
+    "preserved-inputs/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml": {
+      "bytes": 273965,
+      "sha256": "65b672e9a5fbf7843926fed93e1cd484d0c7474a4d82ac1cdcf59965a2c1c8c2"
+    },
+    "preserved-inputs/_bmad-output/implementation-artifacts/sprint-status.yaml": {
+      "bytes": 37619,
+      "sha256": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40"
+    },
+    "preserved-inputs/_bmad-output/planning-artifacts/planning-story-manifest.yaml": {
+      "bytes": 178764,
+      "sha256": "ba04ee232dcf74da85127af481336c8a17539cf7b0a17e4b1e95bba7aab84837"
+    },
+    "replay.py": {
+      "bytes": 1083,
+      "sha256": "9d86fe327065dc77d1409b7f8fa76cedac4a867e85383e62f0c6d2f7d99042e0"
+    },
+    "run/Builds-Directory.Packages.props.diff": {
+      "bytes": 18704,
+      "sha256": "2fce0560a40a081ac74740cf2d3773b6a71f7d9907523ead63844167931c2122"
+    },
+    "run/Folders-FoldersGatewayHumanBearerHandler.cs.diff": {
+      "bytes": 1466,
+      "sha256": "1fefe3a7ee946595b310bd2e765ef39e1d4bb4791f0473f1412ca97a02777ff7"
+    },
+    "run/Folders-FoldersServerHostComposition.cs.diff": {
+      "bytes": 2230,
+      "sha256": "1f685fe0e8f1d7ca5c707be6805515913ee66bf5d3563cc2778ba3ae2dd2034c"
+    },
+    "run/Folders-HexalithFoldersClient.g.cs.diff": {
+      "bytes": 3294,
+      "sha256": "3928199d11008560a70f8a430efcf6aa2c2fd857ed76f827d5b1363f359e9a77"
+    },
+    "run/Folders-rollback.md.diff": {
+      "bytes": 6227,
+      "sha256": "ba71f844b7f24883785c50adb54889f56d7dde59ab44eec146770335b7b44783"
+    },
+    "run/Projects-FoldersProjectFileReferenceDirectory.cs.diff": {
+      "bytes": 972,
+      "sha256": "8ba00e6b911225258af7eb34e545afc9d049f947e06a178fbcbc4637b6b5508a"
+    },
+    "run/Projects-FoldersProjectFolderDirectory.cs.diff": {
+      "bytes": 907,
+      "sha256": "20cb895e7b989ace97b9100a7dc6c56cdf4132bd13084a63869bb5c33a74dc0a"
+    },
+    "run/Projects-ProjectsServerServiceCollectionExtensions.cs.diff": {
+      "bytes": 10825,
+      "sha256": "028bb40089720d6d3e7af51ca0e0ef878ebc1ca13255d99ef79b051750a77c15"
+    },
+    "run/audit-result.json": {
+      "bytes": 910,
+      "sha256": "27af57e3ffb00a9078cc3e5da8d49850ada005bcd23909d546d0b10f02c9dcb3"
+    },
+    "run/audit.py": {
+      "bytes": 3062,
+      "sha256": "8220397e30d593cefad8f4c647bfa979430a8a3a123040cbaec750edad9bc6f9"
+    },
+    "run/commands.json": {
+      "bytes": 1756,
+      "sha256": "a1355f1e2f6ae67c4fa84cd299d47d70a137740a73e1595957edacd9151dc2ad"
+    },
+    "run/complete-mutation-suite.txt": {
+      "bytes": 9314,
+      "sha256": "ff7d56753cde292c724cd319c593dfc8eb2339a6ec6b9290fee6ea35606eacfb"
+    },
+    "run/complete-tests.txt": {
+      "bytes": 9314,
+      "sha256": "2f48b6bdec39626030b7fbb496b0667ad951b2b87c9eeb783f8cd650488a10e5"
+    },
+    "run/current-verifier.txt": {
+      "bytes": 142,
+      "sha256": "ca0d5f23604bb0e4bfe5427ac5a41ed54788771d6b5b82bd6335f3aca18bd969"
+    },
+    "run/diff-check.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "run/final_checks.py": {
+      "bytes": 1243,
+      "sha256": "c4021b687466ee00ffbf5c4ef481d2ed569829c56602625a6628b0bafaf79b58"
+    },
+    "run/harden_inputs.py": {
+      "bytes": 5729,
+      "sha256": "d945c23f1a267f7addd01103eb1504e7b80cfd450f1ba1d1addb3b80fbafb735"
+    },
+    "run/hardened-tests.txt": {
+      "bytes": 12484,
+      "sha256": "199350940af4b829099efa74521dddc5cc2bcf674b5f9441ba8c5cc925d5f2d9"
+    },
+    "run/independent-audit.txt": {
+      "bytes": 910,
+      "sha256": "27af57e3ffb00a9078cc3e5da8d49850ada005bcd23909d546d0b10f02c9dcb3"
+    },
+    "run/initial-tests.txt": {
+      "bytes": 8745,
+      "sha256": "23cd30e8c325d5c060996bd17be63700de9f7a971e46c4832b3268e81e668676"
+    },
+    "run/inspected-source-deltas.json": {
+      "bytes": 5319,
+      "sha256": "f1a5a1cfc3e713fe4c748683c5f452d4b7d3fe2004582cf3179d3655aac05869"
+    },
+    "run/old-verifier.txt": {
+      "bytes": 155,
+      "sha256": "1eee9c9fbf41b4befc8f2526d6495c9ff4dc09325e225dee4055a36e9de0c5e5"
+    },
+    "run/preservation-before.json": {
+      "bytes": 1991489,
+      "sha256": "ce806393d3a218d6f72dbd6751576724211bfd4376a5f4a34b2ac46643e38a5f"
+    },
+    "run/readiness-before-agent.md": {
+      "bytes": 220422,
+      "sha256": "7c1916e0c7594342a2df50ac47311c46a9b7a99515f1ec0f03f77fd81c7f3763"
+    },
+    "run/reconcile.py": {
+      "bytes": 18303,
+      "sha256": "fbd0e9876ead3084a18b5b1e363e113b1418149767f9a7bd79fd2250da6cd0b3"
+    },
+    "run/reconciled-constants.json": {
+      "bytes": 5673,
+      "sha256": "d3d3a6d167162f20b56def4fc41ab3d7f7724a28fbf990d82aa140de51faae4d"
+    },
+    "run/reviewed-working-tree.diff": {
+      "bytes": 117263,
+      "sha256": "72234e5cea56d0afff74f0e857a52b76ff39ec77b762310aa395add194500de2"
+    },
+    "run/source-deltas.json": {
+      "bytes": 1901,
+      "sha256": "2893fe225b72902f31550fe40ff383f9c864f228b38dc372b96c0ae6939b3d4e"
+    },
+    "run/spec-before-agent.md": {
+      "bytes": 80139,
+      "sha256": "d3d7d8e8b2295aa1b1949ef29cb176e8b5e99c7d135edca5513b7c466623203d"
+    },
+    "run/update_tests.py": {
+      "bytes": 9601,
+      "sha256": "eb1ef2781fd6a173b979996535bebfc99e2f200a1d40c466753e652393733f78"
+    },
+    "run/update_verifier.py": {
+      "bytes": 10272,
+      "sha256": "c52f90aceb69b15d800bbf979e12301e5a88f03b40994c52b9738b80522c6721"
+    }
+  },
+  "embeddedMemberManifestSha256": "34b003cc57d9f6aae435ccf5d73c0317e6b25092f72550486b734d785bcb6f74"
+}
