@@ -1,0 +1,117 @@
+{
+  "recordId": "STORY-1-17-OWNER-INTAKE-2026-10-25",
+  "recordedAtUtc": "2026-10-25T16:43:26.919332+00:00",
+  "status": "Sealed local packet; ordinary/adoption/current tuple/release/hosted acceptance HOLD",
+  "archive": {
+    "path": "story-1-17-owner-intake-2026-10-25.artifacts.tar.gz",
+    "sha256": "504012dfebd645e604f55469d3369b2b262817479cd6532c11cb867d0516509c",
+    "bytes": 19743175
+  },
+  "memberManifest": {
+    "path": "story-1-17-owner-intake-2026-10-25.members.json",
+    "sha256": "bcecfa15e76bb30398aae64f45633020b046ccccea5feb9c3daac6ef251407ea",
+    "bytes": 66062
+  },
+  "handoff": {
+    "path": "../story-1-17-owner-intake-handoff-2026-10-25.json",
+    "sha256": "25e870b572043a26073e0a118ad243d80fe790d46b07d926ca13e5d67df58075"
+  },
+  "decisions": {
+    "path": "../story-1-17-owner-intake-decisions-2026-10-25.json",
+    "sha256": "8d2c72f3095836edeb8375eae2689ca167a140dab776804473c2ad3a16c4d4d3"
+  },
+  "readableDecisions": {
+    "path": "../story-1-17-owner-intake-decisions-2026-10-25.md",
+    "sha256": "23c3c73cae07938a77b576a3fa87b065cb301d2f2a610c843e1c77f1d2b40f45"
+  },
+  "priorReceipt": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25.json",
+    "sha256": "65d75f34951d934bca54a0f2a74b59928e9bcd8517a66092fcb2164dda9f657b",
+    "bytes": 4587
+  },
+  "outcomes": {
+    "ordinaryExitCode": 3,
+    "ordinaryRuleId": "HXW001",
+    "declarationPasses": 3,
+    "declarationsMissing": 2,
+    "adoptionFailures": 5,
+    "adoptionDiagnostics": 267,
+    "ownerDecisions": 11,
+    "hostingCandidates": 14,
+    "applicationBuilds": 0
+  },
+  "reuse": {
+    "bindings": 10049,
+    "statuses": {
+      "unchanged": 9816,
+      "changed": 143,
+      "unavailable": 90
+    },
+    "byScope": {
+      "current-cache": {
+        "unchanged": 671
+      },
+      "current-sdk": {
+        "unchanged": 512
+      },
+      "current-workspace": {
+        "unchanged": 7339,
+        "changed": 143
+      },
+      "retained-capsule-only": {
+        "unchanged": 1294
+      },
+      "unretained-temporary-input": {
+        "unavailable": 90
+      }
+    },
+    "profiles": 231,
+    "byteReuseEligibleProfiles": 108,
+    "priorAuditSha256": "edb89811bd4644211b10a68377f563a3b7cb8a40fdd03abf0694fd71104ca3c8",
+    "priorProfilesSha256": "7c5e475314b1df5e5833766652cd65241585c4b7eb85cb40ebe87879ba2d7f91",
+    "policy": "Current workspace/cache/SDK bindings freshly rehashed; retained-only and unavailable scopes preserve earlier sealed observations. Eligibility is bounded to listed input bytes. No command rerun, current whole-tuple qualification, release or hosted acceptance inferred."
+  },
+  "compiledBindings": {
+    "total": 864,
+    "unchanged": 836,
+    "changed": 28
+  },
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false,
+    "stagingChecksExecuted": 0
+  },
+  "stagingChecks": {
+    "total": 14,
+    "executed": 0
+  },
+  "preservation": {
+    "repositories": 12,
+    "trackedChanges": [
+      ".gitattributes additive preservation patterns"
+    ],
+    "parentAndTrackerBytesUnchanged": true,
+    "priorReceiptBoundFilesUnchanged": true
+  },
+  "completionSourceStability": {
+    "checkedAtUtc": "2026-10-25T16:30:44.482331+00:00",
+    "snapshot": "after.json",
+    "sourceBindingsStable": true,
+    "repositories": 12,
+    "investigationBindings": 168,
+    "compiledBindings": 864,
+    "auditDiagnosticBindings": 267,
+    "priorReceiptBoundFiles": 6,
+    "currentSourcePackageSdkBindingsRechecked": 8665
+  },
+  "replay": "Extract archive into a fresh directory; python3 -B replay.py --receipt /absolute/path/to/this/receipt.json (also python3 -B -O).",
+  "verification": {
+    "path": "story-1-17-owner-intake-2026-10-25.verification.json",
+    "sha256": "7b609e0ca2e4954eb6b84147d9ae1e783cebb07e3b3fc216430f338527e2008e",
+    "bytes": 1873
+  }
+}
