@@ -14,8 +14,8 @@ public sealed class WorkspaceFileContextQueryHandler(
     IUtcClock clock,
     ILogger<WorkspaceFileContextQueryHandler>? logger = null)
 {
-    public const string MetadataActionToken = "read_metadata";
-    public const string ContentActionToken = "read_file_content";
+    public const string MetadataActionToken = "mutate_files";
+    public const string ContentActionToken = "mutate_files";
 
     private const string ActorPresentIdentifier = "actor_present";
     private const string SnapshotPerTask = "snapshot_per_task";
@@ -53,8 +53,7 @@ public sealed class WorkspaceFileContextQueryHandler(
             ? ContentActionToken
             : MetadataActionToken;
 
-        LayeredFolderAuthorizationResult authorization = await authorizationService.AuthorizeCurrentMetadataReadAsync(
-            new LayeredFolderAuthorizationContext(
+        LayeredFolderAuthorizationContext authorityContext = new(
                 query.AuthoritativeTenantId,
                 query.PrincipalId,
                 ActorPresentIdentifier,
@@ -65,7 +64,9 @@ public sealed class WorkspaceFileContextQueryHandler(
                 query.CorrelationId,
                 query.TaskId,
                 query.ClientControlledTenantValues,
-                query.ClientControlledPrincipalValues),
+                query.ClientControlledPrincipalValues);
+        LayeredFolderAuthorizationResult authorization = await authorizationService.AuthorizeCurrentContextReadAsync(
+            authorityContext,
             cancellationToken).ConfigureAwait(false);
 
         if (!authorization.IsAllowed || authorization.AllowedContext is null)
@@ -76,16 +77,22 @@ public sealed class WorkspaceFileContextQueryHandler(
             return SafeResult(MapAuthorizationDenial(authorization), query, authorization);
         }
 
-        PathPreparationResult pathPreparation = await PreparePathsAsync(query, cancellationToken).ConfigureAwait(false);
+        PathPreparationResult pathPreparation = await PreparePathsAsync(query, authorityContext, cancellationToken).ConfigureAwait(false);
         if (pathPreparation.Code is not null)
         {
-            return SafeResult(pathPreparation.Code.Value, query);
+            return SafeResult(pathPreparation.Code.Value, query, pathPreparation.AuthorizationDenial);
         }
 
         WorkspaceFileContextResultCode? boundsFailure = ValidateC4Bounds(query);
         if (boundsFailure is not null)
         {
             return SafeResult(boundsFailure.Value, query);
+        }
+
+        authorization = await authorizationService.AuthorizeCurrentContextReadAsync(authorityContext, cancellationToken).ConfigureAwait(false);
+        if (!authorization.IsAllowed || authorization.AllowedContext is null)
+        {
+            return SafeResult(MapAuthorizationDenial(authorization), query, authorization);
         }
 
         int limit = EffectiveLimit(query);
@@ -127,6 +134,7 @@ public sealed class WorkspaceFileContextQueryHandler(
 
     private async Task<PathPreparationResult> PreparePathsAsync(
         WorkspaceFileContextQuery query,
+        LayeredFolderAuthorizationContext authorityContext,
         CancellationToken cancellationToken)
     {
         IReadOnlyList<PathMetadata> paths = query.Kind == WorkspaceFileContextQueryKind.Range
@@ -167,6 +175,13 @@ public sealed class WorkspaceFileContextQueryHandler(
             WorkspacePathSensitivityResult sensitivity = await sensitivityClassifier
                 .ClassifyAsync(path, cancellationToken)
                 .ConfigureAwait(false);
+
+            LayeredFolderAuthorizationResult currentAuthority = await authorizationService
+                .AuthorizeCurrentContextReadAsync(authorityContext, cancellationToken).ConfigureAwait(false);
+            if (!currentAuthority.IsAllowed || currentAuthority.AllowedContext is null)
+            {
+                return new(MapAuthorizationDenial(currentAuthority), [], currentAuthority);
+            }
 
             if (sensitivity.Decision == WorkspaceFileSensitivityDecision.Unavailable)
             {
@@ -378,12 +393,13 @@ public sealed class WorkspaceFileContextQueryHandler(
             LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable
                 or LayeredAuthorizationOutcomeCodes.TenantProjectionStale
                 or LayeredAuthorizationOutcomeCodes.FolderAclUnavailable
-                or LayeredAuthorizationOutcomeCodes.FolderAclStale => WorkspaceFileContextResultCode.ReadModelUnavailable,
+                or LayeredAuthorizationOutcomeCodes.FolderAclStale
+                or LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed => WorkspaceFileContextResultCode.ReadModelUnavailable,
+            LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied when authorization.Decision.Retryable => WorkspaceFileContextResultCode.ReadModelUnavailable,
             LayeredAuthorizationOutcomeCodes.DaprPolicyDenied when authorization.Decision.Retryable => WorkspaceFileContextResultCode.ReadModelUnavailable,
             LayeredAuthorizationOutcomeCodes.DaprPolicyDenied
                 or LayeredAuthorizationOutcomeCodes.ClaimTransformDenied
                 or LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied
-                or LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed
                 or LayeredAuthorizationOutcomeCodes.TenantAccessDenied => WorkspaceFileContextResultCode.AuthorizationDenied,
             _ => WorkspaceFileContextResultCode.ReadModelUnavailable,
         };
@@ -401,5 +417,6 @@ public sealed class WorkspaceFileContextQueryHandler(
 
     private sealed record PathPreparationResult(
         WorkspaceFileContextResultCode? Code,
-        IReadOnlyList<WorkspaceFileContextQueryPath> Paths);
+        IReadOnlyList<WorkspaceFileContextQueryPath> Paths,
+        LayeredFolderAuthorizationResult? AuthorizationDenial = null);
 }

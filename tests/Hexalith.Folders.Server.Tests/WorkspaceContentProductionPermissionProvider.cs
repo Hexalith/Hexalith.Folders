@@ -33,6 +33,8 @@ namespace Hexalith.Folders.Server.Tests;
 internal sealed class WorkspaceContentProductionPermissionProvider : IFolderPermissionEvidenceProvider
 {
     internal bool Allowed = true;
+    /// <summary>Allows loss of current permission evidence during a protected read.</summary>
+    internal string? Watermark = "permission_watermark_v1";
     public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(FolderPermissionEvidenceRequest request, CancellationToken cancellationToken = default)
-        => Task.FromResult(Allowed ? FolderPermissionEvidenceResult.Allowed("permission_watermark_v1", organizationId: "tenant-a") : FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, null));
+        => Task.FromResult(Allowed ? FolderPermissionEvidenceResult.Allowed(Watermark, organizationId: "tenant-a") : FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, null));
 }

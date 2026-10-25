@@ -17,6 +17,25 @@ public sealed class Pd10ConformanceSetTests
     private static readonly string RepositoryRoot = FindRepositoryRoot();
 
     [Fact]
+    public void InventoryCoversEveryRuntimeAndTestCompileInputIncludingExtractedHelpers()
+    {
+        HashSet<string> inventory = ListedCandidatePaths();
+        const string rootsPath = "scripts/pd10-v2-coverage-roots.txt";
+        inventory.ShouldContain(rootsPath);
+        foreach (string root in File.ReadAllLines(Path.Combine(RepositoryRoot, rootsPath)))
+        {
+            Directory.Exists(Path.Combine(RepositoryRoot, root)).ShouldBeTrue(root);
+            string[] compileInputs = Directory.EnumerateFiles(Path.Combine(RepositoryRoot, root), "*", SearchOption.AllDirectories)
+                .Where(path => Path.GetExtension(path) is ".cs" or ".csproj")
+                .Select(path => Path.GetRelativePath(RepositoryRoot, path).Replace('\\', '/'))
+                .Where(path => !path.Split('/').Any(segment => segment is "bin" or "obj"))
+                .ToArray();
+            compileInputs.ShouldNotBeEmpty(root);
+            foreach (string input in compileInputs) inventory.ShouldContain(input, $"Unbound compile input: {input}");
+        }
+    }
+
+    [Fact]
     public void CurrentSourceInventoryPreservesHistoricalEvidenceAndRequiresRequalification()
     {
         const string previous = "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml";
@@ -66,10 +85,32 @@ public sealed class Pd10ConformanceSetTests
             .ShouldBe(Scalar(root, "authorization_matrix_sha256"));
 
         entries.Select(entry => entry.Path).ToHashSet(StringComparer.Ordinal)
-            .SetEquals(IndependentCandidatePaths()).ShouldBeTrue();
+            .SetEquals(ListedCandidatePaths()).ShouldBeTrue();
         entries.Select(entry => entry.Path).ShouldNotContain(".github/workflows/release.yml");
         entries.Select(entry => entry.Path).ShouldNotContain("Directory.Packages.props");
         entries.Select(entry => entry.Path).ShouldNotContain(path => path.StartsWith("references/", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void CandidateCoverageIncludesIndependentRuntimeDependencyClosure()
+        => Pd10CandidateCoverage.MissingPaths(RepositoryRoot, ListedCandidatePaths()).ShouldBeEmpty();
+
+    [Theory]
+    [InlineData("src/shared/AdapterCore/SafeBearerTokenHandler.cs")]
+    [InlineData("src/Hexalith.Folders.Cli/Composition/FoldersClientFactory.cs")]
+    [InlineData("src/Hexalith.Folders.Cli/Program.cs")]
+    [InlineData("src/Hexalith.Folders.Mcp/Composition/FoldersClientRegistration.cs")]
+    [InlineData("src/Hexalith.Folders.Mcp/Tools/FileTools.cs")]
+    [InlineData("src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj")]
+    [InlineData("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj")]
+    [InlineData("src/Hexalith.Folders/Aggregates/StreamNameSegment.cs")]
+    [InlineData("src/Hexalith.Folders/Hashing/LengthPrefixedHash.cs")]
+    [InlineData("src/Hexalith.Folders.Server/Authentication/HumanAuthorityReceiptVerifier.cs")]
+    public void CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency(string removedPath)
+    {
+        HashSet<string> complete = Pd10CandidateCoverage.RequiredPaths(RepositoryRoot);
+        complete.Remove(removedPath).ShouldBeTrue();
+        Pd10CandidateCoverage.MissingPaths(RepositoryRoot, complete).ShouldBe([removedPath]);
     }
 
     [Fact]
@@ -139,7 +180,7 @@ public sealed class Pd10ConformanceSetTests
     private static string Sha256(byte[] bytes) =>
         Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
 
-    private static HashSet<string> IndependentCandidatePaths()
+    private static HashSet<string> ListedCandidatePaths()
         => File.ReadAllLines(Path.Combine(RepositoryRoot, StoryOwnedPathsPath))
             .Select(static line => line.Trim())
             .Where(static line => line.Length > 0)

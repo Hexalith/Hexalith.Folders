@@ -7,6 +7,9 @@ public sealed record EventStoreClaimTransformEvidence(
     bool IsPresent,
     bool Malformed)
 {
+    /// <summary>Gets the verified delegating principal's claims when this is a delegated transport identity.</summary>
+    public EventStoreClaimTransformEvidence? Delegator { get; init; }
+
     public static EventStoreClaimTransformEvidence Allowed(
         string? tenantId,
         string? principalId,

@@ -9,4 +9,8 @@ internal sealed record PreauthorizedRequestState(
     string? OrganizationId,
     string CandidateActionToken,
     string HistoricalActionToken,
-    string? DelegatorPrincipalId);
+    string? DelegatorPrincipalId)
+{
+    /// <summary>Gets the task scope established by the outer protected-operation boundary.</summary>
+    public string? TaskId { get; init; }
+}

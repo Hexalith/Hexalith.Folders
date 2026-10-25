@@ -3368,7 +3368,7 @@ public sealed class GoldenLifecycleParityTests
             publication.Version.ShouldBe(1);
             publication.LockFence.ShouldBe(1);
             publication.ReceiptId.ShouldNotBeNullOrWhiteSpace();
-            host.SeedWorkspacePermissions("tenant-a", "tenant-a", "folder-addfile", "user-a", "read_file_content");
+            host.SeedWorkspacePermissions("tenant-a", "tenant-a", "folder-addfile", "user-a", "mutate_files");
             using (IServiceScope contentScope = host.Services.CreateScope())
             {
                 IAuthoritativeContentStore contentStore = contentScope.ServiceProvider.GetRequiredService<IAuthoritativeContentStore>();
@@ -3409,10 +3409,10 @@ public sealed class GoldenLifecycleParityTests
             }
 
             // ---- Step 7: ListFolderFiles (context query) — query → 200 (REST + SDK equivalence) ----
-            // The candidate requires mutate_files and the content handler independently rechecks current
-            // read_metadata authority. Seed both grants so REST and SDK reach the authorized content source.
+            // Context reads require WRITE at both boundaries. READ alone must be denied before
+            // observation; fresh WRITE must let REST and SDK reach the authorized content source.
             const string contextFolder = "folder_context_001";
-            SeedPermissionsForAction(host.Permissions, "tenant-a", "tenant-a", contextFolder, "user-a", "mutate_files");
+            SeedPermissionsForAction(host.Permissions, "tenant-a", "tenant-a", contextFolder, "user-a", "read_metadata");
             using (HttpRequestMessage deniedListRequest = new(HttpMethod.Get, $"/api/v2/folders/{contextFolder}/workspaces/{CandidateWorkspace}/context/tree?limit=10"))
             {
                 deniedListRequest.Headers.Add("X-Correlation-Id", "correlation_context_denied");
@@ -3430,7 +3430,7 @@ public sealed class GoldenLifecycleParityTests
                 deniedProblem.GetProperty("retryable").GetBoolean().ShouldBeFalse();
                 deniedProblem.GetProperty("details").EnumerateObject().Select(static property => property.Name).ShouldBe(["visibility"]);
                 deniedProblem.GetProperty("details").GetProperty("visibility").GetString().ShouldBe("redacted");
-                host.ContextSourceCalls.ShouldBe(0, "mutate_files alone must be denied before the context source is called.");
+                host.ContextSourceCalls.ShouldBe(0, "READ alone must be denied before the context source is called.");
             }
 
             host.SeedContextReadPermissions("tenant-a", "tenant-a", contextFolder, "user-a", "mutate_files");

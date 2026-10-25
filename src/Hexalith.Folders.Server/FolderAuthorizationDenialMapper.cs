@@ -69,10 +69,13 @@ public static class FolderAuthorizationDenialMapper
                 (StatusCodes.Status403Forbidden, "policy_denied"),
             LayeredAuthorizationOutcomeCodes.ClaimTransformDenied =>
                 (StatusCodes.Status403Forbidden, "authorization_denied"),
+            LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied when decision.Retryable =>
+                (StatusCodes.Status503ServiceUnavailable, "read_model_unavailable"),
             LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied =>
                 (StatusCodes.Status403Forbidden, "authorization_denied"),
             LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed =>
-                (StatusCodes.Status403Forbidden, "authorization_denied"),
+                decision.Retryable ? (StatusCodes.Status503ServiceUnavailable, "read_model_unavailable")
+                    : (StatusCodes.Status403Forbidden, "authorization_denied"),
             LayeredAuthorizationOutcomeCodes.TenantAccessDenied =>
                 (StatusCodes.Status403Forbidden, "tenant_access_denied"),
             _ => (StatusCodes.Status403Forbidden, "authorization_denied"),

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Text.Json;
 
 using Hexalith.Folders;
@@ -254,7 +255,7 @@ public sealed class FileContextEndpointTests
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
         json.ShouldContain("\"contentBytes\":\"YQ==\"");
-        source.Requests.ShouldHaveSingleItem().ActionToken.ShouldBe("read_file_content");
+        source.Requests.ShouldHaveSingleItem().ActionToken.ShouldBe("mutate_files");
     }
 
     [Theory]
@@ -453,6 +454,15 @@ public sealed class FileContextEndpointTests
 
         configure?.Invoke(builder);
         WebApplication app = builder.Build();
+        app.Use(async (context, next) =>
+        {
+            if (tenantId is not null && principalId is not null)
+            {
+                context.User = new ClaimsPrincipal(new ClaimsIdentity(
+                    [new("eventstore:tenant", tenantId), new("sub", principalId)], "context-test"));
+            }
+            await next(context).ConfigureAwait(true);
+        });
         app.MapFoldersServerEndpoints();
         return app;
     }

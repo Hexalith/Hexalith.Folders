@@ -27,6 +27,15 @@ public sealed class LayeredFolderAuthorizationService(
             includeFolderAcl: true, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>Rechecks explicit WRITE and both delegated principals before protected context observation.</summary>
+    public Task<LayeredFolderAuthorizationResult> AuthorizeCurrentContextReadAsync(
+        LayeredFolderAuthorizationContext context, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        return ReauthorizeCurrentAsync(context with { ActionToken = "mutate_files", OperationPolicy = LayeredFolderOperationPolicy.StrictRead() },
+            includeFolderAcl: true, cancellationToken, requireCompleteFreshness: true);
+    }
+
     /// <summary>Runs the complete authorization stack for an operation that has no existing folder ACL scope.</summary>
     internal Task<LayeredFolderAuthorizationResult> AuthorizeTenantScopedAsync(
         LayeredFolderAuthorizationContext context,
@@ -39,6 +48,7 @@ public sealed class LayeredFolderAuthorizationService(
         bool initializing,
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(context);
         LayeredFolderAuthorizationResult authorization = await ReauthorizeMutationAsync(
             context, includeFolderAcl: !initializing, cancellationToken).ConfigureAwait(false);
         if (!authorization.IsAllowed || !initializing)
@@ -58,7 +68,8 @@ public sealed class LayeredFolderAuthorizationService(
     private async Task<LayeredFolderAuthorizationResult> AuthorizeCoreAsync(
         LayeredFolderAuthorizationContext context,
         bool includeFolderAcl,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        bool requireCompleteFreshness = false)
     {
         ArgumentNullException.ThrowIfNull(context);
 
@@ -119,6 +130,11 @@ public sealed class LayeredFolderAuthorizationService(
         }
 
         evaluatedLayers.Add(AuthorizationLayer.EventStoreClaimTransform);
+        if (requireCompleteFreshness && (!context.ClaimTransformEvidence.IsPresent || context.ClaimTransformEvidence.Malformed))
+        {
+            return Deny(AuthorizationLayer.EventStoreClaimTransform, LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
+                context, actorSafeIdentifier, evaluatedLayers, "unavailable", retryable: true);
+        }
         if (HasClientControlledMismatch(context.AuthoritativeTenantId, context.ClientControlledTenantValues)
             || HasClientControlledMismatch(context.PrincipalId, context.ClientControlledPrincipalValues)
             || !IsClaimTransformEvidenceValid(context))
@@ -143,6 +159,13 @@ public sealed class LayeredFolderAuthorizationService(
             ? await tenantAccessAuthorizer.AuthorizeDiagnosticReadAsync(tenantAccessContext, cancellationToken).ConfigureAwait(false)
             : await tenantAccessAuthorizer.AuthorizeMutationAsync(tenantAccessContext, cancellationToken).ConfigureAwait(false);
 
+        if (requireCompleteFreshness && tenantAccess.FreshnessStatus == TenantProjectionFreshnessStatus.Fresh
+            && string.IsNullOrWhiteSpace(tenantAccess.ProjectionWatermark))
+        {
+            return Deny(AuthorizationLayer.TenantAccessFreshness, LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable,
+                context, actorSafeIdentifier, evaluatedLayers, "unavailable", retryable: true);
+        }
+
         if (!tenantAccess.IsAllowed)
         {
             return Deny(
@@ -154,7 +177,8 @@ public sealed class LayeredFolderAuthorizationService(
                 freshnessClass: MapFreshness(tenantAccess.FreshnessStatus),
                 freshnessWatermark: tenantAccess.ProjectionWatermark,
                 retryable: tenantAccess.Outcome is TenantAccessOutcome.StaleProjection
-                    or TenantAccessOutcome.UnavailableProjection);
+                    or TenantAccessOutcome.UnavailableProjection
+                    || requireCompleteFreshness && tenantAccess.Outcome is TenantAccessOutcome.MalformedEvidence or TenantAccessOutcome.ReplayConflict);
         }
 
         if (tenantAccess.TenantId is not null
@@ -166,10 +190,18 @@ public sealed class LayeredFolderAuthorizationService(
                 context,
                 actorSafeIdentifier,
                 evaluatedLayers,
-                freshnessClass: "malformed");
+                freshnessClass: "malformed",
+                retryable: requireCompleteFreshness);
         }
 
         string managedTenantId = authoritativeTenantId;
+
+        if (requireCompleteFreshness && (tenantAccess.FreshnessStatus != TenantProjectionFreshnessStatus.Fresh
+            || string.IsNullOrWhiteSpace(tenantAccess.ProjectionWatermark)))
+        {
+            return Deny(AuthorizationLayer.TenantAccessFreshness, LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable,
+                context, actorSafeIdentifier, evaluatedLayers, "unavailable", retryable: true);
+        }
 
         string? folderWatermark = tenantAccess.ProjectionWatermark;
         string folderFreshnessClass = MapFreshness(tenantAccess.FreshnessStatus);
@@ -208,6 +240,17 @@ public sealed class LayeredFolderAuthorizationService(
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 folderEvidence = FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Unavailable, null);
+            }
+
+            if (requireCompleteFreshness
+                && (folderEvidence.Status is FolderPermissionEvidenceStatus.Stale or FolderPermissionEvidenceStatus.Unavailable
+                    or FolderPermissionEvidenceStatus.Malformed
+                    || !string.Equals(folderEvidence.FreshnessClass, "fresh", StringComparison.Ordinal)
+                    || folderEvidence.Status == FolderPermissionEvidenceStatus.Allowed
+                        && string.IsNullOrWhiteSpace(folderEvidence.FreshnessWatermark)))
+            {
+                return Deny(AuthorizationLayer.FolderAcl, LayeredAuthorizationOutcomeCodes.FolderAclUnavailable,
+                    context, actorSafeIdentifier, evaluatedLayers, "unavailable", retryable: true);
             }
 
             if (folderEvidence.Status != FolderPermissionEvidenceStatus.Allowed)
@@ -255,6 +298,13 @@ public sealed class LayeredFolderAuthorizationService(
             validatorResult = EventStoreAuthorizationValidationResult.Unavailable();
         }
 
+        if (requireCompleteFreshness && validatorResult.Status == EventStoreAuthorizationValidationStatus.Allowed
+            && !string.Equals(validatorResult.FreshnessClass, "fresh", StringComparison.Ordinal))
+        {
+            return Deny(AuthorizationLayer.EventStoreValidator, LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied,
+                context, actorSafeIdentifier, evaluatedLayers, validatorResult.FreshnessClass, retryable: true);
+        }
+
         if (validatorResult.Status != EventStoreAuthorizationValidationStatus.Allowed)
         {
             return Deny(
@@ -265,7 +315,8 @@ public sealed class LayeredFolderAuthorizationService(
                 evaluatedLayers,
                 validatorResult.FreshnessClass,
                 validatorResult.FreshnessWatermark,
-                validatorResult.Retryable);
+                validatorResult.Retryable || requireCompleteFreshness
+                    && validatorResult.Status == EventStoreAuthorizationValidationStatus.Malformed);
         }
 
         string? watermarkAfterValidator = folderWatermark ?? validatorResult.FreshnessWatermark;
@@ -291,6 +342,13 @@ public sealed class LayeredFolderAuthorizationService(
             daprEvidence = DaprPolicyEvidenceResult.Unavailable("dapr_policy_unavailable");
         }
 
+        if (requireCompleteFreshness && daprEvidence.Status == DaprPolicyEvidenceStatus.Allowed
+            && !string.Equals(daprEvidence.FreshnessClass, "fresh", StringComparison.Ordinal))
+        {
+            return Deny(AuthorizationLayer.DaprDenyByDefaultPolicy, LayeredAuthorizationOutcomeCodes.DaprPolicyDenied,
+                context, actorSafeIdentifier, evaluatedLayers, daprEvidence.FreshnessClass, retryable: true);
+        }
+
         if (daprEvidence.Status != DaprPolicyEvidenceStatus.Allowed)
         {
             return Deny(
@@ -301,7 +359,7 @@ public sealed class LayeredFolderAuthorizationService(
                 evaluatedLayers,
                 daprEvidence.FreshnessClass,
                 daprEvidence.FreshnessWatermark,
-                daprEvidence.Retryable);
+                daprEvidence.Retryable || requireCompleteFreshness && daprEvidence.Status == DaprPolicyEvidenceStatus.Malformed);
         }
 
         string? finalWatermark = watermarkAfterValidator ?? daprEvidence.FreshnessWatermark;
@@ -346,6 +404,13 @@ public sealed class LayeredFolderAuthorizationService(
         LayeredFolderAuthorizationContext context,
         bool includeFolderAcl,
         CancellationToken cancellationToken = default)
+        => await ReauthorizeCurrentAsync(context, includeFolderAcl, cancellationToken).ConfigureAwait(false);
+
+    private async Task<LayeredFolderAuthorizationResult> ReauthorizeCurrentAsync(
+        LayeredFolderAuthorizationContext context,
+        bool includeFolderAcl,
+        CancellationToken cancellationToken,
+        bool requireCompleteFreshness = false)
     {
         ArgumentNullException.ThrowIfNull(context);
         LayeredFolderAuthorizationContext freshContext = includeFolderAcl
@@ -354,19 +419,41 @@ public sealed class LayeredFolderAuthorizationService(
         PreauthorizedRequestState? preauthorized = PreauthorizedRequestContext.Current;
         if (preauthorized is null)
         {
-            return await AuthorizeCoreAsync(freshContext, includeFolderAcl, cancellationToken).ConfigureAwait(false);
+            LayeredFolderAuthorizationResult currentActor = await AuthorizeCoreAsync(
+                freshContext, includeFolderAcl, cancellationToken, requireCompleteFreshness).ConfigureAwait(false);
+            if (!requireCompleteFreshness || !currentActor.IsAllowed || freshContext.ClaimTransformEvidence.Delegator is not { } delegation)
+            {
+                return currentActor;
+            }
+
+            if (!delegation.IsPresent || delegation.Malformed || string.IsNullOrWhiteSpace(delegation.PrincipalId))
+            {
+                return Deny(AuthorizationLayer.EventStoreClaimTransform, LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
+                    freshContext, SafeActorIdentifier(freshContext), currentActor.EvaluatedLayers, "unavailable", retryable: true);
+            }
+
+            LayeredFolderAuthorizationResult currentDelegator = await AuthorizeCoreAsync(freshContext with
+            {
+                PrincipalId = delegation.PrincipalId,
+                ActorSafeIdentifier = freshContext.PrincipalId,
+                ClaimTransformEvidence = delegation,
+                ClientControlledPrincipalValues = null,
+            }, includeFolderAcl, cancellationToken, requireCompleteFreshness).ConfigureAwait(false);
+            return currentDelegator.IsAllowed ? currentActor : currentDelegator;
         }
 
         if (!PreauthorizedRequestContext.Covers(
                 freshContext.AuthoritativeTenantId,
                 freshContext.PrincipalId,
                 freshContext.OperationScope,
-                freshContext.ActionToken))
+                freshContext.ActionToken)
+            || requireCompleteFreshness && (!string.Equals(preauthorized.TaskId, freshContext.TaskId, StringComparison.Ordinal)
+                || !string.Equals(preauthorized.CandidateActionToken, "mutate_files", StringComparison.Ordinal)))
         {
             return LayeredFolderAuthorizationResult.Denied(
                 Snapshot(
                     AuthorizationLayer.EventStoreClaimTransform,
-                    LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
+                    requireCompleteFreshness ? LayeredAuthorizationOutcomeCodes.FolderAclDenied : LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
                     retryable: false,
                     freshnessClass: "malformed",
                     freshnessWatermark: null,
@@ -388,7 +475,7 @@ public sealed class LayeredFolderAuthorizationService(
         LayeredFolderAuthorizationResult actor = await AuthorizeCoreAsync(
             actorContext,
             includeFolderAcl,
-            cancellationToken).ConfigureAwait(false);
+            cancellationToken, requireCompleteFreshness).ConfigureAwait(false);
         if (!actor.IsAllowed || actor.AllowedContext is null || preauthorized.DelegatorPrincipalId is null)
         {
             return actor;
@@ -407,7 +494,7 @@ public sealed class LayeredFolderAuthorizationService(
         LayeredFolderAuthorizationResult delegator = await AuthorizeCoreAsync(
             delegatorContext,
             includeFolderAcl,
-            cancellationToken).ConfigureAwait(false);
+            cancellationToken, requireCompleteFreshness).ConfigureAwait(false);
         return delegator.IsAllowed ? actor : delegator;
     }
 

@@ -120,6 +120,7 @@ public sealed class WorkspaceContentProductionTests
     [InlineData("revoke")]
     [InlineData("remove")]
     [InlineData("policy")]
+    [InlineData("watermark")]
     public async Task RangeCannotDisclose416AfterCurrentStateChangesDuringSensitivityAwait(string change)
     {
         var fixture = await WorkspaceContentProductionFixture.CreateAsync().ConfigureAwait(true);
@@ -128,6 +129,7 @@ public sealed class WorkspaceContentProductionTests
         fixture.Sensitivity.After = async () =>
         {
             if (change == "revoke") fixture.Permissions.Allowed = false;
+            else if (change == "watermark") fixture.Permissions.Watermark = null;
             else if (change == "remove") _ = await fixture.PublishAsync("docs/a.txt", "", accepted, remove: true).ConfigureAwait(true);
             else fixture.App.Configuration["Folders:WorkspaceFilePolicy:Excludes:0"] = "docs/**";
         };
@@ -136,6 +138,33 @@ public sealed class WorkspaceContentProductionTests
         result.Status.ShouldNotBe(WorkspaceFileContextSourceStatus.RangeUnsatisfiable);
         result.Status.ShouldNotBe(WorkspaceFileContextSourceStatus.Available);
         result.Range.ShouldBeNull(); result.Items.ShouldBeEmpty(); result.ContentBytes.ShouldBeNull();
+        if (change == "watermark")
+        {
+            result.Status.ShouldBe(WorkspaceFileContextSourceStatus.Unavailable);
+            fixture.State.ContentPublications.ShouldContain(pair => pair.Value.ReceiptId == accepted.ContentBinding!.ReceiptId);
+            fixture.State.FileIdentities[accepted.OwnerFileId!].Active.ShouldBeTrue();
+        }
+    }
+
+    [Fact]
+    public async Task DirectLegacyContentReauthorizationPreservesTheRequestTaskInValidatorContexts()
+    {
+        var fixture = await WorkspaceContentProductionFixture.CreateAsync().ConfigureAwait(true);
+        await using var cleanup = fixture.ConfigureAwait(true);
+        var accepted = await fixture.PublishAsync("docs/a.txt", "original").ConfigureAwait(true);
+        using var scope = fixture.Scope();
+        fixture.Validator.Requests.Clear();
+        var result = await scope.ServiceProvider.GetRequiredService<IWorkspaceFileContextSource>()
+            .QueryAsync(fixture.RangeRequest(0, 1), TestContext.Current.CancellationToken).ConfigureAwait(true);
+        result.Status.ShouldBe(WorkspaceFileContextSourceStatus.Available);
+        fixture.Validator.Requests.ShouldNotBeEmpty();
+        foreach (var request in fixture.Validator.Requests)
+        {
+            request.SafeContext.TaskId.ShouldBe(accepted.TaskId);
+            request.SafeContext.OperationScope.ShouldBe("folder-a");
+            request.SafeContext.ActionToken.ShouldBe("mutate_files");
+        }
+        fixture.State.ContentPublications.ShouldContain(pair => pair.Value.ReceiptId == accepted.ContentBinding!.ReceiptId);
     }
 
     [Fact]

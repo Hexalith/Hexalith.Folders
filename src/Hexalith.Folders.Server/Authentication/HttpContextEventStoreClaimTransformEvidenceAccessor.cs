@@ -48,6 +48,22 @@ public sealed class HttpContextEventStoreClaimTransformEvidenceAccessor(IHttpCon
         IEnumerable<string> permissions = user.FindAll(PermissionClaimType)
             .Select(static claim => claim.Value);
 
-        return EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, permissions);
+        EventStoreClaimTransformEvidence actor = EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, permissions);
+        string[] delegators = user.FindAll("eventstore:delegator").Select(static claim => claim.Value).ToArray();
+        string[] delegatedPermissions = user.FindAll("eventstore:delegator-permission").Select(static claim => claim.Value).ToArray();
+        if (delegators.Length == 0 && delegatedPermissions.Length == 0)
+        {
+            return actor;
+        }
+
+        bool complete = delegators.Length > 0 && delegators.All(static value => !string.IsNullOrWhiteSpace(value))
+            && delegators.Distinct(StringComparer.Ordinal).Count() == 1
+            && !string.Equals(delegators[0], principalId, StringComparison.Ordinal)
+            && delegatedPermissions.Length > 0 && delegatedPermissions.All(static value => !string.IsNullOrWhiteSpace(value));
+        return actor with
+        {
+            Delegator = complete ? EventStoreClaimTransformEvidence.Allowed(tenantId, delegators[0], delegatedPermissions)
+                : EventStoreClaimTransformEvidence.MalformedEvidence(),
+        };
     }
 }

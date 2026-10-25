@@ -345,7 +345,10 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                             context.Items.TryGetValue(AuthorizedOrganizationItem, out object? organization) ? organization as string : null,
                             descriptor.ActionToken,
                             descriptor.HistoricalActionToken,
-                            context.Items.TryGetValue(AuthorizedDelegatorItem, out object? delegator) ? delegator as string : null);
+                            context.Items.TryGetValue(AuthorizedDelegatorItem, out object? delegator) ? delegator as string : null)
+                        {
+                            TaskId = Header(context, "X-Hexalith-Task-Id") ?? Value(routeValues, "taskId"),
+                        };
                         try
                         {
                             PreauthorizedRequestContext.Begin(preauthorized);
@@ -1632,8 +1635,7 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             && !string.IsNullOrWhiteSpace(delegatorId)
             && !string.Equals(delegatorId, actorId, StringComparison.Ordinal)
             && rawPermissions.Length > 0
-            && rawPermissions.All(static value => !string.IsNullOrWhiteSpace(value))
-            && permissions.Contains(actionToken, StringComparer.Ordinal);
+            && rawPermissions.All(static value => !string.IsNullOrWhiteSpace(value));
         return usable
             ? (true, true, delegatorId, EventStoreClaimTransformEvidence.Allowed(tenantId, delegatorId, permissions))
             : (true, false, delegatorId, null);

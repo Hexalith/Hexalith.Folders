@@ -37,6 +37,8 @@ internal sealed class WorkspaceContentProductionFixture : IAsyncDisposable
     internal readonly WorkspaceContentProductionClock Clock = new();
     internal readonly WorkspaceContentProductionSensitivityClassifier Sensitivity = new();
     internal readonly WorkspaceContentProductionPermissionProvider Permissions = new();
+    /// <summary>Records the validator contexts used by real content reauthorization.</summary>
+    internal readonly WorkspaceContentProductionValidator Validator = new();
     internal readonly ClaimsPrincipal Principal = new(new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, "user-a")], "production-test"));
     internal ContentScope ContentScope { get; } = new("tenant-a", "folders", "folder-a", "workspace-a");
     internal WebApplication App { get; private set; } = null!;
@@ -53,6 +55,7 @@ internal sealed class WorkspaceContentProductionFixture : IAsyncDisposable
             Replace<DaprClient>(builder, fixture.Dapr); Replace<IEventStoreGatewayClient>(builder, fixture.Gateway);
             Replace<TimeProvider>(builder, fixture.Clock); Replace<IWorkspaceFileSensitivityClassifier>(builder, fixture.Sensitivity);
             Replace<IFolderPermissionEvidenceProvider>(builder, fixture.Permissions);
+            Replace<IEventStoreAuthorizationValidator>(builder, fixture.Validator);
             if (expireAfterPreparation)
             {
                 builder.Services.RemoveAll<IFolderRepository>(); builder.Services.AddScoped<IFolderRepository, ActorFoldedFolderRepository>();
@@ -85,7 +88,7 @@ internal sealed class WorkspaceContentProductionFixture : IAsyncDisposable
         return scope;
     }
     internal static PathMetadata Path(string path) => new(path, path.Split('/')[^1], "content_allowed", "NFC");
-    internal WorkspaceFileContextSourceRequest RangeRequest(long start, long end) => new(WorkspaceFileContextQueryKind.Range, "tenant-a", "folder-a", "workspace-a", "user-a", "read_file_content", _task, "correlation-a", null,
+    internal WorkspaceFileContextSourceRequest RangeRequest(long start, long end) => new(WorkspaceFileContextQueryKind.Range, "tenant-a", "folder-a", "workspace-a", "user-a", "mutate_files", _task, "correlation-a", null,
         [new(Path("docs/a.txt"), "digest", "content_allowed", "tenant_sensitive", "not_redacted")], null, null, 1, null, start, end);
     internal Task<ContentReceipt> StageAsync(byte[] bytes) => _seed.UploadAsync(Principal,
         new(ContentScope, _task, Convert.ToHexStringLower(SHA256.HashData(bytes)), bytes.Length, "text/plain"), new MemoryStream(bytes), TestContext.Current.CancellationToken);

@@ -1,0 +1,11 @@
+src/Hexalith.Folders
+src/Hexalith.Folders.Cli
+src/Hexalith.Folders.Client
+src/Hexalith.Folders.Mcp
+src/Hexalith.Folders.Server
+src/shared
+tests/Hexalith.Folders.Contracts.Tests
+tests/Hexalith.Folders.IntegrationTests
+tests/Hexalith.Folders.Server.Tests
+tests/Hexalith.Folders.Tests
+tests/shared

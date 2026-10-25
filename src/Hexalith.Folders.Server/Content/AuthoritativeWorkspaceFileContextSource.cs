@@ -14,7 +14,8 @@ namespace Hexalith.Folders.Server.Content;
 /// <summary>Shapes only policy-visible source-bound SDK content metadata and exact bounded body ranges.</summary>
 internal sealed class AuthoritativeWorkspaceFileContextSource(IAuthoritativeContentStore store,
     WorkspaceContentStateReader source, IWorkspaceFilePolicySource policies, IHttpContextAccessor http, TimeProvider clock,
-    IWorkspaceFileSensitivityClassifier sensitivities, ILogger<AuthoritativeWorkspaceFileContextSource> logger)
+    IWorkspaceFileSensitivityClassifier sensitivities, ILogger<AuthoritativeWorkspaceFileContextSource> logger,
+    IContentAuthority authority)
     : IWorkspaceFileContextSource
 {
     public async Task<WorkspaceFileContextSourceResult> QueryAsync(WorkspaceFileContextSourceRequest request,
@@ -30,10 +31,12 @@ internal sealed class AuthoritativeWorkspaceFileContextSource(IAuthoritativeCont
         try
         {
             var token = deadline.Token;
+            http.HttpContext!.Items[WorkspaceContentAuthority.TaskItem] = request.TaskId;
+            var scope = new ContentScope(request.ManagedTenantId, "folders", request.FolderId, request.WorkspaceId);
+            await authority.AuthorizeAsync(http.HttpContext!.User, scope, ContentOperation.Read, scope, token).ConfigureAwait(false);
             var policy = policies.Capture();
             if (policy.ProtectionMode != "non_confidential") return Failure(WorkspaceFileContextSourceStatus.NotFoundSafe);
             http.HttpContext!.Items[WorkspaceContentAuthority.ActionItem] = request.ActionToken;
-            var scope = new ContentScope(request.ManagedTenantId, "folders", request.FolderId, request.WorkspaceId);
             // Direct paths are checked before any namespace or body observation.
             if (request.Paths.Any(path => policy.Classify(path.Path) is "excluded" or "restricted"))
                 return Failure(WorkspaceFileContextSourceStatus.NotFoundSafe);

@@ -18,6 +18,8 @@ internal sealed class WorkspaceContentAuthority(LayeredFolderAuthorizationServic
     ILayeredFolderAuthorizationResultAccessor processAuthorization, WorkspaceContentStateReader source,
     IWorkspaceFilePolicySource policies, IEventStoreGatewayClient gateway, IHttpContextAccessor http, TimeProvider clock) : IContentAuthority
 {
+    /// <summary>Identifies the current context query task throughout scoped content reauthorization.</summary>
+    internal const string TaskItem = "Folders:WorkspaceContentTask";
     internal const string ActionItem = "Folders:WorkspaceContentAction";
     internal const string EvaluationItem = "Folders:WorkspaceContentEvaluation";
     private WorkspaceFilePolicySnapshot? _snapshot;
@@ -66,18 +68,22 @@ internal sealed class WorkspaceContentAuthority(LayeredFolderAuthorizationServic
             || principal.Identity?.IsAuthenticated != true || string.IsNullOrWhiteSpace(tenant.PrincipalId))
             throw new UnauthorizedAccessException();
         string action = operation == ContentOperation.Disposition ? "manage_folder_access"
+            : operation == ContentOperation.Read ? "mutate_files"
             : processAuthorization.Current?.AllowedContext?.ActionToken
                 ?? http.HttpContext?.Items[ActionItem] as string
                 ?? (operation == ContentOperation.Read ? "read_file_content" : "mutate_files");
-        bool mutation = action == "mutate_files" || operation == ContentOperation.Disposition;
+        bool mutation = operation != ContentOperation.Read && (action == "mutate_files" || operation == ContentOperation.Disposition);
+        string? readTaskId = http.HttpContext?.Items.TryGetValue(TaskItem, out object? currentTask) == true
+            ? currentTask as string : PreauthorizedRequestContext.Current?.TaskId;
         string? taskId = resource switch { ContentUploadRequest upload => upload.TaskId,
-            ContentUploadVerification upload => upload.TaskId, ContentPublicationRequest publication => publication.TaskId, _ => null };
+            ContentUploadVerification upload => upload.TaskId, ContentPublicationRequest publication => publication.TaskId,
+            _ => operation == ContentOperation.Read ? readTaskId : null };
         var context = new LayeredFolderAuthorizationContext(scope.TenantId, tenant.PrincipalId, tenant.PrincipalId,
             action, mutation ? LayeredFolderOperationPolicy.Mutation() : LayeredFolderOperationPolicy.StrictRead(),
             claims.GetEvidence(action), scope.AggregateId, null, taskId, null, null);
         var result = mutation
             ? await authorization.ReauthorizeTaskMutationAsync(context, cancellationToken).ConfigureAwait(false)
-            : await authorization.AuthorizeCurrentMetadataReadAsync(context, cancellationToken).ConfigureAwait(false);
+            : await authorization.AuthorizeCurrentContextReadAsync(context, cancellationToken).ConfigureAwait(false);
         if (!result.IsAllowed) throw result.Decision.Retryable ? new ContentUnavailableException() : new UnauthorizedAccessException();
         if (operation != ContentOperation.Disposition)
         {

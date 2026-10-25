@@ -89,11 +89,6 @@ public sealed class TenantAccessAuthorizer(
             return Result(TenantAccessOutcome.MalformedEvidence, projection);
         }
 
-        if (!projection.Enabled)
-        {
-            return Result(TenantAccessOutcome.DisabledTenant, projection);
-        }
-
         TimeSpan age = clock.UtcNow - projection.LastEventTimestamp.Value;
         if (age < TimeSpan.Zero)
         {
@@ -112,6 +107,11 @@ public sealed class TenantAccessAuthorizer(
         if (allowBoundedStale && age > options.DiagnosticStalenessBudget)
         {
             return Result(TenantAccessOutcome.StaleProjection, projection, age, freshness);
+        }
+
+        if (!projection.Enabled)
+        {
+            return Result(TenantAccessOutcome.DisabledTenant, projection, age, freshness);
         }
 
         if (string.IsNullOrWhiteSpace(context.PrincipalId)

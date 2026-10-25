@@ -15,6 +15,20 @@ BASELINE_COMMIT = "3f1056d998ac4688f36eb869c516812c1a4ddb71"
 MATRIX_PATH = "docs/contract/authorization-matrix.md"
 HISTORICAL_V1_PATH = "src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml"
 STORY_OWNED_PATHS_PATH = "scripts/pd10-v2-story-owned-paths.txt"
+COVERAGE_ROOTS_PATH = "scripts/pd10-v2-coverage-roots.txt"
+
+
+def required_runtime_paths(root: Path) -> set[str]:
+    """Cover complete runtime/test compile inputs, including future extracted helpers."""
+    required = {COVERAGE_ROOTS_PATH}
+    for relative_root in (root / COVERAGE_ROOTS_PATH).read_text(encoding="utf-8").splitlines():
+        directory = root / relative_root
+        if not relative_root or not directory.is_dir() or not directory.resolve().is_relative_to(root.resolve()):
+            raise RuntimeError(f"Invalid candidate coverage root: {relative_root}")
+        for path in directory.rglob("*"):
+            if path.suffix in {".cs", ".csproj"} and not {"bin", "obj"}.intersection(path.relative_to(root).parts):
+                required.add(path.relative_to(root).as_posix())
+    return required
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -30,6 +44,10 @@ def candidate_paths(root: Path, output: Path) -> list[str]:
     paths = [line.strip() for line in allowlist.read_text(encoding="utf-8").splitlines() if line.strip()]
     if paths != sorted(set(paths)):
         raise RuntimeError("The story-owned candidate path allowlist must be unique and ordinally sorted.")
+
+    missing = sorted(required_runtime_paths(root) - set(paths))
+    if missing:
+        raise RuntimeError("Candidate inventory omits runtime/test compile inputs: " + ", ".join(missing))
 
     resolved_output = output.resolve()
     for historical_input in (HISTORICAL_V1_PATH, PRIOR_CONFORMANCE_PATH):

@@ -36,12 +36,32 @@ public sealed class VerifiedReceiptEventStoreAuthorizationValidator(IHttpContext
                     || Content.WorkspaceContentRetentionEndpoints.Matches(httpContext))
                     && MatchesValidatedHuman(httpContext, request)),
             "strict_read" or "bounded_diagnostic_read" => verifiedRead
-                || (httpContext is not null && MatchesValidatedHuman(httpContext, request)),
+                || (httpContext is not null && (MatchesValidatedHuman(httpContext, request)
+                    || request.OperationPolicyClass == "strict_read" && MatchesStrictContextDelegation(httpContext, request))),
             _ => false,
         };
         return Task.FromResult(allowed
             ? EventStoreAuthorizationValidationResult.Allowed(null)
             : EventStoreAuthorizationValidationResult.Denied());
+    }
+
+    private static bool MatchesStrictContextDelegation(HttpContext context, EventStoreAuthorizationValidationRequest request)
+    {
+        if (context.User.Identity?.IsAuthenticated != true || request.SafeContext.ActionToken != "mutate_files"
+            || string.IsNullOrWhiteSpace(request.SafeContext.AuthoritativeTenantId)) return false;
+        string[] actors = context.User.FindAll("sub").Select(static claim => claim.Value).ToArray();
+        string[] tenants = context.User.FindAll("eventstore:tenant").Select(static claim => claim.Value).ToArray();
+        string[] delegators = context.User.FindAll("eventstore:delegator").Select(static claim => claim.Value).ToArray();
+        return actors.Length > 0 && actors.All(static value => !string.IsNullOrWhiteSpace(value))
+            && actors.Distinct(StringComparer.Ordinal).Count() == 1
+            && string.Equals(actors[0], request.SafeContext.ActorSafeIdentifier, StringComparison.Ordinal)
+            && tenants.Length > 0 && tenants.All(value => string.Equals(value, request.SafeContext.AuthoritativeTenantId, StringComparison.Ordinal))
+            && delegators.Length > 0 && delegators.All(static value => !string.IsNullOrWhiteSpace(value))
+            && delegators.Distinct(StringComparer.Ordinal).Count() == 1
+            && !string.Equals(delegators[0], actors[0], StringComparison.Ordinal)
+            && string.Equals(delegators[0], request.SafeContext.PrincipalId, StringComparison.Ordinal)
+            && context.User.HasClaim("eventstore:permission", request.SafeContext.ActionToken)
+            && context.User.HasClaim("eventstore:delegator-permission", request.SafeContext.ActionToken);
     }
 
     private static bool MatchesValidatedHuman(HttpContext context, EventStoreAuthorizationValidationRequest request)

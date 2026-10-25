@@ -160,7 +160,7 @@ public sealed class WorkspaceFileContextQueryHandlerTests
         request.FolderId.ShouldBe("folder-a");
         request.WorkspaceId.ShouldBe("workspace-a");
         request.PrincipalId.ShouldBe("user-a");
-        request.ActionToken.ShouldBe(kind is WorkspaceFileContextQueryKind.Range or WorkspaceFileContextQueryKind.Search ? "read_file_content" : "read_metadata");
+        request.ActionToken.ShouldBe("mutate_files");
         request.AuthorizationWatermark.ShouldBe("permission_watermark_v1");
 
         if (kind == WorkspaceFileContextQueryKind.Range)
@@ -286,7 +286,7 @@ public sealed class WorkspaceFileContextQueryHandlerTests
             "workspace-a",
             "tenant-a",
             "user-a",
-            EventStoreClaimTransformEvidence.Allowed("tenant-a", "user-a", [kind is WorkspaceFileContextQueryKind.Range or WorkspaceFileContextQueryKind.Search ? "read_file_content" : "read_metadata"]),
+            EventStoreClaimTransformEvidence.Allowed("tenant-a", "user-a", ["mutate_files"]),
             "correlation-a",
             "task-a",
             null,

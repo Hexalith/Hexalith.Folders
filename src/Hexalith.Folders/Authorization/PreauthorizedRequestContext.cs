@@ -29,7 +29,7 @@ internal static class PreauthorizedRequestContext
     /// <summary>Gets the active state for transport adapters that must project the reused decision.</summary>
     public static PreauthorizedRequestState? Current => CurrentState.Value;
 
-    /// <summary>Temporarily disables reuse while a protected mutation obtains fresh evidence.</summary>
+    /// <summary>Temporarily disables reuse while a protected effect or observation obtains fresh evidence.</summary>
     public static IDisposable SuppressReuse()
     {
         ReuseSuppressionDepth.Value++;
