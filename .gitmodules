@@ -38,3 +38,7 @@
 	path = references/Hexalith.McpCli
 	url = https://github.com/Hexalith/Hexalith.McpCli.git
 	update = none
+[submodule "Hexalith.Parties"]
+	path = references/Hexalith.Parties
+	url = https://github.com/Hexalith/Hexalith.Parties.git
+	update = none
