@@ -1,0 +1,1894 @@
+{
+  "record_id": "story-1-17-local-aspire-readiness-2026-10-25",
+  "recorded_at_utc": "2026-10-25T10:57:19.219752+00:00",
+  "scope": "Bounded local Aspire readiness continuation; broader Story 1.17 rollout remains on HOLD.",
+  "source": {
+    "folders_head": "72d66e58bb464ca00d543060dab33086a3429269",
+    "original_baseline": "37d348945b35620da6ba4e524a09bee202712460",
+    "runtime_or_configuration_changes": false,
+    "existing_memories_repair_preserved": true,
+    "initial_external_advance": {
+      "initial_root_observation": "befe1039b4a608997aab4e4846b597bd59ccd4af",
+      "before_preservation_snapshot": "72d66e58bb464ca00d543060dab33086a3429269",
+      "note": "An external commit recorded the five previously staged evidence/doc files during initial parent guidance loading, before both preservation snapshots. No tool in this implementation or parent run staged or committed. Unchanged revision/index claims are relative to the captured snapshots, not the earlier observation."
+    }
+  },
+  "diagnosis": {
+    "prior_attempt": "10:29:13 isolated start, followed by tunnel shutdown at 10:29:24.496, all three containers Running -> Stopping -> Unknown at 10:29:25\u201329, Docker object-not-found errors and missing isolated network. The recorded exact-AppHost stop began only at 10:31:49.776.",
+    "established_cause": "The old readiness wait observed removed container/network resources, not containers still undergoing normal startup.",
+    "removal_attribution": "The resource monitor PID 97107 exited while the distinct AppHost PID 96938 remained available. The reason for that DCP lifecycle loss and initiating removal actor/trigger remain unresolved. Bounded Docker events, service journal and kernel journal provide no retained attribution. The preceding exact-AppHost stop finished at 10:28:51.465; delayed cleanup remains an unproven hypothesis.",
+    "source_inspection": "No broad Docker cleanup in the Folders AppHost/helpers or EventStore/Memories hosting helpers. Forgejo smoke cleanup names only its own container/network. No source defect was reproduced.",
+    "recovery": "Fresh isolated start of the unchanged existing Debug/source output recovered the local topology. No package, container-image tag, source, configuration or cleanup workaround was introduced.",
+    "dcp_lifecycle_correlation": "Resource/container monitors shared PID 97107. At 10:29:26.304 child 98945 logged that monitor 97107 exited and it was shutting down; the AppHost/CLI identities were distinct and the AppHost remained available until the 10:31:49 stop. This supports DCP lifecycle loss as part of the failure; the reason for the monitor exit is not established."
+  },
+  "verification": {
+    "folders_wait": {
+      "exit": 0,
+      "completed_utc": "2026-10-25T10:51:04.249435+00:00",
+      "reported_elapsed_seconds": 18.6
+    },
+    "explicit_active_resource_waits": {
+      "total": 28,
+      "passed": 28,
+      "exits": [
+        0
+      ]
+    },
+    "hidden_inclusive_inventory": {
+      "total": 40,
+      "running_healthy": 28,
+      "idle_rebuilders": 6,
+      "declarative_dapr_sidecars_without_runtime_state": 6,
+      "unhealthy_waiting_unknown": 0,
+      "details": "Six projects, six actual Dapr CLI executables, dashboard, three containers, four Dapr components and eight parameters are healthy. Rebuilders are on-demand helpers; the six DaprSidecar model entries are represented at runtime by the six healthy Dapr executables."
+    },
+    "docker": "Three resource containers and the DCP tunnel were running with zero restarts/OOM/errors at 10:54:14; all four attached to the exact isolated bridge network.",
+    "stop": {
+      "exit": 0,
+      "completed_utc": "2026-10-25T10:54:22.164412+00:00",
+      "exact_folders_instance_absent": true
+    },
+    "unrelated_apphosts": "No commands targeted other AppHosts. FrontComposer remains running at PID 58939. Projects remains running, but changed externally from PID 37099 to 6968 between the before/after inventories.",
+    "new_build_or_unit_test_run": false,
+    "reason": "No executable code or configuration was changed; actual isolated topology readiness, container state and preservation checks are the relevant fresh checks."
+  },
+  "limits": [
+    "This proves local resource health at the recorded time, not authorization or user-flow end-to-end acceptance.",
+    "Keycloak console logs also emitted CLIENT_LOGIN_ERROR/invalid_request for the workload client after startup; authentication behavior was not exercised or qualified by these health checks. No credential, realm/user identifier or authority URL is retained.",
+    "The initiator of the earlier container/network removal remains unverified; no claim of a permanently fixed source defect or reproducible cleanup race.",
+    "Existing Debug assets were run without rebuilding. Earlier source/package builds and test suites remain dated evidence, not rerun results.",
+    "Exact current release, immutable hosted artifacts, source-identity qualification, target/data disposition, hosted identity/delegation, staging, operational observation/recovery, latency and closure remain pending."
+  ],
+  "checks": [
+    {
+      "id": "initial-apphosts",
+      "command": [
+        "aspire",
+        "ps",
+        "--non-interactive",
+        "--format",
+        "Json"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:50:34.267121+00:00",
+      "finished_utc": "2026-10-25T10:50:34.695373+00:00",
+      "exit": 0,
+      "output": [
+        {
+          "appHostPath": "/home/administrator/projects/hexalith/frontcomposer/src/Hexalith.FrontComposer.AppHost/Hexalith.FrontComposer.AppHost.csproj",
+          "appHostPid": 58939,
+          "status": "running",
+          "sdkVersion": "13.6.3"
+        },
+        {
+          "appHostPath": "/home/administrator/projects/hexalith/projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj",
+          "appHostPid": 37099,
+          "status": "running",
+          "sdkVersion": "13.6.3"
+        }
+      ]
+    },
+    {
+      "id": "initial-start",
+      "command": [
+        "env",
+        "UseNuGetDeps=false",
+        "aspire",
+        "start",
+        "--no-build",
+        "--isolated",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+        "--format",
+        "Json"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:50:34.737729+00:00",
+      "finished_utc": "2026-10-25T10:50:38.019971+00:00",
+      "exit": 0,
+      "output": {
+        "appHostPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+        "appHostPid": 37288
+      }
+    },
+    {
+      "id": "initial-state",
+      "command": [
+        "aspire",
+        "describe",
+        "--include-hidden",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+        "--format",
+        "Json"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:50:44.849325+00:00",
+      "finished_utc": "2026-10-25T10:50:45.265719+00:00",
+      "exit": 0,
+      "output": {
+        "keys": [
+          "resources"
+        ],
+        "resources": [
+          {
+            "name": "aspire-dashboard-rqrrujfw",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "eventstore-aakrbjqu",
+            "state": "Waiting"
+          },
+          {
+            "name": "eventstore-app-api-token",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "eventstore-dapr"
+          },
+          {
+            "name": "eventstore-dapr-cli-byafzhxa",
+            "state": "Waiting"
+          },
+          {
+            "name": "eventstore-rebuilder-ndwadpec",
+            "state": "NotStarted"
+          },
+          {
+            "name": "eventstore-workload-client-secret",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-app-api-token",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-dapr"
+          },
+          {
+            "name": "folders-dapr-cli-yvydkcqq",
+            "state": "Waiting"
+          },
+          {
+            "name": "folders-human-authority-receipt-key",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-idempotency-digest-key",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-rebuilder-fyzsbqtm",
+            "state": "NotStarted"
+          },
+          {
+            "name": "folders-ui-bfxkbygv",
+            "state": "Waiting"
+          },
+          {
+            "name": "folders-ui-dapr"
+          },
+          {
+            "name": "folders-ui-dapr-cli-baramzye",
+            "state": "Waiting"
+          },
+          {
+            "name": "folders-ui-rebuilder-dgcrkdtz",
+            "state": "NotStarted"
+          },
+          {
+            "name": "folders-workers-app-api-token",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-workers-dapr"
+          },
+          {
+            "name": "folders-workers-dapr-cli-npcfqtaa",
+            "state": "Waiting"
+          },
+          {
+            "name": "folders-workers-mykhhycz",
+            "state": "Waiting"
+          },
+          {
+            "name": "folders-workers-rebuilder-sgcutnuz",
+            "state": "NotStarted"
+          },
+          {
+            "name": "folders-yyffynqw",
+            "state": "Waiting"
+          },
+          {
+            "name": "memories-dapr"
+          },
+          {
+            "name": "memories-dapr-cli-mcayakxx",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "memories-graphs-gynektea",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "memories-llm",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "memories-rebuilder-aedcykwg",
+            "state": "NotStarted"
+          },
+          {
+            "name": "memories-secretstore",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "memories-vectors-ukekwwhh",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "memories-wssfkwqw",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "pubsub",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "security-eventstore-client-password",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "security-eventstore-client-username",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "security-ssgbshgc",
+            "state": "Running",
+            "healthStatus": "Unhealthy"
+          },
+          {
+            "name": "statestore",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "tenants-dapr"
+          },
+          {
+            "name": "tenants-dapr-cli-hpasxkky",
+            "state": "Waiting"
+          },
+          {
+            "name": "tenants-hecymhvj",
+            "state": "Waiting"
+          },
+          {
+            "name": "tenants-rebuilder-pcyujzsg",
+            "state": "NotStarted"
+          }
+        ]
+      }
+    },
+    {
+      "id": "initial-wait",
+      "command": [
+        "aspire",
+        "wait",
+        "folders",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:50:45.353976+00:00",
+      "finished_utc": "2026-10-25T10:51:04.249435+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'folders' to be healthy...\n\n\u2705 Resource 'folders' is healthy. (18.6s)"
+    },
+    {
+      "id": "ready-state",
+      "command": [
+        "aspire",
+        "describe",
+        "--include-hidden",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+        "--format",
+        "Json"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:51:38.924074+00:00",
+      "finished_utc": "2026-10-25T10:51:39.233143+00:00",
+      "exit": 0,
+      "output": {
+        "keys": [
+          "resources"
+        ],
+        "resources": [
+          {
+            "name": "aspire-dashboard-rqrrujfw",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "eventstore-aakrbjqu",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "eventstore-app-api-token",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "eventstore-dapr"
+          },
+          {
+            "name": "eventstore-dapr-cli-byafzhxa",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "eventstore-rebuilder-ndwadpec",
+            "state": "NotStarted"
+          },
+          {
+            "name": "eventstore-workload-client-secret",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-app-api-token",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-dapr"
+          },
+          {
+            "name": "folders-dapr-cli-yvydkcqq",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-human-authority-receipt-key",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-idempotency-digest-key",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-rebuilder-fyzsbqtm",
+            "state": "NotStarted"
+          },
+          {
+            "name": "folders-ui-bfxkbygv",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-ui-dapr"
+          },
+          {
+            "name": "folders-ui-dapr-cli-baramzye",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-ui-rebuilder-dgcrkdtz",
+            "state": "NotStarted"
+          },
+          {
+            "name": "folders-workers-app-api-token",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-workers-dapr"
+          },
+          {
+            "name": "folders-workers-dapr-cli-npcfqtaa",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-workers-mykhhycz",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "folders-workers-rebuilder-sgcutnuz",
+            "state": "NotStarted"
+          },
+          {
+            "name": "folders-yyffynqw",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "memories-dapr"
+          },
+          {
+            "name": "memories-dapr-cli-mcayakxx",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "memories-graphs-gynektea",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "memories-llm",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "memories-rebuilder-aedcykwg",
+            "state": "NotStarted"
+          },
+          {
+            "name": "memories-secretstore",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "memories-vectors-ukekwwhh",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "memories-wssfkwqw",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "pubsub",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "security-eventstore-client-password",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "security-eventstore-client-username",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "security-ssgbshgc",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "statestore",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "tenants-dapr"
+          },
+          {
+            "name": "tenants-dapr-cli-hpasxkky",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "tenants-hecymhvj",
+            "state": "Running",
+            "healthStatus": "Healthy"
+          },
+          {
+            "name": "tenants-rebuilder-pcyujzsg",
+            "state": "NotStarted"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wait-eventstore-app-api-token",
+      "command": [
+        "aspire",
+        "wait",
+        "eventstore-app-api-token",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:39.228400+00:00",
+      "finished_utc": "2026-10-25T10:53:39.671430+00:00",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "id": "wait-eventstore-aakrbjqu",
+      "command": [
+        "aspire",
+        "wait",
+        "eventstore-aakrbjqu",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:39.234232+00:00",
+      "finished_utc": "2026-10-25T10:53:39.689084+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'eventstore-aakrbjqu' to be healthy...\n\n\u2705 Resource 'eventstore-aakrbjqu' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-eventstore-dapr-cli-byafzhxa",
+      "command": [
+        "aspire",
+        "wait",
+        "eventstore-dapr-cli-byafzhxa",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:39.240123+00:00",
+      "finished_utc": "2026-10-25T10:53:39.738612+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'eventstore-dapr-cli-byafzhxa' to be healthy...\n\n\u2705 Resource 'eventstore-dapr-cli-byafzhxa' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-aspire-dashboard-rqrrujfw",
+      "command": [
+        "aspire",
+        "wait",
+        "aspire-dashboard-rqrrujfw",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:39.271579+00:00",
+      "finished_utc": "2026-10-25T10:53:39.822615+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'aspire-dashboard-rqrrujfw' to be healthy...\n\n\u2705 Resource 'aspire-dashboard-rqrrujfw' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-folders-dapr-cli-yvydkcqq",
+      "command": [
+        "aspire",
+        "wait",
+        "folders-dapr-cli-yvydkcqq",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:39.796410+00:00",
+      "finished_utc": "2026-10-25T10:53:40.270628+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'folders-dapr-cli-yvydkcqq' to be healthy...\n\n\u2705 Resource 'folders-dapr-cli-yvydkcqq' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-eventstore-workload-client-secret",
+      "command": [
+        "aspire",
+        "wait",
+        "eventstore-workload-client-secret",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:39.822313+00:00",
+      "finished_utc": "2026-10-25T10:53:40.357988+00:00",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "id": "wait-folders-app-api-token",
+      "command": [
+        "aspire",
+        "wait",
+        "folders-app-api-token",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:39.839668+00:00",
+      "finished_utc": "2026-10-25T10:53:40.422712+00:00",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "id": "wait-folders-human-authority-receipt-key",
+      "command": [
+        "aspire",
+        "wait",
+        "folders-human-authority-receipt-key",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:39.994082+00:00",
+      "finished_utc": "2026-10-25T10:53:40.863376+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'folders-human-authority-receipt-key' to be healthy...\n\n\u2705 Resource 'folders-human-authority-receipt-key' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-folders-idempotency-digest-key",
+      "command": [
+        "aspire",
+        "wait",
+        "folders-idempotency-digest-key",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:40.448233+00:00",
+      "finished_utc": "2026-10-25T10:53:41.278892+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'folders-idempotency-digest-key' to be healthy...\n\n\u2705 Resource 'folders-idempotency-digest-key' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-folders-ui-bfxkbygv",
+      "command": [
+        "aspire",
+        "wait",
+        "folders-ui-bfxkbygv",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:40.560499+00:00",
+      "finished_utc": "2026-10-25T10:53:40.955594+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'folders-ui-bfxkbygv' to be healthy...\n\n\u2705 Resource 'folders-ui-bfxkbygv' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-folders-ui-dapr-cli-baramzye",
+      "command": [
+        "aspire",
+        "wait",
+        "folders-ui-dapr-cli-baramzye",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:40.616120+00:00",
+      "finished_utc": "2026-10-25T10:53:41.258533+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'folders-ui-dapr-cli-baramzye' to be healthy...\n\n\u2705 Resource 'folders-ui-dapr-cli-baramzye' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-folders-workers-dapr-cli-npcfqtaa",
+      "command": [
+        "aspire",
+        "wait",
+        "folders-workers-dapr-cli-npcfqtaa",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:41.087456+00:00",
+      "finished_utc": "2026-10-25T10:53:41.546698+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'folders-workers-dapr-cli-npcfqtaa' to be healthy...\n\n\u2705 Resource 'folders-workers-dapr-cli-npcfqtaa' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-folders-workers-app-api-token",
+      "command": [
+        "aspire",
+        "wait",
+        "folders-workers-app-api-token",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:41.118530+00:00",
+      "finished_utc": "2026-10-25T10:53:41.568187+00:00",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "id": "wait-folders-yyffynqw",
+      "command": [
+        "aspire",
+        "wait",
+        "folders-yyffynqw",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:41.430438+00:00",
+      "finished_utc": "2026-10-25T10:53:41.927360+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'folders-yyffynqw' to be healthy...\n\n\u2705 Resource 'folders-yyffynqw' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-folders-workers-mykhhycz",
+      "command": [
+        "aspire",
+        "wait",
+        "folders-workers-mykhhycz",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:41.450554+00:00",
+      "finished_utc": "2026-10-25T10:53:42.007766+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'folders-workers-mykhhycz' to be healthy...\n\n\u2705 Resource 'folders-workers-mykhhycz' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-memories-graphs-gynektea",
+      "command": [
+        "aspire",
+        "wait",
+        "memories-graphs-gynektea",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:41.720267+00:00",
+      "finished_utc": "2026-10-25T10:53:42.090948+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'memories-graphs-gynektea' to be healthy...\n\n\u2705 Resource 'memories-graphs-gynektea' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-memories-dapr-cli-mcayakxx",
+      "command": [
+        "aspire",
+        "wait",
+        "memories-dapr-cli-mcayakxx",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:41.742788+00:00",
+      "finished_utc": "2026-10-25T10:53:42.229454+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'memories-dapr-cli-mcayakxx' to be healthy...\n\n\u2705 Resource 'memories-dapr-cli-mcayakxx' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-memories-llm",
+      "command": [
+        "aspire",
+        "wait",
+        "memories-llm",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:42.082722+00:00",
+      "finished_utc": "2026-10-25T10:53:42.663882+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'memories-llm' to be healthy...\n\n\u2705 Resource 'memories-llm' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-memories-secretstore",
+      "command": [
+        "aspire",
+        "wait",
+        "memories-secretstore",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:42.169176+00:00",
+      "finished_utc": "2026-10-25T10:53:42.563741+00:00",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "id": "wait-memories-vectors-ukekwwhh",
+      "command": [
+        "aspire",
+        "wait",
+        "memories-vectors-ukekwwhh",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:42.225150+00:00",
+      "finished_utc": "2026-10-25T10:53:42.858029+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'memories-vectors-ukekwwhh' to be healthy...\n\n\u2705 Resource 'memories-vectors-ukekwwhh' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-memories-wssfkwqw",
+      "command": [
+        "aspire",
+        "wait",
+        "memories-wssfkwqw",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:42.277511+00:00",
+      "finished_utc": "2026-10-25T10:53:42.672994+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'memories-wssfkwqw' to be healthy...\n\n\u2705 Resource 'memories-wssfkwqw' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-pubsub",
+      "command": [
+        "aspire",
+        "wait",
+        "pubsub",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:42.644142+00:00",
+      "finished_utc": "2026-10-25T10:53:43.245998+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'pubsub' to be healthy...\n\n\u2705 Resource 'pubsub' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-security-eventstore-client-password",
+      "command": [
+        "aspire",
+        "wait",
+        "security-eventstore-client-password",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:42.719514+00:00",
+      "finished_utc": "2026-10-25T10:53:43.243942+00:00",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "id": "wait-security-eventstore-client-username",
+      "command": [
+        "aspire",
+        "wait",
+        "security-eventstore-client-username",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:42.791553+00:00",
+      "finished_utc": "2026-10-25T10:53:43.480597+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'security-eventstore-client-username' to be healthy...\n\n\u2705 Resource 'security-eventstore-client-username' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-security-ssgbshgc",
+      "command": [
+        "aspire",
+        "wait",
+        "security-ssgbshgc",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:42.907050+00:00",
+      "finished_utc": "2026-10-25T10:53:43.387346+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'security-ssgbshgc' to be healthy...\n\n\u2705 Resource 'security-ssgbshgc' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-tenants-dapr-cli-hpasxkky",
+      "command": [
+        "aspire",
+        "wait",
+        "tenants-dapr-cli-hpasxkky",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:43.332705+00:00",
+      "finished_utc": "2026-10-25T10:53:43.965297+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'tenants-dapr-cli-hpasxkky' to be healthy...\n\n\u2705 Resource 'tenants-dapr-cli-hpasxkky' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-statestore",
+      "command": [
+        "aspire",
+        "wait",
+        "statestore",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:43.366981+00:00",
+      "finished_utc": "2026-10-25T10:53:43.930289+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'statestore' to be healthy...\n\n\u2705 Resource 'statestore' is healthy. (0.0s)"
+    },
+    {
+      "id": "wait-tenants-hecymhvj",
+      "command": [
+        "aspire",
+        "wait",
+        "tenants-hecymhvj",
+        "--timeout",
+        "50",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:53:43.442722+00:00",
+      "finished_utc": "2026-10-25T10:53:43.943126+00:00",
+      "exit": 0,
+      "output": "Waiting for resource 'tenants-hecymhvj' to be healthy...\n\n\u2705 Resource 'tenants-hecymhvj' is healthy. (0.0s)"
+    },
+    {
+      "id": "final-ready-state",
+      "command": [
+        "aspire",
+        "describe",
+        "--include-hidden",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+        "--format",
+        "Json"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:54:13.487272+00:00",
+      "finished_utc": "2026-10-25T10:54:13.941862+00:00",
+      "exit": 0,
+      "output": {
+        "keys": [
+          "resources"
+        ],
+        "resources": [
+          {
+            "name": "aspire-dashboard-rqrrujfw",
+            "displayName": "aspire-dashboard",
+            "resourceType": "Executable",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "eventstore-aakrbjqu",
+            "displayName": "eventstore",
+            "resourceType": "Project",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": [
+              {
+                "type": "Reference",
+                "resourceName": "eventstore-app-api-token"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "folders-idempotency-digest-key"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "folders-human-authority-receipt-key"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "eventstore-workload-client-secret"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              }
+            ]
+          },
+          {
+            "name": "eventstore-app-api-token",
+            "displayName": "eventstore-app-api-token",
+            "resourceType": "Parameter",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "eventstore-dapr",
+            "displayName": "eventstore-dapr",
+            "resourceType": "DaprSidecar",
+            "relationships": []
+          },
+          {
+            "name": "eventstore-dapr-cli-byafzhxa",
+            "displayName": "eventstore-dapr-cli",
+            "resourceType": "Executable",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": [
+              {
+                "type": "Parent",
+                "resourceName": "eventstore-aakrbjqu"
+              }
+            ]
+          },
+          {
+            "name": "eventstore-rebuilder-ndwadpec",
+            "displayName": "eventstore-rebuilder",
+            "resourceType": "Executable",
+            "state": "NotStarted",
+            "relationships": [
+              {
+                "type": "Parent",
+                "resourceName": "eventstore-aakrbjqu"
+              }
+            ]
+          },
+          {
+            "name": "eventstore-workload-client-secret",
+            "displayName": "eventstore-workload-client-secret",
+            "resourceType": "Parameter",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "folders-app-api-token",
+            "displayName": "folders-app-api-token",
+            "resourceType": "Parameter",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "folders-dapr",
+            "displayName": "folders-dapr",
+            "resourceType": "DaprSidecar",
+            "relationships": []
+          },
+          {
+            "name": "folders-dapr-cli-yvydkcqq",
+            "displayName": "folders-dapr-cli",
+            "resourceType": "Executable",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": [
+              {
+                "type": "Parent",
+                "resourceName": "folders-yyffynqw"
+              }
+            ]
+          },
+          {
+            "name": "folders-human-authority-receipt-key",
+            "displayName": "folders-human-authority-receipt-key",
+            "resourceType": "Parameter",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "folders-idempotency-digest-key",
+            "displayName": "folders-idempotency-digest-key",
+            "resourceType": "Parameter",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "folders-rebuilder-fyzsbqtm",
+            "displayName": "folders-rebuilder",
+            "resourceType": "Executable",
+            "state": "NotStarted",
+            "relationships": [
+              {
+                "type": "Parent",
+                "resourceName": "folders-yyffynqw"
+              }
+            ]
+          },
+          {
+            "name": "folders-ui-bfxkbygv",
+            "displayName": "folders-ui",
+            "resourceType": "Project",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": [
+              {
+                "type": "Reference",
+                "resourceName": "folders-yyffynqw"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "folders-yyffynqw"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "folders-yyffynqw"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              }
+            ]
+          },
+          {
+            "name": "folders-ui-dapr",
+            "displayName": "folders-ui-dapr",
+            "resourceType": "DaprSidecar",
+            "relationships": []
+          },
+          {
+            "name": "folders-ui-dapr-cli-baramzye",
+            "displayName": "folders-ui-dapr-cli",
+            "resourceType": "Executable",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": [
+              {
+                "type": "Parent",
+                "resourceName": "folders-ui-bfxkbygv"
+              }
+            ]
+          },
+          {
+            "name": "folders-ui-rebuilder-dgcrkdtz",
+            "displayName": "folders-ui-rebuilder",
+            "resourceType": "Executable",
+            "state": "NotStarted",
+            "relationships": [
+              {
+                "type": "Parent",
+                "resourceName": "folders-ui-bfxkbygv"
+              }
+            ]
+          },
+          {
+            "name": "folders-workers-app-api-token",
+            "displayName": "folders-workers-app-api-token",
+            "resourceType": "Parameter",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "folders-workers-dapr",
+            "displayName": "folders-workers-dapr",
+            "resourceType": "DaprSidecar",
+            "relationships": []
+          },
+          {
+            "name": "folders-workers-dapr-cli-npcfqtaa",
+            "displayName": "folders-workers-dapr-cli",
+            "resourceType": "Executable",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": [
+              {
+                "type": "Parent",
+                "resourceName": "folders-workers-mykhhycz"
+              }
+            ]
+          },
+          {
+            "name": "folders-workers-mykhhycz",
+            "displayName": "folders-workers",
+            "resourceType": "Project",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": [
+              {
+                "type": "Reference",
+                "resourceName": "eventstore-aakrbjqu"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "tenants-hecymhvj"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "eventstore-aakrbjqu"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "tenants-hecymhvj"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "folders-workers-app-api-token"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              }
+            ]
+          },
+          {
+            "name": "folders-workers-rebuilder-sgcutnuz",
+            "displayName": "folders-workers-rebuilder",
+            "resourceType": "Executable",
+            "state": "NotStarted",
+            "relationships": [
+              {
+                "type": "Parent",
+                "resourceName": "folders-workers-mykhhycz"
+              }
+            ]
+          },
+          {
+            "name": "folders-yyffynqw",
+            "displayName": "folders",
+            "resourceType": "Project",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": [
+              {
+                "type": "Reference",
+                "resourceName": "folders-human-authority-receipt-key"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "eventstore-aakrbjqu"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "tenants-hecymhvj"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "eventstore-aakrbjqu"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "tenants-hecymhvj"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "folders-app-api-token"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              }
+            ]
+          },
+          {
+            "name": "memories-dapr",
+            "displayName": "memories-dapr",
+            "resourceType": "DaprSidecar",
+            "relationships": []
+          },
+          {
+            "name": "memories-dapr-cli-mcayakxx",
+            "displayName": "memories-dapr-cli",
+            "resourceType": "Executable",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": [
+              {
+                "type": "Parent",
+                "resourceName": "memories-wssfkwqw"
+              }
+            ]
+          },
+          {
+            "name": "memories-graphs-gynektea",
+            "displayName": "memories-graphs",
+            "resourceType": "Container",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "memories-llm",
+            "displayName": "memories-llm",
+            "resourceType": "DaprComponent",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "memories-rebuilder-aedcykwg",
+            "displayName": "memories-rebuilder",
+            "resourceType": "Executable",
+            "state": "NotStarted",
+            "relationships": [
+              {
+                "type": "Parent",
+                "resourceName": "memories-wssfkwqw"
+              }
+            ]
+          },
+          {
+            "name": "memories-secretstore",
+            "displayName": "memories-secretstore",
+            "resourceType": "DaprComponent",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "memories-vectors-ukekwwhh",
+            "displayName": "memories-vectors",
+            "resourceType": "Container",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "memories-wssfkwqw",
+            "displayName": "memories",
+            "resourceType": "Project",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": [
+              {
+                "type": "Reference",
+                "resourceName": "memories-graphs-gynektea"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "memories-graphs-gynektea"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "memories-secretstore"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "memories-llm"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "memories-vectors-ukekwwhh"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "memories-vectors-ukekwwhh"
+              }
+            ]
+          },
+          {
+            "name": "pubsub",
+            "displayName": "pubsub",
+            "resourceType": "DaprComponent",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "security-eventstore-client-password",
+            "displayName": "security-eventstore-client-password",
+            "resourceType": "Parameter",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "security-eventstore-client-username",
+            "displayName": "security-eventstore-client-username",
+            "resourceType": "Parameter",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "security-ssgbshgc",
+            "displayName": "security",
+            "resourceType": "Container",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": [
+              {
+                "type": "Reference",
+                "resourceName": "security-eventstore-client-username"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-eventstore-client-password"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "eventstore-workload-client-secret"
+              }
+            ]
+          },
+          {
+            "name": "statestore",
+            "displayName": "statestore",
+            "resourceType": "DaprComponent",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": []
+          },
+          {
+            "name": "tenants-dapr",
+            "displayName": "tenants-dapr",
+            "resourceType": "DaprSidecar",
+            "relationships": []
+          },
+          {
+            "name": "tenants-dapr-cli-hpasxkky",
+            "displayName": "tenants-dapr-cli",
+            "resourceType": "Executable",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": [
+              {
+                "type": "Parent",
+                "resourceName": "tenants-hecymhvj"
+              }
+            ]
+          },
+          {
+            "name": "tenants-hecymhvj",
+            "displayName": "tenants",
+            "resourceType": "Project",
+            "state": "Running",
+            "healthStatus": "Healthy",
+            "relationships": [
+              {
+                "type": "Reference",
+                "resourceName": "eventstore-aakrbjqu"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "eventstore-aakrbjqu"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "WaitFor",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              },
+              {
+                "type": "Reference",
+                "resourceName": "security-ssgbshgc"
+              }
+            ]
+          },
+          {
+            "name": "tenants-rebuilder-pcyujzsg",
+            "displayName": "tenants-rebuilder",
+            "resourceType": "Executable",
+            "state": "NotStarted",
+            "relationships": [
+              {
+                "type": "Parent",
+                "resourceName": "tenants-hecymhvj"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "local-stop",
+      "command": [
+        "aspire",
+        "stop",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:54:20.887816+00:00",
+      "finished_utc": "2026-10-25T10:54:22.164412+00:00",
+      "exit": 0,
+      "output": "Scanning for running AppHosts...\n\ud83d\udce6 Found running AppHost: src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj\n\ud83d\uded1 Sending stop signal to src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj...\nStopping src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj...\n\n\u2705 src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj stopped successfully."
+    },
+    {
+      "id": "after-stop",
+      "command": [
+        "aspire",
+        "describe",
+        "--include-hidden",
+        "--non-interactive",
+        "--apphost",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+        "--format",
+        "Json"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:54:22.291415+00:00",
+      "finished_utc": "2026-10-25T10:54:22.815945+00:00",
+      "exit": 0,
+      "output": "\u2139\ufe0f No AppHost is currently running for 'src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj'. Use 'aspire run' to start it first."
+    },
+    {
+      "id": "final-apphosts",
+      "command": [
+        "aspire",
+        "ps",
+        "--non-interactive",
+        "--format",
+        "Json"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "started_utc": "2026-10-25T10:54:22.894616+00:00",
+      "finished_utc": "2026-10-25T10:54:23.388190+00:00",
+      "exit": 0,
+      "output": [
+        {
+          "appHostPath": "/home/administrator/projects/hexalith/frontcomposer/src/Hexalith.FrontComposer.AppHost/Hexalith.FrontComposer.AppHost.csproj",
+          "appHostPid": 58939,
+          "status": "running",
+          "sdkVersion": "13.6.3"
+        },
+        {
+          "appHostPath": "/home/administrator/projects/hexalith/projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj",
+          "appHostPid": 6968,
+          "status": "running",
+          "sdkVersion": "13.6.3"
+        }
+      ]
+    }
+  ],
+  "preservation": {
+    "observed_utc": "2026-10-25T10:57:19.779280+00:00",
+    "repositories": {
+      ".": {
+        "head": "72d66e58bb464ca00d543060dab33086a3429269",
+        "head_unchanged": true,
+        "staged_entries_sha256": "165ee637c0d34b05712708dcb7e9d783d2fcf4dd4c4ffba8dcc3a2dfe70cb4ac",
+        "staged_content_unchanged": true,
+        "protected_files": 6,
+        "protected_mismatches": []
+      },
+      "references/Hexalith.Tenants": {
+        "head": "14133e96d2c5efb13270580f920133079707398b",
+        "head_unchanged": true,
+        "staged_entries_sha256": "8ebd10f4f491f2914f278e9b062bd4c1a3cc0385343f6e47912c271f52dd677c",
+        "staged_content_unchanged": true,
+        "protected_files": 6,
+        "protected_mismatches": []
+      },
+      "references/Hexalith.AI.Tools": {
+        "head": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+        "head_unchanged": true,
+        "staged_entries_sha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569",
+        "staged_content_unchanged": true,
+        "protected_files": 3,
+        "protected_mismatches": []
+      },
+      "references/Hexalith.EventStore": {
+        "head": "245ded36b78b960b57728f845f9a8aae62275908",
+        "head_unchanged": true,
+        "staged_entries_sha256": "47cb7ba328378f3b981c2a8f00c283e8f11c14db7a1a94bd3327d916894e602a",
+        "staged_content_unchanged": true,
+        "protected_files": 6,
+        "protected_mismatches": []
+      },
+      "references/Hexalith.FrontComposer": {
+        "head": "80782afc7fc2fd33ee365d4601cb6b5e91d215fa",
+        "head_unchanged": true,
+        "staged_entries_sha256": "bada1f50aab3eacf90698150bcaa382dbd78b32d01cfd68a0a4bf7ce073b17a3",
+        "staged_content_unchanged": true,
+        "protected_files": 6,
+        "protected_mismatches": []
+      },
+      "references/Hexalith.Memories": {
+        "head": "fd80d62a6ba1cf5703155f57d7cd18d8a3627579",
+        "head_unchanged": true,
+        "staged_entries_sha256": "59e277d047bc89b709269809e58dcdb501ede0b7a50e2c26c7aa4e6502a82708",
+        "staged_content_unchanged": true,
+        "protected_files": 7,
+        "protected_mismatches": []
+      },
+      "references/Hexalith.Commons": {
+        "head": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+        "head_unchanged": true,
+        "staged_entries_sha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644",
+        "staged_content_unchanged": true,
+        "protected_files": 6,
+        "protected_mismatches": []
+      },
+      "references/Hexalith.Builds": {
+        "head": "142b06e6d05c94b55ac35e587450c35fcac87590",
+        "head_unchanged": true,
+        "staged_entries_sha256": "9c829c1e620c6b333c67b05764c1277f52df4eb2fea3f9d7d3bc894815e2134e",
+        "staged_content_unchanged": true,
+        "protected_files": 8,
+        "protected_mismatches": []
+      },
+      "references/Hexalith.PolymorphicSerializations": {
+        "head": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+        "head_unchanged": true,
+        "staged_entries_sha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862",
+        "staged_content_unchanged": true,
+        "protected_files": 5,
+        "protected_mismatches": []
+      },
+      "references/Hexalith.Projects": {
+        "head": "94f6ad1f6854df62c8cd15e47d65dc72985f4e79",
+        "head_unchanged": true,
+        "staged_entries_sha256": "9f3485ecad451ee9007a1ab9f796b0419a0603a45bdbed2bc89e932c2ecb07b2",
+        "staged_content_unchanged": true,
+        "protected_files": 6,
+        "protected_mismatches": []
+      },
+      "references/Hexalith.Platform": {
+        "head": "31b9cdbac61e691ab7d76bfbf3758569be542355",
+        "head_unchanged": true,
+        "staged_entries_sha256": "2c1e63a7b9dcc28962ffd48cac847e93f2a3365e28ca9bcd356447dd222dec78",
+        "staged_content_unchanged": true,
+        "protected_files": 6,
+        "protected_mismatches": []
+      },
+      "references/Hexalith.McpCli": {
+        "head": "8962e2f2570459dbea2976f789b468aa5c6353c6",
+        "head_unchanged": true,
+        "staged_entries_sha256": "20703186a204b4bb8f60ae8162a2863cf5c7399e2fd3b193f73f33e6fb2ab3ea",
+        "staged_content_unchanged": true,
+        "protected_files": 7,
+        "protected_mismatches": []
+      }
+    },
+    "snapshot_files": 33,
+    "snapshot_nonappend_changes": [],
+    "append_only_files": [
+      "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+      "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md"
+    ],
+    "candidate_rows": 1425,
+    "candidate_raw_sha256": "65b672e9a5fbf7843926fed93e1cd484d0c7474a4d82ac1cdcf59965a2c1c8c2",
+    "candidate_mismatches": [],
+    "planning_bindings": 20,
+    "planning_mismatches": []
+  },
+  "operational_control": {
+    "mode": "V1Only",
+    "T0": null,
+    "activation_authority": null,
+    "spec_status": "in-progress",
+    "tracker": "backlog",
+    "original_tasks_unchanged": true,
+    "rollout_performed": false
+  },
+  "sanitization": {
+    "retained": "Command/exit/timestamp records, resource names/types/states/relationships, container state and image identity, selected DCP lifecycle/error metadata.",
+    "excluded": [
+      "dashboard URLs/tokens",
+      "credentials",
+      "environment values",
+      "raw resource properties",
+      "raw health reports",
+      "full console/AppHost logs"
+    ],
+    "archive_allowlist_applied": true
+  },
+  "archive": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-local-aspire-readiness-2026-10-25.logs.tar.gz",
+    "sha256": "f56fcd288b4e17f7ab4db4662038851b428ed6472c61b19e1fa77b2198b31c66",
+    "members": {
+      "after-stop.json": "43db226ebdc9aed1e6b72a59390addb35eee06454f30e78e7d680212ef77c10f",
+      "all-resource-wait-summary.json": "88fa8cef6883c71ba154958f8ad7c8045e949470489ad833d6bc5bfe15720d4f",
+      "cli_20261025T102831269_detach-child_6221b388094a4d9db3361383143d78ae.log.sanitized.json": "3c2531a7337f8fadea674251dd22db379c8ff474a2181569c31210302a8c6342",
+      "cli_20261025T102913411_detach-child_eeca48e5a0d14b54bc944faf806b8e01.log.sanitized.json": "a1867ab582bedcc780df72760564381aba8b29977e689e3f96a53e02650e9ba3",
+      "current-dcp-state-events.json": "5e6b763534968e49725f6ab5f89cbf05758aac85220b9965daefdf42c0fe7154",
+      "final-apphosts.json": "98bf84c12a59758f594860e75c68ae9695e9b3a14138390d09352f9f45d63de1",
+      "final-container-memories-graphs-gynektea.json": "6abdf21d94f528929c6b650a5291cef58a7213eeaff726f4ca47b8e27c1f4c30",
+      "final-container-memories-vectors-ukekwwhh.json": "4d2d9b889d8d1adf5ba482462e7e87fc8f42cf23875b606c2d7487056ce934af",
+      "final-container-security-ssgbshgc.json": "ad07ae51cacbec774b378d78547a4403fa715734e34341976b7f5154750e0c88",
+      "final-container-tunnel-proxy-f13999f7-26c3-4470-9177-8e20c21ecc9d.json": "8a6551e0849430e67daea19df0ed3818436a23015505d28d36367e44aad4aa03",
+      "final-network-state.json": "3111dd930e2e1a30fceccf02039ee7cd35df275541012d8c685e3d32a711b061",
+      "final-ready-state.json": "2962e510976ab29273cf577c8c23ae7625635f5ec63cbf9babd16833414d562d",
+      "historical-dcp-monitor-correlation.json": "ab1f39e437043ec9c8bc290ae724cb174168a818b3e9dad79783465ade24d9fd",
+      "historical-docker-events.json": "84c52a8ce9f7be0a900c705133b214e89e5b77c9711bf2742028ac1a89e0cbf3",
+      "historical-docker-journal.json": "e959b2028ae7a0db2e5e34916ae0c8be9b21286ccc18bd289efcbd57021c2472",
+      "historical-kernel-journal.json": "4f626357d18721a248891351b96223d0a58ecf6bbe60d0093d0080cf2618e330",
+      "initial-apphosts.json": "b29d21f5f002777029efb5f5defe6a5eef7f75e463ca53cc0010a0f5c96b261d",
+      "initial-start.json": "1b5f1a91a4a0b56e38e5ad49ca345ae7eb890eceae96d2b7a15e2d10d42d2efd",
+      "initial-state.json": "3463ae8981a9bb8529622caca33a6c5b671299652872b16c628aa9b61ede9fe6",
+      "initial-wait.json": "deb189b21137b590f6c31ace81b1a1b3b0c5469d7a01a97e28adcd89e6531859",
+      "local-stop.json": "47ecb1743f3f0ae630696b75e2243165ffe742888a8322b03dec1708b0d0f8f4",
+      "preservation-final.json": "511649f6e0859086eede9ba78f81d65d06d757d8afe7edd4246cb10b9a8b99a9",
+      "ready-state.json": "4618a4102b1e26f37febefbcdbd98ba84d31bb08740f4dd4649876980fc95da8",
+      "runtime-identities.json": "6a56111d8e61699d054a1ea9b3762b7ea8c2f67c2a7d6e03e4d7bb956a22fa30",
+      "wait-aspire-dashboard-rqrrujfw.json": "7b0506dc2c537507968af3e7ebe15e59adc5e8334c262e2ae5a6695a1b9b118f",
+      "wait-eventstore-aakrbjqu.json": "fb9c5d32db419ba021af6755aae20a473b65b05f4fac52175913896f4bdac806",
+      "wait-eventstore-app-api-token.json": "a66bfec7ebe0c7b078e57ebf36ba81ff210ba73e41c9798989af9d36b6b44c45",
+      "wait-eventstore-dapr-cli-byafzhxa.json": "778516377dfb2fa7af7f224839a76a66054e497e9df8f36743a58d295e1a4de3",
+      "wait-eventstore-workload-client-secret.json": "2021fc273593e3f44fd5e46078a05ae9f3a82b22bec415835148fd6b67d27905",
+      "wait-folders-app-api-token.json": "4955d8504bd0db44b8168b6ea1559348ee262c82431d73619b1343d098e171b7",
+      "wait-folders-dapr-cli-yvydkcqq.json": "3e9cc84b7f8c2ced6155d957856caeb3f6077ce45a8d1588bb322d2e931bdaef",
+      "wait-folders-human-authority-receipt-key.json": "b643b42145a9fb3e83150aedeacdb9007f50571401b422ae0d364f9cfe664d3a",
+      "wait-folders-idempotency-digest-key.json": "3d390ce28161cb9f1721fb4dd24f5db68ad0c2e6fcfe31de7a13d28f0b716896",
+      "wait-folders-ui-bfxkbygv.json": "54f36de98187afc8716c51ddc478e6faaa18cf7e9c5348d8562979a58d241d22",
+      "wait-folders-ui-dapr-cli-baramzye.json": "338fa29f4038b12a54916717d2d57643c4b2cce80e8553c66cafa24e7fffaa26",
+      "wait-folders-workers-app-api-token.json": "26a80fd11ca2f86e1c49c00f9664fc77c72eab7a7a382363bb602eba4dc3c1ce",
+      "wait-folders-workers-dapr-cli-npcfqtaa.json": "c9b8264456dc8006cff2d15230291440d7f35fb474edc2e05ff65ed09f0aac93",
+      "wait-folders-workers-mykhhycz.json": "87e7000bdfa28497fd34d1cbdbee1081dc67ded6f59dca15725080a6a86b163e",
+      "wait-folders-yyffynqw.json": "584cf26f028c0d7ff2b3116e26c1ea9c6f9f92adf3ffca99f980597f0cdf8fb7",
+      "wait-memories-dapr-cli-mcayakxx.json": "d1739ae418c8a6ef60bf59141870455e77a6759c07a4fc718c4d5f8dbf494c8f",
+      "wait-memories-graphs-gynektea.json": "a48050754c8d9fb2d6b5bb988e026cf3929eec7e224d91fdd5099ca3a11a6e8e",
+      "wait-memories-llm.json": "3ea7d104d35ad9fe5a066c0948d8f5a3bf722ee987247220116f448308ce2e7f",
+      "wait-memories-secretstore.json": "2f6bc69c551890fa32066a23b85c612e7393f20f943d3f676a17ee7ff0638d83",
+      "wait-memories-vectors-ukekwwhh.json": "b3337e155bae4c0ab7edca624e401c0337a2535697d371f27059465857459b7a",
+      "wait-memories-wssfkwqw.json": "d844aa5c130913b9492dfaaacf63ed4350a7923efbd39c06e6ff3f34b6c8822e",
+      "wait-pubsub.json": "8f2617f72064b7aa12c4d1e52efc9b0029e5a42fdc1887bc2f9e9686d5d1a527",
+      "wait-security-eventstore-client-password.json": "e4be9d8f52f7c225d7ced74d67c8163d57dca4cb79da2d2510eb8ecaace903e4",
+      "wait-security-eventstore-client-username.json": "305adfaeeafabaa76c19ad29596911df6bcd92dc3bbf9ef8f00350ccab70ec0b",
+      "wait-security-ssgbshgc.json": "8fef569f76452b4496c1f24129ca2e0b7db86d6c5dc2748733f3d1ce6d2af441",
+      "wait-statestore.json": "90fe73d513eb0bfa2e548f346e1522f203f7f1b3ad36b9de6c02efa119500356",
+      "wait-tenants-dapr-cli-hpasxkky.json": "72f366f7bb698a2ac33c0f46a8baa3f6323b4d3101276bc72a5bf61ebfbbb49e",
+      "wait-tenants-hecymhvj.json": "fc37992c513286f26645f0cce39bca129d2c02fa484c6f875a01a0ee8badbbc9"
+    }
+  },
+  "independent_parent_verification": {
+    "archive_sha256_verified": "f56fcd288b4e17f7ab4db4662038851b428ed6472c61b19e1fa77b2198b31c66",
+    "member_hashes_verified": 52,
+    "active_resource_waits_verified": 28,
+    "all_waits_inventory_and_container_checks_completed_before_stop": true,
+    "final_healthy_projects": 6,
+    "final_healthy_resource_containers": 3,
+    "directly_verified_runtime_containers_including_tunnel": 4,
+    "repository_heads_and_staged_entries_preserved": 12,
+    "snapshot_prefixes_and_unchanged_files_verified": 33,
+    "memories_source_delta_and_prior_runtime_hashes_preserved": true,
+    "metadata_allowlists_verified": true,
+    "credential_pattern_findings": [],
+    "git_diff_check_exit": 0,
+    "diagnostic_limit": "The initiating trigger of historical DCP monitor exit remains unproven; local recovery is not a permanent source fix or broader qualification.",
+    "verified_at_utc": "2026-10-25T11:01:59.656464+00:00"
+  }
+}
