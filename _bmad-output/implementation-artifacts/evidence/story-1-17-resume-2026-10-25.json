@@ -1,0 +1,959 @@
+{
+  "record_id": "story-1-17-resume-2026-10-25",
+  "recorded_at_utc": "2026-10-25T06:41:50.982680+00:00",
+  "scope": "Local resumed implementation of the approved Story 1.17 migration/closure spec. Evidence-only changes; no source, dependency, candidate or operational change. No GitHub, NuGet feed, target or data-store discovery; implicit package restore in local builds is included.",
+  "source": {
+    "folders_head": "f104bb2763728b1ad232a72dfda5ed4bae46efec",
+    "folders_origin_main_local_tracking_ref": "445660bfe25722a4ce10a8dc59d4a60d2b6b25e1",
+    "folders_worktree_clean_at_start": true,
+    "projects_head": "5325ad18443f4085b5cc97685e7420a4eee7a286",
+    "root_gitlinks": {
+      "references/Hexalith.AI.Tools": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "references/Hexalith.Builds": "dd3b4cd2f76cc6455cadf48fd458358834763852",
+      "references/Hexalith.Commons": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "references/Hexalith.EventStore": "849f069ebbb0860e890fdce8e4ab659ac10509f4",
+      "references/Hexalith.FrontComposer": "494169c7818109b90aa136c4d9d8a2ecd917d7c9",
+      "references/Hexalith.McpCli": "3b1738881a3484da51cf64c8ca3b24a8f65227df",
+      "references/Hexalith.Memories": "5a852389327bf45df7d59b2c2e29c7adbe353f19",
+      "references/Hexalith.Platform": "53818818483935d1d90d334e511848335563213f",
+      "references/Hexalith.PolymorphicSerializations": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "references/Hexalith.Projects": "5325ad18443f4085b5cc97685e7420a4eee7a286",
+      "references/Hexalith.Tenants": "c157c394b8fca5f392b5f8a6a5ff1f51f4ac77a0"
+    },
+    "submodule_worktrees_match_gitlinks_and_clean": true,
+    "eventstore_package_version": "3.127.0",
+    "folders_package_version_selected_by_builds_catalog": "1.3.1"
+  },
+  "fresh_checks": [
+    {
+      "id": "folders-release-package-build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-25T06:36:59.465230+00:00",
+      "exit": 0,
+      "duration_seconds": 64.46,
+      "log": "folders-release-package-build.log",
+      "result": "0 warnings, 0 errors; default audited Release/package command"
+    },
+    {
+      "id": "projects-release-package-build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Projects.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseHexalithProjectReferences=false",
+        "-m:1",
+        "-warnaserror"
+      ],
+      "cwd": "references/Hexalith.Projects",
+      "exit": 0,
+      "log": "projects-release-package-build.log",
+      "exit_observation": "Linux completed child wait status while sequenced runner was paused to narrow remaining validation",
+      "result": "0 warnings, 0 errors; default audited Release/package command"
+    },
+    {
+      "id": "projects-adapters",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.Tests.dll",
+        "-class",
+        "Hexalith.Projects.Server.Tests.ProjectFolderDirectoryTests",
+        "-class",
+        "Hexalith.Projects.Server.Tests.ProjectFileReferenceDirectoryTests",
+        "-class",
+        "Hexalith.Projects.Server.Tests.DelegatedProjectDirectoryRegistrationTests",
+        "-xml",
+        "/tmp/story117-resume-20261025-gs16c4o4/projects-adapters.xml"
+      ],
+      "cwd": "references/Hexalith.Projects",
+      "started_at_utc": "2026-10-25T06:39:38.334209+00:00",
+      "exit": 0,
+      "duration_seconds": 0.52,
+      "log": "projects-adapters.log",
+      "tests": {
+        "total": 85,
+        "passed": 85,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "failed_tests": [],
+      "xml": "projects-adapters.xml"
+    },
+    {
+      "id": "folders-routing",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+        "-xml",
+        "/tmp/story117-resume-20261025-gs16c4o4/folders-routing.xml"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-25T06:39:38.856543+00:00",
+      "exit": 0,
+      "duration_seconds": 23.68,
+      "log": "folders-routing.log",
+      "tests": {
+        "total": 18,
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "failed_tests": [],
+      "xml": "folders-routing.xml"
+    },
+    {
+      "id": "contracts-focused",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2ContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests",
+        "-xml",
+        "/tmp/story117-resume-20261025-gs16c4o4/contracts-focused.xml"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-25T06:40:02.532477+00:00",
+      "exit": 1,
+      "duration_seconds": 2.68,
+      "log": "contracts-focused.log",
+      "tests": {
+        "total": 51,
+        "passed": 48,
+        "failed": 3,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "failed_tests": [
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.ManifestBindsEveryListedCandidateArtifactAndOrderedSetDigest",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.GeneratorReproducesTheCommittedManifestByteForByte",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2ContractTests.ConformanceSetBindsEveryCandidateArtifactWithoutChangingReleaseAuthority"
+      ],
+      "xml": "contracts-focused.xml"
+    },
+    {
+      "id": "governance",
+      "command": [
+        "pwsh",
+        "tests/tools/run-governance-completeness-gates.ps1",
+        "-SkipRestoreBuild"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-25T06:40:05.210940+00:00",
+      "exit": 0,
+      "duration_seconds": 3.31,
+      "log": "governance.log",
+      "result": "23/23 + 7/7 + 3/3 (all passed)"
+    },
+    {
+      "id": "parity",
+      "command": [
+        "pwsh",
+        "tests/tools/run-contract-parity-ci-gates.ps1",
+        "-NoRestore",
+        "-OutputReportPath",
+        "/tmp/story117-resume-20261025-gs16c4o4/parity-latest.json"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-25T06:40:08.525987+00:00",
+      "exit": 1,
+      "duration_seconds": 41.97,
+      "log": "parity.log",
+      "result": {
+        "passed_categories": 11,
+        "total_categories": 12,
+        "failed_categories": [
+          "pd10-v2-conformance-set"
+        ]
+      }
+    },
+    {
+      "id": "platform-packet-diagnostic",
+      "command": [
+        "env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "python3",
+        "eng/story117-platform-qualification-current/verify.py"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-25T06:40:50.497323+00:00",
+      "exit": 1,
+      "duration_seconds": 0.03,
+      "log": "platform-packet-diagnostic.log"
+    }
+  ],
+  "candidate": {
+    "pending_inventory_path": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml",
+    "pending_inventory_sha256": "4d46a8a08427cdec76cf1a86d718762475d489a1fb3f55baf61062a954ad5899",
+    "artifact_count": 229,
+    "stale_rows": [
+      {
+        "path": "docs/sdk/cli-reference.md",
+        "recorded_sha256": "45c133525f1a3d77be079bf00f22ebc545e7ecf40cd2656e54e033128fc17cd9",
+        "actual_sha256": "aae50b9e92cb27398345d28d79ba56a00f60b3d617f3dbc712dec6ca657a270b",
+        "recorded_bytes": 10768,
+        "actual_bytes": 12240
+      },
+      {
+        "path": "docs/sdk/mcp-reference.md",
+        "recorded_sha256": "8fda3a9b05b27a725658dde462f6219dd878b6ed0b63d06dac46fa358a524031",
+        "actual_sha256": "b11791ed1cbeb74551a6ea6e55aaf7a57e3c8fff39ccc514c48f991855765317",
+        "recorded_bytes": 9538,
+        "actual_bytes": 11010
+      },
+      {
+        "path": "src/Hexalith.Folders.Cli/Commands/CommandOptions.cs",
+        "recorded_sha256": "8d152e74d035f537f7ecc8e58046b9283f90345286bdf3ad2034489e0afd2841",
+        "actual_sha256": "f902a32d2b4687d074b91d03a12759bd5c79596e9f145400ec883b287d6667f0",
+        "recorded_bytes": 6845,
+        "actual_bytes": 6863
+      },
+      {
+        "path": "src/Hexalith.Folders.Cli/Commands/CommandPipeline.cs",
+        "recorded_sha256": "caeed1ec674aff8c3a3ba5bda80991de88491dd70cadfc957235639996e2ff37",
+        "actual_sha256": "8fbbb86a396d5e8df5e3920fce9aebc2034152c66ab0a7785148f9ae6bff2b10",
+        "recorded_bytes": 12468,
+        "actual_bytes": 11204
+      },
+      {
+        "path": "src/Hexalith.Folders.Client/Serialization/Oq2RequestValidation.cs",
+        "recorded_sha256": "f434b33dfa36a6c5359418c3cef041091b67c08c080cb8bf0a6c1e09750c161c",
+        "actual_sha256": "d1fbf89ef792bdef7113356bc90d8ae82b58b88041a1a1475c8353414a458553",
+        "recorded_bytes": 7601,
+        "actual_bytes": 7613
+      },
+      {
+        "path": "src/Hexalith.Folders.Client/Serialization/Oq2WireObjectConverter.cs",
+        "recorded_sha256": "581863791ffe4b6962dab9ee08e238d8e7a72f0cee55b63cef38993f2b8be900",
+        "actual_sha256": "642d6c029fc63343837b5226e035823651e9348699536aff1e7ddbf7cd37572b",
+        "recorded_bytes": 36490,
+        "actual_bytes": 36510
+      },
+      {
+        "path": "src/Hexalith.Folders.Mcp/Tooling/ToolPipeline.cs",
+        "recorded_sha256": "4f1f37f5a0d1043a23691d51ccc8dee1943ba13061cb0b065e211038be3bd4fe",
+        "actual_sha256": "162209f27b8d4c4132cacfdc791a117ae40eeba7486aee9e6b4d196879fc0026",
+        "recorded_bytes": 9727,
+        "actual_bytes": 8621
+      },
+      {
+        "path": "src/Hexalith.Folders.Server/FolderCanonicalSegmentIdentifier.cs",
+        "recorded_sha256": "dd7fbcd3e4001650976a6f4f410e547b87fa3edf3be64703b68341ac01973bc2",
+        "actual_sha256": "eb3742d3c9eba8d2e7b51bf214ed2bf587c22301472f7d045792431d41061656",
+        "recorded_bytes": 1017,
+        "actual_bytes": 1021
+      },
+      {
+        "path": "src/Hexalith.Folders.Server/FolderDomainProcessor.cs",
+        "recorded_sha256": "c2deb4d23575e0403c02a5b9b20a3906e58e8acc50bc89a7d8bf6fe221ebde4e",
+        "actual_sha256": "71ec92b72529c2f6b760cd4ad5dea15d856ac163fe4a283fcc80f663fc8bf42d",
+        "recorded_bytes": 86468,
+        "actual_bytes": 86484
+      },
+      {
+        "path": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs",
+        "recorded_sha256": "889763cdb115965f3b385726df41f57992bb7a127ca7e9d33e7070abaa4da0b9",
+        "actual_sha256": "c0cda8da6853aa3ad03343d6d377b5d093b8f5148c62bb84e4ad6c3890248e7f",
+        "recorded_bytes": 293882,
+        "actual_bytes": 294092
+      },
+      {
+        "path": "src/Hexalith.Folders.Server/Pd10V2CandidateCompatibilitySeam.cs",
+        "recorded_sha256": "dd5fe657701960cdf5a531029faf23403196c5090cf9ccbf1a8551670b663d5a",
+        "actual_sha256": "41a1ea12874439b6be045e3e33400775957ee796519eb6159007ed5c75337e0c",
+        "recorded_bytes": 84367,
+        "actual_bytes": 85950
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/BranchRefPolicyConfigurationService.cs",
+        "recorded_sha256": "e5b1a2ddb87468d62150738d57268dbcb2d4353a97f063c491803a74ac904c87",
+        "actual_sha256": "9d57a56a5ee456758155945568bf3be109c697bb5f5286d76356386ccaf21a87",
+        "recorded_bytes": 10248,
+        "actual_bytes": 8598
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/FolderAccessMutationService.cs",
+        "recorded_sha256": "cc2aeec0634ca99dc4c69e567652874c3d9dafdfffb8e8ec5d05a9d99d3d0966",
+        "actual_sha256": "ec7ad946d6745dca3d579227baf8a2ee498e64fdc36ff15ebe0909a223f01b1f",
+        "recorded_bytes": 8312,
+        "actual_bytes": 6663
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs",
+        "recorded_sha256": "865c2c5452594edfe02c0fdfd0a39c0f634b7263ea056594f8e18e451057d7d6",
+        "actual_sha256": "e07633cc2633686376b4c85099d105780068f1b9e1ff5af10b285b8de805ae59",
+        "recorded_bytes": 42215,
+        "actual_bytes": 44220
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/FolderCreationService.cs",
+        "recorded_sha256": "313f87e9a65e899ca8af4183987143841757ba51834d834dc87c9480b09ce152",
+        "actual_sha256": "70339bcb6a101f9d4428c19c3b6e276f43db73e3c6e615ccbfe3a245de51818a",
+        "recorded_bytes": 8240,
+        "actual_bytes": 6591
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/FolderStreamName.cs",
+        "recorded_sha256": "cdd20cb7d9d84d4c04858944fc0c3b9d5b665bac55fc1a349763736adee012a2",
+        "actual_sha256": "2d56f7e9586d278de5304e02331422828ed747a19645351fa75276b29aaa4659",
+        "recorded_bytes": 3535,
+        "actual_bytes": 3154
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/RepositoryBackedFolderCreationService.cs",
+        "recorded_sha256": "0b2cf083801ed5b7dcb5ca8b78c64cf1fb8f049d6fe72d44f0931a5cc3a267ab",
+        "actual_sha256": "da536b5ea87812398b06c4732460a9b542e9645af752162dd66f3869ce2a9ca0",
+        "recorded_bytes": 10570,
+        "actual_bytes": 8920
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/RepositoryBindingService.cs",
+        "recorded_sha256": "2dc3c29ed073ae7b95b0eba87abd2966319557b0659fa0407d2d2e18f555aeee",
+        "actual_sha256": "f0968c14d69f0010a77f16ea0e0d49d46123d77ce5bba84012249f90cdb1b91e",
+        "recorded_bytes": 23631,
+        "actual_bytes": 22000
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/WorkspaceCommitService.cs",
+        "recorded_sha256": "8b67b2e554175febc90b65915aded04b6b1c78cbfd886a21a8cdd24f76c1e381",
+        "actual_sha256": "ff7096e2175224178bf27f550d0d46a3a02c0b354f2456d1afdb005c380431ab",
+        "recorded_bytes": 11451,
+        "actual_bytes": 9801
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/WorkspaceFileMutationService.cs",
+        "recorded_sha256": "45f4dd5027fa3ba2e1f91994dc5decac923d78211ff72babd1d5f64c9cda8175",
+        "actual_sha256": "a45212aab4bf682c39e143766171a11b237c9465fedefd2b12f5a7ae9d8c7c5c",
+        "recorded_bytes": 17940,
+        "actual_bytes": 16329
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/WorkspaceLockAcquisitionService.cs",
+        "recorded_sha256": "74cbbecee728591323712898d654e20f8fe309ea09d22719f36e9727793e0ef7",
+        "actual_sha256": "6ad647733749a43e5d0ab23b50dd00e7c39d6ce1bc5f6983bb14bde2504c8c28",
+        "recorded_bytes": 7214,
+        "actual_bytes": 5565
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/WorkspaceLockReleaseService.cs",
+        "recorded_sha256": "1eb720e70dcf276ba76d103490bafa569dbf5c259b166f01f10f9ec814e6eb2d",
+        "actual_sha256": "7a1896aa01b7028fbc809aa370271444d8ea70ccc0009fa941654082ca8dc0c0",
+        "recorded_bytes": 7252,
+        "actual_bytes": 5603
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Folder/WorkspacePreparationService.cs",
+        "recorded_sha256": "762743694423a219b4d7967b5694468f1dc9d42a15e4399cf4078cdf29ac4bab",
+        "actual_sha256": "5a70e20b6c331b47612c88e6a0df2de0c7b8d444c8e8118e3ef96c8d16758cf5",
+        "recorded_bytes": 13829,
+        "actual_bytes": 12198
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Organization/ConfigureProviderBindingService.cs",
+        "recorded_sha256": "f37a9dbb51b26e38bf4668559eb3e7c114f055adcdeb35e28ce7aaaa93a7266f",
+        "actual_sha256": "61cdc0c8de9a889bd2ebceb182e93957492e72d4382200587940733ef205a7c2",
+        "recorded_bytes": 9397,
+        "actual_bytes": 9016
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs",
+        "recorded_sha256": "b801ceead2d08d0db1b5fe4d98558d9f009ecf872a1ba5589ca3b68cbeb092d8",
+        "actual_sha256": "db4e59327e840196e573c2828cc229d4c260265ff2cf031985134d51e3642688",
+        "recorded_bytes": 4660,
+        "actual_bytes": 4664
+      },
+      {
+        "path": "src/Hexalith.Folders/Aggregates/Organization/OrganizationStreamName.cs",
+        "recorded_sha256": "1c959ea4dbfab08e11f9a5da846e32ec28c48137ed6484f53e0c8112ce2632f1",
+        "actual_sha256": "f2877b62f1a4e95dab339b65126c7905e77f78f61f3eb4795582c3c5bbc8f838",
+        "recorded_bytes": 2596,
+        "actual_bytes": 2143
+      },
+      {
+        "path": "tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs",
+        "recorded_sha256": "01a154aa6516a2ba224306d0f7109a1d6f7384875884bf892f62b451124278c7",
+        "actual_sha256": "05993a6eb0efca38d031590f072ddb143fb11daa3de74ca9d8499dd840c2a3cf",
+        "recorded_bytes": 104007,
+        "actual_bytes": 105633
+      },
+      {
+        "path": "tests/Hexalith.Folders.Client.Tests/FileUploadConvenienceTests.cs",
+        "recorded_sha256": "902902fd3bef4fc226880a265e6ccc1cacb116a7d8d0745d15c4c8884d4b5d06",
+        "actual_sha256": "8960ec7451d104a966c5e78b4b6bb755838b585c56c7cd0aaf371d27adbac7db",
+        "recorded_bytes": 36703,
+        "actual_bytes": 38433
+      },
+      {
+        "path": "tests/Hexalith.Folders.IntegrationTests/AdapterParity/CrossAdapterBehavioralParityTests.cs",
+        "recorded_sha256": "84b02948ebb7de69a9c1f47650fcf6c02ba389c0629fa05ff79ddd53ac969e18",
+        "actual_sha256": "6be862d0207edcfedb7270f9a058bde232e631f4dbc30b786574b46631f184df",
+        "recorded_bytes": 53408,
+        "actual_bytes": 54360
+      },
+      {
+        "path": "tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs",
+        "recorded_sha256": "0ace20af805977b9c083345e420e44f1d976c6330292d5f09447236b852d9aef",
+        "actual_sha256": "5ec698108de6eb52f662b22cc40be832c44460fd4e9f2e7e7982d1bdcdd92595",
+        "recorded_bytes": 72005,
+        "actual_bytes": 72351
+      },
+      {
+        "path": "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs",
+        "recorded_sha256": "b7b1a1707d6e10fd67c5daecbb7aa1f7e7828418c7043e0fb1777e767dc62f91",
+        "actual_sha256": "5afdd56bb49a4f4c830da939acd5abf7786ea2a808346bc803bcceee25cc5641",
+        "recorded_bytes": 227293,
+        "actual_bytes": 244999
+      },
+      {
+        "path": "tests/Hexalith.Folders.IntegrationTests/RecordingArchivePrincipalEvidenceProvider.cs",
+        "recorded_sha256": "d888fb9bc5365d49eb0249992e2cca7e3c70906b5aeb18806b0446beb2d8b5c2",
+        "actual_sha256": "08946358f1e07de86deb64a0dcc7480378d408a1e86d1b018d3522047cf98c6e",
+        "recorded_bytes": 587,
+        "actual_bytes": 590
+      },
+      {
+        "path": "tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderStreamShapeTests.cs",
+        "recorded_sha256": "835cd35f7e3bdfe4cdb475d4cbc974023dee1084d672d550c4c54c9ec2fa280e",
+        "actual_sha256": "e409e621f8305712d3dd3c59584deef5315b103a836bd01ecb57502ca4751cd0",
+        "recorded_bytes": 4944,
+        "actual_bytes": 5140
+      },
+      {
+        "path": "tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclStreamShapeTests.cs",
+        "recorded_sha256": "870a228b5c1578548575aa024ed6dfdb1b28db027231f20eeb55e388d097c89a",
+        "actual_sha256": "59abaac363aff6003391bd7ec30bac696c69034d6ab9c4c4ba800edaa9d3a654",
+        "recorded_bytes": 3483,
+        "actual_bytes": 4023
+      }
+    ],
+    "scratch_generations": [
+      {
+        "exit": 0,
+        "sha256": "836316a5b2581aada129d27c1a55d55df7863e95d94c90424f94a7b7cc3a9dce",
+        "log": ""
+      },
+      {
+        "exit": 0,
+        "sha256": "836316a5b2581aada129d27c1a55d55df7863e95d94c90424f94a7b7cc3a9dce",
+        "log": ""
+      }
+    ],
+    "generations_identical": true,
+    "scratch_candidate_set_sha256": "3c06533eaf7c8a299a80456e93c691a01381b88311465583a7ecc47e21e9b2d9",
+    "current_bindings": [
+      {
+        "path": "_bmad-output/planning-artifacts/prd.md",
+        "expected": "b08c5bb51a8d07b0a452837304486b69a1ce5c1f63ca4e7b2a360393b0c45608",
+        "actual": "b08c5bb51a8d07b0a452837304486b69a1ce5c1f63ca4e7b2a360393b0c45608"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/architecture.md",
+        "expected": "7ee56ec9d991ee91ef0557c8f7d99b7c5bb98e5f1476adb865fb9a8781ac5eaa",
+        "actual": "7ee56ec9d991ee91ef0557c8f7d99b7c5bb98e5f1476adb865fb9a8781ac5eaa"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/ux-design-specification.md",
+        "expected": "d6a72eb0eb60dc60086d57725188cca35da910eb7cdde3333f17253d8014a17b",
+        "actual": "d6a72eb0eb60dc60086d57725188cca35da910eb7cdde3333f17253d8014a17b"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/epics.md",
+        "expected": "da39584ed822f30bfd618eec6f00d6b17d420a1d407ce65464ea804dc8e780de",
+        "actual": "da39584ed822f30bfd618eec6f00d6b17d420a1d407ce65464ea804dc8e780de"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-17.md",
+        "expected": "dafeb5ea8757a1a02ce156017e99a7f6fb7d6f52837fb038e5914a14ebefee37",
+        "actual": "dafeb5ea8757a1a02ce156017e99a7f6fb7d6f52837fb038e5914a14ebefee37"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml",
+        "expected": "3e869bcc1d543d71254ef0a3848976fea0ee62ed3c5be37583fec2f9e8862ebf",
+        "actual": "3e869bcc1d543d71254ef0a3848976fea0ee62ed3c5be37583fec2f9e8862ebf"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml",
+        "expected": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff",
+        "actual": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff"
+      },
+      {
+        "path": "docs/exit-criteria/nfr-traceability.md",
+        "expected": "7e3065a226339a78875f0687f39711f31ac8d21a0160f6e8af5ffb061f97423c",
+        "actual": "7e3065a226339a78875f0687f39711f31ac8d21a0160f6e8af5ffb061f97423c"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml",
+        "expected": "08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec",
+        "actual": "08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md",
+        "expected": "6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57",
+        "actual": "6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml",
+        "expected": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40",
+        "actual": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml",
+        "expected": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558",
+        "actual": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml",
+        "expected": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab",
+        "actual": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml",
+        "expected": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c",
+        "actual": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c"
+      },
+      {
+        "path": "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs",
+        "expected": "0d2558f147bb1c51e395cb00fc5157e881c32c1afd721b998e631f398588f5b8",
+        "actual": "0d2558f147bb1c51e395cb00fc5157e881c32c1afd721b998e631f398588f5b8"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml",
+        "expected": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+        "actual": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml",
+        "expected": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d",
+        "actual": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml",
+        "expected": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d",
+        "actual": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml",
+        "expected": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492",
+        "actual": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492"
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml",
+        "expected": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390",
+        "actual": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390"
+      }
+    ],
+    "packages": [
+      {
+        "id": "hexalith.folders.client",
+        "version": "1.3.1",
+        "archive_sha256": "c495d0f700c8cea577280e35ab85e63444af937a10fb0cebf3d173d6b64e0dac",
+        "nuspec_repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.Folders",
+          "commit": "72dff26e2ecc042afe76c10046576a2424d0d85b"
+        },
+        "dll_sha256": "6ca839fe4b40c61322d3e49d253744ac4d85ceae73f22d0c53ae8b7c56ba1ac7",
+        "runtime_sha256": {
+          "src/Hexalith.Projects.Server/bin/Release/net10.0": "6ca839fe4b40c61322d3e49d253744ac4d85ceae73f22d0c53ae8b7c56ba1ac7",
+          "tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0": "6ca839fe4b40c61322d3e49d253744ac4d85ceae73f22d0c53ae8b7c56ba1ac7"
+        }
+      },
+      {
+        "id": "hexalith.folders.contracts",
+        "version": "1.3.1",
+        "archive_sha256": "0df2ef9ea194f25b25a6c3fc2aade5347ab1524384d439384c7fa42c2f038714",
+        "nuspec_repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.Folders",
+          "commit": "72dff26e2ecc042afe76c10046576a2424d0d85b"
+        },
+        "dll_sha256": "ad81d60e79ddcee548eec74549506106465dec63a9a11fb7d77c2d409c8a3121",
+        "runtime_sha256": {
+          "src/Hexalith.Projects.Server/bin/Release/net10.0": "ad81d60e79ddcee548eec74549506106465dec63a9a11fb7d77c2d409c8a3121",
+          "tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0": "ad81d60e79ddcee548eec74549506106465dec63a9a11fb7d77c2d409c8a3121"
+        }
+      }
+    ],
+    "projects_assets_package_versions": [
+      "Hexalith.Folders.Client/1.3.1",
+      "Hexalith.Folders.Contracts/1.3.1"
+    ],
+    "resealed": false,
+    "reseal_decision": "34 stale rows remain; two scratch generations reproduce the October 24 scratch result. Pending coverage and context-read authority reconciliation remain unresolved while Stories 12.2 and 12.3 are open. No hash-only reseal or approval inference."
+  },
+  "evidence_reuse": {
+    "prior_receipt": "_bmad-output/implementation-artifacts/evidence/story-1-17-resume-2026-10-24.json",
+    "prior_receipt_sha256": "e86e497a8bb5bef8418a786b4abeb0bfa2a6202d21c98119c7b1c99f4eda3409",
+    "prior_archive": "_bmad-output/implementation-artifacts/evidence/story-1-17-resume-2026-10-24.logs.tar.gz",
+    "prior_archive_sha256": "712ca24a8d20497df462308e3e245de4528c1fef84f426960f2c93d2764456eb",
+    "source_comparison": {
+      "previous_head": "445660bfe25722a4ce10a8dc59d4a60d2b6b25e1",
+      "current_head": "f104bb2763728b1ad232a72dfda5ed4bae46efec",
+      "unchanged_inputs": [
+        {
+          "path": "src",
+          "previous_git_object": "f282828c33840950856aaec91b66dc85f2dbf748",
+          "current_git_object": "f282828c33840950856aaec91b66dc85f2dbf748",
+          "unchanged": true
+        },
+        {
+          "path": "tests",
+          "previous_git_object": "22164c4ec1bc39e7ca7ed00d3cb30d8232c6c072",
+          "current_git_object": "22164c4ec1bc39e7ca7ed00d3cb30d8232c6c072",
+          "unchanged": true
+        },
+        {
+          "path": "scripts",
+          "previous_git_object": "330f3c1519e19d432cd86569cc3f2e642b28dfe6",
+          "current_git_object": "330f3c1519e19d432cd86569cc3f2e642b28dfe6",
+          "unchanged": true
+        },
+        {
+          "path": "tools",
+          "previous_git_object": "a4c057f291d8999edf31f02178a97230082157c6",
+          "current_git_object": "a4c057f291d8999edf31f02178a97230082157c6",
+          "unchanged": true
+        },
+        {
+          "path": ".github",
+          "previous_git_object": "4169dd9e7601813445146245ed41215b3a17fcf1",
+          "current_git_object": "4169dd9e7601813445146245ed41215b3a17fcf1",
+          "unchanged": true
+        },
+        {
+          "path": "deploy",
+          "previous_git_object": "6a19cc9f0763226f7d4bfacd831c57223b889d95",
+          "current_git_object": "6a19cc9f0763226f7d4bfacd831c57223b889d95",
+          "unchanged": true
+        },
+        {
+          "path": "Directory.Build.props",
+          "previous_git_object": "4a4440bc62ed5d2a0762c46573de3d3737fd59d9",
+          "current_git_object": "4a4440bc62ed5d2a0762c46573de3d3737fd59d9",
+          "unchanged": true
+        },
+        {
+          "path": "Directory.Build.targets",
+          "previous_git_object": "e031bff1621202569187e13b44b1930737797a5b",
+          "current_git_object": "e031bff1621202569187e13b44b1930737797a5b",
+          "unchanged": true
+        },
+        {
+          "path": "Directory.Packages.props",
+          "previous_git_object": "f569bcdfdc98fb68c6291bd24b030aa67263257e",
+          "current_git_object": "f569bcdfdc98fb68c6291bd24b030aa67263257e",
+          "unchanged": true
+        },
+        {
+          "path": "global.json",
+          "previous_git_object": "12b348ca76e516a9dcdfbdc65fbef9e8da434d82",
+          "current_git_object": "12b348ca76e516a9dcdfbdc65fbef9e8da434d82",
+          "unchanged": true
+        },
+        {
+          "path": "Hexalith.Folders.CI.slnx",
+          "previous_git_object": "672e3c2057a7cb48d67fb7c021e745e5dd87b7c3",
+          "current_git_object": "672e3c2057a7cb48d67fb7c021e745e5dd87b7c3",
+          "unchanged": true
+        }
+      ],
+      "committed_changed_paths": [
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-resume-2026-10-24.json",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-resume-2026-10-24.logs.tar.gz",
+        "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+        "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md",
+        "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md",
+        "docs/runbooks/rollback.md"
+      ],
+      "tracked_worktree_diff_before_evidence_edits": []
+    },
+    "reused_checks": [
+      {
+        "id": "projects-server-suite",
+        "cwd": "references/Hexalith.Projects",
+        "command": [
+          "dotnet",
+          "tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.Tests.dll",
+          "-xml",
+          "projects-server-tests.xml"
+        ],
+        "utc": [
+          "2026-10-24T04:02:26Z",
+          "2026-10-24T04:02:38Z"
+        ],
+        "exit": 0,
+        "result": "1219 total, 1218 passed, 0 failed, 1 existing skip (SupportedProjectReadHttpTests.ProtectedSdkDispatchAndReadsSurviveHostAndStoreClientRestart), 0 errors; includes ProjectFolderDirectoryTests 47/47, ProjectFileReferenceDirectoryTests 34/34, DelegatedProjectAdvisoryConversationDirectoryTests 13/13, DelegatedProjectDirectoryRegistrationTests 4/4",
+        "log": "projects-server-tests.log",
+        "xml": "projects-server-tests.xml",
+        "execution": "reused 2026-10-24 evidence; not rerun 2026-10-25"
+      },
+      {
+        "id": "folders-server-suite",
+        "command": [
+          "dotnet",
+          "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll"
+        ],
+        "exit": 0,
+        "result": "1216/1216 pass",
+        "log": "server-full.log",
+        "xml": "server-full.xml",
+        "execution": "reused 2026-10-24 evidence; not rerun 2026-10-25"
+      },
+      {
+        "id": "contracts-full",
+        "command": [
+          "dotnet",
+          "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll"
+        ],
+        "exit": 1,
+        "result": "355/360 pass; the 3 PD10 inventory failures above plus 2 Story 11.5 negative-scope failures (CommitStatusContractGroupTests.CommitStatusContractNotes_RecordDeferredOwnersAndNegativeScope and AuditOpsConsoleContractGroupTests.AuditOpsConsoleNegativeScope_DoesNotAddRuntimeAdaptersGeneratedClientsUiOrCi) caused by new src/Hexalith.Folders/Aggregates/StreamNameSegment.cs from b79223a0",
+        "log": "contracts-full.log",
+        "xml": "contracts-full.xml",
+        "execution": "reused 2026-10-24 evidence; not rerun 2026-10-25"
+      }
+    ],
+    "released_pair": "The 1.3.1 archive hashes and runtime payloads were checked freshly; signature and remote release observations are retained October 24 evidence, not fresh remote verification. Prior GitHub CI observations remain dated October 24; no current hosted-CI claim."
+  },
+  "qualification_packet": {
+    "fresh_diagnostic_exit": 1,
+    "first_failure": "source changed: src/Hexalith.Folders.Server/FoldersServerHostComposition.cs",
+    "all_stale_source_bindings": [
+      {
+        "path": "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs",
+        "expected": "75784c67efbf1be8fa5ebc270659afc09c020def941f2a21a9cc6f9499fb5676",
+        "actual": "c085ae16fe4d566b46278885c51746462e2578470899f9010188f8080c4d4352"
+      },
+      {
+        "path": "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs",
+        "expected": "dbc41081169dc3562d91bfa2133f9655b2fa5a68843aa9737197c522e476d2b5",
+        "actual": "a17db79206935c2f837e9e08a9799a11b8a90d213d2f4ce0dcdc4d6e1fe1816f"
+      },
+      {
+        "path": "docs/runbooks/rollback.md",
+        "expected": "b127688e1199b0d15f15d66cfd26854ca0ed78d095828646c54d9adbf7747192",
+        "actual": "191121ca0f52a1facb67750955035b33938983639876303ca41e6363e38b8f7f"
+      },
+      {
+        "path": "references/Hexalith.Projects/src/Hexalith.Projects.Server/ProjectsServerServiceCollectionExtensions.cs",
+        "expected": "46a3dfc12d83a62051f77a498c517b49f908b1bb0fe57d3a996f3e128392c6af",
+        "actual": "8f9bbf440fb0ed536e2e1638a51ae2eff4ee20071b7029e03045cbacf2af3346"
+      },
+      {
+        "path": "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFolderDirectory.cs",
+        "expected": "dcea1de00934076e26e33b4ac902685ab4dc44eafbb2aafc1a80b084ea6e580b",
+        "actual": "06648237244f0adf67590d81a3950a53fdaae36478ecea20f053413004a8f10c"
+      },
+      {
+        "path": "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFileReferenceDirectory.cs",
+        "expected": "dc24eb9dedc6452d57c4cab8e432154d1b544ddf9d5b5162c364f11e99108269",
+        "actual": "48292b6d2d91df8600e5fc53f626f2c619df275084ae23ac89e853cf963041e9"
+      },
+      {
+        "path": "references/Hexalith.Builds/Props/Directory.Packages.props",
+        "expected": "1a9fcfe7360e4b756db11173ef9bbc4f6dc49dd983c297b7fc27d42bd7f31dcd",
+        "actual": "c8efba903924130cdcb286066bb3a9e97dd3dcb9155ccc3f852c65329ea2a0bf"
+      },
+      {
+        "path": "src/Hexalith.Folders.Server/Authentication/FoldersGatewayHumanBearerHandler.cs",
+        "expected": "2b9e05ea6e86646051fe4bcfdc74f02ba3345a77b932f3aff29d71e22530a763",
+        "actual": "7fc9d6c8877cdbab43ec834f3fe6a4405d5bf968a0c2b9cf972eeb7db1ae7ff9"
+      }
+    ],
+    "modified": false
+  },
+  "matrix_audit": {
+    "hold_coexistence_retirement": "Fresh composed-host routing 18/18 plus fresh parity golden/adapter categories. These are local behavior checks.",
+    "projects_migration": "Fresh 85/85 direct/delegated folder/file-reference/registration tests against retained 1.3.1 packages; no final current-candidate or deployment artifact.",
+    "first_install_unknown_retained_data_existing_v1_expiry_incident": "Operational rows remain unexecuted; no attempt-bound target/data, exact-artifact staging/recovery, production observation or migration/expiry evidence."
+  },
+  "operational_control": {
+    "runtime_mode": "V1Only",
+    "t0": null,
+    "activation_authority": null,
+    "tracker_row": "1-17-publish-the-pd10-v2-authorization-contract-spine: backlog",
+    "entry_decision": "HOLD",
+    "open": [
+      "exact current-candidate release (requalified inventory, then release lane) and matching Projects pin/build",
+      "immutable Folders/Projects deployment artifacts and composed Platform release",
+      "Platform intake, hosted identity/delegation, environment isolation, numeric thresholds, operators and UTC attempt slots",
+      "target/consumer/retained-data disposition under the attempt lock",
+      "isolated staging qualification",
+      "production install, five-minute verification/observation and applicable recovery evidence (or, for a discovered v1 installation, the original migration evidence)",
+      "closure decision and authorized tracker delta"
+    ]
+  },
+  "protected_inputs": {
+    "docs/contract/authorization-matrix.md": {
+      "before": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420",
+      "after": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420"
+    },
+    "src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml": {
+      "before": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+      "after": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2"
+    },
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": {
+      "before": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+      "after": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286"
+    },
+    "_bmad-output/planning-artifacts/planning-story-manifest.yaml": {
+      "before": "ba04ee232dcf74da85127af481336c8a17539cf7b0a17e4b1e95bba7aab84837",
+      "after": "ba04ee232dcf74da85127af481336c8a17539cf7b0a17e4b1e95bba7aab84837"
+    },
+    "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml": {
+      "before": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff",
+      "after": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff"
+    },
+    "_bmad-output/implementation-artifacts/sprint-status.yaml": {
+      "before": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40",
+      "after": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40"
+    },
+    "_bmad-output/implementation-artifacts/story-1-17-first-install-decision-2026-10-18.md": {
+      "before": "f658c26f4939e2c6ef3217c30cde96e5fda17c985623338be4191957c1809d42",
+      "after": "f658c26f4939e2c6ef3217c30cde96e5fda17c985623338be4191957c1809d42"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml": {
+      "before": "4d46a8a08427cdec76cf1a86d718762475d489a1fb3f55baf61062a954ad5899",
+      "after": "4d46a8a08427cdec76cf1a86d718762475d489a1fb3f55baf61062a954ad5899"
+    },
+    "docs/contract/pd10-v2-consumer-discovery.md": {
+      "before": "b2e41c5ad9b57f66a7c7a1d3d7764cec54cf668470f1cfd3886263a83d248b59",
+      "after": "b2e41c5ad9b57f66a7c7a1d3d7764cec54cf668470f1cfd3886263a83d248b59"
+    },
+    "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml": {
+      "before": "d417afd8454dac16824af17c2c0a787fe579c342a009e13b6985b147724d89a7",
+      "after": "d417afd8454dac16824af17c2c0a787fe579c342a009e13b6985b147724d89a7"
+    },
+    "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml": {
+      "before": "471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972",
+      "after": "471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972"
+    },
+    "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml": {
+      "before": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558",
+      "after": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558"
+    },
+    "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml": {
+      "before": "fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750",
+      "after": "fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750"
+    },
+    "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml": {
+      "before": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab",
+      "after": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab"
+    },
+    "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml": {
+      "before": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40",
+      "after": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40"
+    },
+    "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-APPROVAL-2026-09-23.yaml": {
+      "before": "45ad4fc46f7e74aacae3a9c90d1ec535d97fb5ff615d513c1d588aed16df52be",
+      "after": "45ad4fc46f7e74aacae3a9c90d1ec535d97fb5ff615d513c1d588aed16df52be"
+    },
+    "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-PREPARATION-2026-09-23.yaml": {
+      "before": "4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443",
+      "after": "4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443"
+    },
+    "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml": {
+      "before": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c",
+      "after": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c"
+    },
+    "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml": {
+      "before": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d",
+      "after": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d"
+    },
+    "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml": {
+      "before": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390",
+      "after": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390"
+    },
+    "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml": {
+      "before": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d",
+      "after": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d"
+    },
+    "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml": {
+      "before": "05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973",
+      "after": "05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973"
+    },
+    "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml": {
+      "before": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492",
+      "after": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492"
+    }
+  },
+  "archive": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-resume-2026-10-25.logs.tar.gz",
+    "sha256": "9182786b2ed298853ca298e1539ddb9a3ab2dc5ed5ae568d4852bfe7756d9b1d",
+    "members": {
+      "candidate-generation-1.yaml": "836316a5b2581aada129d27c1a55d55df7863e95d94c90424f94a7b7cc3a9dce",
+      "candidate-generation-2.yaml": "836316a5b2581aada129d27c1a55d55df7863e95d94c90424f94a7b7cc3a9dce",
+      "checks.json": "3c025aca62340158d4d7c7b55920c309de41d54455584132b10e3362dc582f5e",
+      "contracts-focused.log": "9c8f847ca0f292ba2e4710a19d741a50406647652dc0970c68ac74a051802832",
+      "contracts-focused.xml": "412e7825c348a64ae601ceb818e0bd3735b7db2a68da53d425b18b8daca13658",
+      "evidence-reuse-audit.json": "a3b27443f3e989550f6838b3087c4be7b0225d873e4a813bff4219ff0d58d626",
+      "folders-release-package-build.log": "9101b4391df7eeb8e4cbd66ca4ce977b67dc2f8f31f2f7ce7734f1f5a0158a70",
+      "folders-routing.log": "9c211acc91e91182da4ac2aad8aa96ad23932fcf65f900f276bfdf67b3cb10a5",
+      "folders-routing.xml": "1c5677105b82ba90a4b28ab5da09b1da1240c675d8118ce1032636d711ac8696",
+      "governance-latest.json": "5f18ede6f3d772c51a6c69baed5770e9d43e4d159f3a721c0f81069cb827ccbb",
+      "governance.log": "25ab157ae568c974f78fa1989041bb3a6a9f6cca03a06f5d3076c68625e0731e",
+      "input-audit.json": "9a72cca11ec648f245690bc5cf8eea5cc1c133074933cb87b7d588115272dcb0",
+      "parity-latest.json": "c0e051ee952772a50c8f8c29386712f61167c835a3e1ff9f62c010777b565bc8",
+      "parity.log": "5d3c4b5d0a9fc75045a06b08bc1e5e76882ef8e37f8128688f4f7a2178ae9c07",
+      "platform-packet-diagnostic.log": "20519c965ad169e4618b47cf7fed27ecee1a317f424fc6f372af1364c90a3ff8",
+      "projects-adapters.log": "aff26f787cabe2b847df966e7705444cd0435408a94f49b78b4334c18cff9791",
+      "projects-adapters.xml": "d0257d044921e223911eaae7e197413262d11a2ebabc47ca4076a1e6fa81223c",
+      "projects-release-package-build.log": "9b4aff311ff335ff512b3d0309a48da6b50a9b67fb60898c5bf14b052ebbbca4",
+      "start.json": "1e77144132a8ca82b67cd89f8c9cefd2b9178f701aacaae98c608c4b68104d0f",
+      "validation-summary.json": "2155117e4df50d094f3128f82185525eb35a79ba681ed7593d349476e3f4e09a"
+    }
+  },
+  "not_performed": [
+    "Aspire AppHost baseline (no runtime/source change)",
+    "broad Server/Contracts test reruns (prior source-bound evidence retained explicitly)",
+    "remote operational/release/CI discovery",
+    "candidate or current provenance refresh",
+    "publication",
+    "deployment",
+    "route change",
+    "T0 or first-install activation",
+    "staging or production observation/recovery",
+    "v1 retirement",
+    "Git staging/commit/push",
+    "tracker transition"
+  ],
+  "final_control_verification": {
+    "frozen_intent_sha256": "e49624d17ab0abd3fb1fbe8e3f6f5e3c0119cc726509af714eaecf31b625f194",
+    "spec_frontmatter_unchanged": true,
+    "task_checkboxes_unchanged": true,
+    "all_protected_hashes_unchanged": true,
+    "root_gitlinks_equal_prior_receipt": true,
+    "archive_members_verified": 20,
+    "changed_document_sha256": {
+      "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": "434b67dcce1aeaf8eb8606170a955440d3cafb49d7b61f416bf4b9aa3e4408ec",
+      "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md": "8ee3425d41a4cd2b5586f7aa3e6477832771c886321bcf8bba770e9031c3ed1d",
+      "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md": "afd9329f728fd9602998ce99e69137a5f065c9211e8ea02d5669641c3533c0fa"
+    }
+  }
+}
