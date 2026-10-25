@@ -65,3 +65,7 @@ _bmad-output/implementation-artifacts/evidence/story-1-17-current-qualification-
 # Preserve this byte-bound Story 1.17 release-readiness evidence and handoff.
 _bmad-output/implementation-artifacts/evidence/story-1-17-release-readiness-2026-10-25* -text
 _bmad-output/implementation-artifacts/story-1-17-publication-handoff-2026-10-25.json -text
+
+# Preserve additive current-composition qualification evidence and handoff bytes.
+_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25* -text
+_bmad-output/implementation-artifacts/story-1-17-composition-intake-handoff-2026-10-25.json -text

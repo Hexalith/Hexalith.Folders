@@ -1,0 +1,380 @@
+{
+  "recordId": "STORY-1-17-COMPOSITION-INTAKE-HANDOFF-2026-10-25",
+  "recordedAtUtc": "2026-10-25T15:14:04.747080+00:00",
+  "status": "HOLD for publication, adoption, current tuple acceptance and hosted qualification; local composition continuation verified",
+  "supersedesForCurrentObservationsOnly": {
+    "path": "story-1-17-publication-handoff-2026-10-25.json",
+    "sha256": "54f704ad29f71ab6ea595af85a28e9e5f88f89a31487a3dd6020b1aa046ced6b",
+    "priorReceiptAndHandoffImmutable": true
+  },
+  "sourceTuple": {
+    ".": {
+      "revision": "aa4c180bb96ec6a5efa603e4897a74e2dea771a0",
+      "indexSha256": "b5bc38e7a9dda6f2dcc22296a3cd3ab913087af9383ae5bdaaff2f9705a075dc"
+    },
+    "references/Hexalith.Tenants": {
+      "revision": "14133e96d2c5efb13270580f920133079707398b",
+      "indexSha256": "8ebd10f4f491f2914f278e9b062bd4c1a3cc0385343f6e47912c271f52dd677c"
+    },
+    "references/Hexalith.AI.Tools": {
+      "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "indexSha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569"
+    },
+    "references/Hexalith.EventStore": {
+      "revision": "245ded36b78b960b57728f845f9a8aae62275908",
+      "indexSha256": "47cb7ba328378f3b981c2a8f00c283e8f11c14db7a1a94bd3327d916894e602a"
+    },
+    "references/Hexalith.FrontComposer": {
+      "revision": "80782afc7fc2fd33ee365d4601cb6b5e91d215fa",
+      "indexSha256": "bada1f50aab3eacf90698150bcaa382dbd78b32d01cfd68a0a4bf7ce073b17a3"
+    },
+    "references/Hexalith.Memories": {
+      "revision": "78657969f4d7d6ccd82c99766296b99ee55bd895",
+      "indexSha256": "4a4f2c351432a06e2f4080f659383dfe1fdad2d0e0f15fd017f5b3255e632157"
+    },
+    "references/Hexalith.Commons": {
+      "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "indexSha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644"
+    },
+    "references/Hexalith.Builds": {
+      "revision": "142b06e6d05c94b55ac35e587450c35fcac87590",
+      "indexSha256": "9c829c1e620c6b333c67b05764c1277f52df4eb2fea3f9d7d3bc894815e2134e"
+    },
+    "references/Hexalith.PolymorphicSerializations": {
+      "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "indexSha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862"
+    },
+    "references/Hexalith.Projects": {
+      "revision": "6e45180c3160ed6fe761d4563c50ac873d18dc56",
+      "indexSha256": "49865cf13949807d9c6ba1736b09c2fc01560bb77f7da6f9dafb41432d257ea7"
+    },
+    "references/Hexalith.Platform": {
+      "revision": "5fa798f7d860a021feb8cccc35331271e3c9c802",
+      "indexSha256": "0cbcc90a221510b3cd1f38208fd1c1bb3f9e625c9c610c78dee6075b46565767"
+    },
+    "references/Hexalith.McpCli": {
+      "revision": "8962e2f2570459dbea2976f789b468aa5c6353c6",
+      "indexSha256": "20703186a204b4bb8f60ae8162a2863cf5c7399e2fd3b193f73f33e6fb2ab3ea"
+    }
+  },
+  "localQualification": {
+    "platformBuilds": {
+      "Debug": "PASS project references; UseNuGetDeps=false; warnings as errors",
+      "Release": "PASS package references; warnings as errors; Tooling remains explicit direct source ProjectReference"
+    },
+    "canonicalGraph": {
+      "platformPinnedExports": "PASS Debug and Release; unchanged test compares exact canonical graph with maintained chart",
+      "currentOwnerExports": "PASS Debug and Release; exact root owner files plus existing Parties export",
+      "ordinaryWorkspace": "FAIL Debug and Release before Describe: missing Parties manifest at ReferenceOptions path",
+      "fixtureScope": "Disposable owner root markers and exact exported Memories test-entry file support unchanged validation; no Git initialization and no test-entry execution."
+    },
+    "additionalTests": {
+      "Debug": 8,
+      "Release": 8,
+      "classes": [
+        "AgentsAcceptedDeploymentContextTests",
+        "PlatformOwnerServicesTests"
+      ],
+      "method": "HostedEntryRefusesRunModeBeforeGeneratingLocalResourcesOrSecrets"
+    },
+    "releasedCliJointValidation": "PASS pinned and current-owner exports, actual cached CLI 4.35.2",
+    "projectsRepair": "ProjectsRepositoryDirectory rename; Debug/Release property values and generator commands equivalent; reserved-property diagnostic removed",
+    "reuse": "source-reuse-summary.json / source-reuse-audit.json / source-reuse-profiles.json delimit exact unchanged bindings; previous execution outcomes remain historical"
+  },
+  "moduleIntake": {
+    "folders": {
+      "declarationExitCode": 1,
+      "adoptionExitCode": 1,
+      "diagnosticCount": 72,
+      "countsByRequirement": {
+        "declaration": 1,
+        "tool-pin": 1,
+        "hosting-inventory": 1,
+        "dependency-selectors": 33,
+        "dapr-subscriptions": 36
+      },
+      "owner": "Folders module maintainer with Platform intake owner",
+      "status": "HOLD"
+    },
+    "projects": {
+      "declarationExitCode": 1,
+      "adoptionExitCode": 1,
+      "diagnosticCount": 27,
+      "countsByRequirement": {
+        "declaration": 1,
+        "gitlinks": 1,
+        "tool-pin": 1,
+        "hosting-inventory": 1,
+        "dependency-selectors": 16,
+        "dapr-subscriptions": 7
+      },
+      "owner": "Projects module maintainer with Platform intake owner",
+      "status": "HOLD"
+    },
+    "eventstore": {
+      "declarationExitCode": 0,
+      "adoptionExitCode": 1,
+      "diagnosticCount": 94,
+      "countsByRequirement": {
+        "declaration": 1,
+        "gitlinks": 1,
+        "tool-pin": 1,
+        "hosting-inventory": 1,
+        "dependency-selectors": 4,
+        "dapr-subscriptions": 86
+      },
+      "owner": "Eventstore module maintainer with Platform intake owner",
+      "status": "HOLD"
+    },
+    "tenants": {
+      "declarationExitCode": 0,
+      "adoptionExitCode": 1,
+      "diagnosticCount": 21,
+      "countsByRequirement": {
+        "declaration": 1,
+        "gitlinks": 1,
+        "tool-pin": 1,
+        "hosting-inventory": 1,
+        "dependency-selectors": 6,
+        "dapr-subscriptions": 11
+      },
+      "owner": "Tenants module maintainer with Platform intake owner",
+      "status": "HOLD"
+    },
+    "memories": {
+      "declarationExitCode": 0,
+      "adoptionExitCode": 1,
+      "diagnosticCount": 50,
+      "countsByRequirement": {
+        "declaration": 1,
+        "gitlinks": 1,
+        "tool-pin": 1,
+        "hosting-inventory": 1,
+        "dependency-selectors": 6,
+        "dapr-subscriptions": 40
+      },
+      "owner": "Memories module maintainer with Platform intake owner",
+      "status": "HOLD"
+    }
+  },
+  "catalogs": {
+    "direct": {
+      "revision": "142b06e6d05c94b55ac35e587450c35fcac87590",
+      "gitCommand": [
+        "git",
+        "show",
+        "142b06e6d05c94b55ac35e587450c35fcac87590:Props/Directory.Packages.props"
+      ],
+      "sha256": "553796eef36f2789f60bb47bc8902b5fb9f1df5b3a942cde7f0523768bf1d2a1",
+      "member": "provenance/catalog-direct.props"
+    },
+    "platform-gitlink": {
+      "revision": "0c735503728e18de93937b1495abebcfa6e33f9a",
+      "gitCommand": [
+        "git",
+        "show",
+        "0c735503728e18de93937b1495abebcfa6e33f9a:Props/Directory.Packages.props"
+      ],
+      "sha256": "553796eef36f2789f60bb47bc8902b5fb9f1df5b3a942cde7f0523768bf1d2a1",
+      "member": "provenance/catalog-platform-gitlink.props"
+    },
+    "accepted-tool-source": {
+      "revision": "4248b8c70cb35ba79fdd7e4dd63049d4c73211a0",
+      "gitCommand": [
+        "git",
+        "show",
+        "4248b8c70cb35ba79fdd7e4dd63049d4c73211a0:Props/Directory.Packages.props"
+      ],
+      "sha256": "f10372ba382108f8c35b3ee922c76fe8608dbec336c399278709345ae255078d",
+      "member": "provenance/catalog-accepted-tool-source.props"
+    },
+    "comparison": {
+      "directEqualsPlatform": true,
+      "directEqualsAcceptedTool": false,
+      "currentTupleAccepted": false
+    }
+  },
+  "releasedTool": {
+    "version": "4.35.2",
+    "source": "4248b8c70cb35ba79fdd7e4dd63049d4c73211a0",
+    "archiveSha256": "637bebd547f45b5f2012c2f43af79b9b01772f1e81af02809babe62f4aa7cf1d",
+    "cachedArchiveMatchesAccepted": true,
+    "currentTupleAccepted": false
+  },
+  "retainedPackageIdentities": {
+    "Hexalith.Folders.Client": [
+      {
+        "version": "1.3.1",
+        "archiveSha256": "c495d0f700c8cea577280e35ab85e63444af937a10fb0cebf3d173d6b64e0dac",
+        "archiveDllSha256": "6ca839fe4b40c61322d3e49d253744ac4d85ceae73f22d0c53ae8b7c56ba1ac7",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.Folders",
+          "commit": "72dff26e2ecc042afe76c10046576a2424d0d85b"
+        },
+        "qualification": "retained signed release identity only"
+      },
+      {
+        "version": "0.0.0-story117.20261025",
+        "archiveSha256": "77beedc4c3c2446e32df010727eb041e9ebcf0763e6e482844adb30ee7622dc0",
+        "archiveDllSha256": "60cef1a59dfd98ac5adde200ca1a1823a9724fab2fa3626fec3fe8fe519311fe",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.Folders",
+          "branch": "refs/heads/main",
+          "commit": "2472a50027e8e4f6581b0690828ea9a14dfa9018"
+        },
+        "qualification": "unpublished unsigned diagnostic only"
+      }
+    ],
+    "Hexalith.Folders.Contracts": [
+      {
+        "version": "1.3.1",
+        "archiveSha256": "0df2ef9ea194f25b25a6c3fc2aade5347ab1524384d439384c7fa42c2f038714",
+        "archiveDllSha256": "ad81d60e79ddcee548eec74549506106465dec63a9a11fb7d77c2d409c8a3121",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.Folders",
+          "commit": "72dff26e2ecc042afe76c10046576a2424d0d85b"
+        },
+        "qualification": "retained signed release identity only"
+      },
+      {
+        "version": "0.0.0-story117.20261025",
+        "archiveSha256": "a45e7faa1c9f183011e09d9fb3de58922e6bc18a9c3823fd2c7696d2c73c0b4e",
+        "archiveDllSha256": "b256d7213db33272527288a578faa2af3546a6d07ff7dc21cd3823deb4d7d661",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.Folders",
+          "branch": "refs/heads/main",
+          "commit": "2472a50027e8e4f6581b0690828ea9a14dfa9018"
+        },
+        "qualification": "unpublished unsigned diagnostic only"
+      }
+    ]
+  },
+  "publicationWorkflow": {
+    "path": ".github/workflows/release.yml",
+    "sha256": "d6a69c9be2a657e02a35ee2d8109d8d3658299102ae157e816ff08ceac6d2345",
+    "manifest": "tools/release-packages.json",
+    "manifestSha256": "f220b06f663b74a3d07af21d2ab5f513f6924677ea843a40d2303084e6d8cce2",
+    "packageCount": 5,
+    "sourceCiNotLookedUp": true,
+    "workflowDispatched": false
+  },
+  "ownerInputs": [
+    {
+      "owner": "Projects maintainer / workspace mapping owner",
+      "source": "references/Hexalith.Projects/Directory.Build.props and the recorded Conversations gitlink",
+      "needed": "Supply approved ordinary workspace roots for Folders and Conversations at current Projects source tuple (full revision in sourceTuple). Current Projects pins Conversations ed53473ea4c67aa10ffc46c9b951d9864fe263d4 and Folders 2472a50027e8e4f6581b0690828ea9a14dfa9018. Existing object-store comparison against prior qualified Conversations 8444207001d6ad3cd197c2ffba519317effa8b37 changes only a planning spec and Builds gitlink; module source bytes match but the dependency tuple does not. The prior supplied-root build/140-test probe remains historical. Current default mapping and current full source tuple remain HOLD; they were not rerun or accepted here.",
+      "evidence": "provenance/projects-current-mapping.json"
+    },
+    {
+      "owner": "Platform code/workflow owner @jpiquot with Builds/tool owner",
+      "source": "references/Hexalith.Platform/.config/dotnet-tools.json, hexalith-platform.json and retained pass-5 accepted-identities.json",
+      "needed": "Platform owner @jpiquot and Builds/tool owner must qualify/accept the exact current Platform 5fa798f7d860a021feb8cccc35331271e3c9c802 / direct Builds 142b06e6d05c94b55ac35e587450c35fcac87590 / CLI 4.35.2 / catalog / source Tooling DLL-PDB / composed artifact tuple. Local graph/chart checks and package identity pass; owner tuple acceptance, ordinary CLI and hosted acceptance remain HOLD."
+    },
+    {
+      "owner": "Platform composition/export owner with Parties module owner",
+      "needed": "Owner-qualified Parties bytes recovered from exact Git history; four-owner pinned and current-owner disposable graph/chart checks PASS. Ordinary workspace still lacks its permitted owner inputs. Supply approved ordinary mapping/intake without nested initialization; no repeated declaration approval is requested.",
+      "requiredPath": "references/Hexalith.Platform/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+      "partiesRevision": "986a369ec26f6c5194593eb7bce12955eda54149",
+      "status": "HOLD ordinary mapping; local export gate passed"
+    },
+    {
+      "owner": "Platform intake owner with each module owner",
+      "source": "references/Hexalith.Platform/docs/domain-module-enrollment.md and Story 4.8 tracker backlog",
+      "needed": "Each module owner supplies its real module/hexalith.module-manifest.v2.json (missing for Folders/Projects), all five module/hosting-inventory.json files with accountable owners/consumers, exact .config/dotnet-tools.json pin, and module/platform-handoff.md registration decisions. Platform/Builds owners reconcile minimum dependency policy for EventStore/Tenants/Memories and tracked production/test/historical source-audit diagnostics without suppressing checks. Nested Builds initialization remains prohibited here. Registration must bind servers/projects/images, server-scoped configuration/token adapters, gateway tuples, Dapr policy, exact revisions and human SM-2/ordinary CLI evidence. Exact diagnostics and supplying owner categories: intake-classification.json."
+    },
+    {
+      "owner": "Folders release operator / protected production reviewer; NuGet creator jpiquot",
+      "source": "docs/operations/release-packages.md and .github/workflows/release.yml",
+      "needed": "After source ownership/review, select the exact committed main tuple, obtain successful exact-source push CI and the protected production-environment review, confirm enabled publication/trusted-publisher prerequisites, and run the existing five-package lane. Its shared action/execution pin is 3639c8d9340fc81d6f8e0a90566a97e56d5d8446. Semantic-release chooses the real release version. Rebuild/reseal that version and verify signed published archives and exact artifacts; do not publish or relabel the unsigned diagnostic version."
+    },
+    {
+      "owner": "Administrator for actual attempt/target evidence, with Platform/module operators",
+      "source": "story-1-17-first-install-decision-2026-10-18.md and current offline proposal",
+      "needed": "Bind target/consumer/retained-data disposition to the acquired qualified attempt lock/epoch; supply exact immutable hosted artifacts, identity/delegation, qualified recovery branch, numeric operational thresholds and actual UTC operators/slots. All fourteen staging checks are unexecuted. First-install scope is already conditionally accepted; existing-v1 discovery selects its original clocks and retirement/reversal gates. No repeated scope approval is requested."
+    },
+    {
+      "owner": "Module and Platform operational qualification owners",
+      "source": "deferred-work.md and accepted first-install/migration decision",
+      "needed": "Retain representative production-latency, exact-release staging, verification/observation/recovery and authorized closure/tracker evidence. Local Redis/Dapr software checks and dated topology health do not supply these."
+    }
+  ],
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false,
+    "stagingChecksExecuted": 0
+  },
+  "parentStatus": "in-progress",
+  "trackerStatus": "backlog",
+  "stagingChecks": {
+    "total": 14,
+    "executed": 0
+  },
+  "evidenceReceipt": "evidence/story-1-17-composition-intake-2026-10-25.json",
+  "limits": [
+    "Local supplied-input metadata/model checks only; no AppHost start, deployment, publish, remote Git operation, staging, commit or dependency change.",
+    "Prior released Client/Contracts pair and unsigned diagnostic artifacts retain their exact identities; no new release or signed package acceptance is inferred.",
+    "No current full runtime suite, live SM-2 or hosted environment acceptance; all fourteen staging checks remain unexecuted."
+  ],
+  "currentSourceBuiltTooling": {
+    "Debug": {
+      "sourceRevision": "142b06e6d05c94b55ac35e587450c35fcac87590",
+      "loadedDllSha256": "5e5399a70f544d00d2af7eac29ec6302f737e5bac3c3aec37fc610a68d81de89",
+      "loadedPdbSha256": "b68fa339fac27d0ebf8629194becd18e73c062cd5881e4d2b5bd3b77094e4a15",
+      "matchesDirectSourceOutput": true,
+      "binding": "binaries/Debug-runtime.json"
+    },
+    "Release": {
+      "sourceRevision": "142b06e6d05c94b55ac35e587450c35fcac87590",
+      "loadedDllSha256": "087529a0c3e12bdc9a56c712c8e8ff267fe0942f93bdaabe076d2bf0d0aeb34e",
+      "loadedPdbSha256": "efbbb475ec30df82350194e91a7856827aa43055bb15ef0036175f328ebc2297",
+      "matchesDirectSourceOutput": true,
+      "binding": "binaries/Release-runtime.json"
+    }
+  },
+  "verificationLimits": {
+    "diffCheck": {
+      "Folders": 0,
+      "Projects": 0,
+      "Platform": 2,
+      "PlatformReason": "Pre-existing preserved CRLF/trailing-whitespace edits in composition tests; exact git diff --check diagnostics retained in logs/diff-check-platform.txt. No Platform source file was changed by this task."
+    }
+  },
+  "sourceReuseSummary": {
+    "bindings": 10049,
+    "retainedMembersVerified": 1564,
+    "statuses": {
+      "unchanged": 9873,
+      "changed": 86,
+      "unavailable": 90
+    },
+    "byScope": {
+      "current-cache": {
+        "unchanged": 671
+      },
+      "current-sdk": {
+        "unchanged": 512
+      },
+      "current-workspace": {
+        "unchanged": 7396,
+        "changed": 86
+      },
+      "retained-capsule-only": {
+        "unchanged": 1294
+      },
+      "unretained-temporary-input": {
+        "unavailable": 90
+      }
+    },
+    "profiles": 231,
+    "byteReuseEligibleProfiles": 114,
+    "policy": "Only unchanged byte bindings/profile facets are reusable. All previous executable outcomes remain labelled historical; current Platform results are fresh. Projects rename has independently proven property/argument equivalence but changed project-file bytes are not marked unchanged."
+  }
+}

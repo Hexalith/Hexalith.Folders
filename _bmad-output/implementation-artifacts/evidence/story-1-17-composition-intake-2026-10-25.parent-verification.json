@@ -1,0 +1,113 @@
+{
+  "recordId": "STORY-1-17-COMPOSITION-INTAKE-PARENT-VERIFICATION-2026-10-25",
+  "recordedAtUtc": "2026-10-25T15:37:18.002797+00:00",
+  "receiptSha256": "65d75f34951d934bca54a0f2a74b59928e9bcd8517a66092fcb2164dda9f657b",
+  "archiveSha256": "d9ba51c07b2fce5725bad06e2678d287b6e7e32fc203a8230ad6511cf8e29de9",
+  "handoffSha256": "a910bc067033be3f25cf3e0941e918866884ad487eabf3ab3432dab8ef80736e",
+  "memberManifestSha256": "7672b9b27902332e2b97ebd291636a9078e2bf460fc6612233433106c4e3272a",
+  "verifiedFileMembers": 2107,
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "replay.py"
+      ],
+      "cwd": "/tmp/story117-composition-parent-final31-15k68a4k",
+      "startedAtUtc": "2026-10-25T15:36:53.920795+00:00",
+      "completedAtUtc": "2026-10-25T15:36:54.542854+00:00",
+      "exitCode": 0,
+      "output": "PASS: sealed current composition/intake evidence, nonzero checks, exact identities and preserved controls; publication and hosted acceptance remain HOLD.\n",
+      "outputSha256": "dfd859628c1c243c6fd707ff65e5e85b1a2ad03e4581a6b0952f5a1d15cd76ed"
+    },
+    {
+      "command": [
+        "python3",
+        "-O",
+        "replay.py"
+      ],
+      "cwd": "/tmp/story117-composition-parent-final31-15k68a4k",
+      "startedAtUtc": "2026-10-25T15:36:54.542932+00:00",
+      "completedAtUtc": "2026-10-25T15:36:55.261524+00:00",
+      "exitCode": 0,
+      "output": "PASS: sealed current composition/intake evidence, nonzero checks, exact identities and preserved controls; publication and hosted acceptance remain HOLD.\n",
+      "outputSha256": "dfd859628c1c243c6fd707ff65e5e85b1a2ad03e4581a6b0952f5a1d15cd76ed"
+    },
+    {
+      "command": [
+        "python3",
+        "replay.py",
+        "--workspace",
+        "/home/administrator/projects/hexalith/folders"
+      ],
+      "cwd": "/tmp/story117-composition-parent-final31-15k68a4k",
+      "startedAtUtc": "2026-10-25T15:36:55.261599+00:00",
+      "completedAtUtc": "2026-10-25T15:36:57.648077+00:00",
+      "exitCode": 0,
+      "output": "PASS: sealed current composition/intake evidence, nonzero checks, exact identities and preserved controls; publication and hosted acceptance remain HOLD.\n",
+      "outputSha256": "dfd859628c1c243c6fd707ff65e5e85b1a2ad03e4581a6b0952f5a1d15cd76ed"
+    },
+    {
+      "command": [
+        "python3",
+        "replay.py",
+        "--execute-graphs"
+      ],
+      "cwd": "/tmp/story117-composition-parent-final31-15k68a4k",
+      "startedAtUtc": "2026-10-25T15:36:57.648186+00:00",
+      "completedAtUtc": "2026-10-25T15:36:59.141188+00:00",
+      "exitCode": 0,
+      "output": "PASS: sealed current composition/intake evidence, nonzero checks, exact identities and preserved controls; publication and hosted acceptance remain HOLD.\n",
+      "outputSha256": "dfd859628c1c243c6fd707ff65e5e85b1a2ad03e4581a6b0952f5a1d15cd76ed"
+    },
+    {
+      "command": [
+        "python3",
+        "test_replay.py"
+      ],
+      "cwd": "/tmp/story117-composition-parent-final31-15k68a4k",
+      "startedAtUtc": "2026-10-25T15:36:59.141267+00:00",
+      "completedAtUtc": "2026-10-25T15:37:17.255144+00:00",
+      "exitCode": 0,
+      "output": "test_activation_authority_refused (__main__.ReplayMutationTests.test_activation_authority_refused) ... ok\ntest_arbitrary_workspace_failure_refused (__main__.ReplayMutationTests.test_arbitrary_workspace_failure_refused) ... ok\ntest_catalog_corruption_hits_member_integrity_guard (__main__.ReplayMutationTests.test_catalog_corruption_hits_member_integrity_guard) ... ok\ntest_copy_fallback_does_not_hide_other_errors (__main__.ReplayMutationTests.test_copy_fallback_does_not_hide_other_errors) ... ok\ntest_cross_filesystem_copy_fallback_preserves_source (__main__.ReplayMutationTests.test_cross_filesystem_copy_fallback_preserves_source) ... ok\ntest_current_owner_hash_substitution_refused (__main__.ReplayMutationTests.test_current_owner_hash_substitution_refused) ... ok\ntest_current_owner_receipt_substitution_refused (__main__.ReplayMutationTests.test_current_owner_receipt_substitution_refused) ... ok\ntest_current_owner_revision_substitution_refused (__main__.ReplayMutationTests.test_current_owner_revision_substitution_refused) ... ok\ntest_current_tuple_acceptance_refused (__main__.ReplayMutationTests.test_current_tuple_acceptance_refused) ... ok\ntest_duplicate_compiler_document_refused (__main__.ReplayMutationTests.test_duplicate_compiler_document_refused) ... ok\ntest_duplicate_parties_revision_refused (__main__.ReplayMutationTests.test_duplicate_parties_revision_refused) ... ok\ntest_empty_compiler_documents_refused (__main__.ReplayMutationTests.test_empty_compiler_documents_refused) ... ok\ntest_empty_parties_provenance_refused (__main__.ReplayMutationTests.test_empty_parties_provenance_refused) ... ok\ntest_individual_failure_cannot_hide_in_pass_totals (__main__.ReplayMutationTests.test_individual_failure_cannot_hide_in_pass_totals) ... ok\ntest_intake_requirement_counts_derived_from_diagnostics (__main__.ReplayMutationTests.test_intake_requirement_counts_derived_from_diagnostics) ... ok\ntest_intake_source_categories_derived_from_diagnostics (__main__.ReplayMutationTests.test_intake_source_categories_derived_from_diagnostics) ... ok\ntest_missing_materialized_binding_refused (__main__.ReplayMutationTests.test_missing_materialized_binding_refused) ... ok\ntest_nested_members_file_is_not_exempt (__main__.ReplayMutationTests.test_nested_members_file_is_not_exempt) ... ok\ntest_nested_members_in_cache_directory_is_not_exempt (__main__.ReplayMutationTests.test_nested_members_in_cache_directory_is_not_exempt) ... ok\ntest_preservation_index_summary_cannot_hide_drift (__main__.ReplayMutationTests.test_preservation_index_summary_cannot_hide_drift) ... ok\ntest_preservation_summary_cannot_hide_changed_file (__main__.ReplayMutationTests.test_preservation_summary_cannot_hide_changed_file) ... ok\ntest_prior_handoff_snapshot_substitution_refused (__main__.ReplayMutationTests.test_prior_handoff_snapshot_substitution_refused) ... ok\ntest_released_tool_handoff_substitution_refused (__main__.ReplayMutationTests.test_released_tool_handoff_substitution_refused) ... ok\ntest_retained_pdb_audit_coverage_required (__main__.ReplayMutationTests.test_retained_pdb_audit_coverage_required) ... ok\ntest_reuse_binding_status_cannot_be_invented (__main__.ReplayMutationTests.test_reuse_binding_status_cannot_be_invented) ... ok\ntest_reuse_eligibility_must_match_detailed_rows (__main__.ReplayMutationTests.test_reuse_eligibility_must_match_detailed_rows) ... ok\ntest_reuse_summary_must_match_detailed_rows (__main__.ReplayMutationTests.test_reuse_summary_must_match_detailed_rows) ... ok\ntest_source_tooling_handoff_substitution_refused (__main__.ReplayMutationTests.test_source_tooling_handoff_substitution_refused) ... ok\ntest_unrelated_canonical_test_refused (__main__.ReplayMutationTests.test_unrelated_canonical_test_refused) ... ok\ntest_wrong_additional_test_identity_refused (__main__.ReplayMutationTests.test_wrong_additional_test_identity_refused) ... ok\ntest_zero_test_false_pass_refused (__main__.ReplayMutationTests.test_zero_test_false_pass_refused) ... ok\n\n----------------------------------------------------------------------\nRan 31 tests in 18.057s\n\nOK\n",
+      "outputSha256": "e35fc838becd2a83e48690619792f97cee6c433413255b02721641acd7738ea3"
+    }
+  ],
+  "review": {
+    "layers": [
+      "blind",
+      "edge cases",
+      "verification gaps"
+    ],
+    "findings": 15,
+    "disposition": "All 15 verified findings corrected through evidence-only patches; 31 mutation/portability tests pass. No application behavior or gate weakened."
+  },
+  "generalIntegrityGuardRegressionProbe": {
+    "command": [
+      "python3",
+      "test_replay.py",
+      "ReplayMutationTests.test_catalog_corruption_hits_member_integrity_guard"
+    ],
+    "modification": "Removed only general member size/SHA256 check in disposable copy and rebound that script manifest entry.",
+    "exitCode": 1,
+    "expectedExit": "nonzero; corruption test must detect this verifier regression",
+    "output": "test_catalog_corruption_hits_member_integrity_guard (__main__.ReplayMutationTests.test_catalog_corruption_hits_member_integrity_guard) ... FAIL\n\n======================================================================\nFAIL: test_catalog_corruption_hits_member_integrity_guard (__main__.ReplayMutationTests.test_catalog_corruption_hits_member_integrity_guard)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/story117-integrity-guard-probe-final-kd6u52cb/capsule/test_replay.py\", line 51, in test_catalog_corruption_hits_member_integrity_guard\n    self.run_mutation('provenance/catalog-direct.props',lambda b:b+b'corruption','Member mismatch: provenance/catalog-direct.props',False)\n    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/story117-integrity-guard-probe-final-kd6u52cb/capsule/test_replay.py\", line 47, in run_mutation\n    self.assertNotEqual(result.returncode,0,result.stdout.decode());self.assertIn(('FAIL: '+diagnostic).encode(),result.stdout)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 0 == 0 : PASS: sealed current composition/intake evidence, nonzero checks, exact identities and preserved controls; publication and hosted acceptance remain HOLD.\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.640s\n\nFAILED (failures=1)\n",
+    "outputSha256": "451a35ab9e17d9171a3300982990901d7a985baa2c50616f6abe38df9ef0503e",
+    "testCaughtVerifierRegression": true
+  },
+  "authority": "Local evidence verified only; publication, adoption, current tuple owner acceptance and hosted gates remain HOLD.",
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false,
+    "stagingChecksExecuted": 0
+  },
+  "stagingChecks": {
+    "total": 14,
+    "executed": 0
+  },
+  "parentStatus": "in-progress",
+  "trackerStatus": "backlog"
+}
