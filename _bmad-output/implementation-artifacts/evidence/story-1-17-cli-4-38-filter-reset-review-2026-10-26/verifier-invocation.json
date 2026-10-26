@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "/usr/bin/python3.14",
+    "-I",
+    "-B",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26/verify_execution_capsule.py",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence"
+  ],
+  "cwd": "/",
+  "startedAtUtc": "2026-10-26T16:21:19.499440+00:00",
+  "endedAtUtc": "2026-10-26T16:21:20.211249+00:00",
+  "exitCode": 0,
+  "stdout": "{\n  \"result\": \"VERIFIED\",\n  \"evidenceDirectory\": \"/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence\",\n  \"artifacts\": {\n    \"story-1-17-cli-4-38-filter-reset-execution-2026-10-26.json\": {\n      \"bytes\": 217465,\n      \"sha256\": \"83926941c48d04402d107df0e11e9f8f5300144601197d79e55c7bbd6c0a96ef\"\n    },\n    \"story-1-17-cli-4-38-filter-reset-execution-2026-10-26.artifacts.tar.gz\": {\n      \"bytes\": 43400158,\n      \"sha256\": \"a7e68bcc283c14c2a48f2262c31e8e52b7b478c828fcb534be4f920a07ec3387\"\n    },\n    \"story-1-17-cli-4-38-filter-reset-execution-2026-10-26.members.json\": {\n      \"bytes\": 104228,\n      \"sha256\": \"44f74850e5b83433153552a2f934a83ae55f3eb1e045c2a9501494f0979873c5\"\n    }\n  },\n  \"verifiedMemberCount\": 417,\n  \"uniqueSafeRegularMembers\": true,\n  \"exactMemberSetSizesAndSha256\": true,\n  \"operations\": \"stdlib reads only; no extraction, writes, subprocesses, or code/SDK execution\",\n  \"limit\": \"Integrity only; no renewed authorization or independent proof of unretained historic regular-file metadata.\"\n}\n",
+  "stderr": "",
+  "stdoutSha256": "6e49b13245492a49ee1951be0b91ab5ce4f9c01fa7f43d3cbc55577600704cd2",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "verifier": {
+    "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26/verify_execution_capsule.py",
+    "bytes": 6602,
+    "sha256": "ec5f92359c9a45cf1f4ed47b911513f9acac9597491542d638ad71dcd5bee6e2"
+  },
+  "scope": "One allowed invocation of the new stdlib read-only verifier. No target/SDK/adapter/test rerun."
+}

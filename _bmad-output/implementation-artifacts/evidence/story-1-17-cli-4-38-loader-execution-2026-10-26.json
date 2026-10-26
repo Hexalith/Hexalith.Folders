@@ -1,0 +1,315 @@
+{
+  "recordId": "STORY-1-17-CLI-4-38-LOADER-EXECUTION-2026-10-26",
+  "recordedAtUtc": "2026-10-26T14:44:18.388291+00:00",
+  "status": "AUTHORIZED_REBIND_APPLIED_SDK_INFO_SANDBOX_GATE_STOP",
+  "outcome": "The recording-only root rebind passed. One sandboxed dotnet --version completed with 10.0.402. The next bwrap invocation failed setting seccomp with EINVAL before SDK --info launched. The unchanged driver stopped; no compiler, loader case, model build, repair or retry ran.",
+  "rootRebindPlan": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-plan-2026-10-26.json",
+    "bytes": 18983,
+    "sha256": "228fe3ede636d56312f60bf4600a61d0c2fe62801ce31965f1d50eb0040efb3b"
+  },
+  "rootRebindAuthorization": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-authorization-2026-10-26.json",
+    "bytes": 9719,
+    "sha256": "9257cb257195e0d6405aea9ceb38524dae53e911721eabe9e146797b6be72619"
+  },
+  "originalPlan": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-runtime-resolution-plan-2026-10-26.json",
+    "bytes": 13719,
+    "sha256": "83fec7a858d1e1a8e9a9e1f514803a7ccb5408f56b1ef15c7c5bad12e4c42e7f"
+  },
+  "originalExecutionApproval": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-authorization-2026-10-26.json",
+    "bytes": 4094,
+    "sha256": "01907142a0863a50dfde4d6cfe465399898b8f5121982779775cf526cbefefd3"
+  },
+  "authorizedInvocationCount": 1,
+  "outerCommand": {
+    "argv": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5s",
+      "600s",
+      "python3",
+      "-B",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-rebind-proposal-2026-10-26/execute_after_rebind_authorization.py",
+      "--authorization",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-authorization-2026-10-26.json"
+    ],
+    "cwd": "/home/administrator/projects/hexalith/folders",
+    "startedAtUtc": "2026-10-26T14:40:09.332893+00:00",
+    "privateDirectoriesBefore": [],
+    "authorizedInvocationNumber": 1,
+    "endedAtUtc": "2026-10-26T14:40:15.169072+00:00",
+    "exitCode": 1,
+    "stdoutSha256": "b73d7f1570ab19550d495257e17aa091b6f6bfce21f97805a20da2936dac1bdf",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "newPrivateDirectories": [
+      "/tmp/story117-cli438-loader-20261026-nt8qjert",
+      "/tmp/story117-cli438-root-rebind-20261026-ebbg0qhy"
+    ]
+  },
+  "actualRootRevision": "43423a9849c82a3a526590b0fa6e613768e7eb24",
+  "actualRootIndexEntriesSha256": "62459e20b5115ebea71409210950651c7d3bfd32c20729dd69cde0d62d0a666d",
+  "repositoryStateAtExecution": {
+    ".": {
+      "revision": "43423a9849c82a3a526590b0fa6e613768e7eb24",
+      "indexEntriesSha256": "62459e20b5115ebea71409210950651c7d3bfd32c20729dd69cde0d62d0a666d",
+      "status": "? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-rebind-proposal-2026-10-26/execute_after_rebind_authorization.py\n? _bmad-output/implementation-artifacts/spec-1-17-cli-4-38-loader-root-rebind.md\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-authorization-2026-10-26.json\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-2026-10-26.md\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-authorization-2026-10-26.json\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-plan-2026-10-26.json\n"
+    },
+    "references/Hexalith.Tenants": {
+      "revision": "24fb584b8d2b8a3bc7a51fcf8b5a6266e21e53e7",
+      "indexEntriesSha256": "279c1b2c7fed9cc80dd048ca637e1b2031bb10d45ff439586b899aefb6dfcc80",
+      "status": ""
+    },
+    "references/Hexalith.AI.Tools": {
+      "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "indexEntriesSha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569",
+      "status": ""
+    },
+    "references/Hexalith.EventStore": {
+      "revision": "c5d1c280d8c1c1a207cd159d817f614e93c93130",
+      "indexEntriesSha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e",
+      "status": ""
+    },
+    "references/Hexalith.FrontComposer": {
+      "revision": "cfa9febc2942666265f23f87b26112c846f625ad",
+      "indexEntriesSha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2",
+      "status": ""
+    },
+    "references/Hexalith.Memories": {
+      "revision": "7b0c8b5692600e293346eea7a84652eb87e4c346",
+      "indexEntriesSha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76",
+      "status": ""
+    },
+    "references/Hexalith.Commons": {
+      "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "indexEntriesSha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644",
+      "status": ""
+    },
+    "references/Hexalith.Builds": {
+      "revision": "74932ad0247203797274aba8b7b6366a4bbf92b9",
+      "indexEntriesSha256": "a379d24eb9569cbbfd77c245c80f41ff239d9c97e928c66b3a444ca6cb53b94e",
+      "status": ""
+    },
+    "references/Hexalith.PolymorphicSerializations": {
+      "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "indexEntriesSha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862",
+      "status": ""
+    },
+    "references/Hexalith.Projects": {
+      "revision": "298f6f6a41b9ce7b67f14c21c724d76832b957a9",
+      "indexEntriesSha256": "1494da6a6b03a0ca3ae427b9bad145b8c9cd51806d370c80468c510ef07e9eda",
+      "status": ""
+    },
+    "references/Hexalith.Platform": {
+      "revision": "9869094acc21f9054960a573f884c60ddf3235cd",
+      "indexEntriesSha256": "1c6649f6dbd9d725da61199cfbef8fe5156af23f730156bdbe0b2620077b066b",
+      "status": ""
+    },
+    "references/Hexalith.McpCli": {
+      "revision": "dc282889e624a4c990faa3f005ad7eaa8db7a473",
+      "indexEntriesSha256": "c361ea1f29b3bc49536e23d02ae8f3ac21b2d182cfe0bdfa2f2ce92af83b505f",
+      "status": ""
+    },
+    "references/Hexalith.Parties": {
+      "revision": "986a369ec26f6c5194593eb7bce12955eda54149",
+      "indexEntriesSha256": "933d7d5f591ff2c0d291e6f497587ea1f804946698f9601af3822d47c3e8c44c",
+      "status": ""
+    }
+  },
+  "inputDerivation": {
+    "sourceInputsSha256": "91627812dd0741159174e140bc66bde65af29238f6344b982440ba0a16c10ac2",
+    "derivedInputsSha256": "6c7c62ee3ba5973521313916e343045c9fbd0c04e889955502249c63f4f31c40",
+    "onlyDerivedFields": [
+      "repositories[\".\"].revision",
+      "repositories[\".\"].indexEntriesSha256"
+    ],
+    "everyOtherJsonValueEqual": true,
+    "originalDriverAndProbeUnchanged": true
+  },
+  "executionCounts": {
+    "adapterInvocations": 1,
+    "originalDriverInvocations": 1,
+    "sandboxIdentityInvocations": 2,
+    "sdkIdentityCommandsCompleted": 1,
+    "sdkInfoExecuted": false,
+    "compilerCommandsExecuted": 0,
+    "loaderCasesExecuted": 0,
+    "modelBuildsExecuted": 0,
+    "restoresExecuted": 0,
+    "retries": 0
+  },
+  "gateFailure": {
+    "label": "sdk-info",
+    "commandExitCode": 1,
+    "driverExitCode": 1,
+    "targetArgv": [
+      "/home/administrator/.dotnet/dotnet",
+      "--info"
+    ],
+    "stderr": "bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+    "driverTraceback": "Traceback (most recent call last):\n  File \"/tmp/story117-cli438-root-rebind-20261026-ebbg0qhy/execute_after_authorization.py\", line 191, in <module>\n    assert code == 0 and '10.0.402' in info and str(PLATFORM / 'global.json') in info\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "lastCompletedGate": "sdk-before-compiler: dotnet --version == 10.0.402",
+    "sandboxSetupFailedBeforeSdkInfo": true,
+    "remainingCasesStopped": true
+  },
+  "preservation": {
+    "repositoryStateEqual": true,
+    "allTwelveDirectCheckoutsAndIndicesUnchanged": true,
+    "rootIndexUnchanged": true,
+    "originalPacketBytesUnchanged": true,
+    "ownerBoundRecordBytesUnchanged": true,
+    "sdkFilesVerified": 503,
+    "copiedHostFilesVerified": 238,
+    "copiedModelFilesVerified": 45,
+    "sourceModelPackageArchiveBindingsUnchanged": true,
+    "certificateMetadataEqual": true,
+    "inputDrifts": [],
+    "observedOwnedSurvivors": [],
+    "finalCheckArchiveMember": "root-rebind/final-preservation.json",
+    "processCheckArchiveMember": "root-rebind/owned-process-after.json"
+  },
+  "evidence": {
+    "archive": {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-execution-2026-10-26.artifacts.tar.gz",
+      "bytes": 37224160,
+      "sha256": "516ada5078375dbfe10ead323e5b864f27d4f5929d4679a0b46a2e006d2c4269"
+    },
+    "memberManifest": {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-execution-2026-10-26.members.json",
+      "bytes": 59311,
+      "sha256": "6a58de3c876de72aea6041dcd7c69d67e631d784812e62db98b2e9a64c98d1e9"
+    },
+    "verifiedFileMembers": 315,
+    "bothActualPrivateDirectoriesIncluded": true,
+    "privateDirectories": [
+      "/tmp/story117-cli438-root-rebind-20261026-ebbg0qhy",
+      "/tmp/story117-cli438-loader-20261026-nt8qjert"
+    ],
+    "rawSdkCommands": [
+      {
+        "label": "sdk-before-compiler",
+        "commandRecord": "loader/sdk-before-compiler.command.json",
+        "stdout": "loader/sdk-before-compiler.stdout",
+        "stderr": "loader/sdk-before-compiler.stderr"
+      },
+      {
+        "label": "sdk-info",
+        "commandRecord": "loader/sdk-info.command.json",
+        "stdout": "loader/sdk-info.stdout",
+        "stderr": "loader/sdk-info.stderr"
+      }
+    ],
+    "completeSdkEnvironment": "loader/environment.json",
+    "seccompFilter": "loader/deny-sockets.bpf"
+  },
+  "cleanup": {
+    "performed": false,
+    "retainedPrivateDirectories": [
+      "/tmp/story117-cli438-root-rebind-20261026-ebbg0qhy",
+      "/tmp/story117-cli438-loader-20261026-nt8qjert"
+    ],
+    "reason": "No automatic deletion. Both exact new directories are inventoried and retained after archive/member verification and owned-process observation. No old qualification paths, caches, certificate stores or checkouts were removed."
+  },
+  "limits": [
+    "Only the --version invocation completed; the SDK --info invocation did not launch and its sandbox setup did not complete. No broad sandbox capability or runtime loader finding follows.",
+    "Process observations sample every 200ms plus final PID/startTime/group checks; transient children may be missed.",
+    "All historical qualification limitations remain, including the incomplete historical immediate SDK gate.",
+    "No ordinary mapping, ContentHash, API behavior, model rebuild, hosted qualification, application entrypoint or acceptance is established."
+  ],
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false
+  },
+  "parentStatus": "in-progress",
+  "trackerStatus": "backlog",
+  "stagingChecks": {
+    "total": 14,
+    "executed": 0
+  },
+  "ordinaryMapping": null,
+  "ContentHash": null,
+  "historicalAcceptedCli": "4.35.2",
+  "candidateCli": "4.38.0",
+  "currentTupleAccepted": false,
+  "packageAccepted": false,
+  "hostedAccepted": false,
+  "boundSpecStatusHandling": "Preserve all byte-bound spec/frontmatter values. Record owner approval, pending rebind and actual execution state additively in receipts; do not invalidate approved hashes to update workflow status.",
+  "repositoryStateAfterSealing": {
+    ".": {
+      "revision": "43423a9849c82a3a526590b0fa6e613768e7eb24",
+      "indexEntriesSha256": "62459e20b5115ebea71409210950651c7d3bfd32c20729dd69cde0d62d0a666d",
+      "status": "? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-execution-2026-10-26.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-execution-2026-10-26.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-execution-2026-10-26.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-rebind-proposal-2026-10-26/execute_after_rebind_authorization.py\n? _bmad-output/implementation-artifacts/spec-1-17-cli-4-38-loader-root-rebind.md\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-authorization-2026-10-26.json\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-2026-10-26.md\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-authorization-2026-10-26.json\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-plan-2026-10-26.json\n"
+    },
+    "references/Hexalith.Tenants": {
+      "revision": "24fb584b8d2b8a3bc7a51fcf8b5a6266e21e53e7",
+      "indexEntriesSha256": "279c1b2c7fed9cc80dd048ca637e1b2031bb10d45ff439586b899aefb6dfcc80",
+      "status": ""
+    },
+    "references/Hexalith.AI.Tools": {
+      "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "indexEntriesSha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569",
+      "status": ""
+    },
+    "references/Hexalith.EventStore": {
+      "revision": "c5d1c280d8c1c1a207cd159d817f614e93c93130",
+      "indexEntriesSha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e",
+      "status": ""
+    },
+    "references/Hexalith.FrontComposer": {
+      "revision": "cfa9febc2942666265f23f87b26112c846f625ad",
+      "indexEntriesSha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2",
+      "status": ""
+    },
+    "references/Hexalith.Memories": {
+      "revision": "7b0c8b5692600e293346eea7a84652eb87e4c346",
+      "indexEntriesSha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76",
+      "status": ""
+    },
+    "references/Hexalith.Commons": {
+      "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "indexEntriesSha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644",
+      "status": ""
+    },
+    "references/Hexalith.Builds": {
+      "revision": "74932ad0247203797274aba8b7b6366a4bbf92b9",
+      "indexEntriesSha256": "a379d24eb9569cbbfd77c245c80f41ff239d9c97e928c66b3a444ca6cb53b94e",
+      "status": ""
+    },
+    "references/Hexalith.PolymorphicSerializations": {
+      "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "indexEntriesSha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862",
+      "status": ""
+    },
+    "references/Hexalith.Projects": {
+      "revision": "298f6f6a41b9ce7b67f14c21c724d76832b957a9",
+      "indexEntriesSha256": "1494da6a6b03a0ca3ae427b9bad145b8c9cd51806d370c80468c510ef07e9eda",
+      "status": ""
+    },
+    "references/Hexalith.Platform": {
+      "revision": "9869094acc21f9054960a573f884c60ddf3235cd",
+      "indexEntriesSha256": "1c6649f6dbd9d725da61199cfbef8fe5156af23f730156bdbe0b2620077b066b",
+      "status": ""
+    },
+    "references/Hexalith.McpCli": {
+      "revision": "dc282889e624a4c990faa3f005ad7eaa8db7a473",
+      "indexEntriesSha256": "c361ea1f29b3bc49536e23d02ae8f3ac21b2d182cfe0bdfa2f2ce92af83b505f",
+      "status": ""
+    },
+    "references/Hexalith.Parties": {
+      "revision": "986a369ec26f6c5194593eb7bce12955eda54149",
+      "indexEntriesSha256": "933d7d5f591ff2c0d291e6f497587ea1f804946698f9601af3822d47c3e8c44c",
+      "status": ""
+    }
+  },
+  "onlyNewRepositoryFiles": [
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-execution-2026-10-26.json",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-execution-2026-10-26.artifacts.tar.gz",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-execution-2026-10-26.members.json"
+  ]
+}

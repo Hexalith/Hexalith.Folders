@@ -1,0 +1,76 @@
+{
+  "format": "sha256-file-members-v1",
+  "members": [
+    {
+      "path": "review/execute_after_filter_reset_authorization.py",
+      "bytes": 13534,
+      "sha256": "1b3aeb881751e469d3407a4f9614b3ec715b91244cd380fb9ca3bce5322d0618"
+    },
+    {
+      "path": "review/final-verification.json",
+      "bytes": 3882,
+      "sha256": "e024ef6022dc5b9d4bae7b7d54817c8475ecaa946ec81f7e644d3007e35a2d2d"
+    },
+    {
+      "path": "review/review-layer-results.json",
+      "bytes": 4297,
+      "sha256": "d0a99694e6cf8a680d835379a595378ced42ada71c5a90202530870c8fb7002e"
+    },
+    {
+      "path": "review/review-triage.json",
+      "bytes": 7075,
+      "sha256": "51df1853ba756e5beafe53b1aa6eddece6bbcc89b947e1c7cdbc2fc94a5b804b"
+    },
+    {
+      "path": "review/verifier-invocation.json",
+      "bytes": 2231,
+      "sha256": "1125088fddcd5fc8a192150ae8ade22d8bcc0c2a65b5b8c884c1251242529c75"
+    },
+    {
+      "path": "review/verify_execution_capsule.py",
+      "bytes": 6602,
+      "sha256": "ec5f92359c9a45cf1f4ed47b911513f9acac9597491542d638ad71dcd5bee6e2"
+    }
+  ],
+  "sourceBindings": [
+    {
+      "sourcePath": "/tmp/story117-cli438-filter-reset-invocation-20261026-A3HitNsX/final-verification.json",
+      "bytes": 3882,
+      "sha256": "e024ef6022dc5b9d4bae7b7d54817c8475ecaa946ec81f7e644d3007e35a2d2d",
+      "copyPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26/final-verification.json",
+      "archiveMember": "review/final-verification.json",
+      "role": "Existing observation preserved byte-for-byte"
+    },
+    {
+      "sourcePath": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26/execute_after_filter_reset_authorization.py",
+      "bytes": 13534,
+      "sha256": "1b3aeb881751e469d3407a4f9614b3ec715b91244cd380fb9ca3bce5322d0618",
+      "copyPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26/execute_after_filter_reset_authorization.py",
+      "archiveMember": "review/execute_after_filter_reset_authorization.py",
+      "role": "Approved adapter preserved as data only; never invoked"
+    },
+    {
+      "sourcePath": "/tmp/story117-cli438-approved-fresh-20261026-ot00opmr/review-triage.json",
+      "bytes": 7075,
+      "sha256": "51df1853ba756e5beafe53b1aa6eddece6bbcc89b947e1c7cdbc2fc94a5b804b",
+      "copyPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26/review-triage.json",
+      "archiveMember": "review/review-triage.json",
+      "role": "Exact parent review record"
+    },
+    {
+      "sourcePath": "/tmp/story117-cli438-approved-fresh-20261026-ot00opmr/review-layer-results.json",
+      "bytes": 4297,
+      "sha256": "d0a99694e6cf8a680d835379a595378ced42ada71c5a90202530870c8fb7002e",
+      "copyPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26/review-layer-results.json",
+      "archiveMember": "review/review-layer-results.json",
+      "role": "Exact parent review record"
+    }
+  ],
+  "verification": {
+    "atUtc": "2026-10-26T16:21:20.239934+00:00",
+    "uniqueSafeRegularMembers": true,
+    "fileMemberCount": 6,
+    "exactMemberSetSizesAndSha256": true
+  },
+  "scope": "Additive review evidence only. Original packet is unchanged and is not resealed. No historical metadata reconstruction."
+}

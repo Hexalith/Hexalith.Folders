@@ -1,0 +1,115 @@
+{
+  "format": "sha256-file-members-v1",
+  "members": [
+    {
+      "path": "actual-execution-binding.json",
+      "sha256": "29eb9ba4c76588dfae6907b3326c44206c644206ee6fa127c74ed597eb6b6cad",
+      "bytes": 761
+    },
+    {
+      "path": "bubblewrap.c",
+      "sha256": "e81e833751d3d247d72dff1ad1792ca72939fa6956974dde2cb86f9f1b0a2bb3",
+      "bytes": 116430
+    },
+    {
+      "path": "driver.after.proposed.py",
+      "sha256": "ae559715da8b3e220703d4e229776289cf4bfdb3d098fa0fc15a4c0244b4bdba",
+      "bytes": 15412
+    },
+    {
+      "path": "final-preservation.json",
+      "sha256": "7ebe72a48cde1cbeef62b086452360e073493c1b32ffaa6cb55e8f7aa4714345",
+      "bytes": 7217
+    },
+    {
+      "path": "guard-tests.command.json",
+      "sha256": "f2543b394cb299174031f0f5cdb2f195676827469ff267d7c71f5c0c180cc39e",
+      "bytes": 931
+    },
+    {
+      "path": "guard-tests.stderr",
+      "sha256": "cac5b565578e1b31f6787112c1d12a0e79d4751c7f652d4b10f39d4362432419",
+      "bytes": 112
+    },
+    {
+      "path": "guard-tests.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "installed-bubblewrap-binding.json",
+      "sha256": "e102911288871c3eb90baf8d99bddd116fb922cad4d7573caa792cad70df44e6",
+      "bytes": 187
+    },
+    {
+      "path": "installed-bubblewrap-package.txt",
+      "sha256": "60e1ef5ab9d9306ef80d70b5b073670a432e825e6f0ca83319d5bd4dd6e2b25e",
+      "bytes": 1170
+    },
+    {
+      "path": "proposal/execute_after_filter_reset_authorization.py",
+      "sha256": "1b3aeb881751e469d3407a4f9614b3ec715b91244cd380fb9ca3bce5322d0618",
+      "bytes": 13534
+    },
+    {
+      "path": "proposal/story-1-17-cli-4-38-filter-reset-plan-2026-10-26.json",
+      "sha256": "efdbd430962e48d7596e8d9bb4030c5697ca02198b5f9e24c26da3a35d93ad50",
+      "bytes": 30493
+    },
+    {
+      "path": "proposal/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26.md",
+      "sha256": "3716b8ac47edefb7850259291c1ad3bb0ad2e369fd91df62fd508143cde40585",
+      "bytes": 11210
+    },
+    {
+      "path": "proposal/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26.patch",
+      "sha256": "39c6b938492aa10270ca3b79ab388d6fc070a3b327a0c068b8dee0acadea79f4",
+      "bytes": 1005
+    },
+    {
+      "path": "proposal/test_authorization_guards.py",
+      "sha256": "90771542638b996fe7182d5a1dbe083e665d428cffebdb6fa040d4451615dfec",
+      "bytes": 6309
+    },
+    {
+      "path": "proposed-driver-binding.json",
+      "sha256": "4ceb34ae716ad8fec0bea180545b7aa99a9ec17ab8733b05904b49c501b5eda1",
+      "bytes": 705
+    },
+    {
+      "path": "retry-adapter-binding.json",
+      "sha256": "22055a9bf9e400cd81340f73270328b05a0642b11fd8b7c321fadf29dbc1068a",
+      "bytes": 306
+    },
+    {
+      "path": "review-scope.json",
+      "sha256": "a4dc28212d444317a4dc2914507501851e51537b922c5ed1d6d855fba0416310",
+      "bytes": 1203
+    },
+    {
+      "path": "review-triage.json",
+      "sha256": "ba0c7f88435e763d4765c139777a0af41e3222b773669db5b7f71db55c8c6912",
+      "bytes": 6998
+    },
+    {
+      "path": "review.diff",
+      "sha256": "8c887a83d3087a3f498b8e4a73e1a73ab90e66ae733370e2a92b356421cf6f13",
+      "bytes": 135910
+    },
+    {
+      "path": "seal_analysis.py",
+      "sha256": "dc7bcf8346ac7d6ab349e3f25b72666769212b728d0256e804d0082f1037fc12",
+      "bytes": 9824
+    },
+    {
+      "path": "source-provenance.json",
+      "sha256": "cac0bf472f300eb18910c8ce3dd495131b40bfc368ecdf4865a38b4edca4449a",
+      "bytes": 679
+    },
+    {
+      "path": "utils.c",
+      "sha256": "c99f12bf7f74bb299e102852fb30ff76a6dfee0a2f6bfed5c840beb3249d4ddb",
+      "bytes": 21879
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "atUtc": "2026-10-26T15:58:42.881201+00:00",
+  "rootStatus": "? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-analysis-2026-10-26.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-analysis-2026-10-26.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-analysis-2026-10-26.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-execution-2026-10-26.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-execution-2026-10-26.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-execution-2026-10-26.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26/execute_after_filter_reset_authorization.py\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26/test_authorization_guards.py\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-execution-2026-10-26.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-execution-2026-10-26.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-execution-2026-10-26.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-rebind-proposal-2026-10-26/execute_after_rebind_authorization.py\n? _bmad-output/implementation-artifacts/spec-1-17-cli-4-38-loader-root-rebind.md\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-filter-reset-authorization-2026-10-26.json\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-filter-reset-plan-2026-10-26.json\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26.md\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26.patch\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-authorization-2026-10-26.json\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-2026-10-26.md\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-authorization-2026-10-26.json\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-plan-2026-10-26.json\n",
+  "onlyThreeAuthorizedEvidenceAdditions": true,
+  "receipt": {
+    "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-execution-2026-10-26.json",
+    "bytes": 217465,
+    "sha256": "83926941c48d04402d107df0e11e9f8f5300144601197d79e55c7bbd6c0a96ef"
+  },
+  "archive": {
+    "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-execution-2026-10-26.artifacts.tar.gz",
+    "bytes": 43400158,
+    "sha256": "a7e68bcc283c14c2a48f2262c31e8e52b7b478c828fcb534be4f920a07ec3387"
+  },
+  "manifest": {
+    "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-execution-2026-10-26.members.json",
+    "bytes": 104228,
+    "sha256": "44f74850e5b83433153552a2f934a83ae55f3eb1e045c2a9501494f0979873c5"
+  },
+  "verifiedMemberCount": 417,
+  "ownedSurvivors": [],
+  "finalOwnedObservationAtUtc": "2026-10-26T15:58:42.904559+00:00",
+  "allPrivateDirectoriesAndClaimRetained": true,
+  "noTargetCommandRerun": true
+}

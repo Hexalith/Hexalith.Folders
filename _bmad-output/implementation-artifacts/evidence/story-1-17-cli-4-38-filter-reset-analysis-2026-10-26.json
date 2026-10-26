@@ -1,0 +1,328 @@
+{
+  "recordId": "STORY-1-17-CLI-4-38-FILTER-RESET-ANALYSIS-2026-10-26",
+  "recordedAtUtc": "2026-10-26T15:25:20.809495+00:00",
+  "status": "FAILED_ATTEMPT_PRESERVED_PRIVATE_REPAIR_PROPOSED_UNAPPLIED",
+  "actualExecution": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-execution-2026-10-26.json",
+    "sha256": "565555482f5f607d07fd26dd927b15cf2640a0fdb29755891879a6737bf3fc19",
+    "bytes": 16727
+  },
+  "actualExecutionCounts": {
+    "adapterInvocations": 1,
+    "originalDriverInvocations": 1,
+    "sandboxIdentityInvocations": 2,
+    "sdkIdentityCommandsCompleted": 1,
+    "sdkInfoExecuted": false,
+    "compilerCommandsExecuted": 0,
+    "loaderCasesExecuted": 0,
+    "modelBuildsExecuted": 0,
+    "restoresExecuted": 0,
+    "retries": 0
+  },
+  "actualOutcome": "The recording-only root rebind passed. One sandboxed dotnet --version completed with 10.0.402. The next bwrap invocation failed setting seccomp with EINVAL before SDK --info launched. The unchanged driver stopped; no compiler, loader case, model build, repair or retry ran.",
+  "diagnosis": {
+    "classification": "Concrete source defect and strongly supported explanation; actual historical cursor not measured.",
+    "defect": "One shared seccomp file descriptor is read through EOF by bwrap and reused without seek. A later call can load zero filter instructions.",
+    "observedFilterBytes": 120,
+    "observedFilterSha256": "92b4ad47fbfa2d39d14bcfc40dc3354a2adabcb632a0c0cbe1b1c017b59c3e48",
+    "actualDescriptorOffset": null,
+    "sourceProvenance": [
+      {
+        "url": "https://raw.githubusercontent.com/containers/bubblewrap/v0.11.1/bubblewrap.c",
+        "tag": "v0.11.1",
+        "sha256": "e81e833751d3d247d72dff1ad1792ca72939fa6956974dde2cb86f9f1b0a2bb3",
+        "bytes": 116430,
+        "limit": "Comparative upstream source; installed Ubuntu patch-level source/binary equivalence not established."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/containers/bubblewrap/v0.11.1/utils.c",
+        "tag": "v0.11.1",
+        "sha256": "c99f12bf7f74bb299e102852fb30ff76a6dfee0a2f6bfed5c840beb3249d4ddb",
+        "bytes": 21879,
+        "limit": "Comparative upstream source; installed Ubuntu patch-level source/binary equivalence not established."
+      }
+    ],
+    "installedBinary": {
+      "path": "/usr/bin/bwrap",
+      "sha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+      "bytes": 80424,
+      "mode": "0o100755",
+      "sourceEquivalenceProven": false
+    },
+    "limitations": [
+      "Upstream tag source is not proven equivalent to Ubuntu patched binary.",
+      "No offset probe or repaired sandbox execution was performed."
+    ]
+  },
+  "proposedPatch": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26.patch",
+    "sha256": "39c6b938492aa10270ca3b79ab388d6fc070a3b327a0c068b8dee0acadea79f4",
+    "bytes": 1005
+  },
+  "beforeDriverSha256": "515acde8c304d5ab71eb44a7d84fde1a247ada176c9121eb07e4ecb6c8927463",
+  "proposedAfterDriverSha256": "ae559715da8b3e220703d4e229776289cf4bfdb3d098fa0fc15a4c0244b4bdba",
+  "driverAddedLines": 4,
+  "driverRemovedLines": 0,
+  "repositoryPatchApplied": false,
+  "proposedDriverExecuted": false,
+  "freshAttemptPlan": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-filter-reset-plan-2026-10-26.json",
+    "sha256": "efdbd430962e48d7596e8d9bb4030c5697ca02198b5f9e24c26da3a35d93ad50",
+    "bytes": 30493
+  },
+  "authoredArtifacts": [
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26.md",
+      "sha256": "3716b8ac47edefb7850259291c1ad3bb0ad2e369fd91df62fd508143cde40585",
+      "bytes": 11210
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-filter-reset-plan-2026-10-26.json",
+      "sha256": "efdbd430962e48d7596e8d9bb4030c5697ca02198b5f9e24c26da3a35d93ad50",
+      "bytes": 30493
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26.patch",
+      "sha256": "39c6b938492aa10270ca3b79ab388d6fc070a3b327a0c068b8dee0acadea79f4",
+      "bytes": 1005
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26/execute_after_filter_reset_authorization.py",
+      "sha256": "1b3aeb881751e469d3407a4f9614b3ec715b91244cd380fb9ca3bce5322d0618",
+      "bytes": 13534
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26/test_authorization_guards.py",
+      "sha256": "90771542638b996fe7182d5a1dbe083e665d428cffebdb6fa040d4451615dfec",
+      "bytes": 6309
+    }
+  ],
+  "review": {
+    "recordedAtUtc": "2026-10-26T15:19:41.235896+00:00",
+    "kind": "bmad-build three independent context-free review layers",
+    "frozenDiff": "/tmp/story117-cli438-filter-repair-20261026-V30VH5/review.diff",
+    "frozenDiffSha256": "8c887a83d3087a3f498b8e4a73e1a73ab90e66ae733370e2a92b356421cf6f13",
+    "reviewers": [
+      "/root/loader_blind_review",
+      "/root/loader_edge_review",
+      "/root/loader_verification_review"
+    ],
+    "allLayersReportedBeforeTriage": true,
+    "scope": "Only unexecuted proposal edits and evidence clarifications. No actual driver, original approved spec/status or failed execution artifact was edited; no SDK/payload rerun.",
+    "findings": [
+      {
+        "id": "blind-1",
+        "verdict": "low",
+        "route": "patch",
+        "evidence": "The analysis trio was absent during review preparation. Complete and bind those artifacts before presenting; their final existence/hash checks are recorded in the sealed receipt."
+      },
+      {
+        "id": "blind-2",
+        "verdict": "high",
+        "route": "patch",
+        "evidence": "Inherited PYTHONOPTIMIZE can remove assert gates. New outer and inner launches use a bound interpreter with -I -B; an explicit non-assert guard rejects optimize!=0 or isolated!=1. Pure guard and launch-wiring tests pass."
+      },
+      {
+        "id": "blind-3",
+        "verdict": "high",
+        "route": "patch",
+        "evidence": "A numeric one-attempt field alone does not prevent replay/concurrency. Add atomic exclusive per-approval claim, keep it consumed on failure, exclude ledger from cleanup. Duplicate/race tests pass; external ledger deletion remains outside the guarantee."
+      },
+      {
+        "id": "blind-4",
+        "verdict": "medium",
+        "route": "patch",
+        "evidence": "Status/index hashes do not reveal all hidden-worktree flags. Prospective adapter rejects lowercase assume-unchanged and S skip-worktree tags in every repository. Actual prior run did not record this flag check; no retrospective claim."
+      },
+      {
+        "id": "blind-5",
+        "verdict": "medium",
+        "route": "patch",
+        "evidence": "A same-path untracked edit need not change status text. Rehash every bound recording file and actual approval immediately before launch and after return; same-path mutation test passes. These are point-in-time checks, not continuous filesystem attestation."
+      },
+      {
+        "id": "blind-6",
+        "verdict": "medium",
+        "route": "patch",
+        "evidence": "Post-run-only audit is incomplete on launch errors or interruption. New prelaunch record, explicit exception/signal handling, bounded child termination and best-effort finalization preserve actual partial outcomes. SIGKILL can still truncate final records and is disclosed."
+      },
+      {
+        "id": "blind-7",
+        "verdict": "medium",
+        "route": "patch",
+        "evidence": "Inherited PATH could select a different inner Python. Use sys.executable from the hash-bound canonical outer interpreter; both launches are isolated. Structural launch test passes."
+      },
+      {
+        "id": "blind-8",
+        "verdict": "low",
+        "route": "patch",
+        "evidence": "The prior root-rebind approval was bound but not separately copied. Add prior-root-rebind-approval.json to the prospective adapter artifacts; previous actual failure capsule already retains its own original approval copies unchanged."
+      },
+      {
+        "id": "blind-9",
+        "verdict": "low",
+        "route": "patch",
+        "evidence": "Offsets held only in memory could be lost if Popen fails. Four-line proposed repair now writes a prelaunch JSON record after successful seek/reset and before Popen. A failed seek may still leave only the driver error trace; no unobserved offset is invented."
+      },
+      {
+        "id": "blind-10",
+        "verdict": "medium",
+        "route": "patch",
+        "evidence": "Root/authorization guard rejection lacked executable verification. Thirteen pure tests now exercise valid/invalid root states, flags, Python mode, same-path byte drift, duplicate/concurrent claims, unsafe claim path and guard-to-launch wiring, without Git mutation or target processes."
+      },
+      {
+        "id": "blind-11",
+        "verdict": "low",
+        "route": "patch",
+        "evidence": "Add an explicit reproducible partial-failure sealing procedure: exact inputs/destinations, no overwrite, inventory boundaries, certificate-content exclusions, manifest/archive verification, receipt facts and retention/cleanup. No actual retry sealing result is fabricated."
+      },
+      {
+        "id": "edge-1",
+        "verdict": "high",
+        "route": "patch",
+        "evidence": "Same optimization defect as blind-2, independently traced. Bound -I -B and explicit runtime-mode rejection added; tests cover rejected optimized/nonisolated states."
+      },
+      {
+        "id": "edge-2",
+        "verdict": "high",
+        "route": "patch",
+        "evidence": "Same replay/concurrency defect as blind-3. Exclusive claim added before materialization/SDK; consumed claims retained and duplicate/race tests pass."
+      },
+      {
+        "id": "edge-3",
+        "verdict": "medium",
+        "route": "patch",
+        "evidence": "Same status-versus-byte gap as blind-5. Repeated recording/approval byte checks added immediately before launch and after completion, with retained snapshot checks."
+      },
+      {
+        "id": "verification-1",
+        "verdict": "medium",
+        "route": "patch",
+        "evidence": "Pre-verified regression gap: allowing an extra untracked path could reach the downstream snapshot equality gate. Pure checker rejects that exact fixture; static wiring verifies it is called before claim and Popen. Test remains under qualification artifacts, without unauthorized scripts/tests or CI production edits."
+      }
+    ],
+    "grouping": [
+      {
+        "rootCause": "optimization",
+        "members": [
+          "blind-2",
+          "edge-1"
+        ]
+      },
+      {
+        "rootCause": "one-use-authority",
+        "members": [
+          "blind-3",
+          "edge-2"
+        ]
+      },
+      {
+        "rootCause": "record-byte-drift",
+        "members": [
+          "blind-5",
+          "edge-3"
+        ]
+      },
+      {
+        "rootCause": "guard-rejection-coverage",
+        "members": [
+          "blind-10",
+          "verification-1"
+        ]
+      }
+    ],
+    "supplementaryObservation": "A provisional reviewer message suggested an archive change. Independent rehash and full315-member verification reproduce the original worker hashes516ada5078375dbfe10ead323e5b864f27d4f5929d4679a0b46a2e006d2c4269 /6a58de3c876de72aea6041dcd7c69d67e631d784812e62db98b2e9a64c98d1e9 and original approval member4094 bytes. The final reviewer findings did not retain that claim. No failed archive was modified.",
+    "focusedFollowup": {
+      "recordedAtUtc": "2026-10-26T15:22:37.505043+00:00",
+      "reviewer": "/root/loader_verification_review",
+      "result": "No concrete remaining blocker found. Retained13-test run matches current adapter/test hashes; static safeguards, exact launch argv and four-line transformation bindings confirmed. No proposal execution."
+    }
+  },
+  "guardTests": {
+    "count": 13,
+    "passed": 13,
+    "command": {
+      "argv": [
+        "/usr/bin/python3.14",
+        "-I",
+        "-B",
+        "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26/test_authorization_guards.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-10-26T15:17:00.033721+00:00",
+      "endedAtUtc": "2026-10-26T15:17:00.090023+00:00",
+      "exitCode": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "cac5b565578e1b31f6787112c1d12a0e79d4751c7f652d4b10f39d4362432419",
+      "testedAdapterSha256": "1b3aeb881751e469d3407a4f9614b3ec715b91244cd380fb9ca3bce5322d0618",
+      "testedSourceSha256": "90771542638b996fe7182d5a1dbe083e665d428cffebdb6fa040d4451615dfec",
+      "scope": "Pure unit guard functions and static launch wiring only; no adapter/main driver, Git mutation, bwrap, SDK or model/host execution."
+    },
+    "scope": "Pure definitions and launch wiring only; no Git mutation, adapter main, bwrap, SDK or target assembly execution."
+  },
+  "artifactArchive": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-analysis-2026-10-26.artifacts.tar.gz",
+    "sha256": "1fbf5963ea0bbc998d05a8fb7ea1e20e0a65e49a9376cf8814b84179028c7909",
+    "bytes": 104380
+  },
+  "memberManifest": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-analysis-2026-10-26.members.json",
+    "sha256": "2848925222190a92b3bbe8769e41a0a678a04512c50819b0092c9bfb9a05a4b8",
+    "bytes": 3669
+  },
+  "membersVerified": 22,
+  "preservation": {
+    "all13RevisionsAndIndicesPreserved": true,
+    "all12DirectCheckoutsPreserved": true,
+    "existingApprovalsAndApprovedSpecBytesPreserved": true,
+    "originalFailed315MemberCapsuleUnchanged": true,
+    "currentHiddenIndexFlags": [],
+    "stagedEntries": [],
+    "freshAuthorityFileExists": false,
+    "sdkTargetCommandsCompleted": 1,
+    "loaderCasesExecuted": 0,
+    "retries": 0,
+    "newGuardTestsOnly": 13,
+    "scope": "Hash-bound files and Git observations; no full-machine claim."
+  },
+  "ownerDecision": {
+    "decisionMaker": "Jerome",
+    "status": "PENDING",
+    "authorized": false,
+    "question": "Authorize only the exact private-copy filter repair and guarded single fresh attempt?",
+    "previousExecutionAuthorityConsumed": true,
+    "freshAttemptAuthorityRequired": true
+  },
+  "necessaryDependencyOrBuildPropertyChange": false,
+  "selectedRedisCatalogPin": "3.4.5",
+  "operationalSourcePatch": null,
+  "ordinaryMapping": null,
+  "ContentHash": null,
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false
+  },
+  "parentStatus": "in-progress",
+  "trackerStatus": "backlog",
+  "stagingChecks": {
+    "total": 14,
+    "executed": 0
+  },
+  "historicalAcceptedCli": "4.35.2",
+  "candidateCli": "4.38.0",
+  "currentTupleAccepted": false,
+  "packageAccepted": false,
+  "hostedAccepted": false,
+  "historicalImmediateSdkGate": "Incomplete and unchanged; no rerun of completed model build.",
+  "staged": false,
+  "committed": false,
+  "pushed": false,
+  "published": false,
+  "deployed": false,
+  "dependenciesChanged": false,
+  "nestedSubmodulesInitialized": false
+}

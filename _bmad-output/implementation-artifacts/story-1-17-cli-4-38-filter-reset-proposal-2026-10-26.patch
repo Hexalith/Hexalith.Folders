@@ -1,0 +1,13 @@
+--- a/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-proposal-2026-10-26/execute_after_authorization.py
++++ b/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-proposal-2026-10-26/execute_after_authorization.py
+@@ -84,6 +84,10 @@
+         '--chdir', str(PLATFORM), '--', *map(str, argv)]
+     record = dict(atUtc=now(), argv=sandbox, targetArgv=list(map(str, argv)), cwd=str(PLATFORM),
+         environment=ENV, timeoutSeconds=limit, termGraceSeconds=5, observations=[])
++    record["seccompOffsetBeforeReset"] = os.lseek(SECCOMP_FD, 0, os.SEEK_CUR)
++    record["seccompOffsetAtLaunch"] = os.lseek(SECCOMP_FD, 0, os.SEEK_SET)
++    assert record["seccompOffsetAtLaunch"] == 0
++    write(WORK / (label + ".prelaunch.json"), record)
+     seen = set()
+     with (WORK / (label + '.stdout')).open('wb') as stdout, (WORK / (label + '.stderr')).open('wb') as stderr:
+         process = subprocess.Popen(sandbox, cwd=PLATFORM, env=ENV, stdin=subprocess.DEVNULL,

@@ -1,0 +1,629 @@
+{
+  "recordId": "STORY-1-17-CLI-4-38-FILTER-RESET-REVIEW-2026-10-26",
+  "recordedAtUtc": "2026-10-26T16:21:20.240152+00:00",
+  "status": "TEN_EVIDENCE_ONLY_REVIEW_FINDINGS_RESOLVED_ADDITIVELY",
+  "scope": "Evidence supplement only. No SDK/compiler/probe/adapter execution, retry, cleanup, Git mutation, source/dependency change, original-packet resealing or follow-up operational authority.",
+  "supersession": {
+    "rule": "Only the field meanings and report wording explicitly listed in fieldSpecificCorrections are narrowed. All original raw bytes, observed results, approvals and operational holds remain authoritative within their preserved limits.",
+    "originalReceiptSha256": "83926941c48d04402d107df0e11e9f8f5300144601197d79e55c7bbd6c0a96ef",
+    "originalManifestSha256": "44f74850e5b83433153552a2f934a83ae55f3eb1e045c2a9501494f0979873c5",
+    "rawOriginalLabelsPreserved": true
+  },
+  "unchangedOriginalExecutionArtifacts": {
+    ".json": {
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-execution-2026-10-26.json",
+      "bytes": 217465,
+      "sha256": "83926941c48d04402d107df0e11e9f8f5300144601197d79e55c7bbd6c0a96ef"
+    },
+    ".artifacts.tar.gz": {
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-execution-2026-10-26.artifacts.tar.gz",
+      "bytes": 43400158,
+      "sha256": "a7e68bcc283c14c2a48f2262c31e8e52b7b478c828fcb534be4f920a07ec3387"
+    },
+    ".members.json": {
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-execution-2026-10-26.members.json",
+      "bytes": 104228,
+      "sha256": "44f74850e5b83433153552a2f934a83ae55f3eb1e045c2a9501494f0979873c5"
+    }
+  },
+  "sourceBindings": [
+    {
+      "sourcePath": "/tmp/story117-cli438-filter-reset-invocation-20261026-A3HitNsX/final-verification.json",
+      "bytes": 3882,
+      "sha256": "e024ef6022dc5b9d4bae7b7d54817c8475ecaa946ec81f7e644d3007e35a2d2d",
+      "copyPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26/final-verification.json",
+      "archiveMember": "review/final-verification.json",
+      "role": "Existing observation preserved byte-for-byte"
+    },
+    {
+      "sourcePath": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-proposal-2026-10-26/execute_after_filter_reset_authorization.py",
+      "bytes": 13534,
+      "sha256": "1b3aeb881751e469d3407a4f9614b3ec715b91244cd380fb9ca3bce5322d0618",
+      "copyPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26/execute_after_filter_reset_authorization.py",
+      "archiveMember": "review/execute_after_filter_reset_authorization.py",
+      "role": "Approved adapter preserved as data only; never invoked"
+    },
+    {
+      "sourcePath": "/tmp/story117-cli438-approved-fresh-20261026-ot00opmr/review-triage.json",
+      "bytes": 7075,
+      "sha256": "51df1853ba756e5beafe53b1aa6eddece6bbcc89b947e1c7cdbc2fc94a5b804b",
+      "copyPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26/review-triage.json",
+      "archiveMember": "review/review-triage.json",
+      "role": "Exact parent review record"
+    },
+    {
+      "sourcePath": "/tmp/story117-cli438-approved-fresh-20261026-ot00opmr/review-layer-results.json",
+      "bytes": 4297,
+      "sha256": "d0a99694e6cf8a680d835379a595378ced42ada71c5a90202530870c8fb7002e",
+      "copyPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26/review-layer-results.json",
+      "archiveMember": "review/review-layer-results.json",
+      "role": "Exact parent review record"
+    }
+  ],
+  "preservedFinalObservation": {
+    "sourcePath": "/tmp/story117-cli438-filter-reset-invocation-20261026-A3HitNsX/final-verification.json",
+    "archiveMember": "review/final-verification.json",
+    "observationAtUtc": "2026-10-26T15:58:42.881201+00:00",
+    "finalOwnedObservationAtUtc": "2026-10-26T15:58:42.904559+00:00",
+    "reconstructed": false,
+    "meaning": "Exact historical post-receipt observation; not a fresh observation at supplement creation."
+  },
+  "completePerFindingTriage": {
+    "scope": "Evidence-only corrections after all three review layers completed; no target rerun, no change to sealed execution or earlier approval bytes.",
+    "layers": {
+      "fresh_blind_review": {
+        "findings": 10,
+        "floor": "min(floor(sqrt(356.861)+1),10)=10"
+      },
+      "fresh_edge_review": {
+        "findings": 0,
+        "result": "[]"
+      },
+      "fresh_verification_review": {
+        "findings": 0,
+        "result": "No verification gaps found."
+      }
+    },
+    "findings": [
+      {
+        "id": "F1",
+        "verdict": "medium",
+        "claim": "Final post-receipt verification remains only in /tmp, outside the sealed packet.",
+        "evidence": "The manifest has 417 files and no final-verification.json. The original capture directory retains that actual observation at 2026-10-26T15:58:42.881201+00:00, binding the unchanged receipt/archive/manifest and zero survivors.",
+        "route": "patch",
+        "fix": "Preserve the existing final-verification.json bytes in a separately bound supplement; do not reconstruct the observation or reseal the original packet."
+      },
+      {
+        "id": "F2",
+        "verdict": "medium",
+        "claim": "postRecordingMetadataEqual names a later boundary than the captured certificate observation.",
+        "evidence": "certificate-post-seal-metadata.json is timestamped 15:58:31.506310Z, before archive verification at 15:58:42.509137Z and receipt creation. The metadata comparison is after target execution and before sealing completed.",
+        "route": "patch",
+        "fix": "Add a field-specific correction narrowing the boundary to the captured timestamp; preserve raw labels and bytes."
+      },
+      {
+        "id": "F3",
+        "verdict": "medium",
+        "claim": "The outer invocation observer overstates process-group coverage.",
+        "evidence": "invoke_once.py builds the sampled set by recursive ppid traversal and checks previously seen PID/startTime identities at its end. It does not union every process in the outer process group. The separate inner driver and later seal observer do check owned sandbox groups.",
+        "route": "patch",
+        "fix": "Distinguish outer ancestry sampling/seen-identity check from inner sandbox group observations, including their limits."
+      },
+      {
+        "id": "F4",
+        "verdict": "medium",
+        "claim": "Certificate contentsRead/storeEdits claims need an explicit collector subject.",
+        "evidence": "The collector uses lstat metadata only; sandbox targets can read the real home mounted read-only. No file-access trace proves that SDK or implicit initializers never read stores. Equal recorded metadata does not prove every possible read or external-state nonchange.",
+        "route": "patch",
+        "fix": "Scope no-read/no-hash/no-edit assertions to collection code and report observed metadata equality; explicitly retain unobserved target reads."
+      },
+      {
+        "id": "F5",
+        "verdict": "medium",
+        "claim": "Independent historical regular-file metadata preservation is not supported by the persisted manifest.",
+        "evidence": "seal_evidence.py compares full inventories before and after archival in memory, but writes regular-file path/size/hash only. Directory metadata is persisted; historical regular-file mode/uid/gid/mtimeNs/ctimeNs snapshots are not. Tar headers alone cannot reconstruct that source comparison.",
+        "route": "patch",
+        "fix": "Narrow sourceMembershipAndMetadataUnchanged to the collector-reported intra-seal assertion; distinguish independently checked contents from unretained metadata snapshots. Do not invent historical metadata."
+      },
+      {
+        "id": "F6",
+        "verdict": "medium",
+        "claim": "The outer adapter's approved bytes are not portable within the execution archive.",
+        "evidence": "The 417-member manifest has the private driver and wrappers but not execute_after_filter_reset_authorization.py. The approved adapter still exists unchanged at the plan-bound repository path with SHA256 1b3aeb881751e469d3407a4f9614b3ec715b91244cd380fb9ca3bce5322d0618.",
+        "route": "patch",
+        "fix": "Copy those exact approved adapter bytes into the supplement and bind their original source/path/hash; do not invoke them."
+      },
+      {
+        "id": "F7",
+        "verdict": "low",
+        "claim": "Inherited package-layout anomalies need explicit disclosure as untested seams.",
+        "evidence": "The signed candidate nupkg itself contains g4-host/cs/cs/Aspire.Hosting.resources.dll and g4-host/runtimes/linux-x64/native/runtimes/linux-x64/native/libhex1binterop.so. The ordinary g4-host/runtimes/linux-x64/native/libhex1binterop.so is absent; host deps names runtimes/linux-x64/native/libhex1binterop.so. No affected native/satellite load was exercised.",
+        "route": "patch",
+        "fix": "Disclose inherited layout observations and qualification limits; do not infer runtime failure, choose a package repair, or broaden authorization."
+      },
+      {
+        "id": "F8",
+        "verdict": "low",
+        "claim": "The cold-case report can describe captured binding state more precisely.",
+        "evidence": "The cold context initiallyLoaded list contains no Hexalith.EventStore assembly, while TPA maps Hexalith.EventStore.Aspire.dll to host. No EventStore.Aspire assembly-load event appears in cold before the final failure; host-first has the explicit 3.127 event. These are recorded observations, not proof of all native binder internals or ordinary JIT order.",
+        "route": "patch",
+        "fix": "State the captured initial/event/TPA distinction without equating a host mapping with an already loaded assembly."
+      },
+      {
+        "id": "F9",
+        "verdict": "low",
+        "claim": "Inherited conclusions need direct links to their governing evidence.",
+        "evidence": "The report currently links only the execution receipt, although the immutable original plan, new approval, compile/reference result, selected catalog qualification and owner-intake/composition records all exist.",
+        "route": "patch",
+        "fix": "Add exact relative links to governing plans/approvals and reused evidence; retain their prior limitations."
+      },
+      {
+        "id": "F10",
+        "verdict": "low",
+        "claim": "The packet needs portable read-only verification instructions.",
+        "evidence": "seal_evidence.py mutates recording outputs and depends on private source trees, so it is unsuitable for portable verification of the completed packet. No standalone read-only verifier is currently supplied.",
+        "route": "patch",
+        "fix": "Supply a read-only Python verifier for fixed receipt/archive/manifest SHA256 values and all unique safe regular-file members/sizes/hashes. No extraction, writes, subprocesses or target commands."
+      }
+    ],
+    "groupingAfterIndividualVerdicts": [
+      {
+        "ids": [
+          "F1",
+          "F6"
+        ],
+        "rootCause": "Portable packet omits retained supporting bytes",
+        "route": "patch"
+      },
+      {
+        "ids": [
+          "F2",
+          "F4"
+        ],
+        "rootCause": "Certificate field labels omit observation subject/time",
+        "route": "patch"
+      },
+      {
+        "ids": [
+          "F3"
+        ],
+        "rootCause": "Outer observer description exceeds implementation",
+        "route": "patch"
+      },
+      {
+        "ids": [
+          "F5"
+        ],
+        "rootCause": "Persisted regular-file metadata evidence is narrower than summary wording",
+        "route": "patch"
+      },
+      {
+        "ids": [
+          "F7"
+        ],
+        "rootCause": "Untested inherited package-layout seam omitted from disclosure",
+        "route": "patch"
+      },
+      {
+        "ids": [
+          "F8"
+        ],
+        "rootCause": "Captured binding state summarized too loosely",
+        "route": "patch"
+      },
+      {
+        "ids": [
+          "F9"
+        ],
+        "rootCause": "Missing direct evidence links",
+        "route": "patch"
+      },
+      {
+        "ids": [
+          "F10"
+        ],
+        "rootCause": "No portable read-only verification procedure",
+        "route": "patch"
+      }
+    ],
+    "deferredFindings": [],
+    "frozenSpecAndOperationalRecordsUnchanged": true
+  },
+  "allThreeRawReviewResults": {
+    "fresh_blind_review": {
+      "agent": "/root/fresh_blind_review",
+      "result": "- Floor calculation: 356,861 bytes / 1,000 = 356.861 kB; N = min(floor(\u221a356.861 + 1), 10) = min(19, 10) = **10**.\n\n- The execution receipt\u2019s `statusAfterWritingThisReceiptExpected` leaves the actual final repository check in an unbound `/tmp` file. `final-verification.json` is absent from the archive and manifest. Preserve that completed observation in a separate bound artifact so the final preservation claim survives loss of `/tmp`.\n\n- `certificateEvidence.postRecordingMetadataEqual` overstates its observation boundary. The archived certificate check occurred at `15:58:31.506310Z`, before archive verification at `15:58:42.509137Z` and receipt creation. Describe it as a check after target execution and before sealing, or preserve a later observation separately.\n\n- `outerCommand.samplingLimit` claims observation of descendants \u201cand matching process group,\u201d but archived `invoke_once.py` collects descendants through `ppid` traversal only. Its final check also considers previously seen identities rather than every member of the outer process group. Correct the description and distinguish this observer from the inner sandbox group checks.\n\n- The certificate fields `contentsRead: false` and `storeEdits: false`, and the corresponding report sentence, need an explicit subject. The collector avoids content reads and observes equal metadata; the sandbox leaves the real home readable, and there is no file-access trace establishing that every SDK or implicitly initialized assembly avoided certificate reads. Scope these statements to collector actions and observed metadata.\n\n- The manifest preserves detailed directory metadata but only size and SHA256 for regular files. Archived `seal_evidence.py` collects regular-file mode, ownership and timestamps and then discards those values from the manifest. Preserve those expected values and verify the applicable archive headers if `sourceMembershipAndMetadataUnchanged` is intended to be independently assessable.\n\n- The capsule includes the private driver and the invocation/sealing wrappers but omits the executed outer adapter, `execute_after_filter_reset_authorization.py`. Its runtime source was an untracked root file. Archive its approved bytes, or provide a durable source location containing those exact bytes, so the authorization/materialization implementation remains inspectable without the original workspace.\n\n- The manifest exposes packaged-host layout anomalies that the results report never identifies: for example, `host/cs/cs/Aspire.Hosting.resources.dll` and `host/runtimes/linux-x64/native/runtimes/linux-x64/native/libhex1binterop.so`. The host deps file names the ordinary native asset path. Record these inherited package-layout discrepancies as additional untested seams; managed identity bindings do not qualify those assets.\n\n- The report could resolve an important uncertainty using evidence already captured. Cold-case context records show no initially loaded EventStore assembly, while the trusted-platform-assembly list already points to host EventStore. Distinguish the observed host dependency mapping from an explicitly loaded host assembly, and state what the captured assembly-load events show before the final demand.\n\n- The results report links only the new execution receipt while relying on earlier catalog selection, transitive-pinning diagnosis, historical SDK deficiencies, owner-intake evidence and dependency-policy conflict. Add direct links to the governing plan/approval and the exact earlier evidence supporting those inherited conclusions.\n\n- The packet lacks a documented read-only verification procedure. The archived sealing script creates files and expects the original private directories; it is unsuitable as a portable verification command. Provide a verifier or concise instructions that check archive/manifest hashes, member uniqueness, paths, sizes and SHA256 values without invoking the consumed authorization or recreating execution."
+    },
+    "fresh_edge_review": {
+      "agent": "/root/fresh_edge_review",
+      "result": "[]"
+    },
+    "fresh_verification_review": {
+      "agent": "/root/fresh_verification_review",
+      "result": "No verification gaps found."
+    }
+  },
+  "perFindingDispositions": [
+    {
+      "id": "F1",
+      "triageVerdict": "medium",
+      "route": "patch",
+      "status": "resolved_by_evidence_only_patch",
+      "resolution": "Exact existing final-verification.json preserved as a separate byte-bound review archive member; original observation is not reconstructed."
+    },
+    {
+      "id": "F2",
+      "triageVerdict": "medium",
+      "route": "patch",
+      "status": "resolved_by_evidence_only_patch",
+      "resolution": "The named certificate field is narrowed to its actual post-target/pre-seal timestamp."
+    },
+    {
+      "id": "F3",
+      "triageVerdict": "medium",
+      "route": "patch",
+      "status": "resolved_by_evidence_only_patch",
+      "resolution": "Outer PPID ancestry and seen-identity-only checks are distinguished from inner sandbox group checks."
+    },
+    {
+      "id": "F4",
+      "triageVerdict": "medium",
+      "route": "patch",
+      "status": "resolved_by_evidence_only_patch",
+      "resolution": "No certificate-content read/hash/edit claims are scoped to collectors; target reads and implicit initializer effects remain unproven."
+    },
+    {
+      "id": "F5",
+      "triageVerdict": "medium",
+      "route": "patch",
+      "status": "resolved_by_evidence_only_patch",
+      "resolution": "Inventory/metadata equality is labelled a collector-reported intra-seal assertion; missing historical regular-file metadata is not recreated."
+    },
+    {
+      "id": "F6",
+      "triageVerdict": "medium",
+      "route": "patch",
+      "status": "resolved_by_evidence_only_patch",
+      "resolution": "The exact plan-bound adapter is preserved as data, with source path/size/hash; it is never invoked."
+    },
+    {
+      "id": "F7",
+      "triageVerdict": "low",
+      "route": "patch",
+      "status": "resolved_by_evidence_only_patch",
+      "resolution": "Duplicated native/satellite nupkg paths and absent ordinary native path are disclosed as inherited untested seams, without a runtime-failure or repair claim."
+    },
+    {
+      "id": "F8",
+      "triageVerdict": "low",
+      "route": "patch",
+      "status": "resolved_by_evidence_only_patch",
+      "resolution": "Cold initiallyLoaded, TPA mapping, missing EventStore.Aspire load event, and explicit host-first3.127 load are stated separately."
+    },
+    {
+      "id": "F9",
+      "triageVerdict": "low",
+      "route": "patch",
+      "status": "resolved_by_evidence_only_patch",
+      "resolution": "Exact relative governing-evidence links and byte bindings are supplied here; the parent owns the corresponding human-report links and corrections."
+    },
+    {
+      "id": "F10",
+      "triageVerdict": "low",
+      "route": "patch",
+      "status": "resolved_by_evidence_only_patch",
+      "resolution": "New positional-path stdlib read-only verifier and its actual exit0/417-member result are archived, with fixed original artifact hashes."
+    }
+  ],
+  "fieldSpecificCorrections": [
+    {
+      "finding": "F2",
+      "originalField": "/certificateEvidence/postRecordingMetadataEqual",
+      "replacementMeaning": "The collector recorded equal real/private certificate-store metadata after target execution at 2026-10-26T15:58:31.506310+00:00, before original sealing completed. This is not a post-receipt or post-seal observation.",
+      "sourceMember": "filter-reset/recording-audit/certificate-post-seal-metadata.json"
+    },
+    {
+      "finding": "F3",
+      "originalField": "/outerCommand/samplingLimit",
+      "replacementMeaning": "The outer invocation observer recursively sampled descendants by PPID and finally checked previously seen PID/startTime identities. It did not enumerate every member of the outer process group. Separate inner sandbox command observers and the later sealing observer did check owned sandbox groups. All sampled observations can miss transient or escaped processes.",
+      "sourceMembers": [
+        "filter-reset/recording-audit/invoke_once.py",
+        "filter-reset/recording-audit/invocation.json",
+        "filter-reset/recording-audit/owned-process-final.json"
+      ]
+    },
+    {
+      "finding": "F4",
+      "originalFields": [
+        "/certificateEvidence/contentsRead",
+        "/certificateEvidence/contentsHashed",
+        "/certificateEvidence/storeEdits"
+      ],
+      "replacementMeaning": "No-read/no-hash/no-store-edit assertions describe the collection code. It collected lstat metadata and observed equal recorded store metadata. The real home was readable to sandbox targets; SDK and implicit initializer reads are unobserved. No file-access trace establishes that all targets avoided certificate reads, and metadata equality does not establish all external-state nonchange.",
+      "subject": "Evidence collection code only"
+    },
+    {
+      "finding": "F5",
+      "originalFields": [
+        "receipt:/archiveVerification/sourceMembershipAndMetadataUnchanged",
+        "manifest:/memberVerification/sourceMembershipAndMetadataUnchanged"
+      ],
+      "replacementMeaning": "This boolean is the collector-reported intra-seal inventory equality assertion. The collector compared its in-memory source inventories before/after archival. Persisted regular-file entries contain path, size and SHA256 only; historical source mode, uid, gid, mtimeNs and ctimeNs snapshots were not persisted and cannot now be independently reconstructed. Directory metadata was persisted. Archive headers do not reconstruct the missing source comparison. Portable verification independently checks retained content integrity only.",
+      "historicalRegularFileMetadataRecreated": false
+    },
+    {
+      "finding": "F7",
+      "originalScope": "Managed binding evidence and package-layout qualification limits",
+      "replacementMeaning": "Inherited nupkg layout seams. Neither the affected native nor satellite asset was exercised. No runtime failure, package repair, or follow-up execution authority is inferred.",
+      "observations": {
+        "sourcePackage": {
+          "path": "/tmp/story117-cli438-qualification-20261026-fk5qKp/download/hexalith.builds.module.cli.4.38.0.nupkg",
+          "bytes": 37220356,
+          "sha256": "f352d3e0f03f21dbfe42c89adb7a8765cb073a2351281acaa3cf304235426ab1"
+        },
+        "presentInheritedPackageMembers": [
+          "tools/net10.0/any/g4-host/cs/cs/Aspire.Hosting.resources.dll",
+          "tools/net10.0/any/g4-host/runtimes/linux-x64/native/runtimes/linux-x64/native/libhex1binterop.so"
+        ],
+        "absentOrdinaryPackageMember": "tools/net10.0/any/g4-host/runtimes/linux-x64/native/libhex1binterop.so",
+        "originalHostDepsMember": "loader/host/Hexalith.Builds.Module.AppHost.deps.json",
+        "depsRuntimeTarget": "runtimes/linux-x64/native/libhex1binterop.so",
+        "depsRuntimeTargetMetadata": {
+          "rid": "linux-x64",
+          "assetType": "native",
+          "fileVersion": "0.0.0.0"
+        },
+        "interpretation": "Inherited nupkg layout seams. Neither the affected native nor satellite asset was exercised. No runtime failure, package repair, or follow-up execution authority is inferred."
+      }
+    },
+    {
+      "finding": "F8",
+      "originalScope": "/limitations cold/host-first binding-state summary",
+      "replacementMeaning": "Cold initiallyLoaded records no Hexalith.EventStore assembly. TPA maps Hexalith.EventStore.Aspire.dll to the host path, while cold records no Hexalith.EventStore.Aspire assembly-load event before the final failure. Host-first records the explicit host3.127 load. A TPA path is a dependency mapping, not proof of an already loaded assembly. These observations do not establish all native binder internals, ordinary JIT/demand order, target file reads or every implicit initializer effect.",
+      "observedCaseState": {
+        "cold": {
+          "sourceMember": "loader/probe-cold.stdout",
+          "contextAtUtc": "2026-10-26T15:54:41.2852458+00:00",
+          "initiallyLoadedEventStore": [],
+          "trustedPlatformEventStoreAspirePaths": [
+            "/tmp/story117-cli438-loader-20261026-801w2mad/host/Hexalith.EventStore.Aspire.dll"
+          ],
+          "eventStoreAspireAssemblyLoadEvents": [],
+          "finalFailure": {
+            "atUtc": "2026-10-26T15:54:41.401463+00:00",
+            "kind": "failure",
+            "data": {
+              "phase": "final-EventStore3128-demand",
+              "exception": "System.IO.FileLoadException: Could not load file or assembly 'Hexalith.EventStore.Aspire, Version=3.128.0.0, Culture=neutral, PublicKeyToken=null'. The located assembly's manifest definition does not match the assembly reference. (0x80131040)\nFile name: 'Hexalith.EventStore.Aspire, Version=3.128.0.0, Culture=neutral, PublicKeyToken=null'\n ---> System.IO.FileLoadException: Could not load file or assembly '/tmp/story117-cli438-loader-20261026-801w2mad/model/Hexalith.EventStore.Aspire.dll'. The located assembly's manifest definition does not match the assembly reference. (0x80131040)\nFile name: '/tmp/story117-cli438-loader-20261026-801w2mad/model/Hexalith.EventStore.Aspire.dll'\n   at System.Runtime.Loader.AssemblyLoadContext.LoadFromAssemblyPath(String assemblyPath)\n   at LoaderProbe.<>c__DisplayClass3_0.<Main>b__1(AssemblyLoadContext context, AssemblyName name)\n   at System.Runtime.Loader.AssemblyLoadContext.GetFirstResolvedAssemblyFromResolvingEvent(AssemblyName assemblyName)\n   at System.Runtime.Loader.AssemblyLoadContext.ResolveUsingEvent(AssemblyName assemblyName)\n   at System.Reflection.RuntimeAssembly.InternalLoad(AssemblyName assemblyName, StackCrawlMark& stackMark, AssemblyLoadContext assemblyLoadContext, RuntimeAssembly requestingAssembly, Boolean throwOnFileNotFound)\n   at System.Runtime.Loader.AssemblyLoadContext.LoadFromAssemblyName(AssemblyName assemblyName)\n   at LoaderProbe.Demand(String label, String identity)\n   at LoaderProbe.Main(String[] args)",
+              "HResult": -2146234304
+            }
+          }
+        },
+        "host-first": {
+          "sourceMember": "loader/probe-host-first.stdout",
+          "contextAtUtc": "2026-10-26T15:54:42.0876477+00:00",
+          "initiallyLoadedEventStore": [],
+          "trustedPlatformEventStoreAspirePaths": [
+            "/tmp/story117-cli438-loader-20261026-801w2mad/host/Hexalith.EventStore.Aspire.dll"
+          ],
+          "eventStoreAspireAssemblyLoadEvents": [
+            {
+              "atUtc": "2026-10-26T15:54:42.1659658+00:00",
+              "kind": "assembly-load",
+              "data": {
+                "identity": "Hexalith.EventStore.Aspire, Version=3.127.0.0, Culture=neutral, PublicKeyToken=null",
+                "location": "/tmp/story117-cli438-loader-20261026-801w2mad/host/Hexalith.EventStore.Aspire.dll",
+                "context": "Default",
+                "mvid": "c0a386fc-2a57-4a09-a803-4287f7b6d27e",
+                "sha256": "8c9418926bda7d438e72fe9b083d648909d117305f8ae181b163426603866c38"
+              }
+            }
+          ],
+          "finalFailure": {
+            "atUtc": "2026-10-26T15:54:42.1883402+00:00",
+            "kind": "failure",
+            "data": {
+              "phase": "final-EventStore3128-demand",
+              "exception": "System.IO.FileLoadException: Could not load file or assembly 'Hexalith.EventStore.Aspire, Version=3.128.0.0, Culture=neutral, PublicKeyToken=null'. The located assembly's manifest definition does not match the assembly reference. (0x80131040)\nFile name: 'Hexalith.EventStore.Aspire, Version=3.128.0.0, Culture=neutral, PublicKeyToken=null'\n ---> System.IO.FileLoadException: Could not load file or assembly '/tmp/story117-cli438-loader-20261026-801w2mad/model/Hexalith.EventStore.Aspire.dll'. The located assembly's manifest definition does not match the assembly reference. (0x80131040)\nFile name: '/tmp/story117-cli438-loader-20261026-801w2mad/model/Hexalith.EventStore.Aspire.dll'\n   at System.Runtime.Loader.AssemblyLoadContext.LoadFromAssemblyPath(String assemblyPath)\n   at LoaderProbe.<>c__DisplayClass3_0.<Main>b__1(AssemblyLoadContext context, AssemblyName name)\n   at System.Runtime.Loader.AssemblyLoadContext.GetFirstResolvedAssemblyFromResolvingEvent(AssemblyName assemblyName)\n   at System.Runtime.Loader.AssemblyLoadContext.ResolveUsingEvent(AssemblyName assemblyName)\n   at System.Reflection.RuntimeAssembly.InternalLoad(AssemblyName assemblyName, StackCrawlMark& stackMark, AssemblyLoadContext assemblyLoadContext, RuntimeAssembly requestingAssembly, Boolean throwOnFileNotFound)\n   at System.Runtime.Loader.AssemblyLoadContext.LoadFromAssemblyName(AssemblyName assemblyName)\n   at LoaderProbe.Demand(String label, String identity)\n   at LoaderProbe.Main(String[] args)",
+              "HResult": -2146234304
+            }
+          }
+        }
+      }
+    }
+  ],
+  "governingEvidenceLinks": [
+    {
+      "title": "Governing fresh-attempt plan",
+      "relativeLink": "../story-1-17-cli-4-38-filter-reset-plan-2026-10-26.json",
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-cli-4-38-filter-reset-plan-2026-10-26.json",
+      "bytes": 30493,
+      "sha256": "efdbd430962e48d7596e8d9bb4030c5697ca02198b5f9e24c26da3a35d93ad50"
+    },
+    {
+      "title": "Fresh owner approval",
+      "relativeLink": "../story-1-17-cli-4-38-filter-reset-authorization-2026-10-26.json",
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-cli-4-38-filter-reset-authorization-2026-10-26.json",
+      "bytes": 16084,
+      "sha256": "6b8e8f0ae4dc8fa0aa8b35a405e6ebd09711cda119c7808479c13cec387e8506"
+    },
+    {
+      "title": "Original runtime-resolution plan",
+      "relativeLink": "../story-1-17-cli-4-38-runtime-resolution-plan-2026-10-26.json",
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-cli-4-38-runtime-resolution-plan-2026-10-26.json",
+      "bytes": 13719,
+      "sha256": "83fec7a858d1e1a8e9a9e1f514803a7ccb5408f56b1ef15c7c5bad12e4c42e7f"
+    },
+    {
+      "title": "Original loader approval",
+      "relativeLink": "../story-1-17-cli-4-38-loader-authorization-2026-10-26.json",
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-authorization-2026-10-26.json",
+      "bytes": 4094,
+      "sha256": "01907142a0863a50dfde4d6cfe465399898b8f5121982779775cf526cbefefd3"
+    },
+    {
+      "title": "Completed compile/reference qualification",
+      "relativeLink": "story-1-17-cli-4-38-nonlaunch-qualification-2026-10-26.json",
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-nonlaunch-qualification-2026-10-26.json",
+      "bytes": 198233,
+      "sha256": "2997532260421a485a931a0fb5fbea394f9f7bf03e151c4f0a8d840d84d35b4c"
+    },
+    {
+      "title": "Compile/reference result and limitations",
+      "relativeLink": "../story-1-17-cli-4-38-nonlaunch-qualification-2026-10-26.md",
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-cli-4-38-nonlaunch-qualification-2026-10-26.md",
+      "bytes": 12027,
+      "sha256": "244968a423ef76bfedcb122d720e9032d42b52780f8053b107bedc556c36f6a3"
+    },
+    {
+      "title": "Selected catalog qualification plan",
+      "relativeLink": "../story-1-17-current-platform-tool-catalog-qualification-plan-2026-10-25.json",
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-current-platform-tool-catalog-qualification-plan-2026-10-25.json",
+      "bytes": 37609,
+      "sha256": "ca503daf6298cb2e05d5fbe196470df27dc6e7ee1a0cbdcd625c0a173c3e532f"
+    },
+    {
+      "title": "Compile/reference owner approval",
+      "relativeLink": "../story-1-17-cli-4-38-nonlaunch-qualification-approval-2026-10-26.md",
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-cli-4-38-nonlaunch-qualification-approval-2026-10-26.md",
+      "bytes": 1631,
+      "sha256": "155df9f169507e456528c4d3943c13f08dec18f33a27aa1161b3a19dd33b4a64"
+    },
+    {
+      "title": "Owner-intake evidence",
+      "relativeLink": "story-1-17-owner-intake-2026-10-25.json",
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25.json",
+      "bytes": 3978,
+      "sha256": "1844ed919e41cf4d7677b924c7a3b23fd7926cf369c5797d38b72dbab5b459b7"
+    },
+    {
+      "title": "Owner-intake decisions",
+      "relativeLink": "../story-1-17-owner-intake-decisions-2026-10-25.json",
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-owner-intake-decisions-2026-10-25.json",
+      "bytes": 610685,
+      "sha256": "8d2c72f3095836edeb8375eae2689ca167a140dab776804473c2ad3a16c4d4d3"
+    },
+    {
+      "title": "Composition-intake evidence",
+      "relativeLink": "story-1-17-composition-intake-2026-10-25.json",
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25.json",
+      "bytes": 4587,
+      "sha256": "65d75f34951d934bca54a0f2a74b59928e9bcd8517a66092fcb2164dda9f657b"
+    },
+    {
+      "title": "Composition-intake handoff",
+      "relativeLink": "../story-1-17-composition-intake-handoff-2026-10-25.json",
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-composition-intake-handoff-2026-10-25.json",
+      "bytes": 18672,
+      "sha256": "a910bc067033be3f25cf3e0941e918866884ad487eabf3ab3432dab8ef80736e"
+    }
+  ],
+  "reviewDisposition": {
+    "allTenEvidenceOnlyPatchRoutes": true,
+    "deferredOperationalRepairs": [],
+    "newOperationalExecutionAuthority": false,
+    "parentOwnsHumanResultReport": true
+  },
+  "verification": {
+    "verifierPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26/verify_execution_capsule.py",
+    "archiveMember": "review/verify_execution_capsule.py",
+    "fixedOriginalArtifactBindings": {
+      ".json": {
+        "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-execution-2026-10-26.json",
+        "bytes": 217465,
+        "sha256": "83926941c48d04402d107df0e11e9f8f5300144601197d79e55c7bbd6c0a96ef"
+      },
+      ".artifacts.tar.gz": {
+        "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-execution-2026-10-26.artifacts.tar.gz",
+        "bytes": 43400158,
+        "sha256": "a7e68bcc283c14c2a48f2262c31e8e52b7b478c828fcb534be4f920a07ec3387"
+      },
+      ".members.json": {
+        "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-execution-2026-10-26.members.json",
+        "bytes": 104228,
+        "sha256": "44f74850e5b83433153552a2f934a83ae55f3eb1e045c2a9501494f0979873c5"
+      }
+    },
+    "exactInvocation": [
+      "/usr/bin/python3.14",
+      "-I",
+      "-B",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26/verify_execution_capsule.py",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence"
+    ],
+    "portableInstructions": "python3 -I -B <new-review-directory>/verify_execution_capsule.py <explicit-evidence-directory>",
+    "cwdIndependent": true,
+    "actualInvocationMember": "review/verifier-invocation.json",
+    "actualExitCode": 0,
+    "actualVerifiedOriginalMembers": 417,
+    "actualResult": {
+      "result": "VERIFIED",
+      "evidenceDirectory": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence",
+      "artifacts": {
+        "story-1-17-cli-4-38-filter-reset-execution-2026-10-26.json": {
+          "bytes": 217465,
+          "sha256": "83926941c48d04402d107df0e11e9f8f5300144601197d79e55c7bbd6c0a96ef"
+        },
+        "story-1-17-cli-4-38-filter-reset-execution-2026-10-26.artifacts.tar.gz": {
+          "bytes": 43400158,
+          "sha256": "a7e68bcc283c14c2a48f2262c31e8e52b7b478c828fcb534be4f920a07ec3387"
+        },
+        "story-1-17-cli-4-38-filter-reset-execution-2026-10-26.members.json": {
+          "bytes": 104228,
+          "sha256": "44f74850e5b83433153552a2f934a83ae55f3eb1e045c2a9501494f0979873c5"
+        }
+      },
+      "verifiedMemberCount": 417,
+      "uniqueSafeRegularMembers": true,
+      "exactMemberSetSizesAndSha256": true,
+      "operations": "stdlib reads only; no extraction, writes, subprocesses, or code/SDK execution",
+      "limit": "Integrity only; no renewed authorization or independent proof of unretained historic regular-file metadata."
+    },
+    "readsOnly": true,
+    "noExtractionWritesSubprocessesOrArchivedCodeExecution": true,
+    "limit": "Checksum verification is content integrity only. It neither renews consumed authorization nor independently proves missing historic source regular-file metadata."
+  },
+  "archive": {
+    "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26.artifacts.tar.gz",
+    "bytes": 11983,
+    "sha256": "d4db5b6d52085b919eed7581ea5253fdf4eb57936eea993d64282b7b72f54b1e"
+  },
+  "manifest": {
+    "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26.members.json",
+    "bytes": 3459,
+    "sha256": "179e91f17fa006dc6d3a15b251d29029c86a8c1e824a89d1bfd548b29c1198bd"
+  },
+  "supplementMemberVerification": {
+    "atUtc": "2026-10-26T16:21:20.239934+00:00",
+    "uniqueSafeRegularMembers": true,
+    "fileMemberCount": 6,
+    "exactMemberSetSizesAndSha256": true
+  },
+  "retainedPrivateDirectories": [
+    "/tmp/story117-cli438-filter-reset-20261026-lkmagqwq",
+    "/tmp/story117-cli438-loader-20261026-801w2mad",
+    "/tmp/story117-cli438-filter-reset-attempt-claims-20261026/6b8e8f0ae4dc8fa0aa8b35a405e6ebd09711cda119c7808479c13cec387e8506"
+  ],
+  "privateTargetsAndClaimUnmodified": true,
+  "originalPlansApprovalsSpecsDriversAndInputsUnmodified": true,
+  "cleanupPerformed": false,
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false
+  },
+  "parentStatus": "in-progress",
+  "trackerStatus": "backlog",
+  "stagingChecks": {
+    "total": 14,
+    "executed": 0
+  },
+  "ordinaryMapping": null,
+  "ContentHash": null,
+  "currentTupleAccepted": false,
+  "packageAccepted": false,
+  "hostedAccepted": false
+}

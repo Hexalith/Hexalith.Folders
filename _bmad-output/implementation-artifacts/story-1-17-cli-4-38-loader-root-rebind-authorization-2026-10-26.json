@@ -1,0 +1,177 @@
+{
+  "recordId": "STORY-1-17-CLI-4-38-LOADER-ROOT-REBIND-AUTHORIZATION-2026-10-26",
+  "decisionMaker": "Jerome",
+  "reply": "approve",
+  "authorized": true,
+  "recordedAtUtc": "2026-10-26T14:36:44.567392+00:00",
+  "scope": "story-1-17-cli-4-38-root-rebind-only",
+  "planSha256": "228fe3ede636d56312f60bf4600a61d0c2fe62801ce31965f1d50eb0040efb3b",
+  "adapterSha256": "833f632afa43cbf9e3eb20d6c91efb35cf35358f17dc8d30ba0f521fe4f7fcf7",
+  "decisionPacketReceiptSha256": "b95a334c0793b19056c196b975f3bdacab32531221071092e3153302f0012f92",
+  "rootRecordingBindings": {
+    "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-authorization-2026-10-26.json": {
+      "sha256": "01907142a0863a50dfde4d6cfe465399898b8f5121982779775cf526cbefefd3",
+      "bytes": 4094
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-rebind-proposal-2026-10-26/execute_after_rebind_authorization.py": {
+      "sha256": "833f632afa43cbf9e3eb20d6c91efb35cf35358f17dc8d30ba0f521fe4f7fcf7",
+      "bytes": 8342
+    },
+    "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-2026-10-26.md": {
+      "sha256": "ba575f28f26eb6a6db8df0785b4137df0f2a072b819c249efe1841e7325b0b81",
+      "bytes": 8583
+    },
+    "_bmad-output/implementation-artifacts/spec-1-17-cli-4-38-loader-root-rebind.md": {
+      "sha256": "5519cc8a2ae9ae226933f4635015ba0a2a12a206974376f9f87f8e8e3f94cefa",
+      "bytes": 4464
+    },
+    "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-plan-2026-10-26.json": {
+      "sha256": "228fe3ede636d56312f60bf4600a61d0c2fe62801ce31965f1d50eb0040efb3b",
+      "bytes": 18983
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.json": {
+      "sha256": "b95a334c0793b19056c196b975f3bdacab32531221071092e3153302f0012f92",
+      "bytes": 29320
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.members.json": {
+      "sha256": "a509080d2de0f493633748c86e0d563e0ed40491c77c7db3fe1e75bc2a14392d",
+      "bytes": 26542
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.artifacts.tar.gz": {
+      "sha256": "ed53f937ba119219f6d1439f75a553916d9bde80daf8d3671b3359cdde1f8d5c",
+      "bytes": 2330577
+    }
+  },
+  "originalExecutionApproval": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-authorization-2026-10-26.json",
+    "sha256": "01907142a0863a50dfde4d6cfe465399898b8f5121982779775cf526cbefefd3",
+    "bytes": 4094
+  },
+  "originalPlan": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-runtime-resolution-plan-2026-10-26.json",
+    "sha256": "83fec7a858d1e1a8e9a9e1f514803a7ccb5408f56b1ef15c7c5bad12e4c42e7f",
+    "bytes": 13719
+  },
+  "approvedRootPredicate": [
+    "Current root must equal or descend from43423a9849c82a3a526590b0fa6e613768e7eb24.",
+    "The complete git diff --raw --no-abbrev --no-renames -z baseline HEAD may contain only A entries, old mode000000/new mode100644, at the eight exact rootRecordingPaths or the one separately named actual rebind-authorization file.",
+    "Each of the eight recording files must equal its new owner authorization rootRecordingBindings SHA256/size. The separately named authorization file must equal the actual loaded authorization bytes and is archived with its computed hash; it does not self-hash.",
+    "No changes to any baseline tracked path, including original packet, operational source, config, dependency pins, gitlinks, guides, tracker or approvals. No renames/deletions/mode changes, staged entries or tracked working-tree edits.",
+    "All untracked nonignored paths must be among those exact nine names. There is no path wildcard or generic docs-only exemption.",
+    "All twelve direct revisions, newline stage-entry hashes and clean statuses must equal original inputs. Source/model/package/SDK and all other old input gates remain unchanged.",
+    "Reconfirm the entire snapshot before materializing the private adapter. Any further drift at the original driver gate stops execution without retry."
+  ],
+  "preAuthorizationRepositoryState": {
+    ".": {
+      "revision": "43423a9849c82a3a526590b0fa6e613768e7eb24",
+      "indexEntriesSha256": "62459e20b5115ebea71409210950651c7d3bfd32c20729dd69cde0d62d0a666d",
+      "status": "? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-preflight-2026-10-26.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-rebind-proposal-2026-10-26/execute_after_rebind_authorization.py\n? _bmad-output/implementation-artifacts/spec-1-17-cli-4-38-loader-root-rebind.md\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-authorization-2026-10-26.json\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-2026-10-26.md\n? _bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-plan-2026-10-26.json\n",
+      "staged": ""
+    },
+    "references/Hexalith.Tenants": {
+      "revision": "24fb584b8d2b8a3bc7a51fcf8b5a6266e21e53e7",
+      "indexEntriesSha256": "279c1b2c7fed9cc80dd048ca637e1b2031bb10d45ff439586b899aefb6dfcc80",
+      "status": "",
+      "staged": ""
+    },
+    "references/Hexalith.AI.Tools": {
+      "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "indexEntriesSha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569",
+      "status": "",
+      "staged": ""
+    },
+    "references/Hexalith.EventStore": {
+      "revision": "c5d1c280d8c1c1a207cd159d817f614e93c93130",
+      "indexEntriesSha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e",
+      "status": "",
+      "staged": ""
+    },
+    "references/Hexalith.FrontComposer": {
+      "revision": "cfa9febc2942666265f23f87b26112c846f625ad",
+      "indexEntriesSha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2",
+      "status": "",
+      "staged": ""
+    },
+    "references/Hexalith.Memories": {
+      "revision": "7b0c8b5692600e293346eea7a84652eb87e4c346",
+      "indexEntriesSha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76",
+      "status": "",
+      "staged": ""
+    },
+    "references/Hexalith.Commons": {
+      "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "indexEntriesSha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644",
+      "status": "",
+      "staged": ""
+    },
+    "references/Hexalith.Builds": {
+      "revision": "74932ad0247203797274aba8b7b6366a4bbf92b9",
+      "indexEntriesSha256": "a379d24eb9569cbbfd77c245c80f41ff239d9c97e928c66b3a444ca6cb53b94e",
+      "status": "",
+      "staged": ""
+    },
+    "references/Hexalith.PolymorphicSerializations": {
+      "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "indexEntriesSha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862",
+      "status": "",
+      "staged": ""
+    },
+    "references/Hexalith.Projects": {
+      "revision": "298f6f6a41b9ce7b67f14c21c724d76832b957a9",
+      "indexEntriesSha256": "1494da6a6b03a0ca3ae427b9bad145b8c9cd51806d370c80468c510ef07e9eda",
+      "status": "",
+      "staged": ""
+    },
+    "references/Hexalith.Platform": {
+      "revision": "9869094acc21f9054960a573f884c60ddf3235cd",
+      "indexEntriesSha256": "1c6649f6dbd9d725da61199cfbef8fe5156af23f730156bdbe0b2620077b066b",
+      "status": "",
+      "staged": ""
+    },
+    "references/Hexalith.McpCli": {
+      "revision": "dc282889e624a4c990faa3f005ad7eaa8db7a473",
+      "indexEntriesSha256": "c361ea1f29b3bc49536e23d02ae8f3ac21b2d182cfe0bdfa2f2ce92af83b505f",
+      "status": "",
+      "staged": ""
+    },
+    "references/Hexalith.Parties": {
+      "revision": "986a369ec26f6c5194593eb7bce12955eda54149",
+      "indexEntriesSha256": "933d7d5f591ff2c0d291e6f497587ea1f804946698f9601af3822d47c3e8c44c",
+      "status": "",
+      "staged": ""
+    }
+  },
+  "exactExecutionCommand": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "600s",
+    "python3",
+    "-B",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-root-rebind-proposal-2026-10-26/execute_after_rebind_authorization.py",
+    "--authorization",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-cli-4-38-loader-root-rebind-authorization-2026-10-26.json"
+  ],
+  "executionAttemptsAuthorized": 1,
+  "authorityLimit": "Approve only the exact root-recording predicate and private two-field derivation, then use the already-approved two-case driver. No retries or weakened gates; retain actual outputs on failure.",
+  "boundSpecStatusHandling": "Preserve all byte-bound spec/frontmatter values. Record owner approval, pending rebind and actual execution state additively in receipts; do not invalidate approved hashes to update workflow status.",
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false
+  },
+  "parentStatus": "in-progress",
+  "trackerStatus": "backlog",
+  "stagingChecks": {
+    "total": 14,
+    "executed": 0
+  },
+  "ordinaryMapping": null,
+  "ContentHash": null,
+  "currentTupleAccepted": false,
+  "packageAccepted": false,
+  "hostedAccepted": false
+}
