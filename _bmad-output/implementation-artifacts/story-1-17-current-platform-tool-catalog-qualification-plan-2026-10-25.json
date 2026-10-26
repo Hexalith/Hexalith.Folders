@@ -1,0 +1,583 @@
+{
+  "recordId": "STORY-1-17-CURRENT-PLATFORM-TOOL-CATALOG-QUALIFICATION-PLAN-2026-10-25",
+  "status": "Proposed; candidate qualification authorization pending; no build or candidate CLI executed",
+  "decision": "Authorize only isolated non-launch candidate 4.38.0 model compile and dependency-reference inspection; no accepted-tool replacement, dependency edit, runtime or acceptance.",
+  "baseline": {
+    "root": "b5ae26e4ce2df1bc4a275f1272bf3d147eef2a2b",
+    "repositories": {
+      ".": {
+        "revision": "b5ae26e4ce2df1bc4a275f1272bf3d147eef2a2b",
+        "indexEntriesSha256": "9894ec026fdecf0a0056df90afadb120cf92ff933058ed147ae15953c6200084",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 74932ad0247203797274aba8b7b6366a4bbf92b9 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 c5d1c280d8c1c1a207cd159d817f614e93c93130 0\treferences/Hexalith.EventStore",
+          "160000 cfa9febc2942666265f23f87b26112c846f625ad 0\treferences/Hexalith.FrontComposer",
+          "160000 dc282889e624a4c990faa3f005ad7eaa8db7a473 0\treferences/Hexalith.McpCli",
+          "160000 7b0c8b5692600e293346eea7a84652eb87e4c346 0\treferences/Hexalith.Memories",
+          "160000 986a369ec26f6c5194593eb7bce12955eda54149 0\treferences/Hexalith.Parties",
+          "160000 9869094acc21f9054960a573f884c60ddf3235cd 0\treferences/Hexalith.Platform",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 298f6f6a41b9ce7b67f14c21c724d76832b957a9 0\treferences/Hexalith.Projects",
+          "160000 24fb584b8d2b8a3bc7a51fcf8b5a6266e21e53e7 0\treferences/Hexalith.Tenants"
+        ]
+      },
+      "references/Hexalith.Tenants": {
+        "revision": "24fb584b8d2b8a3bc7a51fcf8b5a6266e21e53e7",
+        "indexEntriesSha256": "279c1b2c7fed9cc80dd048ca637e1b2031bb10d45ff439586b899aefb6dfcc80",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 1783c0a377615063f3222c1d28f3ab513af4e72f 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 4e905980a58c9641d800be062667cac24a50d0b3 0\treferences/Hexalith.EventStore",
+          "160000 25e8a07198987b33cef052bdbc745f836cb6cbbf 0\treferences/Hexalith.FrontComposer",
+          "160000 aabc03c68c56ac8085ee1b145654576f5fd201a4 0\treferences/Hexalith.McpCli",
+          "160000 cdd73d7361f67781a523f63f04853491a687f426 0\treferences/Hexalith.Memories",
+          "160000 eecea3fa467d27226ef6173c19f853add36bb26c 0\treferences/Hexalith.Platform",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations"
+        ]
+      },
+      "references/Hexalith.AI.Tools": {
+        "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+        "indexEntriesSha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569",
+        "gitlinks": []
+      },
+      "references/Hexalith.EventStore": {
+        "revision": "c5d1c280d8c1c1a207cd159d817f614e93c93130",
+        "indexEntriesSha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 0c735503728e18de93937b1495abebcfa6e33f9a 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 76e063b56a9ef2a0d976926d3e8aac89b08364c2 0\treferences/Hexalith.FrontComposer",
+          "160000 4b60d49e842d58adc139fd2f6058ab1073e12d6d 0\treferences/Hexalith.McpCli",
+          "160000 7b0c8b5692600e293346eea7a84652eb87e4c346 0\treferences/Hexalith.Memories",
+          "160000 5fa798f7d860a021feb8cccc35331271e3c9c802 0\treferences/Hexalith.Platform",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 3b60914ace5201a711fb51c1036d3679e0512ec8 0\treferences/Hexalith.Tenants"
+        ]
+      },
+      "references/Hexalith.FrontComposer": {
+        "revision": "cfa9febc2942666265f23f87b26112c846f625ad",
+        "indexEntriesSha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 1783c0a377615063f3222c1d28f3ab513af4e72f 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 aa46e2526ab33b2f4b220478c8acc097f7ad01b0 0\treferences/Hexalith.EventStore",
+          "160000 7e9ca2c214b3e912a4a55b2c57c5d4d492920897 0\treferences/Hexalith.Memories",
+          "160000 d915a5893715328ef5bdf6a740888b6d212257ca 0\treferences/Hexalith.Parties",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 14133e96d2c5efb13270580f920133079707398b 0\treferences/Hexalith.Tenants"
+        ]
+      },
+      "references/Hexalith.Memories": {
+        "revision": "7b0c8b5692600e293346eea7a84652eb87e4c346",
+        "indexEntriesSha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 e171c5a788eab183b32683431b084198c9b8d373 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 6ca1b4cb9d422017138541036b3c23397265de98 0\treferences/Hexalith.EventStore",
+          "160000 80782afc7fc2fd33ee365d4601cb6b5e91d215fa 0\treferences/Hexalith.FrontComposer",
+          "160000 6043ca8f1cb1c3c8ffd67e0140c07b266722c348 0\treferences/Hexalith.McpCli",
+          "160000 fbac4610309c6f9f9df334cfd5b029dcb3a9e354 0\treferences/Hexalith.Platform",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 8804c10b8a900860ea2394c81eff78d23bb3c0a4 0\treferences/Hexalith.Tenants"
+        ]
+      },
+      "references/Hexalith.Commons": {
+        "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+        "indexEntriesSha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 332b2c144defba546fe0a09626a4a72f2340e22f 0\treferences/Hexalith.Builds",
+          "160000 80ce5afd99216ce5f591d66c833feafaf371f171 0\treferences/Hexalith.PolymorphicSerializations"
+        ]
+      },
+      "references/Hexalith.Builds": {
+        "revision": "74932ad0247203797274aba8b7b6366a4bbf92b9",
+        "indexEntriesSha256": "a379d24eb9569cbbfd77c245c80f41ff239d9c97e928c66b3a444ca6cb53b94e",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools"
+        ]
+      },
+      "references/Hexalith.PolymorphicSerializations": {
+        "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+        "indexEntriesSha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 332b2c144defba546fe0a09626a4a72f2340e22f 0\treferences/Hexalith.Builds"
+        ]
+      },
+      "references/Hexalith.Projects": {
+        "revision": "298f6f6a41b9ce7b67f14c21c724d76832b957a9",
+        "indexEntriesSha256": "1494da6a6b03a0ca3ae427b9bad145b8c9cd51806d370c80468c510ef07e9eda",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 fd4b1a54ae3da4e1dde4063058b747f4156137df 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 8039d2abcf41bcd2c01fa3dbe618cbec2f4f6da3 0\treferences/Hexalith.Conversations",
+          "160000 c5d1c280d8c1c1a207cd159d817f614e93c93130 0\treferences/Hexalith.EventStore",
+          "160000 00628f275fe47d3cfb9431456fbe28bdb20101bf 0\treferences/Hexalith.Folders",
+          "160000 cfa9febc2942666265f23f87b26112c846f625ad 0\treferences/Hexalith.FrontComposer",
+          "160000 0d0ca22915bd4cd1a8141d420221e5b525e07642 0\treferences/Hexalith.McpCli",
+          "160000 7b0c8b5692600e293346eea7a84652eb87e4c346 0\treferences/Hexalith.Memories",
+          "160000 986a369ec26f6c5194593eb7bce12955eda54149 0\treferences/Hexalith.Parties",
+          "160000 f5e6348cc4c0f6f258394ff9fba4f8a4f5b21d48 0\treferences/Hexalith.Platform",
+          "160000 60f9dfd28e7b134785cb00a30bb8acb8889e4b2e 0\treferences/Hexalith.Tenants"
+        ]
+      },
+      "references/Hexalith.Platform": {
+        "revision": "9869094acc21f9054960a573f884c60ddf3235cd",
+        "indexEntriesSha256": "1c6649f6dbd9d725da61199cfbef8fe5156af23f730156bdbe0b2620077b066b",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 a624d25cc0c8a7c5a4ebd8c2fc0e0ffb1731ae1e 0\treferences/Hexalith.Agents",
+          "160000 022668ac2dd3b0ec4b1b8e99b243debef0eee374 0\treferences/Hexalith.Builds",
+          "160000 0468d19e56752bb70add6a8f885cfa8de0124260 0\treferences/Hexalith.ChatBot",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 8039d2abcf41bcd2c01fa3dbe618cbec2f4f6da3 0\treferences/Hexalith.Conversations",
+          "160000 c5d1c280d8c1c1a207cd159d817f614e93c93130 0\treferences/Hexalith.EventStore",
+          "160000 00628f275fe47d3cfb9431456fbe28bdb20101bf 0\treferences/Hexalith.Folders",
+          "160000 cfa9febc2942666265f23f87b26112c846f625ad 0\treferences/Hexalith.FrontComposer",
+          "160000 0d0ca22915bd4cd1a8141d420221e5b525e07642 0\treferences/Hexalith.McpCli",
+          "160000 7b0c8b5692600e293346eea7a84652eb87e4c346 0\treferences/Hexalith.Memories",
+          "160000 986a369ec26f6c5194593eb7bce12955eda54149 0\treferences/Hexalith.Parties",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 7430d730beec90b791192c772c5881a7db9bde0b 0\treferences/Hexalith.Projects",
+          "160000 60f9dfd28e7b134785cb00a30bb8acb8889e4b2e 0\treferences/Hexalith.Tenants",
+          "160000 39e1455250206d6a59476f88c685d03f64887f81 0\treferences/Hexalith.Timesheets",
+          "160000 5a937f7bded5e3a952fbea572bd616793e37e245 0\treferences/Hexalith.Works"
+        ]
+      },
+      "references/Hexalith.McpCli": {
+        "revision": "dc282889e624a4c990faa3f005ad7eaa8db7a473",
+        "indexEntriesSha256": "c361ea1f29b3bc49536e23d02ae8f3ac21b2d182cfe0bdfa2f2ce92af83b505f",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 28d0c413107275c9ab1590fb2f64376445c89280 0\treferences/Hexalith.Agents",
+          "160000 e171c5a788eab183b32683431b084198c9b8d373 0\treferences/Hexalith.Builds",
+          "160000 6e76a59fc87ef1f0fdb051264d48d8572100b310 0\treferences/Hexalith.ChatBot",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 ed53473ea4c67aa10ffc46c9b951d9864fe263d4 0\treferences/Hexalith.Conversations",
+          "160000 6ca1b4cb9d422017138541036b3c23397265de98 0\treferences/Hexalith.EventStore",
+          "160000 2472a50027e8e4f6581b0690828ea9a14dfa9018 0\treferences/Hexalith.Folders",
+          "160000 80782afc7fc2fd33ee365d4601cb6b5e91d215fa 0\treferences/Hexalith.FrontComposer",
+          "160000 d9826761def835880ee352b9df3517fdf4ac41e0 0\treferences/Hexalith.Memories",
+          "160000 559b91c812a422f9890e448f7942e645f3739b2b 0\treferences/Hexalith.Parties",
+          "160000 2c7ebe356a890e0a846a4c08ad02cb5147f4fd9e 0\treferences/Hexalith.Platform",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 94f6ad1f6854df62c8cd15e47d65dc72985f4e79 0\treferences/Hexalith.Projects",
+          "160000 8804c10b8a900860ea2394c81eff78d23bb3c0a4 0\treferences/Hexalith.Tenants",
+          "160000 39e1455250206d6a59476f88c685d03f64887f81 0\treferences/Hexalith.Timesheets",
+          "160000 5a937f7bded5e3a952fbea572bd616793e37e245 0\treferences/Hexalith.Works"
+        ]
+      },
+      "references/Hexalith.Parties": {
+        "revision": "986a369ec26f6c5194593eb7bce12955eda54149",
+        "indexEntriesSha256": "933d7d5f591ff2c0d291e6f497587ea1f804946698f9601af3822d47c3e8c44c",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 1783c0a377615063f3222c1d28f3ab513af4e72f 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 694e37bad3e667931fbafc6a1ed9f85e4a0b4912 0\treferences/Hexalith.EventStore",
+          "160000 80782afc7fc2fd33ee365d4601cb6b5e91d215fa 0\treferences/Hexalith.FrontComposer",
+          "160000 8962e2f2570459dbea2976f789b468aa5c6353c6 0\treferences/Hexalith.McpCli",
+          "160000 7b0c8b5692600e293346eea7a84652eb87e4c346 0\treferences/Hexalith.Memories",
+          "160000 1b7a00381794bb7ecf40caf643c63c50758a81eb 0\treferences/Hexalith.Platform",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 14133e96d2c5efb13270580f920133079707398b 0\treferences/Hexalith.Tenants"
+        ]
+      }
+    },
+    "selectedCatalogRevision": "022668ac2dd3b0ec4b1b8e99b243debef0eee374",
+    "selectedCatalogPath": "Props/Directory.Packages.props",
+    "selectedCatalogSha256": "140e161c0ac14183be0cca8babce5cc896355174e1c621979b92d49826bdadb2"
+  },
+  "acceptedTool": {
+    "version": "4.35.2",
+    "source": "4248b8c70cb35ba79fdd7e4dd63049d4c73211a0",
+    "archive": {
+      "path": "/home/administrator/.nuget/packages/hexalith.builds.module.cli/4.35.2/hexalith.builds.module.cli.4.35.2.nupkg",
+      "sha256": "637bebd547f45b5f2012c2f43af79b9b01772f1e81af02809babe62f4aa7cf1d",
+      "bytes": 36818927
+    },
+    "continuesAsHistoricalAcceptedIdentity": true
+  },
+  "candidateTool": {
+    "version": "4.38.0",
+    "source": "e171c5a788eab183b32683431b084198c9b8d373",
+    "archive": {
+      "url": "https://api.nuget.org/v3-flatcontainer/hexalith.builds.module.cli/4.38.0/hexalith.builds.module.cli.4.38.0.nupkg",
+      "httpStatus": 200,
+      "bytes": 37220356,
+      "sha256": "f352d3e0f03f21dbfe42c89adb7a8765cb073a2351281acaa3cf304235426ab1",
+      "headers": {
+        "Date": "Sun, 25 Oct 2026 21:03:13 GMT",
+        "Content-Type": "application/octet-stream",
+        "Content-Length": "37220356",
+        "Connection": "close",
+        "Cache-Control": "public, max-age=86400",
+        "Last-Modified": "Sun, 25 Oct 2026 13:50:56 GMT",
+        "ETag": "0x8DF329EFE34E413",
+        "x-ms-request-id": "f1592df8-d01e-004c-49c4-642dc7000000",
+        "x-ms-version": "2009-09-19",
+        "x-ms-meta-da7b2905_0f3c_4262_921c_b1593d1336f1_ESRP_RequestId": "1d5aa5d9-6c8e-4365-83a0-36b7f072aa20",
+        "x-ms-meta-SHA512": "HRpceCtXfGpKe6DnFsYcBQuYgbF+/qzFxhV7Pouu2NVxIq/LFSDfnH2xXV4Lc/mMf+hwjDWp+lvZ4EOJC1XDeQ==",
+        "x-ms-lease-status": "unlocked",
+        "x-ms-blob-type": "BlockBlob",
+        "Access-Control-Expose-Headers": "x-ms-request-id,Server,x-ms-version,x-ms-meta-da7b2905_0f3c_4262_921c_b1593d1336f1_ESRP_RequestId,x-ms-meta-SHA512,Content-Type,Cache-Control,ETag,Last-Modified,x-ms-lease-status,x-ms-blob-type,Content-Length,Date,Transfer-Encoding",
+        "Access-Control-Allow-Origin": "*",
+        "x-azure-ref": "20261025T210312Z-17b6d6c8d49qxgsxhC1PARqvpn00000001pg000000002c2a",
+        "x-fd-int-roxy-purgeid": "0",
+        "X-Cache": "TCP_MISS",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        "X-Content-Type-Options": "nosniff",
+        "Accept-Ranges": "bytes"
+      },
+      "localPath": "/tmp/hexalith.builds.module.cli.4.38.0.nupkg",
+      "observedAtUtc": "2026-10-25T21:03:19.785842+00:00"
+    },
+    "members": {
+      "Hexalith.Builds.Module.Cli.nuspec": {
+        "bytes": 899,
+        "sha256": "4a7a58f42fdc44ae84269c4909975741d2d275ae7c9cd76268c25950b57a0c8a"
+      },
+      "tools/net10.0/any/Hexalith.Builds.Module.Cli.dll": {
+        "bytes": 27136,
+        "sha256": "6798dce33fc2531079f312f8fda542df77dedcde8d30341cd4493f381acd1f54"
+      },
+      "tools/net10.0/any/Hexalith.Builds.Tooling.dll": {
+        "bytes": 1459200,
+        "sha256": "0266257a74c1dbc49407c61b07d90f7c95b806d937ea4f338b98bf8d128256fd"
+      },
+      "tools/net10.0/any/g4-host/Hexalith.Builds.Module.AppHost.dll": {
+        "bytes": 94208,
+        "sha256": "712bccd88bcce9fb92c7c6147eded8af6b514363ec5548a22f9e87f7e7f2669d"
+      },
+      "tools/net10.0/any/g4-host/Hexalith.Builds.Tooling.dll": {
+        "bytes": 1459200,
+        "sha256": "0266257a74c1dbc49407c61b07d90f7c95b806d937ea4f338b98bf8d128256fd"
+      },
+      ".signature.p7s": {
+        "bytes": 12983,
+        "sha256": "2e58cc1851498c943c0e90674670d3a4ee2f3d34c8ebbcd4fb9ad7e0ef7381b7"
+      }
+    },
+    "embeddedCatalog": {
+      "schemaVersion": "1",
+      "eventStoreVersion": "3.127.0",
+      "frontComposerVersion": "4.7.0",
+      "daprSdkVersion": "1.18.10",
+      "aspireHostingVersion": "13.6.3",
+      "aspireHostingDaprVersion": "13.6.1-beta.935",
+      "aspireAppHostSdkVersion": "13.6.3",
+      "daprRuntimeVersion": "1.18.7",
+      "daprCliVersion": "1.18.2",
+      "redisImage": "docker.io/library/redis",
+      "redisImageTag": "7.4-alpine",
+      "redisImageDigest": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+      "eventStoreHostingDaprRange": "13.6.1-beta.935"
+    },
+    "signatureVerification": {
+      "argv": [
+        "dotnet",
+        "nuget",
+        "verify",
+        "/tmp/hexalith.builds.module.cli.4.38.0.nupkg",
+        "--all"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "exitCode": 0,
+      "combinedOutput": "\nVerifying Hexalith.Builds.Module.Cli.4.38.0\nContent hash: 56mH3xo3wdeZG08AxRDJ4cVuj+BjjovQAMHHpHbq/smn5uMfleVc5rYeQyupTkS3bbrK/b0mDGpLXAk6u8iUrA==\n\nSignature type: Repository\n  Subject Name: CN=NuGet.org Repository by Microsoft, O=NuGet.org Repository by Microsoft, L=Redmond, S=Washington, C=US\n  SHA256 hash: 1F4B311D9ACC115C8DC8018B5A49E00FCE6DA8E2855F9F014CA6F34570BC482D\n  Valid from: 02/23/2024 01:00:00 to 05/19/2027 01:59:59\n",
+      "combinedOutputSha256": "72d57a17a0c4d93f3afdd636f3fa9ba8122c83efb0c6c0aa5f19b366ba972760",
+      "capture": "Transcribed exact tool combined output; stdout/stderr separation was not captured. No rerun."
+    },
+    "accepted": false,
+    "installed": false,
+    "cliInvoked": false
+  },
+  "workspacePatch": null,
+  "workspaceOrGitlinkChangeRequiredForQualification": false,
+  "affectedRepositoryPaths": [],
+  "temporaryPaths": [
+    "<qualification-dir>/tool-4.38.0",
+    "<qualification-dir>/pinned-tree/Props/Directory.Packages.props",
+    "<qualification-dir>/hosts/platform-model",
+    "<qualification-dir>/build/platform-model",
+    "<qualification-dir>/logs",
+    "<qualification-dir>/download",
+    "<qualification-dir>/cache",
+    "<qualification-dir>/dotnet-home",
+    "<qualification-dir>/tmp"
+  ],
+  "placeholderContract": {
+    "<qualification-dir>": "A new private absolute directory, created with mktemp -d after authorization; substitute the same path in every argument and record it. Never reuse an existing run workspace.",
+    "<qualified-tool-directory>": "Only after a later tool/current-tuple disposition; root of the verified isolated package directory. Not assigned as accepted by this plan.",
+    "<one-existing-dependency-dll-from-listed-scope>": "An actual DLL selected by step5 named inventory, with its exact path recorded. No arbitrary runtime or test assembly is executed."
+  },
+  "steps": [
+    {
+      "order": 1,
+      "action": "Reconfirm root/repository revisions, stage-zero entries, current tracked bytes and direct checkout containment against the receipt. Stop on drift before executing dependent work. Hash changes require scoped reassessment; no pin repair is authorized.",
+      "executed": false,
+      "sdkCommands": [
+        [
+          "which",
+          "dotnet"
+        ],
+        [
+          "dotnet",
+          "--version"
+        ],
+        [
+          "dotnet",
+          "--info"
+        ],
+        [
+          "dotnet",
+          "msbuild",
+          "-version",
+          "-nologo"
+        ]
+      ],
+      "sdkCwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "sdkGate": "Hash the resolved dotnet executable and global.json; require the selected SDK to satisfy Platform10.0.402/latestPatch in the same10.0.4xx feature band, record exact SDK/MSBuild versions and relevant build properties. No implicit SDK installation. Recheck these identities before build.",
+      "filesystemGate": "Before any build/helper acquisition, inventory all paths (including untracked and ignored files, symlink targets, byte hashes and absence) under the owning root and all direct repositories, excluding .git internals and the newly created qualification directory. Compare afterward; permit only named qualification artifacts within that directory. Preserve unexpected outside writes and stop rather than deleting them. Capture ordinary source `.git` descendants ownership-aware, not only references/*."
+    },
+    {
+      "order": 2,
+      "action": "Rehash exact candidate archive, signature, nuspec source and CLI/Tooling/g4-host identities; safely extract only into the new private qualification directory, rejecting traversal and symlink entries. Do not dotnet tool install/update or write a tool manifest.",
+      "executed": false,
+      "archiveAcquisition": {
+        "useIfPresent": "/tmp/hexalith.builds.module.cli.4.38.0.nupkg",
+        "ifMissing": "Download exact recorded HTTPS URL to <qualification-dir>/download/hexalith.builds.module.cli.4.38.0.nupkg, never NuGet tool cache. Verify exact SHA-256 f352d3e0f03f21dbfe42c89adb7a8765cb073a2351281acaa3cf304235426ab1 and37220356bytes before any extraction. Abort on mismatch; do not select another version.",
+        "downloadArgv": [
+          "curl",
+          "--fail",
+          "--location",
+          "--proto",
+          "=https",
+          "--max-time",
+          "180",
+          "--output",
+          "<qualification-dir>/download/hexalith.builds.module.cli.4.38.0.nupkg",
+          "https://api.nuget.org/v3-flatcontainer/hexalith.builds.module.cli/4.38.0/hexalith.builds.module.cli.4.38.0.nupkg"
+        ],
+        "verificationArgv": [
+          "dotnet",
+          "nuget",
+          "verify",
+          "<qualification-dir>/download/hexalith.builds.module.cli.4.38.0.nupkg",
+          "--all"
+        ],
+        "cachedArchiveHandling": "If the observed /tmp archive still exists, rehash then copy it into the same qualification download path before the verification command; no package bytes are assumed retained by the evidence capsule."
+      }
+    },
+    {
+      "order": 3,
+      "action": "Export catalog bytes from the immutable direct Builds object; require the recorded SHA-256 and no new imports; retain export command stdout bytes. This is a catalog file, not a mapping artifact.",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "argv": [
+        "git",
+        "show",
+        "022668ac2dd3b0ec4b1b8e99b243debef0eee374:Props/Directory.Packages.props"
+      ],
+      "stdoutDestination": "<qualification-dir>/pinned-tree/Props/Directory.Packages.props",
+      "executed": false
+    },
+    {
+      "order": 4,
+      "status": "Proposed only, not executed; direct model compile, no SourceMapping constructed. Prerequisite exact signed package extraction into new isolated dir and immutable catalog export; output is not ordinary CLI mapping, graph test or runtime acceptance.",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "argv": [
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "600s",
+        "dotnet",
+        "build",
+        "src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj",
+        "--configuration",
+        "Debug",
+        "--output",
+        "<qualification-dir>/hosts/platform-model",
+        "--artifacts-path",
+        "<qualification-dir>/build/platform-model",
+        "-p:BuildsToolingAssemblyPath=<qualification-dir>/tool-4.38.0/tools/net10.0/any/Hexalith.Builds.Tooling.dll",
+        "-p:NuGetAudit=false",
+        "-p:MinVerVersionOverride=1.0.0",
+        "-nodeReuse:false",
+        "-p:UseSharedCompilation=false",
+        "-p:CustomBeforeDirectoryBuildProps=<qualification-dir>/pinned-tree/Props/Directory.Packages.props",
+        "-p:ImportDirectoryPackagesProps=false",
+        "-p:CentralPackageVersionsFileImported=true",
+        "-p:DirectoryPackagesPropsPath=<qualification-dir>/pinned-tree/Props/Directory.Packages.props",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithBuildsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "-p:HexalithEventStoreRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+        "-p:HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons",
+        "-p:HexalithTenantsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+        "-p:HexalithTenantsBasePath=/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src"
+      ],
+      "source": "Candidate PlatformManifestCommand.cs:73-103,243-249; Debug defaults source refs in current Platform Directory.Build.props. Explicit root properties may be used to bind existing root direct sources. Necessary follows successful static API and catalog checks; prior model build inputs changed.",
+      "action": "Focused changed-input model build supervised by timeout; exit124 denotes deadline and137 possible forced kill. No node reuse/shared compiler. Retain stdout/stderr, exit and any surviving process IDs. Stop dependent work on any nonzero exit or unresolved child; cleanup only the recorded process group, never unrelated dotnet processes.",
+      "requiredResolvedProperties": {
+        "Configuration": "Debug",
+        "UseHexalithProjectReferences": "true",
+        "HexalithBuildsRoot": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "HexalithEventStoreRoot": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+        "UseNuGetDeps": "false",
+        "HexalithCommonsRoot": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons",
+        "HexalithTenantsRoot": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+        "HexalithTenantsBasePath": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src"
+      },
+      "executed": false,
+      "qualificationOverrides": {
+        "UseHexalithProjectReferences": "true",
+        "UseNuGetDeps": "false",
+        "HexalithBuildsRoot": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "HexalithEventStoreRoot": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+        "HexalithCommonsRoot": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons",
+        "HexalithTenantsRoot": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+        "HexalithTenantsBasePath": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src"
+      },
+      "differenceFromPublicHelper": "The candidate helper base argv is reproduced, with explicit global source/root properties added for the repository development-source policy. These added selectors make this a bounded model/tool compile check, not proof of the later ordinary public command\u2019s resolved graph. Actual CLI graph/model evidence remains a separate mandatory check.",
+      "propertyEvidenceArgv": [
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "120s",
+        "dotnet",
+        "msbuild",
+        "src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj",
+        "-nologo",
+        "-noAutoResponse",
+        "-getProperty:Configuration,UseHexalithProjectReferences,UseNuGetDeps,HexalithBuildsRoot,HexalithEventStoreRoot,HexalithCommonsRoot,HexalithTenantsRoot,HexalithTenantsBasePath,BuildsToolingAssemblyPath,DirectoryPackagesPropsPath",
+        "-getItem:ProjectReference,PackageReference,PackageVersion",
+        "-p:BuildsToolingAssemblyPath=<qualification-dir>/tool-4.38.0/tools/net10.0/any/Hexalith.Builds.Tooling.dll",
+        "-p:NuGetAudit=false",
+        "-p:MinVerVersionOverride=1.0.0",
+        "-p:UseSharedCompilation=false",
+        "-p:CustomBeforeDirectoryBuildProps=<qualification-dir>/pinned-tree/Props/Directory.Packages.props",
+        "-p:ImportDirectoryPackagesProps=false",
+        "-p:CentralPackageVersionsFileImported=true",
+        "-p:DirectoryPackagesPropsPath=<qualification-dir>/pinned-tree/Props/Directory.Packages.props",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithBuildsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "-p:HexalithEventStoreRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+        "-p:HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons",
+        "-p:HexalithTenantsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+        "-p:HexalithTenantsBasePath=/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src",
+        "-p:Configuration=Debug",
+        "-p:ArtifactsPath=<qualification-dir>/build/platform-model"
+      ],
+      "propertyEvidenceGate": "Run the read-only property/item evaluation before build with the same environment/selectors, retain JSON stdout and require expected values/physical roots. After build, inventory/hash every project.assets.json under the isolated artifacts path; record resolved project and package identities per project. Any unexpected package fallback for intended Hexalith source references or catalog/tool path drift fails qualification; no silent flag adjustment."
+    },
+    {
+      "order": 5,
+      "action": "Bounded metadata inspection only: inspect Composition.dll, packaged AppHost.dll, and actual Tooling, Aspire.Hosting, Hexalith.EventStore.Aspire and Hexalith.EventStore.ServiceDefaults dependency DLLs in the model output and packaged g4-host directories where present. Record assembly name/version/public-key token, path/hash and direct references. Do not invoke a type/model/AppHost entry point.",
+      "commands": [
+        [
+          "dnx",
+          "dotnet-inspect@0.26.0",
+          "-y",
+          "--",
+          "library",
+          "<qualification-dir>/hosts/platform-model/Hexalith.Platform.Composition.dll",
+          "--json"
+        ],
+        [
+          "dnx",
+          "dotnet-inspect@0.26.0",
+          "-y",
+          "--",
+          "library",
+          "<qualification-dir>/tool-4.38.0/tools/net10.0/any/g4-host/Hexalith.Builds.Module.AppHost.dll",
+          "--json"
+        ]
+      ],
+      "executed": false,
+      "scopeAndGate": "Require the emitted model to reference the candidate Tooling identity and the actual model/host Tooling DLL bytes to match the candidate hash. Compare model Aspire.Hosting AssemblyRef against the actual packaged host DLL identity; missing/mismatched required direct identities fail this bounded check. Record EventStore source-built DLL identities and resolved asset provenance against selected3.128.0; candidate embedded3.127.0 is a retained version-policy difference, not an equality assertion. If its relevance cannot be established, record unresolved; do not approve runtime. This is not a transitive loader/behavior pass; full ordinary preflight/load stays pending.",
+      "additionalMetadataArgvTemplate": [
+        "dnx",
+        "dotnet-inspect@0.26.0",
+        "-y",
+        "--",
+        "library",
+        "<one-existing-dependency-dll-from-listed-scope>",
+        "--json"
+      ],
+      "evidenceInventory": "Enumerate the listed dependency names in model and g4-host output, record present/absent for each, run the template only for present DLLs, retain actual argv and complete JSON. Preserve missing dependencies as findings; do not restore alternate versions."
+    },
+    {
+      "order": 6,
+      "action": "Retain exact command/exit/streams/output hashes and preservation result. Report compile/reference qualification or exact failure, residual EventStore embedded3.127.0 versus selected3.128.0 difference, and request no automatic tuple/hosted acceptance. Stop if any source/config/dependency repair is needed and prepare its exact independent patch. The bounded result is compile/direct-reference evidence only; current-tuple and runtime acceptance remain pending even if all listed checks pass.",
+      "executed": false
+    }
+  ],
+  "ordinaryAttempt": {
+    "status": "Unexecuted and excluded from this decision; requires separate runtime authority and candidate/current-tuple disposition",
+    "cwd": "/home/administrator/projects/hexalith/folders",
+    "argv": [
+      "dotnet",
+      "<qualified-tool-directory>/tools/net10.0/any/Hexalith.Builds.Module.Cli.dll",
+      "run",
+      "--manifest",
+      "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+      "--mode",
+      "source",
+      "--output",
+      "json"
+    ],
+    "commandProducedMapping": null,
+    "ContentHash": null,
+    "mappingOutputContract": "<actual run workspace>/source-mapping/mapping.json; only retain if actually produced by the ordinary public command",
+    "requiredEvidence": [
+      "actual run workspace and command provenance",
+      "diagnostics with phase/category/message",
+      "mapping bytes and ContentHash",
+      "contemporaneous root/direct owner gitlinks and HEADs",
+      "dirty-file, declaration and executable-project byte hashes",
+      "selected catalog snapshot/evaluation",
+      "actual model/g4-host load/preflight result before startup",
+      "bounded runtime readiness and exact-run down/cleanup outcome"
+    ],
+    "runtimePrerequisites": "After separate execution authority: valid actual four-owner declaration closure and executable mapped server projects; accepted candidate execution identity; all direct checkouts preexisting and exact ordinary owner gitlinks; executable Aspire --version exactly candidate embedded13.6.3; Docker version --format {{.Server.Version}} successful nonempty; isolated absolute HEXALITH_DAPR_HOME with tools/dapr CLI1.18.2/runtime1.18.7 and .dapr/bin/daprd version1.18.7; placement/scheduler announce runtime1.18.7; package g4-host plus runtime-specific DCP/dashboard assets13.6.3; pinned selected catalog materialization/evaluation; candidate model compile/load and preflight; writable private output/state dirs, resource/port ownership, bounded readiness and exact-run cleanup. Dapr service probes can briefly start placement/scheduler processes and scheduler uses temp etcd dir; these probes were not executed in this investigation.",
+    "hostedFixtureEquivalent": false
+  },
+  "rollback": "Abandon candidate qualification and preserve its evidence; existing accepted tool/index/checkouts never change. Remove only newly generated private outputs after checking for unexpected work. Do not clean shared caches or source trees.",
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false,
+    "stagingChecksExecuted": 0
+  },
+  "parentStatus": "in-progress",
+  "trackerStatus": "backlog",
+  "stagingChecks": {
+    "executed": 0,
+    "total": 14
+  },
+  "ownerDecision": null,
+  "environment": {
+    "NUGET_PACKAGES": "<qualification-dir>/cache/nuget/packages",
+    "NUGET_HTTP_CACHE_PATH": "<qualification-dir>/cache/nuget/http",
+    "NUGET_PLUGINS_CACHE_PATH": "<qualification-dir>/cache/nuget/plugins",
+    "DOTNET_CLI_HOME": "<qualification-dir>/dotnet-home",
+    "XDG_CACHE_HOME": "<qualification-dir>/cache/xdg",
+    "TMPDIR": "<qualification-dir>/tmp",
+    "TMP": "<qualification-dir>/tmp",
+    "TEMP": "<qualification-dir>/tmp",
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true"
+  },
+  "feedPolicy": "Pinned package restore/tool-helper acquisition may read the existing configured feeds and write only the private cache/output locations. Do not change NuGet.Config, credentials, SDK, workload, tool selection or package versions. Capture effective source URLs without credentials. Failed/missing packages stop the lane. No security/audit qualification is inferred from the helper-compatible NuGetAudit=false flag."
+}

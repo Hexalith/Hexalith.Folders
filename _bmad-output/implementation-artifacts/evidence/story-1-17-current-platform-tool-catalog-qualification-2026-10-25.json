@@ -1,0 +1,420 @@
+{
+  "recordId": "STORY-1-17-CURRENT-PLATFORM-TOOL-CATALOG-QUALIFICATION-2026-10-25",
+  "recordedAtUtc": "2026-10-25T21:16:26.614079+00:00",
+  "status": "Accepted CLI 4.35.2/current Platform statically incompatible; isolated CLI 4.38.0 qualification proposed; acceptance HOLD",
+  "rootRevision": "b5ae26e4ce2df1bc4a275f1272bf3d147eef2a2b",
+  "initialObservation": {
+    "source": "Initial tool output in this conversation; historical observation, not reconstructed as a new command run",
+    "rootRevision": "09707e19ab7024b88b34d89651e15a45bc895eeb",
+    "stagedPaths": [
+      ".gitmodules",
+      "references/Hexalith.Parties"
+    ],
+    "unstagedTrackedPaths": [
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-ordinary-workspace-mapping-proposal-2026-10-25.json",
+      "_bmad-output/implementation-artifacts/spec-1-17-ordinary-workspace-mapping-proposal.md",
+      "_bmad-output/implementation-artifacts/story-1-17-ordinary-workspace-mapping-proposal-2026-10-25.md",
+      "references/Hexalith.Platform"
+    ],
+    "untrackedPaths": [
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-ordinary-workspace-mapping-application-2026-10-25.json",
+      "_bmad-output/implementation-artifacts/story-1-17-ordinary-workspace-mapping-approval-2026-10-25.md"
+    ]
+  },
+  "externalTransition": {
+    "commits": [
+      "6566b154ac940f4274780665818396e689036298",
+      "b5ae26e4ce2df1bc4a275f1272bf3d147eef2a2b"
+    ],
+    "taskIssuedGitMutation": false,
+    "approvalInferred": false,
+    "currentStagedPaths": [],
+    "originalApprovedPartiesBytesAndCheckoutPreserved": true
+  },
+  "sourceTuple": {
+    "root": "b5ae26e4ce2df1bc4a275f1272bf3d147eef2a2b",
+    "repositories": {
+      ".": {
+        "revision": "b5ae26e4ce2df1bc4a275f1272bf3d147eef2a2b",
+        "indexEntriesSha256": "9894ec026fdecf0a0056df90afadb120cf92ff933058ed147ae15953c6200084",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 74932ad0247203797274aba8b7b6366a4bbf92b9 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 c5d1c280d8c1c1a207cd159d817f614e93c93130 0\treferences/Hexalith.EventStore",
+          "160000 cfa9febc2942666265f23f87b26112c846f625ad 0\treferences/Hexalith.FrontComposer",
+          "160000 dc282889e624a4c990faa3f005ad7eaa8db7a473 0\treferences/Hexalith.McpCli",
+          "160000 7b0c8b5692600e293346eea7a84652eb87e4c346 0\treferences/Hexalith.Memories",
+          "160000 986a369ec26f6c5194593eb7bce12955eda54149 0\treferences/Hexalith.Parties",
+          "160000 9869094acc21f9054960a573f884c60ddf3235cd 0\treferences/Hexalith.Platform",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 298f6f6a41b9ce7b67f14c21c724d76832b957a9 0\treferences/Hexalith.Projects",
+          "160000 24fb584b8d2b8a3bc7a51fcf8b5a6266e21e53e7 0\treferences/Hexalith.Tenants"
+        ]
+      },
+      "references/Hexalith.Tenants": {
+        "revision": "24fb584b8d2b8a3bc7a51fcf8b5a6266e21e53e7",
+        "indexEntriesSha256": "279c1b2c7fed9cc80dd048ca637e1b2031bb10d45ff439586b899aefb6dfcc80",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 1783c0a377615063f3222c1d28f3ab513af4e72f 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 4e905980a58c9641d800be062667cac24a50d0b3 0\treferences/Hexalith.EventStore",
+          "160000 25e8a07198987b33cef052bdbc745f836cb6cbbf 0\treferences/Hexalith.FrontComposer",
+          "160000 aabc03c68c56ac8085ee1b145654576f5fd201a4 0\treferences/Hexalith.McpCli",
+          "160000 cdd73d7361f67781a523f63f04853491a687f426 0\treferences/Hexalith.Memories",
+          "160000 eecea3fa467d27226ef6173c19f853add36bb26c 0\treferences/Hexalith.Platform",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations"
+        ]
+      },
+      "references/Hexalith.AI.Tools": {
+        "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+        "indexEntriesSha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569",
+        "gitlinks": []
+      },
+      "references/Hexalith.EventStore": {
+        "revision": "c5d1c280d8c1c1a207cd159d817f614e93c93130",
+        "indexEntriesSha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 0c735503728e18de93937b1495abebcfa6e33f9a 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 76e063b56a9ef2a0d976926d3e8aac89b08364c2 0\treferences/Hexalith.FrontComposer",
+          "160000 4b60d49e842d58adc139fd2f6058ab1073e12d6d 0\treferences/Hexalith.McpCli",
+          "160000 7b0c8b5692600e293346eea7a84652eb87e4c346 0\treferences/Hexalith.Memories",
+          "160000 5fa798f7d860a021feb8cccc35331271e3c9c802 0\treferences/Hexalith.Platform",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 3b60914ace5201a711fb51c1036d3679e0512ec8 0\treferences/Hexalith.Tenants"
+        ]
+      },
+      "references/Hexalith.FrontComposer": {
+        "revision": "cfa9febc2942666265f23f87b26112c846f625ad",
+        "indexEntriesSha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 1783c0a377615063f3222c1d28f3ab513af4e72f 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 aa46e2526ab33b2f4b220478c8acc097f7ad01b0 0\treferences/Hexalith.EventStore",
+          "160000 7e9ca2c214b3e912a4a55b2c57c5d4d492920897 0\treferences/Hexalith.Memories",
+          "160000 d915a5893715328ef5bdf6a740888b6d212257ca 0\treferences/Hexalith.Parties",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 14133e96d2c5efb13270580f920133079707398b 0\treferences/Hexalith.Tenants"
+        ]
+      },
+      "references/Hexalith.Memories": {
+        "revision": "7b0c8b5692600e293346eea7a84652eb87e4c346",
+        "indexEntriesSha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 e171c5a788eab183b32683431b084198c9b8d373 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 6ca1b4cb9d422017138541036b3c23397265de98 0\treferences/Hexalith.EventStore",
+          "160000 80782afc7fc2fd33ee365d4601cb6b5e91d215fa 0\treferences/Hexalith.FrontComposer",
+          "160000 6043ca8f1cb1c3c8ffd67e0140c07b266722c348 0\treferences/Hexalith.McpCli",
+          "160000 fbac4610309c6f9f9df334cfd5b029dcb3a9e354 0\treferences/Hexalith.Platform",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 8804c10b8a900860ea2394c81eff78d23bb3c0a4 0\treferences/Hexalith.Tenants"
+        ]
+      },
+      "references/Hexalith.Commons": {
+        "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+        "indexEntriesSha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 332b2c144defba546fe0a09626a4a72f2340e22f 0\treferences/Hexalith.Builds",
+          "160000 80ce5afd99216ce5f591d66c833feafaf371f171 0\treferences/Hexalith.PolymorphicSerializations"
+        ]
+      },
+      "references/Hexalith.Builds": {
+        "revision": "74932ad0247203797274aba8b7b6366a4bbf92b9",
+        "indexEntriesSha256": "a379d24eb9569cbbfd77c245c80f41ff239d9c97e928c66b3a444ca6cb53b94e",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools"
+        ]
+      },
+      "references/Hexalith.PolymorphicSerializations": {
+        "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+        "indexEntriesSha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 332b2c144defba546fe0a09626a4a72f2340e22f 0\treferences/Hexalith.Builds"
+        ]
+      },
+      "references/Hexalith.Projects": {
+        "revision": "298f6f6a41b9ce7b67f14c21c724d76832b957a9",
+        "indexEntriesSha256": "1494da6a6b03a0ca3ae427b9bad145b8c9cd51806d370c80468c510ef07e9eda",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 fd4b1a54ae3da4e1dde4063058b747f4156137df 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 8039d2abcf41bcd2c01fa3dbe618cbec2f4f6da3 0\treferences/Hexalith.Conversations",
+          "160000 c5d1c280d8c1c1a207cd159d817f614e93c93130 0\treferences/Hexalith.EventStore",
+          "160000 00628f275fe47d3cfb9431456fbe28bdb20101bf 0\treferences/Hexalith.Folders",
+          "160000 cfa9febc2942666265f23f87b26112c846f625ad 0\treferences/Hexalith.FrontComposer",
+          "160000 0d0ca22915bd4cd1a8141d420221e5b525e07642 0\treferences/Hexalith.McpCli",
+          "160000 7b0c8b5692600e293346eea7a84652eb87e4c346 0\treferences/Hexalith.Memories",
+          "160000 986a369ec26f6c5194593eb7bce12955eda54149 0\treferences/Hexalith.Parties",
+          "160000 f5e6348cc4c0f6f258394ff9fba4f8a4f5b21d48 0\treferences/Hexalith.Platform",
+          "160000 60f9dfd28e7b134785cb00a30bb8acb8889e4b2e 0\treferences/Hexalith.Tenants"
+        ]
+      },
+      "references/Hexalith.Platform": {
+        "revision": "9869094acc21f9054960a573f884c60ddf3235cd",
+        "indexEntriesSha256": "1c6649f6dbd9d725da61199cfbef8fe5156af23f730156bdbe0b2620077b066b",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 a624d25cc0c8a7c5a4ebd8c2fc0e0ffb1731ae1e 0\treferences/Hexalith.Agents",
+          "160000 022668ac2dd3b0ec4b1b8e99b243debef0eee374 0\treferences/Hexalith.Builds",
+          "160000 0468d19e56752bb70add6a8f885cfa8de0124260 0\treferences/Hexalith.ChatBot",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 8039d2abcf41bcd2c01fa3dbe618cbec2f4f6da3 0\treferences/Hexalith.Conversations",
+          "160000 c5d1c280d8c1c1a207cd159d817f614e93c93130 0\treferences/Hexalith.EventStore",
+          "160000 00628f275fe47d3cfb9431456fbe28bdb20101bf 0\treferences/Hexalith.Folders",
+          "160000 cfa9febc2942666265f23f87b26112c846f625ad 0\treferences/Hexalith.FrontComposer",
+          "160000 0d0ca22915bd4cd1a8141d420221e5b525e07642 0\treferences/Hexalith.McpCli",
+          "160000 7b0c8b5692600e293346eea7a84652eb87e4c346 0\treferences/Hexalith.Memories",
+          "160000 986a369ec26f6c5194593eb7bce12955eda54149 0\treferences/Hexalith.Parties",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 7430d730beec90b791192c772c5881a7db9bde0b 0\treferences/Hexalith.Projects",
+          "160000 60f9dfd28e7b134785cb00a30bb8acb8889e4b2e 0\treferences/Hexalith.Tenants",
+          "160000 39e1455250206d6a59476f88c685d03f64887f81 0\treferences/Hexalith.Timesheets",
+          "160000 5a937f7bded5e3a952fbea572bd616793e37e245 0\treferences/Hexalith.Works"
+        ]
+      },
+      "references/Hexalith.McpCli": {
+        "revision": "dc282889e624a4c990faa3f005ad7eaa8db7a473",
+        "indexEntriesSha256": "c361ea1f29b3bc49536e23d02ae8f3ac21b2d182cfe0bdfa2f2ce92af83b505f",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 28d0c413107275c9ab1590fb2f64376445c89280 0\treferences/Hexalith.Agents",
+          "160000 e171c5a788eab183b32683431b084198c9b8d373 0\treferences/Hexalith.Builds",
+          "160000 6e76a59fc87ef1f0fdb051264d48d8572100b310 0\treferences/Hexalith.ChatBot",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 ed53473ea4c67aa10ffc46c9b951d9864fe263d4 0\treferences/Hexalith.Conversations",
+          "160000 6ca1b4cb9d422017138541036b3c23397265de98 0\treferences/Hexalith.EventStore",
+          "160000 2472a50027e8e4f6581b0690828ea9a14dfa9018 0\treferences/Hexalith.Folders",
+          "160000 80782afc7fc2fd33ee365d4601cb6b5e91d215fa 0\treferences/Hexalith.FrontComposer",
+          "160000 d9826761def835880ee352b9df3517fdf4ac41e0 0\treferences/Hexalith.Memories",
+          "160000 559b91c812a422f9890e448f7942e645f3739b2b 0\treferences/Hexalith.Parties",
+          "160000 2c7ebe356a890e0a846a4c08ad02cb5147f4fd9e 0\treferences/Hexalith.Platform",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 94f6ad1f6854df62c8cd15e47d65dc72985f4e79 0\treferences/Hexalith.Projects",
+          "160000 8804c10b8a900860ea2394c81eff78d23bb3c0a4 0\treferences/Hexalith.Tenants",
+          "160000 39e1455250206d6a59476f88c685d03f64887f81 0\treferences/Hexalith.Timesheets",
+          "160000 5a937f7bded5e3a952fbea572bd616793e37e245 0\treferences/Hexalith.Works"
+        ]
+      },
+      "references/Hexalith.Parties": {
+        "revision": "986a369ec26f6c5194593eb7bce12955eda54149",
+        "indexEntriesSha256": "933d7d5f591ff2c0d291e6f497587ea1f804946698f9601af3822d47c3e8c44c",
+        "gitlinks": [
+          "160000 3f194e17174994d308ec84af9ee2b5aa68674d0d 0\treferences/Hexalith.AI.Tools",
+          "160000 1783c0a377615063f3222c1d28f3ab513af4e72f 0\treferences/Hexalith.Builds",
+          "160000 1663028fb6d9f46a0bf17919edeb21bb99be1587 0\treferences/Hexalith.Commons",
+          "160000 694e37bad3e667931fbafc6a1ed9f85e4a0b4912 0\treferences/Hexalith.EventStore",
+          "160000 80782afc7fc2fd33ee365d4601cb6b5e91d215fa 0\treferences/Hexalith.FrontComposer",
+          "160000 8962e2f2570459dbea2976f789b468aa5c6353c6 0\treferences/Hexalith.McpCli",
+          "160000 7b0c8b5692600e293346eea7a84652eb87e4c346 0\treferences/Hexalith.Memories",
+          "160000 1b7a00381794bb7ecf40caf643c63c50758a81eb 0\treferences/Hexalith.Platform",
+          "160000 221ac4592ba908ae7661ba1fa9e2d1fcc23baee0 0\treferences/Hexalith.PolymorphicSerializations",
+          "160000 14133e96d2c5efb13270580f920133079707398b 0\treferences/Hexalith.Tenants"
+        ]
+      }
+    },
+    "selectedCatalogRevision": "022668ac2dd3b0ec4b1b8e99b243debef0eee374",
+    "selectedCatalogPath": "Props/Directory.Packages.props",
+    "selectedCatalogSha256": "140e161c0ac14183be0cca8babce5cc896355174e1c621979b92d49826bdadb2"
+  },
+  "tool": {
+    "acceptedVersion": "4.35.2",
+    "acceptedSource": "4248b8c70cb35ba79fdd7e4dd63049d4c73211a0",
+    "acceptedPackageSha256": "637bebd547f45b5f2012c2f43af79b9b01772f1e81af02809babe62f4aa7cf1d",
+    "candidateVersion": "4.38.0",
+    "candidateSource": "e171c5a788eab183b32683431b084198c9b8d373",
+    "candidatePackageSha256": "f352d3e0f03f21dbfe42c89adb7a8765cb073a2351281acaa3cf304235426ab1",
+    "candidatePackageSignatureExitCode": 0,
+    "candidateCliExecuted": false,
+    "candidateInstalled": false,
+    "candidateAccepted": false
+  },
+  "conclusions": {
+    "additionalRepositoryPinChangeJustified": false,
+    "tool4_35_2MissingRequiredPlatformApis": true,
+    "tool4_38_0ContainsIdentifiedApis": true,
+    "candidateModelBuildExecuted": false,
+    "runtimeCompatibilityProven": false,
+    "currentTupleAccepted": false,
+    "packageModeAccepted": false,
+    "hostedAccepted": false,
+    "commandProducedMapping": null,
+    "ContentHash": null
+  },
+  "artifactArchive": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-platform-tool-catalog-qualification-2026-10-25.artifacts.tar.gz",
+    "sha256": "801f38aec199208bf022ec5dd134603b3e4cd7daa780b167d48ac24a5a7f74e0",
+    "bytes": 8273178
+  },
+  "memberManifest": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-platform-tool-catalog-qualification-2026-10-25.members.json",
+    "sha256": "20ec8bca31d914af429ef880150510879425421fe33262d58e7d5e92322d904a",
+    "bytes": 3072
+  },
+  "artifactMembersVerified": 18,
+  "authoredArtifacts": [
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-current-platform-tool-catalog-qualification-2026-10-25.md",
+      "sha256": "efcab1e1311e1e4df4f4d72918d576a12c7d06d39bdd179e8b37b231cbe2043c",
+      "bytes": 19196
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-current-platform-tool-catalog-qualification-plan-2026-10-25.json",
+      "sha256": "ca503daf6298cb2e05d5fbe196470df27dc6e7ee1a0cbdcd625c0a173c3e532f",
+      "bytes": 37609
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/spec-1-17-current-platform-tool-catalog-qualification.md",
+      "sha256": "10392c9b42f1dafd2268477753ee16d6e695bb05b1ec7d2b27ce69bc35d13014",
+      "bytes": 6790
+    }
+  ],
+  "priorReceiptBindings": [
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25.artifacts.tar.gz",
+      "sha256": "504012dfebd645e604f55469d3369b2b262817479cd6532c11cb867d0516509c",
+      "bytes": 19743175
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25.json",
+      "sha256": "1844ed919e41cf4d7677b924c7a3b23fd7926cf369c5797d38b72dbab5b459b7",
+      "bytes": 3978
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25.members.json",
+      "sha256": "bcecfa15e76bb30398aae64f45633020b046ccccea5feb9c3daac6ef251407ea",
+      "bytes": 66062
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25.parent-verification.json",
+      "sha256": "4370f6a50b9ec1021dc677d832d866ccc50c497cfcafbdf74068c7f939d09be6",
+      "bytes": 16528
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25.verification.json",
+      "sha256": "7b609e0ca2e4954eb6b84147d9ae1e783cebb07e3b3fc216430f338527e2008e",
+      "bytes": 1873
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25.artifacts.tar.gz",
+      "sha256": "d9ba51c07b2fce5725bad06e2678d287b6e7e32fc203a8230ad6511cf8e29de9",
+      "bytes": 89221187
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25.json",
+      "sha256": "65d75f34951d934bca54a0f2a74b59928e9bcd8517a66092fcb2164dda9f657b",
+      "bytes": 4587
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25.members.json",
+      "sha256": "7672b9b27902332e2b97ebd291636a9078e2bf460fc6612233433106c4e3272a",
+      "bytes": 401618
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25.parent-verification.json",
+      "sha256": "ba026e3a4add26195f6e80a9e26b5bfd6c6b342651f1e9e0c5bad0d4a1717129",
+      "bytes": 10252
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25.verification.json",
+      "sha256": "1069c63020ad98a6ab486fab7e9f8e46a1f63e82890426176cf162007359476d",
+      "bytes": 5984
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-ordinary-workspace-mapping-application-2026-10-25.json",
+      "sha256": "d28d9bcd321b67a0267b34f1c017a00aa6b573e19a9fd0be20af9807a6a76b55",
+      "bytes": 122139
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-ordinary-workspace-mapping-proposal-2026-10-25.json",
+      "sha256": "55ca031b7223439330aeb1c4d342d33b62822298aa0040c51508407392168de5",
+      "bytes": 504030
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-ordinary-workspace-mapping-approval-2026-10-25.md",
+      "sha256": "4cb272e9f2c9d5670fe13430a1bc9a5d252fcbafaca1f5f8c4a3c6337af88fd8",
+      "bytes": 2353
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-ordinary-workspace-mapping-proposal-2026-10-25.md",
+      "sha256": "acf1a1762e98eed7d2c9c9f27cc8e2e6e61bd3603a872dc36824f8e4b4220abf",
+      "bytes": 21390
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-ordinary-workspace-mapping-proposal-2026-10-25.patch",
+      "sha256": "1df81ae96d9fbb0e5927e12d68ca41c8e82afd26539defa9c9de8d58feb9ee9e",
+      "bytes": 646
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-owner-intake-handoff-2026-10-25.json",
+      "sha256": "25e870b572043a26073e0a118ad243d80fe790d46b07d926ca13e5d67df58075",
+      "bytes": 34718
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-composition-intake-handoff-2026-10-25.json",
+      "sha256": "a910bc067033be3f25cf3e0941e918866884ad487eabf3ab3432dab8ef80736e",
+      "bytes": 18672
+    }
+  ],
+  "reusedEvidence": {
+    "ownerIntakeMembersVerified": 331,
+    "compositionIntakeMembersVerified": 2107,
+    "ownerIntakeVerifierTests": 42,
+    "compositionVerifierTests": 31,
+    "verifiersRerun": false,
+    "fourCurrentOwnerDeclarationsByteIdentical": true,
+    "releasedJointValidationExitCode": 0,
+    "releasedJointValidationLogSha256": "724d6ace8bd53e2658aa456dc61b065be48a3fe24e71ebb7c93b76c056cd0d53",
+    "buildsGraphTestsAdoptionAuditsRerun": false,
+    "limits": "All executable outcomes are historical and retain their recorded source/tool/fixture scopes; hash integrity is not current runtime qualification."
+  },
+  "validation": {
+    "allPreexistingTrackedBytesPreservedSinceCapturedPostExternalBaseline": true,
+    "allRepositoryRevisionsAndIndicesPreservedSinceCapturedPostExternalBaseline": true,
+    "newUntrackedPathsLimitedToSixAuthoredArtifacts": true,
+    "ignoredOutputBytePreservationClaimed": false,
+    "noNestedSubmodulesInitialized": true,
+    "descendantScan": "nested-ownership-scan.json; all12direct checkouts; no markers or directory symlinks",
+    "approvedPartiesAndHistoricalProposalBindingsUnchanged": true,
+    "newArtifactJsonAndWhitespacePassed": true,
+    "archiveManifestVerified": true,
+    "command": [
+      "python3",
+      "-B",
+      "/tmp/story117-current-tuple-7Rw5kh/seal.py"
+    ]
+  },
+  "ownerDecision": null,
+  "proposedPatch": null,
+  "proposedPatchReason": "Isolated candidate compile/reference inspection needs no workspace/gitlink/tool-manifest replacement. Any later permanent dependency/source change requires a separate exact patch.",
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false,
+    "stagingChecksExecuted": 0
+  },
+  "parentStatus": "in-progress",
+  "trackerStatus": "backlog",
+  "stagingChecks": {
+    "executed": 0,
+    "total": 14
+  },
+  "limitations": [
+    "No compiler run or compiler error claimed; missing APIs established by actual package metadata plus immutable source.",
+    "Candidate archive inspected/signature-verified in /tmp only; its CLI was not invoked.",
+    "No ordinary mapping, run/debug, AppHost, Dapr service probe or hosted operation executed.",
+    "No dependency-policy, ownership, registration, hosting or retirement decision inferred.",
+    "No acceptance from external commits or historical passed fixtures."
+  ]
+}
