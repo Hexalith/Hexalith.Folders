@@ -1,0 +1,126 @@
+{
+  "atUtc": "2026-10-26T19:07:20.887273+00:00",
+  "capturedCompilerFiles": 20,
+  "distinctHexalithReferences": 15,
+  "executedPlanSha256": "baead8cb1772a5995ff45135c19eb2d92b956839d7bccea9f60cb9a77a5209b6",
+  "executedReceiptSha256": "c19f4a4df533d6aec2114686e3950955c32d3a786d43d577050943565da648d5",
+  "finalEventValidatorResults": {
+    "cold": {
+      "bindingSucceeded": true,
+      "fatalGate": false,
+      "resolvedObservationCount": 6
+    },
+    "host-first": {
+      "bindingSucceeded": true,
+      "fatalGate": false,
+      "resolvedObservationCount": 7
+    }
+  },
+  "historicalExplicitPrecompileProofsAvailable": false,
+  "historicalFeedProtection": "Prepared once; writable mount and no later prepared-feed hash checks in executed code. No retroactive continuous-integrity/read-only-feed claim.",
+  "historicalResolvedInputProof": "Original process observations retained unchanged; new path/hash/event checks applied read-only after execution, not during the consumed cases.",
+  "historicalSdkHashCoverage": {
+    "Microsoft.Build.Tasks.Core.dll": false,
+    "Microsoft.Build.dll": false,
+    "NuGet.Build.Tasks.dll": false
+  },
+  "probeSourceUnchanged": true,
+  "recordId": "story-1-17-current-builds-host-2026-10-26-post-review-final-audit",
+  "referenceAudit": [
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/bin/Debug/net10.0/Hexalith.Builds.Tooling.dll",
+      "sha256": "c97a79248415731cef6cfac4b8e82902e4554ffe8c928d4cce6c2488708af84b",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Hexalith.Builds.Tooling.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "0c8995eeb56c451929a7996ed41a077403eade9a0fca0c5e4474ae450d04eb4e",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+      "sha256": "e04286c101b5a55ffa0e701277166f4fb28f6a4c1c6e1f5f1f28d566c7741b35",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/Hexalith.EventStore.Admin.Abstractions.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.Aspire/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+      "sha256": "448004459386060a871661ffb2df223a0e48ac0cda06edd8427520ca02406bbb",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.Aspire/Hexalith.EventStore.Aspire.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "bfb65b8f3380e6236917decff53a8a5170a2b40ab60adb80ab9b0f4923a60677",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "1ed3bec73528db967fcec5f12d580df1950b0eb172697564aca2aa32559a862f",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "10739ec2decbd815b0fb506be8e2a3a4810c2fc18cc192822115cfce7c28cf1a",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.Gateway/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+      "sha256": "41da7b2e4affab04b75eb63246c23ab2b592431d84e7c47a1ba18b0f114686d8",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.Gateway/Hexalith.EventStore.Gateway.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "sha256": "36407a2ad4603654b6cab15ace8fc1ddf6b80364599c0f78f96b79df86a1753f",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "2186cac45fc92be37d832d9a71643e7a96c12fc183fd5c5d9923bed85c4ad0e7",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.dll",
+      "sha256": "f29195b98608e5f285a03ee4ad9f86f6dfbee49b297ff7ee9bcce58c7b76afa3",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts.UI/Hexalith.FrontComposer.Contracts.UI.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.dll",
+      "sha256": "c340a68d3632d363a78c805e8a47599a6908e75dc50de25629ecdb61a3d80c03",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts/Hexalith.FrontComposer.Contracts.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.dll",
+      "sha256": "082a0ddd82d595b118155f65c8ae98fd0bc8a6d924ac946382469ff495b3bb81",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Hexalith.FrontComposer.Shell.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.Platform/src/Hexalith.Platform.Custody/bin/Debug/net10.0/Hexalith.Platform.Custody.dll",
+      "sha256": "d0f268a5195fedcf8dff6547861d10a0c4e713613054492663c8a2386e664b8d",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.Platform/src/Hexalith.Platform.Custody/Hexalith.Platform.Custody.csproj"
+    },
+    {
+      "path": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.Platform/src/Hexalith.Platform.Works.Runtime/bin/Debug/net10.0/Hexalith.Platform.Works.Runtime.dll",
+      "sha256": "3551da8d09991ba9b6c322ff8d69b913c0a7870ea3a5cf99b8b693a3a6521957",
+      "sourceProject": "/tmp/story117-current-builds-host-dkkg4fqa/snapshot/references/Hexalith.Platform/src/Hexalith.Platform.Works.Runtime/Hexalith.Platform.Works.Runtime.csproj"
+    }
+  ],
+  "referenceAuditLimit": "Post-review source path/byte consistency against retained manifest and bound project files; no retrospective claim that the new precompile proof gate ran.",
+  "retainedProbeEventValidation": {
+    "cold": {
+      "bindingSucceeded": true,
+      "fatalGate": false,
+      "resolvedObservationCount": 6
+    },
+    "host-first": {
+      "bindingSucceeded": true,
+      "fatalGate": false,
+      "resolvedObservationCount": 7
+    }
+  },
+  "scope": "Final validation against retained bytes/events only; no SDK/build/compiler/loader/test execution.",
+  "targetExecution": false,
+  "validatorSource": {
+    "bytes": 77252,
+    "path": "eng/story117-current-builds-host/qualify.py",
+    "sha256": "a3873c5c2d830a90e88697223bd1b5d5b2acc9f5ed4b66be07180d06e8a4068c"
+  }
+}

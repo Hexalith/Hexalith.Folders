@@ -1,0 +1,24 @@
+<Project>
+  <!-- Private diagnostic import only. This is not a SourceMappingMaterializer output. -->
+  <ItemGroup Condition="'$(Story117Qualification)' == 'true'">
+    <PackageReference Remove="Hexalith.EventStore.Aspire" Condition="'$(MSBuildProjectName)' == 'Hexalith.Builds.Module.AppHost'" />
+    <ProjectReference Include="$(HexalithEventStoreRoot)/src/Hexalith.EventStore.Aspire/Hexalith.EventStore.Aspire.csproj" IsAspireProjectResource="false" Condition="'$(MSBuildProjectName)' == 'Hexalith.Builds.Module.AppHost'" />
+    <PackageReference Remove="Hexalith.EventStore.Gateway" Condition="'$(MSBuildProjectName)' == 'Hexalith.Builds.Module.EventStoreHost'" />
+    <ProjectReference Include="$(HexalithEventStoreRoot)/src/Hexalith.EventStore.Gateway/Hexalith.EventStore.Gateway.csproj" Condition="'$(MSBuildProjectName)' == 'Hexalith.Builds.Module.EventStoreHost'" />
+    <PackageReference Remove="Hexalith.FrontComposer.Shell" Condition="'$(MSBuildProjectName)' == 'Hexalith.Builds.Module.UiHost'" />
+    <ProjectReference Include="$(HexalithFrontComposerRoot)/src/Hexalith.FrontComposer.Shell/Hexalith.FrontComposer.Shell.csproj" Condition="'$(MSBuildProjectName)' == 'Hexalith.Builds.Module.UiHost'" />
+  </ItemGroup>
+  <Target Name="Story117CaptureGraph" BeforeTargets="CollectPackageReferences;CoreCompile" Condition="'$(Story117Qualification)' == 'true'">
+    <Error Condition="'$(Configuration)' != 'Debug'" Text="The qualification permits Debug only." />
+    <Error Condition="'$(UseHexalithProjectReferences)' != 'true' or '$(UseNuGetDeps)' != 'false'" Text="Source selectors changed." />
+    <ItemGroup>
+      <_Story117Fallback Include="@(PackageReference)" Condition="$([System.String]::Copy('%(PackageReference.Identity)').StartsWith('Hexalith.'))" />
+    </ItemGroup>
+    <Error Condition="'@(_Story117Fallback)' != ''" Text="Hexalith package fallback: @(_Story117Fallback)" />
+    <MakeDir Directories="$(Story117EvidenceDirectory)" />
+    <WriteLinesToFile File="$(Story117EvidenceDirectory)/$(MSBuildProjectName).references.txt" Overwrite="true" Lines="Project=$(MSBuildProjectFullPath);Configuration=$(Configuration);Source=$(UseHexalithProjectReferences);NuGet=$(UseNuGetDeps);@(PackageReference->'Package|%(Identity)');@(ProjectReference->'Project|%(FullPath)');@(ReferencePath->'Resolved|%(FullPath)')" />
+  </Target>
+  <Target Name="Story117CaptureCompiler" BeforeTargets="CoreCompile" Condition="'$(Story117Qualification)' == 'true'">
+    <WriteLinesToFile File="$(Story117EvidenceDirectory)/$(MSBuildProjectName).compiler-inputs.txt" Overwrite="true" Lines="@(Compile->'%(FullPath)');@(ReferencePath->'%(FullPath)');@(Analyzer->'%(FullPath)');@(AdditionalFiles->'%(FullPath)');@(EditorConfigFiles->'%(FullPath)');$(MSBuildAllProjects)" />
+  </Target>
+</Project>

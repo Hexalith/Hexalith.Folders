@@ -1,0 +1,16 @@
+{
+  "atUtc": "2026-10-26T18:00:52.475353+00:00",
+  "specSha256": "26314a6131078eb11966e48d1177774e672c4af58a778c3d4fc07fcf9e1ba482",
+  "planSha256": "f8d037332f5d932ef81637066081ead96b2e85595798d4071bb770c7ac7737cd",
+  "authority": "Jerome approved the conditional sequence in the frozen spec; no historical approval is reused.",
+  "continuation": {
+    "feedFormatAuthority": [],
+    "priorBuilds": 0,
+    "priorCompilerCommands": 0,
+    "priorLoaderCases": 0,
+    "priorReceipt": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.json",
+    "priorSdkCommands": 10,
+    "scopeInterpretation": "Parent implementer: implement the frozen serial/fresh-build requirements by enforcing restore -m:1, RestoreBuildInParallel=false, BuildInParallel=false and node reuse disabled, retaining socket denial and deadlines. Preserve the failed restore and all 14 worker crash reports unchanged. Omit exactly the 20 identified generated .artifacts/ui-test-obj inputs from new snapshots, keeping original hashes protected. Continue in a fresh additive attempt under the approved build sequence; no operational source/dependency/tool/isolation change. No loader case has run; each remains once only after all build gates pass."
+  },
+  "privatePreparationPassed": true
+}

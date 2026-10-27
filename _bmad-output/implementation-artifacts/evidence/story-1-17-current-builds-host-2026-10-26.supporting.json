@@ -1,0 +1,45 @@
+{
+  "archive": {
+    "bytes": 831811,
+    "path": "story-1-17-current-builds-host-2026-10-26.supporting.artifacts.tar.gz",
+    "sha256": "06793d8cf6cebf3a8a3b66fef0ed8231d2d77ad4a41d2b6c5530eb15e6985ba5"
+  },
+  "memberCount": 14,
+  "memberManifest": {
+    "bytes": 2827,
+    "path": "story-1-17-current-builds-host-2026-10-26.supporting.members.json",
+    "sha256": "19235b065ff08cc2ee36229e7a74cf2e407e3e95c72bd18f7ed1c61c6b8c2de5"
+  },
+  "outcome": {
+    "atUtc": "2026-10-26T17:39:28.365726+00:00",
+    "caseResults": [],
+    "cleanup": "none; archive precedes any separately chosen private cleanup",
+    "completedCommandLabels": [],
+    "controls": {
+      "ContentHash": null,
+      "T0": null,
+      "activationAuthority": null,
+      "apiAccepted": false,
+      "currentTupleAccepted": false,
+      "hostedAccepted": false,
+      "ordinaryMapping": null,
+      "packageAccepted": false,
+      "parentStatus": "in-progress",
+      "routing": "V1Only",
+      "stagingChecksExecuted": 0,
+      "stagingChecksTotal": 14,
+      "tracker": "backlog"
+    },
+    "currentSourceBinding": "unexecuted",
+    "prerequisite": "Owner must disposition the exact stopped gate before any fresh execution; this one-shot claim is consumed.",
+    "privateDirectory": "/tmp/story117-current-builds-host-un4o1lp1",
+    "stop": {
+      "atUtc": "2026-10-26T17:39:26.128004+00:00",
+      "dependentExecutionStopped": true,
+      "detail": "Duplicate offline package filename",
+      "type": "GateFailure"
+    }
+  },
+  "recordId": "story-1-17-current-builds-host-2026-10-26-supporting",
+  "scope": "Additive portable supporting bytes; failed claim/plan/receipt/archive remain unchanged."
+}

@@ -1,0 +1,239 @@
+{
+  "recordedAtUtc": "2026-10-26T17:42:17.340129+00:00",
+  "scope": "Read-only diagnosis after the stopped sequence; no retry, SDK or target execution",
+  "cause": "Harness preparation defect: flattening every cached third-party nupkg to its basename; cached dotnet tool nupkg filenames omit versions. No missing package or external-owner prerequisite was demonstrated.",
+  "firstCollision": {
+    "filename": "dotnet-inspect.nupkg",
+    "originalInputs": [
+      {
+        "bytes": 23234,
+        "path": "/home/administrator/.nuget/packages/dotnet-inspect/0.16.0/dotnet-inspect.nupkg",
+        "sha256": "6cd4e8894ee91cfdbb9db130efcc5d31ec54dcfe81e0ba10e5197e8d4ebc1151"
+      },
+      {
+        "bytes": 31159,
+        "path": "/home/administrator/.nuget/packages/dotnet-inspect/0.17.0/dotnet-inspect.nupkg",
+        "sha256": "3a4a157fca15432dd51992d7fcc0d36c928a8817da7dc266b0c134750acbbf39"
+      }
+    ],
+    "byteIdentical": false,
+    "retainedPrivateFile": {
+      "path": "/tmp/story117-current-builds-host-un4o1lp1/feed/dotnet-inspect.nupkg",
+      "bytes": 23234,
+      "sha256": "6cd4e8894ee91cfdbb9db130efcc5d31ec54dcfe81e0ba10e5197e8d4ebc1151"
+    }
+  },
+  "allPlannedBasenameCollisions": {
+    "dotnet-inspect.nupkg": {
+      "byteIdentical": false,
+      "inputs": [
+        {
+          "bytes": 23234,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect/0.16.0/dotnet-inspect.nupkg",
+          "sha256": "6cd4e8894ee91cfdbb9db130efcc5d31ec54dcfe81e0ba10e5197e8d4ebc1151"
+        },
+        {
+          "bytes": 31159,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect/0.17.0/dotnet-inspect.nupkg",
+          "sha256": "3a4a157fca15432dd51992d7fcc0d36c928a8817da7dc266b0c134750acbbf39"
+        },
+        {
+          "bytes": 31279,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect/0.18.0/dotnet-inspect.nupkg",
+          "sha256": "098fba1fbf8f29341f56c3dda07228f4ffd7e83f7409fe4f4055a682f5383594"
+        },
+        {
+          "bytes": 32737,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect/0.20.0/dotnet-inspect.nupkg",
+          "sha256": "f30b8a98819371e4e23f98f3c479ebc9f6a916e39abc6642622bfe96b4ba379d"
+        },
+        {
+          "bytes": 35155,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect/0.21.0/dotnet-inspect.nupkg",
+          "sha256": "ca0886b05e5532c9c3964044448fd5de941ccecc6e53064ee32fadcc6906b8df"
+        },
+        {
+          "bytes": 36341,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect/0.22.0/dotnet-inspect.nupkg",
+          "sha256": "c251b1326bf371d10f2a3f4e3d16561c75322de2c07b36d7963e59e31e242f9e"
+        },
+        {
+          "bytes": 23066,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect/0.23.0/dotnet-inspect.nupkg",
+          "sha256": "83904c21f9bd41b1d149ecd28ddc126a0f7cd561b87aa51503a8921158d04b0e"
+        },
+        {
+          "bytes": 24447,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect/0.24.0/dotnet-inspect.nupkg",
+          "sha256": "999de5786405f98c2d5a264ef3e02b282fdaef15439187ec11b15641628164b5"
+        },
+        {
+          "bytes": 25925,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect/0.25.0/dotnet-inspect.nupkg",
+          "sha256": "87a34d51a88dda451de7133a9be9bda5f0fd431cddc01ca4b953dfaf830d3e4b"
+        },
+        {
+          "bytes": 18728,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect/0.26.0/dotnet-inspect.nupkg",
+          "sha256": "9d326031cc23718a351faa8d30dd680f309f24d5c52c0c0a4d761cc08c215f88"
+        }
+      ]
+    },
+    "dotnet-inspect.linux-x64.nupkg": {
+      "byteIdentical": false,
+      "inputs": [
+        {
+          "bytes": 10828979,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect.linux-x64/0.16.0/dotnet-inspect.linux-x64.nupkg",
+          "sha256": "dca379c1b9906b72164af0e0128cdfa0347dbc541d69ad2f902461d133dda0f1"
+        },
+        {
+          "bytes": 18751344,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect.linux-x64/0.17.0/dotnet-inspect.linux-x64.nupkg",
+          "sha256": "1fc750e0060fa200430a433d0ff4586805bbbd3b0e5d050c97c83c066501ec5b"
+        },
+        {
+          "bytes": 19162540,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect.linux-x64/0.18.0/dotnet-inspect.linux-x64.nupkg",
+          "sha256": "bb81719df9b5a6ab00d8715308f2003550e9441e8cb6293d429d7ac2950342b8"
+        },
+        {
+          "bytes": 20979772,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect.linux-x64/0.20.0/dotnet-inspect.linux-x64.nupkg",
+          "sha256": "37b37e4e0c8f4545ba54a7ad30269dc4bc9bf0241b9f8a0364482de1332c36ce"
+        },
+        {
+          "bytes": 22067072,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect.linux-x64/0.21.0/dotnet-inspect.linux-x64.nupkg",
+          "sha256": "1d44158de2835b0c92b90c40d2c29789403ede320402a065472920137fdfadf6"
+        },
+        {
+          "bytes": 23824489,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect.linux-x64/0.22.0/dotnet-inspect.linux-x64.nupkg",
+          "sha256": "5ace66195bf660100ff7914065516b6e6d72a426361692fcc65e73ee48119de4"
+        },
+        {
+          "bytes": 24759578,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect.linux-x64/0.23.0/dotnet-inspect.linux-x64.nupkg",
+          "sha256": "9255ab85d18cc5f5526d2f8e7c7e84b3fd49bbfd62eeee235df0b01b76bd219a"
+        },
+        {
+          "bytes": 25653602,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect.linux-x64/0.24.0/dotnet-inspect.linux-x64.nupkg",
+          "sha256": "4d795b6532b839ba13b22cfeacbe737c9c7d46fba747783698e95c779c731adf"
+        },
+        {
+          "bytes": 29855196,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect.linux-x64/0.25.0/dotnet-inspect.linux-x64.nupkg",
+          "sha256": "b5cb00aca0047104d38af8b42e5937958b340af64d53fe6a8cb09e02f804d2b1"
+        },
+        {
+          "bytes": 57864232,
+          "path": "/home/administrator/.nuget/packages/dotnet-inspect.linux-x64/0.26.0/dotnet-inspect.linux-x64.nupkg",
+          "sha256": "bbd1948373dc8ed3e176b0b5ffeda01379edb76c7da4063ba0aac00f3d4bd558"
+        }
+      ]
+    },
+    "dotnet-stack.nupkg": {
+      "byteIdentical": false,
+      "inputs": [
+        {
+          "bytes": 6025361,
+          "path": "/home/administrator/.nuget/packages/dotnet-stack/10.0.750501/dotnet-stack.nupkg",
+          "sha256": "cd35f399fe023f1793b528590a4d723a1f2f1d9b25696386d926a697bd24c0ca"
+        },
+        {
+          "bytes": 6020094,
+          "path": "/home/administrator/.nuget/packages/dotnet-stack/9.0.661903/dotnet-stack.nupkg",
+          "sha256": "37dcc73805593dd1267e2f2c167e6f76138b842edea37b32caea4268e2d70768"
+        }
+      ]
+    },
+    "dotnet-stryker.nupkg": {
+      "byteIdentical": false,
+      "inputs": [
+        {
+          "bytes": 42378173,
+          "path": "/home/administrator/.nuget/packages/dotnet-stryker/4.14.1/dotnet-stryker.nupkg",
+          "sha256": "d4a376e57fcbfb96185329ee39ecc14ebe47c1f0ea3237afaa6c396fb30b5084"
+        },
+        {
+          "bytes": 42917503,
+          "path": "/home/administrator/.nuget/packages/dotnet-stryker/4.14.2/dotnet-stryker.nupkg",
+          "sha256": "5582c86501bd6fffa17741c10eb5b43df59175c79f9ab7061f3d9cef04c1fbd4"
+        },
+        {
+          "bytes": 43818519,
+          "path": "/home/administrator/.nuget/packages/dotnet-stryker/4.15.0/dotnet-stryker.nupkg",
+          "sha256": "37443e395c11d5f5e29817deefd8ac264c808511970d153bf95396af7580963d"
+        },
+        {
+          "bytes": 46211071,
+          "path": "/home/administrator/.nuget/packages/dotnet-stryker/5.0.0/dotnet-stryker.nupkg",
+          "sha256": "bbc15ca7e765f850606b420721de20b5dcbbaa24aa7920f0ca9caebac79d86f5"
+        }
+      ]
+    }
+  },
+  "failedCommand": {
+    "argv": [
+      "python3",
+      "-I",
+      "-B",
+      "eng/story117-current-builds-host/qualify.py",
+      "--execute"
+    ],
+    "exitCode": 2,
+    "firstFailure": {
+      "atUtc": "2026-10-26T17:39:26.128004+00:00",
+      "dependentExecutionStopped": true,
+      "detail": "Duplicate offline package filename",
+      "type": "GateFailure"
+    },
+    "sdkOrBuildCommandsExecuted": 0,
+    "loaderCasesExecuted": 0
+  },
+  "preservedAttemptArtifacts": [
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.claim.json",
+      "bytes": 331,
+      "sha256": "6c6006cc9a20e4776fc60e3fceee559df9728716c928410ca201aedf54685311"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.json",
+      "bytes": 30754,
+      "sha256": "8aaa6675c1b209b296f3f9fc1b62e2002ba607f4b429d6c71ee0e983f2a077bb"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.members.json",
+      "bytes": 3642037,
+      "sha256": "c0024c940d48b7bbff9804e3a2ea26d3e5c81acadf413d2293af040378684d53"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.artifacts.tar.gz",
+      "bytes": 39147808,
+      "sha256": "a29bc8d506cfe7094996a7951df0e4f43c1f6134983ced1a7bb17fba7211f638"
+    },
+    {
+      "path": "eng/story117-current-builds-host/plan.json",
+      "bytes": 4003315,
+      "sha256": "a1c8b20a9b711e6ce2c0b387b62be44deb70a280568b97d97cae458a84b813cd"
+    }
+  ],
+  "handoff": "Retain this consumed attempt unchanged. The parent implementer must disposition the preparation bug and permitted next action; this report executes no repair or retry.",
+  "controls": {
+    "ContentHash": null,
+    "T0": null,
+    "activationAuthority": null,
+    "apiAccepted": false,
+    "currentTupleAccepted": false,
+    "hostedAccepted": false,
+    "ordinaryMapping": null,
+    "packageAccepted": false,
+    "parentStatus": "in-progress",
+    "routing": "V1Only",
+    "stagingChecksExecuted": 0,
+    "stagingChecksTotal": 14,
+    "tracker": "backlog"
+  }
+}

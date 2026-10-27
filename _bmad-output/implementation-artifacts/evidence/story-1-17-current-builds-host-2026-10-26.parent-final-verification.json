@@ -1,0 +1,182 @@
+{
+  "recordId": "story-1-17-current-builds-host-2026-10-26-parent-final-verification",
+  "recordedAtUtc": "2026-10-26T19:14:16.912397+00:00",
+  "postReviewTests": [
+    {
+      "command": "python3 -I -B -m unittest discover -s eng/story117-current-builds-host/tests",
+      "exitCode": 0,
+      "tests": 49,
+      "seconds": 1.965
+    },
+    {
+      "command": "python3 -I -B -O -m unittest discover -s eng/story117-current-builds-host/tests",
+      "exitCode": 0,
+      "tests": 49,
+      "seconds": 2.011
+    }
+  ],
+  "integrityVerification": [
+    {
+      "receipt": "story-1-17-current-builds-host-2026-10-26-attempt-5.json",
+      "sha256": "c19f4a4df533d6aec2114686e3950955c32d3a786d43d577050943565da648d5",
+      "members": 17208,
+      "optimized": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json",
+      "sha256": "4e8d0b13c2821684bfb22a3a56212671115feabc0b46b49b1bcc134492bf2b9a",
+      "members": 31,
+      "exitCode": 0
+    }
+  ],
+  "reviewLayersComplete": 3,
+  "reviewFindingsResolved": 14,
+  "deferredFindings": 0,
+  "newPostReviewSdkBuildCompilerLoaderRuns": 0,
+  "probeSourceUnchanged": true,
+  "sourceRepositories": [
+    {
+      "path": ".",
+      "revision": "19d8ddc9d64b0af4986b2a8fafe859b8b4e8231a",
+      "stageEntriesSha256": "b5655d89653b3f199d9ebd7ce3b66194d88e624e5d39164811a4ba4eb2f62815",
+      "status": " M .gitattributes\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.artifacts.tar.gz\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.claim.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnosis.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnostic-inputs.artifacts.tar.gz\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnostic-inputs.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnostic-inputs.members.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.guards.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.members.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.artifacts.tar.gz\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.claim.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnosis.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnostic-inputs.artifacts.tar.gz\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnostic-inputs.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnostic-inputs.members.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.guards.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.members.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.artifacts.tar.gz\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.claim.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.guards.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.members.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.artifacts.tar.gz\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.claim.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.guards.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.members.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-post-review/executed-harness/LoaderProbe.cs\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-post-review/executed-harness/qualify.py\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-post-review/executed-harness/source-references.targets\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-post-review/executed-harness/tests/test_qualification_guards.py\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-post-review/executed-harness/verify.py\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-post-review/executed-observations/output-seal.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-post-review/focused-tests.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-post-review/pre-review-results.md\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-post-review/review-summary.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.artifacts.tar.gz\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.claim.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.diagnosis.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.final-preservation.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.final-verification.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.guards.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.handoff.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.members.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.parent-task-audit.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.post-review-final-audit.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.post-review-read-only-audit.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.post-review-supplement.artifacts.tar.gz\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.post-review-supplement.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.post-review-supplement.members.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.review-triage.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.supporting.artifacts.tar.gz\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.supporting.json\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.supporting.members.json\n?? _bmad-output/implementation-artifacts/spec-1-17-current-builds-host-qualification.md\n?? _bmad-output/implementation-artifacts/story-1-17-current-builds-host-investigation-2026-10-26.json\n?? _bmad-output/implementation-artifacts/story-1-17-current-builds-host-results.md\n?? eng/story117-current-builds-host/LoaderProbe.cs\n?? eng/story117-current-builds-host/plan-attempt-2.json\n?? eng/story117-current-builds-host/plan-attempt-3.json\n?? eng/story117-current-builds-host/plan-attempt-4.json\n?? eng/story117-current-builds-host/plan-attempt-5.json\n?? eng/story117-current-builds-host/plan.json\n?? eng/story117-current-builds-host/qualify.py\n?? eng/story117-current-builds-host/source-references.targets\n?? eng/story117-current-builds-host/tests/test_qualification_guards.py\n?? eng/story117-current-builds-host/tests/test_review_guards.py\n?? eng/story117-current-builds-host/verify.py\n"
+    },
+    {
+      "path": "references/Hexalith.Tenants",
+      "revision": "24fb584b8d2b8a3bc7a51fcf8b5a6266e21e53e7",
+      "stageEntriesSha256": "279c1b2c7fed9cc80dd048ca637e1b2031bb10d45ff439586b899aefb6dfcc80",
+      "status": ""
+    },
+    {
+      "path": "references/Hexalith.AI.Tools",
+      "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "stageEntriesSha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569",
+      "status": ""
+    },
+    {
+      "path": "references/Hexalith.EventStore",
+      "revision": "c5d1c280d8c1c1a207cd159d817f614e93c93130",
+      "stageEntriesSha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e",
+      "status": ""
+    },
+    {
+      "path": "references/Hexalith.FrontComposer",
+      "revision": "cfa9febc2942666265f23f87b26112c846f625ad",
+      "stageEntriesSha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2",
+      "status": ""
+    },
+    {
+      "path": "references/Hexalith.Memories",
+      "revision": "7b0c8b5692600e293346eea7a84652eb87e4c346",
+      "stageEntriesSha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76",
+      "status": ""
+    },
+    {
+      "path": "references/Hexalith.Commons",
+      "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "stageEntriesSha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644",
+      "status": ""
+    },
+    {
+      "path": "references/Hexalith.Builds",
+      "revision": "74932ad0247203797274aba8b7b6366a4bbf92b9",
+      "stageEntriesSha256": "a379d24eb9569cbbfd77c245c80f41ff239d9c97e928c66b3a444ca6cb53b94e",
+      "status": ""
+    },
+    {
+      "path": "references/Hexalith.PolymorphicSerializations",
+      "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "stageEntriesSha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862",
+      "status": ""
+    },
+    {
+      "path": "references/Hexalith.Projects",
+      "revision": "298f6f6a41b9ce7b67f14c21c724d76832b957a9",
+      "stageEntriesSha256": "1494da6a6b03a0ca3ae427b9bad145b8c9cd51806d370c80468c510ef07e9eda",
+      "status": ""
+    },
+    {
+      "path": "references/Hexalith.Platform",
+      "revision": "9869094acc21f9054960a573f884c60ddf3235cd",
+      "stageEntriesSha256": "1c6649f6dbd9d725da61199cfbef8fe5156af23f730156bdbe0b2620077b066b",
+      "status": ""
+    },
+    {
+      "path": "references/Hexalith.McpCli",
+      "revision": "dc282889e624a4c990faa3f005ad7eaa8db7a473",
+      "stageEntriesSha256": "c361ea1f29b3bc49536e23d02ae8f3ac21b2d182cfe0bdfa2f2ce92af83b505f",
+      "status": ""
+    },
+    {
+      "path": "references/Hexalith.Parties",
+      "revision": "986a369ec26f6c5194593eb7bce12955eda54149",
+      "stageEntriesSha256": "933d7d5f591ff2c0d291e6f497587ea1f804946698f9601af3822d47c3e8c44c",
+      "status": ""
+    }
+  ],
+  "protectedInitialBindingsVerified": 13,
+  "allowedTrackedChange": ".gitattributes: narrow byte-preservation rules only",
+  "gitDiffCheckExitCode": 0,
+  "bytePreservingAttributesVerified": true,
+  "harness": [
+    {
+      "path": "eng/story117-current-builds-host/qualify.py",
+      "sha256": "a3873c5c2d830a90e88697223bd1b5d5b2acc9f5ed4b66be07180d06e8a4068c",
+      "bytes": 77252
+    },
+    {
+      "path": "eng/story117-current-builds-host/source-references.targets",
+      "sha256": "fbb4dacf73c2253e8607ec2548be1b6c77c6a3c57b4ac9b625399ac1fccf8e8e",
+      "bytes": 4046
+    },
+    {
+      "path": "eng/story117-current-builds-host/LoaderProbe.cs",
+      "sha256": "7da4c17788151873664923ff3f78ba5592fd8dd5ca86385060e68ff480d0e234",
+      "bytes": 7046
+    },
+    {
+      "path": "eng/story117-current-builds-host/verify.py",
+      "sha256": "b87c213e98475b136c2c315331008a601b0ee13b37c5aac39ffebe4cbe247d41",
+      "bytes": 3107
+    },
+    {
+      "path": "eng/story117-current-builds-host/tests/test_qualification_guards.py",
+      "sha256": "f41d91bd76dccbe7d2c448f7bfd750514b304ab68fd2e26310e948fab3925746",
+      "bytes": 22582
+    },
+    {
+      "path": "eng/story117-current-builds-host/tests/test_review_guards.py",
+      "sha256": "6f6a00c89faf3474b6d085b0aa771c5c2ac1e3c9a0f3dd33c50822e2f343c01c",
+      "bytes": 17472
+    }
+  ],
+  "report": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-current-builds-host-results.md",
+    "sha256": "593a508ce195282fd89dad8f452a49192ef42cee88007168a94efcdfe4074328"
+  },
+  "historicalProofLimit": "Actual successful execution used the original 521-path SDK input list and writable prepared feed; stronger post-review guards are prospective. Source-tuple binding observations remain distinct from package/API/ordinary/hosted acceptance.",
+  "parentStatus": "in-progress",
+  "tracker": "backlog",
+  "routing": "V1Only",
+  "T0": null,
+  "activationAuthority": null,
+  "stagingChecksExecuted": 0,
+  "staged": false,
+  "committed": false,
+  "pushed": false,
+  "boundedSpec": {
+    "path": "_bmad-output/implementation-artifacts/spec-1-17-current-builds-host-qualification.md",
+    "status": "done",
+    "sha256": "2a99d0825b3f71797ceca91283f91ff0de23ee638e004ebb9e33d4768a8e5fc5",
+    "frozenScopeSha256": "f380b83f5882dea0f4102bc9a14faac35eb2fd523c2388d3eca9913c97d561c7"
+  },
+  "finalDiff": {
+    "path": "/tmp/story117-host-complete-93brziwn.diff",
+    "bytes": 354406,
+    "sha256": "922b6508bd0676a56f0033bc5747b6ec09a2cf37dd3f8629d7064aa383e6c26a",
+    "includesUntracked": true,
+    "largeData": "binary diff records; independently verified sealed inventories",
+    "snapshotNote": "Captured before this final verification record added its own diff reference."
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "recordId": "story-1-17-current-builds-host-review-2026-10-26",
+  "recordedAtUtc": "2026-10-26T18:43:55.148426+00:00",
+  "layers": {
+    "blindHunter": {
+      "completed": true,
+      "findingFloor": 10,
+      "findings": 10
+    },
+    "edgeCaseHunter": {
+      "completed": true,
+      "findings": 3
+    },
+    "verificationGap": {
+      "completed": true,
+      "findings": 1
+    }
+  },
+  "findings": [
+    {
+      "id": "B1",
+      "verdict": "medium",
+      "group": "SDK dependency coverage",
+      "route": "patch",
+      "evidence": "Final plan includes MSBuild.dll but omits Microsoft.Build.dll, Microsoft.Build.Tasks.Core.dll and NuGet.Build.Tasks.dll. Current binding observations stand; expand future input coverage and disclose the historical hash boundary.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    },
+    {
+      "id": "B2",
+      "verdict": "medium",
+      "group": "Preflight failure retention",
+      "route": "patch",
+      "evidence": "Execution preflight checks precede the try/finally capture block, so input drift can exit without a portable stop record. Retain such failures without launching targets.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    },
+    {
+      "id": "B3",
+      "verdict": "medium",
+      "group": "Consumed-command accounting",
+      "route": "patch",
+      "evidence": "Parent benign-process reproduction wrote a command receipt then failed its post-check; Qualification.commands remained empty. Record launched work even when a later check raises.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    },
+    {
+      "id": "B4",
+      "verdict": "medium",
+      "group": "Owned child finalization",
+      "route": "patch",
+      "evidence": "Parent benign child deliberately changed groups; it remained alive after the original group cleanup. Its observed PID/start identity was recorded and parent cleaned it afterward. Terminate known survivors and verify final state.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    },
+    {
+      "id": "B5",
+      "verdict": "medium",
+      "group": "Fatal runtime preflight",
+      "route": "patch",
+      "evidence": "Parent mocked-stream reproduction with runtime description 10.0.13 and a preflight failure launched both cases. Classify runtime/preflight failures as fatal and stop the second case.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    },
+    {
+      "id": "B6",
+      "verdict": "medium",
+      "group": "Private feed immutability",
+      "route": "patch",
+      "evidence": "Preparation checks feed bytes, but later inputs omit them and the sandbox mounts their work tree writable. Enforce read-only prepared feed and retain its bindings.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    },
+    {
+      "id": "B7",
+      "verdict": "medium",
+      "group": "Resolved compiler references",
+      "route": "patch",
+      "evidence": "Package/assets guards do not inspect direct Reference/HintPath binaries. The import records ReferencePath without rejecting external Hexalith assemblies; validate those existing compiler inputs against verified source outputs.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    },
+    {
+      "id": "B8",
+      "verdict": "medium",
+      "group": "Bound resolution validation",
+      "route": "patch",
+      "evidence": "The probe records returned identities but the driver accepts complete without comparing resolved path/hash to the seal. Validate existing resolved observations; independently observed successful bindings already match the sealed files.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    },
+    {
+      "id": "B9",
+      "verdict": "medium",
+      "group": "Archive negative coverage",
+      "route": "patch",
+      "evidence": "Current verifier tests stop at receipt validation or call safe_name only. Add valid synthetic outer-hash fixtures exercising duplicate manifest/tar paths, special/missing/corrupt members and a valid capsule.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    },
+    {
+      "id": "B10",
+      "verdict": "medium",
+      "group": "Byte-bound artifact checkout",
+      "route": "patch",
+      "evidence": "text=auto can convert new harness/JSON/Markdown bytes on checkout, breaking fixed hashes. Add narrow serialization attributes for this artifact family; operational build/runtime configuration stays unchanged.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    },
+    {
+      "id": "E1",
+      "verdict": "medium",
+      "group": "Launch failure retention",
+      "route": "patch",
+      "evidence": "Parent Popen-OSError reproduction emitted no command receipt. Capture argv/environment and explicit not-launched status before returning the failed launch.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    },
+    {
+      "id": "E2",
+      "verdict": "medium",
+      "group": "Owned child finalization",
+      "route": "patch",
+      "evidence": "Parent polling-interruption reproduction left its benign child running until parent cleanup. Ensure unconditional owned-child cleanup and retain interruption evidence before archiving.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    },
+    {
+      "id": "E3",
+      "verdict": "medium",
+      "group": "Final observation failure",
+      "route": "patch",
+      "evidence": "main finally calls finish then archive without handling finish failure; state/store observation errors can prevent outcome/archive creation. Retain observation failure as unknown and still seal available evidence.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    },
+    {
+      "id": "V1",
+      "verdict": "medium",
+      "group": "Archive negative coverage",
+      "route": "patch",
+      "evidence": "Pre-verified gap: testVerifierRejectsUnsafeAndDuplicatePaths never invokes verify with duplicate tar members. Removing the duplicate-member check would not fail existing tests; add a valid-hash duplicate-member fixture.",
+      "resolution": "fixed-and-verified",
+      "resolutionEvidence": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.json"
+    }
+  ],
+  "parentCounterexamples": {
+    "launchFailureLosesReceipt": true,
+    "postCheckFailureLosesCommandLedgerEntry": true,
+    "interruptionLeavesChildRunning": true,
+    "observedChangedGroupChildSurvives": true,
+    "runtimePreflightFailureAllowsSecondCase": true,
+    "sdkCalls": 0,
+    "targetLibraryLoads": 0,
+    "benignChildrenCleaned": true
+  },
+  "scope": "Post-execution harness/test/report corrections only; no new SDK/build/compiler/loader run; immutable execution capsules preserved.",
+  "postReviewValidation": {
+    "testsNormal": 49,
+    "testsOptimized": 49,
+    "sdkBuildCompilerLoaderRuns": 0,
+    "deferred": 0
+  }
+}

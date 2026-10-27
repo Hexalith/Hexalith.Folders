@@ -1,0 +1,13 @@
+{
+  "atUtc": "2026-10-26T17:48:00.678540+00:00",
+  "specSha256": "26314a6131078eb11966e48d1177774e672c4af58a778c3d4fc07fcf9e1ba482",
+  "planSha256": "e50cb0075361ab7902688822ee85a27a8fb452b8e613f9c2dd9a5d20602ff1f7",
+  "authority": "Jerome approved the conditional sequence in the frozen spec; no historical approval is reused.",
+  "continuation": {
+    "priorLoaderCases": 0,
+    "priorReceipt": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.json",
+    "priorSdkCommands": 0,
+    "scopeInterpretation": "Parent implementer: Jerome's approval covers implementation/verification of the conditional sequence. The pre-SDK file-copy defect did not consume the still-unexecuted build/loader authority. Correct only preparation, retain the failed attempt unchanged, then continue the approved sequence with a fresh additive claim. No failed SDK/build/loader gate may be rerun; each loader case remains once only. No new human signature is required for this reversible correction."
+  },
+  "privatePreparationPassed": true
+}

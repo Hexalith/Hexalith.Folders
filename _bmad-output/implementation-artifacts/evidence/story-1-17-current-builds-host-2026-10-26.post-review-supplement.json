@@ -1,0 +1,132 @@
+{
+  "archive": {
+    "bytes": 4317135,
+    "path": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.artifacts.tar.gz",
+    "sha256": "f8adee3be45b0d3a598bc4d4508c847e9cb7770cce446844dc864577ae764c57"
+  },
+  "atUtc": "2026-10-26T19:08:18.786389+00:00",
+  "executedResult": {
+    "bytes": 41559,
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.json",
+    "sha256": "c19f4a4df533d6aec2114686e3950955c32d3a786d43d577050943565da648d5"
+  },
+  "focusedTests": {
+    "exitCode": 0,
+    "tests": 49
+  },
+  "limitations": "Current Python/MSBuild safeguard revisions were tested with mocks/synthetic data and controlled Python children; not run through SDK/build/compiler/loader. Original narrower SDK/feed/reference/event proof limits remain historical.",
+  "memberCount": 31,
+  "memberManifest": {
+    "bytes": 6816,
+    "path": "story-1-17-current-builds-host-2026-10-26.post-review-supplement.members.json",
+    "sha256": "cef81717413eeea12bfad23f9f3e84749eab1cb62f7448f4be3cbdd62a137f40"
+  },
+  "newTargetExecutions": 0,
+  "outcome": {
+    "atUtc": "2026-10-26T18:14:03.551277+00:00",
+    "caseResults": [
+      {
+        "bindingSucceeded": true,
+        "exitCode": 0,
+        "finalObservation": {
+          "atUtc": "2026-10-26T18:13:55.6781695+00:00",
+          "data": {
+            "bindingObservationOnly": true,
+            "explicitTargetMemberInvocations": 0,
+            "initializerExecutionNotExcluded": true
+          },
+          "kind": "complete"
+        },
+        "hostAssembly": {
+          "bytes": 100352,
+          "path": "host/Hexalith.Builds.Module.AppHost.dll",
+          "sha256": "5553a7deefe9fb8464b259d12e3d7b84980c722233ea2d7806391c30c44ff187"
+        },
+        "mode": "cold",
+        "modelAssembly": {
+          "bytes": 358912,
+          "path": "model/Hexalith.Platform.Composition.dll",
+          "sha256": "76252a429c8707f2641472b95a05d998f97566d3eb91e12e558e8a9e0c7a087d"
+        },
+        "scope": "Explicit metadata/identity demands only; no package/API/ordinary/hosted acceptance"
+      },
+      {
+        "bindingSucceeded": true,
+        "exitCode": 0,
+        "finalObservation": {
+          "atUtc": "2026-10-26T18:14:01.267758+00:00",
+          "data": {
+            "bindingObservationOnly": true,
+            "explicitTargetMemberInvocations": 0,
+            "initializerExecutionNotExcluded": true
+          },
+          "kind": "complete"
+        },
+        "hostAssembly": {
+          "bytes": 100352,
+          "path": "host/Hexalith.Builds.Module.AppHost.dll",
+          "sha256": "5553a7deefe9fb8464b259d12e3d7b84980c722233ea2d7806391c30c44ff187"
+        },
+        "mode": "host-first",
+        "modelAssembly": {
+          "bytes": 358912,
+          "path": "model/Hexalith.Platform.Composition.dll",
+          "sha256": "76252a429c8707f2641472b95a05d998f97566d3eb91e12e558e8a9e0c7a087d"
+        },
+        "scope": "Explicit metadata/identity demands only; no package/API/ordinary/hosted acceptance"
+      }
+    ],
+    "cleanup": "none; archive precedes any separately chosen private cleanup",
+    "completedCommandLabels": [
+      "sdk-evaluate-AppHost",
+      "evaluate-AppHost",
+      "sdk-evaluate-EventStoreHost",
+      "evaluate-EventStoreHost",
+      "sdk-evaluate-UiHost",
+      "evaluate-UiHost",
+      "sdk-restore-AppHost",
+      "restore-AppHost",
+      "sdk-build-AppHost",
+      "build-AppHost",
+      "sdk-evaluate-CLI",
+      "evaluate-CLI",
+      "sdk-restore-CLI",
+      "restore-CLI",
+      "sdk-build-CLI",
+      "build-CLI",
+      "sdk-evaluate-Platform-Composition",
+      "evaluate-Platform-Composition",
+      "sdk-restore-Platform-Composition",
+      "restore-Platform-Composition",
+      "sdk-build-Platform-Composition",
+      "build-Platform-Composition",
+      "sdk-compile-probe",
+      "compile-probe",
+      "sdk-cold",
+      "case-cold",
+      "sdk-host-first",
+      "case-host-first"
+    ],
+    "controls": {
+      "ContentHash": null,
+      "T0": null,
+      "activationAuthority": null,
+      "apiAccepted": false,
+      "currentTupleAccepted": false,
+      "hostedAccepted": false,
+      "ordinaryMapping": null,
+      "packageAccepted": false,
+      "parentStatus": "in-progress",
+      "routing": "V1Only",
+      "stagingChecksExecuted": 0,
+      "stagingChecksTotal": 14,
+      "tracker": "backlog"
+    },
+    "currentSourceBinding": "see per-case results",
+    "prerequisite": "Binding evidence only; ordinary/package/API/hosted acceptance requires separate owner qualification.",
+    "privateDirectory": "/tmp/story117-current-builds-host-dkkg4fqa",
+    "stop": null
+  },
+  "recordId": "story-1-17-current-builds-host-2026-10-26.post-review-supplement",
+  "scope": "Additive unexecuted post-review harness fixes and read-only audits; original successful source-tuple results unchanged."
+}

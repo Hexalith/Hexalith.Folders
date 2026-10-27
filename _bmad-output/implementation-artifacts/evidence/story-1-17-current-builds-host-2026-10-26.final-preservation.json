@@ -1,0 +1,200 @@
+{
+  "allProtectedSourceSdkAndHarnessBytesMatchPlan": true,
+  "atUtc": "2026-10-26T17:42:50.726081+00:00",
+  "attemptClaimPlanAndCapsuleBytesMatchDiagnosis": true,
+  "controls": {
+    "ContentHash": null,
+    "T0": null,
+    "activationAuthority": null,
+    "apiAccepted": false,
+    "currentTupleAccepted": false,
+    "hostedAccepted": false,
+    "ordinaryMapping": null,
+    "packageAccepted": false,
+    "parentStatus": "in-progress",
+    "routing": "V1Only",
+    "stagingChecksExecuted": 0,
+    "stagingChecksTotal": 14,
+    "tracker": "backlog"
+  },
+  "mainCapsuleVerification": {
+    "memberCount": 15931,
+    "normal": {
+      "argv": [
+        "python3",
+        "-I",
+        "-B",
+        "eng/story117-current-builds-host/verify.py",
+        "_bmad-output/implementation-artifacts/evidence",
+        "--receipt-sha256",
+        "8aaa6675c1b209b296f3f9fc1b62e2002ba607f4b429d6c71ee0e983f2a077bb"
+      ],
+      "exitCode": 0,
+      "verified": true
+    },
+    "optimized": {
+      "argv": [
+        "python3",
+        "-I",
+        "-B",
+        "-O",
+        "eng/story117-current-builds-host/verify.py",
+        "_bmad-output/implementation-artifacts/evidence",
+        "--receipt-sha256",
+        "8aaa6675c1b209b296f3f9fc1b62e2002ba607f4b429d6c71ee0e983f2a077bb"
+      ],
+      "exitCode": 0,
+      "verified": true
+    },
+    "receiptSha256": "8aaa6675c1b209b296f3f9fc1b62e2002ba607f4b429d6c71ee0e983f2a077bb"
+  },
+  "noSdkInvoked": true,
+  "repositories": {
+    ".": {
+      "branch": "main",
+      "history": "19d8ddc9 fix: story 1.17\n43423a98 fix: story 1.17\n43bc73bd fix: story 1.17\nb8c66d64 fix: story 1.17\nb5ae26e4 fix: story 1.17\n",
+      "indexFlagsSha256": "e059e87851698bd9377c50db0473f18795e630a8d624a63e67664915b5a81b1b",
+      "indexSha256": "526162a2cd0c687fcd7c3388780742e32712977686f1ad56d326ac424b26cc3a",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Folders.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Folders.git (push)\n",
+      "revision": "19d8ddc9d64b0af4986b2a8fafe859b8b4e8231a",
+      "stageEntriesSha256": "b5655d89653b3f199d9ebd7ce3b66194d88e624e5d39164811a4ba4eb2f62815",
+      "status": "? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.claim.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.diagnosis.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.guards.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.members.json\n? _bmad-output/implementation-artifacts/spec-1-17-current-builds-host-qualification.md\n? _bmad-output/implementation-artifacts/story-1-17-current-builds-host-investigation-2026-10-26.json\n? _bmad-output/implementation-artifacts/story-1-17-current-builds-host-results.md\n? eng/story117-current-builds-host/LoaderProbe.cs\n? eng/story117-current-builds-host/plan.json\n? eng/story117-current-builds-host/qualify.py\n? eng/story117-current-builds-host/source-references.targets\n? eng/story117-current-builds-host/tests/test_qualification_guards.py\n? eng/story117-current-builds-host/verify.py\n"
+    },
+    "references/Hexalith.AI.Tools": {
+      "branch": "main",
+      "history": "3f194e1 docs: add section on Hexalith MCP and CLI ownership guidelines\n5f93d2e refactor: streamline Hexalith LLM instructions for clarity and conciseness\ne671ad5 docs: clarify usage of 'chore' commit type in guidelines\n1190b6d build: sync local changes via /pushall\nde38f78 feat(pushall): add restriction against invoking BMad skills during /pushall execution\n",
+      "indexFlagsSha256": "6afdd00cce2c102cadf19fedb28c1a4585e4e1dcca596d12b2799332d6c6bd11",
+      "indexSha256": "77c94fb29c26e5708460809967060cb8f8f507ffed14e932ae05174013c96f9c",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.AI.Tools.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.AI.Tools.git (push)\n",
+      "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "stageEntriesSha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569",
+      "status": ""
+    },
+    "references/Hexalith.Builds": {
+      "branch": "main",
+      "history": "74932ad build: merge origin/fix/eventstore-token-registration-catalog into main via /pushall\nb547fc1 fix(evidence): archive captured package catalogs (#139)\n022668a build(deps): refresh EventStore 3.128.0 audit\n234778f build(deps): adopt published EventStore 3.128.0\naac713a fix(evidence): archive captured package catalogs\n",
+      "indexFlagsSha256": "63802d935a4e4f12aa1de99a2c4c850bcfa5a73db84735937b6c30631fd2bad9",
+      "indexSha256": "64cf744d70393d356006c4695553a2d2bd5b41009b04703e130f3aebf9752500",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Builds.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Builds.git (push)\n",
+      "revision": "74932ad0247203797274aba8b7b6366a4bbf92b9",
+      "stageEntriesSha256": "a379d24eb9569cbbfd77c245c80f41ff239d9c97e928c66b3a444ca6cb53b94e",
+      "status": ""
+    },
+    "references/Hexalith.Commons": {
+      "branch": "main",
+      "history": "1663028 build: merge dependabot/npm_and_yarn/commitlint/config-conventional-21.2.4 into main via /pushall\n0595c8c build: merge dependabot/npm_and_yarn/commitlint/cli-21.2.4 into main via /pushall\n8c7bb88 chore(deps): Bump @commitlint/cli from 21.2.3 to 21.2.4\n95faa7f chore(deps): Bump @commitlint/config-conventional from 21.2.3 to 21.2.4\n5c23c81 chore(release): 2.30.3 [skip ci]\n",
+      "indexFlagsSha256": "3386aab873e806bc3edac9cfa1562bd6eb27d871454288a3eebfe84c06622113",
+      "indexSha256": "81594052a87e38232911dc5a48935d1cb3dbe9f565abf45cc6228f3ca559bf46",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Commons.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Commons.git (push)\n",
+      "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "stageEntriesSha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644",
+      "status": ""
+    },
+    "references/Hexalith.EventStore": {
+      "branch": "main",
+      "history": "c5d1c280d fix: story 2.13\n80993d367 test(fixtures): use runtime credentials and private canaries\n4e91e552b fix(domain-service): authorize exact command status grants\n12784fde7 build: sync platform submodule pointer\n6de4e7323 build: sync local changes via /pushall\n",
+      "indexFlagsSha256": "12a14d296090534407ad965cf93b500e4c13399b63925a66c1b89443d403fbf0",
+      "indexSha256": "b07e1ba47e692c2db96625e12b5f37f44cf557fe8719fefb868ba4af69a9a1c7",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.EventStore.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.EventStore.git (push)\n",
+      "revision": "c5d1c280d8c1c1a207cd159d817f614e93c93130",
+      "stageEntriesSha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e",
+      "status": ""
+    },
+    "references/Hexalith.FrontComposer": {
+      "branch": "main",
+      "history": "cfa9febc fix: story 13.6\n39cab9cb fix: story 13.6\n76e063b5 fix: story 13.6\n29a5ac94 test: activate approved aspire hosting expectation\n50d9a8b9 build: align approved catalog expectations\n",
+      "indexFlagsSha256": "e2bb6e7ad1656e0289e8c4d097a2f419df0330fc53a605eb8635c4e8b91e8fa4",
+      "indexSha256": "fa151a06b6ecf184046a20648b2a1a473bb2e81d187f459446b2f50f3bb4048b",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.FrontComposer.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.FrontComposer.git (push)\n",
+      "revision": "cfa9febc2942666265f23f87b26112c846f625ad",
+      "stageEntriesSha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2",
+      "status": ""
+    },
+    "references/Hexalith.McpCli": {
+      "branch": "main",
+      "history": "dc28288 docs(review): record story 4.13 code review pass 3\n0d0ca22 test(conformance): complete story 4.13 live gateway semantics\n4b60d49 docs(review): record story 4.13 code review\n6043ca8 build: sync local changes via /pushall\n7f503ae test(conformance): verify all vectors against live gateway semantics\n",
+      "indexFlagsSha256": "74dc5ef7d6c0c4953874794bbb98b1abd16cc68eeefd32060a3cb9d2a0d30fe8",
+      "indexSha256": "ad44ff8e35dcc924babc269de6592a4a9993cf2704cd03738f0118190a2d722c",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.McpCli.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.McpCli.git (push)\n",
+      "revision": "dc282889e624a4c990faa3f005ad7eaa8db7a473",
+      "stageEntriesSha256": "c361ea1f29b3bc49536e23d02ae8f3ac21b2d182cfe0bdfa2f2ce92af83b505f",
+      "status": ""
+    },
+    "references/Hexalith.Memories": {
+      "branch": "main",
+      "history": "7b0c8b56 fix: fence retry payloads and scoped erasure\nea5ef48b build: point Platform gitlink at pushed main\n648a2eb0 build: advance Hexalith.Platform gitlink after main sync\nf17b3150 build: sync local changes via /pushall\n81a5b7ef fix: story 27.4*\n",
+      "indexFlagsSha256": "80bc75cde1c3657610303471e415b6e26d33b848e6d021360222bf2c74182df2",
+      "indexSha256": "858ec403af3820ab9ee3637c415371e1ad96464109e94c2134178b044e397a58",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Memories.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Memories.git (push)\n",
+      "revision": "7b0c8b5692600e293346eea7a84652eb87e4c346",
+      "stageEntriesSha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76",
+      "status": ""
+    },
+    "references/Hexalith.Parties": {
+      "branch": "",
+      "history": "986a369e fix: bound processing history and fence erasure\n559b91c8 fix(host): preserve numeric projection outcomes (#58)\n13a6247a build: point eventstore and memories at synced main\n17290ed6 fix: swwep\nfdba00e5 fix: sweep\n",
+      "indexFlagsSha256": "aaf8dce0e9d85fca90fe8515ed61da4317cd5bf363a9bada8d037887d26fade6",
+      "indexSha256": "6f666a0e4caf8fc51d8dea5903db970ac546281e8d9652b7ff87810a098dc00a",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Parties.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Parties.git (push)\n",
+      "revision": "986a369ec26f6c5194593eb7bce12955eda54149",
+      "stageEntriesSha256": "933d7d5f591ff2c0d291e6f497587ea1f804946698f9601af3822d47c3e8c44c",
+      "status": ""
+    },
+    "references/Hexalith.Platform": {
+      "branch": "main",
+      "history": "9869094 build: merge origin/fix/works-published-sdk-consumer into main via /pushall\nb9162b7 build: sync local changes via /pushall\n30673fd build: advance Projects pointer to the synced main\nf5e6348 build: advance root submodule pointers to origin/main\n1082392 fix: spec 5.4\n",
+      "indexFlagsSha256": "0cdc8d9e0c6c2c32c028e4e4e59b0ff643704af0a3687b6cd74cbe0b777c4239",
+      "indexSha256": "3ca68ff3cff76596be82702348b2bdfc5afbf4dc4a5b96a0fe07ca33db5c6a6e",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Platform.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Platform.git (push)\n",
+      "revision": "9869094acc21f9054960a573f884c60ddf3235cd",
+      "stageEntriesSha256": "1c6649f6dbd9d725da61199cfbef8fe5156af23f730156bdbe0b2620077b066b",
+      "status": ""
+    },
+    "references/Hexalith.PolymorphicSerializations": {
+      "branch": "main",
+      "history": "221ac45 chore(release): 1.19.5 [skip ci]\ncf32fa6 fix(ci): match NuGet trusted publishing policy\n173f97d fix(ci): restore NuGet release publication and verification\nf1b7752 build: sync local changes via /pushall\n80ce5af build: update .NET SDK to 10.0.402\n",
+      "indexFlagsSha256": "d50d5de3a14ed8f5dc9218a38204a9157e3f0d1d5bc9b162b6cafef782580f02",
+      "indexSha256": "99834e9037d6af73bea83dc830ab91d6f25228633456987344d153f3cab98221",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.PolymorphicSerializations.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.PolymorphicSerializations.git (push)\n",
+      "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "stageEntriesSha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862",
+      "status": ""
+    },
+    "references/Hexalith.Projects": {
+      "branch": "main",
+      "history": "298f6f6 build: sync local changes via /pushall\n7430d73 build: advance root submodule pointers to origin/main\na42f02c build: advance the EventStore pointer to origin/main\n0f3f2f5 fix: story 6.1\n6e45180 build: advance Platform pointer to the synced main\n",
+      "indexFlagsSha256": "f4a0ebf07d8d7f0f261ab52c2b4d40ad8c6899397092858ea4bc9fd09dab33a6",
+      "indexSha256": "0afbd6137d295ed9202a71fe42e9d4c6a08853b424da5b0ed683bf8988bfe1fa",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Projects.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Projects.git (push)\n",
+      "revision": "298f6f6a41b9ce7b67f14c21c724d76832b957a9",
+      "stageEntriesSha256": "1494da6a6b03a0ca3ae427b9bad145b8c9cd51806d370c80468c510ef07e9eda",
+      "status": ""
+    },
+    "references/Hexalith.Tenants": {
+      "branch": "main",
+      "history": "24fb584b fix(aspire): await projected bootstrap authority before live seeding\n60f9dfd2 fix(ui): qualify authenticated audit routes and phone recovery\n3b60914a fix(aspire): restore startup and add authenticated route qualification\n8804c10b fix(ui): complete five deferred safety items\n14133e96 build: sync local changes via /pushall\n",
+      "indexFlagsSha256": "6fa460303718710e20c2acef4b5d1d130aa46a36015b792dc532fb798b308057",
+      "indexSha256": "86855bc64d414687e388597cd9b578b8cea18af7b0cddcd00d789aadf42b8e41",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Tenants.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Tenants.git (push)\n",
+      "revision": "24fb584b8d2b8a3bc7a51fcf8b5a6266e21e53e7",
+      "stageEntriesSha256": "279c1b2c7fed9cc80dd048ca637e1b2031bb10d45ff439586b899aefb6dfcc80",
+      "status": ""
+    }
+  },
+  "revisionsIndicesFlagsUnchanged": {
+    ".": true,
+    "references/Hexalith.AI.Tools": true,
+    "references/Hexalith.Builds": true,
+    "references/Hexalith.Commons": true,
+    "references/Hexalith.EventStore": true,
+    "references/Hexalith.FrontComposer": true,
+    "references/Hexalith.McpCli": true,
+    "references/Hexalith.Memories": true,
+    "references/Hexalith.Parties": true,
+    "references/Hexalith.Platform": true,
+    "references/Hexalith.PolymorphicSerializations": true,
+    "references/Hexalith.Projects": true,
+    "references/Hexalith.Tenants": true
+  },
+  "rootStatusPolicy": "Only additive recording paths admitted; exact runtime-period status equality is separately in the unchanged attempt receipt."
+}

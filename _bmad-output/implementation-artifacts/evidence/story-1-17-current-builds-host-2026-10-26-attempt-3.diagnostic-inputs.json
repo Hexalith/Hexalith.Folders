@@ -1,0 +1,53 @@
+{
+  "archive": {
+    "bytes": 5443,
+    "path": "story-1-17-current-builds-host-2026-10-26-attempt-3.diagnostic-inputs.artifacts.tar.gz",
+    "sha256": "a01073c1baac182b6940411592b21e3ae15193f992d851f38bddabf4619aed1b"
+  },
+  "memberCount": 15,
+  "memberManifest": {
+    "bytes": 3278,
+    "path": "story-1-17-current-builds-host-2026-10-26-attempt-3.diagnostic-inputs.members.json",
+    "sha256": "80bb5d6665019b60bc096f580edf2206e24fda9bd56e40525261c1b5d6ed7547"
+  },
+  "outcome": {
+    "atUtc": "2026-10-26T17:54:51.927596+00:00",
+    "caseResults": [],
+    "cleanup": "none; archive precedes any separately chosen private cleanup",
+    "completedCommandLabels": [
+      "sdk-evaluate-AppHost",
+      "evaluate-AppHost",
+      "sdk-evaluate-EventStoreHost",
+      "evaluate-EventStoreHost",
+      "sdk-evaluate-UiHost",
+      "evaluate-UiHost",
+      "sdk-restore-AppHost",
+      "restore-AppHost"
+    ],
+    "controls": {
+      "ContentHash": null,
+      "T0": null,
+      "activationAuthority": null,
+      "apiAccepted": false,
+      "currentTupleAccepted": false,
+      "hostedAccepted": false,
+      "ordinaryMapping": null,
+      "packageAccepted": false,
+      "parentStatus": "in-progress",
+      "routing": "V1Only",
+      "stagingChecksExecuted": 0,
+      "stagingChecksTotal": 14,
+      "tracker": "backlog"
+    },
+    "currentSourceBinding": "unexecuted",
+    "prerequisite": "Owner must disposition the exact stopped gate before any fresh execution; this one-shot claim is consumed.",
+    "privateDirectory": "/tmp/story117-current-builds-host-j5f2yayd",
+    "stop": {
+      "atUtc": "2026-10-26T17:54:49.264227+00:00",
+      "dependentExecutionStopped": true,
+      "detail": "Command failed: restore-AppHost; exit 1",
+      "type": "GateFailure"
+    }
+  },
+  "recordId": "story-1-17-current-builds-host-2026-10-26-attempt-3-diagnostic-inputs"
+}

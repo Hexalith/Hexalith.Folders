@@ -1,0 +1,194 @@
+{
+  "recordId": "story-1-17-current-builds-host-2026-10-26-parent-task-audit",
+  "recordedAtUtc": "2026-10-26T18:24:58.398161+00:00",
+  "receiptSha256": "c19f4a4df533d6aec2114686e3950955c32d3a786d43d577050943565da648d5",
+  "independentOptimizedReplay": {
+    "verified": true,
+    "members": 17208
+  },
+  "commands": [
+    {
+      "label": "build-AppHost",
+      "exitCode": 0,
+      "timeoutSeconds": 600,
+      "atUtc": "2026-10-26T18:10:37.985618+00:00",
+      "endedAtUtc": "2026-10-26T18:12:54.603593+00:00"
+    },
+    {
+      "label": "build-CLI",
+      "exitCode": 0,
+      "timeoutSeconds": 600,
+      "atUtc": "2026-10-26T18:13:13.517443+00:00",
+      "endedAtUtc": "2026-10-26T18:13:18.652619+00:00"
+    },
+    {
+      "label": "build-Platform-Composition",
+      "exitCode": 0,
+      "timeoutSeconds": 600,
+      "atUtc": "2026-10-26T18:13:35.862853+00:00",
+      "endedAtUtc": "2026-10-26T18:13:43.774523+00:00"
+    },
+    {
+      "label": "compile-probe",
+      "exitCode": 0,
+      "timeoutSeconds": 60,
+      "atUtc": "2026-10-26T18:13:49.607398+00:00",
+      "endedAtUtc": "2026-10-26T18:13:50.268824+00:00"
+    },
+    {
+      "label": "case-cold",
+      "exitCode": 0,
+      "timeoutSeconds": 60,
+      "atUtc": "2026-10-26T18:13:55.509942+00:00",
+      "endedAtUtc": "2026-10-26T18:13:55.746721+00:00"
+    },
+    {
+      "label": "case-host-first",
+      "exitCode": 0,
+      "timeoutSeconds": 60,
+      "atUtc": "2026-10-26T18:14:01.094319+00:00",
+      "endedAtUtc": "2026-10-26T18:14:01.330868+00:00"
+    }
+  ],
+  "guardTestCount": 31,
+  "normalAndOptimizedGuardReceiptsChecked": true,
+  "matrixCoverage": [
+    {
+      "row": "verified graph/builds -> two sealed cases",
+      "evidence": [
+        "testValidSealedTupleRunsOnlyTheTwoFixedCases",
+        "three successful Debug builds",
+        "two captured successful loader cases"
+      ]
+    },
+    {
+      "row": "drift/fallback/build failure -> stop",
+      "evidence": [
+        "testFailedInputGateCannotLaunchSdk",
+        "testFailedSdkSelectionCannotLaunchDependentCommand",
+        "testHexalithPackageFallbackIsRejected",
+        "four retained stopped attempts"
+      ]
+    },
+    {
+      "row": "success -> actual binding only",
+      "evidence": [
+        "testValidSealedTupleRunsOnlyTheTwoFixedCases",
+        "two raw resolved-event streams",
+        "inert acceptance controls"
+      ]
+    },
+    {
+      "row": "failure/timeout -> preserve without retry",
+      "evidence": [
+        "testBindingFailureRemainsFailureAndPermitsOnlyTheSecondFixedCase",
+        "testCaseTimeoutPreventsTheSecondCase",
+        "testTimeoutTerminatesOwnedGroupAndRetainsReceipt"
+      ]
+    }
+  ],
+  "allSixTasksSatisfied": true,
+  "repositories": [
+    {
+      "path": ".",
+      "revision": "19d8ddc9d64b0af4986b2a8fafe859b8b4e8231a",
+      "stageEntriesSha256": "b5655d89653b3f199d9ebd7ce3b66194d88e624e5d39164811a4ba4eb2f62815",
+      "hiddenFlags": []
+    },
+    {
+      "path": "references/Hexalith.Tenants",
+      "revision": "24fb584b8d2b8a3bc7a51fcf8b5a6266e21e53e7",
+      "stageEntriesSha256": "279c1b2c7fed9cc80dd048ca637e1b2031bb10d45ff439586b899aefb6dfcc80",
+      "hiddenFlags": []
+    },
+    {
+      "path": "references/Hexalith.AI.Tools",
+      "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "stageEntriesSha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569",
+      "hiddenFlags": []
+    },
+    {
+      "path": "references/Hexalith.EventStore",
+      "revision": "c5d1c280d8c1c1a207cd159d817f614e93c93130",
+      "stageEntriesSha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e",
+      "hiddenFlags": []
+    },
+    {
+      "path": "references/Hexalith.FrontComposer",
+      "revision": "cfa9febc2942666265f23f87b26112c846f625ad",
+      "stageEntriesSha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2",
+      "hiddenFlags": []
+    },
+    {
+      "path": "references/Hexalith.Memories",
+      "revision": "7b0c8b5692600e293346eea7a84652eb87e4c346",
+      "stageEntriesSha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76",
+      "hiddenFlags": []
+    },
+    {
+      "path": "references/Hexalith.Commons",
+      "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "stageEntriesSha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644",
+      "hiddenFlags": []
+    },
+    {
+      "path": "references/Hexalith.Builds",
+      "revision": "74932ad0247203797274aba8b7b6366a4bbf92b9",
+      "stageEntriesSha256": "a379d24eb9569cbbfd77c245c80f41ff239d9c97e928c66b3a444ca6cb53b94e",
+      "hiddenFlags": []
+    },
+    {
+      "path": "references/Hexalith.PolymorphicSerializations",
+      "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "stageEntriesSha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862",
+      "hiddenFlags": []
+    },
+    {
+      "path": "references/Hexalith.Projects",
+      "revision": "298f6f6a41b9ce7b67f14c21c724d76832b957a9",
+      "stageEntriesSha256": "1494da6a6b03a0ca3ae427b9bad145b8c9cd51806d370c80468c510ef07e9eda",
+      "hiddenFlags": []
+    },
+    {
+      "path": "references/Hexalith.Platform",
+      "revision": "9869094acc21f9054960a573f884c60ddf3235cd",
+      "stageEntriesSha256": "1c6649f6dbd9d725da61199cfbef8fe5156af23f730156bdbe0b2620077b066b",
+      "hiddenFlags": []
+    },
+    {
+      "path": "references/Hexalith.McpCli",
+      "revision": "dc282889e624a4c990faa3f005ad7eaa8db7a473",
+      "stageEntriesSha256": "c361ea1f29b3bc49536e23d02ae8f3ac21b2d182cfe0bdfa2f2ce92af83b505f",
+      "hiddenFlags": []
+    },
+    {
+      "path": "references/Hexalith.Parties",
+      "revision": "986a369ec26f6c5194593eb7bce12955eda54149",
+      "stageEntriesSha256": "933d7d5f591ff2c0d291e6f497587ea1f804946698f9601af3822d47c3e8c44c",
+      "hiddenFlags": []
+    }
+  ],
+  "protectedInitialBindingsVerified": 13,
+  "frozenScopeSha256": "f380b83f5882dea0f4102bc9a14faac35eb2fd523c2388d3eca9913c97d561c7",
+  "controls": {
+    "ContentHash": null,
+    "T0": null,
+    "activationAuthority": null,
+    "apiAccepted": false,
+    "currentTupleAccepted": false,
+    "hostedAccepted": false,
+    "ordinaryMapping": null,
+    "packageAccepted": false,
+    "parentStatus": "in-progress",
+    "routing": "V1Only",
+    "stagingChecksExecuted": 0,
+    "stagingChecksTotal": 14,
+    "tracker": "backlog"
+  },
+  "diff": {
+    "path": "/tmp/story117-host-review-1jxzs_kc.diff",
+    "sha256": "e864bab4d1827e70465ef6ae6c4ac3a65930af8fb80b409f19fb229bc762cb2d",
+    "staged": false
+  },
+  "limits": "No new SDK/build/compiler/loader invocation. Generated inventory data verified through the sealed capsule; recording-only spec status/task updates follow this audit."
+}

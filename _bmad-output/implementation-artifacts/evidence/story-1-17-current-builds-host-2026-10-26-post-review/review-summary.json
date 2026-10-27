@@ -1,0 +1,207 @@
+{
+  "atUtc": "2026-10-26T19:07:21.166598+00:00",
+  "changes": [
+    "Fixed SDK task/binary closure for prospective preparation; executed manifests untouched.",
+    "Preflight/launch/post-check/timeout/interruption receipts and truthful consumed-attempt accounting.",
+    "Known PID/start-time termination/reaping, including escaped groups and first-observation failure.",
+    "Unknown preservation observers still leave outcome and archive inputs.",
+    "Read-only/revalidated prepared feed.",
+    "Precompile verified source-output guards for Reference/HintPath, preserving source Tooling.",
+    "Fatal preflight/runtime classification and sealed target-resolution validation.",
+    "Correctly hashed positive/adversarial capsule tests; narrow byte-preservation attributes."
+  ],
+  "controls": {
+    "ContentHash": null,
+    "T0": null,
+    "activationAuthority": null,
+    "apiAccepted": false,
+    "currentTupleAccepted": false,
+    "hostedAccepted": false,
+    "ordinaryMapping": null,
+    "packageAccepted": false,
+    "parentStatus": "in-progress",
+    "routing": "V1Only",
+    "stagingChecksExecuted": 0,
+    "stagingChecksTotal": 14,
+    "tracker": "backlog"
+  },
+  "executedReceipt": {
+    "bytes": 41559,
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.json",
+    "sha256": "c19f4a4df533d6aec2114686e3950955c32d3a786d43d577050943565da648d5"
+  },
+  "historicalLimits": "Prepared once; writable mount and no later prepared-feed hash checks in executed code. No retroactive continuous-integrity/read-only-feed claim.",
+  "noSdkBuildCompilerLoaderPackageInstallStageOrRemoteOperation": true,
+  "preservedArtifacts": [
+    {
+      "bytes": 4326338,
+      "path": "eng/story117-current-builds-host/plan-attempt-2.json",
+      "sha256": "e50cb0075361ab7902688822ee85a27a8fb452b8e613f9c2dd9a5d20602ff1f7"
+    },
+    {
+      "bytes": 4302871,
+      "path": "eng/story117-current-builds-host/plan-attempt-3.json",
+      "sha256": "e43e704676b75265063131a772b3e054d8a53f1cb74acbaee0ea29cc0e088b79"
+    },
+    {
+      "bytes": 4310854,
+      "path": "eng/story117-current-builds-host/plan-attempt-4.json",
+      "sha256": "f8d037332f5d932ef81637066081ead96b2e85595798d4071bb770c7ac7737cd"
+    },
+    {
+      "bytes": 4313571,
+      "path": "eng/story117-current-builds-host/plan-attempt-5.json",
+      "sha256": "baead8cb1772a5995ff45135c19eb2d92b956839d7bccea9f60cb9a77a5209b6"
+    },
+    {
+      "bytes": 4003315,
+      "path": "eng/story117-current-builds-host/plan.json",
+      "sha256": "a1c8b20a9b711e6ce2c0b387b62be44deb70a280568b97d97cae458a84b813cd"
+    },
+    {
+      "bytes": 40021071,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.artifacts.tar.gz",
+      "sha256": "a3888979f64ed8b3f34ba938c8acff24271592fc9c1fd60101bf855721e8ebaf"
+    },
+    {
+      "bytes": 1061,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.claim.json",
+      "sha256": "f2df4c23caee0bdb5a804eb0f021e9ad95a6ef8ef64ddedc72c5e80ebe90567f"
+    },
+    {
+      "bytes": 2027709,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnostic-inputs.artifacts.tar.gz",
+      "sha256": "71ef57c5d15c78bbab51fc5f307765500cfc9123c801e4015668ecabb6a37633"
+    },
+    {
+      "bytes": 346,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnostic-inputs.members.json",
+      "sha256": "85fba56eb388f1b9b50c102c4065d5db8dd0c2cb8f12fa790045e88a256d2316"
+    },
+    {
+      "bytes": 33338,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.json",
+      "sha256": "dbf6f19975bf7a758c3eca5479aadf7591a6a68496670bf64e7318c972af1d20"
+    },
+    {
+      "bytes": 3644580,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.members.json",
+      "sha256": "8f30606a8c68e043a7fa8a9c4729dd31a3f4a532a24b0ac1d9a79d6a58ff443c"
+    },
+    {
+      "bytes": 40028111,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.artifacts.tar.gz",
+      "sha256": "c84356a7bdb8a3a731587b9bf2e5264da9acad07c60c71c92b86f4919c3be72c"
+    },
+    {
+      "bytes": 1344,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.claim.json",
+      "sha256": "a4cbfc787aa655f793456b9b2eaf49d3e9e52bfd588c519a612d3c38e61e89f4"
+    },
+    {
+      "bytes": 5443,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnostic-inputs.artifacts.tar.gz",
+      "sha256": "a01073c1baac182b6940411592b21e3ae15193f992d851f38bddabf4619aed1b"
+    },
+    {
+      "bytes": 3278,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnostic-inputs.members.json",
+      "sha256": "80bb5d6665019b60bc096f580edf2206e24fda9bd56e40525261c1b5d6ed7547"
+    },
+    {
+      "bytes": 35787,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.json",
+      "sha256": "8dbe4ce417bae0a0255475b34822c8f2f465dedee3211ff8f33578a91bd4cb70"
+    },
+    {
+      "bytes": 3647561,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.members.json",
+      "sha256": "73460a9a0fa5fe5f61ca05907da0f583c7d840ab5a3b5e4fdd0d2e8b38794d57"
+    },
+    {
+      "bytes": 84552732,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.artifacts.tar.gz",
+      "sha256": "ebaea6b8a2e7a7430a17ce91499f4a4190007d8b2c769a707818b89a52296584"
+    },
+    {
+      "bytes": 1304,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.claim.json",
+      "sha256": "815f64c4aafe27cc75470b63d5b83d04bd60cd70f7d6298ef43bc3d456cdc1ec"
+    },
+    {
+      "bytes": 38107,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.json",
+      "sha256": "ea614c444332df6942a6cca25df714db1f81597614f6b7bc31142645b29b9d0b"
+    },
+    {
+      "bytes": 3820610,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.members.json",
+      "sha256": "af7d615023ac3f6a2706c1eab7927850d64800bbc628b1858652e79744051fef"
+    },
+    {
+      "bytes": 144962765,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.artifacts.tar.gz",
+      "sha256": "90443dbf6902c05d96542eeaa013f613c8b38d38c895c346910e2cd1cc879dce"
+    },
+    {
+      "bytes": 1596,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.claim.json",
+      "sha256": "7e826805b2d345561936f477e69f758e51673176fd00093f7af7c33f3f57e827"
+    },
+    {
+      "bytes": 41559,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.json",
+      "sha256": "c19f4a4df533d6aec2114686e3950955c32d3a786d43d577050943565da648d5"
+    },
+    {
+      "bytes": 3944305,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.members.json",
+      "sha256": "9c0ef06e640b51fbd33ebb21bbd1491b3fb441bc0b70e03dc1ed905aa0e61277"
+    },
+    {
+      "bytes": 39147808,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.artifacts.tar.gz",
+      "sha256": "a29bc8d506cfe7094996a7951df0e4f43c1f6134983ced1a7bb17fba7211f638"
+    },
+    {
+      "bytes": 331,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.claim.json",
+      "sha256": "6c6006cc9a20e4776fc60e3fceee559df9728716c928410ca201aedf54685311"
+    },
+    {
+      "bytes": 14889,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.final-preservation.json",
+      "sha256": "013e9e8d4bc92188b7f8c05f812bba3eada8ad1a5e444a1f7d55b9132093282f"
+    },
+    {
+      "bytes": 2145,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.final-verification.json",
+      "sha256": "0ad716a4ee82d7ae66324442cb3d35e4fca2bc3cd03d036252e1ded646b69409"
+    },
+    {
+      "bytes": 30754,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.json",
+      "sha256": "8aaa6675c1b209b296f3f9fc1b62e2002ba607f4b429d6c71ee0e983f2a077bb"
+    },
+    {
+      "bytes": 3642037,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.members.json",
+      "sha256": "c0024c940d48b7bbff9804e3a2ea26d3e5c81acadf413d2293af040378684d53"
+    },
+    {
+      "bytes": 831811,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.supporting.artifacts.tar.gz",
+      "sha256": "06793d8cf6cebf3a8a3b66fef0ed8231d2d77ad4a41d2b6c5530eb15e6985ba5"
+    },
+    {
+      "bytes": 2827,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.supporting.members.json",
+      "sha256": "19235b065ff08cc2ee36229e7a74cf2e407e3e95c72bd18f7ed1c61c6b8c2de5"
+    }
+  ],
+  "probeSourceUnchanged": true,
+  "testResult": {
+    "exitCode": 0,
+    "tests": 49
+  }
+}

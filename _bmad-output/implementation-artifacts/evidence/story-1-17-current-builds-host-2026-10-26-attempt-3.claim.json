@@ -1,0 +1,19 @@
+{
+  "atUtc": "2026-10-26T17:54:21.697242+00:00",
+  "specSha256": "26314a6131078eb11966e48d1177774e672c4af58a778c3d4fc07fcf9e1ba482",
+  "planSha256": "e43e704676b75265063131a772b3e054d8a53f1cb74acbaee0ea29cc0e088b79",
+  "authority": "Jerome approved the conditional sequence in the frozen spec; no historical approval is reused.",
+  "continuation": {
+    "feedFormatAuthority": [
+      "https://learn.microsoft.com/en-us/nuget/hosting-packages/local-feeds",
+      "https://github.com/NuGet/Home/wiki/Nupkg-Metadata-File"
+    ],
+    "priorBuilds": 0,
+    "priorCompilerCommands": 0,
+    "priorLoaderCases": 0,
+    "priorReceipt": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.json",
+    "priorSdkCommands": 2,
+    "scopeInterpretation": "Parent implementer: attempt 2's present nupkg plus failed SDK resolution identify another private feed-format preparation defect. Preserve its failed evaluation/claim/plan immutably. Correct only preparation to canonical flat ID.version.nupkg names, with discovery regression checks, then continue the still-unrun build/loader sequence under the existing approved scope. No new packages, pins, tools, network or target behavior; no target loader case is retried. All SDK/source/isolation gates remain enforced."
+  },
+  "privatePreparationPassed": true
+}

@@ -1,0 +1,802 @@
+[
+  {
+    "bytes": 27448,
+    "path": "host/Aspire.Hosting.AppHost.dll",
+    "sha256": "dccaa8f1be8532a9545b5f6bcf889743cb323c834ef77df25a284ee0684b225f"
+  },
+  {
+    "bytes": 38752,
+    "path": "host/Aspire.Hosting.Keycloak.dll",
+    "sha256": "282bd117dbd7f4c605e3fef5d6a9189057a57c4d32b8d4cc743c6e20d30cff77"
+  },
+  {
+    "bytes": 70968,
+    "path": "host/Aspire.Hosting.Redis.dll",
+    "sha256": "5aa8b0ce84a62895ac6a1f907ea13b8e0464dae16b7278fb8d49033fafa60597"
+  },
+  {
+    "bytes": 3378528,
+    "path": "host/Aspire.Hosting.dll",
+    "sha256": "86507650b7d1ecb6765f5cf46092327a53635bba1eef5e98c4207844ff31cd3b"
+  },
+  {
+    "bytes": 137544,
+    "path": "host/CommunityToolkit.Aspire.Hosting.Dapr.dll",
+    "sha256": "7763ba9497ce1e91100a694a265daec1c7ec069094f8bcf74cc1a8f15b8b0996"
+  },
+  {
+    "bytes": 22016,
+    "path": "host/Fractions.dll",
+    "sha256": "e8407a878af8aec1f485f50a9f356c439371610fff20756d4f2284ac6c995cbf"
+  },
+  {
+    "bytes": 501760,
+    "path": "host/Google.Protobuf.dll",
+    "sha256": "8997a69619b59db587a45e75a03c164a44afb613f82db138d35e1636e4cbdc73"
+  },
+  {
+    "bytes": 21504,
+    "path": "host/Grpc.AspNetCore.Server.ClientFactory.dll",
+    "sha256": "c57f69775e2b8acda401efb5f152eba6cfd23d0fc9277b7d2e0ed1f1533158e3"
+  },
+  {
+    "bytes": 157184,
+    "path": "host/Grpc.AspNetCore.Server.dll",
+    "sha256": "a66e142b1a3cbaf8ed3f0835faac72e0484d4eb8b1295e0d3d1de69d72e575b2"
+  },
+  {
+    "bytes": 59904,
+    "path": "host/Grpc.Core.Api.dll",
+    "sha256": "440b6b0a5beca40718a01b3e892baa6e2fd03933f3f501fc40e2a956b0d937a1"
+  },
+  {
+    "bytes": 348672,
+    "path": "host/Grpc.Net.Client.dll",
+    "sha256": "4070680267f1eba977958284088f8bf63bccb2f9fea873d6b244fd7d4b76afd3"
+  },
+  {
+    "bytes": 44544,
+    "path": "host/Grpc.Net.ClientFactory.dll",
+    "sha256": "b62b17995c8576378e790ce1c5dff994c0cf605a6d7da7510078857f59f09d97"
+  },
+  {
+    "bytes": 11776,
+    "path": "host/Grpc.Net.Common.dll",
+    "sha256": "c6ee8099f5fd7013825d2ff636375391c8992704ad40b9819f6c9078c25c6574"
+  },
+  {
+    "bytes": 22528,
+    "path": "host/HealthChecks.Redis.dll",
+    "sha256": "3ce9e611ecd44219f4bed786d665712759583b87a1bb9228355e9161ce7ffa52"
+  },
+  {
+    "bytes": 29184,
+    "path": "host/HealthChecks.Uris.dll",
+    "sha256": "32f8e0615a70e07c6c37c3e2e0774207c84d2f2695942fba82e7bc3bee1a5708"
+  },
+  {
+    "bytes": 7401984,
+    "path": "host/Hex1b.dll",
+    "sha256": "1113557a5737e1fac2fdda1f6579737c50eac4620e83fefb3c29fa2ecc9b12bc"
+  },
+  {
+    "bytes": 78192,
+    "path": "host/Hexalith.Builds.Module.AppHost",
+    "sha256": "c4855169b18c991ab5b24c8f89a9c8506b5ea8c54909928b03918a7f617f4b90"
+  },
+  {
+    "bytes": 45164,
+    "path": "host/Hexalith.Builds.Module.AppHost.deps.json",
+    "sha256": "747b1b349943851a9e0a7b4f94940a67ff2d73aff156cbecb9b38e5ccff7c810"
+  },
+  {
+    "bytes": 100352,
+    "path": "host/Hexalith.Builds.Module.AppHost.dll",
+    "sha256": "5553a7deefe9fb8464b259d12e3d7b84980c722233ea2d7806391c30c44ff187"
+  },
+  {
+    "bytes": 42324,
+    "path": "host/Hexalith.Builds.Module.AppHost.pdb",
+    "sha256": "3eeb96c8eac954cba8297a3fc63b91cd1c46b671d2d37a91f4e19f956b8ee427"
+  },
+  {
+    "bytes": 369,
+    "path": "host/Hexalith.Builds.Module.AppHost.runtimeconfig.json",
+    "sha256": "dd72603f49fc74ad956017904a955b25d7043d65291c0c7d033a2064e141622a"
+  },
+  {
+    "bytes": 28891,
+    "path": "host/Hexalith.Builds.Module.AppHost.xml",
+    "sha256": "b9f1434721bc97057cadd7c0d165b5b0362ae6e83cfc8916bbb1b210ca4cd419"
+  },
+  {
+    "bytes": 1589248,
+    "path": "host/Hexalith.Builds.Tooling.dll",
+    "sha256": "c97a79248415731cef6cfac4b8e82902e4554ffe8c928d4cce6c2488708af84b"
+  },
+  {
+    "bytes": 353812,
+    "path": "host/Hexalith.Builds.Tooling.pdb",
+    "sha256": "640b7aa7948e5610b1e0808f49abd8175e34cc6fbe9b899d204b6752eaa7b11f"
+  },
+  {
+    "bytes": 629402,
+    "path": "host/Hexalith.Builds.Tooling.xml",
+    "sha256": "58db750959d9aa18def79c51ef5b976675a01d14c7115ec4a1f2660538b54e4f"
+  },
+  {
+    "bytes": 73216,
+    "path": "host/Hexalith.EventStore.Aspire.dll",
+    "sha256": "448004459386060a871661ffb2df223a0e48ac0cda06edd8427520ca02406bbb"
+  },
+  {
+    "bytes": 37120,
+    "path": "host/Hexalith.EventStore.Aspire.pdb",
+    "sha256": "c0e707c34660ee6fbd9c81b872084c417e3297ada3ba1291adad13f38c6fed5a"
+  },
+  {
+    "bytes": 643760,
+    "path": "host/Humanizer.dll",
+    "sha256": "2769ed8265b691a5482c72506ed274dc52446fa1641997a8c12c66f5b9263d39"
+  },
+  {
+    "bytes": 54272,
+    "path": "host/Json.More.dll",
+    "sha256": "80b6cd50331fa2ded4fbacdbf80dcedd2b142dee679df227c30299d2a3c3840f"
+  },
+  {
+    "bytes": 25600,
+    "path": "host/JsonPointer.Net.dll",
+    "sha256": "4d7ce7739bc0bf8df69778f4545c390a6c06fd11c8f583ae166f0fdc6e9c3123"
+  },
+  {
+    "bytes": 294400,
+    "path": "host/JsonSchema.Net.dll",
+    "sha256": "5eca1875cdf54faf841fb14353b7f3cbbb345e26de6458ff01888a1c0e578fa2"
+  },
+  {
+    "bytes": 10680320,
+    "path": "host/KubernetesClient.dll",
+    "sha256": "1fdb3ddc3db829a3f4015afc328a00d3747fb228c7866df6f765be4cedb800ce"
+  },
+  {
+    "bytes": 34304,
+    "path": "host/MessagePack.Annotations.dll",
+    "sha256": "7ecf18db7e98845d9f1c4108fee6dc01993b0781443444dd62058630381bfdf5"
+  },
+  {
+    "bytes": 397824,
+    "path": "host/MessagePack.dll",
+    "sha256": "ad9c0fad8b6cca8510a9cbd13f190e2bf1b30f1f643b9e2af65339c8122e9127"
+  },
+  {
+    "bytes": 672056,
+    "path": "host/Microsoft.Extensions.AI.Abstractions.dll",
+    "sha256": "dd444efc3b9e2db2e4e7616909731b8dde824b554455014002167918b823eac4"
+  },
+  {
+    "bytes": 33552,
+    "path": "host/Microsoft.NET.StringTools.dll",
+    "sha256": "887dec541cd0a719b7111458eb90a83b4491d6dd24eff2b16cf03d2782fd26a0"
+  },
+  {
+    "bytes": 441888,
+    "path": "host/Microsoft.VisualStudio.Threading.dll",
+    "sha256": "138e3548e487152de355b81303ae98e1bb52a31fe5c9107fa81a15f66404f426"
+  },
+  {
+    "bytes": 37392,
+    "path": "host/Microsoft.VisualStudio.Validation.dll",
+    "sha256": "59cd5e953cce597847e515a73a1c0975cd5a6b94921a7b91e81045fa9922f57c"
+  },
+  {
+    "bytes": 26224,
+    "path": "host/Microsoft.Win32.SystemEvents.dll",
+    "sha256": "ca495bf6c86b7f092d624928101985a941532d149dcd8acfea170f8a53be8850"
+  },
+  {
+    "bytes": 1216000,
+    "path": "host/ModelContextProtocol.Core.dll",
+    "sha256": "cd434634473f1d6b945a5583d48782207a1e79b8202cf6adb174e41ed2ca4643"
+  },
+  {
+    "bytes": 88064,
+    "path": "host/ModelContextProtocol.dll",
+    "sha256": "1f0760611e72588fbffe2c7bacfce55b9942d7ed5cb5cd4a3ded5d5f7600e930"
+  },
+  {
+    "bytes": 641024,
+    "path": "host/Nerdbank.MessagePack.dll",
+    "sha256": "fc086ce3623a9a3f9213159d438c642d225046e371489e8e7f126d4c62f188fa"
+  },
+  {
+    "bytes": 222048,
+    "path": "host/Nerdbank.Streams.dll",
+    "sha256": "e5c90ffcb7a0bd0cedf51ac33e818b9f64045e9839b19701eb73460356631872"
+  },
+  {
+    "bytes": 723368,
+    "path": "host/Newtonsoft.Json.dll",
+    "sha256": "a28c251dfe36d881e9e2462e171441b8b0ec156fe3f452602c9149b1b9efe05b"
+  },
+  {
+    "bytes": 62264,
+    "path": "host/NuGet.Versioning.dll",
+    "sha256": "fc2f75a7a5f3be9b4c3dcfc21644b871bb5a41ada8615c92d778713d2a310670"
+  },
+  {
+    "bytes": 23552,
+    "path": "host/OpenTelemetry.Api.ProviderBuilderExtensions.dll",
+    "sha256": "fcd57330a4a3252773a0c71b9a497ee7834f415210fa405151275f97575ed164"
+  },
+  {
+    "bytes": 79872,
+    "path": "host/OpenTelemetry.Api.dll",
+    "sha256": "9c636063c335902c73f916c133de22fe8af476c68189080176443b0b82d4d399"
+  },
+  {
+    "bytes": 177664,
+    "path": "host/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll",
+    "sha256": "3297002036e73a2ea7385d9521464dee725bbbd6491e20c559498cbe81598a3c"
+  },
+  {
+    "bytes": 10752,
+    "path": "host/OpenTelemetry.Extensions.Hosting.dll",
+    "sha256": "97e52b88bfbad51767829ba834a3a35a63692170109c21a7103f5170c389d6f9"
+  },
+  {
+    "bytes": 264704,
+    "path": "host/OpenTelemetry.dll",
+    "sha256": "a19a8b4d39a00dca043919473c0d5b46a174a4363d611c8dd237b8f2b3f8a5b8"
+  },
+  {
+    "bytes": 223136,
+    "path": "host/Polly.Core.dll",
+    "sha256": "f7f50017ca9f457b854498358ae595c2a8ab69c1fd8b915139d22bed8f7e4f2a"
+  },
+  {
+    "bytes": 323072,
+    "path": "host/PolyType.dll",
+    "sha256": "33d30bc1baf80b85ad9b428a388d9999eaf20999d555a6e684aa758f4f679968"
+  },
+  {
+    "bytes": 195584,
+    "path": "host/QRCoder.dll",
+    "sha256": "2c9a588e08ec91f00fac37a4a43995c8f1966a6cce615e9e8c063eec3d0f145a"
+  },
+  {
+    "bytes": 116736,
+    "path": "host/RESPite.dll",
+    "sha256": "ec60961494a640b0faff3447afe14c90f5bd27e53f5ab0b4284b34cae717f4fa"
+  },
+  {
+    "bytes": 72704,
+    "path": "host/Semver.dll",
+    "sha256": "a99edcb96efce3d6ff019c667e132d81d879f5a92bc9337591e0b7309d7f493f"
+  },
+  {
+    "bytes": 2349056,
+    "path": "host/StackExchange.Redis.dll",
+    "sha256": "e14460fe50cd699b34c75b9a8b10cdb79c2ed68f4088879afa2e073b7afba502"
+  },
+  {
+    "bytes": 647048,
+    "path": "host/StreamJsonRpc.dll",
+    "sha256": "ddc6a4d60e6cc940aae31faafc1fdcdbe520dfa51bec8dfc7f505449291536d5"
+  },
+  {
+    "bytes": 175216,
+    "path": "host/System.Drawing.Common.dll",
+    "sha256": "98d07e6b1e7d3641a8608a360b3dc273fe8a0f78926b6e1e5f679a7a074d491f"
+  },
+  {
+    "bytes": 56104,
+    "path": "host/System.IO.Hashing.dll",
+    "sha256": "cea6795cf9f7b139b2215ff6de794a6f6e44e78640fb30fa4c0d5fa8472df8e5"
+  },
+  {
+    "bytes": 300032,
+    "path": "host/YamlDotNet.dll",
+    "sha256": "d618138109a40e4a7250e49e2abad8c450e3636bee18d7499ab231e37fa9150a"
+  },
+  {
+    "bytes": 26464,
+    "path": "host/cs/Aspire.Hosting.resources.dll",
+    "sha256": "94e11bffea97c46160c42b9cabe4df9725f2527b8fe6b4f495b01e0fb2bd5e86"
+  },
+  {
+    "bytes": 17936,
+    "path": "host/cs/Microsoft.VisualStudio.Threading.resources.dll",
+    "sha256": "53fa0540b7787d2702df6526dd9df68b1a44575c66ff007f3e11b1e2b528330e"
+  },
+  {
+    "bytes": 14880,
+    "path": "host/cs/Microsoft.VisualStudio.Validation.resources.dll",
+    "sha256": "830b54077b4f3febe75ed87aa163eb49fb58362c61be5ca26cf42d4e13c51f3c"
+  },
+  {
+    "bytes": 25944,
+    "path": "host/cs/StreamJsonRpc.resources.dll",
+    "sha256": "5115a8c09c591d1caa16359b5a45eccece63d9c337e703d89c05a69264ba291b"
+  },
+  {
+    "bytes": 26424,
+    "path": "host/de/Aspire.Hosting.resources.dll",
+    "sha256": "987c4abb3929ddcf4c0bddd12c2cae7d5012eded2a6cf258939e117f793d82ab"
+  },
+  {
+    "bytes": 18448,
+    "path": "host/de/Microsoft.VisualStudio.Threading.resources.dll",
+    "sha256": "0a68bd16faed213eb7bf17025b25125c6aaee5b86a545449afe297632a503853"
+  },
+  {
+    "bytes": 14864,
+    "path": "host/de/Microsoft.VisualStudio.Validation.resources.dll",
+    "sha256": "fd7edef2b3f30903f2c287c49d62cb3394f9656fd82ff1c98eb122ad62a04a56"
+  },
+  {
+    "bytes": 27016,
+    "path": "host/de/StreamJsonRpc.resources.dll",
+    "sha256": "01e2c454d751b89aba08d4270ca00d8e07fa8af861650ecd704481ce06b87b24"
+  },
+  {
+    "bytes": 26424,
+    "path": "host/es/Aspire.Hosting.resources.dll",
+    "sha256": "87baeef90190d07629d44ad9bdf55b29401261c6d90df2455ebc8ec84dcfedf2"
+  },
+  {
+    "bytes": 18448,
+    "path": "host/es/Microsoft.VisualStudio.Threading.resources.dll",
+    "sha256": "7fc33931e5c544e89ce8d767781a729a7be21c60e559294ef693fa249034b066"
+  },
+  {
+    "bytes": 14864,
+    "path": "host/es/Microsoft.VisualStudio.Validation.resources.dll",
+    "sha256": "c40129bf64177dbfbd79bf977e11d46f2888c20c3e807336a36dac82370f6d83"
+  },
+  {
+    "bytes": 26464,
+    "path": "host/es/StreamJsonRpc.resources.dll",
+    "sha256": "bacf7fadae7361e00f097dcafbe9a4a759f4346f364676389304a688fdb3b636"
+  },
+  {
+    "bytes": 26976,
+    "path": "host/fr/Aspire.Hosting.resources.dll",
+    "sha256": "fb16b030be9fad78e87389ed2be55b557c136c4457a9a9d4cdcf7a0359c49d6c"
+  },
+  {
+    "bytes": 18448,
+    "path": "host/fr/Microsoft.VisualStudio.Threading.resources.dll",
+    "sha256": "abe294e2c7ecf00f3632b83f61e19538b8b9531e6289b5d84992bc447f29783e"
+  },
+  {
+    "bytes": 14864,
+    "path": "host/fr/Microsoft.VisualStudio.Validation.resources.dll",
+    "sha256": "e56fe93ab669c22850389bdb685bbc45317d962849cc683d412bc9e8ad637740"
+  },
+  {
+    "bytes": 26976,
+    "path": "host/fr/StreamJsonRpc.resources.dll",
+    "sha256": "99ee72e2ea1de18367345b83884d0aa8c4192f98f2f3fb6b50bdbbebd6960afc"
+  },
+  {
+    "bytes": 26424,
+    "path": "host/it/Aspire.Hosting.resources.dll",
+    "sha256": "e483cbad9360b0f108ce8353cd6433101537a894826b017ec62fa8685c936564"
+  },
+  {
+    "bytes": 18448,
+    "path": "host/it/Microsoft.VisualStudio.Threading.resources.dll",
+    "sha256": "c6d1c91560f9914f36ff52d9a2704f44255adfd88a2c57ccd44fce62603667a7"
+  },
+  {
+    "bytes": 14864,
+    "path": "host/it/Microsoft.VisualStudio.Validation.resources.dll",
+    "sha256": "8918618aaf356bf03333f62507ed4b2511c98850388c3856afe970c41672fae0"
+  },
+  {
+    "bytes": 26464,
+    "path": "host/it/StreamJsonRpc.resources.dll",
+    "sha256": "31741ef214310f03ec256b3dd8643e5d4151c9123bd6994bb8f53381ca348244"
+  },
+  {
+    "bytes": 27448,
+    "path": "host/ja/Aspire.Hosting.resources.dll",
+    "sha256": "7fff4b35b08477344de36d63f57d13624c95f61ad5141f022b177b71d3b077c0"
+  },
+  {
+    "bytes": 18456,
+    "path": "host/ja/Microsoft.VisualStudio.Threading.resources.dll",
+    "sha256": "e375ebb7fe0f6807371dd42f09671b4eafcab6a1464851af68b8fd14494067c9"
+  },
+  {
+    "bytes": 14880,
+    "path": "host/ja/Microsoft.VisualStudio.Validation.resources.dll",
+    "sha256": "89963143a49c629f52776c88715544a8a53b12f1f6c7b4cd6c686d0751ea0d5b"
+  },
+  {
+    "bytes": 28512,
+    "path": "host/ja/StreamJsonRpc.resources.dll",
+    "sha256": "36897272170334ea43284e4f7c8f908e170bc1f082e9612528787ca03ae9e7ce"
+  },
+  {
+    "bytes": 26424,
+    "path": "host/ko/Aspire.Hosting.resources.dll",
+    "sha256": "eee628b8cf412b479ca281c7ba5c260cf1138173acbf1fcc615772e40d3c62ec"
+  },
+  {
+    "bytes": 17952,
+    "path": "host/ko/Microsoft.VisualStudio.Threading.resources.dll",
+    "sha256": "6fda6bb4822f56356cd446ef30750319552780ea28434b741cc35bf3d8111010"
+  },
+  {
+    "bytes": 14880,
+    "path": "host/ko/Microsoft.VisualStudio.Validation.resources.dll",
+    "sha256": "a2be5cbddafa74c4d64b6cb46e60a64b151d46056566e3fc39b810e431cf047f"
+  },
+  {
+    "bytes": 26976,
+    "path": "host/ko/StreamJsonRpc.resources.dll",
+    "sha256": "53ce6c7e88dd7228d968fc26ff7cbf35bcdc81ee88275ca2325eaf8feffe47bc"
+  },
+  {
+    "bytes": 26464,
+    "path": "host/pl/Aspire.Hosting.resources.dll",
+    "sha256": "5c4d29cb248a168361b310c52a8ec7cfdbe193d093e7ab5e64eec4327410115f"
+  },
+  {
+    "bytes": 18464,
+    "path": "host/pl/Microsoft.VisualStudio.Threading.resources.dll",
+    "sha256": "c2d599b82424ac6961d568f411a01e366b359ac3c167ab2fce74c5e2c96c1ca6"
+  },
+  {
+    "bytes": 14864,
+    "path": "host/pl/Microsoft.VisualStudio.Validation.resources.dll",
+    "sha256": "f77bd918ee6d7e3dfade1bbbf192fdd0fcd4f2ceb6296d14775f235f1562aea5"
+  },
+  {
+    "bytes": 26464,
+    "path": "host/pl/StreamJsonRpc.resources.dll",
+    "sha256": "2e3d2bc745170f9b323711bf584b56246a6b9e4235e5e1dcac2ce83b7a9a1e1f"
+  },
+  {
+    "bytes": 26464,
+    "path": "host/pt-BR/Aspire.Hosting.resources.dll",
+    "sha256": "836fd612c7d349870d563ce65038189ae64f609dafc70e4bb2426ba249c9860e"
+  },
+  {
+    "bytes": 17952,
+    "path": "host/pt-BR/Microsoft.VisualStudio.Threading.resources.dll",
+    "sha256": "432ba5ed5c1f37436ec28d4f4b37b622cee3c833bdb01b44b6cf9fe255a445e5"
+  },
+  {
+    "bytes": 14864,
+    "path": "host/pt-BR/Microsoft.VisualStudio.Validation.resources.dll",
+    "sha256": "656bcea3398e47aff8e86741bfb097940b589f52ebca2236ec104129d0d3014d"
+  },
+  {
+    "bytes": 26464,
+    "path": "host/pt-BR/StreamJsonRpc.resources.dll",
+    "sha256": "990e5f544dd810cc9af2921cd4809c45a4c216697d9a5c4bd22d42700f57d8fc"
+  },
+  {
+    "bytes": 28512,
+    "path": "host/ru/Aspire.Hosting.resources.dll",
+    "sha256": "ef9ddfaf66e902ab34507eb2c71fb8960d3993aef776592d9a5d683f124ffc3f"
+  },
+  {
+    "bytes": 19480,
+    "path": "host/ru/Microsoft.VisualStudio.Threading.resources.dll",
+    "sha256": "ff177fd4f159895d050fd7a19c4632b8e69792e79ef181f3aa1af9ae6c770f21"
+  },
+  {
+    "bytes": 15392,
+    "path": "host/ru/Microsoft.VisualStudio.Validation.resources.dll",
+    "sha256": "db19d56c8e725fc91182ffc75c3803c5d6ca9f0dc6d99d695cbf4e30acc56fce"
+  },
+  {
+    "bytes": 30088,
+    "path": "host/ru/StreamJsonRpc.resources.dll",
+    "sha256": "5a32d75f02d6de17cfabe4f1f7fe57191a5549fcc11d5975fe77427826b38dea"
+  },
+  {
+    "bytes": 71960,
+    "path": "host/runtimes/linux-arm64/native/libhex1binterop.so",
+    "sha256": "285d3f2994da13cc31bd29e757d34adca86c9777248a9898f57eef44368e84fc"
+  },
+  {
+    "bytes": 21896,
+    "path": "host/runtimes/linux-x64/native/libhex1binterop.so",
+    "sha256": "1f06a0d471c52fc72b7d3e2e526a30d8b10cf758acdf3e8225407c96352ebf06"
+  },
+  {
+    "bytes": 52072,
+    "path": "host/runtimes/osx-arm64/native/libhex1binterop.dylib",
+    "sha256": "334610a7054265032e7d9643192a6d5d9a46e27adb2e6b09f0e841034bff8e0c"
+  },
+  {
+    "bytes": 18752,
+    "path": "host/runtimes/osx-x64/native/libhex1binterop.dylib",
+    "sha256": "ec65750845a042c78802d59c3790135e283bb9a5a20032ac64e28e14120246c0"
+  },
+  {
+    "bytes": 427112,
+    "path": "host/runtimes/unix/lib/net6.0/System.Drawing.Common.dll",
+    "sha256": "89ea595ccb1fd1384480c1e30bd487c92af5d06d3b06f295323eff601acd9019"
+  },
+  {
+    "bytes": 800552,
+    "path": "host/runtimes/win/lib/net10.0/System.Diagnostics.EventLog.Messages.dll",
+    "sha256": "8f3def30d41d85e2bd87b2d2e7542d49d625f0b4d96a6dc9b03e0f49bd59b8ef"
+  },
+  {
+    "bytes": 53352,
+    "path": "host/runtimes/win/lib/net6.0/Microsoft.Win32.SystemEvents.dll",
+    "sha256": "142cce4ed8ac9da22d69c38a6f22738abfb22090dc9313e8b58e6f91978e89af"
+  },
+  {
+    "bytes": 454248,
+    "path": "host/runtimes/win/lib/net6.0/System.Drawing.Common.dll",
+    "sha256": "4d3001697df50cca54f32ed2dbbd1f3f415b48d5d756b1bf9500a43ae9b68da0"
+  },
+  {
+    "bytes": 1120056,
+    "path": "host/runtimes/win-arm64/native/arm64/OpenConsole.exe",
+    "sha256": "ed7622fd0d3bedc9ab9f122f5e58edf0def9e7999224f52dd395ba9f54edbe09"
+  },
+  {
+    "bytes": 106336,
+    "path": "host/runtimes/win-arm64/native/conpty.dll",
+    "sha256": "db3d173640b172bafd42d5b541b638a9aeec1c7d0e40dd636bf02822a32c912c"
+  },
+  {
+    "bytes": 5028352,
+    "path": "host/runtimes/win-arm64/native/hex1bpty.exe",
+    "sha256": "50375f34089d1562f5bbec9caed634203e42aaf0205e0573e4cfe1a2815b0bf2"
+  },
+  {
+    "bytes": 1120056,
+    "path": "host/runtimes/win-x64/native/arm64/OpenConsole.exe",
+    "sha256": "ed7622fd0d3bedc9ab9f122f5e58edf0def9e7999224f52dd395ba9f54edbe09"
+  },
+  {
+    "bytes": 109920,
+    "path": "host/runtimes/win-x64/native/conpty.dll",
+    "sha256": "39fba2713e2495117b1591ae8c32a3b904bea7aa66069cf7815e2844c76d75d8"
+  },
+  {
+    "bytes": 4914688,
+    "path": "host/runtimes/win-x64/native/hex1bpty.exe",
+    "sha256": "64b4fed87df4d22ac3a41d3456403cdc809b5bb1b3080bc43a52e032ea57a16d"
+  },
+  {
+    "bytes": 1066296,
+    "path": "host/runtimes/win-x64/native/x64/OpenConsole.exe",
+    "sha256": "b7fd936c2668b87b9ecf7b3366dc6568afc1c6f981874cba3e955a1c35cf8160"
+  },
+  {
+    "bytes": 26464,
+    "path": "host/tr/Aspire.Hosting.resources.dll",
+    "sha256": "3dcbc531240febe27750f59e172e1c966d1f30c37b77638f5a3de1a2e6650c7c"
+  },
+  {
+    "bytes": 17952,
+    "path": "host/tr/Microsoft.VisualStudio.Threading.resources.dll",
+    "sha256": "cfd3afd4bd9b0d7f6f782370ca460f3333bb2ebf7db4977e6d2af22a47b71dd9"
+  },
+  {
+    "bytes": 14880,
+    "path": "host/tr/Microsoft.VisualStudio.Validation.resources.dll",
+    "sha256": "620295974b05a36b268169cd94b39f99848224f7774b9748db014c2a2d027073"
+  },
+  {
+    "bytes": 25952,
+    "path": "host/tr/StreamJsonRpc.resources.dll",
+    "sha256": "1df15719aa69c7915028419f93bdb27cf8814f1ea6455e6d4f23dc110d81f1f1"
+  },
+  {
+    "bytes": 25400,
+    "path": "host/zh-Hans/Aspire.Hosting.resources.dll",
+    "sha256": "3ece4b71c4db375face5ca117e3577bf0bff4a9be2e55fbd11e4a7457529a1c4"
+  },
+  {
+    "bytes": 16400,
+    "path": "host/zh-Hans/Microsoft.VisualStudio.Threading.resources.dll",
+    "sha256": "ef07ef11562297acd78ee9ec7a21bee4b9fb0f4255794f87ccff0970f9f3ccb4"
+  },
+  {
+    "bytes": 14880,
+    "path": "host/zh-Hans/Microsoft.VisualStudio.Validation.resources.dll",
+    "sha256": "158f33332fa83a4c01f136482305a1d7d7feffa626fb082d65bfef4a0ce493a3"
+  },
+  {
+    "bytes": 24928,
+    "path": "host/zh-Hans/StreamJsonRpc.resources.dll",
+    "sha256": "0c3a6e2b27cd768f6b94b9ffcd86097811f2be89583bef4f1bb24fd81a18fd47"
+  },
+  {
+    "bytes": 25400,
+    "path": "host/zh-Hant/Aspire.Hosting.resources.dll",
+    "sha256": "f4ca3d605c370560e9cad3d57b88e1469775c2eeb1ad806163945fa93cc9cb0a"
+  },
+  {
+    "bytes": 17424,
+    "path": "host/zh-Hant/Microsoft.VisualStudio.Threading.resources.dll",
+    "sha256": "d0d594d3590ad804b8a9d5f0b23306864c7e8870ce9a445ef6990597d0ad20ab"
+  },
+  {
+    "bytes": 14864,
+    "path": "host/zh-Hant/Microsoft.VisualStudio.Validation.resources.dll",
+    "sha256": "8a3bffea88dc96fca9c307a9a8843a20fe1c7cafc2534b1cb95d688f07b6dbfd"
+  },
+  {
+    "bytes": 24968,
+    "path": "host/zh-Hant/StreamJsonRpc.resources.dll",
+    "sha256": "23e40ffa7c609dbb2b79e8fc38b7097d9d9d9a86f9a03abfd744e5f6bc8330a0"
+  },
+  {
+    "bytes": 15584,
+    "path": "model/Declarations/eventstore.json",
+    "sha256": "c76853a3fd0d03f345929927f94cafcdf71714fdc20192bc2717a5fda8501a09"
+  },
+  {
+    "bytes": 19177,
+    "path": "model/Declarations/local-profile.json",
+    "sha256": "bc1264427956827d59be25a418119ed6aa0425dc150231f3f8c177728900ca80"
+  },
+  {
+    "bytes": 23967,
+    "path": "model/Declarations/memories.json",
+    "sha256": "30f97d509aeb9fa019373579ad24db113aa84a9df52139a88a0cfdbaa6b192d4"
+  },
+  {
+    "bytes": 848,
+    "path": "model/Declarations/provenance.json",
+    "sha256": "8ab18487c4a62b1d4ab41067ec85b136ccf069e40489c3b64b0c831565a356b7"
+  },
+  {
+    "bytes": 16041,
+    "path": "model/Declarations/tenants.json",
+    "sha256": "e79a87df18b8ca40eaa89c94a2534b14e97fa00ecdd4c3a91b7bcc7405a245d4"
+  },
+  {
+    "bytes": 1589248,
+    "path": "model/Hexalith.Builds.Tooling.dll",
+    "sha256": "c97a79248415731cef6cfac4b8e82902e4554ffe8c928d4cce6c2488708af84b"
+  },
+  {
+    "bytes": 353812,
+    "path": "model/Hexalith.Builds.Tooling.pdb",
+    "sha256": "640b7aa7948e5610b1e0808f49abd8175e34cc6fbe9b899d204b6752eaa7b11f"
+  },
+  {
+    "bytes": 629402,
+    "path": "model/Hexalith.Builds.Tooling.xml",
+    "sha256": "58db750959d9aa18def79c51ef5b976675a01d14c7115ec4a1f2660538b54e4f"
+  },
+  {
+    "bytes": 9728,
+    "path": "model/Hexalith.Commons.UniqueIds.dll",
+    "sha256": "0c8995eeb56c451929a7996ed41a077403eade9a0fca0c5e4474ae450d04eb4e"
+  },
+  {
+    "bytes": 14692,
+    "path": "model/Hexalith.Commons.UniqueIds.pdb",
+    "sha256": "2ac43bec4d7e05c34710b1eea6c8b133e9ac6354e500ec0c8e2b451cb9767ff8"
+  },
+  {
+    "bytes": 11802,
+    "path": "model/Hexalith.Commons.UniqueIds.xml",
+    "sha256": "de4a35af5894ccf3e66237fae90db58cf74d4fe5e8cbc07a1a6ae28c274e2ea3"
+  },
+  {
+    "bytes": 73216,
+    "path": "model/Hexalith.EventStore.Aspire.dll",
+    "sha256": "448004459386060a871661ffb2df223a0e48ac0cda06edd8427520ca02406bbb"
+  },
+  {
+    "bytes": 37120,
+    "path": "model/Hexalith.EventStore.Aspire.pdb",
+    "sha256": "c0e707c34660ee6fbd9c81b872084c417e3297ada3ba1291adad13f38c6fed5a"
+  },
+  {
+    "bytes": 1291264,
+    "path": "model/Hexalith.EventStore.Client.dll",
+    "sha256": "bfb65b8f3380e6236917decff53a8a5170a2b40ab60adb80ab9b0f4923a60677"
+  },
+  {
+    "bytes": 316448,
+    "path": "model/Hexalith.EventStore.Client.pdb",
+    "sha256": "234b5f98ecc6e75e13c57cd31ad471928908c04aadea09b52dbe8b3bcb24d105"
+  },
+  {
+    "bytes": 639665,
+    "path": "model/Hexalith.EventStore.Client.xml",
+    "sha256": "16bbd97738b048100f88306ebea59a08090cbea5ef507b9b0f55d912bf4e1eea"
+  },
+  {
+    "bytes": 751104,
+    "path": "model/Hexalith.EventStore.Contracts.dll",
+    "sha256": "1ed3bec73528db967fcec5f12d580df1950b0eb172697564aca2aa32559a862f"
+  },
+  {
+    "bytes": 184224,
+    "path": "model/Hexalith.EventStore.Contracts.pdb",
+    "sha256": "0bb7f29385bdb8ecf06bfea6daf14db317dabfbf866d12ce6398bb1b81206c61"
+  },
+  {
+    "bytes": 968607,
+    "path": "model/Hexalith.EventStore.Contracts.xml",
+    "sha256": "a6189192f7da24f90f8437a1c2e82d51c44a87bf984f008d0d55e1191a0c9eee"
+  },
+  {
+    "bytes": 1286144,
+    "path": "model/Hexalith.EventStore.DomainService.dll",
+    "sha256": "10739ec2decbd815b0fb506be8e2a3a4810c2fc18cc192822115cfce7c28cf1a"
+  },
+  {
+    "bytes": 297004,
+    "path": "model/Hexalith.EventStore.DomainService.pdb",
+    "sha256": "d1d4899496abe91bcb45f14e7b8e645ab8379b59f0257f9257bb77516fd31f5f"
+  },
+  {
+    "bytes": 175616,
+    "path": "model/Hexalith.EventStore.ServiceDefaults.dll",
+    "sha256": "2186cac45fc92be37d832d9a71643e7a96c12fc183fd5c5d9923bed85c4ad0e7"
+  },
+  {
+    "bytes": 60368,
+    "path": "model/Hexalith.EventStore.ServiceDefaults.pdb",
+    "sha256": "39f5dc023b5b09be5e06974f982d32a28a8c72ef1a612e6aeeda743fe626fe10"
+  },
+  {
+    "bytes": 71256,
+    "path": "model/Hexalith.Platform.Composition.deps.json",
+    "sha256": "049f5c02724a3ab2b95c5b8b9f82aafac491311bcd07b1ada4f80d6a9d578a0c"
+  },
+  {
+    "bytes": 358912,
+    "path": "model/Hexalith.Platform.Composition.dll",
+    "sha256": "76252a429c8707f2641472b95a05d998f97566d3eb91e12e558e8a9e0c7a087d"
+  },
+  {
+    "bytes": 94972,
+    "path": "model/Hexalith.Platform.Composition.pdb",
+    "sha256": "ff09b336435667751377d25849e9d22fff44aae2edb3e038068b3d2b86153e34"
+  },
+  {
+    "bytes": 650752,
+    "path": "model/Hexalith.Platform.Custody.dll",
+    "sha256": "d0f268a5195fedcf8dff6547861d10a0c4e713613054492663c8a2386e664b8d"
+  },
+  {
+    "bytes": 170196,
+    "path": "model/Hexalith.Platform.Custody.pdb",
+    "sha256": "ab2740af9fdb138dccf2ab8108d7c6470b7e30e7e107eb990e34bf8ef514fc7d"
+  },
+  {
+    "bytes": 331916,
+    "path": "model/Hexalith.Platform.Custody.xml",
+    "sha256": "cc186a3709a2477be40a54ce67ffeb8d1427b3c5ab84936c86dc717f192180d9"
+  },
+  {
+    "bytes": 36864,
+    "path": "model/Hexalith.Platform.Works.Runtime.dll",
+    "sha256": "3551da8d09991ba9b6c322ff8d69b913c0a7870ea3a5cf99b8b693a3a6521957"
+  },
+  {
+    "bytes": 29936,
+    "path": "model/Hexalith.Platform.Works.Runtime.pdb",
+    "sha256": "3c4f4e9a9e0ae00300fb3e390699accd67b746068f0a7276e09c681ddcf1a24b"
+  },
+  {
+    "bytes": 13823,
+    "path": "model/Hexalith.Platform.Works.Runtime.xml",
+    "sha256": "8954d7999248ac917f360f389a891e7f7bc7b556a3ef316cc6636ee0d76560e0"
+  },
+  {
+    "bytes": 25088,
+    "path": "host/LoaderProbe.dll",
+    "sha256": "2c7382ff3311b439fc68630abafe1947b10565e01b6d19093680d5262aa04055"
+  }
+]

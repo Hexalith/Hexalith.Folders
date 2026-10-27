@@ -1,0 +1,77 @@
+[
+  {
+    "bytes": 10195,
+    "path": "diagnosis.json",
+    "sha256": "b151dd2450977d0d335131014300da2167c1a0989e1effd3b360d625e5c9b4f0"
+  },
+  {
+    "bytes": 2792,
+    "path": "diagnostic-inputs/tmp/MSBuildTemp4GVH36/MSBuild_pid-48_55a3ca8704ca45aab43a43467370d9a1.failure.txt",
+    "sha256": "7f48ff7783c36554f99e33601b046f85304eb4488e0cdd9c44b3c8289f0335de"
+  },
+  {
+    "bytes": 2793,
+    "path": "diagnostic-inputs/tmp/MSBuildTemp4ighAi/MSBuild_pid-110_41773a2bfc8f40239b95f407552f6e96.failure.txt",
+    "sha256": "4ec3cc8a44f1d2bcfde50e0b97885ac89fecd90a2f1e870c5f7f370aa77eabd9"
+  },
+  {
+    "bytes": 2792,
+    "path": "diagnostic-inputs/tmp/MSBuildTemp8XRahd/MSBuild_pid-27_b988925d8478413ca5002784b6cabf2a.failure.txt",
+    "sha256": "9f4f036df0282c373969d570d6e0911d9be20fd5d8d16ff2393c8d835ecce372"
+  },
+  {
+    "bytes": 2792,
+    "path": "diagnostic-inputs/tmp/MSBuildTempBHhwkR/MSBuild_pid-89_a39e150aea8e46b5a2170d41d75498be.failure.txt",
+    "sha256": "a198d94e3d0d4465d3cb67ba513053123602ddf87bdd202d0a5aeed48c7f3a01"
+  },
+  {
+    "bytes": 60,
+    "path": "diagnostic-inputs/tmp/MSBuildTempEanWPI/MSBuild_pid-46_e27dbd9c607c4bc7899e3b1a17c4cb0b.failure.txt",
+    "sha256": "53ef2cdcd74ff50e070bb8dcee946260ec725c5486c617069e6c837f26578d67"
+  },
+  {
+    "bytes": 2792,
+    "path": "diagnostic-inputs/tmp/MSBuildTempIqDAUl/MSBuild_pid-54_e404222345094732a5d6d672c1ad2188.failure.txt",
+    "sha256": "3d725282ad42554684bb838f6fe3de61c72e2d6ab5113141dfd7699d938e506a"
+  },
+  {
+    "bytes": 2792,
+    "path": "diagnostic-inputs/tmp/MSBuildTempJG8uDe/MSBuild_pid-67_fd05943d58cd4243b5737d1d60de6f99.failure.txt",
+    "sha256": "6bbb4cf84d49312c0d2fa11dc7ed12b1555e9a661d7aef2770afa5f77c4ae33f"
+  },
+  {
+    "bytes": 2792,
+    "path": "diagnostic-inputs/tmp/MSBuildTempP7m8S9/MSBuild_pid-51_7c7d240ff81646d3b9791d0a91abc300.failure.txt",
+    "sha256": "495c5e4e4f0ef26ec7d544744bb92fb0878cdabfc99527870a2d12ee1b8dcf3f"
+  },
+  {
+    "bytes": 2792,
+    "path": "diagnostic-inputs/tmp/MSBuildTempSCFGos/MSBuild_pid-28_1bffc3c32c964523b06fd3c84cc44d6f.failure.txt",
+    "sha256": "30ebadb997d7d5df60656b71ac24d5f7480c2cf1c0cfff07f31d49015739ba24"
+  },
+  {
+    "bytes": 2792,
+    "path": "diagnostic-inputs/tmp/MSBuildTempUCOW8p/MSBuild_pid-72_4ff736cdad8041a08c738b75b344eca0.failure.txt",
+    "sha256": "62b418e86e36a98fba176b399c4ff4f77b9995604952c8f4c9d7b8d9a58289f1"
+  },
+  {
+    "bytes": 2792,
+    "path": "diagnostic-inputs/tmp/MSBuildTempcKB2fe/MSBuild_pid-21_562b696c490a400d9cb07fa31795a415.failure.txt",
+    "sha256": "db663ae73a3cd9b87b76b773d8d6de6bd3abb06fb6e765bfab8803419b55d56d"
+  },
+  {
+    "bytes": 2792,
+    "path": "diagnostic-inputs/tmp/MSBuildTempeR3jif/MSBuild_pid-47_8d799dd66a5a4860adbd51b9afc4f973.failure.txt",
+    "sha256": "12044b3467a1fbe31ee94bc34fda1e76d716eafb31ab44662e9a5f6fe5897ea5"
+  },
+  {
+    "bytes": 2792,
+    "path": "diagnostic-inputs/tmp/MSBuildTempiqVnA4/MSBuild_pid-58_a05d1c15b0354bcaabfcdd11a0fb532e.failure.txt",
+    "sha256": "fdfaf3634e2ba7e7b63a1565d255b6e6a0bb8849640907d076ba916a81a0cb55"
+  },
+  {
+    "bytes": 2792,
+    "path": "diagnostic-inputs/tmp/MSBuildTempnSFeOL/MSBuild_pid-61_972c026ca5eb499dba7b992519918bb4.failure.txt",
+    "sha256": "7ca88e06ade23eabc817c5aa44a42b3c32d2b6e523eb52b2c291aeee5ed88150"
+  }
+]

@@ -1,0 +1,48 @@
+{
+  "archive": {
+    "bytes": 2027709,
+    "path": "story-1-17-current-builds-host-2026-10-26-attempt-2.diagnostic-inputs.artifacts.tar.gz",
+    "sha256": "71ef57c5d15c78bbab51fc5f307765500cfc9123c801e4015668ecabb6a37633"
+  },
+  "memberCount": 2,
+  "memberManifest": {
+    "bytes": 346,
+    "path": "story-1-17-current-builds-host-2026-10-26-attempt-2.diagnostic-inputs.members.json",
+    "sha256": "85fba56eb388f1b9b50c102c4065d5db8dd0c2cb8f12fa790045e88a256d2316"
+  },
+  "outcome": {
+    "atUtc": "2026-10-26T17:48:09.212183+00:00",
+    "caseResults": [],
+    "cleanup": "none; archive precedes any separately chosen private cleanup",
+    "completedCommandLabels": [
+      "sdk-evaluate-AppHost",
+      "evaluate-AppHost"
+    ],
+    "controls": {
+      "ContentHash": null,
+      "T0": null,
+      "activationAuthority": null,
+      "apiAccepted": false,
+      "currentTupleAccepted": false,
+      "hostedAccepted": false,
+      "ordinaryMapping": null,
+      "packageAccepted": false,
+      "parentStatus": "in-progress",
+      "routing": "V1Only",
+      "stagingChecksExecuted": 0,
+      "stagingChecksTotal": 14,
+      "tracker": "backlog"
+    },
+    "currentSourceBinding": "unexecuted",
+    "prerequisite": "Owner must disposition the exact stopped gate before any fresh execution; this one-shot claim is consumed.",
+    "privateDirectory": "/tmp/story117-current-builds-host-jh5ynocl",
+    "stop": {
+      "atUtc": "2026-10-26T17:48:06.972263+00:00",
+      "dependentExecutionStopped": true,
+      "detail": "Command failed: evaluate-AppHost; exit 1",
+      "type": "GateFailure"
+    }
+  },
+  "recordId": "story-1-17-current-builds-host-2026-10-26-attempt-2-diagnostic-inputs",
+  "scope": "Additive diagnosis and exact present Aspire SDK package bytes; no re-execution"
+}
