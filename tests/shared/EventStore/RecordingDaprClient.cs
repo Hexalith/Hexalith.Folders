@@ -1,4 +1,5 @@
 // Folders-owned copy of the EventStore recording client so Release CI can compile without checking out update=none submodules.
+// CACHE-NON-TENANT: this double records Dapr calls in tests and is not a tenant data cache.
 #pragma warning disable CS0672, DAPR_DISTRIBUTEDLOCK
 
 using System.Text.Json;

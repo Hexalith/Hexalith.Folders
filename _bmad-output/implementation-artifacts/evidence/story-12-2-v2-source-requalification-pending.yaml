@@ -16,7 +16,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: a44580b0bcc6f61cf6ac6325f91754535f99212def5aefcd148e7336dd1fcf3b
+candidate_set_sha256: 30d8d426b4bc4d39135370dbc1602e4cbc070f178e8e1a9abfc37b8d20721355
 artifact_count: 1452
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -5713,8 +5713,8 @@ artifacts:
     sha256: adbfde06948e3ca89c71a41383d90446628398272706b373d685136cd3e8f237
   - path: "tests/shared/EventStore/RecordingDaprClient.cs"
     kind: file
-    bytes: 22965
-    sha256: f97176b84dbd8bab65bf6b99188e6832dd2271e54f6dfd18b02d0352ceba9a3c
+    bytes: 23058
+    sha256: 2fa40135fbaf3c7f4fb83735303b3690ba6d504df2cb4c62961162153cc9a1bd
   - path: "tests/shared/NativeContent/NativeContentAuthority.cs"
     kind: file
     bytes: 2471
