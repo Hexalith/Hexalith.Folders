@@ -80,7 +80,8 @@ internal sealed class NativeContentGateway(NativeContentFixture fixture) : IEven
                 http.RequestServices = scope.ServiceProvider;
                 http.Request.Headers["X-Hexalith-Task-Id"] = request.Extensions!["taskId"]; http.Request.Headers["X-Correlation-Id"] = request.CorrelationId;
                 var envelopes = events.Select(item => new EventEnvelope(new EventMetadata(item.MessageId, fixture.Folder, "folder", "tenant-a", "folders", item.SequenceNumber,
-                    item.GlobalPosition, item.Timestamp, item.CorrelationId ?? "seed", item.CausationId ?? "seed", "user-a", "native-test", item.EventTypeName, 1, "json") { PayloadVersion = item.PayloadVersion }, item.Payload, null)).ToArray();
+                    item.GlobalPosition, item.Timestamp, item.CorrelationId ?? "seed", item.CausationId ?? "seed", "user-a", "native-test", item.EventTypeName, 1, "json")
+                { PayloadVersion = item.PayloadVersion }, item.Payload, null)).ToArray();
                 // Model the gateway's persisted SDK-key admission: replay uses the original
                 // execution identity, and the real owner processor still validates its fingerprint.
                 string executionId = request.CommandType == FoldersServerModule.MutateFilesCommandType
@@ -99,7 +100,7 @@ internal sealed class NativeContentGateway(NativeContentFixture fixture) : IEven
                 http.Items.Remove("Folders:WorkspaceContentTask"); http.Items.Remove("Folders:WorkspaceContentAction");
                 var processed = await scope.ServiceProvider.GetRequiredService<FoldersDomainServiceRequestHandler>()
                     .ProcessAsync(new DomainServiceRequest(command, new DomainServiceCurrentState(null, envelopes, 0, events.Count))
-                        { HumanAuthorityReceipt = signed }, cancellationToken).ConfigureAwait(true);
+                    { HumanAuthorityReceipt = signed }, cancellationToken).ConfigureAwait(true);
                 if (processed is not IValueHttpResult { Value: DomainServiceWireResult result })
                     throw new InvalidOperationException("Real process authorization rejected native command: " + JsonSerializer.Serialize((processed as IValueHttpResult)?.Value));
                 LastDecision = LastDecision + "\n" + (result.ResultPayload ?? string.Join("; ", result.Events.Select(item => JsonSerializer.Serialize(item))));

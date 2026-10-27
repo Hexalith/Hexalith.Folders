@@ -26,6 +26,8 @@ internal static class FoldersRejectedCommandClassifier
         "Hexalith.Folders.Commands.LockWorkspace",
         "Hexalith.Folders.Commands.ReleaseWorkspaceLock",
         "Hexalith.Folders.Commands.MutateFiles",
+        "Hexalith.Folders.Commands.ChangeNativeTask",
+        "Hexalith.Folders.Commands.AuthorizeWorkspaceContentErasure",
         "Hexalith.Folders.Commands.CommitWorkspace",
     };
 

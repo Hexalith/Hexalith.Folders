@@ -82,8 +82,12 @@ public sealed class WorkspaceFileStreamUploadTests
 
     private static FileUploadDescriptor Descriptor() => new()
     {
-        FolderId = "folder-a", WorkspaceId = "workspace-a", OperationId = "operation-a", MediaType = "application/octet-stream",
-        ExpectedLockFence = 9, ExpectedFileVersion = 0,
+        FolderId = "folder-a",
+        WorkspaceId = "workspace-a",
+        OperationId = "operation-a",
+        MediaType = "application/octet-stream",
+        ExpectedLockFence = 9,
+        ExpectedFileVersion = 0,
         PathMetadata = new() { NormalizedPath = "docs/a.txt", DisplayName = "a.txt", PathPolicyClass = PathMetadataPathPolicyClass.Content_allowed },
     };
 

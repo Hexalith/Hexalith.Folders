@@ -57,8 +57,11 @@ public sealed class VerifiedReceiptEventStoreAuthorizationValidatorTests
     [InlineData("lock_workspace")]
     public async Task NativeMutationPreflightUsesTheCurrentHumanPermission(string action)
     {
-        var context = new DefaultHttpContext { User = new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", "user-a"),
-            new Claim("eventstore:tenant", "tenant-a"), new Claim("eventstore:permission", action)], "Bearer")) };
+        var context = new DefaultHttpContext
+        {
+            User = new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", "user-a"),
+            new Claim("eventstore:tenant", "tenant-a"), new Claim("eventstore:permission", action)], "Bearer"))
+        };
         context.Request.Method = "POST"; context.Request.Path = "/api/v1/folders/folder-a/workspaces/workspace-a/native/task-lease";
         var validator = new VerifiedReceiptEventStoreAuthorizationValidator(new HttpContextAccessor { HttpContext = context });
         var allowed = new LayeredFolderAuthorizationAllowedContext("tenant-a", "user-a", action, "folder-a", null, "task-a", null, []) { PrincipalId = "user-a" };

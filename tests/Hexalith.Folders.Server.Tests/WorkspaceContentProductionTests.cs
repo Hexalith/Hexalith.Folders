@@ -45,10 +45,16 @@ public sealed class WorkspaceContentProductionTests
             LayeredFolderOperationPolicy.Mutation(), EventStoreClaimTransformEvidence.Allowed("tenant-a", "user-a", ["mutate_files"]), "folder-a", "correlation-a", "task-a", null, null), TestContext.Current.CancellationToken).ConfigureAwait(true);
         services.GetRequiredService<Hexalith.Folders.Server.Authorization.ILayeredFolderAuthorizationResultAccessor>().BeginScope(authorization);
         var command = new CommandEnvelope("batch-message", "tenant-a", "folders", "folder-a", FoldersServerModule.MutateFilesCommandType,
-            JsonSerializer.SerializeToUtf8Bytes(new { requestSchemaVersion = "v1", workspaceId = "workspace-a", taskId = "task-a", items = new[] { new {
+            JsonSerializer.SerializeToUtf8Bytes(new
+            {
+                requestSchemaVersion = "v1",
+                workspaceId = "workspace-a",
+                taskId = "task-a",
+                items = new[] { new {
                 operationId = "operation-batch", fileOperationKind = "add", transportOperation = "PutFileInline", pathMetadata = WorkspaceContentProductionFixture.Path("docs/a.txt"),
                 contentHashReference = "hashref_" + receipt.Sha256, byteLength = bytes.Length, mediaType = "text/plain", transportEvidenceKind = "inline_decoded", observedByteLength = bytes.Length,
-                contentReceiptId = receipt.Id, expectedLockFence = 1, expectedFileVersion = 0 } } }), "correlation-a", null, "user-a", new Dictionary<string,string> { ["taskId"] = "task-a" });
+                contentReceiptId = receipt.Id, expectedLockFence = 1, expectedFileVersion = 0 } }
+            }), "correlation-a", null, "user-a", new Dictionary<string, string> { ["taskId"] = "task-a" });
         var current = new DomainServiceCurrentState(JsonSerializer.SerializeToElement(fixture.State), [], 5, 5);
         var processor = services.GetServices<Hexalith.EventStore.Client.Handlers.IDomainProcessor>().OfType<FolderDomainProcessor>().Single();
         var result = await processor.ProcessAsync(command, current).ConfigureAwait(true);

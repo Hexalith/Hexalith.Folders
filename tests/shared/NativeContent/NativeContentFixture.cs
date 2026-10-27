@@ -65,9 +65,15 @@ internal sealed class NativeContentFixture : IAsyncDisposable
         Replace<ITenantContextAccessor>(); Replace<IEventStoreClaimTransformEvidenceAccessor>();
         Replace<IFolderPermissionEvidenceProvider>(); Replace<IDaprPolicyEvidenceProvider>();
         var tenants = new InMemoryFolderTenantAccessProjectionStore();
-        await tenants.SaveAsync(new FolderTenantAccessProjection { TenantId = "tenant-a", Enabled = true,
+        await tenants.SaveAsync(new FolderTenantAccessProjection
+        {
+            TenantId = "tenant-a",
+            Enabled = true,
             Principals = new Dictionary<string, FolderTenantPrincipalEvidence> { ["user-a"] = new("user-a", "Member") },
-            Watermark = 1, LastEventTimestamp = fixture.Clock.Now.AddMinutes(-1), ProjectionWatermark = "tenant_watermark_v1" }).ConfigureAwait(true);
+            Watermark = 1,
+            LastEventTimestamp = fixture.Clock.Now.AddMinutes(-1),
+            ProjectionWatermark = "tenant_watermark_v1"
+        }).ConfigureAwait(true);
         builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>(); builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(tenants);
         fixture.Gateway = new NativeContentGateway(fixture);
         builder.Services.RemoveAll<IEventStoreGatewayClient>(); builder.Services.AddSingleton<IEventStoreGatewayClient>(fixture.Gateway);
@@ -108,15 +114,23 @@ internal sealed class NativeContentFixture : IAsyncDisposable
         long head = (await Gateway.EventsAsync().ConfigureAwait(true)).Count;
         var binding = new WorkspaceContentBinding("tenant-a", Folder, Workspace, task, "legacy_command", operation, file, 1, head, 1,
             receipt.Id, "hashref_" + hash, bytes.Length, "application/octet-stream", policy.Version, policy.Digest, "add", digest)
-            { AcceptedSdkKey = retainKey ? key : null };
-        var metadata = new Dictionary<string, string> { ["path"] = normalizedPath, ["displayName"] = displayName, ["pathPolicyClass"] = "metadata_only",
-            ["pathDigest"] = digest, ["policyVersion"] = policy.Version, ["policyDigest"] = policy.Digest, ["contentReadable"] = "false" };
+        { AcceptedSdkKey = retainKey ? key : null };
+        var metadata = new Dictionary<string, string>
+        {
+            ["path"] = normalizedPath,
+            ["displayName"] = displayName,
+            ["pathPolicyClass"] = "metadata_only",
+            ["pathDigest"] = digest,
+            ["policyVersion"] = policy.Version,
+            ["policyDigest"] = policy.Digest,
+            ["contentReadable"] = "false"
+        };
         await store.PrepareAsync(Principal, new(contentScope, "legacy_command", task, 1, head, [new(file, file, 1, receipt.Id, metadata, receipt)])).ConfigureAwait(true);
         await store.RecoverAsync(Principal, contentScope, "legacy_command").ConfigureAwait(true);
         await Gateway.AppendSeedAsync(new WorkspaceFileMutationAccepted("tenant-a", "tenant-a", Folder, Workspace, FolderWorkspaceLifecycleEvent.FileMutated,
             operation, "add", "PutFileInline", "metadata_only", digest, "hashref_" + hash, bytes.Length, "application/octet-stream", "inline_decoded", bytes.Length,
             "user-a", "legacy_correlation", task, "legacy_command", "legacy_original_fingerprint", Clock.Now)
-            { ContentBinding = binding, OwnerFileId = file, MutationTargetDigest = target }).ConfigureAwait(true);
+        { ContentBinding = binding, OwnerFileId = file, MutationTargetDigest = target }).ConfigureAwait(true);
         if (retainKey && closeTask) await Gateway.AppendSeedAsync(new WorkspaceNativeTaskChanged("tenant-a", "tenant-a", Folder, Workspace, "complete", "legacy_lock", 1, 300,
             Clock.Now, Clock.Now.AddSeconds(300), "legacy_command", "user-a", "legacy_correlation", task, "legacy_completion", "legacy_completion_fp", Clock.Now)).ConfigureAwait(true);
         return file;
@@ -131,7 +145,8 @@ internal sealed class NativeContentFixture : IAsyncDisposable
         byte[] bytes = content ?? [1];
         return await scope.ServiceProvider.GetRequiredService<IAuthoritativeContentStore>().UploadAsync(Principal,
             new ContentUploadRequest(new("tenant-a", "folders", Folder, Workspace), task,
-                Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(bytes)), bytes.Length, "application/octet-stream", "direct_upload") { LeaseFence = fence },
+                Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(bytes)), bytes.Length, "application/octet-stream", "direct_upload")
+            { LeaseFence = fence },
             new MemoryStream(bytes)).ConfigureAwait(true);
     }
     internal async Task<bool> DirectSealAsync(string task, long fence, bool completion, bool readOnly = false)

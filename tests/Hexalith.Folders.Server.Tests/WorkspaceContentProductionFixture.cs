@@ -108,7 +108,8 @@ internal sealed class WorkspaceContentProductionFixture : IAsyncDisposable
         await _seed.RecoverAsync(Principal, ContentScope, operation, TestContext.Current.CancellationToken).ConfigureAwait(true);
         var accepted = new WorkspaceFileMutationAccepted("tenant-a", "tenant-a", "folder-a", "workspace-a", FolderWorkspaceLifecycleEvent.FileMutated, operation, kind,
             remove ? "metadataOnlyRemoval" : "PutFileInline", "content_allowed", digest, binding.ContentHashReference, binding.ByteLength, binding.MediaType, remove ? null : "inline_decoded", binding.ByteLength,
-            "user-a", "correlation-a", _task, operation, "fp-" + operation, Clock.Now) { ContentBinding = binding, OwnerFileId = file, MutationTargetDigest = WorkspacePathPolicyValidator.ComputeMutationTargetDigest("workspace-a", Path(path)) };
+            "user-a", "correlation-a", _task, operation, "fp-" + operation, Clock.Now)
+        { ContentBinding = binding, OwnerFileId = file, MutationTargetDigest = WorkspacePathPolicyValidator.ComputeMutationTargetDigest("workspace-a", Path(path)) };
         Gateway.Events.Add(accepted); _ = State; return accepted;
     }
     internal void Commit() => Gateway.Events.Add(new WorkspaceCommitSucceeded("tenant-a", "tenant-a", "folder-a", "workspace-a", FolderWorkspaceLifecycleEvent.CommitSucceeded,
@@ -123,15 +124,26 @@ internal sealed class WorkspaceContentProductionFixture : IAsyncDisposable
     internal void FailTask() => Gateway.Events.Add(new FolderWorkspaceLifecycleEventRecorded("tenant-a", "tenant-a", "folder-a", "workspace-a", FolderWorkspaceLifecycleEvent.CommitSucceeded,
         null, "terminal", "correlation-a", _task, "terminal", "fp-terminal", Clock.Now));
     private WorkspaceLockAcquired Lock(string task, long fence) => new("tenant-a", "tenant-a", "folder-a", "workspace-a", FolderWorkspaceLifecycleEvent.WorkspaceLocked,
-        "lock-a", "exclusive_write", 3600, task, Clock.Now, Clock.Now, Clock.Now.AddHours(1), "lease_until_expiry", "user-a", "correlation-a", task, "locked-" + fence, "fp-locked-" + fence, Clock.Now) { LockFence = fence };
+        "lock-a", "exclusive_write", 3600, task, Clock.Now, Clock.Now, Clock.Now.AddHours(1), "lease_until_expiry", "user-a", "correlation-a", task, "locked-" + fence, "fp-locked-" + fence, Clock.Now)
+    { LockFence = fence };
     internal HttpRequestMessage NewUploadRequest() => UploadRequest(new("tenant-a", "tenant-a", "folder-a", "workspace-a", FolderWorkspaceLifecycleEvent.FileMutated, "operation_0123456789", "add", "PutFileInline", "content_allowed", "digest", "hashref_" + Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes("original"))), 8, "text/plain", "inline_decoded", 8, "user-a", "correlation-a", "task-a", "key", "fp", Clock.Now), Encoding.UTF8.GetBytes("original"));
     internal static HttpRequestMessage UploadRequest(WorkspaceFileMutationAccepted accepted, byte[] bytes, bool multipart = false)
     {
         string path = "docs/a.txt";
-        object body = new { requestSchemaVersion = "v1", fileOperationKind = "add", transportOperation = multipart ? "PutFileStream" : "PutFileInline", operationId = accepted.OperationId,
-            pathMetadata = Path(path), contentHashReference = accepted.ContentHashReference, byteLength = accepted.ByteLength, expectedFileVersion = 0, expectedLockFence = accepted.ContentBinding?.LockFence ?? 1,
+        object body = new
+        {
+            requestSchemaVersion = "v1",
+            fileOperationKind = "add",
+            transportOperation = multipart ? "PutFileStream" : "PutFileInline",
+            operationId = accepted.OperationId,
+            pathMetadata = Path(path),
+            contentHashReference = accepted.ContentHashReference,
+            byteLength = accepted.ByteLength,
+            expectedFileVersion = 0,
+            expectedLockFence = accepted.ContentBinding?.LockFence ?? 1,
             inlineContent = multipart ? null : new { mediaType = "text/plain", contentBytes = Convert.ToBase64String(bytes) },
-            streamDescriptor = multipart ? new { mediaType = "text/plain", declaredLength = accepted.ByteLength, observedLength = accepted.ByteLength, stagingReference = "staged_0123456789", observedContentHashReference = accepted.ContentHashReference, uploadMode = "request_body_stream" } : null };
+            streamDescriptor = multipart ? new { mediaType = "text/plain", declaredLength = accepted.ByteLength, observedLength = accepted.ByteLength, stagingReference = "staged_0123456789", observedContentHashReference = accepted.ContentHashReference, uploadMode = "request_body_stream" } : null
+        };
         var json = JsonSerializer.SerializeToNode(body, new JsonSerializerOptions(JsonSerializerDefaults.Web) { DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull })!;
         var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/files/add") { Content = multipart ? WorkspaceContentTransportTestServices.Multipart(JsonContent.Create(json), bytes) : JsonContent.Create(json) };
         Headers(request, accepted.TaskId); request.Headers.Add("Idempotency-Key", accepted.IdempotencyKey); return request;

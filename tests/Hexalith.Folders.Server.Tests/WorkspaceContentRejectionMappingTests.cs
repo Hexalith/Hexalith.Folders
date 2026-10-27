@@ -13,8 +13,14 @@ public sealed class WorkspaceContentRejectionMappingTests
     [Fact]
     public void RetainedDecisionMustBindTheUniqueCorrelationTaskAndProtectedExecution()
     {
-        byte[] payload = JsonSerializer.SerializeToUtf8Bytes(new { Code = "AppendConflict", TaskId = "task", CorrelationId = "correlation",
-            CommandType = FoldersServerModule.MutateFilesCommandType, IdempotencyKey = "protected-execution" });
+        byte[] payload = JsonSerializer.SerializeToUtf8Bytes(new
+        {
+            Code = "AppendConflict",
+            TaskId = "task",
+            CorrelationId = "correlation",
+            CommandType = FoldersServerModule.MutateFilesCommandType,
+            IdempotencyKey = "protected-execution"
+        });
         var source = new StreamReadEvent(1, typeof(FolderCommandRejected).FullName!, payload, "json", 1,
             "event-id", "correlation", "protected-execution", DateTimeOffset.UtcNow, "actor");
         WorkspaceContentRejectionReader.ReadCode([source], "correlation", "task").ShouldBe(FolderResultCode.AppendConflict);

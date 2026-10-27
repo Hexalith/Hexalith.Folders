@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using Shouldly;
 using Xunit;
 namespace Hexalith.Folders.Client.Tests;
+
 public sealed class NativeFileUploadTests
 {
     [Theory]
@@ -25,10 +26,20 @@ public sealed class NativeFileUploadTests
     [Fact]
     public void LegacyLookupRetainsTheExactGeneratedCanonicalKey()
     {
-        var path = new PathMetadata { NormalizedPath = "mailbox/message/1-a.pdf", DisplayName = "a.pdf",
-            PathPolicyClass = PathMetadataPathPolicyClass.Metadata_only, UnicodeNormalization = PathMetadataUnicodeNormalization.NFC };
-        var mutation = new FileMutationRequest { OperationId = "mailbox-attachment:" + new string('a', 64), PathMetadata = path,
-            FileOperationKind = FileMutationRequestFileOperationKind.Add, ContentHashReference = "hashref_" + new string('b', 64) };
+        var path = new PathMetadata
+        {
+            NormalizedPath = "mailbox/message/1-a.pdf",
+            DisplayName = "a.pdf",
+            PathPolicyClass = PathMetadataPathPolicyClass.Metadata_only,
+            UnicodeNormalization = PathMetadataUnicodeNormalization.NFC
+        };
+        var mutation = new FileMutationRequest
+        {
+            OperationId = "mailbox-attachment:" + new string('a', 64),
+            PathMetadata = path,
+            FileOperationKind = FileMutationRequestFileOperationKind.Add,
+            ContentHashReference = "hashref_" + new string('b', 64)
+        };
         string generated = FileUpload.ComputeIdempotencyKey(mutation, "workspace:" + new string('c', 64), "task:" + new string('d', 64));
         NativeFileUpload.ComputeLegacyAddIdempotencyKey(mutation.OperationId, path, mutation.ContentHashReference,
             "workspace:" + new string('c', 64), "task:" + new string('d', 64)).ShouldBe(generated);

@@ -68,9 +68,13 @@ internal sealed class WorkspaceContentMutationAdapter(IAuthoritativeContentStore
             throw new ContentConflictException();
         var metadata = new Dictionary<string, string>(StringComparer.Ordinal)
         {
-            ["path"] = path.NormalizedPath, ["displayName"] = path.DisplayName, ["pathPolicyClass"] = path.PathPolicyClass,
+            ["path"] = path.NormalizedPath,
+            ["displayName"] = path.DisplayName,
+            ["pathPolicyClass"] = path.PathPolicyClass,
             ["pathDigest"] = WorkspacePathPolicyValidator.ComputePathMetadataDigest(path),
-            ["policyVersion"] = policy.Version, ["policyDigest"] = policy.Digest, ["contentReadable"] = readable ? "true" : "false",
+            ["policyVersion"] = policy.Version,
+            ["policyDigest"] = policy.Digest,
+            ["contentReadable"] = readable ? "true" : "false",
         };
         var publication = new ContentPublicationRequest(scope, commandId, taskId, fence, expectedHead,
             [new(fileId, fileId, version, receipt?.Id, metadata, receipt)]);

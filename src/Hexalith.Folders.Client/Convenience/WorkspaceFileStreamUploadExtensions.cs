@@ -35,20 +35,38 @@ public static class WorkspaceFileStreamUploadExtensions
         bool inline = bytes.Length <= 262144;
         string kind = descriptor.FileOperationKind switch
         {
-            FileMutationRequestFileOperationKind.Add => "add", FileMutationRequestFileOperationKind.Change => "change",
+            FileMutationRequestFileOperationKind.Add => "add",
+            FileMutationRequestFileOperationKind.Change => "change",
             _ => throw new ArgumentException("Upload requires add or change.", nameof(descriptor)),
         };
         var metadata = new
         {
-            requestSchemaVersion = "v1", operationId = descriptor.OperationId, fileOperationKind = kind,
+            requestSchemaVersion = "v1",
+            operationId = descriptor.OperationId,
+            fileOperationKind = kind,
             transportOperation = inline ? "PutFileInline" : "PutFileStream",
-            pathMetadata = new { normalizedPath = descriptor.PathMetadata.NormalizedPath, displayName = descriptor.PathMetadata.DisplayName,
-                pathPolicyClass = descriptor.PathMetadata.PathPolicyClass.ToString().ToLowerInvariant(), unicodeNormalization = "NFC" },
-            contentHashReference = hash, byteLength = bytes.Length, ownerFileId = descriptor.OwnerFileId,
-            expectedLockFence = descriptor.ExpectedLockFence, expectedFileVersion = descriptor.ExpectedFileVersion,
+            pathMetadata = new
+            {
+                normalizedPath = descriptor.PathMetadata.NormalizedPath,
+                displayName = descriptor.PathMetadata.DisplayName,
+                pathPolicyClass = descriptor.PathMetadata.PathPolicyClass.ToString().ToLowerInvariant(),
+                unicodeNormalization = "NFC"
+            },
+            contentHashReference = hash,
+            byteLength = bytes.Length,
+            ownerFileId = descriptor.OwnerFileId,
+            expectedLockFence = descriptor.ExpectedLockFence,
+            expectedFileVersion = descriptor.ExpectedFileVersion,
             inlineContent = inline ? new { mediaType = descriptor.MediaType, contentBytes = Convert.ToBase64String(bytes) } : null,
-            streamDescriptor = inline ? null : new { mediaType = descriptor.MediaType, declaredLength = bytes.Length,
-                observedLength = bytes.Length, observedContentHashReference = hash, stagingReference = "request_body_stream", uploadMode = "request_body_stream" },
+            streamDescriptor = inline ? null : new
+            {
+                mediaType = descriptor.MediaType,
+                declaredLength = bytes.Length,
+                observedLength = bytes.Length,
+                observedContentHashReference = hash,
+                stagingReference = "request_body_stream",
+                uploadMode = "request_body_stream"
+            },
         };
         using var request = new HttpRequestMessage(kind == "add" ? HttpMethod.Post : HttpMethod.Put,
             $"api/v1/folders/{Uri.EscapeDataString(descriptor.FolderId)}/workspaces/{Uri.EscapeDataString(descriptor.WorkspaceId)}/files/{kind}");

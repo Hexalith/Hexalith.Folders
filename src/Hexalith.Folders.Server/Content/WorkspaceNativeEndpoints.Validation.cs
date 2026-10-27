@@ -38,8 +38,16 @@ internal static partial class WorkspaceNativeEndpoints
         return final;
     }
     private static IResult TerminalResult(WorkspaceNativeLeaseRequest request, TimeProvider clock)
-        => Results.Ok(new { lockId = request.LockId, ownershipProof = request.OwnershipProof, lockFence = request.LockFence,
-            effectiveAt = clock.GetUtcNow(), expiresAt = clock.GetUtcNow(), renewalIntervalSeconds = 30, authorizationIntervalSeconds = 15 });
+        => Results.Ok(new
+        {
+            lockId = request.LockId,
+            ownershipProof = request.OwnershipProof,
+            lockFence = request.LockFence,
+            effectiveAt = clock.GetUtcNow(),
+            expiresAt = clock.GetUtcNow(),
+            renewalIntervalSeconds = 30,
+            authorizationIntervalSeconds = 15
+        });
 
     private static async Task<IResult?> RetainedDecisionAsync(WorkspaceContentState current, ContentScope scope, string task,
         WorkspaceNativeLeaseRequest request, HttpContext http, WorkspaceContentStateReader source, WorkspaceOperationEvidence evidence, CancellationToken token)

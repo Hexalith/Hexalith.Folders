@@ -62,6 +62,10 @@
       "payloadVersion": 1
     },
     {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceNativeTaskChanged",
+      "payloadVersion": 1
+    },
+    {
       "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceFileMutationAccepted",
       "payloadVersion": 1
     },
@@ -165,6 +169,11 @@
     },
     {
       "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceFileMutationAccepted",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceNativeTaskChanged",
       "readAsVersion": 1,
       "status": "closed-legacy-v1"
     },

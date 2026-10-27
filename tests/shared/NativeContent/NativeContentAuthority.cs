@@ -9,6 +9,7 @@ using System.Security.Claims;
 using Hexalith.Folders.Authorization;
 using Microsoft.AspNetCore.Http;
 namespace Hexalith.Folders.NativeContent.Tests;
+
 internal sealed class NativeContentAuthority(IHttpContextAccessor http) : ITenantContextAccessor, IEventStoreClaimTransformEvidenceAccessor,
     IFolderPermissionEvidenceProvider, IEventStoreAuthorizationValidator, IDaprPolicyEvidenceProvider
 {

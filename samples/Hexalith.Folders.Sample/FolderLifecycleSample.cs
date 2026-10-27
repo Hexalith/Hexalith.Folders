@@ -172,13 +172,16 @@ public sealed class FolderLifecycleSample(IClient client, Action<string>? log = 
                 PathPolicyClass = PathMetadataPathPolicyClass.Metadata_only,
                 UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
             },
+            ExpectedFileVersion = 0,
+            ExpectedLockFence = 1,
         };
         byte[] content = Encoding.UTF8.GetBytes("# Sample\nSynthetic authorized request body for the SDK sample.\n");
 
         // The idempotency key is computed from the canonical request (the supported path); the SDK never
         // auto-generates it. UploadFileAsync re-selects the same inline transport deterministically.
         FileMutationRequest fileMutation = FileUpload.BuildInlineFileMutation(
-            content, descriptor.MediaType, descriptor.PathMetadata, descriptor.OperationId);
+            content, descriptor.MediaType, descriptor.PathMetadata, descriptor.OperationId,
+            expectedFileVersion: 0, expectedLockFence: 1);
         string fileIdempotencyKey = FileUpload.ComputeIdempotencyKey(fileMutation, inputs.WorkspaceId, taskId);
 
         AcceptedCommand fileAck = await _client.UploadFileAsync(

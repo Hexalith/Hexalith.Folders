@@ -102,7 +102,8 @@ internal static class FileTools
             ReadOnlyMemory<byte> content = DecodeContent(contentBase64);
             FileUploadDescriptor descriptor = new()
             {
-                ExpectedFileVersion = expectedFileVersion, ExpectedLockFence = expectedLockFence,
+                ExpectedFileVersion = expectedFileVersion,
+                ExpectedLockFence = expectedLockFence,
                 FolderId = folderId,
                 WorkspaceId = workspaceId,
                 OperationId = operationId,

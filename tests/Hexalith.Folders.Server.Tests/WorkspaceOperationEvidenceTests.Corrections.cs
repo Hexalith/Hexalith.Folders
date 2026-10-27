@@ -15,15 +15,16 @@ using Shouldly;
 using Xunit;
 
 namespace Hexalith.Folders.Server.Tests;
+
 public sealed partial class WorkspaceOperationEvidenceTests
 {
     [Theory]
-    [InlineData("operation-evidence", "{}") ]
+    [InlineData("operation-evidence", "{}")]
     [InlineData("operation-evidence", "")]
     [InlineData("operation-evidence", "null")]
     [InlineData("operation-evidence", "{\"operationId\":null}")]
     [InlineData("operation-evidence", "{\"pathMetadata\":{\"normalizedPath\":null}}")]
-    [InlineData("task-lease", "{}") ]
+    [InlineData("task-lease", "{}")]
     [InlineData("task-lease", "")]
     [InlineData("task-lease", "null")]
     [InlineData("task-lease", "{\"operation\":\"renew\",\"requestedLeaseSeconds\":300}")]
@@ -32,7 +33,7 @@ public sealed partial class WorkspaceOperationEvidenceTests
         var fixture = await NativeContentFixture.CreateAsync().ConfigureAwait(true);
         await using var cleanup = fixture.ConfigureAwait(true);
         using var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/native/" + operation)
-            { Content = new StringContent(body, Encoding.UTF8, "application/json") };
+        { Content = new StringContent(body, Encoding.UTF8, "application/json") };
         request.Headers.Add("X-Correlation-Id", "correlation-a"); request.Headers.Add("X-Hexalith-Task-Id", "task-a");
         using var response = await fixture.Client().SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
         ((int)response.StatusCode).ShouldBeInRange(400, 499);
@@ -90,8 +91,12 @@ public sealed partial class WorkspaceOperationEvidenceTests
         {
             fixture.Gateway.AfterAppend = null;
             var state = await fixture.StateAsync().ConfigureAwait(true);
-            var lease = new NativeLease { LockId = state.WorkspaceLockId!, LockFence = state.WorkspaceLockFence,
-                OwnershipProof = WorkspaceNativeTaskService.OwnershipProof("tenant-a", "folder-a", "workspace-a", "task-a", state.WorkspaceLockId!, state.WorkspaceLockFence) };
+            var lease = new NativeLease
+            {
+                LockId = state.WorkspaceLockId!,
+                LockFence = state.WorkspaceLockFence,
+                OwnershipProof = WorkspaceNativeTaskService.OwnershipProof("tenant-a", "folder-a", "workspace-a", "task-a", state.WorkspaceLockId!, state.WorkspaceLockFence)
+            };
             int reads = fixture.Gateway.StreamReads;
             fixture.Authority.BeforePermission = async permission =>
             {
@@ -186,8 +191,12 @@ public sealed partial class WorkspaceOperationEvidenceTests
         if (streamed)
         {
             var receipt = await fixture.DirectUploadAsync("task-a", lease.LockFence, bytes).ConfigureAwait(true);
-            mutation = FileUpload.BuildStreamedFileMutation(new FileStreamStagingEvidence { StagingReference = receipt.Id,
-                ObservedContentHashReference = hash, ObservedLength = bytes.Length }, "application/octet-stream", Path(), "operation-correction",
+            mutation = FileUpload.BuildStreamedFileMutation(new FileStreamStagingEvidence
+            {
+                StagingReference = receipt.Id,
+                ObservedContentHashReference = hash,
+                ObservedLength = bytes.Length
+            }, "application/octet-stream", Path(), "operation-correction",
                 expectedFileVersion: 0, expectedLockFence: lease.LockFence);
             body = JObject.FromObject(mutation);
         }
@@ -206,10 +215,21 @@ public sealed partial class WorkspaceOperationEvidenceTests
     }
     private static Task<NativeLease> AcquireAsync(NativeClient client) => client.ChangeNativeTaskLeaseAsync("folder-a", "workspace-a", "correlation-a", "task-a",
         new() { Operation = "acquire", RequestedLeaseSeconds = 300 }, TestContext.Current.CancellationToken);
-    private static NativeLeaseRequest Owned(string operation, NativeLease lease) => new() { Operation = operation, RequestedLeaseSeconds = 300,
-        LockId = lease.LockId, OwnershipProof = lease.OwnershipProof, LockFence = lease.LockFence };
-    private static Hexalith.Folders.Client.Generated.PathMetadata Path() => new() { NormalizedPath = "docs/a.txt", DisplayName = "a.txt",
-        PathPolicyClass = PathMetadataPathPolicyClass.Metadata_only, UnicodeNormalization = PathMetadataUnicodeNormalization.NFC };
+    private static NativeLeaseRequest Owned(string operation, NativeLease lease) => new()
+    {
+        Operation = operation,
+        RequestedLeaseSeconds = 300,
+        LockId = lease.LockId,
+        OwnershipProof = lease.OwnershipProof,
+        LockFence = lease.LockFence
+    };
+    private static Hexalith.Folders.Client.Generated.PathMetadata Path() => new()
+    {
+        NormalizedPath = "docs/a.txt",
+        DisplayName = "a.txt",
+        PathPolicyClass = PathMetadataPathPolicyClass.Metadata_only,
+        UnicodeNormalization = PathMetadataUnicodeNormalization.NFC
+    };
     private static async Task<NativeEvidence> PublishAsync(NativeClient client, NativeLease lease)
     {
         var mutation = FileUpload.BuildInlineFileMutation(new byte[] { 1, 2 }, "application/octet-stream", Path(), "operation-correction",
@@ -217,8 +237,15 @@ public sealed partial class WorkspaceOperationEvidenceTests
         string key = FileUpload.ComputeIdempotencyKey(mutation, "workspace-a", "task-a");
         var wire = JObject.FromObject(mutation); wire["requestSchemaVersion"] = "v1";
         _ = await client.AddNativeFileAsync("folder-a", "workspace-a", "correlation-a", "task-a", key, wire, TestContext.Current.CancellationToken).ConfigureAwait(true);
-        return await client.GetNativeOperationEvidenceAsync("folder-a", "workspace-a", "correlation-a", "task-a", new() { LookupKind = "accepted", OperationId = mutation.OperationId,
-            AcceptedKey = key, PathMetadata = new() { NormalizedPath = "docs/a.txt", DisplayName = "a.txt", PathPolicyClass = "metadata_only", UnicodeNormalization = "NFC" },
-            ContentHashReference = mutation.ContentHashReference, ByteLength = 2, MediaType = "application/octet-stream" }, TestContext.Current.CancellationToken).ConfigureAwait(true);
+        return await client.GetNativeOperationEvidenceAsync("folder-a", "workspace-a", "correlation-a", "task-a", new()
+        {
+            LookupKind = "accepted",
+            OperationId = mutation.OperationId,
+            AcceptedKey = key,
+            PathMetadata = new() { NormalizedPath = "docs/a.txt", DisplayName = "a.txt", PathPolicyClass = "metadata_only", UnicodeNormalization = "NFC" },
+            ContentHashReference = mutation.ContentHashReference,
+            ByteLength = 2,
+            MediaType = "application/octet-stream"
+        }, TestContext.Current.CancellationToken).ConfigureAwait(true);
     }
 }

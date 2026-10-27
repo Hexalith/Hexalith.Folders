@@ -26,7 +26,9 @@ public sealed class ContextReadFreshTenantTests
         IFolderTenantAccessProjectionStore tenants = Substitute.For<IFolderTenantAccessProjectionStore>();
         FolderTenantAccessProjection projection = new()
         {
-            TenantId = "tenant-a", Enabled = state != "stale-disabled", Watermark = 1,
+            TenantId = "tenant-a",
+            Enabled = state != "stale-disabled",
+            Watermark = 1,
             ProjectionWatermark = state == "missing-watermark" ? string.Empty : "tenant:current",
             LastEventTimestamp = state.StartsWith("stale", StringComparison.Ordinal) ? now.AddHours(-1) : now,
             MalformedEvidence = state == "malformed",

@@ -23,7 +23,8 @@ internal sealed class WorkspaceContentStateReader(IFolderRepository repository, 
             return new(state!, source?.CurrentSequence ?? 0, (source?.Events ?? []).Select(item => new StreamReadEvent(
                 item.Metadata.SequenceNumber, item.Metadata.EventTypeName, item.Payload, item.Metadata.SerializationFormat,
                 item.Metadata.MetadataVersion, item.Metadata.MessageId, item.Metadata.CorrelationId, item.Metadata.CausationId,
-                item.Metadata.Timestamp, item.Metadata.UserId) { PayloadVersion = item.Metadata.PayloadVersion }).ToArray(), true);
+                item.Metadata.Timestamp, item.Metadata.UserId)
+            { PayloadVersion = item.Metadata.PayloadVersion }).ToArray(), true);
         }
         var result = await new AuthoritativeEventStreamReader(gateway, clock, TimeSpan.FromSeconds(2))
             .ReadAsync(new AggregateIdentity(scope.TenantId, scope.Domain, scope.AggregateId), token).ConfigureAwait(false);
@@ -31,7 +32,8 @@ internal sealed class WorkspaceContentStateReader(IFolderRepository repository, 
         EventEnvelope[] events = stream.Events.Select(item => new EventEnvelope(new EventMetadata(item.MessageId,
             scope.AggregateId, "folder", scope.TenantId, scope.Domain, item.SequenceNumber, item.GlobalPosition, item.Timestamp,
             item.CorrelationId ?? "source", item.CausationId ?? "source", item.UserId ?? "source", "source", item.EventTypeName,
-            item.MetadataVersion, item.SerializationFormat) { PayloadVersion = item.PayloadVersion }, item.Payload, null)).ToArray();
+            item.MetadataVersion, item.SerializationFormat)
+        { PayloadVersion = item.PayloadVersion }, item.Payload, null)).ToArray();
         var folded = replay.FoldFolder(new DomainServiceCurrentState(null, events, 0, stream.Head), scope.TenantId, scope.AggregateId);
         return new(folded, stream.Head, stream.Events, false);
     }

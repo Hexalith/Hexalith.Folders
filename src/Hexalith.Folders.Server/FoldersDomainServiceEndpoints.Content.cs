@@ -73,10 +73,14 @@ public static partial class FoldersDomainServiceEndpoints
             title: status == 404 ? "Resource not available." : "Workspace content operation unavailable.", statusCode: status,
             extensions: new Dictionary<string, object?>
             {
-                ["category"] = category, ["code"] = code,
+                ["category"] = category,
+                ["code"] = code,
                 ["message"] = status == 404 ? "The requested resource is not available to the caller." : "The workspace content operation could not be completed.",
-                ["correlationId"] = correlationId, ["taskId"] = taskId, ["retryable"] = retryable,
-                ["clientAction"] = action, ["details"] = new Dictionary<string, object?> { ["visibility"] = "metadata_only" },
+                ["correlationId"] = correlationId,
+                ["taskId"] = taskId,
+                ["retryable"] = retryable,
+                ["clientAction"] = action,
+                ["details"] = new Dictionary<string, object?> { ["visibility"] = "metadata_only" },
             });
     }
 }

@@ -48,8 +48,10 @@ public sealed class WorkspaceContentDurabilityAcceptanceTests(WorkspaceContentDu
 
         using (HttpResponseMessage stale = await UploadAsync(descriptor with
         {
-            OperationId = FolderDurabilityAcceptanceFixture.NewId(), FileOperationKind = FileMutationRequestFileOperationKind.Change,
-            OwnerFileId = binding.FileId, ExpectedFileVersion = 0,
+            OperationId = FolderDurabilityAcceptanceFixture.NewId(),
+            FileOperationKind = FileMutationRequestFileOperationKind.Change,
+            OwnerFileId = binding.FileId,
+            ExpectedFileVersion = 0,
         }, bytes, FolderDurabilityAcceptanceFixture.NewId(), task))
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(stale, HttpStatusCode.Conflict, "Stale file version");
 
@@ -155,9 +157,17 @@ public sealed class WorkspaceContentDurabilityAcceptanceTests(WorkspaceContentDu
         await DispositionAsync(folder, workspace, binding.ReceiptId!, "hold");
         string removeOperation = FolderDurabilityAcceptanceFixture.NewId();
         using (HttpResponseMessage removed = await fixture.MutateAsync($"/api/v1/folders/{folder}/workspaces/{workspace}/files/remove",
-            new { requestSchemaVersion = "v1", operationId = removeOperation, fileOperationKind = "remove",
-                transportOperation = "metadataOnlyRemoval", pathMetadata = Metadata("docs/content.txt"),
-                ownerFileId = binding.FileId, expectedFileVersion = 1, expectedLockFence = fence },
+            new
+            {
+                requestSchemaVersion = "v1",
+                operationId = removeOperation,
+                fileOperationKind = "remove",
+                transportOperation = "metadataOnlyRemoval",
+                pathMetadata = Metadata("docs/content.txt"),
+                ownerFileId = binding.FileId,
+                expectedFileVersion = 1,
+                expectedLockFence = fence
+            },
             FolderDurabilityAcceptanceFixture.NewId(), taskId: task))
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(removed, HttpStatusCode.Accepted, "Authoritative removal admission");
         _ = await WaitForMutationAsync(folder, removeOperation);
@@ -190,14 +200,19 @@ public sealed class WorkspaceContentDurabilityAcceptanceTests(WorkspaceContentDu
         const string provider = "content-provider";
         if (initialize)
         {
-        await fixture.OrganizationCommandAsync("InitializeOrganizationAclBaseline", ["manage_organization_acl"]).ConfigureAwait(false);
-        await fixture.OrganizationCommandAsync("GrantOrganizationAclPrincipal", ["create_folder", "read_metadata", "manage_folder_access",
+            await fixture.OrganizationCommandAsync("InitializeOrganizationAclBaseline", ["manage_organization_acl"]).ConfigureAwait(false);
+            await fixture.OrganizationCommandAsync("GrantOrganizationAclPrincipal", ["create_folder", "read_metadata", "manage_folder_access",
             "configure_provider_binding", "provider_readiness_read", "bind_repository", "configure_branch_ref_policy",
             "prepare_workspace", "lock_workspace", "mutate_files", "read_file_content"]).ConfigureAwait(false);
-        using (HttpResponseMessage response = await fixture.MutateAsync("/api/v1/provider-bindings/" + provider,
-            new { requestSchemaVersion = "v1", providerFamilyRef = "forgejo", capabilityProfileRef = "operational",
-                nonSecretCredentialReference = OperationalProviderFixture.CredentialReference }, FolderDurabilityAcceptanceFixture.NewId(), method: HttpMethod.Put).ConfigureAwait(false))
-            await FolderDurabilityAcceptanceFixture.RequireStatusAsync(response, HttpStatusCode.Accepted, "Content provider configuration").ConfigureAwait(false);
+            using (HttpResponseMessage response = await fixture.MutateAsync("/api/v1/provider-bindings/" + provider,
+                new
+                {
+                    requestSchemaVersion = "v1",
+                    providerFamilyRef = "forgejo",
+                    capabilityProfileRef = "operational",
+                    nonSecretCredentialReference = OperationalProviderFixture.CredentialReference
+                }, FolderDurabilityAcceptanceFixture.NewId(), method: HttpMethod.Put).ConfigureAwait(false))
+                await FolderDurabilityAcceptanceFixture.RequireStatusAsync(response, HttpStatusCode.Accepted, "Content provider configuration").ConfigureAwait(false);
         }
         string key = FolderDurabilityAcceptanceFixture.NewId(), folder = fixture.CreatedFolderId(key);
         using (HttpResponseMessage response = await fixture.MutateAsync("/api/v1/folders",
@@ -205,25 +220,49 @@ public sealed class WorkspaceContentDurabilityAcceptanceTests(WorkspaceContentDu
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(response, HttpStatusCode.Accepted, "Content folder creation").ConfigureAwait(false);
         await fixture.WaitForCurrentFolderEvidenceAsync(folder, "content repository binding").ConfigureAwait(false);
         using (HttpResponseMessage response = await fixture.MutateAsync($"/api/v1/folders/{folder}/repository-bindings",
-            new { requestSchemaVersion = "v1", providerBindingRef = provider, externalRepositoryRef = "operational-remote",
-                branchRefPolicy = new { requestSchemaVersion = "v1", repositoryBindingId = "target", policyRef = "operational-main",
-                    defaultRef = "branch_ref_main", allowedRefPatterns = new[] { "branch_ref_main" }, protectedRefPatterns = Array.Empty<string>() } },
+            new
+            {
+                requestSchemaVersion = "v1",
+                providerBindingRef = provider,
+                externalRepositoryRef = "operational-remote",
+                branchRefPolicy = new
+                {
+                    requestSchemaVersion = "v1",
+                    repositoryBindingId = "target",
+                    policyRef = "operational-main",
+                    defaultRef = "branch_ref_main",
+                    allowedRefPatterns = new[] { "branch_ref_main" },
+                    protectedRefPatterns = Array.Empty<string>()
+                }
+            },
             FolderDurabilityAcceptanceFixture.NewId()).ConfigureAwait(false))
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(response, HttpStatusCode.Accepted, "Content repository binding").ConfigureAwait(false);
         RepositoryBound repository = await WaitForEventAsync<RepositoryBound>(folder).ConfigureAwait(false);
         await fixture.WaitForCurrentFolderEvidenceAsync(folder, "content folder grants").ConfigureAwait(false);
         await fixture.GrantFolderActionsAsync(folder, ["read_file_content", "mutate_files", "read_workspace_lock", "read_workspace_status"]).ConfigureAwait(false);
         using (HttpResponseMessage response = await fixture.MutateAsync($"/api/v1/folders/{folder}/branch-ref-policy",
-            new { requestSchemaVersion = "v1", repositoryBindingId = repository.RepositoryBindingId, policyRef = "operational-main",
-                defaultRef = "branch_ref_main", allowedRefPatterns = new[] { "branch_ref_main" }, protectedRefPatterns = Array.Empty<string>() },
+            new
+            {
+                requestSchemaVersion = "v1",
+                repositoryBindingId = repository.RepositoryBindingId,
+                policyRef = "operational-main",
+                defaultRef = "branch_ref_main",
+                allowedRefPatterns = new[] { "branch_ref_main" },
+                protectedRefPatterns = Array.Empty<string>()
+            },
             FolderDurabilityAcceptanceFixture.NewId(), method: HttpMethod.Put).ConfigureAwait(false))
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(response, HttpStatusCode.Accepted, "Content branch policy").ConfigureAwait(false);
         await fixture.WaitForCurrentFolderEvidenceAsync(folder, "content workspace preparation").ConfigureAwait(false);
         const string workspace = "content-workspace";
         string task = FolderDurabilityAcceptanceFixture.NewId();
         using (HttpResponseMessage response = await fixture.MutateAsync($"/api/v1/folders/{folder}/workspaces/{workspace}/preparation",
-            new { requestSchemaVersion = "v1", repositoryBindingId = repository.RepositoryBindingId,
-                branchRefPolicyRef = "operational-main", workspacePolicyRef = "metadata-workspace" }, FolderDurabilityAcceptanceFixture.NewId(), taskId: task).ConfigureAwait(false))
+            new
+            {
+                requestSchemaVersion = "v1",
+                repositoryBindingId = repository.RepositoryBindingId,
+                branchRefPolicyRef = "operational-main",
+                workspacePolicyRef = "metadata-workspace"
+            }, FolderDurabilityAcceptanceFixture.NewId(), taskId: task).ConfigureAwait(false))
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(response, HttpStatusCode.Accepted, "Content workspace preparation").ConfigureAwait(false);
         _ = await WaitForEventAsync<WorkspacePreparationRequested>(folder).ConfigureAwait(false);
         await fixture.WaitForCurrentFolderEvidenceAsync(folder, "content workspace lock").ConfigureAwait(false);
@@ -238,9 +277,13 @@ public sealed class WorkspaceContentDurabilityAcceptanceTests(WorkspaceContentDu
 
     private static FileUploadDescriptor Descriptor(string folder, string workspace, string path, long fence) => new()
     {
-        FolderId = folder, WorkspaceId = workspace, OperationId = FolderDurabilityAcceptanceFixture.NewId(), MediaType = "application/octet-stream",
+        FolderId = folder,
+        WorkspaceId = workspace,
+        OperationId = FolderDurabilityAcceptanceFixture.NewId(),
+        MediaType = "application/octet-stream",
         PathMetadata = new() { NormalizedPath = path, DisplayName = path.Split('/').Last(), PathPolicyClass = PathMetadataPathPolicyClass.Content_allowed },
-        ExpectedLockFence = fence, ExpectedFileVersion = 0,
+        ExpectedLockFence = fence,
+        ExpectedFileVersion = 0,
     };
     private async Task<HttpResponseMessage> UploadAsync(FileUploadDescriptor descriptor, byte[] bytes, string key, string task, string? correlation = null, bool replica = false)
     {
@@ -358,8 +401,13 @@ public sealed class WorkspaceContentDurabilityAcceptanceTests(WorkspaceContentDu
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(stale, HttpStatusCode.Conflict, "Old lock fence after reacquisition").ConfigureAwait(true);
         (await DispositionAsync(folder, workspace, receipt, "apply").ConfigureAwait(true)).ShouldBeFalse();
         using (HttpResponseMessage completed = await fixture.MutateAsync($"/api/v1/folders/{folder}/workspaces/{workspace}/lock/release",
-            new { requestSchemaVersion = "v1", lockId = resumedLease.LockId,
-                lockOwnershipProof = OwnershipProof(fixture.TenantId, folder, workspace, resumedTask, resumedLease.LockId), releaseReasonCode = "caller_completed" },
+            new
+            {
+                requestSchemaVersion = "v1",
+                lockId = resumedLease.LockId,
+                lockOwnershipProof = OwnershipProof(fixture.TenantId, folder, workspace, resumedTask, resumedLease.LockId),
+                releaseReasonCode = "caller_completed"
+            },
             FolderDurabilityAcceptanceFixture.NewId(), taskId: resumedTask).ConfigureAwait(true))
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(completed, HttpStatusCode.Accepted, "Resumed task terminal release").ConfigureAwait(true);
         await fixture.WaitForCurrentFolderEvidenceAsync(folder, "fresh epoch after resumed task").ConfigureAwait(true);
@@ -394,12 +442,18 @@ public sealed class WorkspaceContentDurabilityAcceptanceTests(WorkspaceContentDu
         object Item(int index, bool change = false, long expectedVersion = 0, string? owner = null) => new
         {
             operationId = change ? FolderDurabilityAcceptanceFixture.NewId() : descriptors[index].OperationId,
-            fileOperationKind = change ? "change" : "add", transportOperation = "PutFileInline",
+            fileOperationKind = change ? "change" : "add",
+            transportOperation = "PutFileInline",
             pathMetadata = Metadata(descriptors[index].PathMetadata.NormalizedPath),
             contentHashReference = "hashref_" + Convert.ToHexStringLower(SHA256.HashData(bodies[index])),
-            byteLength = bodies[index].Length, mediaType = "application/octet-stream", transportEvidenceKind = "inline_decoded",
-            observedByteLength = bodies[index].Length, contentReceiptId = receipts[index], expectedFileVersion = expectedVersion,
-            expectedLockFence = fence, ownerFileId = owner,
+            byteLength = bodies[index].Length,
+            mediaType = "application/octet-stream",
+            transportEvidenceKind = "inline_decoded",
+            observedByteLength = bodies[index].Length,
+            contentReceiptId = receipts[index],
+            expectedFileVersion = expectedVersion,
+            expectedLockFence = fence,
+            ownerFileId = owner,
         };
         using (HttpResponseMessage accepted = await fixture.SubmitContentBatchAsync(folder, workspace, task, [Item(0), Item(1)]).ConfigureAwait(true))
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(accepted, HttpStatusCode.Accepted, "Atomic multi-item metadata admission").ConfigureAwait(true);

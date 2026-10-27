@@ -76,10 +76,14 @@ internal sealed class WorkspaceContentAuthority(LayeredFolderAuthorizationServic
         bool mutation = operation != ContentOperation.Read && (action == "mutate_files" || operation == ContentOperation.Disposition);
         string? readTaskId = http.HttpContext?.Items.TryGetValue(TaskItem, out object? currentTask) == true
             ? currentTask as string : PreauthorizedRequestContext.Current?.TaskId;
-        string? taskId = resource switch { ContentUploadRequest upload => upload.TaskId,
-            ContentUploadVerification upload => upload.TaskId, ContentPublicationRequest publication => publication.TaskId,
+        string? taskId = resource switch
+        {
+            ContentUploadRequest upload => upload.TaskId,
+            ContentUploadVerification upload => upload.TaskId,
+            ContentPublicationRequest publication => publication.TaskId,
             ContentTaskSealRequest sealing => sealing.TaskId,
-            _ => operation is ContentOperation.Read or ContentOperation.Recover ? readTaskId : null };
+            _ => operation is ContentOperation.Read or ContentOperation.Recover ? readTaskId : null
+        };
         var context = new LayeredFolderAuthorizationContext(scope.TenantId, tenant.PrincipalId, tenant.PrincipalId,
             action, mutation ? LayeredFolderOperationPolicy.Mutation() : LayeredFolderOperationPolicy.StrictRead(),
             claims.GetEvidence(action), scope.AggregateId, null, taskId, null, null);
@@ -174,19 +178,19 @@ internal sealed class WorkspaceContentAuthority(LayeredFolderAuthorizationServic
             if (bindings.Length != request.Changes.Count) throw new ContentUnavailableException();
             foreach (var binding in bindings)
             {
-            var change = request.Changes.SingleOrDefault(value => value.FileId == binding.FileId) ?? throw new ContentUnavailableException();
-            if (binding.ManagedTenantId != request.Scope.TenantId || binding.FolderId != request.Scope.AggregateId
-                || binding.WorkspaceId != request.Scope.WorkspaceId || binding.TaskId != request.TaskId
-                || binding.LockFence != request.LockFence || binding.ExpectedVersion != request.ExpectedVersion
-                || binding.FileId != change.FileId || change.IncarnationId != binding.FileId || binding.Version != change.Version
-                || binding.ReceiptId != change.ReceiptId || binding.PathMetadataDigest != change.ResourceMetadata?.GetValueOrDefault("pathDigest")
-                || binding.PolicyDigest != change.ResourceMetadata?.GetValueOrDefault("policyDigest")
-                || binding.PolicyVersion != change.ResourceMetadata?.GetValueOrDefault("policyVersion")
-                || (binding.ContentReadable ? "true" : "false") != change.ResourceMetadata?.GetValueOrDefault("contentReadable")
-                || (binding.ReceiptId is not null && (change.ExpectedReceipt is not { } receipt
-                    || receipt.TaskId != binding.TaskId || "hashref_" + receipt.Sha256 != binding.ContentHashReference
-                    || receipt.ByteLength != binding.ByteLength || receipt.MediaType != binding.MediaType)))
-                throw new ContentUnavailableException();
+                var change = request.Changes.SingleOrDefault(value => value.FileId == binding.FileId) ?? throw new ContentUnavailableException();
+                if (binding.ManagedTenantId != request.Scope.TenantId || binding.FolderId != request.Scope.AggregateId
+                    || binding.WorkspaceId != request.Scope.WorkspaceId || binding.TaskId != request.TaskId
+                    || binding.LockFence != request.LockFence || binding.ExpectedVersion != request.ExpectedVersion
+                    || binding.FileId != change.FileId || change.IncarnationId != binding.FileId || binding.Version != change.Version
+                    || binding.ReceiptId != change.ReceiptId || binding.PathMetadataDigest != change.ResourceMetadata?.GetValueOrDefault("pathDigest")
+                    || binding.PolicyDigest != change.ResourceMetadata?.GetValueOrDefault("policyDigest")
+                    || binding.PolicyVersion != change.ResourceMetadata?.GetValueOrDefault("policyVersion")
+                    || (binding.ContentReadable ? "true" : "false") != change.ResourceMetadata?.GetValueOrDefault("contentReadable")
+                    || (binding.ReceiptId is not null && (change.ExpectedReceipt is not { } receipt
+                        || receipt.TaskId != binding.TaskId || "hashref_" + receipt.Sha256 != binding.ContentHashReference
+                        || receipt.ByteLength != binding.ByteLength || receipt.MediaType != binding.MediaType)))
+                    throw new ContentUnavailableException();
             }
             return ContentPublicationOutcome.Accepted;
         }

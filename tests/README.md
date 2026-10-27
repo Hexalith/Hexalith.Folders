@@ -10,7 +10,7 @@ Hexalith.Folders uses a .NET-first test framework: xUnit v3 for execution, Shoul
    automatic checkout skips through `update = none`:
 
    ```powershell
-   git submodule update --init --checkout references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.McpCli references/Hexalith.Memories references/Hexalith.Platform references/Hexalith.PolymorphicSerializations references/Hexalith.Projects references/Hexalith.Tenants
+   git submodule update --init --checkout references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.McpCli references/Hexalith.Memories references/Hexalith.Platform references/Hexalith.Parties references/Hexalith.PolymorphicSerializations references/Hexalith.Projects references/Hexalith.Tenants
    ```
 
 3. Restore from the repository root:

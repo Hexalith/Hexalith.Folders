@@ -60,9 +60,16 @@ public sealed class WorkspaceContentBindingTests
 
     private static FolderState Locked() => FolderState.Empty with
     {
-        IsCreated = true, ManagedTenantId = "tenant-a", OrganizationId = "tenant-a", FolderId = "folder-a",
-        LifecycleState = FolderLifecycleState.Active, WorkspaceId = "workspace-a", WorkspaceTaskId = "task-a",
-        WorkspaceLifecycleState = FolderWorkspaceLifecycleState.Locked, WorkspaceLockFence = 1, WorkspaceLockHolderTaskId = "task-a",
+        IsCreated = true,
+        ManagedTenantId = "tenant-a",
+        OrganizationId = "tenant-a",
+        FolderId = "folder-a",
+        LifecycleState = FolderLifecycleState.Active,
+        WorkspaceId = "workspace-a",
+        WorkspaceTaskId = "task-a",
+        WorkspaceLifecycleState = FolderWorkspaceLifecycleState.Locked,
+        WorkspaceLockFence = 1,
+        WorkspaceLockHolderTaskId = "task-a",
     };
     private static string Key(string file) => WorkspaceContentBinding.BatchItemKey("command-a", "operation-" + file);
     private static WorkspaceFileMutationAccepted Accepted(string file, string key, char marker)
@@ -72,7 +79,8 @@ public sealed class WorkspaceContentBindingTests
             operation, "add", "PutFileInline", "content_allowed", digest, hash, 12, "text/plain", "inline_decoded", 12,
             "user-a", "correlation-a", "task-a", key, "fingerprint-" + key, DateTimeOffset.UnixEpoch)
         {
-            OwnerFileId = file, MutationTargetDigest = digest,
+            OwnerFileId = file,
+            MutationTargetDigest = digest,
             ContentBinding = new("tenant-a", "folder-a", "workspace-a", "task-a", "command-a", operation, file, 1, 11, 1,
                 "content_" + digest, hash, 12, "text/plain", "1.1.0", new string('c', 64), "add", digest, true),
         };

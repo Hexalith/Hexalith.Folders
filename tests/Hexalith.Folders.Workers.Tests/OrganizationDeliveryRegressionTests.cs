@@ -146,6 +146,6 @@ public sealed class OrganizationDeliveryRegressionTests
             evidence.Status.ShouldBe(mapping.ScopeKind == FolderCommandOperationScopeKind.OrganizationBaseline
                 ? FolderPermissionEvidenceStatus.Allowed : FolderPermissionEvidenceStatus.NotFoundSafe, name);
         }
-        mapped.ShouldBe(16);
+        mapped.ShouldBe(18);
     }
 }

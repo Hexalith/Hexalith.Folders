@@ -1,4 +1,5 @@
 namespace Hexalith.Folders.NativeContent.Tests;
+
 internal sealed class NativeContentTimer(NativeContentClock clock, TimerCallback callback, object? state) : ITimer
 {
     internal DateTimeOffset Due { get; private set; } = DateTimeOffset.MaxValue;

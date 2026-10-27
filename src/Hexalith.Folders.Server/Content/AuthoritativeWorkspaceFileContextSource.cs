@@ -70,15 +70,15 @@ internal sealed class AuthoritativeWorkspaceFileContextSource(IAuthoritativeCont
             }
             // Alias checks use accepted spelling at every component. No target is selected for an ambiguous namespace.
             foreach (var path in request.Paths)
-            foreach (var entry in visible)
-            {
-                string[] wanted = path.Path.NormalizedPath.Split('/'), actual = entry.Path.NormalizedPath.Split('/');
-                for (int index = 0; index < Math.Min(wanted.Length, actual.Length); index++)
+                foreach (var entry in visible)
                 {
-                    if (!wanted[index].Equals(actual[index], StringComparison.OrdinalIgnoreCase)) break;
-                    if (wanted[index] != actual[index]) return Failure(WorkspaceFileContextSourceStatus.PathValidationFailed);
+                    string[] wanted = path.Path.NormalizedPath.Split('/'), actual = entry.Path.NormalizedPath.Split('/');
+                    for (int index = 0; index < Math.Min(wanted.Length, actual.Length); index++)
+                    {
+                        if (!wanted[index].Equals(actual[index], StringComparison.OrdinalIgnoreCase)) break;
+                        if (wanted[index] != actual[index]) return Failure(WorkspaceFileContextSourceStatus.PathValidationFailed);
+                    }
                 }
-            }
             if (request.Paths.Count > 0)
             {
                 if (request.Paths.Any(path => !visible.Any(entry => entry.Path.NormalizedPath == path.Path.NormalizedPath)))
@@ -128,7 +128,8 @@ internal sealed class AuthoritativeWorkspaceFileContextSource(IAuthoritativeCont
             }
             var items = visible.OrderBy(entry => entry.Path.NormalizedPath, StringComparer.Ordinal).Take(request.Limit)
                 .Select(entry => new WorkspaceFileContextItem(entry.Path, "file", entry.Binding.Receipt.ByteLength,
-                    "tenant_sensitive", "not_redacted") { FileId = entry.Binding.Change.FileId, Version = entry.Binding.Change.Version }).ToList();
+                    "tenant_sensitive", "not_redacted")
+                { FileId = entry.Binding.Change.FileId, Version = entry.Binding.Change.Version }).ToList();
             bool truncated = visible.Count > items.Count;
             string reason = truncated ? "result_count_limit" : "not_truncated";
             long bytes = JsonSerializer.SerializeToUtf8Bytes(items, JsonSerializerOptions.Web).LongLength;

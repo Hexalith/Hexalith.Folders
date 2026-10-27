@@ -138,7 +138,7 @@ public static class FolderStateApply
             WorkspaceContentErasureAuthorized erased => state with
             {
                 ContentErasureGrants = new Dictionary<string, long>(state.ContentErasureGrants, StringComparer.Ordinal)
-                    { [erased.ReceiptId] = erased.SourceGeneration }.ToFrozenDictionary(StringComparer.Ordinal),
+                { [erased.ReceiptId] = erased.SourceGeneration }.ToFrozenDictionary(StringComparer.Ordinal),
                 IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, erased),
             },
             WorkspaceFileMutationAccepted accepted => ApplyWorkspaceFileMutationAccepted(state, accepted),

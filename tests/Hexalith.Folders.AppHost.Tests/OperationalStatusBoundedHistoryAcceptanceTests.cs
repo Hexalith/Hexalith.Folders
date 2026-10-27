@@ -90,8 +90,19 @@ public sealed class OperationalStatusBoundedHistoryAcceptanceTests(FolderDurabil
         Task36QualificationEvidence.CapturedDigest(canonical).ShouldBe(sealedLeaf.Digests[..32]);
         string canonicalBefore = Task36QualificationEvidence.Hash(canonical.CanonicalPayload);
         var oldLease = await coordinator.RefreshLeaseAsync(scope, OperationalStatusGeneration.WriterId, token);
-        output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new { phase = "before-inheritance", operation, sourceHash,
-            owner = folder, sdkKey, rawCheckpoint = retainedBefore, checkpoint = captured, canonicalSha256 = canonicalBefore, capturedIdentitySha256 = Convert.ToHexString(sealedLeaf.Digests[..32]), canonicalOrigin = "reconstructed-DTO-matched-to-persisted-SDK-captured-leaf" }));
+        output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new
+        {
+            phase = "before-inheritance",
+            operation,
+            sourceHash,
+            owner = folder,
+            sdkKey,
+            rawCheckpoint = retainedBefore,
+            checkpoint = captured,
+            canonicalSha256 = canonicalBefore,
+            capturedIdentitySha256 = Convert.ToHexString(sealedLeaf.Digests[..32]),
+            canonicalOrigin = "reconstructed-DTO-matched-to-persisted-SDK-captured-leaf"
+        }));
         using (HttpResponseMessage inherited = await fixture.NamedProjectAsync(otherFolder, other,
             FolderDurabilityAcceptanceFixture.NewId(), retryBudget: phaseBudget, observe: output.WriteLine))
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(inherited, HttpStatusCode.OK, "Independent owner generation");
@@ -112,16 +123,29 @@ public sealed class OperationalStatusBoundedHistoryAcceptanceTests(FolderDurabil
             var delivery = Task36QualificationEvidence.Delivery(fixture.TenantId, folder, original[index]);
             (await coordinator.JournalAsync(scope, lease, delivery, token)).ShouldBe(SharedProjectionJournalResult.AlreadyCaptured);
             var replay = await fixture.NamedDeliveryAsync(folder, original[index]);
-            output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new { phase = "inherited-replay", index,
-                outcome = replay, canonicalSha256 = Task36QualificationEvidence.Hash(delivery.CanonicalPayload) }));
+            output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new
+            {
+                phase = "inherited-replay",
+                index,
+                outcome = replay,
+                canonicalSha256 = Task36QualificationEvidence.Hash(delivery.CanonicalPayload)
+            }));
             replay.Status.ShouldBe(ProjectionDispatchStatus.AlreadyCompleted);
         }
         Task36QualificationEvidence.FoldCount(fixture.FoldObservationPath, folder).ShouldBe(beforeFolds);
         (await fixture.QualificationPersistedValueAsync(sdkKey)).ShouldBe(retainedBefore);
         JsonSerializer.Serialize(await coordinator.GetCheckpointAsync(scope, folder, token)).ShouldBe(JsonSerializer.Serialize(captured));
         Task36QualificationEvidence.Hash(Task36QualificationEvidence.Delivery(fixture.TenantId, folder, original[0]).CanonicalPayload).ShouldBe(canonicalBefore);
-        output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new { phase = "after-inherited-replay", operation,
-            epoch, checkpoint = captured, rawCheckpoint = retainedBefore, canonicalSha256 = canonicalBefore, foldCallbackDelta = Task36QualificationEvidence.FoldCount(fixture.FoldObservationPath, folder) - beforeFolds }));
+        output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new
+        {
+            phase = "after-inherited-replay",
+            operation,
+            epoch,
+            checkpoint = captured,
+            rawCheckpoint = retainedBefore,
+            canonicalSha256 = canonicalBefore,
+            foldCallbackDelta = Task36QualificationEvidence.FoldCount(fixture.FoldObservationPath, folder) - beforeFolds
+        }));
 
         // Damage only task-owned derived proof, then restore its original value before the next control.
         string proofKey = "shared-identity-v1:" + captured.CapturedIdentityReference!.NamespaceHash + ":node:" + captured.CapturedIdentityReference.RootDigest;
@@ -155,8 +179,13 @@ public sealed class OperationalStatusBoundedHistoryAcceptanceTests(FolderDurabil
             OperationalStatusKeys.Checkpoint(fixture.TenantId, otherFolder), token)).Value!.Sequence.ShouldBe(1);
         foreach (int index in new[] { 0, count / 2, count })
             (await fixture.NamedDeliveryAsync(folder, grown[index])).Status.ShouldBe(ProjectionDispatchStatus.AlreadyCompleted);
-        output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new { phase = "grown-rebuild", status = await coordinator.GetStatusAsync(scope, token),
-            checkpoint = await coordinator.GetCheckpointAsync(scope, folder, token), rawCheckpoint = await fixture.QualificationPersistedValueAsync(sdkKey) }));
+        output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new
+        {
+            phase = "grown-rebuild",
+            status = await coordinator.GetStatusAsync(scope, token),
+            checkpoint = await coordinator.GetCheckpointAsync(scope, folder, token),
+            rawCheckpoint = await fixture.QualificationPersistedValueAsync(sdkKey)
+        }));
         // Repeat omission after growth so every altered identity below exercises inherited-owner proof.
         using (HttpResponseMessage omittedAgain = await fixture.NamedProjectAsync(otherFolder, other,
             FolderDurabilityAcceptanceFixture.NewId(), retryBudget: phaseBudget, observe: output.WriteLine))
@@ -198,9 +227,16 @@ public sealed class OperationalStatusBoundedHistoryAcceptanceTests(FolderDurabil
         JsonSerializer.Serialize((await coordinator.ReadAsync<FolderLifecycleStatusReadModelSnapshot>(scope,
             OperationalStatusKeys.Lifecycle(fixture.TenantId, folder), token)).Value).ShouldBe(finalLifecycle);
         Task36QualificationEvidence.FoldCount(fixture.FoldObservationPath, folder).ShouldBe(finalFolds);
-        output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new { phase = "final-state", sourceHash, otherHash,
-            checkpoint = await coordinator.GetCheckpointAsync(scope, folder, token), status = await coordinator.GetStatusAsync(scope, token),
-            rawCheckpoint = await fixture.QualificationPersistedValueAsync(sdkKey), selectedCheckpoint = selected }));
+        output.WriteLine("TASK36_EVIDENCE " + JsonSerializer.Serialize(new
+        {
+            phase = "final-state",
+            sourceHash,
+            otherHash,
+            checkpoint = await coordinator.GetCheckpointAsync(scope, folder, token),
+            status = await coordinator.GetStatusAsync(scope, token),
+            rawCheckpoint = await fixture.QualificationPersistedValueAsync(sdkKey),
+            selectedCheckpoint = selected
+        }));
         Hash(original).ShouldBe(sourceHash);
         Hash(other).ShouldBe(otherHash);
         (await coordinator.GetStatusAsync(scope, token)).IsBuilding.ShouldBeFalse();

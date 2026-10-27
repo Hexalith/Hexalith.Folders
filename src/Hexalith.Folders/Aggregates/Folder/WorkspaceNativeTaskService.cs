@@ -18,23 +18,38 @@ public static class WorkspaceNativeTaskService
         ArgumentNullException.ThrowIfNull(change);
         if (state.WorkspaceId != change.WorkspaceId || change.LockFence <= 0 || state.LifecycleState != FolderLifecycleState.Active)
             throw new InvalidOperationException("Invalid native task binding.");
-        state = state with { WorkspaceCorrelationId = change.CorrelationId, WorkspaceActorPrincipalId = change.ActorPrincipalId,
-            WorkspaceTaskId = change.TaskId, WorkspaceOperationId = change.PublicationCommandId ?? change.LockId,
-            WorkspaceLifecycleUpdatedAt = change.OccurredAt };
+        state = state with
+        {
+            WorkspaceCorrelationId = change.CorrelationId,
+            WorkspaceActorPrincipalId = change.ActorPrincipalId,
+            WorkspaceTaskId = change.TaskId,
+            WorkspaceOperationId = change.PublicationCommandId ?? change.LockId,
+            WorkspaceLifecycleUpdatedAt = change.OccurredAt
+        };
         if (change.Operation == "acquire")
         {
             if (state.WorkspaceLifecycleState != FolderWorkspaceLifecycleState.Ready || state.WorkspaceLockHolderTaskId is not null
                 || change.LockFence != checked(state.WorkspaceLockFence + 1) || state.IsTaskClosed(change.WorkspaceId, change.TaskId))
                 throw new InvalidOperationException("Invalid native lease acquisition.");
-            return state with { WorkspaceLifecycleState = FolderWorkspaceLifecycleState.Locked,
+            return state with
+            {
+                WorkspaceLifecycleState = FolderWorkspaceLifecycleState.Locked,
                 WorkspaceOperatorDisposition = FolderOperatorDisposition.DegradedButServing,
-                WorkspaceLockId = change.LockId, WorkspaceLockFence = change.LockFence, WorkspaceLockIntent = "exclusive_write",
+                WorkspaceLockId = change.LockId,
+                WorkspaceLockFence = change.LockFence,
+                WorkspaceLockIntent = "exclusive_write",
                 WorkspaceLifecycleEvent = FolderWorkspaceLifecycleEvent.WorkspaceLocked,
-                WorkspaceLockHolderTaskId = change.TaskId, WorkspaceLockAcquiredAt = change.EffectiveAt,
-                WorkspaceLockEffectiveAt = change.EffectiveAt, WorkspaceLockExpiresAt = change.ExpiresAt,
-                WorkspaceLockRequestedLeaseSeconds = change.LeaseSeconds, WorkspaceLockRetryEligibilityBasis = "lease_until_expiry", WorkspaceTaskId = change.TaskId,
-                WorkspaceNativeLease = true, WorkspaceNativeProviderWork = false,
-                WorkspaceLifecycleUpdatedAt = change.OccurredAt };
+                WorkspaceLockHolderTaskId = change.TaskId,
+                WorkspaceLockAcquiredAt = change.EffectiveAt,
+                WorkspaceLockEffectiveAt = change.EffectiveAt,
+                WorkspaceLockExpiresAt = change.ExpiresAt,
+                WorkspaceLockRequestedLeaseSeconds = change.LeaseSeconds,
+                WorkspaceLockRetryEligibilityBasis = "lease_until_expiry",
+                WorkspaceTaskId = change.TaskId,
+                WorkspaceNativeLease = true,
+                WorkspaceNativeProviderWork = false,
+                WorkspaceLifecycleUpdatedAt = change.OccurredAt
+            };
         }
         if (!state.WorkspaceNativeLease || state.WorkspaceLockId != change.LockId || state.WorkspaceLockFence != change.LockFence
             || state.WorkspaceLockHolderTaskId != change.TaskId) throw new InvalidOperationException("Native lease is not owned.");
@@ -51,11 +66,20 @@ public static class WorkspaceNativeTaskService
         if (change.Operation == "complete") closures[FolderState.TaskBindingKey(change.WorkspaceId, change.TaskId)] = new(change.WorkspaceId,
             change.TaskId, "native_completed", change.PublicationCommandId!, change.CorrelationId, change.OccurredAt);
         else released[FolderState.TaskBindingKey(change.TaskId, change.LockId)] = change.LockFence;
-        return state with { WorkspaceLifecycleState = FolderWorkspaceLifecycleState.Ready,
-            WorkspaceOperatorDisposition = FolderOperatorDisposition.Available, WorkspaceLockId = null,
-            WorkspaceLockHolderTaskId = null, WorkspaceLockAcquiredAt = null, WorkspaceLockEffectiveAt = null,
-            WorkspaceLockExpiresAt = null, WorkspaceLockRetryEligibilityBasis = null, WorkspaceNativeLease = false,
-            NativeReleasedLeaseFences = System.Collections.Frozen.FrozenDictionary.ToFrozenDictionary(released, StringComparer.Ordinal), TaskClosures = System.Collections.Frozen.FrozenDictionary.ToFrozenDictionary(closures, StringComparer.Ordinal),
-            WorkspaceLifecycleUpdatedAt = change.OccurredAt };
+        return state with
+        {
+            WorkspaceLifecycleState = FolderWorkspaceLifecycleState.Ready,
+            WorkspaceOperatorDisposition = FolderOperatorDisposition.Available,
+            WorkspaceLockId = null,
+            WorkspaceLockHolderTaskId = null,
+            WorkspaceLockAcquiredAt = null,
+            WorkspaceLockEffectiveAt = null,
+            WorkspaceLockExpiresAt = null,
+            WorkspaceLockRetryEligibilityBasis = null,
+            WorkspaceNativeLease = false,
+            NativeReleasedLeaseFences = System.Collections.Frozen.FrozenDictionary.ToFrozenDictionary(released, StringComparer.Ordinal),
+            TaskClosures = System.Collections.Frozen.FrozenDictionary.ToFrozenDictionary(closures, StringComparer.Ordinal),
+            WorkspaceLifecycleUpdatedAt = change.OccurredAt
+        };
     }
 }

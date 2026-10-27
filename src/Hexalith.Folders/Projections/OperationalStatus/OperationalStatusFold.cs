@@ -273,7 +273,8 @@ public static class OperationalStatusFold
             state.WorkspaceLockId is null ? "unlocked" : "locked", state.WorkspaceLockId, state.WorkspaceLockHolderTaskId,
             state.WorkspaceLockAcquiredAt, state.WorkspaceLockEffectiveAt, state.WorkspaceLockExpiresAt,
             state.WorkspaceLockRetryEligibilityBasis, state.WorkspaceCorrelationId, state.WorkspaceTaskId, freshness,
-            Evidence(state, WorkspaceLockStatusQueryHandler.ActionToken)) { LockFence = state.WorkspaceLockFence };
+            Evidence(state, WorkspaceLockStatusQueryHandler.ActionToken))
+        { LockFence = state.WorkspaceLockFence };
         WorkspaceCleanupStatusReadModelSnapshot cleanup = new(state.ManagedTenantId!, state.FolderId!, state.WorkspaceId!,
             state.WorkspaceTaskId, "status_only", "cleanup_status_only", new(false, "cleanup_not_applicable"), freshness,
             state.WorkspaceCorrelationId, observed, null, Evidence(state, WorkspaceCleanupStatusQueryHandler.ActionToken));

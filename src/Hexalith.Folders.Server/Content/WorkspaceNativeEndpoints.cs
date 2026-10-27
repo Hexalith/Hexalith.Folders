@@ -168,9 +168,15 @@ internal static partial class WorkspaceNativeEndpoints
     private static IResult LeaseResult(FolderState state, ContentScope scope, string task, IConfiguration configuration)
     {
         var timing = Timing(configuration);
-        return Results.Ok(new { lockId = state.WorkspaceLockId,
+        return Results.Ok(new
+        {
+            lockId = state.WorkspaceLockId,
             ownershipProof = WorkspaceNativeTaskService.OwnershipProof(scope.TenantId, scope.AggregateId, scope.WorkspaceId, task, state.WorkspaceLockId!, state.WorkspaceLockFence),
-            lockFence = state.WorkspaceLockFence, effectiveAt = state.WorkspaceLockEffectiveAt, expiresAt = state.WorkspaceLockExpiresAt,
-            renewalIntervalSeconds = timing.Renewal, authorizationIntervalSeconds = timing.Authorization });
+            lockFence = state.WorkspaceLockFence,
+            effectiveAt = state.WorkspaceLockEffectiveAt,
+            expiresAt = state.WorkspaceLockExpiresAt,
+            renewalIntervalSeconds = timing.Renewal,
+            authorizationIntervalSeconds = timing.Authorization
+        });
     }
 }

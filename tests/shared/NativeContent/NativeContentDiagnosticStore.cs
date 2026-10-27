@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Hexalith.EventStore.DomainService.Content;
 namespace Hexalith.Folders.NativeContent.Tests;
+
 internal sealed class NativeContentDiagnosticStore(IAuthoritativeContentStore inner, NativeContentFixture fixture) : IAuthoritativeContentStore
 {
     private async Task<T> Track<T>(Func<Task<T>> action)

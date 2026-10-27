@@ -110,6 +110,7 @@ public sealed class ScaffoldContractTests
         "references/Hexalith.McpCli",
         "references/Hexalith.Memories",
         "references/Hexalith.Platform",
+        "references/Hexalith.Parties",
         "references/Hexalith.PolymorphicSerializations",
         "references/Hexalith.Projects",
         "references/Hexalith.Tenants",
@@ -194,7 +195,7 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.EventStore", ["Hexalith.EventStore.DomainService", "Hexalith.EventStore.Gateway", "Hexalith.Folders"]);
         AssertReferences(references, "Hexalith.Folders.EventStore.Tests", ["Hexalith.Folders.EventStore", "Hexalith.Folders.Server"]);
         AssertReferences(references, "Hexalith.Folders.Tests", ["Hexalith.EventStore.Testing", "Hexalith.Folders", "Hexalith.Folders.Client", "Hexalith.Folders.Server", "Hexalith.Folders.Testing", "Hexalith.Folders.UI"]);
-        AssertReferences(references, "Hexalith.Folders.Server.Tests", ["Hexalith.EventStore.Testing", "Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.Server.Tests", ["Hexalith.Commons.UniqueIds", "Hexalith.EventStore.Testing", "Hexalith.Folders.Client", "Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Client.Tests", ["Hexalith.Folders.Client", "Hexalith.Folders.Client.Generation.Shared", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Cli.Tests", ["Hexalith.Folders.Cli", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Mcp.Tests", ["Hexalith.Folders.Mcp", "Hexalith.Folders.Testing"]);
@@ -207,7 +208,7 @@ public sealed class ScaffoldContractTests
         // round-trip by publishing real SearchIndexEntryChanged/Removed CloudEvents through the worker's pub/sub
         // component (and to reuse FoldersSemanticIndexingDefaults). Memories.Contracts flows in transitively; this is
         // a test project, so it is not subject to the production Memories-isolation rule (see ForbiddenReferencesAreNotIntroduced).
-        AssertReferences(references, "Hexalith.Folders.AppHost.Tests", ["Hexalith.Folders.AppHost", "Hexalith.Folders.Aspire", "Hexalith.Folders.Workers"]);
+        AssertReferences(references, "Hexalith.Folders.AppHost.Tests", ["Hexalith.Folders.AppHost", "Hexalith.Folders.Aspire", "Hexalith.Folders.Client", "Hexalith.Folders.Workers", "Task36FoldObserver"]);
         AssertReferences(references, "Hexalith.Folders.LoadTests.Tests", ["Hexalith.Folders.LoadTests"]);
         AssertReferences(references, "Hexalith.Folders.PatternExamples", ["Hexalith.Folders.Client", "Hexalith.Folders.Contracts"]);
     }

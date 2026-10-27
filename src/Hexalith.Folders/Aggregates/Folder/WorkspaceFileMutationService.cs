@@ -153,7 +153,8 @@ public sealed class WorkspaceFileMutationService(
                 command.TaskId,
                 command.OperationId,
                 pathPolicy.PathMetadataDigest!,
-                pathPolicy.PathPolicyClass!) { PathMetadata = command.PathMetadata },
+                pathPolicy.PathPolicyClass!)
+            { PathMetadata = command.PathMetadata },
             cancellationToken).ConfigureAwait(false);
 
         if (evidence.Decision != WorkspacePathPolicyEvidenceDecision.NoEscape)
@@ -212,11 +213,16 @@ public sealed class WorkspaceFileMutationService(
                     command.ObservedByteLength!.Value)
                 {
                     PrincipalId = allowed.PrincipalId ?? request.PrincipalId,
-                    FileId = command.OwnerFileId, FileVersion = currentFileVersion + 1,
-                    ExpectedVersion = expectedHead, LockFence = state.WorkspaceLockFence,
-                    ReceiptId = command.ContentReceiptId, PathMetadata = command.PathMetadata,
-                    PolicyVersion = evidence.PolicyVersion, PolicyDigest = evidence.PolicyDigest,
-                    RequestedLockFence = command.ExpectedLockFence, RequestedFileVersion = command.ExpectedFileVersion,
+                    FileId = command.OwnerFileId,
+                    FileVersion = currentFileVersion + 1,
+                    ExpectedVersion = expectedHead,
+                    LockFence = state.WorkspaceLockFence,
+                    ReceiptId = command.ContentReceiptId,
+                    PathMetadata = command.PathMetadata,
+                    PolicyVersion = evidence.PolicyVersion,
+                    PolicyDigest = evidence.PolicyDigest,
+                    RequestedLockFence = command.ExpectedLockFence,
+                    RequestedFileVersion = command.ExpectedFileVersion,
                 },
                 cancellationToken).ConfigureAwait(false);
 
@@ -241,10 +247,15 @@ public sealed class WorkspaceFileMutationService(
                     pathPolicy.PathPolicyClass!)
                 {
                     PrincipalId = allowed.PrincipalId ?? request.PrincipalId,
-                    FileId = command.OwnerFileId, FileVersion = currentFileVersion + 1,
-                    ExpectedVersion = expectedHead, LockFence = state.WorkspaceLockFence,
-                    PathMetadata = command.PathMetadata, PolicyVersion = evidence.PolicyVersion, PolicyDigest = evidence.PolicyDigest,
-                    RequestedLockFence = command.ExpectedLockFence, RequestedFileVersion = command.ExpectedFileVersion,
+                    FileId = command.OwnerFileId,
+                    FileVersion = currentFileVersion + 1,
+                    ExpectedVersion = expectedHead,
+                    LockFence = state.WorkspaceLockFence,
+                    PathMetadata = command.PathMetadata,
+                    PolicyVersion = evidence.PolicyVersion,
+                    PolicyDigest = evidence.PolicyDigest,
+                    RequestedLockFence = command.ExpectedLockFence,
+                    RequestedFileVersion = command.ExpectedFileVersion,
                 },
                 cancellationToken).ConfigureAwait(false);
 
@@ -263,7 +274,8 @@ public sealed class WorkspaceFileMutationService(
             if (!finalAuthorization.IsAllowed) return FolderResult.Rejected(command, FolderAuthorizationResultMapper.Map(finalAuthorization.Decision.OutcomeCode));
             var finalEvidence = await _pathPolicyEvidenceProvider.GetEvidenceAsync(new(
                 command.ManagedTenantId, command.FolderId, command.WorkspaceId, command.TaskId, command.OperationId,
-                pathPolicy.PathMetadataDigest!, pathPolicy.PathPolicyClass!) { PathMetadata = command.PathMetadata }, cancellationToken).ConfigureAwait(false);
+                pathPolicy.PathMetadataDigest!, pathPolicy.PathPolicyClass!)
+            { PathMetadata = command.PathMetadata }, cancellationToken).ConfigureAwait(false);
             if (finalEvidence.Decision != WorkspacePathPolicyEvidenceDecision.NoEscape
                 || finalEvidence.PolicyVersion != evidence.PolicyVersion || finalEvidence.PolicyDigest != evidence.PolicyDigest)
                 return FolderResult.Rejected(command, FolderResultCode.PolicyEvidenceUnavailable);

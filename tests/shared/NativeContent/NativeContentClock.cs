@@ -1,5 +1,6 @@
 using Hexalith.Folders.Projections.TenantAccess;
 namespace Hexalith.Folders.NativeContent.Tests;
+
 internal sealed class NativeContentClock : TimeProvider, IUtcClock
 {
     internal object Sync { get; } = new();

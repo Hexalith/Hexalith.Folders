@@ -172,6 +172,7 @@ public sealed class FolderLifecycleReplayDeterminismTests
             typeof(WorkspaceCommitSucceeded),
             typeof(WorkspaceCommitFailed),
             typeof(WorkspaceCommitOutcomeUnknown),
+            typeof(WorkspaceNativeTaskChanged),
         ];
         Type[] actual = typeof(IFolderEvent).Assembly
             .GetTypes()

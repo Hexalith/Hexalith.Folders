@@ -40,34 +40,34 @@ public sealed class ContextReadAuthorityTests
     public async Task EveryContextReadRequiresWriteAtBothPublicBoundaries(string operation)
     {
         foreach (bool candidate in new[] { false, true })
-        foreach (bool write in new[] { false, true })
-        {
-            IFolderPermissionEvidenceProvider evidence = Substitute.For<IFolderPermissionEvidenceProvider>();
-            evidence.GetEvidenceAsync(Arg.Any<FolderPermissionEvidenceRequest>(), Arg.Any<CancellationToken>())
-                .Returns(call => call.Arg<FolderPermissionEvidenceRequest>().ActionToken == "mutate_files" && !write
-                    ? FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "acl:1")
-                    : FolderPermissionEvidenceResult.Allowed("acl:1"));
-            IWorkspaceFileContextSource source = Source();
-            IWorkspaceFileSensitivityClassifier sensitivity = Sensitivity();
-            await using WebApplication app = BuildApp(evidence, source, sensitivity);
-            await app.StartAsync(TestContext.Current.CancellationToken);
-            using HttpRequestMessage request = Request(operation, candidate);
-            using HttpResponseMessage response = await app.GetTestClient().SendAsync(request, TestContext.Current.CancellationToken);
-            response.StatusCode.ShouldBe(write ? HttpStatusCode.OK : HttpStatusCode.NotFound,
-                await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
-            if (!write)
+            foreach (bool write in new[] { false, true })
             {
-                await source.DidNotReceive().QueryAsync(Arg.Any<WorkspaceFileContextSourceRequest>(), Arg.Any<CancellationToken>());
-                await sensitivity.DidNotReceive().ClassifyAsync(Arg.Any<PathMetadata>(), Arg.Any<CancellationToken>());
-                if (candidate) await AssertCanonicalAsync(response, "tenant_access_denied", "resource_unavailable");
+                IFolderPermissionEvidenceProvider evidence = Substitute.For<IFolderPermissionEvidenceProvider>();
+                evidence.GetEvidenceAsync(Arg.Any<FolderPermissionEvidenceRequest>(), Arg.Any<CancellationToken>())
+                    .Returns(call => call.Arg<FolderPermissionEvidenceRequest>().ActionToken == "mutate_files" && !write
+                        ? FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "acl:1")
+                        : FolderPermissionEvidenceResult.Allowed("acl:1"));
+                IWorkspaceFileContextSource source = Source();
+                IWorkspaceFileSensitivityClassifier sensitivity = Sensitivity();
+                await using WebApplication app = BuildApp(evidence, source, sensitivity);
+                await app.StartAsync(TestContext.Current.CancellationToken);
+                using HttpRequestMessage request = Request(operation, candidate);
+                using HttpResponseMessage response = await app.GetTestClient().SendAsync(request, TestContext.Current.CancellationToken);
+                response.StatusCode.ShouldBe(write ? HttpStatusCode.OK : HttpStatusCode.NotFound,
+                    await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
+                if (!write)
+                {
+                    await source.DidNotReceive().QueryAsync(Arg.Any<WorkspaceFileContextSourceRequest>(), Arg.Any<CancellationToken>());
+                    await sensitivity.DidNotReceive().ClassifyAsync(Arg.Any<PathMetadata>(), Arg.Any<CancellationToken>());
+                    if (candidate) await AssertCanonicalAsync(response, "tenant_access_denied", "resource_unavailable");
+                }
+                else
+                {
+                    await source.Received(1).QueryAsync(Arg.Is<WorkspaceFileContextSourceRequest>(value =>
+                        value.ActionToken == "mutate_files" && value.ManagedTenantId == "tenant-a" && value.FolderId == Folder),
+                        Arg.Any<CancellationToken>());
+                }
             }
-            else
-            {
-                await source.Received(1).QueryAsync(Arg.Is<WorkspaceFileContextSourceRequest>(value =>
-                    value.ActionToken == "mutate_files" && value.ManagedTenantId == "tenant-a" && value.FolderId == Folder),
-                    Arg.Any<CancellationToken>());
-            }
-        }
     }
 
     [Theory]
@@ -228,7 +228,10 @@ public sealed class ContextReadAuthorityTests
             .Returns(Task.FromException<FolderTenantAccessProjection?>(new IOException("unavailable")));
         else tenants.GetAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(new FolderTenantAccessProjection
         {
-            TenantId = "tenant-a", Enabled = !disabled, Watermark = 1, ProjectionWatermark = "tenant:1",
+            TenantId = "tenant-a",
+            Enabled = !disabled,
+            Watermark = 1,
+            ProjectionWatermark = "tenant:1",
             LastEventTimestamp = state == "stale" ? Now.AddDays(-1) : Now,
             MalformedEvidence = state == "incomplete",
             Principals = new Dictionary<string, FolderTenantPrincipalEvidence>(StringComparer.Ordinal),
@@ -353,8 +356,11 @@ public sealed class ContextReadAuthorityTests
                 bool outer = candidate && ++reads == 1;
                 return new FolderTenantAccessProjection
                 {
-                    TenantId = "tenant-a", Enabled = outer || !disabled, Watermark = 1,
-                    ProjectionWatermark = outer ? "tenant:1" : string.Empty, LastEventTimestamp = Now,
+                    TenantId = "tenant-a",
+                    Enabled = outer || !disabled,
+                    Watermark = 1,
+                    ProjectionWatermark = outer ? "tenant:1" : string.Empty,
+                    LastEventTimestamp = Now,
                     Principals = outer ? new(StringComparer.Ordinal) { ["actor-a"] = new("actor-a", "Member") } : new(StringComparer.Ordinal),
                 };
             });
@@ -460,10 +466,15 @@ public sealed class ContextReadAuthorityTests
         InMemoryFolderTenantAccessProjectionStore tenants = new();
         tenants.SaveAsync(new FolderTenantAccessProjection
         {
-            TenantId = "tenant-a", Enabled = true, Watermark = 1, ProjectionWatermark = "tenant:1", LastEventTimestamp = Now,
+            TenantId = "tenant-a",
+            Enabled = true,
+            Watermark = 1,
+            ProjectionWatermark = "tenant:1",
+            LastEventTimestamp = Now,
             Principals = new Dictionary<string, FolderTenantPrincipalEvidence>(StringComparer.Ordinal)
             {
-                ["actor-a"] = new("actor-a", "Member"), ["delegator-a"] = new("delegator-a", "Member"),
+                ["actor-a"] = new("actor-a", "Member"),
+                ["delegator-a"] = new("delegator-a", "Member"),
             },
         }).GetAwaiter().GetResult();
         Replace<IFolderTenantAccessProjectionStore>(builder, tenantStore ?? tenants);

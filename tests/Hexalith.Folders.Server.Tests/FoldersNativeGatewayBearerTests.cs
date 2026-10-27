@@ -13,6 +13,7 @@ using Shouldly;
 using Xunit;
 
 namespace Hexalith.Folders.Server.Tests;
+
 public sealed class FoldersNativeGatewayBearerTests
 {
     [Theory]

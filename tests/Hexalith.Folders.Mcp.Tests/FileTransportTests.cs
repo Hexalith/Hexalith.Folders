@@ -205,8 +205,8 @@ public sealed class FileTransportTests
     public void UploadToolMetadataRequiresCallerObservations()
     {
         foreach (string method in new[] { nameof(FileTools.AddFile), nameof(FileTools.ChangeFile) })
-        foreach (string parameter in new[] { "expectedFileVersion", "expectedLockFence" })
-            typeof(FileTools).GetMethod(method)!.GetParameters().Single(value => value.Name == parameter).HasDefaultValue.ShouldBeFalse();
+            foreach (string parameter in new[] { "expectedFileVersion", "expectedLockFence" })
+                typeof(FileTools).GetMethod(method)!.GetParameters().Single(value => value.Name == parameter).HasDefaultValue.ShouldBeFalse();
     }
 
     [Theory]

@@ -310,8 +310,15 @@ public sealed class MutationEnvelopeEndpointMatrixTests
             bytes = Enumerable.Repeat((byte)65, 262145).ToArray();
             body["byteLength"] = bytes.Length; body["contentHashReference"] = WorkspaceContentTransportTestServices.Hash(bytes);
             body["transportOperation"] = "PutFileStream"; body.Remove("inlineContent");
-            body["streamDescriptor"] = JsonSerializer.SerializeToNode(new { mediaType = "application/octet-stream", declaredLength = bytes.Length,
-                observedLength = bytes.Length, stagingReference = "staged-content-a", observedContentHashReference = WorkspaceContentTransportTestServices.Hash(bytes), uploadMode = "request_body_stream" });
+            body["streamDescriptor"] = JsonSerializer.SerializeToNode(new
+            {
+                mediaType = "application/octet-stream",
+                declaredLength = bytes.Length,
+                observedLength = bytes.Length,
+                stagingReference = "staged-content-a",
+                observedContentHashReference = WorkspaceContentTransportTestServices.Hash(bytes),
+                uploadMode = "request_body_stream"
+            });
         }
         request.Content = streamed ? WorkspaceContentTransportTestServices.Multipart(JsonContent.Create(body), bytes) : JsonContent.Create(body);
         using var response = await client.SendAsync(request, TestContext.Current.CancellationToken);
@@ -485,7 +492,8 @@ public sealed class MutationEnvelopeEndpointMatrixTests
                     operationId = "operation-a",
                     fileOperationKind = "remove",
                     transportOperation = "metadataOnlyRemoval",
-                    expectedFileVersion = 0, expectedLockFence = 1,
+                    expectedFileVersion = 0,
+                    expectedLockFence = 1,
                     pathMetadata = PathMetadata(),
                 }),
             },
@@ -542,7 +550,8 @@ public sealed class MutationEnvelopeEndpointMatrixTests
             operationId = "operation-a",
             fileOperationKind,
             transportOperation,
-            expectedFileVersion = 0, expectedLockFence = 1,
+            expectedFileVersion = 0,
+            expectedLockFence = 1,
             pathMetadata = PathMetadata(),
             contentHashReference = WorkspaceContentTransportTestServices.Hash(Convert.FromBase64String("aGVsbG8gd29ybGQh")),
             byteLength = 12,

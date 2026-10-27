@@ -29,7 +29,7 @@ initialize only repository-declared submodules under `references/`:
 Do not initialize nested submodules by default.
 
 ```text
-git submodule update --init --checkout references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.McpCli references/Hexalith.Memories references/Hexalith.Platform references/Hexalith.PolymorphicSerializations references/Hexalith.Projects references/Hexalith.Tenants
+git submodule update --init --checkout references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.McpCli references/Hexalith.Memories references/Hexalith.Platform references/Hexalith.Parties references/Hexalith.PolymorphicSerializations references/Hexalith.Projects references/Hexalith.Tenants
 ```
 
 Do not use:

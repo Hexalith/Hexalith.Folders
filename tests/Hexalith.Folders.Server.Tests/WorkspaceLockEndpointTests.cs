@@ -1283,7 +1283,8 @@ public sealed class WorkspaceLockEndpointTests
             Content = JsonContent.Create(new
             {
                 requestSchemaVersion = "v1",
-                expectedFileVersion = 0, expectedLockFence = 1,
+                expectedFileVersion = 0,
+                expectedLockFence = 1,
                 operationId = "operation-a",
                 fileOperationKind,
                 transportOperation,
@@ -1317,7 +1318,8 @@ public sealed class WorkspaceLockEndpointTests
             Content = JsonContent.Create(new
             {
                 requestSchemaVersion = "v1",
-                expectedFileVersion = 0, expectedLockFence = 1,
+                expectedFileVersion = 0,
+                expectedLockFence = 1,
                 operationId = "operation-a",
                 fileOperationKind = "add",
                 transportOperation = "PutFileInline",
@@ -1369,7 +1371,8 @@ public sealed class WorkspaceLockEndpointTests
             Content = JsonContent.Create(new
             {
                 requestSchemaVersion = "v1",
-                expectedFileVersion = 0, expectedLockFence = 1,
+                expectedFileVersion = 0,
+                expectedLockFence = 1,
                 operationId = "operation-a",
                 fileOperationKind = "change",
                 transportOperation = "PutFileStream",
@@ -1470,7 +1473,8 @@ public sealed class WorkspaceLockEndpointTests
                 ActionToken: "read_workspace_lock",
                 TaskId: "task-a",
                 CorrelationId: "correlation-a",
-                AuthorizationWatermark: "permission_watermark_v1")) { LockFence = 29 });
+                AuthorizationWatermark: "permission_watermark_v1"))
+        { LockFence = 29 });
         return readModel;
     }
 

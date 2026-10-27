@@ -254,12 +254,20 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             Content = JsonContent.Create(new SubmitCommandRequest(NewId(), TenantId, "folders", folder,
                 "Hexalith.Folders.Commands.MutateFiles", JsonSerializer.SerializeToElement(new
                 {
-                    requestSchemaVersion = "v1", workspaceId = workspace, operationId = NewId(), fileOperationKind = "add",
+                    requestSchemaVersion = "v1",
+                    workspaceId = workspace,
+                    operationId = NewId(),
+                    fileOperationKind = "add",
                     taskId = task,
-                    transportOperation = "PutFileInline", pathMetadata = new { normalizedPath = "docs/rejected.txt", displayName = "rejected.txt", pathPolicyClass = "content_allowed", unicodeNormalization = "NFC" },
-                    contentHashReference = "hashref_" + Convert.ToHexStringLower(SHA256.HashData(new byte[] { 1 })), byteLength = 1,
-                    mediaType = "application/octet-stream", transportEvidenceKind = "inline_decoded", observedByteLength = 1,
-                    expectedFileVersion = 0, expectedLockFence = fence,
+                    transportOperation = "PutFileInline",
+                    pathMetadata = new { normalizedPath = "docs/rejected.txt", displayName = "rejected.txt", pathPolicyClass = "content_allowed", unicodeNormalization = "NFC" },
+                    contentHashReference = "hashref_" + Convert.ToHexStringLower(SHA256.HashData(new byte[] { 1 })),
+                    byteLength = 1,
+                    mediaType = "application/octet-stream",
+                    transportEvidenceKind = "inline_decoded",
+                    observedByteLength = 1,
+                    expectedFileVersion = 0,
+                    expectedLockFence = fence,
                 }), Extensions: new Dictionary<string, string> { ["taskId"] = task }, IdempotencyKey: key)),
         };
         request.Headers.Add("X-Correlation-Id", NewId());

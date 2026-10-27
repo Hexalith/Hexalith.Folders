@@ -40,7 +40,8 @@ internal sealed class WorkspaceContentProductionGateway : IEventStoreGatewayClie
             Events.Add(new WorkspaceContentErasureAuthorized("tenant-a", "tenant-a", "folder-a", "workspace-a",
                 request.Payload.GetProperty("receiptId").GetString()!, request.Payload.GetProperty("expectedGeneration").GetInt64(), "user-a",
                 request.CorrelationId!, request.Extensions!["taskId"], request.MessageId, "erasure-fp", DateTimeOffset.UtcNow));
-        return Task.FromResult(new SubmitCommandResponse(request.CorrelationId!, JsonSerializer.SerializeToElement(new { status = "accepted", idempotentReplay = true }))); }
+        return Task.FromResult(new SubmitCommandResponse(request.CorrelationId!, JsonSerializer.SerializeToElement(new { status = "accepted", idempotentReplay = true })));
+    }
     public Task<EventStoreQueryResult> SubmitQueryAsync(SubmitQueryRequest request, string? ifNoneMatch = null, CancellationToken cancellationToken = default) => throw new NotSupportedException();
     public Task<EventStoreQueryResult<T>> SubmitQueryAsync<T>(SubmitQueryRequest request, string? ifNoneMatch = null, CancellationToken cancellationToken = default) => throw new NotSupportedException();
     public Task<StreamReadPage> ReadStreamAsync(StreamReadRequest request, CancellationToken cancellationToken = default)

@@ -46,7 +46,11 @@ public sealed class WorkspaceContentProcessWiringTests
         var tenants = new InMemoryFolderTenantAccessProjectionStore();
         await tenants.SaveAsync(new FolderTenantAccessProjection
         {
-            TenantId = "tenant-a", Enabled = true, Watermark = 1, LastEventTimestamp = now, ProjectionWatermark = "tenant-a:1",
+            TenantId = "tenant-a",
+            Enabled = true,
+            Watermark = 1,
+            LastEventTimestamp = now,
+            ProjectionWatermark = "tenant-a:1",
             Principals = new Dictionary<string, FolderTenantPrincipalEvidence>(StringComparer.Ordinal) { ["user-a"] = new("user-a", "Owner") },
         }, TestContext.Current.CancellationToken).ConfigureAwait(true);
         var permissions = new InMemoryEffectivePermissionsReadModel();
@@ -92,8 +96,12 @@ public sealed class WorkspaceContentProcessWiringTests
         byte[] bytes = Encoding.UTF8.GetBytes("Actual bytes cross the process gate.\r\n");
         var descriptor = new FileUploadDescriptor
         {
-            FolderId = "folder-a", WorkspaceId = "workspace-a", OperationId = "operation-a", MediaType = "text/plain",
-            ExpectedFileVersion = 0, ExpectedLockFence = 1,
+            FolderId = "folder-a",
+            WorkspaceId = "workspace-a",
+            OperationId = "operation-a",
+            MediaType = "text/plain",
+            ExpectedFileVersion = 0,
+            ExpectedLockFence = 1,
             PathMetadata = new() { NormalizedPath = "docs/a.txt", DisplayName = "a.txt", PathPolicyClass = PathMetadataPathPolicyClass.Content_allowed },
         };
         using (var content = new MemoryStream(bytes))
@@ -119,8 +127,12 @@ public sealed class WorkspaceContentProcessWiringTests
             stale.StatusCode.ShouldBe(HttpStatusCode.Conflict);
         repository.EventsAppended.ShouldBe(before);
         using (var content = new MemoryStream(bytes))
-        using (HttpResponseMessage hidden = await client.UploadWorkspaceFileAsync(descriptor with { OperationId = "hidden", PathMetadata = new()
-            { NormalizedPath = "private/a.txt", DisplayName = "a.txt", PathPolicyClass = PathMetadataPathPolicyClass.Content_allowed } },
+        using (HttpResponseMessage hidden = await client.UploadWorkspaceFileAsync(descriptor with
+        {
+            OperationId = "hidden",
+            PathMetadata = new()
+            { NormalizedPath = "private/a.txt", DisplayName = "a.txt", PathPolicyClass = PathMetadataPathPolicyClass.Content_allowed }
+        },
             content, "hidden-key", "correlation-hidden", "task-a", TestContext.Current.CancellationToken).ConfigureAwait(true))
         {
             hidden.StatusCode.ShouldBe(HttpStatusCode.NotFound);
@@ -130,16 +142,22 @@ public sealed class WorkspaceContentProcessWiringTests
         foreach (var file in new[] { ("docs/b.txt", "needle in docs"), ("other/c.txt", "needle elsewhere") })
         {
             using var content = new MemoryStream(Encoding.UTF8.GetBytes(file.Item2));
-            using var uploaded = await client.UploadWorkspaceFileAsync(descriptor with { OperationId = "operation-" + Guid.NewGuid().ToString("N"), PathMetadata = new()
-                { NormalizedPath = file.Item1, DisplayName = file.Item1.Split('/')[^1], PathPolicyClass = PathMetadataPathPolicyClass.Content_allowed } }, content,
+            using var uploaded = await client.UploadWorkspaceFileAsync(descriptor with
+            {
+                OperationId = "operation-" + Guid.NewGuid().ToString("N"),
+                PathMetadata = new()
+                { NormalizedPath = file.Item1, DisplayName = file.Item1.Split('/')[^1], PathPolicyClass = PathMetadataPathPolicyClass.Content_allowed }
+            }, content,
                 Guid.NewGuid().ToString("N"), "correlation-a", "task-a", TestContext.Current.CancellationToken).ConfigureAwait(true);
             uploaded.StatusCode.ShouldBe(HttpStatusCode.Accepted);
         }
         async Task<string> QueryAsync(string family, string term, int limit)
         {
             using var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/context/" + family)
-            { Content = family == "search" ? JsonContent.Create(new { requestSchemaVersion = "v1", queryFamily = family, queryText = term, limit })
-                : JsonContent.Create(new { requestSchemaVersion = "v1", queryFamily = family, globPattern = term, limit }) };
+            {
+                Content = family == "search" ? JsonContent.Create(new { requestSchemaVersion = "v1", queryFamily = family, queryText = term, limit })
+                : JsonContent.Create(new { requestSchemaVersion = "v1", queryFamily = family, globPattern = term, limit })
+            };
             request.Headers.Add("X-Correlation-Id", "correlation_0123456789"); request.Headers.Add("X-Hexalith-Task-Id", "task-a"); request.Headers.Add("X-Hexalith-Freshness", "snapshot_per_task");
             using var response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
             string wire = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);

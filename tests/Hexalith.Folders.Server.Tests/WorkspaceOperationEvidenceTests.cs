@@ -18,7 +18,7 @@ public sealed partial class WorkspaceOperationEvidenceTests
         catch (Exception error) { throw new InvalidOperationException(fixture.Gateway.Failure?.ToString() ?? error.ToString()); }
         lease.LockFence.ShouldBe(1); lease.OwnershipProof.ShouldNotBeNullOrWhiteSpace();
         lease.ExpiresAt.ShouldBe(fixture.Clock.Now.AddSeconds(20));
-        var request = Request() ; request.LookupKind = "absence"; request.LockFence = lease.LockFence;
+        var request = Request(); request.LookupKind = "absence"; request.LockFence = lease.LockFence;
         var evidence = await client.GetNativeOperationEvidenceAsync("folder-a", "workspace-a", "correlation-a", "task-a", request, TestContext.Current.CancellationToken).ConfigureAwait(true);
         evidence.Status.ShouldBe("absent"); evidence.ExpectedFileVersion.ShouldBe(0);
         request.LockFence++;
@@ -74,9 +74,13 @@ public sealed partial class WorkspaceOperationEvidenceTests
         var client = new NativeClient(fixture.Client());
         var lease = await client.ChangeNativeTaskLeaseAsync("folder-a", "workspace-a", "correlation-a", "task-a",
             new() { Operation = "acquire", RequestedLeaseSeconds = 300 }, TestContext.Current.CancellationToken).ConfigureAwait(true);
-        var path = new Hexalith.Folders.Client.Generated.PathMetadata { NormalizedPath = "docs/a.txt", DisplayName = "a.txt",
+        var path = new Hexalith.Folders.Client.Generated.PathMetadata
+        {
+            NormalizedPath = "docs/a.txt",
+            DisplayName = "a.txt",
             PathPolicyClass = Hexalith.Folders.Client.Generated.PathMetadataPathPolicyClass.Metadata_only,
-            UnicodeNormalization = Hexalith.Folders.Client.Generated.PathMetadataUnicodeNormalization.NFC };
+            UnicodeNormalization = Hexalith.Folders.Client.Generated.PathMetadataUnicodeNormalization.NFC
+        };
         var mutation = Hexalith.Folders.Client.Convenience.FileUpload.BuildInlineFileMutation(new byte[] { 1, 2 }, "application/octet-stream", path,
             "operation_0123456789", expectedFileVersion: 0, expectedLockFence: lease.LockFence + 1);
         string key = Hexalith.Folders.Client.Convenience.FileUpload.ComputeIdempotencyKey(mutation, "workspace-a", "task-a");
@@ -92,8 +96,17 @@ public sealed partial class WorkspaceOperationEvidenceTests
         var publication = await client.GetNativeOperationEvidenceAsync("folder-a", "workspace-a", "correlation-a", "task-a", query,
             TestContext.Current.CancellationToken).ConfigureAwait(true);
         publication.Status.ShouldBe("accepted");
-        var complete = new NativeLeaseRequest { Operation = "complete", RequestedLeaseSeconds = 300, LockId = lease.LockId,
-            OwnershipProof = lease.OwnershipProof, LockFence = lease.LockFence, OperationId = mutation.OperationId, AcceptedKey = key, Fingerprint = "wrong" };
+        var complete = new NativeLeaseRequest
+        {
+            Operation = "complete",
+            RequestedLeaseSeconds = 300,
+            LockId = lease.LockId,
+            OwnershipProof = lease.OwnershipProof,
+            LockFence = lease.LockFence,
+            OperationId = mutation.OperationId,
+            AcceptedKey = key,
+            Fingerprint = "wrong"
+        };
         (await Should.ThrowAsync<HexalithFoldersNativeApiException>(() => client.ChangeNativeTaskLeaseAsync("folder-a", "workspace-a", "correlation-a", "task-a", complete,
             TestContext.Current.CancellationToken)).ConfigureAwait(true)).StatusCode.ShouldBe(409);
         complete.Fingerprint = publication.Fingerprint;
@@ -157,7 +170,7 @@ public sealed partial class WorkspaceOperationEvidenceTests
         var fixture = await NativeContentFixture.CreateAsync().ConfigureAwait(true);
         await using var cleanup = fixture.ConfigureAwait(true);
         using var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/native/" + operation)
-            { Content = new StringContent("{}", System.Text.Encoding.UTF8, "application/json") };
+        { Content = new StringContent("{}", System.Text.Encoding.UTF8, "application/json") };
         request.Headers.Add("X-Correlation-Id", "correlation-a"); request.Headers.Add("X-Hexalith-Task-Id", "task-a");
         request.Headers.Add("X-Hexalith-Tenant-Id", "tenant-b");
         using var response = await fixture.Client().SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -176,8 +189,13 @@ public sealed partial class WorkspaceOperationEvidenceTests
     {
         var fixture = await NativeContentFixture.CreateAsync().ConfigureAwait(true);
         await using var cleanup = fixture.ConfigureAwait(true);
-        foreach (var pair in new Dictionary<string, int> { ["RenewalIntervalSeconds"] = 30, ["AuthorizationIntervalSeconds"] = 15,
-            ["RevocationEffectSeconds"] = 60, ["ExpiredToStaleSeconds"] = 60 }) fixture.App.Configuration["Folders:NativeLease:" + pair.Key] = pair.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        foreach (var pair in new Dictionary<string, int>
+        {
+            ["RenewalIntervalSeconds"] = 30,
+            ["AuthorizationIntervalSeconds"] = 15,
+            ["RevocationEffectSeconds"] = 60,
+            ["ExpiredToStaleSeconds"] = 60
+        }) fixture.App.Configuration["Folders:NativeLease:" + pair.Key] = pair.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
         fixture.App.Configuration["Folders:NativeLease:" + setting] = value.ToString(System.Globalization.CultureInfo.InvariantCulture);
         var client = new NativeClient(fixture.Client());
         (await Should.ThrowAsync<HexalithFoldersNativeApiException>(() => client.ChangeNativeTaskLeaseAsync("folder-a", "workspace-a", "correlation-a", "task-a",
@@ -186,8 +204,12 @@ public sealed partial class WorkspaceOperationEvidenceTests
     }
     private static NativeEvidenceRequest Request() => new()
     {
-        LookupKind = "accepted", OperationId = "operation-a", AcceptedKey = "sha256:" + new string('a', 64),
+        LookupKind = "accepted",
+        OperationId = "operation-a",
+        AcceptedKey = "sha256:" + new string('a', 64),
         PathMetadata = new() { NormalizedPath = "docs/a.txt", DisplayName = "a.txt", PathPolicyClass = "metadata_only", UnicodeNormalization = "NFC" },
-        ContentHashReference = "hashref_" + new string('b', 64), ByteLength = 1, MediaType = "text/plain",
+        ContentHashReference = "hashref_" + new string('b', 64),
+        ByteLength = 1,
+        MediaType = "text/plain",
     };
 }
