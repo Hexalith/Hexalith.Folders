@@ -1,0 +1,1328 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "b5380a7978912d6db0a6b8f6c3313de99aef8c6d5535ce3eaa32c2573ae77d9b",
+      "bytes": 4324
+    },
+    "after-audits.json": {
+      "sha256": "19b57e50c23dd9dd83431244420b33bf36c878e12bfbfced42b55e403cddc114",
+      "bytes": 11659479
+    },
+    "after.json": {
+      "sha256": "79b33b23f2d7af7d6328303ccf0915dd899099ff2c19466355e25d213f8b6a44",
+      "bytes": 11660167
+    },
+    "baseline.json": {
+      "sha256": "2c878d8053b8411b1fc97161c788f9dd01a29ce85a0a85d1131804a60229c4f1",
+      "bytes": 11166699
+    },
+    "before.json": {
+      "sha256": "cb5b1495f2ac3c9a1457b68f66029b182c9a6409593c8258215635f96658b562",
+      "bytes": 11659479
+    },
+    "bounded-reuse.json": {
+      "sha256": "f68b2f2db56606c1f1c976383b221c3db5f5709565cffe8d8a09287371a21bd6",
+      "bytes": 3962
+    },
+    "capture_intake.py": {
+      "sha256": "217895168a04e1af1f4a241ba729f541c470b7cfd8a251530994c6aba754cba9",
+      "bytes": 6964
+    },
+    "capture_snapshot.py": {
+      "sha256": "aea71e44935519f3764647506ec572efa90e068d6efac5827242ce9b0dc29093",
+      "bytes": 1444
+    },
+    "commands.json": {
+      "sha256": "aa16e62a0842eed4bb1909ee9dba546ee41bcb2a78d73812f78d1f896c813d0e",
+      "bytes": 14070
+    },
+    "compiled-current-inputs.json": {
+      "sha256": "a99ce2f28d85e800cdb4be500d489f21287b6731fdee73f4a0bb7229ed3a8df6",
+      "bytes": 479796
+    },
+    "compiled-materialized-inputs/04bfd5e8540f13be23bc225892296c561f1c614eabd912b2acb00b2e1097b5fc.cs": {
+      "sha256": "04bfd5e8540f13be23bc225892296c561f1c614eabd912b2acb00b2e1097b5fc",
+      "bytes": 1154
+    },
+    "compiled-materialized-inputs/0c1686873676bb4be7ed08354fc097951d7a236b6220edc83ca8b4189d560297.cs": {
+      "sha256": "0c1686873676bb4be7ed08354fc097951d7a236b6220edc83ca8b4189d560297",
+      "bytes": 815
+    },
+    "compiled-materialized-inputs/206a1dd2d92f05c8c977f2a86bc283fbbf519e69abf17808be1daee9a2642fe3.cs": {
+      "sha256": "206a1dd2d92f05c8c977f2a86bc283fbbf519e69abf17808be1daee9a2642fe3",
+      "bytes": 1094
+    },
+    "compiled-materialized-inputs/25a720a1bff21f4919fa971823441300776ca957f2721ca0ae4f6bf05abdfd23.cs": {
+      "sha256": "25a720a1bff21f4919fa971823441300776ca957f2721ca0ae4f6bf05abdfd23",
+      "bytes": 1156
+    },
+    "compiled-materialized-inputs/303e9cd7ab294ddd335cd7bba5ab391da9053502115a0a650433a369b543873f.cs": {
+      "sha256": "303e9cd7ab294ddd335cd7bba5ab391da9053502115a0a650433a369b543873f",
+      "bytes": 251
+    },
+    "compiled-materialized-inputs/325bf0eaf2bffe3462920709d5ab103f0fa4a718f89de1eeaf6176db38b2f304.cs": {
+      "sha256": "325bf0eaf2bffe3462920709d5ab103f0fa4a718f89de1eeaf6176db38b2f304",
+      "bytes": 1632
+    },
+    "compiled-materialized-inputs/65602126817b689b35fa18c53698b55d76993aa472224759f1b06d4dee4e02b8.cs": {
+      "sha256": "65602126817b689b35fa18c53698b55d76993aa472224759f1b06d4dee4e02b8",
+      "bytes": 1319
+    },
+    "compiled-materialized-inputs/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592.cs": {
+      "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592",
+      "bytes": 231
+    },
+    "compiled-materialized-inputs/959777ca185f4c8c54d4bcd143466e5e8c44b9c4eb7fd39edd43b1a36f754206.cs": {
+      "sha256": "959777ca185f4c8c54d4bcd143466e5e8c44b9c4eb7fd39edd43b1a36f754206",
+      "bytes": 1141
+    },
+    "compiled-materialized-inputs/a686e9d1bcf666b0281b04224ee690dcb85ceae8b5db43f0b07872a15c3465c9.cs": {
+      "sha256": "a686e9d1bcf666b0281b04224ee690dcb85ceae8b5db43f0b07872a15c3465c9",
+      "bytes": 1143
+    },
+    "compiled-materialized-inputs/b0cba66c8c9a9cc5ba1bfc0e0bb1d50f0c701e016f2c95f50d4c9ca1b41da7a0.cs": {
+      "sha256": "b0cba66c8c9a9cc5ba1bfc0e0bb1d50f0c701e016f2c95f50d4c9ca1b41da7a0",
+      "bytes": 1306
+    },
+    "compiled-materialized-inputs/dfbaa2cf2fd7171a264af60dbe1a19528bceb5ea75d1be6de41be8752a68aff2.cs": {
+      "sha256": "dfbaa2cf2fd7171a264af60dbe1a19528bceb5ea75d1be6de41be8752a68aff2",
+      "bytes": 1634
+    },
+    "compiled-materialized-inputs/e110bb9fe21ca6c3120a00382c773a086d62a008a0b0d2b76d08416f27d92bf2.cs": {
+      "sha256": "e110bb9fe21ca6c3120a00382c773a086d62a008a0b0d2b76d08416f27d92bf2",
+      "bytes": 1018
+    },
+    "compiled-materialized-inputs/eadbf7020713e63d70b7689c5f18e7160aa74a0302cb099fd9960557805e6319.cs": {
+      "sha256": "eadbf7020713e63d70b7689c5f18e7160aa74a0302cb099fd9960557805e6319",
+      "bytes": 1049
+    },
+    "compiled-materialized-inputs/f79c1ad9a9fc76110b3655f5bfb5ff4e3168e9addceff05b937c0796f0ec34eb.cs": {
+      "sha256": "f79c1ad9a9fc76110b3655f5bfb5ff4e3168e9addceff05b937c0796f0ec34eb",
+      "bytes": 196
+    },
+    "compiled-source-recheck.json": {
+      "sha256": "e11420fd480be85b8fccc17ef42d340f0d8c3976ce58a0d2db595e061808bba6",
+      "bytes": 374019
+    },
+    "compiled-source-reuse.json": {
+      "sha256": "e11420fd480be85b8fccc17ef42d340f0d8c3976ce58a0d2db595e061808bba6",
+      "bytes": 374019
+    },
+    "completion-source-stability.json": {
+      "sha256": "a43583fc5931957ebf94eb279a2069be78f379faadc353b75be27c68486d5250",
+      "bytes": 315
+    },
+    "current-baseline.json": {
+      "sha256": "32c64718bfae787006fd7e5e64e9100b1e79a9df25cedae40160c7d3a68aa772",
+      "bytes": 11659392
+    },
+    "decisions.json": {
+      "sha256": "8d2c72f3095836edeb8375eae2689ca167a140dab776804473c2ad3a16c4d4d3",
+      "bytes": 610685
+    },
+    "decisions.md": {
+      "sha256": "23c3c73cae07938a77b576a3fa87b065cb301d2f2a610c843e1c77f1d2b40f45",
+      "bytes": 21370
+    },
+    "finalize_capture.py": {
+      "sha256": "6fa84ca00257fb709b0dea8b5bafff0c912accb4a5cb3cca5991bbe904b0facc",
+      "bytes": 4197
+    },
+    "fresh-intake.json": {
+      "sha256": "618efdf4542ff4f57daa40892c496352d9e01971ef210873ea250867e498b38a",
+      "bytes": 399331
+    },
+    "generate_packet.py": {
+      "sha256": "72152d5201194f62dbc6fb7ea88bff1a5ce60b1c6049d4ddf213f1b160422796",
+      "bytes": 17505
+    },
+    "gitattributes.after": {
+      "sha256": "1e377ce35003d2b0c757a2360a1b2e51020a58bc51f6287fcbdf9ddcb9dfaf5c",
+      "bytes": 4426
+    },
+    "handoff.json": {
+      "sha256": "25e870b572043a26073e0a118ad243d80fe790d46b07d926ca13e5d67df58075",
+      "bytes": 34718
+    },
+    "intake-owner-sources/Builds/.gitmodules": {
+      "sha256": "816cb1b5c6fde628bd5b3ee6036bc75ad6d05130201609f0c6d23c949773621b",
+      "bytes": 137
+    },
+    "intake-owner-sources/Builds/Directory.Build.props": {
+      "sha256": "87831265b6dc7e43269e0638f6fc875230861e6283d383ec803472f4e749f59d",
+      "bytes": 724
+    },
+    "intake-owner-sources/Builds/Directory.Packages.props": {
+      "sha256": "c3d41f4a1a5d0f9fbc0e40ba0997ace2f8c22b996864f864d6cd1bff2b4e9515",
+      "bytes": 152
+    },
+    "intake-owner-sources/Builds/src/libraries/Hexalith.Builds.Tooling/Manifest/PlatformAdoptionSourceAudit.cs": {
+      "sha256": "3ad0ce5ed4aae78a36ee94629e7219bb39beadec1c8d3fe1a56106043646f7df",
+      "bytes": 27919
+    },
+    "intake-owner-sources/Builds/src/libraries/Hexalith.Builds.Tooling/Manifest/PlatformAdoptionValidator.cs": {
+      "sha256": "2a59c43cd5eec8015bd1c0a22a4595a1d5fd4147a30b7cb25f5f7dbfde4e5e9f",
+      "bytes": 16290
+    },
+    "intake-owner-sources/Builds/src/libraries/Hexalith.Builds.Tooling/Manifest/PlatformHostingInventory.cs": {
+      "sha256": "7f82e3188ca663f49ec913f401966e27e80339178c1ffdd37227ac4865da2618",
+      "bytes": 6753
+    },
+    "intake-owner-sources/Builds/src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionDeclarationClosure.cs": {
+      "sha256": "259f7c38f744481ce4c5bd650f648355651edefa5bd5b86b1f6c32c8bc6cc9b0",
+      "bytes": 12561
+    },
+    "intake-owner-sources/Builds/test/Hexalith.Builds.Module.Tests/PlatformAdoptionValidationTests.cs": {
+      "sha256": "261f1d29bd4a6f83ff54fe39245a6e8113c464e1031162230d3cac53354925c7",
+      "bytes": 91617
+    },
+    "intake-owner-sources/EventStore/.config/dotnet-tools.json": {
+      "sha256": "73dc9d23c2bd374cad713d87df85a2acf078d1955ccbf292ad5750736cdc86d9",
+      "bytes": 367
+    },
+    "intake-owner-sources/EventStore/.gitmodules": {
+      "sha256": "b449c9b1f825b01d56f8273948765b20229c1faecb2f9ae358490dcf5a6828d4",
+      "bytes": 1182
+    },
+    "intake-owner-sources/EventStore/Directory.Build.props": {
+      "sha256": "66b2d5f9b4b60ef17fff045881badc565fcca6e4dfb51919aee760feebb6f477",
+      "bytes": 9578
+    },
+    "intake-owner-sources/EventStore/Directory.Build.targets": {
+      "sha256": "c20dc10cd6c9ff0e76e5145a21be2fc64feddc1128aca1db97e1390b1c424fa8",
+      "bytes": 9209
+    },
+    "intake-owner-sources/EventStore/Directory.Packages.props": {
+      "sha256": "4fe25096ceefd11e8ffffe1ab6a1854e18ac36c853a6805fa72285433b03b638",
+      "bytes": 1484
+    },
+    "intake-owner-sources/EventStore/README.md": {
+      "sha256": "afdb10a707277e696e0f39b2ce25bc43dc0a4f3fb632d2729f837527ba212b2f",
+      "bytes": 14421
+    },
+    "intake-owner-sources/EventStore/_bmad-output/implementation-artifacts/2-12-tenants-runtime-identity-adoption-and-package-mode-validation.md": {
+      "sha256": "7713f7b8e65c8a6dfc6b5acbfe729caa8260fe904290f7c207435c7eea3cb9e6",
+      "bytes": 130929
+    },
+    "intake-owner-sources/EventStore/module/hexalith.module-manifest.v2.json": {
+      "sha256": "6193ccfd67ef325e990e3c6e15c1e0b5040f939530c9ebae47daf00f2d62a9ee",
+      "bytes": 18475
+    },
+    "intake-owner-sources/EventStore/samples/Hexalith.EventStore.Sample.Api/Hexalith.EventStore.Sample.Api.csproj": {
+      "sha256": "9a5042d07cf5aacf44d1de45829f4b7c49060c6cee18b05ee4ae8b25fc20aee8",
+      "bytes": 1265
+    },
+    "intake-owner-sources/EventStore/samples/Hexalith.EventStore.Sample.BlazorUI/Hexalith.EventStore.Sample.BlazorUI.csproj": {
+      "sha256": "d8ba1a9e2fe37453c4194c1fd3cc9b18438a96f63bf9d73271f5f64f7952d4b7",
+      "bytes": 1445
+    },
+    "intake-owner-sources/EventStore/src/Hexalith.EventStore.Admin.Server.Host/Hexalith.EventStore.Admin.Server.Host.csproj": {
+      "sha256": "432c267f326a5c9489c74b9cda807025df45c4ee6b3e4891f27de255629d0aa7",
+      "bytes": 651
+    },
+    "intake-owner-sources/EventStore/src/Hexalith.EventStore.Admin.UI/Hexalith.EventStore.Admin.UI.csproj": {
+      "sha256": "63a5a4d5c2ae3879137b85fcaf05387c42029b6254ad0980c285c1cd2c134830",
+      "bytes": 1359
+    },
+    "intake-owner-sources/EventStore/src/Hexalith.EventStore.AppHost/Hexalith.EventStore.AppHost.csproj": {
+      "sha256": "d77e20113b68d21260a6bbf8a9648b769fe4b5e6b1b54681900a202bcef5b1f6",
+      "bytes": 2365
+    },
+    "intake-owner-sources/EventStore/src/Hexalith.EventStore.Aspire/Hexalith.EventStore.Aspire.csproj": {
+      "sha256": "a05fa59392fd33324d0a37a502a91fc3f707d64be1e0accb860ae574c8060656",
+      "bytes": 947
+    },
+    "intake-owner-sources/EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj": {
+      "sha256": "a33f6eff943d309ae17d4278d0b2e7dafd2fab2c14c1134c01821ac622cd99db",
+      "bytes": 1852
+    },
+    "intake-owner-sources/EventStore/src/Hexalith.EventStore.Gateway/Hexalith.EventStore.Gateway.csproj": {
+      "sha256": "4b10fc3d5fb1fb79e73eba7e580f755f64fab8bde7cd84c180af379c8ccdaee5",
+      "bytes": 2647
+    },
+    "intake-owner-sources/EventStore/src/Hexalith.EventStore.Operations/Hexalith.EventStore.Operations.csproj": {
+      "sha256": "66fff04ca05e0260aaf14749bef469411ecb62d55a22073ad1ee812be035c3e2",
+      "bytes": 836
+    },
+    "intake-owner-sources/EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj": {
+      "sha256": "b37eea866dad7e491d37b3046d8007b93ed04a72d992395c5d9ffdb6eda33c92",
+      "bytes": 1832
+    },
+    "intake-owner-sources/EventStore/tests/Hexalith.EventStore.AppHost.Tests/Hexalith.EventStore.AppHost.Tests.csproj": {
+      "sha256": "0f244b08aec52149a9982c7223a60699fd74768ffb21ed9a4e40eeeea9f44501",
+      "bytes": 1266
+    },
+    "intake-owner-sources/EventStore/tests/Hexalith.EventStore.IntegrationTests/Hexalith.EventStore.IntegrationTests.csproj": {
+      "sha256": "243f68d36ac0875f3d149ee45bd73e7dfaffe14b22ab30e29ecfcbdbca01961f",
+      "bytes": 1942
+    },
+    "intake-owner-sources/EventStore/tests/Hexalith.EventStore.ServiceDefaults.Tests/Hexalith.EventStore.ServiceDefaults.Tests.csproj": {
+      "sha256": "0606a03816a68f3a5ae8731e7232864e9b3715d585733a5edfedeeb7a9fee2ff",
+      "bytes": 540
+    },
+    "intake-owner-sources/Folders/.gitmodules": {
+      "sha256": "a58f12852498d0ae2ceee340ce835955c6547a4e7f8f4de0311eae6d122b3183",
+      "bytes": 1545
+    },
+    "intake-owner-sources/Folders/Directory.Build.props": {
+      "sha256": "c29f98146c92a4a182cab16b393bf4760540f7180bb00277350ca3f2b6f612ea",
+      "bytes": 6861
+    },
+    "intake-owner-sources/Folders/Directory.Build.targets": {
+      "sha256": "142ee531ce5bf030f68c057ac43153ca912da76bb9bca4666f7ca92574ae578a",
+      "bytes": 3002
+    },
+    "intake-owner-sources/Folders/Directory.Packages.props": {
+      "sha256": "07287d602e3d782505a4b203b7f0c3e035add66febbe7d59720b13a6b5ac77a0",
+      "bytes": 1314
+    },
+    "intake-owner-sources/Folders/docs/governance/approval-policy.md": {
+      "sha256": "156929f0695d364d515dc71adfdf3292903b4f08538e723f6015633655ebd8a4",
+      "bytes": 2640
+    },
+    "intake-owner-sources/Folders/src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj": {
+      "sha256": "ba52b4cf8339848b6bd5705f2d7966e9bce570cfc5969e98c9a9f0d8ab1d5677",
+      "bytes": 2419
+    },
+    "intake-owner-sources/Folders/src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj": {
+      "sha256": "048c65f33cb40244b4a7415ff5a8cc0fd41cdcd3faa18e108c9c82f070f0a73c",
+      "bytes": 456
+    },
+    "intake-owner-sources/Folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj": {
+      "sha256": "c9d9b6040dddc17e702198a500e1a05c019b9efb8da57d9673a64daf7e6e2846",
+      "bytes": 3650
+    },
+    "intake-owner-sources/Folders/src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj": {
+      "sha256": "946917bf6a27f53c930412962a5a6813872adfbf42e79dc89962ad5360258953",
+      "bytes": 775
+    },
+    "intake-owner-sources/Folders/src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj": {
+      "sha256": "ab344ff830e721a4fca69bbd5c3948887101287d5724f47be72b7432e09e40e9",
+      "bytes": 2069
+    },
+    "intake-owner-sources/Folders/tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj": {
+      "sha256": "2259f6ceeb49110fdcd304f856e56d0aa85655f844a9d1d591f92f1d1dbfbe85",
+      "bytes": 1982
+    },
+    "intake-owner-sources/Folders/tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj": {
+      "sha256": "d66e82e84b60fef471d4d8f6cafdee4328c3be3373b22c26cc11f127f11175ba",
+      "bytes": 853
+    },
+    "intake-owner-sources/Folders/tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj": {
+      "sha256": "5d26227eb48be761b239d4b1fa334e1864d03aedef95ca34b3e139b81cc3718a",
+      "bytes": 6554
+    },
+    "intake-owner-sources/Memories/.gitmodules": {
+      "sha256": "fc6b4d7b354d156f8cdfb8f4397e866cc3e6c495eae285f4f8d70a878a4e1761",
+      "bytes": 1237
+    },
+    "intake-owner-sources/Memories/Directory.Build.props": {
+      "sha256": "9ea564e52fe87e974297d72f73fe5b04380bd7b5e57faf6e656cdc73be5c3bb1",
+      "bytes": 11523
+    },
+    "intake-owner-sources/Memories/Directory.Build.targets": {
+      "sha256": "0bb92dee5beeb02399ec642d3a87079bbbc672583c5c8a68d8843d4cf70b60e4",
+      "bytes": 1229
+    },
+    "intake-owner-sources/Memories/Directory.Packages.props": {
+      "sha256": "ddb5c6e74e73a9e8a6a24679a6af7e0dd0df9e1e8cc749bb21444c83b681f7d1",
+      "bytes": 1085
+    },
+    "intake-owner-sources/Memories/README.md": {
+      "sha256": "76be64ce4f4b8bed75eb52b4a1a66f8845f83f89842404c939fb70f9829284d2",
+      "bytes": 10443
+    },
+    "intake-owner-sources/Memories/_bmad-output/implementation-artifacts/spec-pg2-c1-single-owner-approval-policy.md": {
+      "sha256": "bff6ff94ddbf031804e5aaec1c90badb825f2cf2e9cb675099ce794683f41768",
+      "bytes": 13247
+    },
+    "intake-owner-sources/Memories/module/hexalith.module-manifest.v2.json": {
+      "sha256": "1265d887617a15b904d88f0ff42af3e118d418b449b3e3f73796ee509d1a361f",
+      "bytes": 28234
+    },
+    "intake-owner-sources/Memories/src/Hexalith.Memories.AccessTelemetry/Hexalith.Memories.AccessTelemetry.csproj": {
+      "sha256": "30af95908efd6de5c367e0138f0acff77e9243ea5df4156a22dcee76a8bcf9d1",
+      "bytes": 954
+    },
+    "intake-owner-sources/Memories/src/Hexalith.Memories.AccessTelemetry.Clock/Hexalith.Memories.AccessTelemetry.Clock.csproj": {
+      "sha256": "3b151942706ab902714d1dd64af41a98aeb231a11529ed7b2028ea150cc017da",
+      "bytes": 831
+    },
+    "intake-owner-sources/Memories/src/Hexalith.Memories.AppHost/Hexalith.Memories.AppHost.csproj": {
+      "sha256": "884bf49d82cc5ccfc30c293cd19b9ea2663b0417f74dc5e1e462732073a78a0c",
+      "bytes": 1417
+    },
+    "intake-owner-sources/Memories/src/Hexalith.Memories.Aspire/Hexalith.Memories.Aspire.csproj": {
+      "sha256": "293f0b868f63f2063b6de8852aa84feb079ccb2280f379168f1d43188ca7beb2",
+      "bytes": 1713
+    },
+    "intake-owner-sources/Memories/src/Hexalith.Memories.Mcp/Hexalith.Memories.Mcp.csproj": {
+      "sha256": "4a1b6cd847bd0e43cae8c4d011616f97f4691626e9dd7526aa6d673ee73d284f",
+      "bytes": 2206
+    },
+    "intake-owner-sources/Memories/src/Hexalith.Memories.ServiceDefaults/Hexalith.Memories.ServiceDefaults.csproj": {
+      "sha256": "166c1f2656a99aa6405536160fec41304f2256283f7fd106fcf556824b9590ec",
+      "bytes": 2822
+    },
+    "intake-owner-sources/Memories/tests/Hexalith.Memories.IntegrationTests/Hexalith.Memories.IntegrationTests.csproj": {
+      "sha256": "861de8ad4108b5a1e06531d659e9a8478bb168c9bd2451df4f4830afe9b8f89d",
+      "bytes": 3181
+    },
+    "intake-owner-sources/Memories/tests/Hexalith.Memories.Server.Tests/Hexalith.Memories.Server.Tests.csproj": {
+      "sha256": "ab6ac1fbe7482eaa20f3c0f04aeaec68e00909c52e1e786c7a2af8e05c9df11a",
+      "bytes": 2427
+    },
+    "intake-owner-sources/Platform/.config/dotnet-tools.json": {
+      "sha256": "5d72a022a9416cb753da75cda1b0f1945fd938c065521fd9946aaa525fe048da",
+      "bytes": 206
+    },
+    "intake-owner-sources/Platform/.github/CODEOWNERS": {
+      "sha256": "2b338e90f00d9d29582065320a7a7d38bd68e7b33598516d894be9d966eefc21",
+      "bytes": 152
+    },
+    "intake-owner-sources/Platform/.gitmodules": {
+      "sha256": "6da4f5297d79bfa54afcb8daacda70670af11868ba1738cc185f584db8eb6ab7",
+      "bytes": 2380
+    },
+    "intake-owner-sources/Platform/Directory.Build.props": {
+      "sha256": "e07baf3cf5b11bf417590e268087202935b0f07d81f041d3d9a541f70e3bd20f",
+      "bytes": 1389
+    },
+    "intake-owner-sources/Platform/Directory.Build.targets": {
+      "sha256": "2aba9feae72b95412779c70691e4408cf80829f84882c748b6541f16a027b439",
+      "bytes": 271
+    },
+    "intake-owner-sources/Platform/Directory.Packages.props": {
+      "sha256": "71bbbb3b3bf472b00e24c0fa29130ee60851f9c929b8e2e0f32ae19c6c1c8b29",
+      "bytes": 789
+    },
+    "intake-owner-sources/Platform/_bmad-output/implementation-artifacts/evidence/1-13/pass-5/release/accepted-identities.json": {
+      "sha256": "3c65702098e93254d1a9c13497749811bfd67b231341ec0b136b852b605a3f4a",
+      "bytes": 4092
+    },
+    "intake-owner-sources/Platform/_bmad-output/implementation-artifacts/evidence/1-13/pass-5/release/owner-approval.json": {
+      "sha256": "08c8e14569795670966567e8b9b210377197f9425cdeed5e88e566907bc025f0",
+      "bytes": 559
+    },
+    "intake-owner-sources/Platform/docs/domain-module-enrollment.md": {
+      "sha256": "f3871a49eb4a741a521ae02378f4fa494d7388313f6bbf22695b114173c4cb44",
+      "bytes": 14558
+    },
+    "intake-owner-sources/Platform/hexalith-platform.json": {
+      "sha256": "3ba6c30a8d602bbc3216f0a4f9f90fb9e1f2e11ea985b4fb5058c3611149fb23",
+      "bytes": 68
+    },
+    "intake-owner-sources/Platform/src/Hexalith.Platform.Composition/PlatformGatewayConfiguration.cs": {
+      "sha256": "8f158eaa188610032df2179b49203fd149702a05a1095705097aeca4fb055b76",
+      "bytes": 1918
+    },
+    "intake-owner-sources/Platform/src/Hexalith.Platform.Composition/PlatformLocalProfile.cs": {
+      "sha256": "62fd734ed2e9316e4662e6029c88f84476674e696664b6e45cc96c74c70f462a",
+      "bytes": 9152
+    },
+    "intake-owner-sources/Platform/src/Hexalith.Platform.Composition/PlatformServerBindings.cs": {
+      "sha256": "21a49f775e6d7e862c3a61761b5cc625ef1fca212152edb6c317536726f40f6e",
+      "bytes": 7533
+    },
+    "intake-owner-sources/Platform/templates/domain-module-enrollment/hexalith.module-manifest.v2.json": {
+      "sha256": "9146acfb6cbb74056aab386dbd52ff4a168d2093358b558939ad93b8d62e3dd5",
+      "bytes": 2191
+    },
+    "intake-owner-sources/Platform/templates/domain-module-enrollment/hosting-inventory.json": {
+      "sha256": "32d224adf052598411d4385942ab704f16e81091fbf6e29eef8abc7750c0058e",
+      "bytes": 2736
+    },
+    "intake-owner-sources/Platform/templates/domain-module-enrollment/platform-handoff.md": {
+      "sha256": "a06345e407edcfe704ef898faa95c210d476f76db8de48c48343b6896d6dbcb2",
+      "bytes": 3203
+    },
+    "intake-owner-sources/Projects/.gitmodules": {
+      "sha256": "5b5054ea8ed4804a52a792e8bd0f77f8a6d6ecdd8185b58840c0fdc7da7946dc",
+      "bytes": 1524
+    },
+    "intake-owner-sources/Projects/Directory.Build.props": {
+      "sha256": "dd28973111bdb352af15b6e46c0793fe4137d94a6c68c122e0ecdce8fb27ca67",
+      "bytes": 8708
+    },
+    "intake-owner-sources/Projects/Directory.Packages.props": {
+      "sha256": "db026ea147622209d4280cc35d27de75f3c2c5f480e8502272a2376ea0f07d5e",
+      "bytes": 1264
+    },
+    "intake-owner-sources/Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj": {
+      "sha256": "69543faa046745c48450cbb3c5150df5f6ebb6fb02cbbdad146ce7939a62efd1",
+      "bytes": 1644
+    },
+    "intake-owner-sources/Projects/src/Hexalith.Projects.Aspire/Hexalith.Projects.Aspire.csproj": {
+      "sha256": "3a9059810555ca7a9ff42455c49528c4858f38861086b8c9a1f9745bd4184584",
+      "bytes": 268
+    },
+    "intake-owner-sources/Projects/src/Hexalith.Projects.Server/Hexalith.Projects.Server.csproj": {
+      "sha256": "06b9231292a3d910f337367364c8d7bb732244c1722569332ae69dcdfdfac1b8",
+      "bytes": 3832
+    },
+    "intake-owner-sources/Projects/src/Hexalith.Projects.ServiceDefaults/Hexalith.Projects.ServiceDefaults.csproj": {
+      "sha256": "b87f882ede13a172f9b2549ac0ab45a352468c7d93ef6f7490c643679a27116c",
+      "bytes": 804
+    },
+    "intake-owner-sources/Projects/src/Hexalith.Projects.Workers/Hexalith.Projects.Workers.csproj": {
+      "sha256": "be7cbb9783a0aec90d5087564fd84a00de22aff7cea11010abb9363fdd6ec720",
+      "bytes": 1691
+    },
+    "intake-owner-sources/Projects/tests/Hexalith.Projects.Integration.Tests/Hexalith.Projects.Integration.Tests.csproj": {
+      "sha256": "fa5c9ddfaeaa50670cdc179d56da7591321e701d0a9a8487ba39eb69b7b51339",
+      "bytes": 1522
+    },
+    "intake-owner-sources/Tenants/.gitmodules": {
+      "sha256": "372ae4525c40a32e202a3b2bb507bd13e191b3464838c9ee715349a7356a3a22",
+      "bytes": 1191
+    },
+    "intake-owner-sources/Tenants/Directory.Build.props": {
+      "sha256": "aa63a48d8cc10fef234bb2335058dd18d863cd8487952c478f89dc33b5414ba2",
+      "bytes": 15085
+    },
+    "intake-owner-sources/Tenants/Directory.Build.targets": {
+      "sha256": "79ccdd907cf115a55ade4d40c0159afe1effe1ff17935e341d6583c3633ecfab",
+      "bytes": 2652
+    },
+    "intake-owner-sources/Tenants/Directory.Packages.props": {
+      "sha256": "c8351c554ea90792eae487eadd8d6a08faeb0719e62341a929d81f7f44fdcd08",
+      "bytes": 1163
+    },
+    "intake-owner-sources/Tenants/_bmad-output/implementation-artifacts/story-5-1-performance-decision.md": {
+      "sha256": "33b51532d164824b251dbe04ceb8c1b962b77e9e421722c1b9448c60d1ee9e92",
+      "bytes": 7881
+    },
+    "intake-owner-sources/Tenants/module/hexalith.module-manifest.v2.json": {
+      "sha256": "1588f3428ec29296c452fdd35bf95146142315aad3ad8ceb934e7a791f1fb522",
+      "bytes": 18506
+    },
+    "intake-owner-sources/Tenants/src/Hexalith.Tenants.AppHost/Hexalith.Tenants.AppHost.csproj": {
+      "sha256": "6647a3a3130502632cd1200b1451873b4194d7e1edae60ab997f976a000901c8",
+      "bytes": 6166
+    },
+    "intake-owner-sources/Tenants/src/Hexalith.Tenants.Aspire/Hexalith.Tenants.Aspire.csproj": {
+      "sha256": "078e94d3eb81a9da3451ab5fa5ff11403cef85cfbd2b75c8e4ce4511ac06fe81",
+      "bytes": 1188
+    },
+    "intake-owner-sources/Tenants/tests/Hexalith.Tenants.AppHost.Tests/Hexalith.Tenants.AppHost.Tests.csproj": {
+      "sha256": "626d49ebe79b48d48805572a9b3870a58e0644e58d76e13acc4f1a79f8161349",
+      "bytes": 589
+    },
+    "intake-owner-sources/Tenants/tests/Hexalith.Tenants.IntegrationTests/Hexalith.Tenants.IntegrationTests.csproj": {
+      "sha256": "42a9c713d333ef4bad068520a0787ae68f1fec869eb7e480467f06a8ba8ee46b",
+      "bytes": 3272
+    },
+    "intake-owner-sources/catalog-accepted-tool.props": {
+      "sha256": "f10372ba382108f8c35b3ee922c76fe8608dbec336c399278709345ae255078d",
+      "bytes": 29609
+    },
+    "intake-owner-sources/catalog-direct.props": {
+      "sha256": "553796eef36f2789f60bb47bc8902b5fb9f1df5b3a942cde7f0523768bf1d2a1",
+      "bytes": 30088
+    },
+    "intake-owner-sources/catalog-platform-pin.props": {
+      "sha256": "553796eef36f2789f60bb47bc8902b5fb9f1df5b3a942cde7f0523768bf1d2a1",
+      "bytes": 30088
+    },
+    "investigation-source-recheck.json": {
+      "sha256": "73544f610fb34ed3611980d276f2037b1802315052018c242fac012d4015d5f1",
+      "bytes": 98337
+    },
+    "latest-source-comparison.json": {
+      "sha256": "1d3bde707fbf284b25c7abef37c3153bc99271cf0094e49cca7fa114bcfba047",
+      "bytes": 391398
+    },
+    "logs/after-diff-check-folders.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/after-diff-check-folders.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/after-diff-check-platform.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/after-diff-check-platform.stdout.txt": {
+      "sha256": "03bd1598f35c1d69698bd1e00476666dd0b584283d998739689d692d9e6c69e2",
+      "bytes": 3894
+    },
+    "logs/after-diff-check-projects.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/after-diff-check-projects.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/before-diff-check-folders.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/before-diff-check-folders.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/before-diff-check-platform.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/before-diff-check-platform.stdout.txt": {
+      "sha256": "03bd1598f35c1d69698bd1e00476666dd0b584283d998739689d692d9e6c69e2",
+      "bytes": 3894
+    },
+    "logs/before-diff-check-projects.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/before-diff-check-projects.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/eventstore-adoption.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/eventstore-adoption.stdout.txt": {
+      "sha256": "9896dc73f8503d7edde06adc0da3e0d8efae2d4d5890144562929262a2c3b098",
+      "bytes": 53978
+    },
+    "logs/eventstore-declaration.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/eventstore-declaration.stdout.txt": {
+      "sha256": "724d6ace8bd53e2658aa456dc61b065be48a3fe24e71ebb7c93b76c056cd0d53",
+      "bytes": 120
+    },
+    "logs/folders-adoption.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/folders-adoption.stdout.txt": {
+      "sha256": "75e4ef20c717853a5523d02f29bc248102369250f1b02c2676d41867104711b0",
+      "bytes": 50078
+    },
+    "logs/folders-declaration.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/folders-declaration.stdout.txt": {
+      "sha256": "b51e9e72adaaac1029041ba7b4a470f1b82a7afbd5439615e26db6af7dfa3bc2",
+      "bytes": 361
+    },
+    "logs/memories-adoption.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/memories-adoption.stdout.txt": {
+      "sha256": "86f969872b2e982d6a98a38b2214f7117b87f92b1ff3f6ed6812f39b0ae77084",
+      "bytes": 29936
+    },
+    "logs/memories-declaration.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/memories-declaration.stdout.txt": {
+      "sha256": "724d6ace8bd53e2658aa456dc61b065be48a3fe24e71ebb7c93b76c056cd0d53",
+      "bytes": 120
+    },
+    "logs/normal-tests.txt": {
+      "sha256": "821c80a39116c85429ea3bc788e1d67fd35f1df1f540b0e53d1476db38a76bc6",
+      "bytes": 141
+    },
+    "logs/optimized-tests.txt": {
+      "sha256": "ce64b52d387a3e11f35e7ebe46948d49b46a63c99798ca38fc77b8d94f5e285c",
+      "bytes": 141
+    },
+    "logs/ordinary-missing-parties.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/ordinary-missing-parties.stdout.txt": {
+      "sha256": "1a912da2e70ca0b9a77c8acc36db9bd4009151d446052eecf6e0711ed881c0d5",
+      "bytes": 1979
+    },
+    "logs/projects-adoption.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/projects-adoption.stdout.txt": {
+      "sha256": "678970b4f1f127b54f916c3eb452011837aae217b99f1bbfd454408b80fb98cf",
+      "bytes": 16990
+    },
+    "logs/projects-declaration.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/projects-declaration.stdout.txt": {
+      "sha256": "b51e9e72adaaac1029041ba7b4a470f1b82a7afbd5439615e26db6af7dfa3bc2",
+      "bytes": 361
+    },
+    "logs/tenants-adoption.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/tenants-adoption.stdout.txt": {
+      "sha256": "772f231ad21e40798ce0067d1bd08cad1535b3f8eae67c392142313b78aa54da",
+      "bytes": 11978
+    },
+    "logs/tenants-declaration.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "logs/tenants-declaration.stdout.txt": {
+      "sha256": "724d6ace8bd53e2658aa456dc61b065be48a3fe24e71ebb7c93b76c056cd0d53",
+      "bytes": 120
+    },
+    "ordinary-mapping-investigation.json": {
+      "sha256": "b8ed17ab5e32c74ca124444022e256ac8a73014ddeb5ed9c3dbac82a404fd2c5",
+      "bytes": 116167
+    },
+    "ordinary-mapping-sources/.gitmodules": {
+      "sha256": "a58f12852498d0ae2ceee340ce835955c6547a4e7f8f4de0311eae6d122b3183",
+      "bytes": 1545
+    },
+    "ordinary-mapping-sources/command-output/000-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/000-stdout.txt": {
+      "sha256": "2bc7490b227ed4ab2f19f8e8c3ea3c0535fab116a25fdd96eb4635f9cde69d6e",
+      "bytes": 41
+    },
+    "ordinary-mapping-sources/command-output/001-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/001-stdout.txt": {
+      "sha256": "6403203dd5a0867eb14d104ee8a73730bd72dd9ad92e78d996a6dba0a5dcfc01",
+      "bytes": 5
+    },
+    "ordinary-mapping-sources/command-output/002-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/002-stdout.txt": {
+      "sha256": "5ae9c5ea1635034b6574acebe21263ff5b9a789f71528ee817658e9671f65a5b",
+      "bytes": 2333313
+    },
+    "ordinary-mapping-sources/command-output/003-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/003-stdout.txt": {
+      "sha256": "ada60289fc1bb3cd6d44ca73291030c63388700e819716913391bafd07732c76",
+      "bytes": 41
+    },
+    "ordinary-mapping-sources/command-output/004-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/004-stdout.txt": {
+      "sha256": "6403203dd5a0867eb14d104ee8a73730bd72dd9ad92e78d996a6dba0a5dcfc01",
+      "bytes": 5
+    },
+    "ordinary-mapping-sources/command-output/005-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/005-stdout.txt": {
+      "sha256": "99003781840ffb857f3b137cbfc31c19bfe38d4b2143cf023a95aecafc8f6b28",
+      "bytes": 1404784
+    },
+    "ordinary-mapping-sources/command-output/006-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/006-stdout.txt": {
+      "sha256": "6e99db8f01601351c6ff2a893cb128d3128a7d4b99cd6095f60a97123dafa382",
+      "bytes": 41
+    },
+    "ordinary-mapping-sources/command-output/007-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/007-stdout.txt": {
+      "sha256": "6403203dd5a0867eb14d104ee8a73730bd72dd9ad92e78d996a6dba0a5dcfc01",
+      "bytes": 5
+    },
+    "ordinary-mapping-sources/command-output/008-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/008-stdout.txt": {
+      "sha256": "56564de0622d604c8a14876958a7185727ba6eb563409eb1e00448d30cea35d9",
+      "bytes": 438158
+    },
+    "ordinary-mapping-sources/command-output/009-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/009-stdout.txt": {
+      "sha256": "b0ef1a9613e0fc2bda99a1756a0cb2d044f3a2dbc0b04f8f82c805e5e459ace3",
+      "bytes": 926384
+    },
+    "ordinary-mapping-sources/command-output/010-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/010-stdout.txt": {
+      "sha256": "6489d4e7fcb121bec71c0672da735692771649e48a3d468e482559e436a0280a",
+      "bytes": 76824
+    },
+    "ordinary-mapping-sources/command-output/011-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/011-stdout.txt": {
+      "sha256": "7131fa7aaa3bef825060306213b02dbbc6fdac570bf888eb7d4f30bafded68e4",
+      "bytes": 27217
+    },
+    "ordinary-mapping-sources/command-output/012-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/012-stdout.txt": {
+      "sha256": "24fa31c0b5b5cf72f931d26a8f4dd4ec4e09fa3cf0c65cc88118895bd962a063",
+      "bytes": 21775
+    },
+    "ordinary-mapping-sources/command-output/013-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/013-stdout.txt": {
+      "sha256": "961baf3cdb6c28e82434e7cdcdcb0ef1f311365410e1923c631049e1cc241051",
+      "bytes": 41
+    },
+    "ordinary-mapping-sources/command-output/014-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/014-stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/015-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/015-stdout.txt": {
+      "sha256": "827ac6a629ff12b4858ed0a2f799c811357dd2647670ff54a850e8e9598fbecc",
+      "bytes": 413
+    },
+    "ordinary-mapping-sources/command-output/016-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/016-stdout.txt": {
+      "sha256": "fb326b3cf408f8b075a3dd0b44ee5dd12ad2343040ff8448d9f9c3c5036f7059",
+      "bytes": 127
+    },
+    "ordinary-mapping-sources/command-output/017-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/017-stdout.txt": {
+      "sha256": "eec6aa82760f7d32445b0f0dff3566a5052fa81158c19e214b6410458bd51030",
+      "bytes": 277
+    },
+    "ordinary-mapping-sources/command-output/018-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/018-stdout.txt": {
+      "sha256": "44d1aad1222323b612d632e81eb8dea6d78539389750bc303fbe5ac43eb25c5c",
+      "bytes": 156
+    },
+    "ordinary-mapping-sources/command-output/019-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/019-stdout.txt": {
+      "sha256": "0fd4457a1801fa13053ef8821eb16a0cfcc6a5edac94b6ce89e8f220e8a30511",
+      "bytes": 12797
+    },
+    "ordinary-mapping-sources/command-output/020-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/020-stdout.txt": {
+      "sha256": "0fd4457a1801fa13053ef8821eb16a0cfcc6a5edac94b6ce89e8f220e8a30511",
+      "bytes": 12797
+    },
+    "ordinary-mapping-sources/command-output/021-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/021-stdout.txt": {
+      "sha256": "0fd4457a1801fa13053ef8821eb16a0cfcc6a5edac94b6ce89e8f220e8a30511",
+      "bytes": 12797
+    },
+    "ordinary-mapping-sources/command-output/022-stderr.txt": {
+      "sha256": "d2b35cacadc66b7fad8dedd1be5244e17150a6625978c9330f831bd7a9cd6b1e",
+      "bytes": 69
+    },
+    "ordinary-mapping-sources/command-output/022-stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/023-stderr.txt": {
+      "sha256": "d2b35cacadc66b7fad8dedd1be5244e17150a6625978c9330f831bd7a9cd6b1e",
+      "bytes": 69
+    },
+    "ordinary-mapping-sources/command-output/023-stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/024-stderr.txt": {
+      "sha256": "d2b35cacadc66b7fad8dedd1be5244e17150a6625978c9330f831bd7a9cd6b1e",
+      "bytes": 69
+    },
+    "ordinary-mapping-sources/command-output/024-stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/025-stderr.txt": {
+      "sha256": "d2b35cacadc66b7fad8dedd1be5244e17150a6625978c9330f831bd7a9cd6b1e",
+      "bytes": 69
+    },
+    "ordinary-mapping-sources/command-output/025-stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/026-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/026-stdout.txt": {
+      "sha256": "37547e4abcbc223ff0ce79e5bb2e9235879a1cc88883c88e9c1e735774d9e71b",
+      "bytes": 41
+    },
+    "ordinary-mapping-sources/command-output/027-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/027-stdout.txt": {
+      "sha256": "31d52a990dfbbe933d3d50bf3b338c05a6fff2b6e98eec93990cdc1a85ec700c",
+      "bytes": 598
+    },
+    "ordinary-mapping-sources/command-output/028-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/028-stdout.txt": {
+      "sha256": "89d8216e897081ab6d05ee893872422a631967925bfdec41a41cff6f4e9f25ce",
+      "bytes": 388
+    },
+    "ordinary-mapping-sources/command-output/029-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ordinary-mapping-sources/command-output/029-stdout.txt": {
+      "sha256": "e1f63c14dc97a5e5c6b07e1c3e45c1112fd64dee74c8ed35f90805b8bebbac67",
+      "bytes": 436
+    },
+    "ordinary-mapping-sources/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Module.Cli/ModuleCommandApplication.cs": {
+      "sha256": "533ec5b61d490214d5823c70e8df4696c2ac53b97c4862e7e81a18776b98ee35",
+      "bytes": 14666
+    },
+    "ordinary-mapping-sources/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionCommandOptions.cs": {
+      "sha256": "0a2cf5d3b35216b9ed7b730806414d6549df9910cf6f5a4359f3bb310f16813f",
+      "bytes": 2465
+    },
+    "ordinary-mapping-sources/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionDeclarationClosure.cs": {
+      "sha256": "259f7c38f744481ce4c5bd650f648355651edefa5bd5b86b1f6c32c8bc6cc9b0",
+      "bytes": 12561
+    },
+    "ordinary-mapping-sources/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Runtime/ModuleCommandExecutionService.cs": {
+      "sha256": "44490f63c7987c6cf3580f7e37d15528e9638b0e392b814c6901b0e06874c040",
+      "bytes": 94077
+    },
+    "ordinary-mapping-sources/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMapping.cs": {
+      "sha256": "ecb6b6fd69360ab8d8a52e77d2c413897b9c8426f9672a90f2a46b3896bcebeb",
+      "bytes": 4128
+    },
+    "ordinary-mapping-sources/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/SubmoduleInitializer.cs": {
+      "sha256": "7b7ee2f74a41baaef93de7e7e705d0a1dda3cf4e71aaa10915ff24a34c836ca5",
+      "bytes": 22172
+    },
+    "ordinary-mapping-sources/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/WorkspaceRootResolver.cs": {
+      "sha256": "c7e5e10dc3df05c32d33771fb80f0e1edc5c577cb90fabb621da840995ed56a4",
+      "bytes": 28824
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/.config/dotnet-tools.json": {
+      "sha256": "5d72a022a9416cb753da75cda1b0f1945fd938c065521fd9946aaa525fe048da",
+      "bytes": 206
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/.github/CODEOWNERS": {
+      "sha256": "2b338e90f00d9d29582065320a7a7d38bd68e7b33598516d894be9d966eefc21",
+      "bytes": 152
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/.gitmodules": {
+      "sha256": "6da4f5297d79bfa54afcb8daacda70670af11868ba1738cc185f584db8eb6ab7",
+      "bytes": 2380
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/1-12/README.md": {
+      "sha256": "d10c8aa3aee46e9d2bf6969885222627807dec68a16a058c9bde7e67d76b42bb",
+      "bytes": 14897
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/1-12/approved-integration.json": {
+      "sha256": "caf5aeaaf081a63612ecd33a5aa846773556ef789d590a333fa88e395927f1ad",
+      "bytes": 9345
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/1-12/canonical-clean-revisions.json": {
+      "sha256": "64723c9a67beb59bdeeae0651bfd31a0094f8b6e61c3d6e5b88d731b4ef22a7d",
+      "bytes": 7532
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/1-12/canonical-clean-source-mapping.json": {
+      "sha256": "12d1685516c5db05039ca8c588bae0045325fda80320b4ec6c6669e526f80fc8",
+      "bytes": 2986
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/1-12/canonical-source-mapping.json": {
+      "sha256": "12d1685516c5db05039ca8c588bae0045325fda80320b4ec6c6669e526f80fc8",
+      "bytes": 2986
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/1-12/own-source-mapping.json": {
+      "sha256": "2cd16351f8ecd1efb73ddb9d57f709b7cefe3a3244ab31ae63ab82ed7045ab97",
+      "bytes": 3833
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/1-12/platform-smoke-revisions.json": {
+      "sha256": "e11b91dfc3dbe47e8257ff4c4cdbc0fbea2319ca9d24beb886facd7b1ae59ac7",
+      "bytes": 374
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/1-12/platform-smoke-source-mapping.json": {
+      "sha256": "b1a00bf78bd728cf3eef7446c7eb923f88cbfa93875a44ad28464cfc2ee8b20c",
+      "bytes": 3962
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/1-12/review-follow-up.json": {
+      "sha256": "e2b582522f59b8954a993f65408ce92d4e98a9a427568c7d76488c5f8a350019",
+      "bytes": 19958
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/1-12/upstream-integration.json": {
+      "sha256": "e68935a1484958791390a13b5add000071a00ddb1bc4af9ae3e49591b8b35f0d",
+      "bytes": 2317
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/live-source-attempt1/diagnostics/2d5a63380cecd411a2390164732cf816/selected-source-mapping.json": {
+      "sha256": "380505bbac28789977d7571e3c684ba1e9a7d6f5f52037e690e82711a04669b5",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/live-source-attempt1/diagnostics/da80768c02184a12063dbb1efe6df1e8/selected-source-mapping.json": {
+      "sha256": "380505bbac28789977d7571e3c684ba1e9a7d6f5f52037e690e82711a04669b5",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/live-technical-attempt2/diagnostics/515a1b08ff280bb5684ce98d1e82d032/selected-source-mapping.json": {
+      "sha256": "39fc8a40d5c82788a0720abd7b281689f1dea55e8433ac9549746c37a6450b30",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/live-technical-attempt2/diagnostics/eb5df11ab2c8c19cdb7e0a740654f7c8/selected-source-mapping.json": {
+      "sha256": "39fc8a40d5c82788a0720abd7b281689f1dea55e8433ac9549746c37a6450b30",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/live-technical-attempt3/diagnostics/717519ee8557410c70682ed47bab1303/selected-source-mapping.json": {
+      "sha256": "d3c997a9dc7dc03f82fbcff4efe23b5175439bc2304f817cd118f14ec28c07db",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/live-technical-attempt3/diagnostics/fb10e0a7e55275b6a62b331610ad461f/selected-source-mapping.json": {
+      "sha256": "d3c997a9dc7dc03f82fbcff4efe23b5175439bc2304f817cd118f14ec28c07db",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/parent-final/live-final/diagnostics/8629727f7f9688e67b86b7a06e4dcf9d/selected-source-mapping.json": {
+      "sha256": "06d4ccc58a3a53f1eb914d6c6faa6e22ebdeb2a1c0502436f03003c18d8b1fa2",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/parent-final/live-final/diagnostics/927a57797db4d90d6bb817fc7d1cdc8b/selected-source-mapping.json": {
+      "sha256": "06d4ccc58a3a53f1eb914d6c6faa6e22ebdeb2a1c0502436f03003c18d8b1fa2",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/review-round-2/live-attempt-3/diagnostics/0d85ae12fe7f68f5b60a7a3e8a8664be/selected-source-mapping.json": {
+      "sha256": "150e186f07c362711af84a74a77b20b9f43a4a30d18326e1ec5cf5a9b174f65b",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/review-round-2/live-attempt-3/diagnostics/eb2c5693981cc789b98e7c3bf490c78f/selected-source-mapping.json": {
+      "sha256": "150e186f07c362711af84a74a77b20b9f43a4a30d18326e1ec5cf5a9b174f65b",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/review-round-3/live/diagnostics/2f8a837fd855653bfee1186fbe8c65e6/selected-source-mapping.json": {
+      "sha256": "812719721e7d50ad9d218df8bf48116567dc7a11e52cd437df1ebdbcb9e9586a",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/review-round-3/live/diagnostics/fa089a284b28d8794b801465c48b905f/selected-source-mapping.json": {
+      "sha256": "812719721e7d50ad9d218df8bf48116567dc7a11e52cd437df1ebdbcb9e9586a",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/workflow-final/live/diagnostics/929bdb18cf8400a07ea154e00f3a9028/selected-source-mapping.json": {
+      "sha256": "62dc5cdbee68a363114e910877080dc4502b6d32d202925b54caa85cec68ab1c",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-4/workflow-final/live/diagnostics/eaba106ee9884e9e9d819913a4fe115f/selected-source-mapping.json": {
+      "sha256": "62dc5cdbee68a363114e910877080dc4502b6d32d202925b54caa85cec68ab1c",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-5/local-lifecycle-20261024/live/diagnostics/failure/selected-source-mapping.json": {
+      "sha256": "5c31e3913b43cfcf3c4e0a05cda14ea5092b888c7618ff73755d72b7c81b9795",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-5/local-lifecycle-20261024/live/diagnostics/partial-startup/selected-source-mapping.json": {
+      "sha256": "5c31e3913b43cfcf3c4e0a05cda14ea5092b888c7618ff73755d72b7c81b9795",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-5/local-lifecycle-20261024/live/diagnostics/success/selected-source-mapping.json": {
+      "sha256": "5c31e3913b43cfcf3c4e0a05cda14ea5092b888c7618ff73755d72b7c81b9795",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-5/local-lifecycle-20261024/live/diagnostics/timeout/selected-source-mapping.json": {
+      "sha256": "5c31e3913b43cfcf3c4e0a05cda14ea5092b888c7618ff73755d72b7c81b9795",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-5/local-lifecycle-20261024/live-attempt-2-cleanup-retry/diagnostics/success/selected-source-mapping.json": {
+      "sha256": "3d6ed688681e3c5e877564b8b157704b652bad47b274635341c51c1670a7ae15",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-5/local-lifecycle-20261024/live-attempt-3-startup-cause/diagnostics/failure/selected-source-mapping.json": {
+      "sha256": "893606dddab5ec85e844ea9a82cc215ccd8ce269dc35efc7940d65cc0cba0396",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-5/local-lifecycle-20261024/live-attempt-3-startup-cause/diagnostics/partial-startup/selected-source-mapping.json": {
+      "sha256": "893606dddab5ec85e844ea9a82cc215ccd8ce269dc35efc7940d65cc0cba0396",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-5/local-lifecycle-20261024/live-attempt-3-startup-cause/diagnostics/success/selected-source-mapping.json": {
+      "sha256": "893606dddab5ec85e844ea9a82cc215ccd8ce269dc35efc7940d65cc0cba0396",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-5/local-lifecycle-20261024/live-attempt-3-startup-cause/diagnostics/timeout/selected-source-mapping.json": {
+      "sha256": "893606dddab5ec85e844ea9a82cc215ccd8ce269dc35efc7940d65cc0cba0396",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-5/local-lifecycle-20261024/live-before-review-corrections/diagnostics/failure/selected-source-mapping.json": {
+      "sha256": "e7b0dfd4035f0da142d2ca12d7b15b4e9ba247b8cb78017a3d5743dd27466d7b",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-5/local-lifecycle-20261024/live-before-review-corrections/diagnostics/partial-startup/selected-source-mapping.json": {
+      "sha256": "e7b0dfd4035f0da142d2ca12d7b15b4e9ba247b8cb78017a3d5743dd27466d7b",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-5/local-lifecycle-20261024/live-before-review-corrections/diagnostics/success/selected-source-mapping.json": {
+      "sha256": "e7b0dfd4035f0da142d2ca12d7b15b4e9ba247b8cb78017a3d5743dd27466d7b",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/2-5/local-lifecycle-20261024/live-before-review-corrections/diagnostics/timeout/selected-source-mapping.json": {
+      "sha256": "e7b0dfd4035f0da142d2ca12d7b15b4e9ba247b8cb78017a3d5743dd27466d7b",
+      "bytes": 4677
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/sm-2/2026-10-20/eventstore-baseline/source-mapping.json": {
+      "sha256": "47570fa306533d3ba5a3ef2a920d630c48aa866892262425fe6e278b8c1d9e47",
+      "bytes": 3885
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/sm-2/2026-10-20/eventstore-live/edited-source-mapping.json": {
+      "sha256": "47570fa306533d3ba5a3ef2a920d630c48aa866892262425fe6e278b8c1d9e47",
+      "bytes": 3885
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/sm-2/2026-10-20/mcpcli-live/baseline-source-mapping.json": {
+      "sha256": "6306a9cf914ba72bc837ebc4be710854f33fc1db1b4d004348162ec5599e86a7",
+      "bytes": 3881
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/sm-2/2026-10-20/mcpcli-live/edited-source-mapping.json": {
+      "sha256": "6306a9cf914ba72bc837ebc4be710854f33fc1db1b4d004348162ec5599e86a7",
+      "bytes": 3881
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/sm-2/2026-10-20/memories-live/baseline-source-mapping.json": {
+      "sha256": "5950f35ed576ec9d3356fcb14a4e43f8dae110e1774a7be838105bc50686c11e",
+      "bytes": 3883
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/sm-2/2026-10-20/memories-live/edited-source-mapping.json": {
+      "sha256": "5950f35ed576ec9d3356fcb14a4e43f8dae110e1774a7be838105bc50686c11e",
+      "bytes": 3883
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/sm-2/2026-10-20/parties-live/baseline-source-mapping.json": {
+      "sha256": "232cd957d82bd328d8a28ffdc3ac0ffc6f11ba8dac7e0f30849fc1cab996a851",
+      "bytes": 3151
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/sm-2/2026-10-20/parties-live/edited-source-mapping.json": {
+      "sha256": "232cd957d82bd328d8a28ffdc3ac0ffc6f11ba8dac7e0f30849fc1cab996a851",
+      "bytes": 3151
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/sm-2/2026-10-20/parties-superseded-staged-pins/baseline-source-mapping.json": {
+      "sha256": "316b617d91d3e20c8122506a20be25b073492f3550ef42b489e83767500ed382",
+      "bytes": 3951
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/sm-2/2026-10-20/parties-superseded-staged-pins/edited-source-mapping.json": {
+      "sha256": "316b617d91d3e20c8122506a20be25b073492f3550ef42b489e83767500ed382",
+      "bytes": 3951
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/sm-2/2026-10-20/tenants-live/baseline-source-mapping.json": {
+      "sha256": "c658558158a66aed3fec840e6b6f656a984dd79e78f9f85db4f0f3267ed3fe85",
+      "bytes": 2977
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/sm-2/2026-10-20/tenants-live/edited-source-mapping.json": {
+      "sha256": "c658558158a66aed3fec840e6b6f656a984dd79e78f9f85db4f0f3267ed3fe85",
+      "bytes": 2977
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/sm-2/2026-10-20/tenants-superseded-staged-pins/baseline-source-mapping.json": {
+      "sha256": "2737ceac0d618263fede1ee9191da881c5b3c7ecc5f1b9b35a5e7fea9327c97e",
+      "bytes": 3777
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/docs/domain-module-enrollment.md": {
+      "sha256": "f3871a49eb4a741a521ae02378f4fa494d7388313f6bbf22695b114173c4cb44",
+      "bytes": 14558
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/docs/implementation/story-1-17-admission-preparation-2026-10-16.json": {
+      "sha256": "f9dcd28a12cb7d9b0cb528424e7cdad4b2927fbd1f8f376ac6304635bf5fa50d",
+      "bytes": 19344
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/docs/implementation/story-1-17-readiness-qualification-2026-10-17.json": {
+      "sha256": "777b4909d9ec27456cf98ff7a5c8d99cfd229b895903620a67fe6471aff12cdf",
+      "bytes": 36488
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/hexalith-platform.json": {
+      "sha256": "3ba6c30a8d602bbc3216f0a4f9f90fb9e1f2e11ea985b4fb5058c3611149fb23",
+      "bytes": 68
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformAppModel.cs": {
+      "sha256": "8094287f4bfe50e8f78751ecf313ab061cb457774aaf4c187e0ab9c24d3d11b0",
+      "bytes": 40984
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs": {
+      "sha256": "d4f7429743a0a71f6833606527718c9fe8dfa6a286e4f79ce0d0b83d24733906",
+      "bytes": 4548
+    },
+    "ordinary-mapping-sources/references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformServerBindings.cs": {
+      "sha256": "21a49f775e6d7e862c3a61761b5cc625ef1fca212152edb6c317536726f40f6e",
+      "bytes": 7533
+    },
+    "ordinary-mapping-sources/released-tool-source/ModuleCommandExecutionService.cs": {
+      "sha256": "6489d4e7fcb121bec71c0672da735692771649e48a3d468e482559e436a0280a",
+      "bytes": 76824
+    },
+    "ordinary-mapping-sources/released-tool-source/SubmoduleInitializer.cs": {
+      "sha256": "24fa31c0b5b5cf72f931d26a8f4dd4ec4e09fa3cf0c65cc88118895bd962a063",
+      "bytes": 21775
+    },
+    "ordinary-mapping-sources/released-tool-source/WorkspaceRootResolver.cs": {
+      "sha256": "7131fa7aaa3bef825060306213b02dbbc6fdac570bf888eb7d4f30bafded68e4",
+      "bytes": 27217
+    },
+    "ordinary-preflight.json": {
+      "sha256": "b8082ef1d19fae351e1f3c5b716810cafcee64904d14757985638378eca08513",
+      "bytes": 4759
+    },
+    "original/.gitattributes": {
+      "sha256": "47d75da2d5e80f209cb5702b4661f14e1ed987233cc96e9f0dfc606a6a846981",
+      "bytes": 4080
+    },
+    "original/_bmad-output/implementation-artifacts/spec-1-17-ordinary-workspace-owner-intake.md": {
+      "sha256": "ecd8055cdd7ab96e0084d3af335b6d0f738990e661a4520bb66b5cfb803d1003",
+      "bytes": 7913
+    },
+    "owner-intake-investigation.json": {
+      "sha256": "054df0e63cb311a886c33afb968e6f2300e65996d683c9ac75c7f74b06035408",
+      "bytes": 4073887
+    },
+    "preservation.json": {
+      "sha256": "665562eef146e388dd093e3f07033baae589a7b2c009e4d7ffe11e76f3a4a8f4",
+      "bytes": 5136
+    },
+    "prior-bound/current-compiled-source-audit.json": {
+      "sha256": "e9b92aab5991e57c204884df4191e1fc2d3a0a0afcdc9dd7c46e84bab4cb419f",
+      "bytes": 522874
+    },
+    "prior-bound/source-reuse-audit.json": {
+      "sha256": "edb89811bd4644211b10a68377f563a3b7cb8a40fdd03abf0694fd71104ca3c8",
+      "bytes": 4260187
+    },
+    "prior-bound/source-reuse-profiles.json": {
+      "sha256": "7c5e475314b1df5e5833766652cd65241585c4b7eb85cb40ebe87879ba2d7f91",
+      "bytes": 13419324
+    },
+    "prior-bound/source-reuse-summary.json": {
+      "sha256": "2e10431fa30c44a39d0625c41c37196730fd69f030ea075d6b128b66b12c9f33",
+      "bytes": 828
+    },
+    "prior-bound/story-1-17-composition-intake-2026-10-25.json": {
+      "sha256": "65d75f34951d934bca54a0f2a74b59928e9bcd8517a66092fcb2164dda9f657b",
+      "bytes": 4587
+    },
+    "prior-bound/story-1-17-composition-intake-2026-10-25.members.json": {
+      "sha256": "7672b9b27902332e2b97ebd291636a9078e2bf460fc6612233433106c4e3272a",
+      "bytes": 401618
+    },
+    "prior-bound/story-1-17-composition-intake-2026-10-25.parent-verification.json": {
+      "sha256": "ba026e3a4add26195f6e80a9e26b5bfd6c6b342651f1e9e0c5bad0d4a1717129",
+      "bytes": 10252
+    },
+    "prior-bound/story-1-17-composition-intake-2026-10-25.verification.json": {
+      "sha256": "1069c63020ad98a6ab486fab7e9f8e46a1f63e82890426176cf162007359476d",
+      "bytes": 5984
+    },
+    "prior-bound/story-1-17-composition-intake-handoff-2026-10-25.json": {
+      "sha256": "a910bc067033be3f25cf3e0941e918866884ad487eabf3ab3432dab8ef80736e",
+      "bytes": 18672
+    },
+    "prior-seal-validation.json": {
+      "sha256": "bf1952ef998baab741f95098eb27b74a42610bda647c04d0f641078ca848e20a",
+      "bytes": 1937
+    },
+    "prior-source-comparison.json": {
+      "sha256": "0a08ddf423ed5c23db0a3bdc9fe99054ffc05b8213107d04026a1451a44d1790",
+      "bytes": 3992
+    },
+    "refresh_reuse.py": {
+      "sha256": "d7b1f7dbfaacdf3a7996d86f319753acf27b1a38ad93db97438a8541346da180",
+      "bytes": 3383
+    },
+    "replay.py": {
+      "sha256": "fabf119ed73b0a2a71fff6987c3f8c673d4e5b181ec70512a9f77a6b0157041b",
+      "bytes": 27618
+    },
+    "reseal_after_review.py": {
+      "sha256": "bd19e8d0501f79b052e1a8276e193dbde0d104e01c6a2c7de5a821e1711a637d",
+      "bytes": 4903
+    },
+    "review/pre-review-receipt.json": {
+      "sha256": "3b089862bc99da86e09058282653a0197b22e8f5c7b8e840e32e6bd7a9db1c36",
+      "bytes": 3978
+    },
+    "review/pre-review-verification.json": {
+      "sha256": "f039bb9bd05b093b32b30583a72b0ac96f2dff30a7ce9862f4ffb1436f28f956",
+      "bytes": 2655
+    },
+    "review/remediation.json": {
+      "sha256": "c6730285ae120c932dbaf932a208ecd486602998280532061fab89adced82728",
+      "bytes": 632
+    },
+    "review/reproductions.json": {
+      "sha256": "c24a692bb34965f750bf0875f44c0b35d14b25794d97c3348747928603500457",
+      "bytes": 833
+    },
+    "revision-transitions.json": {
+      "sha256": "ac66cc361d4a17869b2aca77f6f17c4e5c5fbad9701d2b0fdb13ed18413de328",
+      "bytes": 16458
+    },
+    "seal_packet.py": {
+      "sha256": "4a39e000d43434bff29ac0ef3709417e3fe5b4769ad37b3d1e106a2dcf61a1f3",
+      "bytes": 5942
+    },
+    "source-reuse-audit.json": {
+      "sha256": "30ba1cadc71416cb9487dad3e4f783dbce46ea6cc0863adea36451a29a74db6e",
+      "bytes": 5851575
+    },
+    "source-reuse-profiles.json": {
+      "sha256": "c90ae12a40766dc2f54120c398380a1010fdb7bdd4cda0d5d1527aad154ef209",
+      "bytes": 13446956
+    },
+    "source-reuse-summary.json": {
+      "sha256": "d05b58bcdf82385771ff72e1bb6557535c77b0cbaba4d74eb511f141bcbefd1e",
+      "bytes": 963
+    },
+    "test_replay.py": {
+      "sha256": "41bee3db70a498ca5df74ab41a8f8550dcdb8cdf21ff17cd545ba93a96d8ff59",
+      "bytes": 12578
+    },
+    "tool-identity.json": {
+      "sha256": "4bcbb7a222c22126b59c6bb673213ca1ace88fe4c49b8b5cb44536c5c64c2c92",
+      "bytes": 52250
+    }
+  }
+}

@@ -61,3 +61,23 @@ eng/story117-builds-publication/** text eol=lf
 # Keep the separate current qualification proposal and its byte-bound receipt stable.
 eng/story117-platform-qualification-current/** text eol=lf
 _bmad-output/implementation-artifacts/evidence/story-1-17-current-qualification-2026-10-17.json text eol=lf
+
+# Preserve this byte-bound Story 1.17 release-readiness evidence and handoff.
+_bmad-output/implementation-artifacts/evidence/story-1-17-release-readiness-2026-10-25* -text
+_bmad-output/implementation-artifacts/story-1-17-publication-handoff-2026-10-25.json -text
+
+# Preserve additive current-composition qualification evidence and handoff bytes.
+_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25* -text
+_bmad-output/implementation-artifacts/story-1-17-composition-intake-handoff-2026-10-25.json -text
+
+# Preserve additive owner-intake evidence and decision/handoff bindings.
+_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25* -text
+_bmad-output/implementation-artifacts/story-1-17-owner-intake-decisions-2026-10-25.* -text
+_bmad-output/implementation-artifacts/story-1-17-owner-intake-handoff-2026-10-25.json -text
+
+# Preserve exact source-host diagnostic inputs, observations and review supplements.
+eng/story117-current-builds-host/** -text
+_bmad-output/implementation-artifacts/story-1-17-current-builds-host-* -text
+_bmad-output/implementation-artifacts/spec-1-17-current-builds-host-qualification.md -text
+_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-* -text
+_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-*/** -text

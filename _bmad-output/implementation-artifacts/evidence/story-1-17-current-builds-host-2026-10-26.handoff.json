@@ -1,0 +1,564 @@
+{
+  "actualLoadedAssemblies": [
+    {
+      "context": "Default",
+      "identity": "Aspire.Hosting, Version=13.6.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51",
+      "label": "host Aspire",
+      "location": "/tmp/story117-current-builds-host-dkkg4fqa/sealed/host/Aspire.Hosting.dll",
+      "mvid": "4904eacd-5621-4e18-99a8-232ca027f88e",
+      "optional": false,
+      "sha256": "86507650b7d1ecb6765f5cf46092327a53635bba1eef5e98c4207844ff31cd3b"
+    },
+    {
+      "context": "Default",
+      "identity": "Hexalith.Builds.Tooling, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "label": "matching source Tooling",
+      "location": "/tmp/story117-current-builds-host-dkkg4fqa/sealed/host/Hexalith.Builds.Tooling.dll",
+      "mvid": "4819a445-b9ce-4ebd-9c1a-31f131e4be98",
+      "optional": false,
+      "sha256": "c97a79248415731cef6cfac4b8e82902e4554ffe8c928d4cce6c2488708af84b"
+    },
+    {
+      "context": "Default",
+      "identity": "Hexalith.Platform.Composition, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "label": "rebuilt model",
+      "location": "/tmp/story117-current-builds-host-dkkg4fqa/sealed/model/Hexalith.Platform.Composition.dll",
+      "mvid": "5fac6660-019c-4ddf-b1b3-9a514b8ca963",
+      "optional": false,
+      "sha256": "76252a429c8707f2641472b95a05d998f97566d3eb91e12e558e8a9e0c7a087d"
+    },
+    {
+      "context": "Default",
+      "identity": "StackExchange.Redis, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c219ff1ca8c2ce46",
+      "label": "host Tooling Redis",
+      "location": "/tmp/story117-current-builds-host-dkkg4fqa/sealed/host/StackExchange.Redis.dll",
+      "mvid": "cca8a025-8f2a-4628-aa78-3a9874ac6164",
+      "optional": false,
+      "sha256": "e14460fe50cd699b34c75b9a8b10cdb79c2ed68f4088879afa2e073b7afba502"
+    },
+    {
+      "context": "Default",
+      "identity": "Hexalith.EventStore.ServiceDefaults, Version=3.128.0.0, Culture=neutral, PublicKeyToken=null",
+      "label": "optional ServiceDefaults; no claim of Parties execution",
+      "location": "/tmp/story117-current-builds-host-dkkg4fqa/sealed/model/Hexalith.EventStore.ServiceDefaults.dll",
+      "mvid": "ddf33779-8801-4507-b306-de186defbbe2",
+      "optional": true,
+      "sha256": "2186cac45fc92be37d832d9a71643e7a96c12fc183fd5c5d9923bed85c4ad0e7"
+    },
+    {
+      "context": "Default",
+      "identity": "Hexalith.EventStore.Aspire, Version=3.128.0.0, Culture=neutral, PublicKeyToken=null",
+      "label": "model EventStore Aspire",
+      "location": "/tmp/story117-current-builds-host-dkkg4fqa/sealed/host/Hexalith.EventStore.Aspire.dll",
+      "mvid": "9bce6e81-73f8-4978-b1bd-b9d3188ecfb3",
+      "optional": false,
+      "sha256": "448004459386060a871661ffb2df223a0e48ac0cda06edd8427520ca02406bbb"
+    }
+  ],
+  "atUtc": "2026-10-26T18:18:43.703145+00:00",
+  "caseResults": [
+    {
+      "bindingSucceeded": true,
+      "exitCode": 0,
+      "finalObservation": {
+        "atUtc": "2026-10-26T18:13:55.6781695+00:00",
+        "data": {
+          "bindingObservationOnly": true,
+          "explicitTargetMemberInvocations": 0,
+          "initializerExecutionNotExcluded": true
+        },
+        "kind": "complete"
+      },
+      "hostAssembly": {
+        "bytes": 100352,
+        "path": "host/Hexalith.Builds.Module.AppHost.dll",
+        "sha256": "5553a7deefe9fb8464b259d12e3d7b84980c722233ea2d7806391c30c44ff187"
+      },
+      "mode": "cold",
+      "modelAssembly": {
+        "bytes": 358912,
+        "path": "model/Hexalith.Platform.Composition.dll",
+        "sha256": "76252a429c8707f2641472b95a05d998f97566d3eb91e12e558e8a9e0c7a087d"
+      },
+      "scope": "Explicit metadata/identity demands only; no package/API/ordinary/hosted acceptance"
+    },
+    {
+      "bindingSucceeded": true,
+      "exitCode": 0,
+      "finalObservation": {
+        "atUtc": "2026-10-26T18:14:01.267758+00:00",
+        "data": {
+          "bindingObservationOnly": true,
+          "explicitTargetMemberInvocations": 0,
+          "initializerExecutionNotExcluded": true
+        },
+        "kind": "complete"
+      },
+      "hostAssembly": {
+        "bytes": 100352,
+        "path": "host/Hexalith.Builds.Module.AppHost.dll",
+        "sha256": "5553a7deefe9fb8464b259d12e3d7b84980c722233ea2d7806391c30c44ff187"
+      },
+      "mode": "host-first",
+      "modelAssembly": {
+        "bytes": 358912,
+        "path": "model/Hexalith.Platform.Composition.dll",
+        "sha256": "76252a429c8707f2641472b95a05d998f97566d3eb91e12e558e8a9e0c7a087d"
+      },
+      "scope": "Explicit metadata/identity demands only; no package/API/ordinary/hosted acceptance"
+    }
+  ],
+  "catalogMetadata": {
+    "memberName": "Hexalith.EventStore.Aspire.nuspec",
+    "nupkg": {
+      "bytes": 49052,
+      "path": "/home/administrator/.nuget/packages/hexalith.eventstore.aspire/3.128.0/hexalith.eventstore.aspire.3.128.0.nupkg",
+      "sha256": "522e68bda69b2881417db790fd7938a30e7fa1f0935e1c14e47f675a69c89bda"
+    },
+    "nuspec": {
+      "bytes": 3769,
+      "path": "/home/administrator/.nuget/packages/hexalith.eventstore.aspire/3.128.0/hexalith.eventstore.aspire.nuspec",
+      "sha256": "36d376bab8683eaf72702f4df328b3e4ae839c5b0e06892bb6ae6fd9ab5a06bc"
+    },
+    "packageId": "Hexalith.EventStore.Aspire",
+    "packageVersion": "3.128.0",
+    "privatePath": "hexalith.eventstore.aspire/3.128.0/hexalith.eventstore.aspire.nuspec",
+    "repositoryCommit": "c5d1c280d8c1c1a207cd159d817f614e93c93130",
+    "scope": "Package-declared metadata provenance only; no proof of full package payload/source equivalence.",
+    "sourceRevision": "c5d1c280d8c1c1a207cd159d817f614e93c93130"
+  },
+  "cleanup": "none; all fresh attempt directories retained after archival",
+  "controls": {
+    "ContentHash": null,
+    "T0": null,
+    "activationAuthority": null,
+    "apiAccepted": false,
+    "currentTupleAccepted": false,
+    "hostedAccepted": false,
+    "ordinaryMapping": null,
+    "packageAccepted": false,
+    "parentStatus": "in-progress",
+    "routing": "V1Only",
+    "stagingChecksExecuted": 0,
+    "stagingChecksTotal": 14,
+    "tracker": "backlog"
+  },
+  "correctionBoundary": "Every attempt/plan/claim/capsule is additive and preserved; parent-directed preparation corrections did not change operational sources, pins, tools or socket policy. The catalog target ran unchanged using only verified cached nuspec metadata.",
+  "decision": "SOURCE_DEBUG_BINDING_EVIDENCE_ONLY; NO ORDINARY/PACKAGE/API/HOSTED ACCEPTANCE",
+  "historicalAttempts": [
+    {
+      "attempt": 1,
+      "stop": "Flat offline feed basename collision; zero SDK/build/loader commands."
+    },
+    {
+      "attempt": 2,
+      "stop": "Incomplete hierarchical feed prevented Aspire.AppHost.Sdk discovery; no source restore/build or loader."
+    },
+    {
+      "attempt": 3,
+      "stop": "Unserialized restore attempted MSBuild named-pipe workers under socket denial; all 14 crash files retained; no build/loader."
+    },
+    {
+      "attempt": 4,
+      "stop": "First AppHost build failed when catalog helper sought selected nuspec through PackageDownload; no probe/loader."
+    }
+  ],
+  "materialLimits": [
+    "AppHost build retained four MSB3277 assembly-conflict warnings: StackExchange.Redis, Microsoft.OpenApi, Microsoft.IdentityModel.Protocols.OpenIdConnect and Microsoft.IdentityModel.Tokens. No pin repair or member/API compatibility claim.",
+    "Source Tooling and Platform model assembly versions are observed 1.0.0.0; this is not a released CLI package qualification.",
+    "Only explicit metadata/identity demands; no ComposeRun, application entrypoint, target method or target constructor was explicitly invoked. Implicit initialization is not excluded.",
+    "The model has no direct Redis AssemblyRef. The labelled transitive demand used the sealed host Redis bytes when the model copy was absent.",
+    "Immediate gates wrap outer driver commands. SDK commands executed inside the unchanged catalog helper inherited the same sandbox/environment; they were not independently wrapped as driver gates.",
+    "Real/private certificate-store observations are metadata only; process sampling is bounded, not whole-host/file-access tracing."
+  ],
+  "ownerPrerequisites": [
+    "Release owner must select/disposition the exact source/package tuple and obtain genuine ordinary catalog/model/mapping evidence; ordinary mapping and ContentHash remain absent.",
+    "Builds owner must separately qualify packaged Release host directories, native/satellite layout and distribution identity; no pack or signed-package patch was performed.",
+    "API behavior, Redis member/connection compatibility, ordinary command demand order and hosted/full application topology remain untested.",
+    "Historical EventStore/Tenants/Memories dependency-policy conflict, direct owner closure/registration and runtime/profile/secret/feed/Docker/state/port prerequisites remain open.",
+    "The two loader cases are consumed once each. Integrity verification grants no renewed target execution or activation authority."
+  ],
+  "plan": {
+    "bytes": 4313571,
+    "path": "eng/story117-current-builds-host/plan-attempt-5.json",
+    "sha256": "baead8cb1772a5995ff45135c19eb2d92b956839d7bccea9f60cb9a77a5209b6"
+  },
+  "preparationContinuationAuthority": {
+    "commandCountScope": "Recorded outer driver commands; SDK calls inside unchanged build helpers are not individually wrapped/countable from this field.",
+    "feedFormatAuthority": [
+      "https://learn.microsoft.com/en-us/nuget/hosting-packages/local-feeds",
+      "https://github.com/NuGet/Home/wiki/Nupkg-Metadata-File"
+    ],
+    "priorBuilds": 1,
+    "priorLoaderCases": 0,
+    "priorProbeCompilerCommands": 0,
+    "priorReceipt": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.json",
+    "priorSdkCommands": 20,
+    "scopeInterpretation": "Parent implementer: bind the existing selected EventStore.Aspire 3.128.0 nupkg and cached nuspec, verify nuspec-member byte equality, exact ID/version and package-declared repository commit matching source. Seed ONLY the nuspec into the fresh private cache, with no Hexalith DLL/nupkg in the restore feed or compiled graph. Preserve attempt 4's failed build and run GeneratePlatformVersionCatalog unchanged in a fresh additive attempt. No fetched packages, source edits, pin changes, tool install or catalog-target bypass; source-only package-fallback guards remain enforced. No loader case has run."
+  },
+  "privateDirectory": "/tmp/story117-current-builds-host-dkkg4fqa",
+  "recordId": "story-1-17-current-builds-host-2026-10-26-release-owner-handoff",
+  "repositories": {
+    ".": {
+      "branch": "main",
+      "history": "19d8ddc9 fix: story 1.17\n43423a98 fix: story 1.17\n43bc73bd fix: story 1.17\nb8c66d64 fix: story 1.17\nb5ae26e4 fix: story 1.17\n",
+      "indexFlagsSha256": "e059e87851698bd9377c50db0473f18795e630a8d624a63e67664915b5a81b1b",
+      "indexSha256": "526162a2cd0c687fcd7c3388780742e32712977686f1ad56d326ac424b26cc3a",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Folders.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Folders.git (push)\n",
+      "revision": "19d8ddc9d64b0af4986b2a8fafe859b8b4e8231a",
+      "stageEntriesSha256": "b5655d89653b3f199d9ebd7ce3b66194d88e624e5d39164811a4ba4eb2f62815",
+      "status": "? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.claim.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnosis.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnostic-inputs.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnostic-inputs.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnostic-inputs.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.guards.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.claim.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnosis.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnostic-inputs.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnostic-inputs.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnostic-inputs.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.guards.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.claim.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.guards.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.claim.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.guards.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.claim.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.diagnosis.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.final-preservation.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.guards.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.members.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.supporting.artifacts.tar.gz\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.supporting.json\n? _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.supporting.members.json\n? _bmad-output/implementation-artifacts/spec-1-17-current-builds-host-qualification.md\n? _bmad-output/implementation-artifacts/story-1-17-current-builds-host-investigation-2026-10-26.json\n? _bmad-output/implementation-artifacts/story-1-17-current-builds-host-results.md\n? eng/story117-current-builds-host/LoaderProbe.cs\n? eng/story117-current-builds-host/plan-attempt-2.json\n? eng/story117-current-builds-host/plan-attempt-3.json\n? eng/story117-current-builds-host/plan-attempt-4.json\n? eng/story117-current-builds-host/plan-attempt-5.json\n? eng/story117-current-builds-host/plan.json\n? eng/story117-current-builds-host/qualify.py\n? eng/story117-current-builds-host/source-references.targets\n? eng/story117-current-builds-host/tests/test_qualification_guards.py\n? eng/story117-current-builds-host/verify.py\n"
+    },
+    "references/Hexalith.AI.Tools": {
+      "branch": "main",
+      "history": "3f194e1 docs: add section on Hexalith MCP and CLI ownership guidelines\n5f93d2e refactor: streamline Hexalith LLM instructions for clarity and conciseness\ne671ad5 docs: clarify usage of 'chore' commit type in guidelines\n1190b6d build: sync local changes via /pushall\nde38f78 feat(pushall): add restriction against invoking BMad skills during /pushall execution\n",
+      "indexFlagsSha256": "6afdd00cce2c102cadf19fedb28c1a4585e4e1dcca596d12b2799332d6c6bd11",
+      "indexSha256": "77c94fb29c26e5708460809967060cb8f8f507ffed14e932ae05174013c96f9c",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.AI.Tools.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.AI.Tools.git (push)\n",
+      "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "stageEntriesSha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569",
+      "status": ""
+    },
+    "references/Hexalith.Builds": {
+      "branch": "main",
+      "history": "74932ad build: merge origin/fix/eventstore-token-registration-catalog into main via /pushall\nb547fc1 fix(evidence): archive captured package catalogs (#139)\n022668a build(deps): refresh EventStore 3.128.0 audit\n234778f build(deps): adopt published EventStore 3.128.0\naac713a fix(evidence): archive captured package catalogs\n",
+      "indexFlagsSha256": "63802d935a4e4f12aa1de99a2c4c850bcfa5a73db84735937b6c30631fd2bad9",
+      "indexSha256": "64cf744d70393d356006c4695553a2d2bd5b41009b04703e130f3aebf9752500",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Builds.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Builds.git (push)\n",
+      "revision": "74932ad0247203797274aba8b7b6366a4bbf92b9",
+      "stageEntriesSha256": "a379d24eb9569cbbfd77c245c80f41ff239d9c97e928c66b3a444ca6cb53b94e",
+      "status": ""
+    },
+    "references/Hexalith.Commons": {
+      "branch": "main",
+      "history": "1663028 build: merge dependabot/npm_and_yarn/commitlint/config-conventional-21.2.4 into main via /pushall\n0595c8c build: merge dependabot/npm_and_yarn/commitlint/cli-21.2.4 into main via /pushall\n8c7bb88 chore(deps): Bump @commitlint/cli from 21.2.3 to 21.2.4\n95faa7f chore(deps): Bump @commitlint/config-conventional from 21.2.3 to 21.2.4\n5c23c81 chore(release): 2.30.3 [skip ci]\n",
+      "indexFlagsSha256": "3386aab873e806bc3edac9cfa1562bd6eb27d871454288a3eebfe84c06622113",
+      "indexSha256": "81594052a87e38232911dc5a48935d1cb3dbe9f565abf45cc6228f3ca559bf46",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Commons.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Commons.git (push)\n",
+      "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "stageEntriesSha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644",
+      "status": ""
+    },
+    "references/Hexalith.EventStore": {
+      "branch": "main",
+      "history": "c5d1c280d fix: story 2.13\n80993d367 test(fixtures): use runtime credentials and private canaries\n4e91e552b fix(domain-service): authorize exact command status grants\n12784fde7 build: sync platform submodule pointer\n6de4e7323 build: sync local changes via /pushall\n",
+      "indexFlagsSha256": "12a14d296090534407ad965cf93b500e4c13399b63925a66c1b89443d403fbf0",
+      "indexSha256": "b07e1ba47e692c2db96625e12b5f37f44cf557fe8719fefb868ba4af69a9a1c7",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.EventStore.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.EventStore.git (push)\n",
+      "revision": "c5d1c280d8c1c1a207cd159d817f614e93c93130",
+      "stageEntriesSha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e",
+      "status": ""
+    },
+    "references/Hexalith.FrontComposer": {
+      "branch": "main",
+      "history": "cfa9febc fix: story 13.6\n39cab9cb fix: story 13.6\n76e063b5 fix: story 13.6\n29a5ac94 test: activate approved aspire hosting expectation\n50d9a8b9 build: align approved catalog expectations\n",
+      "indexFlagsSha256": "e2bb6e7ad1656e0289e8c4d097a2f419df0330fc53a605eb8635c4e8b91e8fa4",
+      "indexSha256": "fa151a06b6ecf184046a20648b2a1a473bb2e81d187f459446b2f50f3bb4048b",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.FrontComposer.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.FrontComposer.git (push)\n",
+      "revision": "cfa9febc2942666265f23f87b26112c846f625ad",
+      "stageEntriesSha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2",
+      "status": ""
+    },
+    "references/Hexalith.McpCli": {
+      "branch": "main",
+      "history": "dc28288 docs(review): record story 4.13 code review pass 3\n0d0ca22 test(conformance): complete story 4.13 live gateway semantics\n4b60d49 docs(review): record story 4.13 code review\n6043ca8 build: sync local changes via /pushall\n7f503ae test(conformance): verify all vectors against live gateway semantics\n",
+      "indexFlagsSha256": "74dc5ef7d6c0c4953874794bbb98b1abd16cc68eeefd32060a3cb9d2a0d30fe8",
+      "indexSha256": "ad44ff8e35dcc924babc269de6592a4a9993cf2704cd03738f0118190a2d722c",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.McpCli.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.McpCli.git (push)\n",
+      "revision": "dc282889e624a4c990faa3f005ad7eaa8db7a473",
+      "stageEntriesSha256": "c361ea1f29b3bc49536e23d02ae8f3ac21b2d182cfe0bdfa2f2ce92af83b505f",
+      "status": ""
+    },
+    "references/Hexalith.Memories": {
+      "branch": "main",
+      "history": "7b0c8b56 fix: fence retry payloads and scoped erasure\nea5ef48b build: point Platform gitlink at pushed main\n648a2eb0 build: advance Hexalith.Platform gitlink after main sync\nf17b3150 build: sync local changes via /pushall\n81a5b7ef fix: story 27.4*\n",
+      "indexFlagsSha256": "80bc75cde1c3657610303471e415b6e26d33b848e6d021360222bf2c74182df2",
+      "indexSha256": "858ec403af3820ab9ee3637c415371e1ad96464109e94c2134178b044e397a58",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Memories.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Memories.git (push)\n",
+      "revision": "7b0c8b5692600e293346eea7a84652eb87e4c346",
+      "stageEntriesSha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76",
+      "status": ""
+    },
+    "references/Hexalith.Parties": {
+      "branch": "",
+      "history": "986a369e fix: bound processing history and fence erasure\n559b91c8 fix(host): preserve numeric projection outcomes (#58)\n13a6247a build: point eventstore and memories at synced main\n17290ed6 fix: swwep\nfdba00e5 fix: sweep\n",
+      "indexFlagsSha256": "aaf8dce0e9d85fca90fe8515ed61da4317cd5bf363a9bada8d037887d26fade6",
+      "indexSha256": "6f666a0e4caf8fc51d8dea5903db970ac546281e8d9652b7ff87810a098dc00a",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Parties.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Parties.git (push)\n",
+      "revision": "986a369ec26f6c5194593eb7bce12955eda54149",
+      "stageEntriesSha256": "933d7d5f591ff2c0d291e6f497587ea1f804946698f9601af3822d47c3e8c44c",
+      "status": ""
+    },
+    "references/Hexalith.Platform": {
+      "branch": "main",
+      "history": "9869094 build: merge origin/fix/works-published-sdk-consumer into main via /pushall\nb9162b7 build: sync local changes via /pushall\n30673fd build: advance Projects pointer to the synced main\nf5e6348 build: advance root submodule pointers to origin/main\n1082392 fix: spec 5.4\n",
+      "indexFlagsSha256": "0cdc8d9e0c6c2c32c028e4e4e59b0ff643704af0a3687b6cd74cbe0b777c4239",
+      "indexSha256": "3ca68ff3cff76596be82702348b2bdfc5afbf4dc4a5b96a0fe07ca33db5c6a6e",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Platform.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Platform.git (push)\n",
+      "revision": "9869094acc21f9054960a573f884c60ddf3235cd",
+      "stageEntriesSha256": "1c6649f6dbd9d725da61199cfbef8fe5156af23f730156bdbe0b2620077b066b",
+      "status": ""
+    },
+    "references/Hexalith.PolymorphicSerializations": {
+      "branch": "main",
+      "history": "221ac45 chore(release): 1.19.5 [skip ci]\ncf32fa6 fix(ci): match NuGet trusted publishing policy\n173f97d fix(ci): restore NuGet release publication and verification\nf1b7752 build: sync local changes via /pushall\n80ce5af build: update .NET SDK to 10.0.402\n",
+      "indexFlagsSha256": "d50d5de3a14ed8f5dc9218a38204a9157e3f0d1d5bc9b162b6cafef782580f02",
+      "indexSha256": "99834e9037d6af73bea83dc830ab91d6f25228633456987344d153f3cab98221",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.PolymorphicSerializations.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.PolymorphicSerializations.git (push)\n",
+      "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "stageEntriesSha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862",
+      "status": ""
+    },
+    "references/Hexalith.Projects": {
+      "branch": "main",
+      "history": "298f6f6 build: sync local changes via /pushall\n7430d73 build: advance root submodule pointers to origin/main\na42f02c build: advance the EventStore pointer to origin/main\n0f3f2f5 fix: story 6.1\n6e45180 build: advance Platform pointer to the synced main\n",
+      "indexFlagsSha256": "f4a0ebf07d8d7f0f261ab52c2b4d40ad8c6899397092858ea4bc9fd09dab33a6",
+      "indexSha256": "0afbd6137d295ed9202a71fe42e9d4c6a08853b424da5b0ed683bf8988bfe1fa",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Projects.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Projects.git (push)\n",
+      "revision": "298f6f6a41b9ce7b67f14c21c724d76832b957a9",
+      "stageEntriesSha256": "1494da6a6b03a0ca3ae427b9bad145b8c9cd51806d370c80468c510ef07e9eda",
+      "status": ""
+    },
+    "references/Hexalith.Tenants": {
+      "branch": "main",
+      "history": "24fb584b fix(aspire): await projected bootstrap authority before live seeding\n60f9dfd2 fix(ui): qualify authenticated audit routes and phone recovery\n3b60914a fix(aspire): restore startup and add authenticated route qualification\n8804c10b fix(ui): complete five deferred safety items\n14133e96 build: sync local changes via /pushall\n",
+      "indexFlagsSha256": "6fa460303718710e20c2acef4b5d1d130aa46a36015b792dc532fb798b308057",
+      "indexSha256": "86855bc64d414687e388597cd9b578b8cea18af7b0cddcd00d789aadf42b8e41",
+      "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Tenants.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Tenants.git (push)\n",
+      "revision": "24fb584b8d2b8a3bc7a51fcf8b5a6266e21e53e7",
+      "stageEntriesSha256": "279c1b2c7fed9cc80dd048ca637e1b2031bb10d45ff439586b899aefb6dfcc80",
+      "status": ""
+    }
+  },
+  "retainedEvidenceArtifacts": [
+    {
+      "bytes": 40021071,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.artifacts.tar.gz",
+      "sha256": "a3888979f64ed8b3f34ba938c8acff24271592fc9c1fd60101bf855721e8ebaf"
+    },
+    {
+      "bytes": 1061,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.claim.json",
+      "sha256": "f2df4c23caee0bdb5a804eb0f021e9ad95a6ef8ef64ddedc72c5e80ebe90567f"
+    },
+    {
+      "bytes": 12140,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnosis.json",
+      "sha256": "a7277ef45f8bd5e0b5fdfc659a94930efc2a59abb30e4689ca3fcf522cdcc86b"
+    },
+    {
+      "bytes": 2027709,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnostic-inputs.artifacts.tar.gz",
+      "sha256": "71ef57c5d15c78bbab51fc5f307765500cfc9123c801e4015668ecabb6a37633"
+    },
+    {
+      "bytes": 1780,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnostic-inputs.json",
+      "sha256": "d6a696199f44a8118831650e417bbf4100046ed1f58be4136c61d6110dea2e80"
+    },
+    {
+      "bytes": 346,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.diagnostic-inputs.members.json",
+      "sha256": "85fba56eb388f1b9b50c102c4065d5db8dd0c2cb8f12fa790045e88a256d2316"
+    },
+    {
+      "bytes": 7851,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.guards.json",
+      "sha256": "cebb2b079ed4645056ce4ea820c61bdf79356b1e087774336a1456f8d7be7d97"
+    },
+    {
+      "bytes": 33338,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.json",
+      "sha256": "dbf6f19975bf7a758c3eca5479aadf7591a6a68496670bf64e7318c972af1d20"
+    },
+    {
+      "bytes": 3644580,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-2.members.json",
+      "sha256": "8f30606a8c68e043a7fa8a9c4729dd31a3f4a532a24b0ac1d9a79d6a58ff443c"
+    },
+    {
+      "bytes": 40028111,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.artifacts.tar.gz",
+      "sha256": "c84356a7bdb8a3a731587b9bf2e5264da9acad07c60c71c92b86f4919c3be72c"
+    },
+    {
+      "bytes": 1344,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.claim.json",
+      "sha256": "a4cbfc787aa655f793456b9b2eaf49d3e9e52bfd588c519a612d3c38e61e89f4"
+    },
+    {
+      "bytes": 10195,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnosis.json",
+      "sha256": "b151dd2450977d0d335131014300da2167c1a0989e1effd3b360d625e5c9b4f0"
+    },
+    {
+      "bytes": 5443,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnostic-inputs.artifacts.tar.gz",
+      "sha256": "a01073c1baac182b6940411592b21e3ae15193f992d851f38bddabf4619aed1b"
+    },
+    {
+      "bytes": 1863,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnostic-inputs.json",
+      "sha256": "b05fb7ef4dee819fe99c787eb588c7ed56d920e5f1c9913e80b82841c21dc1d0"
+    },
+    {
+      "bytes": 3278,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.diagnostic-inputs.members.json",
+      "sha256": "80bb5d6665019b60bc096f580edf2206e24fda9bd56e40525261c1b5d6ed7547"
+    },
+    {
+      "bytes": 8821,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.guards.json",
+      "sha256": "ecec99ac2bf3b34e6ed5dc783dd3f7804095dabd60dafdb56231d9194d5cc4af"
+    },
+    {
+      "bytes": 35787,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.json",
+      "sha256": "8dbe4ce417bae0a0255475b34822c8f2f465dedee3211ff8f33578a91bd4cb70"
+    },
+    {
+      "bytes": 3647561,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-3.members.json",
+      "sha256": "73460a9a0fa5fe5f61ca05907da0f583c7d840ab5a3b5e4fdd0d2e8b38794d57"
+    },
+    {
+      "bytes": 84552732,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.artifacts.tar.gz",
+      "sha256": "ebaea6b8a2e7a7430a17ce91499f4a4190007d8b2c769a707818b89a52296584"
+    },
+    {
+      "bytes": 1304,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.claim.json",
+      "sha256": "815f64c4aafe27cc75470b63d5b83d04bd60cd70f7d6298ef43bc3d456cdc1ec"
+    },
+    {
+      "bytes": 9510,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.guards.json",
+      "sha256": "00afccf3c64ddeb1a63a032497d35f86c9f0346a761b3296ff9c4b1f914f4865"
+    },
+    {
+      "bytes": 38107,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.json",
+      "sha256": "ea614c444332df6942a6cca25df714db1f81597614f6b7bc31142645b29b9d0b"
+    },
+    {
+      "bytes": 3820610,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.members.json",
+      "sha256": "af7d615023ac3f6a2706c1eab7927850d64800bbc628b1858652e79744051fef"
+    },
+    {
+      "bytes": 144962765,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.artifacts.tar.gz",
+      "sha256": "90443dbf6902c05d96542eeaa013f613c8b38d38c895c346910e2cd1cc879dce"
+    },
+    {
+      "bytes": 1596,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.claim.json",
+      "sha256": "7e826805b2d345561936f477e69f758e51673176fd00093f7af7c33f3f57e827"
+    },
+    {
+      "bytes": 10511,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.guards.json",
+      "sha256": "4fd3b5cb1d832c82c7e9dbaa67229bc4556c3fa593dac2d0d41b4816ec8d4e4c"
+    },
+    {
+      "bytes": 41559,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.json",
+      "sha256": "c19f4a4df533d6aec2114686e3950955c32d3a786d43d577050943565da648d5"
+    },
+    {
+      "bytes": 3944305,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.members.json",
+      "sha256": "9c0ef06e640b51fbd33ebb21bbd1491b3fb441bc0b70e03dc1ed905aa0e61277"
+    },
+    {
+      "bytes": 39147808,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.artifacts.tar.gz",
+      "sha256": "a29bc8d506cfe7094996a7951df0e4f43c1f6134983ced1a7bb17fba7211f638"
+    },
+    {
+      "bytes": 331,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.claim.json",
+      "sha256": "6c6006cc9a20e4776fc60e3fceee559df9728716c928410ca201aedf54685311"
+    },
+    {
+      "bytes": 10102,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.diagnosis.json",
+      "sha256": "7a5414e24290d1e0895311d85047baa650d3ad17d8e2f90d4ef36a9f7a1ab15d"
+    },
+    {
+      "bytes": 14889,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.final-preservation.json",
+      "sha256": "013e9e8d4bc92188b7f8c05f812bba3eada8ad1a5e444a1f7d55b9132093282f"
+    },
+    {
+      "bytes": 6823,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.guards.json",
+      "sha256": "112cd0949e84dc33d778c907059d46449fc5d46be4fd82c992344fa134e4aa38"
+    },
+    {
+      "bytes": 30754,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.json",
+      "sha256": "8aaa6675c1b209b296f3f9fc1b62e2002ba607f4b429d6c71ee0e983f2a077bb"
+    },
+    {
+      "bytes": 3642037,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.members.json",
+      "sha256": "c0024c940d48b7bbff9804e3a2ea26d3e5c81acadf413d2293af040378684d53"
+    },
+    {
+      "bytes": 831811,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.supporting.artifacts.tar.gz",
+      "sha256": "06793d8cf6cebf3a8a3b66fef0ed8231d2d77ad4a41d2b6c5530eb15e6985ba5"
+    },
+    {
+      "bytes": 1673,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.supporting.json",
+      "sha256": "6eeb528d9db627cbe5053988d834053d9ca23eccccc2586a69f864a17165e28a"
+    },
+    {
+      "bytes": 2827,
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.supporting.members.json",
+      "sha256": "19235b065ff08cc2ee36229e7a74cf2e407e3e95c72bd18f7ed1c61c6b8c2de5"
+    }
+  ],
+  "runtime": ".NET 10.0.13",
+  "sdk": "10.0.402",
+  "successfulAttempt": {
+    "bytes": 41559,
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.json",
+    "sha256": "c19f4a4df533d6aec2114686e3950955c32d3a786d43d577050943565da648d5"
+  },
+  "tuple": [
+    {
+      "bytes": 45164,
+      "path": "host/Hexalith.Builds.Module.AppHost.deps.json",
+      "sha256": "747b1b349943851a9e0a7b4f94940a67ff2d73aff156cbecb9b38e5ccff7c810"
+    },
+    {
+      "bytes": 100352,
+      "path": "host/Hexalith.Builds.Module.AppHost.dll",
+      "sha256": "5553a7deefe9fb8464b259d12e3d7b84980c722233ea2d7806391c30c44ff187"
+    },
+    {
+      "bytes": 369,
+      "path": "host/Hexalith.Builds.Module.AppHost.runtimeconfig.json",
+      "sha256": "dd72603f49fc74ad956017904a955b25d7043d65291c0c7d033a2064e141622a"
+    },
+    {
+      "bytes": 1589248,
+      "path": "host/Hexalith.Builds.Tooling.dll",
+      "sha256": "c97a79248415731cef6cfac4b8e82902e4554ffe8c928d4cce6c2488708af84b"
+    },
+    {
+      "bytes": 1589248,
+      "path": "model/Hexalith.Builds.Tooling.dll",
+      "sha256": "c97a79248415731cef6cfac4b8e82902e4554ffe8c928d4cce6c2488708af84b"
+    },
+    {
+      "bytes": 358912,
+      "path": "model/Hexalith.Platform.Composition.dll",
+      "sha256": "76252a429c8707f2641472b95a05d998f97566d3eb91e12e558e8a9e0c7a087d"
+    }
+  ]
+}

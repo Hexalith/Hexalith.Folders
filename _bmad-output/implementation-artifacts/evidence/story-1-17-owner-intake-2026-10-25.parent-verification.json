@@ -1,0 +1,246 @@
+{
+  "recordId": "STORY-1-17-OWNER-INTAKE-PARENT-VERIFICATION-2026-10-25",
+  "recordedAtUtc": "2026-10-25T16:44:44.702086+00:00",
+  "receiptSha256": "1844ed919e41cf4d7677b924c7a3b23fd7926cf369c5797d38b72dbab5b459b7",
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "/tmp/story117-owner-parent-final-t1vg0b9_/replay.py",
+        "--receipt",
+        "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25.json"
+      ],
+      "cwd": "/tmp/story117-owner-parent-final-t1vg0b9_",
+      "startedAtUtc": "2026-10-25T16:44:44.963680+00:00",
+      "completedAtUtc": "2026-10-25T16:44:45.850635+00:00",
+      "exitCode": 0,
+      "stdout": "{\"status\": \"PASS\", \"checks\": {\"members\": 331, \"adoptionDiagnostics\": 267, \"decisions\": 11, \"hostingCandidates\": 14, \"profiles\": 231, \"currentFullTupleQualified\": false}, \"limit\": \"Evidence/claim replay only; ordinary adoption, current tuple, release and hosted acceptance remain HOLD.\"}\n",
+      "stderr": "",
+      "stdoutSha256": "dcd160665f4e86460c4815a616856bc1d59d734d46cc038e1b931abe1da473b4",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "/tmp/story117-owner-parent-final-t1vg0b9_/test_replay.py"
+      ],
+      "cwd": "/tmp/story117-owner-parent-final-t1vg0b9_",
+      "startedAtUtc": "2026-10-25T16:44:45.850797+00:00",
+      "completedAtUtc": "2026-10-25T16:44:51.863045+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "..........................................\n----------------------------------------------------------------------\nRan 42 tests in 5.843s\n\nOK\n",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "f465d15a7254c9e9290769e900f87dead8c7a9fbca8118e721a8b3f7fdfebc0c"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-O",
+        "/tmp/story117-owner-parent-final-t1vg0b9_/replay.py",
+        "--receipt",
+        "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25.json"
+      ],
+      "cwd": "/tmp/story117-owner-parent-final-t1vg0b9_",
+      "startedAtUtc": "2026-10-25T16:44:51.863172+00:00",
+      "completedAtUtc": "2026-10-25T16:44:52.861316+00:00",
+      "exitCode": 0,
+      "stdout": "{\"status\": \"PASS\", \"checks\": {\"members\": 331, \"adoptionDiagnostics\": 267, \"decisions\": 11, \"hostingCandidates\": 14, \"profiles\": 231, \"currentFullTupleQualified\": false}, \"limit\": \"Evidence/claim replay only; ordinary adoption, current tuple, release and hosted acceptance remain HOLD.\"}\n",
+      "stderr": "",
+      "stdoutSha256": "dcd160665f4e86460c4815a616856bc1d59d734d46cc038e1b931abe1da473b4",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-O",
+        "/tmp/story117-owner-parent-final-t1vg0b9_/test_replay.py"
+      ],
+      "cwd": "/tmp/story117-owner-parent-final-t1vg0b9_",
+      "startedAtUtc": "2026-10-25T16:44:52.861485+00:00",
+      "completedAtUtc": "2026-10-25T16:44:59.101536+00:00",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "..........................................\n----------------------------------------------------------------------\nRan 42 tests in 5.939s\n\nOK\n",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "eb49b54c3882d8b02bd0f560bc370397dd52c6e0a596ad436e05ab5afae338ae"
+    }
+  ],
+  "archiveSha256": "504012dfebd645e604f55469d3369b2b262817479cd6532c11cb867d0516509c",
+  "memberManifestSha256": "bcecfa15e76bb30398aae64f45633020b046ccccea5feb9c3daac6ef251407ea",
+  "handoffSha256": "25e870b572043a26073e0a118ad243d80fe790d46b07d926ca13e5d67df58075",
+  "decisionsSha256": "8d2c72f3095836edeb8375eae2689ca167a140dab776804473c2ad3a16c4d4d3",
+  "readableDecisionsSha256": "23c3c73cae07938a77b576a3fa87b065cb301d2f2a610c843e1c77f1d2b40f45",
+  "verificationSha256": "7b609e0ca2e4954eb6b84147d9ae1e783cebb07e3b3fc216430f338527e2008e",
+  "sourcePreservation": {
+    "checkedAtUtc": "2026-10-25T16:45:01.222161+00:00",
+    "capsuleSnapshot": "after.json",
+    "capsuleSnapshotSha256": "79b33b23f2d7af7d6328303ccf0915dd899099ff2c19466355e25d213f8b6a44",
+    "repositories": [
+      {
+        "repository": ".",
+        "revision": "00628f275fe47d3cfb9431456fbe28bdb20101bf",
+        "indexEntriesSha256": "5ae9c5ea1635034b6574acebe21263ff5b9a789f71528ee817658e9671f65a5b",
+        "trackedFilesCompared": 12069,
+        "changedTrackedFiles": [],
+        "gitlinksMatch": true,
+        "nestedMarkersMatch": true
+      },
+      {
+        "repository": "references/Hexalith.Tenants",
+        "revision": "3b60914ace5201a711fb51c1036d3679e0512ec8",
+        "indexEntriesSha256": "cc8aac7efe441d88ed925b3eb56ef8208f91e8a63e756a0e31507de9db1e918c",
+        "trackedFilesCompared": 4018,
+        "changedTrackedFiles": [],
+        "gitlinksMatch": true,
+        "nestedMarkersMatch": true
+      },
+      {
+        "repository": "references/Hexalith.AI.Tools",
+        "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+        "indexEntriesSha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569",
+        "trackedFilesCompared": 31,
+        "changedTrackedFiles": [],
+        "gitlinksMatch": true,
+        "nestedMarkersMatch": true
+      },
+      {
+        "repository": "references/Hexalith.EventStore",
+        "revision": "c5d1c280d8c1c1a207cd159d817f614e93c93130",
+        "indexEntriesSha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e",
+        "trackedFilesCompared": 9096,
+        "changedTrackedFiles": [],
+        "gitlinksMatch": true,
+        "nestedMarkersMatch": true
+      },
+      {
+        "repository": "references/Hexalith.FrontComposer",
+        "revision": "cfa9febc2942666265f23f87b26112c846f625ad",
+        "indexEntriesSha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2",
+        "trackedFilesCompared": 6286,
+        "changedTrackedFiles": [],
+        "gitlinksMatch": true,
+        "nestedMarkersMatch": true
+      },
+      {
+        "repository": "references/Hexalith.Memories",
+        "revision": "7b0c8b5692600e293346eea7a84652eb87e4c346",
+        "indexEntriesSha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76",
+        "trackedFilesCompared": 6338,
+        "changedTrackedFiles": [],
+        "gitlinksMatch": true,
+        "nestedMarkersMatch": true
+      },
+      {
+        "repository": "references/Hexalith.Commons",
+        "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+        "indexEntriesSha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644",
+        "trackedFilesCompared": 221,
+        "changedTrackedFiles": [],
+        "gitlinksMatch": true,
+        "nestedMarkersMatch": true
+      },
+      {
+        "repository": "references/Hexalith.Builds",
+        "revision": "9c8f722a4bbe6c1a256d258d754bbc3ddee87257",
+        "indexEntriesSha256": "56564de0622d604c8a14876958a7185727ba6eb563409eb1e00448d30cea35d9",
+        "trackedFilesCompared": 2915,
+        "changedTrackedFiles": [],
+        "gitlinksMatch": true,
+        "nestedMarkersMatch": true
+      },
+      {
+        "repository": "references/Hexalith.PolymorphicSerializations",
+        "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+        "indexEntriesSha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862",
+        "trackedFilesCompared": 68,
+        "changedTrackedFiles": [],
+        "gitlinksMatch": true,
+        "nestedMarkersMatch": true
+      },
+      {
+        "repository": "references/Hexalith.Projects",
+        "revision": "6e45180c3160ed6fe761d4563c50ac873d18dc56",
+        "indexEntriesSha256": "49865cf13949807d9c6ba1736b09c2fc01560bb77f7da6f9dafb41432d257ea7",
+        "trackedFilesCompared": 6359,
+        "changedTrackedFiles": [],
+        "gitlinksMatch": true,
+        "nestedMarkersMatch": true
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "revision": "5338a241b4115818c0ba0e08d6be3d789bf98acc",
+        "indexEntriesSha256": "99003781840ffb857f3b137cbfc31c19bfe38d4b2143cf023a95aecafc8f6b28",
+        "trackedFilesCompared": 9551,
+        "changedTrackedFiles": [],
+        "gitlinksMatch": true,
+        "nestedMarkersMatch": true
+      },
+      {
+        "repository": "references/Hexalith.McpCli",
+        "revision": "0d0ca22915bd4cd1a8141d420221e5b525e07642",
+        "indexEntriesSha256": "314b2ec45082b02a61f677844ea89e4680336f6d50fa2ee9adf4eddaff20ba61",
+        "trackedFilesCompared": 9575,
+        "changedTrackedFiles": [],
+        "gitlinksMatch": true,
+        "nestedMarkersMatch": true
+      }
+    ],
+    "allPreserved": true,
+    "newSpecLifecycleEdits": "Only this newly created continuation spec was marked in-review/completed; it was not a pre-existing user file. Parent story/tracker remain byte-identical."
+  },
+  "review": {
+    "layers": [
+      "blind",
+      "edge cases",
+      "verification gaps"
+    ],
+    "findings": 16,
+    "distinctPatchGroups": 11,
+    "disposition": "All reproduced findings corrected through evidence-only comparisons and focused controls; no application or validation gate weakened."
+  },
+  "scope": "Local evidence verified; ordinary mapping, adoption, current tuple, publication and hosted acceptance remain HOLD. No application build, audit or prior suite rerun during review remediation.",
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false,
+    "stagingChecksExecuted": 0
+  },
+  "stagingChecks": {
+    "total": 14,
+    "executed": 0
+  },
+  "parentStatus": "in-progress",
+  "trackerStatus": "backlog",
+  "verificationDriver": {
+    "command": [
+      "python3",
+      "-B",
+      "/tmp/story117-owner-intake-20261025-4w9dr812/parent_verify_final.py"
+    ],
+    "source": "import pathlib,json,hashlib,tarfile,tempfile,subprocess,datetime\nROOT=pathlib.Path('/home/administrator/projects/hexalith/folders');E=ROOT/'_bmad-output/implementation-artifacts/evidence';RP=E/'story-1-17-owner-intake-2026-10-25.json'\ndef sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()\ndef require(ok,msg):\n if not ok:raise RuntimeError(msg)\nr=json.loads(RP.read_text());out={'recordId':'STORY-1-17-OWNER-INTAKE-PARENT-VERIFICATION-2026-10-25','recordedAtUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'receiptSha256':sha(RP),'checks':[]}\nfor k in ['archive','memberManifest','handoff','decisions','readableDecisions','verification']:\n p=E/r[k]['path'];require(sha(p)==r[k]['sha256'],k+' digest');out[k+'Sha256']=sha(p)\nw=pathlib.Path(tempfile.mkdtemp(prefix='story117-owner-parent-final-'))\nwith tarfile.open(E/r['archive']['path']) as t:t.extractall(w,filter='data')\nfor flags in [[],['-O']]:\n for script,args in [('replay.py',['--receipt',str(RP)]),('test_replay.py',[])]:\n  cmd=['python3','-B',*flags,str(w/script),*args];start=datetime.datetime.now(datetime.timezone.utc).isoformat();p=subprocess.run(cmd,cwd=w,capture_output=True,text=True);row={'command':cmd,'cwd':str(w),'startedAtUtc':start,'completedAtUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'exitCode':p.returncode,'stdout':p.stdout,'stderr':p.stderr,'stdoutSha256':hashlib.sha256(p.stdout.encode()).hexdigest(),'stderrSha256':hashlib.sha256(p.stderr.encode()).hexdigest()};out['checks'].append(row);print(script,flags,p.returncode,p.stdout.strip(),p.stderr[-300:],flush=True);require(p.returncode==0,'Final '+script+' failed')\nafter=json.loads((w/'after.json').read_text())['repositories'];pres=[]\nfor rel,a in after.items():\n p=ROOT/rel;head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=p).decode().strip();idx=hashlib.sha256(subprocess.check_output(['git','ls-files','--stage'],cwd=p)).hexdigest();bad=[f for f,h in a['files'].items() if not (p/f).is_file() or sha(p/f)!=h];links=[s for s in subprocess.check_output(['git','ls-files','--stage'],cwd=p).decode().splitlines() if s.startswith('160000')];nested={x.split('\\t',1)[1]:(p/x.split('\\t',1)[1]/'.git').exists() for x in links} if rel!='.' else {};require(head==a['revision'] and idx==a['indexEntriesSha256'] and links==a['gitlinks'] and nested==a['nestedGitMarkers'] and not bad,rel+' source drift');pres.append({'repository':rel,'revision':head,'indexEntriesSha256':idx,'trackedFilesCompared':len(a['files']),'changedTrackedFiles':bad,'gitlinksMatch':True,'nestedMarkersMatch':True})\nout['sourcePreservation']={'checkedAtUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'capsuleSnapshot':'after.json','capsuleSnapshotSha256':sha(w/'after.json'),'repositories':pres,'allPreserved':True,'newSpecLifecycleEdits':'Only this newly created continuation spec was marked in-review/completed; it was not a pre-existing user file. Parent story/tracker remain byte-identical.'}\nout['review']={'layers':['blind','edge cases','verification gaps'],'findings':16,'distinctPatchGroups':11,'disposition':'All reproduced findings corrected through evidence-only comparisons and focused controls; no application or validation gate weakened.'}\nout['scope']='Local evidence verified; ordinary mapping, adoption, current tuple, publication and hosted acceptance remain HOLD. No application build, audit or prior suite rerun during review remediation.'\nfor k in ['operationalControl','stagingChecks']:out[k]=r[k]\nout['parentStatus']='in-progress';out['trackerStatus']='backlog';out['verificationDriver']={'command':['python3','-B',str(pathlib.Path(__file__).resolve())],'source':pathlib.Path(__file__).read_text()}\npath=E/'story-1-17-owner-intake-2026-10-25.parent-verification.json';path.write_text(json.dumps(out,indent=2)+'\\n');print('parentVerification',path,'extraction',w,flush=True);pathlib.Path('/tmp/story117-owner-intake-20261025-4w9dr812/final-extraction-path').write_text(str(w))\n"
+  },
+  "priorFileGuardRegressionProbe": {
+    "command": [
+      "python3",
+      "-B",
+      "-c",
+      "import pathlib,sys,unittest\nimport replay,test_replay\nsource=pathlib.Path(replay.__file__).read_text()\nline=\"        for b in d['prior-seal-validation.json']['boundFiles']:require((repo/b['path']).is_file() and sha(repo/b['path'])==b['sha256'],'previous receipt-bound file drift')\"\nif source.count(line)!=1:raise RuntimeError('Guard not uniquely found')\nsource=source.replace(line,\"        pass # disposable in-memory regression probe\")\nexec(compile(source,replay.__file__,'exec'),replay.__dict__)\nsuite=unittest.defaultTestLoader.loadTestsFromName('CompleteReceiptReplayTests.test_complete_replay_and_prior_receipt_bound_drift',test_replay)\nresult=unittest.TextTestRunner(verbosity=2).run(suite)\nsys.exit(0 if result.wasSuccessful() else 1)\n"
+    ],
+    "cwd": "/tmp/story117-owner-parent-final-t1vg0b9_",
+    "modification": "Removed only the prior external receipt-bound file check in memory; source files unchanged.",
+    "exitCode": 1,
+    "expected": "Test fails because corrupt prior evidence is no longer refused.",
+    "stdout": "",
+    "stderr": "test_complete_replay_and_prior_receipt_bound_drift (test_replay.CompleteReceiptReplayTests.test_complete_replay_and_prior_receipt_bound_drift) ... FAIL\n\n======================================================================\nFAIL: test_complete_replay_and_prior_receipt_bound_drift (test_replay.CompleteReceiptReplayTests.test_complete_replay_and_prior_receipt_bound_drift)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/story117-owner-parent-final-t1vg0b9_/test_replay.py\", line 110, in test_complete_replay_and_prior_receipt_bound_drift\n    with self.assertRaisesRegex(ValueError,'^previous receipt-bound file drift$'):replay.verify(self.root,self.receipt_path)\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 1.733s\n\nFAILED (failures=1)\n",
+    "stderrSha256": "d745551511ac096bf9519b6e517f50da8aa564ac90a99e3775be021ac6cf4067",
+    "testCaughtVerifierRegression": true
+  }
+}

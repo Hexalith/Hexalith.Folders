@@ -1,0 +1,850 @@
+{
+  "format": "sha256-file-members-v1",
+  "members": [
+    {
+      "path": "capture.py",
+      "bytes": 6156,
+      "sha256": "f0d2b484f579907a4a152ec404663a77a1a8c25b792cd9cbec9e999140350124"
+    },
+    {
+      "path": "current-root-input-derivation.proposed.patch",
+      "bytes": 544,
+      "sha256": "ba6735fb30c34fbff88a8f46edaaf755c27ce2c2297f13881b79593ad87e4b73"
+    },
+    {
+      "path": "preflight.json",
+      "bytes": 18385,
+      "sha256": "243014d19109d91fd65754d49a52f996bc7bb2c1f2287be4a9e4127bce6612c3"
+    },
+    {
+      "path": "proposal/execute_after_rebind_authorization.py",
+      "bytes": 8342,
+      "sha256": "833f632afa43cbf9e3eb20d6c91efb35cf35358f17dc8d30ba0f521fe4f7fcf7"
+    },
+    {
+      "path": "proposal/spec-1-17-cli-4-38-loader-root-rebind.md",
+      "bytes": 4464,
+      "sha256": "5519cc8a2ae9ae226933f4635015ba0a2a12a206974376f9f87f8e8e3f94cefa"
+    },
+    {
+      "path": "proposal/story-1-17-cli-4-38-loader-authorization-2026-10-26.json",
+      "bytes": 4094,
+      "sha256": "01907142a0863a50dfde4d6cfe465399898b8f5121982779775cf526cbefefd3"
+    },
+    {
+      "path": "proposal/story-1-17-cli-4-38-loader-root-rebind-2026-10-26.md",
+      "bytes": 8583,
+      "sha256": "ba575f28f26eb6a6db8df0785b4137df0f2a072b819c249efe1841e7325b0b81"
+    },
+    {
+      "path": "proposal/story-1-17-cli-4-38-loader-root-rebind-plan-2026-10-26.json",
+      "bytes": 18983,
+      "sha256": "228fe3ede636d56312f60bf4600a61d0c2fe62801ce31965f1d50eb0040efb3b"
+    },
+    {
+      "path": "repo-0-index.command.json",
+      "bytes": 360,
+      "sha256": "7da707b8171aad8efc354cc75d4074c0b60eec419dfe6eaa38e3b9ab5bb37aeb"
+    },
+    {
+      "path": "repo-0-index.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-0-index.stdout",
+      "bytes": 2338766,
+      "sha256": "62459e20b5115ebea71409210950651c7d3bfd32c20729dd69cde0d62d0a666d"
+    },
+    {
+      "path": "repo-0-revision.command.json",
+      "bytes": 358,
+      "sha256": "b8cd568921dd2e978231a774303771ad63cbd10896b94564f1a01b8ed2cc3543"
+    },
+    {
+      "path": "repo-0-revision.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-0-revision.stdout",
+      "bytes": 41,
+      "sha256": "6e32b7603610c3e6c5921cd65c67ce54c6c3d0fb082d1cf75966527ce4307a1e"
+    },
+    {
+      "path": "repo-0-staged.command.json",
+      "bytes": 370,
+      "sha256": "e85cb0c22c083bf9b55f24d41b11e547e7c3abd6e8962ebe2f7ab5080eae5416"
+    },
+    {
+      "path": "repo-0-staged.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-0-staged.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-0-status.command.json",
+      "bytes": 394,
+      "sha256": "d7487d03438ec0f62130afcbbc254dc5f7ab3c0c7c63e70bdebc7d84635ddbde"
+    },
+    {
+      "path": "repo-0-status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-0-status.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-1-index.command.json",
+      "bytes": 388,
+      "sha256": "3cc97fef0e99811e80a281c301b6fafd5e58a48246dc6118854f43a980028794"
+    },
+    {
+      "path": "repo-1-index.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-1-index.stdout",
+      "bytes": 485805,
+      "sha256": "279c1b2c7fed9cc80dd048ca637e1b2031bb10d45ff439586b899aefb6dfcc80"
+    },
+    {
+      "path": "repo-1-revision.command.json",
+      "bytes": 386,
+      "sha256": "d29e4f935726235f5a18c48477d7013ac88d6e53c81fac4681176a5793f9a5f5"
+    },
+    {
+      "path": "repo-1-revision.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-1-revision.stdout",
+      "bytes": 41,
+      "sha256": "8375e553a96d52c2f79c6819713ef922a27ea34b43fa0837353dcc44ea0d4ec1"
+    },
+    {
+      "path": "repo-1-staged.command.json",
+      "bytes": 398,
+      "sha256": "1d74ae7baf5e2fd27a1fb10b017d5431f9bfecf2f15e5d74c616c53bfa80d9da"
+    },
+    {
+      "path": "repo-1-staged.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-1-staged.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-1-status.command.json",
+      "bytes": 422,
+      "sha256": "6e763496c8e1cafb4b4fa928e9d0cc59b7ed3e1c311aa9e44e70c5be4cdee280"
+    },
+    {
+      "path": "repo-1-status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-1-status.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-10-index.command.json",
+      "bytes": 389,
+      "sha256": "c85abf34357ba7cca09ded968e2ef35505af069f89fe936f96fcd4c2dcfb362e"
+    },
+    {
+      "path": "repo-10-index.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-10-index.stdout",
+      "bytes": 1440838,
+      "sha256": "1c6649f6dbd9d725da61199cfbef8fe5156af23f730156bdbe0b2620077b066b"
+    },
+    {
+      "path": "repo-10-revision.command.json",
+      "bytes": 387,
+      "sha256": "7ecae57ff9ba21e6d1702a0e142ddc1c0cbc842e013ed5037b5ba5cbc69bd1f4"
+    },
+    {
+      "path": "repo-10-revision.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-10-revision.stdout",
+      "bytes": 41,
+      "sha256": "290904425872168f5b6055adb81ef403b4e9bd0155c1e9f71d0b50b2521a4b2a"
+    },
+    {
+      "path": "repo-10-staged.command.json",
+      "bytes": 399,
+      "sha256": "2656a09270f0e5da0dd9b8518baf5d60d823db30de08be34777e9891bbe34fa2"
+    },
+    {
+      "path": "repo-10-staged.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-10-staged.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-10-status.command.json",
+      "bytes": 423,
+      "sha256": "1c528e3c5f351dbd9569c76f1a8c759c1e2f1690f58824b08d35ea8a6e4d443c"
+    },
+    {
+      "path": "repo-10-status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-10-status.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-11-index.command.json",
+      "bytes": 387,
+      "sha256": "b926a2cf74f127627c788628cf6f165f855c8d62c1f77d56e6cb1b198c76d5a0"
+    },
+    {
+      "path": "repo-11-index.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-11-index.stdout",
+      "bytes": 1491845,
+      "sha256": "c361ea1f29b3bc49536e23d02ae8f3ac21b2d182cfe0bdfa2f2ce92af83b505f"
+    },
+    {
+      "path": "repo-11-revision.command.json",
+      "bytes": 385,
+      "sha256": "5c6b772bea969c826f818f041b9a0c2478c91e6f0db8facc37cecbe9d8ac6145"
+    },
+    {
+      "path": "repo-11-revision.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-11-revision.stdout",
+      "bytes": 41,
+      "sha256": "3e3662124abd9a54b03fe523a3aece317686027c61a0bae8d53f9952b286657e"
+    },
+    {
+      "path": "repo-11-staged.command.json",
+      "bytes": 397,
+      "sha256": "4a61162a8571b70055994b7596e0922c33a412ab5dc9b9deff81f5fc6009bb7d"
+    },
+    {
+      "path": "repo-11-staged.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-11-staged.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-11-status.command.json",
+      "bytes": 421,
+      "sha256": "45aeb56613776ec463d2cab480eb4b81009a7dba114cb8964487bcdf8390e2d7"
+    },
+    {
+      "path": "repo-11-status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-11-status.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-12-index.command.json",
+      "bytes": 388,
+      "sha256": "7f5ab0828457fe0b710660b4d439e5c1fb3a50d6daf4743fc11d37b092f1aa35"
+    },
+    {
+      "path": "repo-12-index.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-12-index.stdout",
+      "bytes": 916212,
+      "sha256": "933d7d5f591ff2c0d291e6f497587ea1f804946698f9601af3822d47c3e8c44c"
+    },
+    {
+      "path": "repo-12-revision.command.json",
+      "bytes": 386,
+      "sha256": "0735a73bf233b635fdc910c43d9be931bab168dca57cd6a0716a985c258b8f57"
+    },
+    {
+      "path": "repo-12-revision.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-12-revision.stdout",
+      "bytes": 41,
+      "sha256": "961baf3cdb6c28e82434e7cdcdcb0ef1f311365410e1923c631049e1cc241051"
+    },
+    {
+      "path": "repo-12-staged.command.json",
+      "bytes": 398,
+      "sha256": "96af5082437b01812067c9fd205b6d98d448ea0a48f6e8dbd3704daccab70c4e"
+    },
+    {
+      "path": "repo-12-staged.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-12-staged.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-12-status.command.json",
+      "bytes": 422,
+      "sha256": "693722bd5a168b2e50f2799a0d34933203e57e786cb85f92af529f3a2b10b2dc"
+    },
+    {
+      "path": "repo-12-status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-12-status.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-2-index.command.json",
+      "bytes": 389,
+      "sha256": "6c8195397a97a357344d0d1d2132fadc04081b64fedec3ba2062659965329d06"
+    },
+    {
+      "path": "repo-2-index.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-2-index.stdout",
+      "bytes": 2804,
+      "sha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569"
+    },
+    {
+      "path": "repo-2-revision.command.json",
+      "bytes": 387,
+      "sha256": "8f32504bcdc39933b3fec049191a7153e94f5961324f0bea4ed1e4e0e4173251"
+    },
+    {
+      "path": "repo-2-revision.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-2-revision.stdout",
+      "bytes": 41,
+      "sha256": "1ebe96a39faec347f9d6e144880f238934aedba846a7408fa3e4e803e3fe67f6"
+    },
+    {
+      "path": "repo-2-staged.command.json",
+      "bytes": 399,
+      "sha256": "82ac2f29274f7d9cd43cc8ae2bbca1376d7ffa21f3ecaaf1d244a649acb21247"
+    },
+    {
+      "path": "repo-2-staged.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-2-staged.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-2-status.command.json",
+      "bytes": 423,
+      "sha256": "2ad2cba8b70794b153a6303e5f947e830e67505eea6ac0e04f3e6bcb8a427f19"
+    },
+    {
+      "path": "repo-2-status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-2-status.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-3-index.command.json",
+      "bytes": 391,
+      "sha256": "a17f759f119d775e1a507103ddef094f4b246483c4c9e4249c23eac66fba6d6b"
+    },
+    {
+      "path": "repo-3-index.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-3-index.stdout",
+      "bytes": 1129797,
+      "sha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e"
+    },
+    {
+      "path": "repo-3-revision.command.json",
+      "bytes": 389,
+      "sha256": "05b5d983bd94dc81855e9db362ae5988ce5da4b65e9eee77c5e1d618a946792e"
+    },
+    {
+      "path": "repo-3-revision.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-3-revision.stdout",
+      "bytes": 41,
+      "sha256": "bbcaac8cd13633d8bba9a6c10e0b85d1bf6e50a069ea51e007ca1fb8960062bb"
+    },
+    {
+      "path": "repo-3-staged.command.json",
+      "bytes": 401,
+      "sha256": "6e45f93f5b96e08fe2ffede56ea0414e28c7ebce8dda812481d21536aab111c8"
+    },
+    {
+      "path": "repo-3-staged.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-3-staged.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-3-status.command.json",
+      "bytes": 425,
+      "sha256": "fec02a026965bf524dbedcf7b401a983f5672aad334364e30ccb05e9e3488aea"
+    },
+    {
+      "path": "repo-3-status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-3-status.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-4-index.command.json",
+      "bytes": 394,
+      "sha256": "0baa53e38721efdacb6241a097765ec3ea6230408f0ee90c383a2a5b4f4c09a2"
+    },
+    {
+      "path": "repo-4-index.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-4-index.stdout",
+      "bytes": 763463,
+      "sha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2"
+    },
+    {
+      "path": "repo-4-revision.command.json",
+      "bytes": 392,
+      "sha256": "cc6306aed86e15e4192dea83d3369d7c9c7abbcbd15ad217f27b6d068d353a5c"
+    },
+    {
+      "path": "repo-4-revision.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-4-revision.stdout",
+      "bytes": 41,
+      "sha256": "51e32b61afcd8f40758e3aada0c96add4c0bf5379f481fbb5dd51c100deac5d2"
+    },
+    {
+      "path": "repo-4-staged.command.json",
+      "bytes": 404,
+      "sha256": "8f7c2d568a57704cd8db209ab9207ec1c28247d8d0e5a2bfdca6d7d5bff65f89"
+    },
+    {
+      "path": "repo-4-staged.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-4-staged.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-4-status.command.json",
+      "bytes": 428,
+      "sha256": "8c2bf4e490cd72347d55ccf0fa63dd57a6e670b172203825d036e0b8e7178b64"
+    },
+    {
+      "path": "repo-4-status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-4-status.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-5-index.command.json",
+      "bytes": 389,
+      "sha256": "e5095a7d13287fcedcc99818273168a9c56309d872fc5f2c310a18015dbae2b9"
+    },
+    {
+      "path": "repo-5-index.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-5-index.stdout",
+      "bytes": 762363,
+      "sha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76"
+    },
+    {
+      "path": "repo-5-revision.command.json",
+      "bytes": 387,
+      "sha256": "6e415aeb77df699656e032bdbf3760fff83b6cb87f1ed47bc5aea6250c4fb5bb"
+    },
+    {
+      "path": "repo-5-revision.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-5-revision.stdout",
+      "bytes": 41,
+      "sha256": "095a23cf084aed93ccbbdfae9ed8e8618df669eb6cb2e8bd885c490b3dae7d06"
+    },
+    {
+      "path": "repo-5-staged.command.json",
+      "bytes": 399,
+      "sha256": "82e59332db5633a71e593e85f5b73c3407e32c7307794cdcb009f8982c15dbea"
+    },
+    {
+      "path": "repo-5-staged.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-5-staged.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-5-status.command.json",
+      "bytes": 423,
+      "sha256": "a92bd44440e94b07c4ef697bfaba11437cc2e31557fd317b6038a3b4b64127c1"
+    },
+    {
+      "path": "repo-5-status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-5-status.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-6-index.command.json",
+      "bytes": 388,
+      "sha256": "3fa3489bd8dcdd92ce711e34ff37bb88109e5163f01dfa52873877523ab69ba9"
+    },
+    {
+      "path": "repo-6-index.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-6-index.stdout",
+      "bytes": 24213,
+      "sha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644"
+    },
+    {
+      "path": "repo-6-revision.command.json",
+      "bytes": 386,
+      "sha256": "1357b0e5557ebe3ee78bccff566d46792d751cf8ca6b7b28a54d336be7882bb4"
+    },
+    {
+      "path": "repo-6-revision.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-6-revision.stdout",
+      "bytes": 41,
+      "sha256": "b5f2da95e162839099822f7e8dcc700dff5a623ffa261266ba18187086a92d08"
+    },
+    {
+      "path": "repo-6-staged.command.json",
+      "bytes": 398,
+      "sha256": "c68da244f1b0978a42dfdb9730e614109746b54acbdc94d6773288d25889d38c"
+    },
+    {
+      "path": "repo-6-staged.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-6-staged.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-6-status.command.json",
+      "bytes": 422,
+      "sha256": "37528d87236aafb788802ad2ea317a02e889ec68bba2f04d79bef5ecec623a0a"
+    },
+    {
+      "path": "repo-6-status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-6-status.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-7-index.command.json",
+      "bytes": 387,
+      "sha256": "f012562f6561b69700a5946db05810aa9b6850e91101f35febd0202fbf28dd6a"
+    },
+    {
+      "path": "repo-7-index.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-7-index.stdout",
+      "bytes": 438451,
+      "sha256": "a379d24eb9569cbbfd77c245c80f41ff239d9c97e928c66b3a444ca6cb53b94e"
+    },
+    {
+      "path": "repo-7-revision.command.json",
+      "bytes": 385,
+      "sha256": "d2a6745bfe8264c8822aa6e12382df0f07b30e858fb07a8f32f6fed039e227b0"
+    },
+    {
+      "path": "repo-7-revision.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-7-revision.stdout",
+      "bytes": 41,
+      "sha256": "8fcd5bf4f45f6fdea4689f27b6a888f52ebdec7f8790d76d7d03b7eb5c58dfb5"
+    },
+    {
+      "path": "repo-7-staged.command.json",
+      "bytes": 397,
+      "sha256": "10cf3aa86f0807ce675a35a9016bc44dcb2161f5e78dbbda6d8e7a4d95325962"
+    },
+    {
+      "path": "repo-7-staged.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-7-staged.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-7-status.command.json",
+      "bytes": 421,
+      "sha256": "3e6e08ccb31bf62d16817cf10d988e8c647d973fe8380f7a75bb12921dcd5ade"
+    },
+    {
+      "path": "repo-7-status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-7-status.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-8-index.command.json",
+      "bytes": 406,
+      "sha256": "530ce6102a113e0b2b0c433bb1186c52322568a43870a2b0bd237b44f0a53686"
+    },
+    {
+      "path": "repo-8-index.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-8-index.stdout",
+      "bytes": 6781,
+      "sha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862"
+    },
+    {
+      "path": "repo-8-revision.command.json",
+      "bytes": 404,
+      "sha256": "14fda368568d29848a77c08012040e2e30bcee04b163311214694657db1b6dca"
+    },
+    {
+      "path": "repo-8-revision.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-8-revision.stdout",
+      "bytes": 41,
+      "sha256": "6e451f038d09e5615bf71c008d153e4b690a9474397aa4707e66349f07b38cbb"
+    },
+    {
+      "path": "repo-8-staged.command.json",
+      "bytes": 416,
+      "sha256": "06bfbefd721ea9393e745e47d73fefd6cfbc5d6aced11ae8cfb056cfb16a8a2a"
+    },
+    {
+      "path": "repo-8-staged.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-8-staged.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-8-status.command.json",
+      "bytes": 440,
+      "sha256": "445ff80a9c1fe4aac99f9c6a86ba3ab15c706c34d4b8fa8722406dfb4cb2d301"
+    },
+    {
+      "path": "repo-8-status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-8-status.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-9-index.command.json",
+      "bytes": 389,
+      "sha256": "ecfddb6d294146f33e6cc2fd7c02656b8dd91416749d9cfb3ecdf6b09b15e490"
+    },
+    {
+      "path": "repo-9-index.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-9-index.stdout",
+      "bytes": 873000,
+      "sha256": "1494da6a6b03a0ca3ae427b9bad145b8c9cd51806d370c80468c510ef07e9eda"
+    },
+    {
+      "path": "repo-9-revision.command.json",
+      "bytes": 387,
+      "sha256": "c6f7c998b51ce55423f347905ae6754a19f88dea9594ce3b0a98d009fa384eab"
+    },
+    {
+      "path": "repo-9-revision.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-9-revision.stdout",
+      "bytes": 41,
+      "sha256": "921bee6c737c07a61e594e9f49b1f40de8aee754bb3e6410cb5faf233165ebf7"
+    },
+    {
+      "path": "repo-9-staged.command.json",
+      "bytes": 399,
+      "sha256": "2b2844ae6203f96d7192b39e2d96fbaffa77fb51bbef074eb404741b528d2857"
+    },
+    {
+      "path": "repo-9-staged.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-9-staged.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-9-status.command.json",
+      "bytes": 423,
+      "sha256": "59a0c7b75252c9060aed865ed851858674c8d0c8aab3295cb7e3e7e34bfa6290"
+    },
+    {
+      "path": "repo-9-status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repo-9-status.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "root-transition.command.json",
+      "bytes": 478,
+      "sha256": "ee2f09ccda09f72eda7c8d6a4cb358e637845da6c707c8dc92c7edd5c582fd72"
+    },
+    {
+      "path": "root-transition.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "root-transition.stdout",
+      "bytes": 970,
+      "sha256": "3aa63aa9b4288be9651f2dfe7c6164aaaa7cf0796403cdb1557dc720fe6140a5"
+    },
+    {
+      "path": "seal.py",
+      "bytes": 7233,
+      "sha256": "03e289832286cb4455db2bd56a50ba7043ba8bae4f51ed597239a2810180c9ae"
+    },
+    {
+      "path": "validation.json",
+      "bytes": 4408,
+      "sha256": "0e8dd6ff98df7d461a7b3cc99e5e181185b7d84cdc5e6ed53fe93d510c0082a2"
+    }
+  ]
+}

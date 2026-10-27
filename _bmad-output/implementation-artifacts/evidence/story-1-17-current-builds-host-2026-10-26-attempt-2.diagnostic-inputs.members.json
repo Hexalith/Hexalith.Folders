@@ -1,0 +1,12 @@
+[
+  {
+    "bytes": 12140,
+    "path": "diagnosis.json",
+    "sha256": "a7277ef45f8bd5e0b5fdfc659a94930efc2a59abb30e4689ca3fcf522cdcc86b"
+  },
+  {
+    "bytes": 2046462,
+    "path": "diagnostic-inputs/aspire.apphost.sdk/13.6.3/aspire.apphost.sdk.13.6.3.nupkg",
+    "sha256": "cb8c5abad85fb542e2bb4807dd31a2ee4c22f56b7762e0258b74a803c1035ad0"
+  }
+]

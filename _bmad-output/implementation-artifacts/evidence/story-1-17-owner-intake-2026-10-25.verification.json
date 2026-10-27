@@ -1,0 +1,43 @@
+{
+  "recordId": "STORY-1-17-OWNER-INTAKE-VERIFICATION-2026-10-25",
+  "archiveSha256": "504012dfebd645e604f55469d3369b2b262817479cd6532c11cb867d0516509c",
+  "memberManifestSha256": "bcecfa15e76bb30398aae64f45633020b046ccccea5feb9c3daac6ef251407ea",
+  "handoffSha256": "25e870b572043a26073e0a118ad243d80fe790d46b07d926ca13e5d67df58075",
+  "postReviewFullReplay": {
+    "status": "Pending independent parent replay",
+    "executed": false
+  },
+  "retainedPreReviewReplay": {
+    "member": "review/pre-review-verification.json",
+    "sha256": "f039bb9bd05b093b32b30583a72b0ac96f2dff30a7ce9862f4ffb1436f28f956",
+    "archiveSha256": "9fa37424c778924a5e6f44506256cd2427760a432dcc909363fb26f95b9fb016",
+    "scope": "Historical pre-review replay only; never relabeled as final archive replay."
+  },
+  "focusedTests": {
+    "total": 42,
+    "negativeControls": 40,
+    "counting": "Negative test methods, including subtest matrices and the complete replay mutation; two other methods are positive controls.",
+    "normal": {
+      "command": [
+        "python3",
+        "-B",
+        "/tmp/story117-owner-intake-20261025-4w9dr812/current/test_replay.py"
+      ],
+      "exitCode": 0,
+      "logMember": "logs/normal-tests.txt",
+      "logSha256": "821c80a39116c85429ea3bc788e1d67fd35f1df1f540b0e53d1476db38a76bc6"
+    },
+    "optimized": {
+      "command": [
+        "python3",
+        "-B",
+        "-O",
+        "/tmp/story117-owner-intake-20261025-4w9dr812/current/test_replay.py"
+      ],
+      "exitCode": 0,
+      "logMember": "logs/optimized-tests.txt",
+      "logSha256": "ce64b52d387a3e11f35e7ebe46948d49b46a63c99798ca38fc77b8d94f5e285c"
+    }
+  },
+  "limits": "Only amended test_replay.py executed after review fixes, normal and optimized. No application build, prior suite, declaration/adoption audit or ordinary run repeated; final full replay delegated to parent."
+}

@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "python3",
+    "-I",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "eng/story117-current-builds-host/tests",
+    "-v"
+  ],
+  "atUtc": "2026-10-26T19:07:20.887815+00:00",
+  "exitCode": 0,
+  "scope": "Observed completed focused run; controlled Python children, mocks and synthetic capsules. No SDK or consumed target case rerun.",
+  "summary": "Ran 49 tests in 1.960s; OK",
+  "tests": 49
+}

@@ -444,6 +444,11 @@ _bmad/**/*.bak
 # cleaned up under a separate housekeeping task.
 _bmad-output/process-notes/predev-preflight-*Z.json
 !_bmad-output/process-notes/predev-preflight-latest.json
+
+# Hexalith.Folders: evidence archives stay out of git. Their size and SHA-256 remain in
+# the committed receipt and member-manifest JSON; see evidence/archives-out-of-git.md.
+# Archives committed before 2026-10-27 remain tracked.
+_bmad-output/implementation-artifacts/evidence/**/*.tar.gz
 .codex/
 .agents/.story-automator-active
 .agents\.story-automator-active

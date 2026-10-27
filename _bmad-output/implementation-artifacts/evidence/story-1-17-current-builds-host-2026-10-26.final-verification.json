@@ -1,0 +1,56 @@
+{
+  "recordedAtUtc": "2026-10-26T18:21:08.447300+00:00",
+  "scope": "Final recording of already completed read-only checks; no target/test rerun",
+  "successfulReceipt": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.json",
+    "bytes": 41559,
+    "sha256": "c19f4a4df533d6aec2114686e3950955c32d3a786d43d577050943565da648d5"
+  },
+  "normalAndOptimizedCapsuleVerification": {
+    "exitCodes": [
+      0,
+      0
+    ],
+    "verifiedMemberCount": 17208,
+    "receiptSha256": "c19f4a4df533d6aec2114686e3950955c32d3a786d43d577050943565da648d5"
+  },
+  "postRecordingStaticCheck": {
+    "argv": [
+      "python3",
+      "-I",
+      "-B",
+      "eng/story117-current-builds-host/qualify.py",
+      "--plan",
+      "plan-attempt-5.json",
+      "--check"
+    ],
+    "exitCode": 0,
+    "output": "Static input/revision/index/SDK-byte checks passed; no SDK invoked.",
+    "scope": "After final results/handoff writes; protected historical artifacts, source revisions/indices and current harness/metadata/SDK bytes rechecked."
+  },
+  "finalGuardReceipt": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-5.guards.json",
+    "bytes": 10511,
+    "sha256": "4fd3b5cb1d832c82c7e9dbaa67229bc4556c3fa593dac2d0d41b4816ec8d4e4c"
+  },
+  "report": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-current-builds-host-results.md",
+    "bytes": 11731,
+    "sha256": "707235f539d04e834104d3de3acffd876021ad46c539a7af64486b9f64316978"
+  },
+  "handoff": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.handoff.json",
+    "bytes": 37773,
+    "sha256": "1d4d8af3c945275b5b7d85bb19ab7b28937d510fcb11e1bf30db4a99aa35e3c1"
+  },
+  "preservation": {
+    "all13RuntimePeriodRevisionsIndicesFlagsStatusesEqual": true,
+    "certificateStoreMetadataEqual": true,
+    "protectedInputDrifts": [],
+    "privateOutputCleanup": "none"
+  },
+  "targetExecutionComplete": true,
+  "coldExecutions": 1,
+  "hostFirstExecutions": 1,
+  "noFurtherTargetExecutionAuthorizedByVerification": true
+}

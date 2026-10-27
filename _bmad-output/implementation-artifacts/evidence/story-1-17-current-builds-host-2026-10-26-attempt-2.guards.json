@@ -1,0 +1,42 @@
+{
+  "atUtc": "2026-10-26T17:46:30.891778+00:00",
+  "sdkInvoked": false,
+  "scope": "Only corrected offline-feed preparation and existing qualification guards",
+  "priorSdkCommands": 0,
+  "priorLoaderCases": 0,
+  "checks": [
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-current-builds-host/tests",
+        "-v"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "testBindingFailureRemainsFailureAndPermitsOnlyTheSecondFixedCase (test_qualification_guards.QualificationGuards.testBindingFailureRemainsFailureAndPermitsOnlyTheSecondFixedCase) ... ok\ntestCaseTimeoutPreventsTheSecondCase (test_qualification_guards.QualificationGuards.testCaseTimeoutPreventsTheSecondCase) ... ok\ntestCorruptOutputFailsSealHash (test_qualification_guards.QualificationGuards.testCorruptOutputFailsSealHash) ... ok\ntestEverySandboxGetsFreshZeroOffsetFilter (test_qualification_guards.QualificationGuards.testEverySandboxGetsFreshZeroOffsetFilter) ... ok\ntestFailedInputGateCannotLaunchSdk (test_qualification_guards.QualificationGuards.testFailedInputGateCannotLaunchSdk) ... ok\ntestFailedSdkSelectionCannotLaunchDependentCommand (test_qualification_guards.QualificationGuards.testFailedSdkSelectionCannotLaunchDependentCommand) ... ok\ntestHexalithPackageFallbackIsRejected (test_qualification_guards.QualificationGuards.testHexalithPackageFallbackIsRejected) ... ok\ntestInstructionLinkIsOmittedButBuildInputSymlinkIsRejected (test_qualification_guards.QualificationGuards.testInstructionLinkIsOmittedButBuildInputSymlinkIsRejected) ... ok\ntestOfflineFeedDeduplicatesIdenticalIdentityVersionBytes (test_qualification_guards.QualificationGuards.testOfflineFeedDeduplicatesIdenticalIdentityVersionBytes) ... ok\ntestOfflineFeedPreservesVersionsDespiteIdenticalBasenames (test_qualification_guards.QualificationGuards.testOfflineFeedPreservesVersionsDespiteIdenticalBasenames) ... ok\ntestOfflineFeedRejectsConflictingBytesForSameIdentityVersion (test_qualification_guards.QualificationGuards.testOfflineFeedRejectsConflictingBytesForSameIdentityVersion) ... ok\ntestOneShotDescriptorCannotBeReused (test_qualification_guards.QualificationGuards.testOneShotDescriptorCannotBeReused) ... ok\ntestProjectReferenceCannotEscapePrivateSnapshot (test_qualification_guards.QualificationGuards.testProjectReferenceCannotEscapePrivateSnapshot) ... ok\ntestProtectedByteDriftFailsBeforeAnySdkUse (test_qualification_guards.QualificationGuards.testProtectedByteDriftFailsBeforeAnySdkUse) ... ok\ntestRecordingDescendantsCannotIncludeOperationalChanges (test_qualification_guards.QualificationGuards.testRecordingDescendantsCannotIncludeOperationalChanges) ... ok\ntestSdkResolverSourcesArePrivateBeforeEvaluation (test_qualification_guards.QualificationGuards.testSdkResolverSourcesArePrivateBeforeEvaluation) ... ok\ntestStaleExtraOutputFailsSealMembership (test_qualification_guards.QualificationGuards.testStaleExtraOutputFailsSealMembership) ... ok\ntestThirdPartyPackagesRemainPermitted (test_qualification_guards.QualificationGuards.testThirdPartyPackagesRemainPermitted) ... ok\ntestTimeoutTerminatesOwnedGroupAndRetainsReceipt (test_qualification_guards.QualificationGuards.testTimeoutTerminatesOwnedGroupAndRetainsReceipt) ... ok\ntestUnbuiltTupleCannotLaunchAnyProbe (test_qualification_guards.QualificationGuards.testUnbuiltTupleCannotLaunchAnyProbe) ... ok\ntestValidSealedTupleRunsOnlyTheTwoFixedCases (test_qualification_guards.QualificationGuards.testValidSealedTupleRunsOnlyTheTwoFixedCases) ... ok\ntestVerifierRejectsCorruptionBeforeOpeningArchive (test_qualification_guards.QualificationGuards.testVerifierRejectsCorruptionBeforeOpeningArchive) ... ok\ntestVerifierRejectsUnsafeAndDuplicatePaths (test_qualification_guards.QualificationGuards.testVerifierRejectsUnsafeAndDuplicatePaths) ... ok\n\n----------------------------------------------------------------------\nRan 23 tests in 0.204s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "-B",
+        "-O",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-current-builds-host/tests",
+        "-v"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "testBindingFailureRemainsFailureAndPermitsOnlyTheSecondFixedCase (test_qualification_guards.QualificationGuards.testBindingFailureRemainsFailureAndPermitsOnlyTheSecondFixedCase) ... ok\ntestCaseTimeoutPreventsTheSecondCase (test_qualification_guards.QualificationGuards.testCaseTimeoutPreventsTheSecondCase) ... ok\ntestCorruptOutputFailsSealHash (test_qualification_guards.QualificationGuards.testCorruptOutputFailsSealHash) ... ok\ntestEverySandboxGetsFreshZeroOffsetFilter (test_qualification_guards.QualificationGuards.testEverySandboxGetsFreshZeroOffsetFilter) ... ok\ntestFailedInputGateCannotLaunchSdk (test_qualification_guards.QualificationGuards.testFailedInputGateCannotLaunchSdk) ... ok\ntestFailedSdkSelectionCannotLaunchDependentCommand (test_qualification_guards.QualificationGuards.testFailedSdkSelectionCannotLaunchDependentCommand) ... ok\ntestHexalithPackageFallbackIsRejected (test_qualification_guards.QualificationGuards.testHexalithPackageFallbackIsRejected) ... ok\ntestInstructionLinkIsOmittedButBuildInputSymlinkIsRejected (test_qualification_guards.QualificationGuards.testInstructionLinkIsOmittedButBuildInputSymlinkIsRejected) ... ok\ntestOfflineFeedDeduplicatesIdenticalIdentityVersionBytes (test_qualification_guards.QualificationGuards.testOfflineFeedDeduplicatesIdenticalIdentityVersionBytes) ... ok\ntestOfflineFeedPreservesVersionsDespiteIdenticalBasenames (test_qualification_guards.QualificationGuards.testOfflineFeedPreservesVersionsDespiteIdenticalBasenames) ... ok\ntestOfflineFeedRejectsConflictingBytesForSameIdentityVersion (test_qualification_guards.QualificationGuards.testOfflineFeedRejectsConflictingBytesForSameIdentityVersion) ... ok\ntestOneShotDescriptorCannotBeReused (test_qualification_guards.QualificationGuards.testOneShotDescriptorCannotBeReused) ... ok\ntestProjectReferenceCannotEscapePrivateSnapshot (test_qualification_guards.QualificationGuards.testProjectReferenceCannotEscapePrivateSnapshot) ... ok\ntestProtectedByteDriftFailsBeforeAnySdkUse (test_qualification_guards.QualificationGuards.testProtectedByteDriftFailsBeforeAnySdkUse) ... ok\ntestRecordingDescendantsCannotIncludeOperationalChanges (test_qualification_guards.QualificationGuards.testRecordingDescendantsCannotIncludeOperationalChanges) ... ok\ntestSdkResolverSourcesArePrivateBeforeEvaluation (test_qualification_guards.QualificationGuards.testSdkResolverSourcesArePrivateBeforeEvaluation) ... ok\ntestStaleExtraOutputFailsSealMembership (test_qualification_guards.QualificationGuards.testStaleExtraOutputFailsSealMembership) ... ok\ntestThirdPartyPackagesRemainPermitted (test_qualification_guards.QualificationGuards.testThirdPartyPackagesRemainPermitted) ... ok\ntestTimeoutTerminatesOwnedGroupAndRetainsReceipt (test_qualification_guards.QualificationGuards.testTimeoutTerminatesOwnedGroupAndRetainsReceipt) ... ok\ntestUnbuiltTupleCannotLaunchAnyProbe (test_qualification_guards.QualificationGuards.testUnbuiltTupleCannotLaunchAnyProbe) ... ok\ntestValidSealedTupleRunsOnlyTheTwoFixedCases (test_qualification_guards.QualificationGuards.testValidSealedTupleRunsOnlyTheTwoFixedCases) ... ok\ntestVerifierRejectsCorruptionBeforeOpeningArchive (test_qualification_guards.QualificationGuards.testVerifierRejectsCorruptionBeforeOpeningArchive) ... ok\ntestVerifierRejectsUnsafeAndDuplicatePaths (test_qualification_guards.QualificationGuards.testVerifierRejectsUnsafeAndDuplicatePaths) ... ok\n\n----------------------------------------------------------------------\nRan 23 tests in 0.216s\n\nOK\n"
+    }
+  ]
+}

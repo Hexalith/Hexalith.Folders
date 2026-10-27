@@ -1,0 +1,50 @@
+{
+  "atUtc": "2026-10-26T17:39:05.332485+00:00",
+  "sdkInvoked": false,
+  "checks": [
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-current-builds-host/tests",
+        "-v"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "testBindingFailureRemainsFailureAndPermitsOnlyTheSecondFixedCase (test_qualification_guards.QualificationGuards.testBindingFailureRemainsFailureAndPermitsOnlyTheSecondFixedCase) ... ok\ntestCaseTimeoutPreventsTheSecondCase (test_qualification_guards.QualificationGuards.testCaseTimeoutPreventsTheSecondCase) ... ok\ntestCorruptOutputFailsSealHash (test_qualification_guards.QualificationGuards.testCorruptOutputFailsSealHash) ... ok\ntestEverySandboxGetsFreshZeroOffsetFilter (test_qualification_guards.QualificationGuards.testEverySandboxGetsFreshZeroOffsetFilter) ... ok\ntestFailedInputGateCannotLaunchSdk (test_qualification_guards.QualificationGuards.testFailedInputGateCannotLaunchSdk) ... ok\ntestFailedSdkSelectionCannotLaunchDependentCommand (test_qualification_guards.QualificationGuards.testFailedSdkSelectionCannotLaunchDependentCommand) ... ok\ntestHexalithPackageFallbackIsRejected (test_qualification_guards.QualificationGuards.testHexalithPackageFallbackIsRejected) ... ok\ntestInstructionLinkIsOmittedButBuildInputSymlinkIsRejected (test_qualification_guards.QualificationGuards.testInstructionLinkIsOmittedButBuildInputSymlinkIsRejected) ... ok\ntestOneShotDescriptorCannotBeReused (test_qualification_guards.QualificationGuards.testOneShotDescriptorCannotBeReused) ... ok\ntestProjectReferenceCannotEscapePrivateSnapshot (test_qualification_guards.QualificationGuards.testProjectReferenceCannotEscapePrivateSnapshot) ... ok\ntestProtectedByteDriftFailsBeforeAnySdkUse (test_qualification_guards.QualificationGuards.testProtectedByteDriftFailsBeforeAnySdkUse) ... ok\ntestRecordingDescendantsCannotIncludeOperationalChanges (test_qualification_guards.QualificationGuards.testRecordingDescendantsCannotIncludeOperationalChanges) ... ok\ntestStaleExtraOutputFailsSealMembership (test_qualification_guards.QualificationGuards.testStaleExtraOutputFailsSealMembership) ... ok\ntestThirdPartyPackagesRemainPermitted (test_qualification_guards.QualificationGuards.testThirdPartyPackagesRemainPermitted) ... ok\ntestTimeoutTerminatesOwnedGroupAndRetainsReceipt (test_qualification_guards.QualificationGuards.testTimeoutTerminatesOwnedGroupAndRetainsReceipt) ... ok\ntestUnbuiltTupleCannotLaunchAnyProbe (test_qualification_guards.QualificationGuards.testUnbuiltTupleCannotLaunchAnyProbe) ... ok\ntestValidSealedTupleRunsOnlyTheTwoFixedCases (test_qualification_guards.QualificationGuards.testValidSealedTupleRunsOnlyTheTwoFixedCases) ... ok\ntestVerifierRejectsCorruptionBeforeOpeningArchive (test_qualification_guards.QualificationGuards.testVerifierRejectsCorruptionBeforeOpeningArchive) ... ok\ntestVerifierRejectsUnsafeAndDuplicatePaths (test_qualification_guards.QualificationGuards.testVerifierRejectsUnsafeAndDuplicatePaths) ... ok\n\n----------------------------------------------------------------------\nRan 19 tests in 0.062s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "-B",
+        "-O",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-current-builds-host/tests",
+        "-v"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "testBindingFailureRemainsFailureAndPermitsOnlyTheSecondFixedCase (test_qualification_guards.QualificationGuards.testBindingFailureRemainsFailureAndPermitsOnlyTheSecondFixedCase) ... ok\ntestCaseTimeoutPreventsTheSecondCase (test_qualification_guards.QualificationGuards.testCaseTimeoutPreventsTheSecondCase) ... ok\ntestCorruptOutputFailsSealHash (test_qualification_guards.QualificationGuards.testCorruptOutputFailsSealHash) ... ok\ntestEverySandboxGetsFreshZeroOffsetFilter (test_qualification_guards.QualificationGuards.testEverySandboxGetsFreshZeroOffsetFilter) ... ok\ntestFailedInputGateCannotLaunchSdk (test_qualification_guards.QualificationGuards.testFailedInputGateCannotLaunchSdk) ... ok\ntestFailedSdkSelectionCannotLaunchDependentCommand (test_qualification_guards.QualificationGuards.testFailedSdkSelectionCannotLaunchDependentCommand) ... ok\ntestHexalithPackageFallbackIsRejected (test_qualification_guards.QualificationGuards.testHexalithPackageFallbackIsRejected) ... ok\ntestInstructionLinkIsOmittedButBuildInputSymlinkIsRejected (test_qualification_guards.QualificationGuards.testInstructionLinkIsOmittedButBuildInputSymlinkIsRejected) ... ok\ntestOneShotDescriptorCannotBeReused (test_qualification_guards.QualificationGuards.testOneShotDescriptorCannotBeReused) ... ok\ntestProjectReferenceCannotEscapePrivateSnapshot (test_qualification_guards.QualificationGuards.testProjectReferenceCannotEscapePrivateSnapshot) ... ok\ntestProtectedByteDriftFailsBeforeAnySdkUse (test_qualification_guards.QualificationGuards.testProtectedByteDriftFailsBeforeAnySdkUse) ... ok\ntestRecordingDescendantsCannotIncludeOperationalChanges (test_qualification_guards.QualificationGuards.testRecordingDescendantsCannotIncludeOperationalChanges) ... ok\ntestStaleExtraOutputFailsSealMembership (test_qualification_guards.QualificationGuards.testStaleExtraOutputFailsSealMembership) ... ok\ntestThirdPartyPackagesRemainPermitted (test_qualification_guards.QualificationGuards.testThirdPartyPackagesRemainPermitted) ... ok\ntestTimeoutTerminatesOwnedGroupAndRetainsReceipt (test_qualification_guards.QualificationGuards.testTimeoutTerminatesOwnedGroupAndRetainsReceipt) ... ok\ntestUnbuiltTupleCannotLaunchAnyProbe (test_qualification_guards.QualificationGuards.testUnbuiltTupleCannotLaunchAnyProbe) ... ok\ntestValidSealedTupleRunsOnlyTheTwoFixedCases (test_qualification_guards.QualificationGuards.testValidSealedTupleRunsOnlyTheTwoFixedCases) ... ok\ntestVerifierRejectsCorruptionBeforeOpeningArchive (test_qualification_guards.QualificationGuards.testVerifierRejectsCorruptionBeforeOpeningArchive) ... ok\ntestVerifierRejectsUnsafeAndDuplicatePaths (test_qualification_guards.QualificationGuards.testVerifierRejectsUnsafeAndDuplicatePaths) ... ok\n\n----------------------------------------------------------------------\nRan 19 tests in 0.063s\n\nOK\n"
+    }
+  ],
+  "preparationObservation": {
+    "command": [
+      "python3",
+      "-I",
+      "-B",
+      "eng/story117-current-builds-host/qualify.py",
+      "--prepare"
+    ],
+    "firstResult": "GateFailure: Special tracked input: references/Hexalith.Commons/.clinerules",
+    "scope": "Pre-execution harness development; no plan/claim/SDK existed. The two non-build instruction links are now narrowly omitted and recorded; build input links still fail closed."
+  }
+}

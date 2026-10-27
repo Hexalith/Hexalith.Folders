@@ -1,0 +1,20 @@
+{
+  "atUtc": "2026-10-26T18:09:50.935603+00:00",
+  "specSha256": "26314a6131078eb11966e48d1177774e672c4af58a778c3d4fc07fcf9e1ba482",
+  "planSha256": "baead8cb1772a5995ff45135c19eb2d92b956839d7bccea9f60cb9a77a5209b6",
+  "authority": "Jerome approved the conditional sequence in the frozen spec; no historical approval is reused.",
+  "continuation": {
+    "commandCountScope": "Recorded outer driver commands; SDK calls inside unchanged build helpers are not individually wrapped/countable from this field.",
+    "feedFormatAuthority": [
+      "https://learn.microsoft.com/en-us/nuget/hosting-packages/local-feeds",
+      "https://github.com/NuGet/Home/wiki/Nupkg-Metadata-File"
+    ],
+    "priorBuilds": 1,
+    "priorLoaderCases": 0,
+    "priorProbeCompilerCommands": 0,
+    "priorReceipt": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26-attempt-4.json",
+    "priorSdkCommands": 20,
+    "scopeInterpretation": "Parent implementer: bind the existing selected EventStore.Aspire 3.128.0 nupkg and cached nuspec, verify nuspec-member byte equality, exact ID/version and package-declared repository commit matching source. Seed ONLY the nuspec into the fresh private cache, with no Hexalith DLL/nupkg in the restore feed or compiled graph. Preserve attempt 4's failed build and run GeneratePlatformVersionCatalog unchanged in a fresh additive attempt. No fetched packages, source edits, pin changes, tool install or catalog-target bypass; source-only package-fallback guards remain enforced. No loader case has run."
+  },
+  "privatePreparationPassed": true
+}

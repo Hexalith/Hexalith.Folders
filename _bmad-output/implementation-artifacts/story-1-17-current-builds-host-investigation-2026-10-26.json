@@ -1,0 +1,208 @@
+{
+  "recordId": "story-1-17-current-builds-host-investigation-2026-10-26",
+  "recordedAtUtc": "2026-10-26T17:22:44.247710+00:00",
+  "scope": "read-only planning investigation; no SDK, build, runtime or archived helper executed",
+  "repositories": [
+    {
+      "path": ".",
+      "revision": "19d8ddc9d64b0af4986b2a8fafe859b8b4e8231a",
+      "stageEntriesSha256": "b5655d89653b3f199d9ebd7ce3b66194d88e624e5d39164811a4ba4eb2f62815",
+      "statusAtInvestigation": "?? _bmad-output/implementation-artifacts/spec-1-17-current-builds-host-qualification.md\n"
+    },
+    {
+      "path": "references/Hexalith.Tenants",
+      "revision": "24fb584b8d2b8a3bc7a51fcf8b5a6266e21e53e7",
+      "stageEntriesSha256": "279c1b2c7fed9cc80dd048ca637e1b2031bb10d45ff439586b899aefb6dfcc80",
+      "statusAtInvestigation": ""
+    },
+    {
+      "path": "references/Hexalith.AI.Tools",
+      "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "stageEntriesSha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569",
+      "statusAtInvestigation": ""
+    },
+    {
+      "path": "references/Hexalith.EventStore",
+      "revision": "c5d1c280d8c1c1a207cd159d817f614e93c93130",
+      "stageEntriesSha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e",
+      "statusAtInvestigation": ""
+    },
+    {
+      "path": "references/Hexalith.FrontComposer",
+      "revision": "cfa9febc2942666265f23f87b26112c846f625ad",
+      "stageEntriesSha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2",
+      "statusAtInvestigation": ""
+    },
+    {
+      "path": "references/Hexalith.Memories",
+      "revision": "7b0c8b5692600e293346eea7a84652eb87e4c346",
+      "stageEntriesSha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76",
+      "statusAtInvestigation": ""
+    },
+    {
+      "path": "references/Hexalith.Commons",
+      "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "stageEntriesSha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644",
+      "statusAtInvestigation": ""
+    },
+    {
+      "path": "references/Hexalith.Builds",
+      "revision": "74932ad0247203797274aba8b7b6366a4bbf92b9",
+      "stageEntriesSha256": "a379d24eb9569cbbfd77c245c80f41ff239d9c97e928c66b3a444ca6cb53b94e",
+      "statusAtInvestigation": ""
+    },
+    {
+      "path": "references/Hexalith.PolymorphicSerializations",
+      "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "stageEntriesSha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862",
+      "statusAtInvestigation": ""
+    },
+    {
+      "path": "references/Hexalith.Projects",
+      "revision": "298f6f6a41b9ce7b67f14c21c724d76832b957a9",
+      "stageEntriesSha256": "1494da6a6b03a0ca3ae427b9bad145b8c9cd51806d370c80468c510ef07e9eda",
+      "statusAtInvestigation": ""
+    },
+    {
+      "path": "references/Hexalith.Platform",
+      "revision": "9869094acc21f9054960a573f884c60ddf3235cd",
+      "stageEntriesSha256": "1c6649f6dbd9d725da61199cfbef8fe5156af23f730156bdbe0b2620077b066b",
+      "statusAtInvestigation": ""
+    },
+    {
+      "path": "references/Hexalith.McpCli",
+      "revision": "dc282889e624a4c990faa3f005ad7eaa8db7a473",
+      "stageEntriesSha256": "c361ea1f29b3bc49536e23d02ae8f3ac21b2d182cfe0bdfa2f2ce92af83b505f",
+      "statusAtInvestigation": ""
+    },
+    {
+      "path": "references/Hexalith.Parties",
+      "revision": "986a369ec26f6c5194593eb7bce12955eda54149",
+      "stageEntriesSha256": "933d7d5f591ff2c0d291e6f497587ea1f804946698f9601af3822d47c3e8c44c",
+      "statusAtInvestigation": ""
+    }
+  ],
+  "bindings": [
+    {
+      "path": "references/Hexalith.Builds/Props/Directory.Packages.props",
+      "sha256": "c31f6ca3fb021992e054b9eda7828fada0247fbd7be6cc53ac95e28cbdee5b9a",
+      "bytes": 30450
+    },
+    {
+      "path": "references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.AppHost/Hexalith.Builds.Module.AppHost.csproj",
+      "sha256": "bad5effa2c6108208e500cc2ad7948f232da00ce9ef1e18736eb5e36017c7c08",
+      "bytes": 1598
+    },
+    {
+      "path": "references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.EventStoreHost/Hexalith.Builds.Module.EventStoreHost.csproj",
+      "sha256": "00be844940b2c6f3e5f5b95359ba2ebbfba3fe0682095b3e2aa24a82aaef19e0",
+      "bytes": 531
+    },
+    {
+      "path": "references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.UiHost/Hexalith.Builds.Module.UiHost.csproj",
+      "sha256": "0087831feb666baf4cd8b44eeda65f9c9eaf88794c5f1bfc71c928f900b2a902",
+      "bytes": 432
+    },
+    {
+      "path": "references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.AppHost/RunTopology.cs",
+      "sha256": "1f72cfd3a85b81163318015dc76d757faaedb74448645dd6afb9b577d783d7be",
+      "bytes": 20513
+    },
+    {
+      "path": "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Module.Cli/Hexalith.Builds.Module.Cli.csproj",
+      "sha256": "537e83ff7001c7ddb1a5ac09e5743ff7d252a239aa988eac31ab09da62a83f01",
+      "bytes": 2872
+    },
+    {
+      "path": "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingMaterializer.cs",
+      "sha256": "bdcd48355b70d349b35d938d1015567729615d5151f24765f9a708ee6f7e9a42",
+      "bytes": 29884
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-runtime-resolution-results-2026-10-26.md",
+      "sha256": "051a5658de8ca6de5bb7251864ccb02729552a5fe75487959dcd038d81824635",
+      "bytes": 15766
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-execution-2026-10-26.json",
+      "sha256": "83926941c48d04402d107df0e11e9f8f5300144601197d79e55c7bbd6c0a96ef",
+      "bytes": 217465
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-filter-reset-review-2026-10-26.json",
+      "sha256": "b86a69fcc9bc55de2f3f3ee1bc84031349264ac16ae770fee31f4fb53ea90efc",
+      "bytes": 40097
+    },
+    {
+      "path": "global.json",
+      "sha256": "47b842a8d37355ae2684a808d95964d3c607be8870f1c902428f852fc06328ef",
+      "bytes": 170
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/sprint-status.yaml",
+      "sha256": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40",
+      "bytes": 37619
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+      "sha256": "ca298df3ed27156b7c6d170a47b1042ef8453c1e8e03207930d6bbbcc9ab0423",
+      "bytes": 106308
+    }
+  ],
+  "historicalSignedCliSource": "e171c5a788eab183b32683431b084198c9b8d373",
+  "currentBuildsProductionAndCatalogDelta": [
+    "Props/Directory.Packages.props",
+    "src/libraries/Hexalith.Builds.Module.Cli/ModuleCommandApplication.cs",
+    "src/libraries/Hexalith.Builds.Tooling/Evidence/G4P0AcceptanceValidator.cs",
+    "src/libraries/Hexalith.Builds.Tooling/Evidence/ReadinessEvidenceValidator.cs",
+    "src/libraries/Hexalith.Builds.Tooling/RunEvidence/ModuleRunEvidenceArtifactSummary.cs",
+    "src/libraries/Hexalith.Builds.Tooling/RunEvidence/ModuleRunEvidenceArtifactValidator.cs",
+    "src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionEngine.cs",
+    "src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionProcessEnvironmentReader.cs",
+    "src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionResourceClaimStore.cs",
+    "src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionRunListing.cs",
+    "src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionRunResources.cs",
+    "src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionRunSession.cs",
+    "src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionRunState.cs",
+    "src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionRunStateStore.cs",
+    "src/libraries/Hexalith.Builds.Tooling/Runtime/ModuleCommandExecutionService.cs",
+    "src/libraries/Hexalith.Builds.Tooling/Runtime/NativeTestExecutor.cs",
+    "src/libraries/Hexalith.Builds.Tooling/Runtime/SelectedNativeTestReport.cs",
+    "src/libraries/Hexalith.Builds.Tooling/TestEnvironment/TestEnvironmentContractReader.cs",
+    "src/libraries/Hexalith.Builds.Tooling/TestEnvironment/TestResultWriter.cs"
+  ],
+  "selectedCatalog": {
+    "repository": "references/Hexalith.Builds",
+    "revision": "022668ac2dd3b0ec4b1b8e99b243debef0eee374",
+    "blobSha256": "140e161c0ac14183be0cca8babce5cc896355174e1c621979b92d49826bdadb2"
+  },
+  "findings": {
+    "currentEventStorePin": "3.128.0",
+    "signed438HostEventStore": "3.127.0",
+    "newPinEditNeeded": false,
+    "debugHostSourceSwitchSupported": false,
+    "sourceReferenceImportRequiredForDebugDiagnostic": true,
+    "ordinaryDebugPackHasReleaseHostGlobs": true,
+    "currentSourceHostAndModelBinding": "unexecuted",
+    "historicalColdAndHostFirst3128Demand": "FileLoadException 0x80131040; both exit 10"
+  },
+  "controls": {
+    "parentStatus": "in-progress",
+    "tracker": "backlog",
+    "routing": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "stagingChecksExecuted": 0,
+    "ordinaryMapping": null,
+    "ContentHash": null,
+    "currentTupleAccepted": false,
+    "packageAccepted": false,
+    "hostedAccepted": false
+  },
+  "limitations": [
+    "Source/catalog inspection does not establish build or runtime compatibility.",
+    "No prior runtime experiment is repeated or newly authorized by this record.",
+    "Status is sampled during planning before the final spec and this receipt are written.",
+    "Index hash covers git ls-files --stage bytes; it does not attest every raw index extension or ignored output."
+  ]
+}

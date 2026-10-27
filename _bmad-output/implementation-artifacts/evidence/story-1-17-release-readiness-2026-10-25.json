@@ -1,0 +1,455 @@
+{
+  "evidenceIndex": {
+    "member": "indices/evidence-index.json",
+    "sha256": "41eea4a24398b78324c115145520c3682f09ead90b91b0ecdfee1d6324b7a1e7",
+    "bytes": 2076
+  },
+  "dirtySource": {
+    "member": "indices/dirty-source.json",
+    "sha256": "bc3a2893662301b63cd0e2f20e84d17482f9bddb38948e8358c4253369788287",
+    "bytes": 8306
+  },
+  "currentSourceBuiltTooling": {
+    "member": "indices/source-built-tooling.json",
+    "sha256": "4859b8eb910039298f79d5d23d9fd9247ea4cfdb3a1ad4825e66fe8f15f71803",
+    "bytes": 3110
+  },
+  "finalInventory": {
+    "member": "indices/final-inventory.json",
+    "sha256": "98d65ca03a5be39d018939ca688525ef08f6d0f1451cba493c218ca9ed56a26b",
+    "bytes": 9951
+  },
+  "sourceTupleScope": "Qualification snapshot captured before final evidence/readiness appends; final-inventory.json separately records tracked appends and new evidence without self-hashing mutable seal wrappers.",
+  "datedTopology": {
+    "member": "indices/dated-topology.json",
+    "sha256": "9f651cd23063117f39823ec22e04e0839280df4478b6ae2b9b4d1a5b06ede34d",
+    "bytes": 993
+  },
+  "declarationAndAdoption": {
+    "member": "indices/declaration-and-adoption.json",
+    "sha256": "4c7471b9168d8cafd7538f6f17305aafc30b05cb7a7ec6690ad54460c1a1e13b",
+    "bytes": 7801
+  },
+  "canonicalGraph": {
+    "checks": {
+      "member": "parent-review/canonical-graph-checks.json",
+      "sha256": "c1a1342ac9b2ee63470de53261f71bca66a259b99e6c8c17df35122d78cb2a91",
+      "bytes": 1741
+    },
+    "results": [
+      {
+        "configuration": "debug",
+        "exitCode": 1,
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "failure": "System.IO.InvalidDataException : ../../../../../references/Hexalith.Parties/module/hexalith.module-manifest.v2.json: manifest: Supply an existing readable manifest file.",
+        "xml": {
+          "member": "parent-review/platform-canonical-graph-debug.xml",
+          "sha256": "fe7fde1d27dfda83e906666861a596fd40eeef48c21f04db7bf8823cc41dcebb",
+          "bytes": 3647
+        }
+      },
+      {
+        "configuration": "release",
+        "exitCode": 1,
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "failure": "System.IO.InvalidDataException : ../../../../../references/Hexalith.Parties/module/hexalith.module-manifest.v2.json: manifest: Supply an existing readable manifest file.",
+        "xml": {
+          "member": "parent-review/platform-canonical-graph-release.xml",
+          "sha256": "cc7d81188fb3c98c6bb11b29c432f91af17302f9f101cf63e5b8bd505fb3de09",
+          "bytes": 3509
+        }
+      }
+    ],
+    "DescribeCanonicalOutcomeExecuted": false,
+    "currentCompositionQualified": false,
+    "prerequisite": {
+      "owner": "Platform composition/export owner with Parties module owner",
+      "requiredPath": "references/Hexalith.Platform/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+      "platformDeclaredPartiesRevision": "1ef274ea0471643d83f924147e85ac8326cf6a47",
+      "action": "Provide the owner-qualified Parties declaration/export in the permitted composition inputs and qualify the canonical four-owner graph against the maintained chart. Both profiles currently fail before Describe; no declaration fabrication, dependency initialization or test weakening is authorized."
+    }
+  },
+  "argumentOnlyProfiles": {
+    "member": "indices/argument-only-profiles.json",
+    "sha256": "73ab08b077336c87478e9968628594c03e138f537b812cb0637d5a12fba7c8ac",
+    "bytes": 16506
+  },
+  "initialSeal": {
+    "archive": "evidence/story-1-17-release-readiness-2026-10-25.artifacts.tar.gz",
+    "archiveSha256": "a167fcb21f725a5f689596c8ccc25ec90e68775ed6ca0d828cba90aa5f0741c3",
+    "memberManifest": "evidence/story-1-17-release-readiness-2026-10-25.members.json",
+    "memberManifestSha256": "271e075281e5aa2a0c2cb5ffd2cad10cd5088d149fe1c8c0d1996188ae053e27",
+    "receiptSnapshot": "prior/pre-review-story-1-17-release-readiness-2026-10-25.json"
+  },
+  "recordId": "STORY-1-17-RELEASE-READINESS-2026-10-25",
+  "recordedAtUtc": "2026-10-25T14:06:21.626301+00:00",
+  "status": "review-final sealed local source/package evidence and publication handoff; canonical graph, actual composition, publication and hosted qualification remain HOLD",
+  "sourceTuple": {
+    ".": {
+      "head": "2472a50027e8e4f6581b0690828ea9a14dfa9018",
+      "headUnchanged": true,
+      "stagedEntriesSha256": "0d29467abc83b74127708a528bd8246ff62ee441d55eddd4a4fb2b76d0333f90",
+      "stagedEntriesUnchanged": true,
+      "status": "M .gitattributes\n M _bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md\n M references/Hexalith.Platform\n M references/Hexalith.Projects",
+      "changedTrackedFiles": [
+        ".gitattributes",
+        "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md"
+      ]
+    },
+    "references/Hexalith.Tenants": {
+      "head": "14133e96d2c5efb13270580f920133079707398b",
+      "headUnchanged": true,
+      "stagedEntriesSha256": "8791cc9002cea3ba1d9623c75a26f7bc8351ded2a4c7151043aab120e54ff2dd",
+      "stagedEntriesUnchanged": true,
+      "status": "",
+      "changedTrackedFiles": [],
+      "rootGitlink": "14133e96d2c5efb13270580f920133079707398b"
+    },
+    "references/Hexalith.AI.Tools": {
+      "head": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "headUnchanged": true,
+      "stagedEntriesSha256": "57c856c08f49ed289d1ed64a1797afd4d00e1bb20b65a979732990b5891cc5dd",
+      "stagedEntriesUnchanged": true,
+      "status": "",
+      "changedTrackedFiles": [],
+      "rootGitlink": "3f194e17174994d308ec84af9ee2b5aa68674d0d"
+    },
+    "references/Hexalith.EventStore": {
+      "head": "245ded36b78b960b57728f845f9a8aae62275908",
+      "headUnchanged": true,
+      "stagedEntriesSha256": "ef91828b8755a4fd1b156dc5eebacde81087892d4c11e4683b06d578d47b15ae",
+      "stagedEntriesUnchanged": true,
+      "status": "",
+      "changedTrackedFiles": [],
+      "rootGitlink": "245ded36b78b960b57728f845f9a8aae62275908"
+    },
+    "references/Hexalith.FrontComposer": {
+      "head": "80782afc7fc2fd33ee365d4601cb6b5e91d215fa",
+      "headUnchanged": true,
+      "stagedEntriesSha256": "0741aee3fa90fd54ead0ab57641c4fe3540a579b5645933a43283b157c558b70",
+      "stagedEntriesUnchanged": true,
+      "status": "",
+      "changedTrackedFiles": [],
+      "rootGitlink": "80782afc7fc2fd33ee365d4601cb6b5e91d215fa"
+    },
+    "references/Hexalith.Memories": {
+      "head": "78657969f4d7d6ccd82c99766296b99ee55bd895",
+      "headUnchanged": true,
+      "stagedEntriesSha256": "a9f3fec617929abbb96eac238bde2f8722a5d81b7e532d764b0f8588eec77c80",
+      "stagedEntriesUnchanged": true,
+      "status": "",
+      "changedTrackedFiles": [],
+      "rootGitlink": "78657969f4d7d6ccd82c99766296b99ee55bd895"
+    },
+    "references/Hexalith.Commons": {
+      "head": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "headUnchanged": true,
+      "stagedEntriesSha256": "c48e93336857e6dbe1f05a85a6c4c18af3da9c2f865a883a57ea7fa1bfba3d5d",
+      "stagedEntriesUnchanged": true,
+      "status": "",
+      "changedTrackedFiles": [],
+      "rootGitlink": "1663028fb6d9f46a0bf17919edeb21bb99be1587"
+    },
+    "references/Hexalith.Builds": {
+      "head": "142b06e6d05c94b55ac35e587450c35fcac87590",
+      "headUnchanged": true,
+      "stagedEntriesSha256": "96317cd9695223d7aa618f7ffd27c8554f8cee2e6971ef73aefa2311e3b1542c",
+      "stagedEntriesUnchanged": true,
+      "status": "",
+      "changedTrackedFiles": [],
+      "rootGitlink": "142b06e6d05c94b55ac35e587450c35fcac87590"
+    },
+    "references/Hexalith.PolymorphicSerializations": {
+      "head": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "headUnchanged": true,
+      "stagedEntriesSha256": "02d4ed751e051abdfcab7d1bf898a1849a30f7522fbf1448099d1d12bc51b470",
+      "stagedEntriesUnchanged": true,
+      "status": "",
+      "changedTrackedFiles": [],
+      "rootGitlink": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0"
+    },
+    "references/Hexalith.Projects": {
+      "head": "94f6ad1f6854df62c8cd15e47d65dc72985f4e79",
+      "headUnchanged": true,
+      "stagedEntriesSha256": "e46fe2c4d0c958691c47b5ad45e8f6bb590ad39318f1f326e46d320238373bb8",
+      "stagedEntriesUnchanged": true,
+      "status": "M tests/Hexalith.Projects.Server.Tests/DelegatedProjectDirectoryRegistrationTests.cs\n M tests/Hexalith.Projects.Server.Tests/Queries/DelegatedProjectAdvisoryConversationDirectoryTests.cs\n M tests/Hexalith.Projects.Server.Tests/Queries/ProjectReadAuthorityFixture.cs",
+      "changedTrackedFiles": [
+        "tests/Hexalith.Projects.Server.Tests/DelegatedProjectDirectoryRegistrationTests.cs",
+        "tests/Hexalith.Projects.Server.Tests/Queries/DelegatedProjectAdvisoryConversationDirectoryTests.cs",
+        "tests/Hexalith.Projects.Server.Tests/Queries/ProjectReadAuthorityFixture.cs"
+      ],
+      "rootGitlink": "94f6ad1f6854df62c8cd15e47d65dc72985f4e79"
+    },
+    "references/Hexalith.Platform": {
+      "head": "31b9cdbac61e691ab7d76bfbf3758569be542355",
+      "headUnchanged": true,
+      "stagedEntriesSha256": "a81909917803b21d2a7f835f49b8086314feadff7daedcd603f3c7c291131383",
+      "stagedEntriesUnchanged": true,
+      "status": "M src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs\n M tests/Hexalith.Platform.Composition.Tests/AgentsHostCompositionTests.cs\n M tests/Hexalith.Platform.Composition.Tests/DomainEnrollmentKitTests.cs\n M tests/Hexalith.Platform.Composition.Tests/PlatformConcurrentRunTests.cs\n M tests/Hexalith.Platform.Composition.Tests/PlatformDaprDiagnosticsTests.cs\n M tests/Hexalith.Platform.Composition.Tests/PlatformDaprToolchainTests.cs\n M tests/Hexalith.Platform.Composition.Tests/PlatformLocalRunLifecycleTests.cs\n M tests/Hexalith.Platform.Composition.Tests/PlatformNativeHostDiagnosticsTests.cs\n M tests/Hexalith.Platform.Composition.Tests/PlatformRetentionBuildIsolationTests.cs\n M tests/Hexalith.Platform.Composition.Tests/PlatformRetentionProfileTests.cs\n M tests/Hexalith.Platform.Composition.Tests/PlatformRunIsolationTests.cs\n M tests/Hexalith.Platform.Composition.Tests/PlatformTestEnvironmentProvisioningTests.cs",
+      "changedTrackedFiles": [
+        "src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs",
+        "tests/Hexalith.Platform.Composition.Tests/AgentsHostCompositionTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/DomainEnrollmentKitTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformConcurrentRunTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformDaprDiagnosticsTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformDaprToolchainTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformLocalRunLifecycleTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformNativeHostDiagnosticsTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformRetentionBuildIsolationTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformRetentionProfileTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformRunIsolationTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformTestEnvironmentProvisioningTests.cs"
+      ],
+      "rootGitlink": "31b9cdbac61e691ab7d76bfbf3758569be542355"
+    },
+    "references/Hexalith.McpCli": {
+      "head": "8962e2f2570459dbea2976f789b468aa5c6353c6",
+      "headUnchanged": true,
+      "stagedEntriesSha256": "e4232500ab8ba0d968dc4406825bca1cd69b32c2099ca6c57b8fd2a2c8b12a71",
+      "stagedEntriesUnchanged": true,
+      "status": "",
+      "changedTrackedFiles": [],
+      "rootGitlink": "8962e2f2570459dbea2976f789b468aa5c6353c6"
+    }
+  },
+  "extraSource": {
+    "origin": "<sibling-projects-workspace>/references/Hexalith.Conversations",
+    "before": {
+      "head": "8444207001d6ad3cd197c2ffba519317effa8b37",
+      "stagedEntriesSha256": "ad377139580afe768c7a9a5b9fe6a83239076ae0e71f8830c9f5d5b5aebe0217",
+      "status": ""
+    },
+    "after": {
+      "head": "8444207001d6ad3cd197c2ffba519317effa8b37",
+      "stagedEntriesSha256": "ad377139580afe768c7a9a5b9fe6a83239076ae0e71f8830c9f5d5b5aebe0217",
+      "status": ""
+    },
+    "unchanged": true,
+    "requestedProjectsGitlink": "8444207001d6ad3cd197c2ffba519317effa8b37",
+    "snapshotSha256": "ec774b8e35fb0b67ba8676594722884a509eff1b2475018184f55664421125af",
+    "suppliedRoots": {
+      "HexalithConversationsRoot": "<capsule>/conversations-source",
+      "HexalithFoldersRoot": "<workspace>",
+      "HexalithEventStoreRoot": "<workspace>/references/Hexalith.EventStore",
+      "HexalithTenantsRoot": "<workspace>/references/Hexalith.Tenants",
+      "HexalithCommonsRoot": "<workspace>/references/Hexalith.Commons",
+      "HexalithFrontComposerRoot": "<workspace>/references/Hexalith.FrontComposer",
+      "Hexalith1BuildPackageProps": "<workspace>/references/Hexalith.Builds/Props/Directory.Packages.props"
+    },
+    "exitCode": 0,
+    "scope": "Explicit isolated source probe only; does not repair the default root-declared workspace or supply tool enrollment/hosted acceptance."
+  },
+  "verification": {
+    "scope": "Local current-candidate source identity and release readiness; full qualification remains blocked.",
+    "operationalControl": {
+      "routeMode": "V1Only",
+      "T0": null,
+      "activationAuthority": null,
+      "publicationAuthorized": false,
+      "deploymentAuthorized": false,
+      "trackerTransitionAuthorized": false,
+      "stagingChecksExecuted": 0
+    },
+    "parentStatus": "in-progress",
+    "tracker": "backlog",
+    "sourceBindings": 10049,
+    "compiledProjectProfiles": 231,
+    "portablePdbCount": 231,
+    "portablePdbDocuments": 17710,
+    "expandedImportEvaluations": 132,
+    "expandedImportFailures": [],
+    "packetBindingsMatched": 52,
+    "candidateEntriesMatched": 1425,
+    "planningBindingsMatched": 20,
+    "changedTrackedFiles": {
+      ".": [
+        ".gitattributes",
+        "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md"
+      ],
+      "references/Hexalith.Projects": [
+        "tests/Hexalith.Projects.Server.Tests/DelegatedProjectDirectoryRegistrationTests.cs",
+        "tests/Hexalith.Projects.Server.Tests/Queries/DelegatedProjectAdvisoryConversationDirectoryTests.cs",
+        "tests/Hexalith.Projects.Server.Tests/Queries/ProjectReadAuthorityFixture.cs"
+      ],
+      "references/Hexalith.Platform": [
+        "src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs",
+        "tests/Hexalith.Platform.Composition.Tests/AgentsHostCompositionTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/DomainEnrollmentKitTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformConcurrentRunTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformDaprDiagnosticsTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformDaprToolchainTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformLocalRunLifecycleTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformNativeHostDiagnosticsTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformRetentionBuildIsolationTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformRetentionProfileTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformRunIsolationTests.cs",
+        "tests/Hexalith.Platform.Composition.Tests/PlatformTestEnvironmentProvisioningTests.cs"
+      ]
+    },
+    "testedBinaryChanges": [
+      "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.dll",
+      "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.Tests.dll",
+      "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/bin/Debug/net10.0/Hexalith.Builds.Tooling.dll",
+      "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/bin/Debug/net10.0/Hexalith.Platform.Composition.Tests.dll",
+      "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/bin/Debug/net10.0/Hexalith.Platform.Composition.dll",
+      "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll"
+    ],
+    "limits": [
+      "The unchanged default Projects workspace lacks Conversations/Folders mapping; the separately supplied-root full CI build and local stateful tests passed.",
+      "Actual changed tool/catalog/composition and module intake are not accepted; bounded owning adoption audits fail.",
+      "Diagnostic packages are unsigned/unpublished and are not the retained released pair or immutable hosted artifacts."
+    ],
+    "sourceTests": {
+      "passed": 140,
+      "failed": 0,
+      "skipped": 0,
+      "ownedState": true
+    },
+    "projectsPackageTests": {
+      "retainedPairPassed": 98,
+      "diagnosticCandidatePairPassed": 98
+    },
+    "finalBinaryRefresh": {
+      "foldersSource": 20,
+      "platformSourceRunRefusal": 1,
+      "unchangedDuringExecution": true
+    },
+    "allCompilerArgumentProfilesCaptured": true,
+    "earlierTestBinaryChanges": "Observed earlier; final Folders source/Platform Debug checks and Projects package checks were refreshed. Exact before/after identities are retained.",
+    "platformCanonicalGraph": {
+      "debug": {
+        "passed": 0,
+        "failed": 1
+      },
+      "release": {
+        "passed": 0,
+        "failed": 1
+      },
+      "DescribeReached": false,
+      "qualification": "open pending owner-qualified Parties export"
+    }
+  },
+  "sourceIdentity": {
+    "bindings": 10049,
+    "compiledProjectProfiles": 231,
+    "portablePdbDocuments": 17710,
+    "expandedImportEvaluations": 132,
+    "allProfilesHaveCompilerArguments": true,
+    "limitations": [
+      "Default workspace mapping and exact supplied-root qualification are distinct.",
+      "The current pending manifest stays byte-identical with its pending/no-production-authority fields.",
+      "Expanded imports are equivalent-profile evaluations, not a recorded earlier-build import-event stream.",
+      "Daprd 1.18.7 / cached Redis in the owned local persistence check do not qualify the Platform tool catalog runtime or hosted environment."
+    ]
+  },
+  "verificationAndReuse": "Exact commands/results, XML, final binary comparisons and reused-input scope are retained inside the capsule. Earlier failures are retained alongside their corrected gates. Expanded imports are separately labelled equivalent-profile evaluations.",
+  "portableEvidence": {
+    "sealStatus": "sealed",
+    "archive": "evidence/story-1-17-release-readiness-2026-10-25.review-final.artifacts.tar.gz",
+    "archiveSha256": "9c9425f0b93e9e6b400f2c49150e42bcc7ba98f199971cf7115ec35de19d48c2",
+    "archiveBytes": 91397343,
+    "memberManifest": "evidence/story-1-17-release-readiness-2026-10-25.review-final.members.json",
+    "memberManifestSha256": "366f36659ea571feb3c78c400acbf1b2cca62a89aff3a2e8b59a7297b7f333aa",
+    "fileMembers": 1565,
+    "replay": "Extract into a disposable directory; python3 replay.py; python3 -O replay.py; python3 test_replay.py. Optional --workspace rehashes current source."
+  },
+  "replayChecks": [
+    {
+      "command": [
+        "python3",
+        "replay.py"
+      ],
+      "exitCode": 0,
+      "outputSha256": "f20da67f2547ed7fe2607a6d6d00bd830c982eca10d07c028e0980808ddc3d98",
+      "output": "PASS: retained source/artifact integrity, exact local qualification outcomes, owner handoff and inert controls; no publication/hosted acceptance."
+    },
+    {
+      "command": [
+        "python3",
+        "-O",
+        "replay.py"
+      ],
+      "exitCode": 0,
+      "outputSha256": "f20da67f2547ed7fe2607a6d6d00bd830c982eca10d07c028e0980808ddc3d98",
+      "output": "PASS: retained source/artifact integrity, exact local qualification outcomes, owner handoff and inert controls; no publication/hosted acceptance."
+    },
+    {
+      "command": [
+        "python3",
+        "replay.py",
+        "--workspace",
+        "<workspace>"
+      ],
+      "exitCode": 0,
+      "outputSha256": "f20da67f2547ed7fe2607a6d6d00bd830c982eca10d07c028e0980808ddc3d98",
+      "output": "PASS: retained source/artifact integrity, exact local qualification outcomes, owner handoff and inert controls; no publication/hosted acceptance."
+    }
+  ],
+  "replayMutationTests": {
+    "total": 4,
+    "failed": 0,
+    "log": "replay-tests.txt",
+    "optimizationAndCorruptionRefusal": true
+  },
+  "handoff": {
+    "path": "story-1-17-publication-handoff-2026-10-25.json",
+    "sha256": "54f704ad29f71ab6ea595af85a28e9e5f88f89a31487a3dd6020b1aa046ced6b"
+  },
+  "remainingOwnerInputs": [
+    {
+      "owner": "Projects maintainer / workspace mapping owner",
+      "source": "references/Hexalith.Projects/Directory.Build.props and the recorded Conversations gitlink",
+      "needed": "Provide the approved ordinary workspace roots for Folders and Conversations. The exact existing Conversations 8444207001d6ad3cd197c2ffba519317effa8b37 snapshot was already used successfully in the explicit isolated full-CI source probe; no additional source approval or dependency update is inferred. The unchanged default workspace command remains a recorded MSB9008/CS0234 failure."
+    },
+    {
+      "owner": "Platform code/workflow owner @jpiquot with Builds/tool owner",
+      "source": "references/Hexalith.Platform/.config/dotnet-tools.json, hexalith-platform.json and retained pass-5 accepted-identities.json",
+      "needed": "Accept/qualify the actual tool 4.35.2 / direct Builds 142b06e6d05c94b55ac35e587450c35fcac87590 / Platform 31b9cdbac61e691ab7d76bfbf3758569be542355 plus local repair / catalog / composed-artifact tuple, including source Tooling identity. Direct and Platform-gitlink catalogs have equal bytes; both differ from accepted-tool source catalog. Version/range, a package hash match, successful compilation and the early refusal test grant no renewed composition acceptance."
+    },
+    {
+      "owner": "Platform composition/export owner with Parties module owner",
+      "source": "parent-review/canonical-graph-checks.json and both XML files",
+      "needed": "Provide the owner-qualified Parties declaration/export in the permitted composition inputs and qualify the canonical four-owner graph against the maintained chart. Both profiles currently fail before Describe; no declaration fabrication, dependency initialization or test weakening is authorized.",
+      "requiredPath": "references/Hexalith.Platform/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+      "partiesRevision": "1ef274ea0471643d83f924147e85ac8326cf6a47"
+    },
+    {
+      "owner": "Platform intake owner with each module owner",
+      "source": "references/Hexalith.Platform/docs/domain-module-enrollment.md and Story 4.8 tracker backlog",
+      "needed": "Resolve current bounded declaration/adoption diagnostics and retain accountable registration/intake. Folders/Projects declarations are absent at the required paths. Separate missing tool pin/hosting inventory, reserved source-selector conventions, source-audit test literals and scans of historical evidence; these are distinct recorded rows requiring owner reconciliation, not authority to rewrite historical evidence or weaken selectors. EventStore/Tenants/Memories declaration validation passes while their adoption audits fail. Human SM-2 and actual ordinary CLI/hosted acceptance remain open."
+    },
+    {
+      "owner": "Folders release operator / protected production reviewer; NuGet creator jpiquot",
+      "source": "docs/operations/release-packages.md and .github/workflows/release.yml",
+      "needed": "After source ownership/review, select the exact committed main tuple, obtain successful exact-source push CI and the protected production-environment review, confirm enabled publication/trusted-publisher prerequisites, and run the existing five-package lane. Its shared action/execution pin is 3639c8d9340fc81d6f8e0a90566a97e56d5d8446. Semantic-release chooses the real release version. Rebuild/reseal that version and verify signed published archives and exact artifacts; do not publish or relabel the unsigned diagnostic version."
+    },
+    {
+      "owner": "Administrator for actual attempt/target evidence, with Platform/module operators",
+      "source": "story-1-17-first-install-decision-2026-10-18.md and current offline proposal",
+      "needed": "Bind target/consumer/retained-data disposition to the acquired qualified attempt lock/epoch; supply exact immutable hosted artifacts, identity/delegation, qualified recovery branch, numeric operational thresholds and actual UTC operators/slots. All fourteen staging checks are unexecuted. First-install scope is already conditionally accepted; existing-v1 discovery selects its original clocks and retirement/reversal gates. No repeated scope approval is requested."
+    },
+    {
+      "owner": "Module and Platform operational qualification owners",
+      "source": "deferred-work.md and accepted first-install/migration decision",
+      "needed": "Retain representative production-latency, exact-release staging, verification/observation/recovery and authorized closure/tracker evidence. Local Redis/Dapr software checks and dated topology health do not supply these."
+    }
+  ],
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false,
+    "stagingChecksExecuted": 0
+  },
+  "preservation": "Parent before.json/notes/original prefixes and every originally tracked file hash are retained. Exact final parent preservation audit is separate; all revisions/index identities remain unchanged.",
+  "noRemoteOperations": "No Git remote operation, publication, deployment or production lookup; cached-only Docker image, local package/SDK restores and owned local test persistence are distinguished."
+}

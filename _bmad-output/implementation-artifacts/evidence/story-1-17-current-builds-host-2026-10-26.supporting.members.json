@@ -1,0 +1,72 @@
+[
+  {
+    "bytes": 331,
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.claim.json",
+    "sha256": "6c6006cc9a20e4776fc60e3fceee559df9728716c928410ca201aedf54685311"
+  },
+  {
+    "bytes": 10102,
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.diagnosis.json",
+    "sha256": "7a5414e24290d1e0895311d85047baa650d3ad17d8e2f90d4ef36a9f7a1ab15d"
+  },
+  {
+    "bytes": 14889,
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.final-preservation.json",
+    "sha256": "013e9e8d4bc92188b7f8c05f812bba3eada8ad1a5e444a1f7d55b9132093282f"
+  },
+  {
+    "bytes": 6823,
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.guards.json",
+    "sha256": "112cd0949e84dc33d778c907059d46449fc5d46be4fd82c992344fa134e4aa38"
+  },
+  {
+    "bytes": 30754,
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-2026-10-26.json",
+    "sha256": "8aaa6675c1b209b296f3f9fc1b62e2002ba607f4b429d6c71ee0e983f2a077bb"
+  },
+  {
+    "bytes": 6084,
+    "path": "_bmad-output/implementation-artifacts/spec-1-17-current-builds-host-qualification.md",
+    "sha256": "26314a6131078eb11966e48d1177774e672c4af58a778c3d4fc07fcf9e1ba482"
+  },
+  {
+    "bytes": 9759,
+    "path": "_bmad-output/implementation-artifacts/story-1-17-current-builds-host-investigation-2026-10-26.json",
+    "sha256": "313f34db224a2d7eee525d483b074db5ea898a29bdce719d7b89d98a3e530860"
+  },
+  {
+    "bytes": 7397,
+    "path": "_bmad-output/implementation-artifacts/story-1-17-current-builds-host-results.md",
+    "sha256": "6a179ac9abaea44217b0dfea216e086fd98538a6b73af3042ed9cbba01e10cb8"
+  },
+  {
+    "bytes": 7046,
+    "path": "eng/story117-current-builds-host/LoaderProbe.cs",
+    "sha256": "7da4c17788151873664923ff3f78ba5592fd8dd5ca86385060e68ff480d0e234"
+  },
+  {
+    "bytes": 4003315,
+    "path": "eng/story117-current-builds-host/plan.json",
+    "sha256": "a1c8b20a9b711e6ce2c0b387b62be44deb70a280568b97d97cae458a84b813cd"
+  },
+  {
+    "bytes": 39303,
+    "path": "eng/story117-current-builds-host/qualify.py",
+    "sha256": "980c19bd9048943514f26f73aa57ab6572ffe409d833723f0a94bd200314d60a"
+  },
+  {
+    "bytes": 2793,
+    "path": "eng/story117-current-builds-host/source-references.targets",
+    "sha256": "8b35f58f3a3bcb74d0254fb69317bde1ae11277fdbb0c65a6e302381fd554132"
+  },
+  {
+    "bytes": 10421,
+    "path": "eng/story117-current-builds-host/tests/test_qualification_guards.py",
+    "sha256": "d7974c1ee66a48e44535698edf0e795fab0db6328badfcf015c396a2d4c21e66"
+  },
+  {
+    "bytes": 3107,
+    "path": "eng/story117-current-builds-host/verify.py",
+    "sha256": "b87c213e98475b136c2c315331008a601b0ee13b37c5aac39ffebe4cbe247d41"
+  }
+]

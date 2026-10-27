@@ -1,0 +1,250 @@
+{
+  "format": "sha256-file-members-v1",
+  "members": [
+    {
+      "path": "candidate-host-members.json",
+      "sha256": "d9a1f01f7f943ed529096ea774441146b9921931da0e879419f5cf979e6b4e2a",
+      "bytes": 49504
+    },
+    {
+      "path": "capture-completion.json",
+      "sha256": "a2ad07d54b904434a436fed950d65edf1e590923e9fb793c45da86bc4fd94a41",
+      "bytes": 889
+    },
+    {
+      "path": "capture.py",
+      "sha256": "a5b05731274be6d152ca15f2d9055f60d51923eae814d0bcc0ac2c624baccd49",
+      "bytes": 10400
+    },
+    {
+      "path": "catalog.props",
+      "sha256": "140e161c0ac14183be0cca8babce5cc896355174e1c621979b92d49826bdadb2",
+      "bytes": 30088
+    },
+    {
+      "path": "delta-bindings.json",
+      "sha256": "6f179f893aa98cb620397c8f00a809af8af0d94be9ebfd0908c8e8da443a48c3",
+      "bytes": 193
+    },
+    {
+      "path": "eventstore-delta.patch",
+      "sha256": "63c316e1c4a4b34f65cdd5e9498775904b0ee4c0f965d15baafa556dc30519b3",
+      "bytes": 21877
+    },
+    {
+      "path": "eventstore-delta.txt",
+      "sha256": "91832456be6b3c66ccd468b7fd1d567fe8be33293746a926c7927ba33a716f11",
+      "bytes": 681
+    },
+    {
+      "path": "final-preservation.json",
+      "sha256": "389b1eda2ca0e3b128a68c00ba12975a7a5db17a4edd394b81a4bb0b468a2ba0",
+      "bytes": 4681
+    },
+    {
+      "path": "host-deps-selection.json",
+      "sha256": "57614fcb04dd52de063f02fdae766c4f65fd2ef623190b8453094d6173503afb",
+      "bytes": 4842
+    },
+    {
+      "path": "layout.json",
+      "sha256": "58f2ac0b6f120f5305fc7c22bc550ad4462dea58c91c563fdea47d5d510bb7ca",
+      "bytes": 1773
+    },
+    {
+      "path": "model-members.json",
+      "sha256": "dec4af5cdfb27766fd05d15e81586fd6c1e736bd02bdf851324878c037f8bf40",
+      "bytes": 8767
+    },
+    {
+      "path": "preflight.json",
+      "sha256": "cd92e38fc4daa904d985a58965d67a8190b2f50f791030e644f8bcabd20daab8",
+      "bytes": 20751
+    },
+    {
+      "path": "proposal/LoaderProbe.cs",
+      "sha256": "79e9e3b07b5081dc2ae77a8ddf6179550b3b1cff8cd42934e755eb1b4c10b15f",
+      "bytes": 6017
+    },
+    {
+      "path": "proposal/execute_after_authorization.py",
+      "sha256": "515acde8c304d5ab71eb44a7d84fde1a247ada176c9121eb07e4ecb6c8927463",
+      "bytes": 15157
+    },
+    {
+      "path": "proposal/inputs.json",
+      "sha256": "91627812dd0741159174e140bc66bde65af29238f6344b982440ba0a16c10ac2",
+      "bytes": 194946
+    },
+    {
+      "path": "proposal/spec-1-17-cli-4-38-runtime-resolution-decision.md",
+      "sha256": "9944310088ce8cb518c65622858c21ed479fba82e9a325a50589b68914c2958d",
+      "bytes": 5297
+    },
+    {
+      "path": "proposal/story-1-17-cli-4-38-runtime-resolution-decision-2026-10-26.md",
+      "sha256": "4f69296bee3b37acff36e2716ff5db1633358767ec43920f68d2f37754786bf4",
+      "bytes": 16966
+    },
+    {
+      "path": "proposal/story-1-17-cli-4-38-runtime-resolution-plan-2026-10-26.json",
+      "sha256": "83fec7a858d1e1a8e9a9e1f514803a7ccb5408f56b1ef15c7c5bad12e4c42e7f",
+      "bytes": 13719
+    },
+    {
+      "path": "proposal-static-validation.json",
+      "sha256": "f2444424634a503daa91e1915372c4bebc19cb4b079552a553f1fa665ada6ea6",
+      "bytes": 1288
+    },
+    {
+      "path": "read_mvid.py",
+      "sha256": "575d1384d24f4b642f37d8fabbb4ec39fbc9661ece0fc68b98b9d4cb8843d308",
+      "bytes": 1335
+    },
+    {
+      "path": "retained-assembly-info.json",
+      "sha256": "33e21d389cbf16bf51ef96a7c9834bcd2c32693fcc023533afc1fb267a24f965",
+      "bytes": 69063
+    },
+    {
+      "path": "reused-evidence.json",
+      "sha256": "40efe445fbbef67ea63d5ddf52911ae3da0795116a565b4807d39650bf2bcc17",
+      "bytes": 8232
+    },
+    {
+      "path": "runtime-source/AssemblyLoadContext.cs",
+      "sha256": "3188b58824bc9d43c3a4b7b5bf7bf66aca544ea4ddbf3d421fb0e27003fa1b33",
+      "bytes": 33549
+    },
+    {
+      "path": "runtime-source/assemblybindercommon.cpp",
+      "sha256": "8db17efda1681e615f65e26c8a44516d65efd15ff051436f66e7d3872dcfa5aa",
+      "bytes": 51652
+    },
+    {
+      "path": "runtime-source-bindings.json",
+      "sha256": "4ef28f4bef38317bb775af7648e715dfa51a48c5f9684597d024d1d4380de669",
+      "bytes": 1009
+    },
+    {
+      "path": "sdk-inputs.json",
+      "sha256": "6df7382b78eb953d382025de54ad4f7649cf9e9bcafa407333a3d1daff3c8a13",
+      "bytes": 120343
+    },
+    {
+      "path": "seal.py",
+      "sha256": "406269577b40cbd41835edc5094f4537c7282ebabce47dbc2db94d4c2ed96a22",
+      "bytes": 11105
+    },
+    {
+      "path": "source/builds/src/hosts/Hexalith.Builds.Module.AppHost/AppHostRunner.cs",
+      "sha256": "de0388ed47eed784e242b1db7aa9885cdf6c5fabc0756e5c56ee25177adb9fca",
+      "bytes": 12327
+    },
+    {
+      "path": "source/builds/src/hosts/Hexalith.Builds.Module.AppHost/RunTopology.cs",
+      "sha256": "a1441997217507c654edd8a854967a4a7549c187e1a3025ab3b693dff93f9330",
+      "bytes": 20128
+    },
+    {
+      "path": "source/builds/src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionCommandOptions.cs",
+      "sha256": "8924a3cd3cb9136076dc62bd619312f37045c7bbdccc68618f1aaf656ac9997f",
+      "bytes": 2403
+    },
+    {
+      "path": "source/builds/src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionEngine.cs",
+      "sha256": "ddc904f7fa91c1ed08c20fed6add04125426ea7be529454f6bd3ca1339495216",
+      "bytes": 126935
+    },
+    {
+      "path": "source/builds/src/libraries/Hexalith.Builds.Tooling/Runtime/PersistedProfileExecutor.cs",
+      "sha256": "d942dc93745c59eb9c3221a4e86e487c66214962b476f6b326030a10e6e9a3f8",
+      "bytes": 18617
+    },
+    {
+      "path": "source/builds/src/libraries/Hexalith.Builds.Tooling/Runtime/PersistedProfileStore.cs",
+      "sha256": "d22be9b5ab5472fa17125c8f5010f29d1a6d75dda2fbae52abd5a135201e2860",
+      "bytes": 4367
+    },
+    {
+      "path": "source/builds/src/libraries/Hexalith.Builds.Tooling/Runtime/PlatformManifestCommand.cs",
+      "sha256": "fab6d17fd5fd83ee02912e91c2f42e1ccb8a081011bd4f7a3ec79b13d84544e9",
+      "bytes": 15942
+    },
+    {
+      "path": "source/eventstore/src/Hexalith.EventStore.Aspire/EventStoreAppChannelTokenBindingAnnotation.cs",
+      "sha256": "8b09a0e080389196be485a86f783ddfe337d9d11535e3ab650ad0b7baaf34cc4",
+      "bytes": 565
+    },
+    {
+      "path": "source/eventstore/src/Hexalith.EventStore.Aspire/HexalithEventStoreAppChannelExtensions.cs",
+      "sha256": "e6ae25a72bded40677cb8ab62ed09faa756cf7265e4649525acd83c338486daf",
+      "bytes": 4553
+    },
+    {
+      "path": "source/eventstore/src/Hexalith.EventStore.ServiceDefaults/Authentication/JwtBearerAuthenticationContract.cs",
+      "sha256": "bed9bdd1669248ad0b5ba89656bcb788c40498818c415a2cfcee6cee812d98d9",
+      "bytes": 11871
+    },
+    {
+      "path": "source/eventstore/src/Hexalith.EventStore.ServiceDefaults/Authentication/JwtBearerAuthenticationOptions.cs",
+      "sha256": "37df1d79fad5785caa286cdc30f88599c82eb5100e1a02b210282cfe1e33c112",
+      "bytes": 1491
+    },
+    {
+      "path": "source/platform/Directory.Packages.props",
+      "sha256": "71bbbb3b3bf472b00e24c0fa29130ee60851f9c929b8e2e0f32ae19c6c1c8b29",
+      "bytes": 789
+    },
+    {
+      "path": "source/platform/global.json",
+      "sha256": "4ec97d7c7e6bee864d2da2c965f18b94b0bd84e71058427f1f6fa69ee6824652",
+      "bytes": 139
+    },
+    {
+      "path": "source/platform/hexalith-platform.json",
+      "sha256": "3ba6c30a8d602bbc3216f0a4f9f90fb9e1f2e11ea985b4fb5058c3611149fb23",
+      "bytes": 68
+    },
+    {
+      "path": "source/platform/src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj",
+      "sha256": "23ee84386db1015f8d6e8ab803f6dbb185723044782a8551af4f1f83c5f0bfa4",
+      "bytes": 2126
+    },
+    {
+      "path": "source/platform/src/Hexalith.Platform.Composition/PlatformAppModel.cs",
+      "sha256": "8094287f4bfe50e8f78751ecf313ab061cb457774aaf4c187e0ab9c24d3d11b0",
+      "bytes": 40984
+    },
+    {
+      "path": "source/platform/src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs",
+      "sha256": "d4f7429743a0a71f6833606527718c9fe8dfa6a286e4f79ce0d0b83d24733906",
+      "bytes": 4548
+    },
+    {
+      "path": "source/platform/src/Hexalith.Platform.Composition/PlatformRedisHealthCheck.cs",
+      "sha256": "2548f5dd02b64c639f0f08bd6ca43ef29ffe80688c26f10097820978ddc086a9",
+      "bytes": 2528
+    },
+    {
+      "path": "source/platform/src/Hexalith.Platform.Composition/PlatformServerBindings.cs",
+      "sha256": "21a49f775e6d7e862c3a61761b5cc625ef1fca212152edb6c317536726f40f6e",
+      "bytes": 7533
+    },
+    {
+      "path": "source/platform/src/Hexalith.Platform.Composition/PlatformTimesheetsBinding.cs",
+      "sha256": "9aeb4ba3adade96b728c4ec74c5708ea86d2b5f525b8e0436b9351519ef889a2",
+      "bytes": 6978
+    },
+    {
+      "path": "source-bindings.json",
+      "sha256": "f8e5f58582a361011e3b220aedf5cd97d2eae36318c4f76d4cedb431c15e1064",
+      "bytes": 7541
+    },
+    {
+      "path": "static-mvids.json",
+      "sha256": "66e8f51b6158f43355f33cdbb3ff0a132042d15e28ee1d087347e037ef1381d2",
+      "bytes": 1736
+    }
+  ]
+}

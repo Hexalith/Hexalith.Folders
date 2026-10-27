@@ -1,0 +1,3119 @@
+{
+  "format": "sha256-file-members-v1",
+  "sources": {
+    "filter-reset": "/tmp/story117-cli438-filter-reset-20261026-lkmagqwq",
+    "loader": "/tmp/story117-cli438-loader-20261026-801w2mad",
+    "attempt-claim": "/tmp/story117-cli438-filter-reset-attempt-claims-20261026/6b8e8f0ae4dc8fa0aa8b35a405e6ebd09711cda119c7808479c13cec387e8506"
+  },
+  "members": [
+    {
+      "path": "attempt-claim/claim.json",
+      "bytes": 342,
+      "sha256": "eda9b7610d5fda8a52675b1b296fa2e6afc8d3cc8aef630e6ec56ef37d0dd187"
+    },
+    {
+      "path": "attempt-claim/outcome.json",
+      "bytes": 176,
+      "sha256": "1b2e161664a799743489448832ef939a186c08f46214c7155d2d25d8e8996a56"
+    },
+    {
+      "path": "filter-reset/LoaderProbe.cs",
+      "bytes": 6017,
+      "sha256": "79e9e3b07b5081dc2ae77a8ddf6179550b3b1cff8cd42934e755eb1b4c10b15f"
+    },
+    {
+      "path": "filter-reset/derived-authorization.json",
+      "bytes": 8380,
+      "sha256": "65abfa2400e1bdc284406f97c6119b7126b28f7770dab6c4249310a26a32f930"
+    },
+    {
+      "path": "filter-reset/driver.command.json",
+      "bytes": 1120,
+      "sha256": "cbd716ff7cd21779616a7aad51e6d8b20c2ba7b663338acdff71ca5fe7d944de"
+    },
+    {
+      "path": "filter-reset/driver.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "filter-reset/driver.stdout",
+      "bytes": 46,
+      "sha256": "3bf160168116623d7507b04ebbd5f56cf3668aac4980d3367fc1b67507c1b36f"
+    },
+    {
+      "path": "filter-reset/execute_after_authorization.py",
+      "bytes": 15412,
+      "sha256": "ae559715da8b3e220703d4e229776289cf4bfdb3d098fa0fc15a4c0244b4bdba"
+    },
+    {
+      "path": "filter-reset/filter-reset-audit.json",
+      "bytes": 10074,
+      "sha256": "55cc4c9afbf8201c73f1fffd26be9bb66897ed627dea0af78c3312c59fb22d9a"
+    },
+    {
+      "path": "filter-reset/fresh-attempt-authorization.json",
+      "bytes": 16084,
+      "sha256": "6b8e8f0ae4dc8fa0aa8b35a405e6ebd09711cda119c7808479c13cec387e8506"
+    },
+    {
+      "path": "filter-reset/inputs.json",
+      "bytes": 194946,
+      "sha256": "6c7c62ee3ba5973521313916e343045c9fbd0c04e889955502249c63f4f31c40"
+    },
+    {
+      "path": "filter-reset/original-execution-approval.json",
+      "bytes": 4094,
+      "sha256": "01907142a0863a50dfde4d6cfe465399898b8f5121982779775cf526cbefefd3"
+    },
+    {
+      "path": "filter-reset/prior-root-rebind-approval.json",
+      "bytes": 9719,
+      "sha256": "9257cb257195e0d6405aea9ceb38524dae53e911721eabe9e146797b6be72619"
+    },
+    {
+      "path": "filter-reset/recording-audit/capture-provenance.json",
+      "bytes": 1618,
+      "sha256": "0bcbe49ef4430d2cd3268fda010f1243201956baa4ee432c96a98b94fb5b92aa"
+    },
+    {
+      "path": "filter-reset/recording-audit/certificate-post-seal-metadata.json",
+      "bytes": 1840,
+      "sha256": "0fa2a4f9040fa57ba0a2c775c6b954f6a6962cf973737d3523aa465f446bb2e3"
+    },
+    {
+      "path": "filter-reset/recording-audit/copied-input-rehash.json",
+      "bytes": 102081,
+      "sha256": "18895688874ab3ca839237730b1140493b42deb24acc24b17d611bc07c60cd3e"
+    },
+    {
+      "path": "filter-reset/recording-audit/dispatched-SPEC.md",
+      "bytes": 4450,
+      "sha256": "9bb7b1db8aadf97765a79dade3010dfc88146b0287b24c05e444a69d28f3ad6a"
+    },
+    {
+      "path": "filter-reset/recording-audit/invocation-start.json",
+      "bytes": 2191,
+      "sha256": "d31061c4a9734f5acff5aaec3a3f86e13fdc3f17b3c42ea58e816505c1902d3a"
+    },
+    {
+      "path": "filter-reset/recording-audit/invocation.json",
+      "bytes": 75658,
+      "sha256": "ebd1d0b3eae4e7a3b1c63e9fc13029f571f85700f88901de13a40acfd2301ddc"
+    },
+    {
+      "path": "filter-reset/recording-audit/invocation.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "filter-reset/recording-audit/invocation.stdout",
+      "bytes": 52,
+      "sha256": "e2ef4929ca79eae1bbb91a387a5ed84f15a6f1dcf92cc1a47af792d170689a15"
+    },
+    {
+      "path": "filter-reset/recording-audit/invoke_once.py",
+      "bytes": 5523,
+      "sha256": "11f1f88f02e8547c8f6e7c1df1e9b3ae57b20f667fecf5df6ab8893b7d347110"
+    },
+    {
+      "path": "filter-reset/recording-audit/owned-process-final.json",
+      "bytes": 2686,
+      "sha256": "d4dde3ec8da757cee7a54243d480c81cddfee5705907725a1c032aad2d38ce77"
+    },
+    {
+      "path": "filter-reset/recording-audit/owner-bound-rehash.json",
+      "bytes": 22419,
+      "sha256": "3a28c973909934f94618d94720ca07d12894e05f04d4986956a81c819a8726e9"
+    },
+    {
+      "path": "filter-reset/recording-audit/preflight.json",
+      "bytes": 19559,
+      "sha256": "d570d03e85fc0eac6eb8f4930bf94affdcb9cf086bde665cd1566f61d3040b04"
+    },
+    {
+      "path": "filter-reset/recording-audit/read-only-git-commands.json",
+      "bytes": 59187,
+      "sha256": "e578a5b89c5f358c6106eb8f2f88956ac68eac4b76056dd1458980298b3b092e"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.AI.Tools.flags.z",
+      "bytes": 1316,
+      "sha256": "64c6513265f305fcc81cce61042719f3e1efde560d4ae693f5c58f2a02f29528"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.AI.Tools.stage.txt",
+      "bytes": 2804,
+      "sha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Builds.flags.z",
+      "bytes": 298387,
+      "sha256": "83e09fbd0e98acd5fe4529c9aef31fda3fb82d650de9ae7c7a527f8f8d3b93db"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Builds.stage.txt",
+      "bytes": 438451,
+      "sha256": "a379d24eb9569cbbfd77c245c80f41ff239d9c97e928c66b3a444ca6cb53b94e"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Commons.flags.z",
+      "bytes": 13365,
+      "sha256": "109a1563a3c298c6a1e980a49061f0271b3b2caac068013edd4b44a35e97cbc0"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Commons.stage.txt",
+      "bytes": 24213,
+      "sha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.EventStore.flags.z",
+      "bytes": 692757,
+      "sha256": "8e5ebc56779fd238eaed37ea48fd957d92f4750bb4c8db35ea79e63cdbda1d2e"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.EventStore.stage.txt",
+      "bytes": 1129797,
+      "sha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.FrontComposer.flags.z",
+      "bytes": 461351,
+      "sha256": "9ec2a1b774120fa55c0089c04e162842505d2e5c115b1cd101a553b826c86657"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.FrontComposer.stage.txt",
+      "bytes": 763463,
+      "sha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.McpCli.flags.z",
+      "bytes": 1031429,
+      "sha256": "6a41ba6bee4461204102b76c47bc4dd78c1944054be6781283824f258966a43c"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.McpCli.stage.txt",
+      "bytes": 1491845,
+      "sha256": "c361ea1f29b3bc49536e23d02ae8f3ac21b2d182cfe0bdfa2f2ce92af83b505f"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Memories.flags.z",
+      "bytes": 457707,
+      "sha256": "163d22b528793132bd4ada2d3b7d7fc6a40c5d230308ddf42a84ed759e84ad5d"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Memories.stage.txt",
+      "bytes": 762363,
+      "sha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Parties.flags.z",
+      "bytes": 584532,
+      "sha256": "f580f1be1aa5e5afc9789e1d61dc32caac02a54d3ab8977901eb7dfd75062fd0"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Parties.stage.txt",
+      "bytes": 916212,
+      "sha256": "933d7d5f591ff2c0d291e6f497587ea1f804946698f9601af3822d47c3e8c44c"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Platform.flags.z",
+      "bytes": 969334,
+      "sha256": "60741d02530669a491ee2fa7a8a27be99f61fb98ded4b73a66251f4e8e95e1f2"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Platform.stage.txt",
+      "bytes": 1440838,
+      "sha256": "1c6649f6dbd9d725da61199cfbef8fe5156af23f730156bdbe0b2620077b066b"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.PolymorphicSerializations.flags.z",
+      "bytes": 3421,
+      "sha256": "0e1f1b32b300ddb5a40638d500d958937d2e0e92649b824e5b1c51ee0a270cb8"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.PolymorphicSerializations.stage.txt",
+      "bytes": 6781,
+      "sha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Projects.flags.z",
+      "bytes": 566664,
+      "sha256": "2d03e363523b4dfb25dd4b89fab331bc80f9c08f2f79704ea0d125a8323826f0"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Projects.stage.txt",
+      "bytes": 873000,
+      "sha256": "1494da6a6b03a0ca3ae427b9bad145b8c9cd51806d370c80468c510ef07e9eda"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Tenants.flags.z",
+      "bytes": 292173,
+      "sha256": "92a7b4922656e4034cf9248ed2519ff3064e050f458603c96281ae497eee072b"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-Hexalith.Tenants.stage.txt",
+      "bytes": 485805,
+      "sha256": "279c1b2c7fed9cc80dd048ca637e1b2031bb10d45ff439586b899aefb6dfcc80"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.AI.Tools.flags.z",
+      "bytes": 1316,
+      "sha256": "64c6513265f305fcc81cce61042719f3e1efde560d4ae693f5c58f2a02f29528"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.AI.Tools.stage.txt",
+      "bytes": 2804,
+      "sha256": "0b791807977954894f16205c67ea7476ac4eafafc66930f6f929ba15ee348569"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Builds.flags.z",
+      "bytes": 298387,
+      "sha256": "83e09fbd0e98acd5fe4529c9aef31fda3fb82d650de9ae7c7a527f8f8d3b93db"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Builds.stage.txt",
+      "bytes": 438451,
+      "sha256": "a379d24eb9569cbbfd77c245c80f41ff239d9c97e928c66b3a444ca6cb53b94e"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Commons.flags.z",
+      "bytes": 13365,
+      "sha256": "109a1563a3c298c6a1e980a49061f0271b3b2caac068013edd4b44a35e97cbc0"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Commons.stage.txt",
+      "bytes": 24213,
+      "sha256": "6d0718ddcbd0d7c7277602aa2ac1d47af8798e22bf8a11437d22a09fb4dc2644"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.EventStore.flags.z",
+      "bytes": 692757,
+      "sha256": "8e5ebc56779fd238eaed37ea48fd957d92f4750bb4c8db35ea79e63cdbda1d2e"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.EventStore.stage.txt",
+      "bytes": 1129797,
+      "sha256": "5864b4dc037fa834a6bf2a094a97f376cd91a2afb692f7c4fb0eacc98d05461e"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.FrontComposer.flags.z",
+      "bytes": 461351,
+      "sha256": "9ec2a1b774120fa55c0089c04e162842505d2e5c115b1cd101a553b826c86657"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.FrontComposer.stage.txt",
+      "bytes": 763463,
+      "sha256": "1d543d9cd585ebf4c12535744dd95a343d3c3cf076380f37c0cbe75a923f3ee2"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.McpCli.flags.z",
+      "bytes": 1031429,
+      "sha256": "6a41ba6bee4461204102b76c47bc4dd78c1944054be6781283824f258966a43c"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.McpCli.stage.txt",
+      "bytes": 1491845,
+      "sha256": "c361ea1f29b3bc49536e23d02ae8f3ac21b2d182cfe0bdfa2f2ce92af83b505f"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Memories.flags.z",
+      "bytes": 457707,
+      "sha256": "163d22b528793132bd4ada2d3b7d7fc6a40c5d230308ddf42a84ed759e84ad5d"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Memories.stage.txt",
+      "bytes": 762363,
+      "sha256": "1fdc8e5a74d19e82d111fefad77942b2716d31b48e2ec86113ded74af29e9b76"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Parties.flags.z",
+      "bytes": 584532,
+      "sha256": "f580f1be1aa5e5afc9789e1d61dc32caac02a54d3ab8977901eb7dfd75062fd0"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Parties.stage.txt",
+      "bytes": 916212,
+      "sha256": "933d7d5f591ff2c0d291e6f497587ea1f804946698f9601af3822d47c3e8c44c"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Platform.flags.z",
+      "bytes": 969334,
+      "sha256": "60741d02530669a491ee2fa7a8a27be99f61fb98ded4b73a66251f4e8e95e1f2"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Platform.stage.txt",
+      "bytes": 1440838,
+      "sha256": "1c6649f6dbd9d725da61199cfbef8fe5156af23f730156bdbe0b2620077b066b"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.PolymorphicSerializations.flags.z",
+      "bytes": 3421,
+      "sha256": "0e1f1b32b300ddb5a40638d500d958937d2e0e92649b824e5b1c51ee0a270cb8"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.PolymorphicSerializations.stage.txt",
+      "bytes": 6781,
+      "sha256": "c44ae23b74492ea2905d4be41b96c5357487918669d07e77d2d4274b340ed862"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Projects.flags.z",
+      "bytes": 566664,
+      "sha256": "2d03e363523b4dfb25dd4b89fab331bc80f9c08f2f79704ea0d125a8323826f0"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Projects.stage.txt",
+      "bytes": 873000,
+      "sha256": "1494da6a6b03a0ca3ae427b9bad145b8c9cd51806d370c80468c510ef07e9eda"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Tenants.flags.z",
+      "bytes": 292173,
+      "sha256": "92a7b4922656e4034cf9248ed2519ff3064e050f458603c96281ae497eee072b"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-Hexalith.Tenants.stage.txt",
+      "bytes": 485805,
+      "sha256": "279c1b2c7fed9cc80dd048ca637e1b2031bb10d45ff439586b899aefb6dfcc80"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-root.flags.z",
+      "bytes": 1757198,
+      "sha256": "c29c3ccf6364310c9fd937a402a1d42501cf5bb49d7f4987f8b8739113c2408f"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-after-root.stage.txt",
+      "bytes": 2338766,
+      "sha256": "62459e20b5115ebea71409210950651c7d3bfd32c20729dd69cde0d62d0a666d"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-root.flags.z",
+      "bytes": 1757198,
+      "sha256": "c29c3ccf6364310c9fd937a402a1d42501cf5bb49d7f4987f8b8739113c2408f"
+    },
+    {
+      "path": "filter-reset/recording-audit/repo-root.stage.txt",
+      "bytes": 2338766,
+      "sha256": "62459e20b5115ebea71409210950651c7d3bfd32c20729dd69cde0d62d0a666d"
+    },
+    {
+      "path": "filter-reset/recording-audit/repository-post-execution.json",
+      "bytes": 17755,
+      "sha256": "e41ae55a9ec2bf88bace1e11c8f399905d2bf13cf0026763f7cfd1b4025adcac"
+    },
+    {
+      "path": "filter-reset/recording-audit/sdk-rehash.json",
+      "bytes": 132155,
+      "sha256": "fd5dc978d3eeb118a91f808b4722f0ebd2f67b0132f9e17cbe85a8cb8019215a"
+    },
+    {
+      "path": "filter-reset/recording-audit/seal_evidence.py",
+      "bytes": 23400,
+      "sha256": "0992c127cf1f0f0b496d8b9dcf860b37a37a135d6940371285b35494e2d2163a"
+    },
+    {
+      "path": "filter-reset/repository-after.json",
+      "bytes": 5073,
+      "sha256": "40e0c0e44a457f8cfc525d7a30429ca21639e2520c206e632c2724d1875325ad"
+    },
+    {
+      "path": "loader/LoaderProbe.cs",
+      "bytes": 6017,
+      "sha256": "79e9e3b07b5081dc2ae77a8ddf6179550b3b1cff8cd42934e755eb1b4c10b15f"
+    },
+    {
+      "path": "loader/authorization.json",
+      "bytes": 8380,
+      "sha256": "65abfa2400e1bdc284406f97c6119b7126b28f7770dab6c4249310a26a32f930"
+    },
+    {
+      "path": "loader/certificate-after.json",
+      "bytes": 1598,
+      "sha256": "37502a381728213a1f8591a1ba4fba64788c67ceacc444c8f42ea29d778af4b2"
+    },
+    {
+      "path": "loader/certificate-before.json",
+      "bytes": 1598,
+      "sha256": "37502a381728213a1f8591a1ba4fba64788c67ceacc444c8f42ea29d778af4b2"
+    },
+    {
+      "path": "loader/cold.host-trace.log",
+      "bytes": 564206,
+      "sha256": "ff0625a142792d9aaa627bd0a9ee44d96242f5610dfbb873dde0b4a37406fc44"
+    },
+    {
+      "path": "loader/compile-probe-only.command.json",
+      "bytes": 46952,
+      "sha256": "6ac69f91acf7c4fa72487604af2bdf9722025342dd537c1b02d28a7906920d39"
+    },
+    {
+      "path": "loader/compile-probe-only.prelaunch.json",
+      "bytes": 42590,
+      "sha256": "4c1cf9032b1f2101ab483992b98755390d85eedc7171e5323cd4cbe59ce272e6"
+    },
+    {
+      "path": "loader/compile-probe-only.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "loader/compile-probe-only.stdout",
+      "bytes": 161,
+      "sha256": "edd64cf9d37a6f21e4b95d8d6ded4064f46192c4b340a290833d3ec2f56ed8d1"
+    },
+    {
+      "path": "loader/compiled-probe.json",
+      "bytes": 163,
+      "sha256": "846a70d4372cf9089757a14c9a5b762d7d5d970ebb450071138da02479ea3b41"
+    },
+    {
+      "path": "loader/deny-sockets.bpf",
+      "bytes": 120,
+      "sha256": "92b4ad47fbfa2d39d14bcfc40dc3354a2adabcb632a0c0cbe1b1c017b59c3e48"
+    },
+    {
+      "path": "loader/dotnet-home/.dotnet/10.0.402.dotnetFirstUseSentinel",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "loader/dotnet-home/.dotnet/10.0.402.toolpath.sentinel",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "loader/environment.json",
+      "bytes": 1186,
+      "sha256": "2ed7b9669f353483c808b19738cacddcc57adb8d953c6b4eb41a0da021ef8079"
+    },
+    {
+      "path": "loader/experiment-completed.json",
+      "bytes": 141,
+      "sha256": "745691fae5e6f36cbe45050b976413eddb6ed6a6445250e19e786d72021981d4"
+    },
+    {
+      "path": "loader/host-first.host-trace.log",
+      "bytes": 564224,
+      "sha256": "b465c78c6132d5732b014aa98c0b24bed7bcc0d54788b5f1e2ecd22ca32e0209"
+    },
+    {
+      "path": "loader/host/Aspire.Hosting.AppHost.dll",
+      "bytes": 27448,
+      "sha256": "dccaa8f1be8532a9545b5f6bcf889743cb323c834ef77df25a284ee0684b225f"
+    },
+    {
+      "path": "loader/host/Aspire.Hosting.Keycloak.dll",
+      "bytes": 38752,
+      "sha256": "282bd117dbd7f4c605e3fef5d6a9189057a57c4d32b8d4cc743c6e20d30cff77"
+    },
+    {
+      "path": "loader/host/Aspire.Hosting.Redis.dll",
+      "bytes": 70968,
+      "sha256": "5aa8b0ce84a62895ac6a1f907ea13b8e0464dae16b7278fb8d49033fafa60597"
+    },
+    {
+      "path": "loader/host/Aspire.Hosting.dll",
+      "bytes": 3378528,
+      "sha256": "86507650b7d1ecb6765f5cf46092327a53635bba1eef5e98c4207844ff31cd3b"
+    },
+    {
+      "path": "loader/host/CommunityToolkit.Aspire.Hosting.Dapr.dll",
+      "bytes": 137544,
+      "sha256": "7763ba9497ce1e91100a694a265daec1c7ec069094f8bcf74cc1a8f15b8b0996"
+    },
+    {
+      "path": "loader/host/Fractions.dll",
+      "bytes": 22016,
+      "sha256": "e8407a878af8aec1f485f50a9f356c439371610fff20756d4f2284ac6c995cbf"
+    },
+    {
+      "path": "loader/host/Google.Protobuf.dll",
+      "bytes": 501760,
+      "sha256": "8997a69619b59db587a45e75a03c164a44afb613f82db138d35e1636e4cbdc73"
+    },
+    {
+      "path": "loader/host/Grpc.AspNetCore.Server.ClientFactory.dll",
+      "bytes": 21504,
+      "sha256": "c57f69775e2b8acda401efb5f152eba6cfd23d0fc9277b7d2e0ed1f1533158e3"
+    },
+    {
+      "path": "loader/host/Grpc.AspNetCore.Server.dll",
+      "bytes": 157184,
+      "sha256": "a66e142b1a3cbaf8ed3f0835faac72e0484d4eb8b1295e0d3d1de69d72e575b2"
+    },
+    {
+      "path": "loader/host/Grpc.Core.Api.dll",
+      "bytes": 70296,
+      "sha256": "16b1ff898b9a2c1ffac0e22035c8280728967e7041bfe8a382bcb1f99a9a530b"
+    },
+    {
+      "path": "loader/host/Grpc.Net.Client.dll",
+      "bytes": 360088,
+      "sha256": "71454959f95469ea1a4abfbbb2ccb71487f6bfe50714277e73d2f7665c89244e"
+    },
+    {
+      "path": "loader/host/Grpc.Net.ClientFactory.dll",
+      "bytes": 54936,
+      "sha256": "52a981845704edf969120f10e6a0a65fce858adf45412b5c10571a1b07222380"
+    },
+    {
+      "path": "loader/host/Grpc.Net.Common.dll",
+      "bytes": 22168,
+      "sha256": "2fe0acf1042d43af95cc33f610a5c7d4d70ae65e3d5f4ce8707a3e2bf95df823"
+    },
+    {
+      "path": "loader/host/HealthChecks.Redis.dll",
+      "bytes": 22528,
+      "sha256": "3ce9e611ecd44219f4bed786d665712759583b87a1bb9228355e9161ce7ffa52"
+    },
+    {
+      "path": "loader/host/HealthChecks.Uris.dll",
+      "bytes": 29184,
+      "sha256": "32f8e0615a70e07c6c37c3e2e0774207c84d2f2695942fba82e7bc3bee1a5708"
+    },
+    {
+      "path": "loader/host/Hex1b.dll",
+      "bytes": 7401984,
+      "sha256": "1113557a5737e1fac2fdda1f6579737c50eac4620e83fefb3c29fa2ecc9b12bc"
+    },
+    {
+      "path": "loader/host/Hexalith.Builds.Module.AppHost",
+      "bytes": 78192,
+      "sha256": "c4855169b18c991ab5b24c8f89a9c8506b5ea8c54909928b03918a7f617f4b90"
+    },
+    {
+      "path": "loader/host/Hexalith.Builds.Module.AppHost.deps.json",
+      "bytes": 45720,
+      "sha256": "6efafa9ea940f24e2d01648766a4005d7a247e10a2966400c32b583007b53649"
+    },
+    {
+      "path": "loader/host/Hexalith.Builds.Module.AppHost.dll",
+      "bytes": 94208,
+      "sha256": "712bccd88bcce9fb92c7c6147eded8af6b514363ec5548a22f9e87f7e7f2669d"
+    },
+    {
+      "path": "loader/host/Hexalith.Builds.Module.AppHost.pdb",
+      "bytes": 40848,
+      "sha256": "23882ffb39f1b1a2d46489d58ed78e06a6a9e9c3b622d943c989a03b0ab52eaf"
+    },
+    {
+      "path": "loader/host/Hexalith.Builds.Module.AppHost.runtimeconfig.json",
+      "bytes": 440,
+      "sha256": "f8bd1713a3691d58eb332a71675f129385b91e852b66e7b6761cae1f34d4efd2"
+    },
+    {
+      "path": "loader/host/Hexalith.Builds.Module.AppHost.xml",
+      "bytes": 28891,
+      "sha256": "b9f1434721bc97057cadd7c0d165b5b0362ae6e83cfc8916bbb1b210ca4cd419"
+    },
+    {
+      "path": "loader/host/Hexalith.Builds.Tooling.dll",
+      "bytes": 1459200,
+      "sha256": "0266257a74c1dbc49407c61b07d90f7c95b806d937ea4f338b98bf8d128256fd"
+    },
+    {
+      "path": "loader/host/Hexalith.Builds.Tooling.pdb",
+      "bytes": 282000,
+      "sha256": "56db7301d8f4a5f3d1656a0490dbee7a3d3d41a1aa7a04e0779beb57175e6afb"
+    },
+    {
+      "path": "loader/host/Hexalith.Builds.Tooling.xml",
+      "bytes": 626175,
+      "sha256": "973a4b24d44fdb7f499fbdb60f79f26392c658d072a9b677003aea4e444dc9c8"
+    },
+    {
+      "path": "loader/host/Hexalith.EventStore.Aspire.dll",
+      "bytes": 69120,
+      "sha256": "8c9418926bda7d438e72fe9b083d648909d117305f8ae181b163426603866c38"
+    },
+    {
+      "path": "loader/host/Humanizer.dll",
+      "bytes": 643760,
+      "sha256": "2769ed8265b691a5482c72506ed274dc52446fa1641997a8c12c66f5b9263d39"
+    },
+    {
+      "path": "loader/host/Json.More.dll",
+      "bytes": 54272,
+      "sha256": "80b6cd50331fa2ded4fbacdbf80dcedd2b142dee679df227c30299d2a3c3840f"
+    },
+    {
+      "path": "loader/host/JsonPointer.Net.dll",
+      "bytes": 25600,
+      "sha256": "4d7ce7739bc0bf8df69778f4545c390a6c06fd11c8f583ae166f0fdc6e9c3123"
+    },
+    {
+      "path": "loader/host/JsonSchema.Net.dll",
+      "bytes": 294400,
+      "sha256": "5eca1875cdf54faf841fb14353b7f3cbbb345e26de6458ff01888a1c0e578fa2"
+    },
+    {
+      "path": "loader/host/KubernetesClient.dll",
+      "bytes": 10680320,
+      "sha256": "1fdb3ddc3db829a3f4015afc328a00d3747fb228c7866df6f765be4cedb800ce"
+    },
+    {
+      "path": "loader/host/LoaderProbe.dll",
+      "bytes": 23040,
+      "sha256": "da2c251193638bb36919aa564afb396bc35d7c575357c758765dcbec18169eb1"
+    },
+    {
+      "path": "loader/host/MessagePack.Annotations.dll",
+      "bytes": 18432,
+      "sha256": "1e51e087987bc857e55863eb4e986c2f2f0bf17230eb2c243e5dc25c34e7cf86"
+    },
+    {
+      "path": "loader/host/MessagePack.dll",
+      "bytes": 385024,
+      "sha256": "a7f8d30a8e6f4a1b445bf6752621a4a7b1f4ff11f5d4dc62dba0d8d7d6995e36"
+    },
+    {
+      "path": "loader/host/Microsoft.Extensions.AI.Abstractions.dll",
+      "bytes": 679224,
+      "sha256": "a3216886dec2b2528b2d7212c438d21c3d6de2061b500bd2ea505a41f896f8d3"
+    },
+    {
+      "path": "loader/host/Microsoft.NET.StringTools.dll",
+      "bytes": 33552,
+      "sha256": "887dec541cd0a719b7111458eb90a83b4491d6dd24eff2b16cf03d2782fd26a0"
+    },
+    {
+      "path": "loader/host/Microsoft.VisualStudio.Threading.dll",
+      "bytes": 441888,
+      "sha256": "138e3548e487152de355b81303ae98e1bb52a31fe5c9107fa81a15f66404f426"
+    },
+    {
+      "path": "loader/host/Microsoft.VisualStudio.Validation.dll",
+      "bytes": 37392,
+      "sha256": "59cd5e953cce597847e515a73a1c0975cd5a6b94921a7b91e81045fa9922f57c"
+    },
+    {
+      "path": "loader/host/Microsoft.Win32.SystemEvents.dll",
+      "bytes": 26224,
+      "sha256": "ca495bf6c86b7f092d624928101985a941532d149dcd8acfea170f8a53be8850"
+    },
+    {
+      "path": "loader/host/ModelContextProtocol.Core.dll",
+      "bytes": 1302016,
+      "sha256": "80757dd4fde30eaed2d99849915c5642d2428487059c711373690a3336caa9b4"
+    },
+    {
+      "path": "loader/host/ModelContextProtocol.dll",
+      "bytes": 91136,
+      "sha256": "45c63242855e574fd6bdb35aad7d6e4af16b67517e20a775b6d19103fad38c63"
+    },
+    {
+      "path": "loader/host/Nerdbank.MessagePack.dll",
+      "bytes": 641024,
+      "sha256": "fc086ce3623a9a3f9213159d438c642d225046e371489e8e7f126d4c62f188fa"
+    },
+    {
+      "path": "loader/host/Nerdbank.Streams.dll",
+      "bytes": 222048,
+      "sha256": "e5c90ffcb7a0bd0cedf51ac33e818b9f64045e9839b19701eb73460356631872"
+    },
+    {
+      "path": "loader/host/Newtonsoft.Json.dll",
+      "bytes": 723368,
+      "sha256": "a28c251dfe36d881e9e2462e171441b8b0ec156fe3f452602c9149b1b9efe05b"
+    },
+    {
+      "path": "loader/host/NuGet.Versioning.dll",
+      "bytes": 62264,
+      "sha256": "fc2f75a7a5f3be9b4c3dcfc21644b871bb5a41ada8615c92d778713d2a310670"
+    },
+    {
+      "path": "loader/host/OpenTelemetry.Api.ProviderBuilderExtensions.dll",
+      "bytes": 24576,
+      "sha256": "dfaab1ecfb87773ccef2737aafbf1eb22a9f074c44e9fdd31947702da59234bc"
+    },
+    {
+      "path": "loader/host/OpenTelemetry.Api.dll",
+      "bytes": 84992,
+      "sha256": "bd75bbab25a4bf769727ec6c17457d4bf189a8c2c70034e5c212ae345132591d"
+    },
+    {
+      "path": "loader/host/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll",
+      "bytes": 201728,
+      "sha256": "65fb06071dcda27215f1dd42d6c8de8cc98691cef0225b36c8fb22f995fd1759"
+    },
+    {
+      "path": "loader/host/OpenTelemetry.Extensions.Hosting.dll",
+      "bytes": 15872,
+      "sha256": "442d9c18f5cc9ffa65e3f486874f01b375866854b0ad08e40e6367139eb9b35a"
+    },
+    {
+      "path": "loader/host/OpenTelemetry.dll",
+      "bytes": 344064,
+      "sha256": "63fb9724258d4a1ac76c7ddffc2e0b18ee5125a1c8ff4b242a570a3410c97fc6"
+    },
+    {
+      "path": "loader/host/Polly.Core.dll",
+      "bytes": 223136,
+      "sha256": "f7f50017ca9f457b854498358ae595c2a8ab69c1fd8b915139d22bed8f7e4f2a"
+    },
+    {
+      "path": "loader/host/PolyType.dll",
+      "bytes": 323072,
+      "sha256": "33d30bc1baf80b85ad9b428a388d9999eaf20999d555a6e684aa758f4f679968"
+    },
+    {
+      "path": "loader/host/QRCoder.dll",
+      "bytes": 195584,
+      "sha256": "2c9a588e08ec91f00fac37a4a43995c8f1966a6cce615e9e8c063eec3d0f145a"
+    },
+    {
+      "path": "loader/host/RESPite.dll",
+      "bytes": 116736,
+      "sha256": "ec60961494a640b0faff3447afe14c90f5bd27e53f5ab0b4284b34cae717f4fa"
+    },
+    {
+      "path": "loader/host/Semver.dll",
+      "bytes": 72704,
+      "sha256": "a99edcb96efce3d6ff019c667e132d81d879f5a92bc9337591e0b7309d7f493f"
+    },
+    {
+      "path": "loader/host/StackExchange.Redis.dll",
+      "bytes": 2349056,
+      "sha256": "e14460fe50cd699b34c75b9a8b10cdb79c2ed68f4088879afa2e073b7afba502"
+    },
+    {
+      "path": "loader/host/StreamJsonRpc.dll",
+      "bytes": 647048,
+      "sha256": "ddc6a4d60e6cc940aae31faafc1fdcdbe520dfa51bec8dfc7f505449291536d5"
+    },
+    {
+      "path": "loader/host/System.Drawing.Common.dll",
+      "bytes": 175216,
+      "sha256": "98d07e6b1e7d3641a8608a360b3dc273fe8a0f78926b6e1e5f679a7a074d491f"
+    },
+    {
+      "path": "loader/host/System.IO.Hashing.dll",
+      "bytes": 56104,
+      "sha256": "cea6795cf9f7b139b2215ff6de794a6f6e44e78640fb30fa4c0d5fa8472df8e5"
+    },
+    {
+      "path": "loader/host/YamlDotNet.dll",
+      "bytes": 300032,
+      "sha256": "d618138109a40e4a7250e49e2abad8c450e3636bee18d7499ab231e37fa9150a"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/ByteAether.Ulid.dll",
+      "bytes": 29696,
+      "sha256": "fc4f3d99e88023ffbd37eea2941ddd81f604611fc967fedb116a4daaf9ae4590"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Dapr.Actors.AspNetCore.dll",
+      "bytes": 26112,
+      "sha256": "c7deffe0f4b6c754fff3935a42ad378d729e85b277da853fbc8924790482d8b0"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Dapr.Actors.dll",
+      "bytes": 214016,
+      "sha256": "98d77fb28b39fe6832e06cb2bd66d58024b9587411b04965da385909f32a9dfa"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Dapr.AspNetCore.dll",
+      "bytes": 57344,
+      "sha256": "4db46444a22bbfd473e0f132139d943cec95e3637cdbf61077d88e618a48213d"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Dapr.Client.dll",
+      "bytes": 181248,
+      "sha256": "cc7b8e629416c52be2569d7610c5c830b19ba690d4f54300ffdee901dec99115"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Dapr.Common.dll",
+      "bytes": 77824,
+      "sha256": "9c10b91825371c10e469e91627080414bde4e8fa5acd894a2dbe398af03e1893"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Dapr.Protos.dll",
+      "bytes": 635904,
+      "sha256": "659938b9475b4951bd49086a66d8ad24f89ac6c1c33d6888adfefb8420edf03c"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/FluentValidation.DependencyInjectionExtensions.dll",
+      "bytes": 15360,
+      "sha256": "32385a476b65365d0f9de1819cd1f46d155d1f46beea68176603cf341b29a797"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/FluentValidation.dll",
+      "bytes": 549888,
+      "sha256": "07373bb5527d6d96908c60962102c9c1339b363c4ee8ad62277eb2ffc6387df4"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Google.Api.CommonProtos.dll",
+      "bytes": 450048,
+      "sha256": "329cf0f2b66c5cbf675321f0d6b33c17d1092e5761f32d3d2c1307a110c0dbbd"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Google.Protobuf.dll",
+      "bytes": 501400,
+      "sha256": "e9b892ac667931162ffefa411ef8dc3eae777d634d8bfe8beddc28b1de95a612"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Grpc.Core.Api.dll",
+      "bytes": 70296,
+      "sha256": "5674c1203706b5a261e8bbd3499147d94fc80b5f077bf45f9934ca28a9c8574b"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Grpc.Net.Client.dll",
+      "bytes": 359064,
+      "sha256": "f884d8444feb888656cbb7de87ee8f53a50811329bb32c6e7a7a81cb1de008ef"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Grpc.Net.Common.dll",
+      "bytes": 22168,
+      "sha256": "fdff383bbd8e5015f3c4aaaa7508b769228f33c92ba14fec4e59d35c5d78e6ae"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Grpc.Reflection.dll",
+      "bytes": 77976,
+      "sha256": "87795d17c1385e7c05469c447ad8eecc883c3c71b4804319c5918a5a490c8d57"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.Builds.Module.EventStoreHost",
+      "bytes": 78192,
+      "sha256": "71ca8164dbca2c6d4fa095762e3067fa6d8e63a80c8c8dfca1ed66f455d994c5"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.Builds.Module.EventStoreHost.deps.json",
+      "bytes": 50562,
+      "sha256": "13f15dd52248f3c3fb2286d250a35f4ca28db2b31a2a63047a888d7dbb79e634"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.Builds.Module.EventStoreHost.dll",
+      "bytes": 30720,
+      "sha256": "76b97ecb89e2cfa8399b249f99815c67cdfb594c6e62c1907fe1d9efe78cde37"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.Builds.Module.EventStoreHost.pdb",
+      "bytes": 36460,
+      "sha256": "b60cd4c51ae7cc5cd9061939ded109bd8561db9c322583d89f0747ac3e2991b0"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.Builds.Module.EventStoreHost.runtimeconfig.json",
+      "bytes": 472,
+      "sha256": "f71b4c67b5233a19be9131b5fe4b45fe7829997cf2b42e762d6baa037da93863"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.Builds.Module.EventStoreHost.staticwebassets.endpoints.json",
+      "bytes": 51,
+      "sha256": "eb6525c892afda953a2560f151f9c5e5bc6e79ef6741d886488ac450262c91e3"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.Builds.Module.EventStoreHost.xml",
+      "bytes": 3126,
+      "sha256": "492425b8a76e3e26b652c5a3faf2e957aa0337cfa836edcb36793abac8618e90"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.Commons.UniqueIds.dll",
+      "bytes": 9728,
+      "sha256": "73db021277a5c3cc2af66a0ac117d108ec2b9f1708199984880772a575018b8e"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.EventStore.Admin.Abstractions.dll",
+      "bytes": 233984,
+      "sha256": "815b9dc633924ad97b177790cd81b811f71761eb12ca9428b34ae8678231d7bc"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.EventStore.Client.dll",
+      "bytes": 1107456,
+      "sha256": "76a124b807ec76a909f6c50b6f339e2c126d7c6a0a257718d69aab491b103550"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.EventStore.Contracts.dll",
+      "bytes": 705024,
+      "sha256": "8cf0c4d99a44f7046bfe33fc0c6efb522896f3d456e4d9f827528050f4a003eb"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.EventStore.DomainService.dll",
+      "bytes": 1136640,
+      "sha256": "bdb751c80304edd03d9e669f07117f964039423db192d8db398c8e4d74d09112"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.EventStore.Gateway.dll",
+      "bytes": 823296,
+      "sha256": "dfdd12b677300378ecabd77e789e16971389b088ea4214e119d7ffe0f1f8a6c2"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.EventStore.Server.dll",
+      "bytes": 3209728,
+      "sha256": "8b555eccbc0a220feb8dc093afac91a0f6d74d7020e1415bb0aeb555bddee85d"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Hexalith.EventStore.ServiceDefaults.dll",
+      "bytes": 157184,
+      "sha256": "c9f45435683571b689cf3f79902916a1a57aef6ad98e4eddc98965ae1304157a"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/MediatR.Contracts.dll",
+      "bytes": 6656,
+      "sha256": "c2601304aa9d15c51a543e1c3300368c64ac38633e7277bb835a04f68ddf6a61"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/MediatR.dll",
+      "bytes": 94208,
+      "sha256": "856b8a06d82033415ffef0edcac5f38256f1ef0336dbc372609f75b82a333d97"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/MessagePack.Annotations.dll",
+      "bytes": 18432,
+      "sha256": "1e51e087987bc857e55863eb4e986c2f2f0bf17230eb2c243e5dc25c34e7cf86"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/MessagePack.dll",
+      "bytes": 385024,
+      "sha256": "a7f8d30a8e6f4a1b445bf6752621a4a7b1f4ff11f5d4dc62dba0d8d7d6995e36"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+      "bytes": 52008,
+      "sha256": "6aa38a3d01cc3e9bfd6ee5cc7c882f4d0399cfb807e52f19ff458f355a31851b"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.AspNetCore.OpenApi.dll",
+      "bytes": 193320,
+      "sha256": "ed704f63de95981f91ded8d0cc7642ad73c455b54e741b18dd42e9e44e60c51f"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.AspNetCore.SignalR.StackExchangeRedis.dll",
+      "bytes": 82216,
+      "sha256": "10ccc62ca65bc2e202fa5d8b1714093c6320cc6a8dcef164c3656047cb609991"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.Bcl.Cryptography.dll",
+      "bytes": 19248,
+      "sha256": "91c6bab93638c268569a38bc87770a5e3ef9932676f5b7a6d47aef4208062925"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.Extensions.AmbientMetadata.Application.dll",
+      "bytes": 34616,
+      "sha256": "aa3fbb981085778df80185ba391253467c363d069308ca5e12213d7a7e689377"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.Extensions.Compliance.Abstractions.dll",
+      "bytes": 43832,
+      "sha256": "e4df4358dd2dd57be430a9e7f220bc49bef26ab00007c732605c0defc207e065"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.Extensions.DependencyInjection.AutoActivation.dll",
+      "bytes": 33632,
+      "sha256": "050802eb79c8d7ce48f40c89753ddca2a68ec1b7e6a6d646a810cd87cd8e9f78"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.Extensions.Diagnostics.ExceptionSummarization.dll",
+      "bytes": 30008,
+      "sha256": "6ae3665434f016222e9d75a54a44a62d01c412ef63b5d7462c3a22ad9757c4d8"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.Extensions.Http.Diagnostics.dll",
+      "bytes": 118112,
+      "sha256": "56da1ed94fe5551db5b67292820634136fe8b6d991626288aebdce7ee25400ee"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.Extensions.Http.Resilience.dll",
+      "bytes": 135992,
+      "sha256": "b28b929922d42b1c979ee403f454387f4522bf973c149753f5300ae959d70531"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.Extensions.Resilience.dll",
+      "bytes": 33080,
+      "sha256": "e7cee26992c26c4484b62da5663601456f7af2c9c10e8da4e47ec0df3b078aa4"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.Extensions.ServiceDiscovery.Abstractions.dll",
+      "bytes": 28984,
+      "sha256": "58ac3be03e3c4ae03486b8ec619ca769bf94befd38f432d61b32b1fba8d7d193"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.Extensions.ServiceDiscovery.dll",
+      "bytes": 77112,
+      "sha256": "3646d627b519e017c3392219b17416b04377c815a918248a503557fd40db9e0a"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.Extensions.Telemetry.Abstractions.dll",
+      "bytes": 58680,
+      "sha256": "57af8ce079eb3bcec63fd176f1034012f8199c44d38f10168438cc78364a9030"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.Extensions.Telemetry.dll",
+      "bytes": 152376,
+      "sha256": "cca41d630de69f9afda79cff76c26976c87ee28aec216cba63c2e81241b8f7f5"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.IdentityModel.Abstractions.dll",
+      "bytes": 19264,
+      "sha256": "46f14d67dfc1894eb24d80282895526db25a854af227eee2fa06a0383fd09e4c"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.IdentityModel.JsonWebTokens.dll",
+      "bytes": 174384,
+      "sha256": "b48515aeaa4a8fadc5fcacb45978c808a4d5bbffaf74f8894cc57c0769a9fb9e"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.IdentityModel.Logging.dll",
+      "bytes": 38192,
+      "sha256": "90b6fa70f28a3b7711fe95aa30a0c5551f1e6aa28565187aa7b3681194215c84"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+      "bytes": 137008,
+      "sha256": "cf37440c96bd178f2676867b77fa651df001b56b2f42be99b08e5226b3ab4918"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.IdentityModel.Protocols.dll",
+      "bytes": 54064,
+      "sha256": "dd8823215cada7e1c7fe5d2a3b06395fb906baa5f79ec00411ad6a1f80585f60"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.IdentityModel.Tokens.dll",
+      "bytes": 416024,
+      "sha256": "84409b8c3a52313fe4f4f621fce39544f42074109e870ac2631e627c8b70210f"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.NET.StringTools.dll",
+      "bytes": 30880,
+      "sha256": "e51c8678fd602a21c249b369e833966019935132476f9434da896bef808ba3b1"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Microsoft.OpenApi.dll",
+      "bytes": 595296,
+      "sha256": "838f23fd0b01bba85157a5bd279847213579786c80b4141b390fef39ad385c12"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/OpenTelemetry.Api.ProviderBuilderExtensions.dll",
+      "bytes": 24576,
+      "sha256": "dfaab1ecfb87773ccef2737aafbf1eb22a9f074c44e9fdd31947702da59234bc"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/OpenTelemetry.Api.dll",
+      "bytes": 84992,
+      "sha256": "bd75bbab25a4bf769727ec6c17457d4bf189a8c2c70034e5c212ae345132591d"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll",
+      "bytes": 201728,
+      "sha256": "65fb06071dcda27215f1dd42d6c8de8cc98691cef0225b36c8fb22f995fd1759"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/OpenTelemetry.Extensions.Hosting.dll",
+      "bytes": 15872,
+      "sha256": "442d9c18f5cc9ffa65e3f486874f01b375866854b0ad08e40e6367139eb9b35a"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/OpenTelemetry.Instrumentation.AspNetCore.dll",
+      "bytes": 76800,
+      "sha256": "369897ccfe1a4483ab92c09aa1846d562c1353afd93ee103ada4e638bcdfbce5"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/OpenTelemetry.Instrumentation.Http.dll",
+      "bytes": 69632,
+      "sha256": "bdd562d21bc152308cd5935394038551137adef50068eb41ab2ca7a820987287"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/OpenTelemetry.Instrumentation.Runtime.dll",
+      "bytes": 10752,
+      "sha256": "5d222223d95be5d1507a5d581a2eebd268b46dfaca0d73b1724b16c8fe25558a"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/OpenTelemetry.dll",
+      "bytes": 344064,
+      "sha256": "63fb9724258d4a1ac76c7ddffc2e0b18ee5125a1c8ff4b242a570a3410c97fc6"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Polly.Core.dll",
+      "bytes": 242736,
+      "sha256": "37762ea6fcf05154685b0a616461705c837c2f07d98e4037dc3a0e4b4c186ea5"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Polly.Extensions.dll",
+      "bytes": 57120,
+      "sha256": "8adac7a20cd056b9a8623efb6e6f9b99a82e18d3c7b7f6c788f7fc4b20ce5f18"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Polly.RateLimiting.dll",
+      "bytes": 28208,
+      "sha256": "afe3042cd4062438857d42880623845f32575375f460fd1ac07f705ea0211804"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/RESPite.dll",
+      "bytes": 116736,
+      "sha256": "ec60961494a640b0faff3447afe14c90f5bd27e53f5ab0b4284b34cae717f4fa"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/StackExchange.Redis.dll",
+      "bytes": 2349056,
+      "sha256": "e14460fe50cd699b34c75b9a8b10cdb79c2ed68f4088879afa2e073b7afba502"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/Swashbuckle.AspNetCore.SwaggerUI.dll",
+      "bytes": 754688,
+      "sha256": "049dd9177dc6789b95b566b4c7f5b896af9ee7fbf8ba2507a44d7339a22316ef"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/System.IO.Hashing.dll",
+      "bytes": 56104,
+      "sha256": "cea6795cf9f7b139b2215ff6de794a6f6e44e78640fb30fa4c0d5fa8472df8e5"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/System.IdentityModel.Tokens.Jwt.dll",
+      "bytes": 91952,
+      "sha256": "593c82287b671e9cceefaf10c51df96793f6db30f9cfa60daabaaf80474670bf"
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost/appsettings.json",
+      "bytes": 318,
+      "sha256": "19c310f519fe5777df466ba19e3703c34ef0965a9cc9017e16ac1307402e5a3e"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Fluxor.Blazor.Web.dll",
+      "bytes": 28160,
+      "sha256": "e05df290ff01c96ff09de7e92eac3f82fa5e4f5cf89096319e5f12b6e34beb65"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Fluxor.dll",
+      "bytes": 88576,
+      "sha256": "f9b73d7c618dee8cd124a56e9d73d02267702d1591e993fb465b7276b834cd39"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Hexalith.Builds.Module.UiHost",
+      "bytes": 78192,
+      "sha256": "e5195c51044a037a2b829fca62e7ba50e462b65ed65c858225401f779cf7ac72"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Hexalith.Builds.Module.UiHost.deps.json",
+      "bytes": 16339,
+      "sha256": "7ce6c84e79cb3b4daf2fc5658005cc58920ff6406bc0c578fd6e02fb91ba1874"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Hexalith.Builds.Module.UiHost.dll",
+      "bytes": 16896,
+      "sha256": "99c0e14cbba654d73d9d06309523de2f277e360449235dc8b0a23e87e2cd7112"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Hexalith.Builds.Module.UiHost.pdb",
+      "bytes": 29184,
+      "sha256": "d9da878e4451f7287a7f32b5c6295baa4a0e7e68bd4c45625e4c1673f770fd30"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Hexalith.Builds.Module.UiHost.runtimeconfig.json",
+      "bytes": 472,
+      "sha256": "f71b4c67b5233a19be9131b5fe4b45fe7829997cf2b42e762d6baa037da93863"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Hexalith.Builds.Module.UiHost.staticwebassets.endpoints.json",
+      "bytes": 102664,
+      "sha256": "72b1144131b808c86a444ce7d1f30038966a6b52e1717d11031877cc42b4fef3"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Hexalith.Builds.Module.UiHost.staticwebassets.runtime.json",
+      "bytes": 10902,
+      "sha256": "aa9de81ad8395d81b2bf294d6cce43f62ed4a6eda5427b98b31fffe48547b107"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Hexalith.Builds.Module.UiHost.xml",
+      "bytes": 2621,
+      "sha256": "544aa10972d4c36a61cb5af9ae86dc0c2840e70ff0816e46484f387c1da59cc5"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Hexalith.FrontComposer.Contracts.UI.dll",
+      "bytes": 24064,
+      "sha256": "b4be74c8903c6d66f940532fb995a426349ffc98658b67697201a9597e391365"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Hexalith.FrontComposer.Contracts.dll",
+      "bytes": 225792,
+      "sha256": "c0934428656918777de11bce8b10c6544e8ff037213223112ba0be02cc297d4d"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Hexalith.FrontComposer.Shell.dll",
+      "bytes": 1865728,
+      "sha256": "bfec1ca1de0650d80a9a5e98f8557c1e890d7ec15732e25eaf7338fd3ac91f42"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.AspNetCore.Authentication.OpenIdConnect.dll",
+      "bytes": 126760,
+      "sha256": "b0b139e6396b5b473513e3abc50d5007009a7e38d3b0b27663cede04211e5c65"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.AspNetCore.Http.Connections.Client.dll",
+      "bytes": 116520,
+      "sha256": "774836d9ac97adbf5624f686a03bbc1306d780c7cb6f524e5be343135720f3be"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.AspNetCore.SignalR.Client.Core.dll",
+      "bytes": 211240,
+      "sha256": "38412214f0c67f1bded26ba59e33612e7c16850d74e72000cfb6f68775e71453"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.AspNetCore.SignalR.Client.dll",
+      "bytes": 20776,
+      "sha256": "c6f8b0db98b630d8d4edd1e79654e1ddf9fce9340804f90ae11278ffa5a9bca5"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.Bcl.Cryptography.dll",
+      "bytes": 19248,
+      "sha256": "91c6bab93638c268569a38bc87770a5e3ef9932676f5b7a6d47aef4208062925"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.FluentUI.AspNetCore.Components.Icons.Color.dll",
+      "bytes": 3541504,
+      "sha256": "951a7c6e090c45094cad4b1f21c495faaa0ead726521640579140a097f20ca76"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.FluentUI.AspNetCore.Components.Icons.Filled.dll",
+      "bytes": 8631808,
+      "sha256": "9006678810eb5709719ccbc8d4c3c197f13b67afc33c0d4de0d75f0a74323552"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.FluentUI.AspNetCore.Components.Icons.Light.dll",
+      "bytes": 206848,
+      "sha256": "76c071e504c643107a474aee7cc1cfc8b452cf9b082e4b9f33cec4d0497c3c96"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.dll",
+      "bytes": 10221056,
+      "sha256": "ea2d135a4a8f33b92aebb359bd2a03b14002fedc44f2d0015220a09fa3b98bde"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.FluentUI.AspNetCore.Components.Icons.dll",
+      "bytes": 5120,
+      "sha256": "709e7efee1a530a2832022f8e382828c29807b1c29aa1bc93ffd50126bf1b997"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.FluentUI.AspNetCore.Components.dll",
+      "bytes": 1817600,
+      "sha256": "82718d81e3d28d7a8b80bfb6a543390678ab136bfc4af02af11f55101d613964"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.IdentityModel.Abstractions.dll",
+      "bytes": 19264,
+      "sha256": "46f14d67dfc1894eb24d80282895526db25a854af227eee2fa06a0383fd09e4c"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.IdentityModel.JsonWebTokens.dll",
+      "bytes": 174384,
+      "sha256": "b48515aeaa4a8fadc5fcacb45978c808a4d5bbffaf74f8894cc57c0769a9fb9e"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.IdentityModel.Logging.dll",
+      "bytes": 38192,
+      "sha256": "90b6fa70f28a3b7711fe95aa30a0c5551f1e6aa28565187aa7b3681194215c84"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+      "bytes": 137008,
+      "sha256": "cf37440c96bd178f2676867b77fa651df001b56b2f42be99b08e5226b3ab4918"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.IdentityModel.Protocols.dll",
+      "bytes": 54064,
+      "sha256": "dd8823215cada7e1c7fe5d2a3b06395fb906baa5f79ec00411ad6a1f80585f60"
+    },
+    {
+      "path": "loader/host/bin/UiHost/Microsoft.IdentityModel.Tokens.dll",
+      "bytes": 416024,
+      "sha256": "84409b8c3a52313fe4f4f621fce39544f42074109e870ac2631e627c8b70210f"
+    },
+    {
+      "path": "loader/host/bin/UiHost/NUlid.dll",
+      "bytes": 22528,
+      "sha256": "6f867f7716683b6b48a67877d616ae3805955eab5b2ec92f0e74b49fae467de7"
+    },
+    {
+      "path": "loader/host/bin/UiHost/System.IdentityModel.Tokens.Jwt.dll",
+      "bytes": 91952,
+      "sha256": "593c82287b671e9cceefaf10c51df96793f6db30f9cfa60daabaaf80474670bf"
+    },
+    {
+      "path": "loader/host/bin/UiHost/System.Reactive.dll",
+      "bytes": 1387984,
+      "sha256": "e8070137fc07efeb8fd00e1607a096c7718ee1814c6b2032e4cb865f5cf042a9"
+    },
+    {
+      "path": "loader/host/bin/UiHost/fr/fr/Hexalith.FrontComposer.Shell.resources.dll",
+      "bytes": 30208,
+      "sha256": "fa4dd8c7940d607370d1d79071da460408d9a3e722dee934331bf7fc783360e5"
+    },
+    {
+      "path": "loader/host/cs/cs/Aspire.Hosting.resources.dll",
+      "bytes": 26464,
+      "sha256": "94e11bffea97c46160c42b9cabe4df9725f2527b8fe6b4f495b01e0fb2bd5e86"
+    },
+    {
+      "path": "loader/host/cs/cs/Microsoft.VisualStudio.Threading.resources.dll",
+      "bytes": 17936,
+      "sha256": "53fa0540b7787d2702df6526dd9df68b1a44575c66ff007f3e11b1e2b528330e"
+    },
+    {
+      "path": "loader/host/cs/cs/Microsoft.VisualStudio.Validation.resources.dll",
+      "bytes": 14880,
+      "sha256": "830b54077b4f3febe75ed87aa163eb49fb58362c61be5ca26cf42d4e13c51f3c"
+    },
+    {
+      "path": "loader/host/cs/cs/StreamJsonRpc.resources.dll",
+      "bytes": 25944,
+      "sha256": "5115a8c09c591d1caa16359b5a45eccece63d9c337e703d89c05a69264ba291b"
+    },
+    {
+      "path": "loader/host/de/de/Aspire.Hosting.resources.dll",
+      "bytes": 26424,
+      "sha256": "987c4abb3929ddcf4c0bddd12c2cae7d5012eded2a6cf258939e117f793d82ab"
+    },
+    {
+      "path": "loader/host/de/de/Microsoft.VisualStudio.Threading.resources.dll",
+      "bytes": 18448,
+      "sha256": "0a68bd16faed213eb7bf17025b25125c6aaee5b86a545449afe297632a503853"
+    },
+    {
+      "path": "loader/host/de/de/Microsoft.VisualStudio.Validation.resources.dll",
+      "bytes": 14864,
+      "sha256": "fd7edef2b3f30903f2c287c49d62cb3394f9656fd82ff1c98eb122ad62a04a56"
+    },
+    {
+      "path": "loader/host/de/de/StreamJsonRpc.resources.dll",
+      "bytes": 27016,
+      "sha256": "01e2c454d751b89aba08d4270ca00d8e07fa8af861650ecd704481ce06b87b24"
+    },
+    {
+      "path": "loader/host/es/es/Aspire.Hosting.resources.dll",
+      "bytes": 26424,
+      "sha256": "87baeef90190d07629d44ad9bdf55b29401261c6d90df2455ebc8ec84dcfedf2"
+    },
+    {
+      "path": "loader/host/es/es/Microsoft.VisualStudio.Threading.resources.dll",
+      "bytes": 18448,
+      "sha256": "7fc33931e5c544e89ce8d767781a729a7be21c60e559294ef693fa249034b066"
+    },
+    {
+      "path": "loader/host/es/es/Microsoft.VisualStudio.Validation.resources.dll",
+      "bytes": 14864,
+      "sha256": "c40129bf64177dbfbd79bf977e11d46f2888c20c3e807336a36dac82370f6d83"
+    },
+    {
+      "path": "loader/host/es/es/StreamJsonRpc.resources.dll",
+      "bytes": 26464,
+      "sha256": "bacf7fadae7361e00f097dcafbe9a4a759f4346f364676389304a688fdb3b636"
+    },
+    {
+      "path": "loader/host/fr/fr/Aspire.Hosting.resources.dll",
+      "bytes": 26976,
+      "sha256": "fb16b030be9fad78e87389ed2be55b557c136c4457a9a9d4cdcf7a0359c49d6c"
+    },
+    {
+      "path": "loader/host/fr/fr/Microsoft.VisualStudio.Threading.resources.dll",
+      "bytes": 18448,
+      "sha256": "abe294e2c7ecf00f3632b83f61e19538b8b9531e6289b5d84992bc447f29783e"
+    },
+    {
+      "path": "loader/host/fr/fr/Microsoft.VisualStudio.Validation.resources.dll",
+      "bytes": 14864,
+      "sha256": "e56fe93ab669c22850389bdb685bbc45317d962849cc683d412bc9e8ad637740"
+    },
+    {
+      "path": "loader/host/fr/fr/StreamJsonRpc.resources.dll",
+      "bytes": 26976,
+      "sha256": "99ee72e2ea1de18367345b83884d0aa8c4192f98f2f3fb6b50bdbbebd6960afc"
+    },
+    {
+      "path": "loader/host/it/it/Aspire.Hosting.resources.dll",
+      "bytes": 26424,
+      "sha256": "e483cbad9360b0f108ce8353cd6433101537a894826b017ec62fa8685c936564"
+    },
+    {
+      "path": "loader/host/it/it/Microsoft.VisualStudio.Threading.resources.dll",
+      "bytes": 18448,
+      "sha256": "c6d1c91560f9914f36ff52d9a2704f44255adfd88a2c57ccd44fce62603667a7"
+    },
+    {
+      "path": "loader/host/it/it/Microsoft.VisualStudio.Validation.resources.dll",
+      "bytes": 14864,
+      "sha256": "8918618aaf356bf03333f62507ed4b2511c98850388c3856afe970c41672fae0"
+    },
+    {
+      "path": "loader/host/it/it/StreamJsonRpc.resources.dll",
+      "bytes": 26464,
+      "sha256": "31741ef214310f03ec256b3dd8643e5d4151c9123bd6994bb8f53381ca348244"
+    },
+    {
+      "path": "loader/host/ja/ja/Aspire.Hosting.resources.dll",
+      "bytes": 27448,
+      "sha256": "7fff4b35b08477344de36d63f57d13624c95f61ad5141f022b177b71d3b077c0"
+    },
+    {
+      "path": "loader/host/ja/ja/Microsoft.VisualStudio.Threading.resources.dll",
+      "bytes": 18456,
+      "sha256": "e375ebb7fe0f6807371dd42f09671b4eafcab6a1464851af68b8fd14494067c9"
+    },
+    {
+      "path": "loader/host/ja/ja/Microsoft.VisualStudio.Validation.resources.dll",
+      "bytes": 14880,
+      "sha256": "89963143a49c629f52776c88715544a8a53b12f1f6c7b4cd6c686d0751ea0d5b"
+    },
+    {
+      "path": "loader/host/ja/ja/StreamJsonRpc.resources.dll",
+      "bytes": 28512,
+      "sha256": "36897272170334ea43284e4f7c8f908e170bc1f082e9612528787ca03ae9e7ce"
+    },
+    {
+      "path": "loader/host/ko/ko/Aspire.Hosting.resources.dll",
+      "bytes": 26424,
+      "sha256": "eee628b8cf412b479ca281c7ba5c260cf1138173acbf1fcc615772e40d3c62ec"
+    },
+    {
+      "path": "loader/host/ko/ko/Microsoft.VisualStudio.Threading.resources.dll",
+      "bytes": 17952,
+      "sha256": "6fda6bb4822f56356cd446ef30750319552780ea28434b741cc35bf3d8111010"
+    },
+    {
+      "path": "loader/host/ko/ko/Microsoft.VisualStudio.Validation.resources.dll",
+      "bytes": 14880,
+      "sha256": "a2be5cbddafa74c4d64b6cb46e60a64b151d46056566e3fc39b810e431cf047f"
+    },
+    {
+      "path": "loader/host/ko/ko/StreamJsonRpc.resources.dll",
+      "bytes": 26976,
+      "sha256": "53ce6c7e88dd7228d968fc26ff7cbf35bcdc81ee88275ca2325eaf8feffe47bc"
+    },
+    {
+      "path": "loader/host/pl/pl/Aspire.Hosting.resources.dll",
+      "bytes": 26464,
+      "sha256": "5c4d29cb248a168361b310c52a8ec7cfdbe193d093e7ab5e64eec4327410115f"
+    },
+    {
+      "path": "loader/host/pl/pl/Microsoft.VisualStudio.Threading.resources.dll",
+      "bytes": 18464,
+      "sha256": "c2d599b82424ac6961d568f411a01e366b359ac3c167ab2fce74c5e2c96c1ca6"
+    },
+    {
+      "path": "loader/host/pl/pl/Microsoft.VisualStudio.Validation.resources.dll",
+      "bytes": 14864,
+      "sha256": "f77bd918ee6d7e3dfade1bbbf192fdd0fcd4f2ceb6296d14775f235f1562aea5"
+    },
+    {
+      "path": "loader/host/pl/pl/StreamJsonRpc.resources.dll",
+      "bytes": 26464,
+      "sha256": "2e3d2bc745170f9b323711bf584b56246a6b9e4235e5e1dcac2ce83b7a9a1e1f"
+    },
+    {
+      "path": "loader/host/projects/EventStore/Host.csproj",
+      "bytes": 1510,
+      "sha256": "a03945c7044bee30586a80d9a8326dd4a60f58363ee2af1e9ea1abef21810827"
+    },
+    {
+      "path": "loader/host/projects/EventStore/Placeholder.cs",
+      "bytes": 83,
+      "sha256": "070c86886f8d246ad4932af47d8f20fe9d4180861d856019b0bfe1e025c94954"
+    },
+    {
+      "path": "loader/host/projects/Ui/Host.csproj",
+      "bytes": 1486,
+      "sha256": "16813c251a95d259e4efdc622466412cea00ced7766b18af13f920619a7f5943"
+    },
+    {
+      "path": "loader/host/projects/Ui/Placeholder.cs",
+      "bytes": 83,
+      "sha256": "070c86886f8d246ad4932af47d8f20fe9d4180861d856019b0bfe1e025c94954"
+    },
+    {
+      "path": "loader/host/pt-BR/pt-BR/Aspire.Hosting.resources.dll",
+      "bytes": 26464,
+      "sha256": "836fd612c7d349870d563ce65038189ae64f609dafc70e4bb2426ba249c9860e"
+    },
+    {
+      "path": "loader/host/pt-BR/pt-BR/Microsoft.VisualStudio.Threading.resources.dll",
+      "bytes": 17952,
+      "sha256": "432ba5ed5c1f37436ec28d4f4b37b622cee3c833bdb01b44b6cf9fe255a445e5"
+    },
+    {
+      "path": "loader/host/pt-BR/pt-BR/Microsoft.VisualStudio.Validation.resources.dll",
+      "bytes": 14864,
+      "sha256": "656bcea3398e47aff8e86741bfb097940b589f52ebca2236ec104129d0d3014d"
+    },
+    {
+      "path": "loader/host/pt-BR/pt-BR/StreamJsonRpc.resources.dll",
+      "bytes": 26464,
+      "sha256": "990e5f544dd810cc9af2921cd4809c45a4c216697d9a5c4bd22d42700f57d8fc"
+    },
+    {
+      "path": "loader/host/ru/ru/Aspire.Hosting.resources.dll",
+      "bytes": 28512,
+      "sha256": "ef9ddfaf66e902ab34507eb2c71fb8960d3993aef776592d9a5d683f124ffc3f"
+    },
+    {
+      "path": "loader/host/ru/ru/Microsoft.VisualStudio.Threading.resources.dll",
+      "bytes": 19480,
+      "sha256": "ff177fd4f159895d050fd7a19c4632b8e69792e79ef181f3aa1af9ae6c770f21"
+    },
+    {
+      "path": "loader/host/ru/ru/Microsoft.VisualStudio.Validation.resources.dll",
+      "bytes": 15392,
+      "sha256": "db19d56c8e725fc91182ffc75c3803c5d6ca9f0dc6d99d695cbf4e30acc56fce"
+    },
+    {
+      "path": "loader/host/ru/ru/StreamJsonRpc.resources.dll",
+      "bytes": 30088,
+      "sha256": "5a32d75f02d6de17cfabe4f1f7fe57191a5549fcc11d5975fe77427826b38dea"
+    },
+    {
+      "path": "loader/host/runtimes/linux-arm64/native/runtimes/linux-arm64/native/libhex1binterop.so",
+      "bytes": 71960,
+      "sha256": "285d3f2994da13cc31bd29e757d34adca86c9777248a9898f57eef44368e84fc"
+    },
+    {
+      "path": "loader/host/runtimes/linux-x64/native/runtimes/linux-x64/native/libhex1binterop.so",
+      "bytes": 21896,
+      "sha256": "1f06a0d471c52fc72b7d3e2e526a30d8b10cf758acdf3e8225407c96352ebf06"
+    },
+    {
+      "path": "loader/host/runtimes/osx-arm64/native/runtimes/osx-arm64/native/libhex1binterop.dylib",
+      "bytes": 52072,
+      "sha256": "334610a7054265032e7d9643192a6d5d9a46e27adb2e6b09f0e841034bff8e0c"
+    },
+    {
+      "path": "loader/host/runtimes/osx-x64/native/runtimes/osx-x64/native/libhex1binterop.dylib",
+      "bytes": 18752,
+      "sha256": "ec65750845a042c78802d59c3790135e283bb9a5a20032ac64e28e14120246c0"
+    },
+    {
+      "path": "loader/host/runtimes/unix/lib/net6.0/runtimes/unix/lib/net6.0/System.Drawing.Common.dll",
+      "bytes": 427112,
+      "sha256": "89ea595ccb1fd1384480c1e30bd487c92af5d06d3b06f295323eff601acd9019"
+    },
+    {
+      "path": "loader/host/runtimes/win-arm64/native/arm64/runtimes/win-arm64/native/arm64/OpenConsole.exe",
+      "bytes": 1120056,
+      "sha256": "ed7622fd0d3bedc9ab9f122f5e58edf0def9e7999224f52dd395ba9f54edbe09"
+    },
+    {
+      "path": "loader/host/runtimes/win-arm64/native/runtimes/win-arm64/native/conpty.dll",
+      "bytes": 106336,
+      "sha256": "db3d173640b172bafd42d5b541b638a9aeec1c7d0e40dd636bf02822a32c912c"
+    },
+    {
+      "path": "loader/host/runtimes/win-arm64/native/runtimes/win-arm64/native/hex1bpty.exe",
+      "bytes": 5028352,
+      "sha256": "50375f34089d1562f5bbec9caed634203e42aaf0205e0573e4cfe1a2815b0bf2"
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/arm64/runtimes/win-x64/native/arm64/OpenConsole.exe",
+      "bytes": 1120056,
+      "sha256": "ed7622fd0d3bedc9ab9f122f5e58edf0def9e7999224f52dd395ba9f54edbe09"
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/runtimes/win-x64/native/conpty.dll",
+      "bytes": 109920,
+      "sha256": "39fba2713e2495117b1591ae8c32a3b904bea7aa66069cf7815e2844c76d75d8"
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/runtimes/win-x64/native/hex1bpty.exe",
+      "bytes": 4914688,
+      "sha256": "64b4fed87df4d22ac3a41d3456403cdc809b5bb1b3080bc43a52e032ea57a16d"
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/x64/runtimes/win-x64/native/x64/OpenConsole.exe",
+      "bytes": 1066296,
+      "sha256": "b7fd936c2668b87b9ecf7b3366dc6568afc1c6f981874cba3e955a1c35cf8160"
+    },
+    {
+      "path": "loader/host/runtimes/win/lib/net10.0/runtimes/win/lib/net10.0/System.Diagnostics.EventLog.Messages.dll",
+      "bytes": 800552,
+      "sha256": "8caf8d059ed75d232cdcc63c4d95164029b5dcf5f27cca7abad81f534db1648f"
+    },
+    {
+      "path": "loader/host/runtimes/win/lib/net6.0/runtimes/win/lib/net6.0/Microsoft.Win32.SystemEvents.dll",
+      "bytes": 53352,
+      "sha256": "142cce4ed8ac9da22d69c38a6f22738abfb22090dc9313e8b58e6f91978e89af"
+    },
+    {
+      "path": "loader/host/runtimes/win/lib/net6.0/runtimes/win/lib/net6.0/System.Drawing.Common.dll",
+      "bytes": 454248,
+      "sha256": "4d3001697df50cca54f32ed2dbbd1f3f415b48d5d756b1bf9500a43ae9b68da0"
+    },
+    {
+      "path": "loader/host/tr/tr/Aspire.Hosting.resources.dll",
+      "bytes": 26464,
+      "sha256": "3dcbc531240febe27750f59e172e1c966d1f30c37b77638f5a3de1a2e6650c7c"
+    },
+    {
+      "path": "loader/host/tr/tr/Microsoft.VisualStudio.Threading.resources.dll",
+      "bytes": 17952,
+      "sha256": "cfd3afd4bd9b0d7f6f782370ca460f3333bb2ebf7db4977e6d2af22a47b71dd9"
+    },
+    {
+      "path": "loader/host/tr/tr/Microsoft.VisualStudio.Validation.resources.dll",
+      "bytes": 14880,
+      "sha256": "620295974b05a36b268169cd94b39f99848224f7774b9748db014c2a2d027073"
+    },
+    {
+      "path": "loader/host/tr/tr/StreamJsonRpc.resources.dll",
+      "bytes": 25952,
+      "sha256": "1df15719aa69c7915028419f93bdb27cf8814f1ea6455e6d4f23dc110d81f1f1"
+    },
+    {
+      "path": "loader/host/zh-Hans/zh-Hans/Aspire.Hosting.resources.dll",
+      "bytes": 25400,
+      "sha256": "3ece4b71c4db375face5ca117e3577bf0bff4a9be2e55fbd11e4a7457529a1c4"
+    },
+    {
+      "path": "loader/host/zh-Hans/zh-Hans/Microsoft.VisualStudio.Threading.resources.dll",
+      "bytes": 16400,
+      "sha256": "ef07ef11562297acd78ee9ec7a21bee4b9fb0f4255794f87ccff0970f9f3ccb4"
+    },
+    {
+      "path": "loader/host/zh-Hans/zh-Hans/Microsoft.VisualStudio.Validation.resources.dll",
+      "bytes": 14880,
+      "sha256": "158f33332fa83a4c01f136482305a1d7d7feffa626fb082d65bfef4a0ce493a3"
+    },
+    {
+      "path": "loader/host/zh-Hans/zh-Hans/StreamJsonRpc.resources.dll",
+      "bytes": 24928,
+      "sha256": "0c3a6e2b27cd768f6b94b9ffcd86097811f2be89583bef4f1bb24fd81a18fd47"
+    },
+    {
+      "path": "loader/host/zh-Hant/zh-Hant/Aspire.Hosting.resources.dll",
+      "bytes": 25400,
+      "sha256": "f4ca3d605c370560e9cad3d57b88e1469775c2eeb1ad806163945fa93cc9cb0a"
+    },
+    {
+      "path": "loader/host/zh-Hant/zh-Hant/Microsoft.VisualStudio.Threading.resources.dll",
+      "bytes": 17424,
+      "sha256": "d0d594d3590ad804b8a9d5f0b23306864c7e8870ce9a445ef6990597d0ad20ab"
+    },
+    {
+      "path": "loader/host/zh-Hant/zh-Hant/Microsoft.VisualStudio.Validation.resources.dll",
+      "bytes": 14864,
+      "sha256": "8a3bffea88dc96fca9c307a9a8843a20fe1c7cafc2534b1cb95d688f07b6dbfd"
+    },
+    {
+      "path": "loader/host/zh-Hant/zh-Hant/StreamJsonRpc.resources.dll",
+      "bytes": 24968,
+      "sha256": "23e40ffa7c609dbb2b79e8fc38b7097d9d9d9a86f9a03abfd744e5f6bc8330a0"
+    },
+    {
+      "path": "loader/model/Declarations/eventstore.json",
+      "bytes": 15584,
+      "sha256": "c76853a3fd0d03f345929927f94cafcdf71714fdc20192bc2717a5fda8501a09"
+    },
+    {
+      "path": "loader/model/Declarations/local-profile.json",
+      "bytes": 19177,
+      "sha256": "bc1264427956827d59be25a418119ed6aa0425dc150231f3f8c177728900ca80"
+    },
+    {
+      "path": "loader/model/Declarations/memories.json",
+      "bytes": 23967,
+      "sha256": "30f97d509aeb9fa019373579ad24db113aa84a9df52139a88a0cfdbaa6b192d4"
+    },
+    {
+      "path": "loader/model/Declarations/provenance.json",
+      "bytes": 848,
+      "sha256": "8ab18487c4a62b1d4ab41067ec85b136ccf069e40489c3b64b0c831565a356b7"
+    },
+    {
+      "path": "loader/model/Declarations/tenants.json",
+      "bytes": 16041,
+      "sha256": "e79a87df18b8ca40eaa89c94a2534b14e97fa00ecdd4c3a91b7bcc7405a245d4"
+    },
+    {
+      "path": "loader/model/Hexalith.Builds.Tooling.dll",
+      "bytes": 1459200,
+      "sha256": "0266257a74c1dbc49407c61b07d90f7c95b806d937ea4f338b98bf8d128256fd"
+    },
+    {
+      "path": "loader/model/Hexalith.Builds.Tooling.pdb",
+      "bytes": 282000,
+      "sha256": "56db7301d8f4a5f3d1656a0490dbee7a3d3d41a1aa7a04e0779beb57175e6afb"
+    },
+    {
+      "path": "loader/model/Hexalith.Builds.Tooling.xml",
+      "bytes": 626175,
+      "sha256": "973a4b24d44fdb7f499fbdb60f79f26392c658d072a9b677003aea4e444dc9c8"
+    },
+    {
+      "path": "loader/model/Hexalith.Commons.UniqueIds.deps.json",
+      "bytes": 1034,
+      "sha256": "99f0247d2fac55d4f8cd522cdc46b3136d629bfa77956545f930bd8a2a55c8e0"
+    },
+    {
+      "path": "loader/model/Hexalith.Commons.UniqueIds.dll",
+      "bytes": 9728,
+      "sha256": "f474098559cf529bde4a0cb5df148302319e5f19fd3ed2203b26b66cd2fdbe11"
+    },
+    {
+      "path": "loader/model/Hexalith.Commons.UniqueIds.pdb",
+      "bytes": 15808,
+      "sha256": "1422c2d1c1e31a00094abb9e46f0a46fedb514cd248df9e97844b6ab2f9112ba"
+    },
+    {
+      "path": "loader/model/Hexalith.Commons.UniqueIds.xml",
+      "bytes": 11802,
+      "sha256": "de4a35af5894ccf3e66237fae90db58cf74d4fe5e8cbc07a1a6ae28c274e2ea3"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.Aspire.deps.json",
+      "bytes": 39891,
+      "sha256": "5e7cf49b0957c6f1221ca937d7053a701a7467160bdd2763340456a0d5b73d06"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.Aspire.dll",
+      "bytes": 73216,
+      "sha256": "7e2720a7940153c83926358494b0e604b0e220ba5b74daee20136a9e2c9badb6"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.Aspire.pdb",
+      "bytes": 38352,
+      "sha256": "d6a534436d43d9120b86aec965399d57addfbef1f5d6c601b4ab5d3d77461d16"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.Client.deps.json",
+      "bytes": 22162,
+      "sha256": "8ff94d35e6d53d45a8cda4f0aede3a9c6fb05f0133479542759dcb4593a85c73"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.Client.dll",
+      "bytes": 1291264,
+      "sha256": "68f49204e0800b7a2fb33d45763de36212729a8d771d386da27311e5cbb49260"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.Client.pdb",
+      "bytes": 318316,
+      "sha256": "de206af0e6cb30a642522c67477fb04fd72a417f5031844bbcfeca5cb1493af3"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.Client.xml",
+      "bytes": 639665,
+      "sha256": "16bbd97738b048100f88306ebea59a08090cbea5ef507b9b0f55d912bf4e1eea"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.Contracts.deps.json",
+      "bytes": 1474,
+      "sha256": "fe4061eaafde45344b3877d32433d719369e37aa74a3112e923a3b63e36089c6"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.Contracts.dll",
+      "bytes": 751104,
+      "sha256": "0a7055c4a62b829340e6a8b1f4ff5536fd083ebeeb6b5705148390c4465616e8"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.Contracts.pdb",
+      "bytes": 186100,
+      "sha256": "e320f14b3b35a010245544b2fae6dfd6185211080254c812fcb2bb90bb278d71"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.Contracts.xml",
+      "bytes": 968607,
+      "sha256": "a6189192f7da24f90f8437a1c2e82d51c44a87bf984f008d0d55e1191a0c9eee"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.DomainService.deps.json",
+      "bytes": 33660,
+      "sha256": "1f9156138cf33cc5bd5cd55b888a6a69824aa456076db9423654b24fcf0ca9f9"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.DomainService.dll",
+      "bytes": 1286144,
+      "sha256": "a6c7158438397d21fb8a077f4e9ef00eb308f50f028b939938fddf863c711404"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.DomainService.pdb",
+      "bytes": 298740,
+      "sha256": "faab735480bec8828617e9878171ddb934ff7aa8fad238140a2202461ace9209"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.ServiceDefaults.deps.json",
+      "bytes": 24542,
+      "sha256": "c25ba07f83da5af75d8226420815234784883120038b9b10f3b5c12f99fc0db9"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.ServiceDefaults.dll",
+      "bytes": 176128,
+      "sha256": "6207e3ad84abf1df04131ddee057f1a1f07e3e8c832f9685c08b3ec5661fad3b"
+    },
+    {
+      "path": "loader/model/Hexalith.EventStore.ServiceDefaults.pdb",
+      "bytes": 61656,
+      "sha256": "a989098f4af1225012ade883ae81fabc13b5db962993c7e0d2b2dafa0e40578b"
+    },
+    {
+      "path": "loader/model/Hexalith.Platform.Composition.deps.json",
+      "bytes": 72714,
+      "sha256": "06ebd21061ef70770d540aee86325af9e9df2ca1ddc590829f91c73392da6b19"
+    },
+    {
+      "path": "loader/model/Hexalith.Platform.Composition.dll",
+      "bytes": 358912,
+      "sha256": "3d793745d43e16e47e056a18e41279abb5f6512666388e11d04dee8629d85ad8"
+    },
+    {
+      "path": "loader/model/Hexalith.Platform.Composition.pdb",
+      "bytes": 96064,
+      "sha256": "8aceca133e73717acfe50d12a8eaabd055f837a20104181118795a2bf7634ea0"
+    },
+    {
+      "path": "loader/model/Hexalith.Platform.Custody.deps.json",
+      "bytes": 8397,
+      "sha256": "0ece6b155477c0633b4fa001eef336cfedd0427efe9819793ccf6cc4072ca6f9"
+    },
+    {
+      "path": "loader/model/Hexalith.Platform.Custody.dll",
+      "bytes": 651264,
+      "sha256": "c3ab269f62087d3d23fc2f61af10483ad7ec0294977d88c944470a6a25b7a49a"
+    },
+    {
+      "path": "loader/model/Hexalith.Platform.Custody.pdb",
+      "bytes": 171596,
+      "sha256": "b0e1047de1c92021887a0cd7b2647b28b37c32c048e4df58865dd5865cd66e97"
+    },
+    {
+      "path": "loader/model/Hexalith.Platform.Custody.xml",
+      "bytes": 331916,
+      "sha256": "cc186a3709a2477be40a54ce67ffeb8d1427b3c5ab84936c86dc717f192180d9"
+    },
+    {
+      "path": "loader/model/Hexalith.Platform.Works.Runtime.deps.json",
+      "bytes": 34115,
+      "sha256": "f06f48c0506fbdf7214042635da0cc3f51b52cdcd49d14ea41109ea2ebb5540b"
+    },
+    {
+      "path": "loader/model/Hexalith.Platform.Works.Runtime.dll",
+      "bytes": 36864,
+      "sha256": "59f0ecdc73aefc75509a317f2dafe20cb8f66691ef19540c0f87a7a6c1821112"
+    },
+    {
+      "path": "loader/model/Hexalith.Platform.Works.Runtime.pdb",
+      "bytes": 30936,
+      "sha256": "8988b7d94faf65db0608075906e506f3b46d4635f665b829fa70344385dd4577"
+    },
+    {
+      "path": "loader/model/Hexalith.Platform.Works.Runtime.xml",
+      "bytes": 13823,
+      "sha256": "8954d7999248ac917f360f389a891e7f7bc7b556a3ef316cc6636ee0d76560e0"
+    },
+    {
+      "path": "loader/model/Humanizer.dll",
+      "bytes": 643760,
+      "sha256": "2769ed8265b691a5482c72506ed274dc52446fa1641997a8c12c66f5b9263d39"
+    },
+    {
+      "path": "loader/model/Json.More.dll",
+      "bytes": 54272,
+      "sha256": "80b6cd50331fa2ded4fbacdbf80dcedd2b142dee679df227c30299d2a3c3840f"
+    },
+    {
+      "path": "loader/model/JsonPointer.Net.dll",
+      "bytes": 25600,
+      "sha256": "4d7ce7739bc0bf8df69778f4545c390a6c06fd11c8f583ae166f0fdc6e9c3123"
+    },
+    {
+      "path": "loader/model/JsonSchema.Net.dll",
+      "bytes": 294400,
+      "sha256": "5eca1875cdf54faf841fb14353b7f3cbbb345e26de6458ff01888a1c0e578fa2"
+    },
+    {
+      "path": "loader/model/NuGet.Versioning.dll",
+      "bytes": 62264,
+      "sha256": "fc2f75a7a5f3be9b4c3dcfc21644b871bb5a41ada8615c92d778713d2a310670"
+    },
+    {
+      "path": "loader/preservation.json",
+      "bytes": 190,
+      "sha256": "9bf691a2bb6013fdcffe182e5043afbc2a2ef8e8aa4213f370cf103ba439744b"
+    },
+    {
+      "path": "loader/probe-cold.command.json",
+      "bytes": 4214,
+      "sha256": "d8fbe950c335a942a46135b9bab1cdd7c2a62af8cd09f1a82776ed9a31032bb4"
+    },
+    {
+      "path": "loader/probe-cold.prelaunch.json",
+      "bytes": 2960,
+      "sha256": "abedd3247ada532f6f55f8c6031dbbefd454a60941c72d21f99490621c1e7cd6"
+    },
+    {
+      "path": "loader/probe-cold.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "loader/probe-cold.stdout",
+      "bytes": 48463,
+      "sha256": "c9bd4a4c4be6153814169e024f61016f582059e9b11909515fd89d72645dc54f"
+    },
+    {
+      "path": "loader/probe-host-first.command.json",
+      "bytes": 4232,
+      "sha256": "57301587b12a2d98f9a116a3858c59fea21277929a8b1604be5383c0f60c8171"
+    },
+    {
+      "path": "loader/probe-host-first.prelaunch.json",
+      "bytes": 2978,
+      "sha256": "c4d7e8f561879b005c515aeca43628b32c897867b846ad4d4f945f7e676eb2d2"
+    },
+    {
+      "path": "loader/probe-host-first.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "loader/probe-host-first.stdout",
+      "bytes": 49556,
+      "sha256": "0d4a2a80fda90b7fccbf6cc25a84f0a4efd83df68eb55e20c4bdc97142d1ab60"
+    },
+    {
+      "path": "loader/repository-after.json",
+      "bytes": 5073,
+      "sha256": "40e0c0e44a457f8cfc525d7a30429ca21639e2520c206e632c2724d1875325ad"
+    },
+    {
+      "path": "loader/repository-before.json",
+      "bytes": 5073,
+      "sha256": "40e0c0e44a457f8cfc525d7a30429ca21639e2520c206e632c2724d1875325ad"
+    },
+    {
+      "path": "loader/sdk-before-compiler.command.json",
+      "bytes": 3194,
+      "sha256": "283860c1acc06e5f16b1b69ea08071e2940ea8b0936560570d866afd7a372efc"
+    },
+    {
+      "path": "loader/sdk-before-compiler.prelaunch.json",
+      "bytes": 1946,
+      "sha256": "31159efaa88e834a2557c7e382cce77aadf54c7b65f56ed982a428998597287b"
+    },
+    {
+      "path": "loader/sdk-before-compiler.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "loader/sdk-before-compiler.stdout",
+      "bytes": 9,
+      "sha256": "44ea2595bc5a7acabc030531952071226aa70862fd008ed7327d752b39c8513c"
+    },
+    {
+      "path": "loader/sdk-immediate-cold.command.json",
+      "bytes": 3202,
+      "sha256": "f6cadf541f97e9bdcc6f329a8afad769e8ce55fe91ef513abf63db63c4e5b64d"
+    },
+    {
+      "path": "loader/sdk-immediate-cold.prelaunch.json",
+      "bytes": 1948,
+      "sha256": "5bea3581244cbf0c593f48c79d8bf86d842a51c54a8bfdcbd935daa2ffc34d2f"
+    },
+    {
+      "path": "loader/sdk-immediate-cold.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "loader/sdk-immediate-cold.stdout",
+      "bytes": 9,
+      "sha256": "44ea2595bc5a7acabc030531952071226aa70862fd008ed7327d752b39c8513c"
+    },
+    {
+      "path": "loader/sdk-immediate-compiler.command.json",
+      "bytes": 3202,
+      "sha256": "32d61e294d1b0400091aad6811101d4a80b2c98488290b99ef4408622cffa492"
+    },
+    {
+      "path": "loader/sdk-immediate-compiler.prelaunch.json",
+      "bytes": 1948,
+      "sha256": "3617fb073b11edf0573532375e9b2e700e8b10fd1eb6f8666e5e8ab475164582"
+    },
+    {
+      "path": "loader/sdk-immediate-compiler.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "loader/sdk-immediate-compiler.stdout",
+      "bytes": 9,
+      "sha256": "44ea2595bc5a7acabc030531952071226aa70862fd008ed7327d752b39c8513c"
+    },
+    {
+      "path": "loader/sdk-immediate-host-first.command.json",
+      "bytes": 3196,
+      "sha256": "30907e16472b3ea5d2a2ba05bf3e0210df16144b7d1dbd9b86403635b186d4e1"
+    },
+    {
+      "path": "loader/sdk-immediate-host-first.prelaunch.json",
+      "bytes": 1948,
+      "sha256": "17a2616ac5da0929db758b20632044771ec6bb87039c316b417968829cd17378"
+    },
+    {
+      "path": "loader/sdk-immediate-host-first.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "loader/sdk-immediate-host-first.stdout",
+      "bytes": 9,
+      "sha256": "44ea2595bc5a7acabc030531952071226aa70862fd008ed7327d752b39c8513c"
+    },
+    {
+      "path": "loader/sdk-info.command.json",
+      "bytes": 3195,
+      "sha256": "17c11c766f92e2b69f4f670f12f46afc7b508b9e9d752fb8194ff8243e6fd699"
+    },
+    {
+      "path": "loader/sdk-info.prelaunch.json",
+      "bytes": 1942,
+      "sha256": "a8998e512df44059546b5fe7e88fce72fdde6acfede06df9dc1095a954f4359d"
+    },
+    {
+      "path": "loader/sdk-info.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "loader/sdk-info.stdout",
+      "bytes": 2520,
+      "sha256": "cdac45f35a6a581f9a31a44df9229c1935f12623afcd27149c8bb3fe33ea092c"
+    },
+    {
+      "path": "loader/sdk-msbuild-version-only.command.json",
+      "bytes": 3254,
+      "sha256": "b39c46e33c4f47b628963f72166d17cef8ea81197c9df70c525ec923163b06b5"
+    },
+    {
+      "path": "loader/sdk-msbuild-version-only.prelaunch.json",
+      "bytes": 2006,
+      "sha256": "404375e35a9b9c7c73d72e96106d30aa6edf1958aabfaf89f6ac8db59f3a2295"
+    },
+    {
+      "path": "loader/sdk-msbuild-version-only.stderr",
+      "bytes": 98,
+      "sha256": "53f56b124f0a5a2cbb626d4a9571d733b4d9c9919fb2481ae410535641a04b9b"
+    },
+    {
+      "path": "loader/sdk-msbuild-version-only.stdout",
+      "bytes": 14,
+      "sha256": "f9dc029dc9a893998449c0cd23ff2e5a422e6d690c1d92093c41b87974f7c669"
+    }
+  ],
+  "directoryMetadata": [
+    {
+      "path": "filter-reset/recording-audit",
+      "mode": 16832,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030311502923188,
+      "ctimeNs": 1793030311502923188
+    },
+    {
+      "path": "loader/bundle",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030077781520721,
+      "ctimeNs": 1793030077781520721
+    },
+    {
+      "path": "loader/cache",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030077781520721,
+      "ctimeNs": 1793030077781520721
+    },
+    {
+      "path": "loader/dotnet-home",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030079441604962,
+      "ctimeNs": 1793030079441604962
+    },
+    {
+      "path": "loader/dotnet-home/.dotnet",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030079445605163,
+      "ctimeNs": 1793030079445605163
+    },
+    {
+      "path": "loader/host",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030080609664234,
+      "ctimeNs": 1793030080609664234
+    },
+    {
+      "path": "loader/host/bin",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030077985531075,
+      "ctimeNs": 1793030077985531075
+    },
+    {
+      "path": "loader/host/bin/EventStoreHost",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030077985531075,
+      "ctimeNs": 1793030077985531075
+    },
+    {
+      "path": "loader/host/bin/UiHost",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078069535337,
+      "ctimeNs": 1793030078069535337
+    },
+    {
+      "path": "loader/host/bin/UiHost/fr",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078069535337,
+      "ctimeNs": 1793030078069535337
+    },
+    {
+      "path": "loader/host/bin/UiHost/fr/fr",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078069535337,
+      "ctimeNs": 1793030078069535337
+    },
+    {
+      "path": "loader/host/cs",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078069535337,
+      "ctimeNs": 1793030078069535337
+    },
+    {
+      "path": "loader/host/cs/cs",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078069535337,
+      "ctimeNs": 1793030078069535337
+    },
+    {
+      "path": "loader/host/de",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078069535337,
+      "ctimeNs": 1793030078069535337
+    },
+    {
+      "path": "loader/host/de/de",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078069535337,
+      "ctimeNs": 1793030078069535337
+    },
+    {
+      "path": "loader/host/es",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078069535337,
+      "ctimeNs": 1793030078069535337
+    },
+    {
+      "path": "loader/host/es/es",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078069535337,
+      "ctimeNs": 1793030078069535337
+    },
+    {
+      "path": "loader/host/fr",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078069535337,
+      "ctimeNs": 1793030078069535337
+    },
+    {
+      "path": "loader/host/fr/fr",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078069535337,
+      "ctimeNs": 1793030078069535337
+    },
+    {
+      "path": "loader/host/it",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078073535539,
+      "ctimeNs": 1793030078073535539
+    },
+    {
+      "path": "loader/host/it/it",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078073535539,
+      "ctimeNs": 1793030078073535539
+    },
+    {
+      "path": "loader/host/ja",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078073535539,
+      "ctimeNs": 1793030078073535539
+    },
+    {
+      "path": "loader/host/ja/ja",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078073535539,
+      "ctimeNs": 1793030078073535539
+    },
+    {
+      "path": "loader/host/ko",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078073535539,
+      "ctimeNs": 1793030078073535539
+    },
+    {
+      "path": "loader/host/ko/ko",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078073535539,
+      "ctimeNs": 1793030078073535539
+    },
+    {
+      "path": "loader/host/pl",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078073535539,
+      "ctimeNs": 1793030078073535539
+    },
+    {
+      "path": "loader/host/pl/pl",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078073535539,
+      "ctimeNs": 1793030078073535539
+    },
+    {
+      "path": "loader/host/projects",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/projects/EventStore",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/projects/Ui",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/pt-BR",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/pt-BR/pt-BR",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/ru",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/ru/ru",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/runtimes",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078141538991,
+      "ctimeNs": 1793030078141538991
+    },
+    {
+      "path": "loader/host/runtimes/linux-arm64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/runtimes/linux-arm64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/runtimes/linux-arm64/native/runtimes",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/runtimes/linux-arm64/native/runtimes/linux-arm64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/runtimes/linux-arm64/native/runtimes/linux-arm64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/runtimes/linux-x64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/runtimes/linux-x64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/runtimes/linux-x64/native/runtimes",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/runtimes/linux-x64/native/runtimes/linux-x64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/runtimes/linux-x64/native/runtimes/linux-x64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078077535743,
+      "ctimeNs": 1793030078077535743
+    },
+    {
+      "path": "loader/host/runtimes/osx-arm64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/osx-arm64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/osx-arm64/native/runtimes",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/osx-arm64/native/runtimes/osx-arm64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/osx-arm64/native/runtimes/osx-arm64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/osx-x64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/osx-x64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/osx-x64/native/runtimes",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/osx-x64/native/runtimes/osx-x64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/osx-x64/native/runtimes/osx-x64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/unix",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/unix/lib",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/unix/lib/net6.0",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/unix/lib/net6.0/runtimes",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/unix/lib/net6.0/runtimes/unix",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/unix/lib/net6.0/runtimes/unix/lib",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/unix/lib/net6.0/runtimes/unix/lib/net6.0",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078081535945,
+      "ctimeNs": 1793030078081535945
+    },
+    {
+      "path": "loader/host/runtimes/win",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078141538991,
+      "ctimeNs": 1793030078141538991
+    },
+    {
+      "path": "loader/host/runtimes/win-arm64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078085536150,
+      "ctimeNs": 1793030078085536150
+    },
+    {
+      "path": "loader/host/runtimes/win-arm64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078089536352,
+      "ctimeNs": 1793030078089536352
+    },
+    {
+      "path": "loader/host/runtimes/win-arm64/native/arm64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078085536150,
+      "ctimeNs": 1793030078085536150
+    },
+    {
+      "path": "loader/host/runtimes/win-arm64/native/arm64/runtimes",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078085536150,
+      "ctimeNs": 1793030078085536150
+    },
+    {
+      "path": "loader/host/runtimes/win-arm64/native/arm64/runtimes/win-arm64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078085536150,
+      "ctimeNs": 1793030078085536150
+    },
+    {
+      "path": "loader/host/runtimes/win-arm64/native/arm64/runtimes/win-arm64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078085536150,
+      "ctimeNs": 1793030078085536150
+    },
+    {
+      "path": "loader/host/runtimes/win-arm64/native/arm64/runtimes/win-arm64/native/arm64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078085536150,
+      "ctimeNs": 1793030078085536150
+    },
+    {
+      "path": "loader/host/runtimes/win-arm64/native/runtimes",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078089536352,
+      "ctimeNs": 1793030078089536352
+    },
+    {
+      "path": "loader/host/runtimes/win-arm64/native/runtimes/win-arm64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078089536352,
+      "ctimeNs": 1793030078089536352
+    },
+    {
+      "path": "loader/host/runtimes/win-arm64/native/runtimes/win-arm64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078105537163,
+      "ctimeNs": 1793030078105537163
+    },
+    {
+      "path": "loader/host/runtimes/win-x64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078117537772,
+      "ctimeNs": 1793030078117537772
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078141538991,
+      "ctimeNs": 1793030078141538991
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/arm64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078117537772,
+      "ctimeNs": 1793030078117537772
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/arm64/runtimes",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078117537772,
+      "ctimeNs": 1793030078117537772
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/arm64/runtimes/win-x64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078117537772,
+      "ctimeNs": 1793030078117537772
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/arm64/runtimes/win-x64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078117537772,
+      "ctimeNs": 1793030078117537772
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/arm64/runtimes/win-x64/native/arm64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078117537772,
+      "ctimeNs": 1793030078117537772
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/runtimes",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078117537772,
+      "ctimeNs": 1793030078117537772
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/runtimes/win-x64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078117537772,
+      "ctimeNs": 1793030078117537772
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/runtimes/win-x64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078133538585,
+      "ctimeNs": 1793030078133538585
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/x64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078141538991,
+      "ctimeNs": 1793030078141538991
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/x64/runtimes",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078141538991,
+      "ctimeNs": 1793030078141538991
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/x64/runtimes/win-x64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078141538991,
+      "ctimeNs": 1793030078141538991
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/x64/runtimes/win-x64/native",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078141538991,
+      "ctimeNs": 1793030078141538991
+    },
+    {
+      "path": "loader/host/runtimes/win-x64/native/x64/runtimes/win-x64/native/x64",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078141538991,
+      "ctimeNs": 1793030078141538991
+    },
+    {
+      "path": "loader/host/runtimes/win/lib",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078145539194,
+      "ctimeNs": 1793030078145539194
+    },
+    {
+      "path": "loader/host/runtimes/win/lib/net10.0",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078141538991,
+      "ctimeNs": 1793030078141538991
+    },
+    {
+      "path": "loader/host/runtimes/win/lib/net10.0/runtimes",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078141538991,
+      "ctimeNs": 1793030078141538991
+    },
+    {
+      "path": "loader/host/runtimes/win/lib/net10.0/runtimes/win",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078141538991,
+      "ctimeNs": 1793030078141538991
+    },
+    {
+      "path": "loader/host/runtimes/win/lib/net10.0/runtimes/win/lib",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078141538991,
+      "ctimeNs": 1793030078141538991
+    },
+    {
+      "path": "loader/host/runtimes/win/lib/net10.0/runtimes/win/lib/net10.0",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078141538991,
+      "ctimeNs": 1793030078141538991
+    },
+    {
+      "path": "loader/host/runtimes/win/lib/net6.0",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078145539194,
+      "ctimeNs": 1793030078145539194
+    },
+    {
+      "path": "loader/host/runtimes/win/lib/net6.0/runtimes",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078145539194,
+      "ctimeNs": 1793030078145539194
+    },
+    {
+      "path": "loader/host/runtimes/win/lib/net6.0/runtimes/win",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078145539194,
+      "ctimeNs": 1793030078145539194
+    },
+    {
+      "path": "loader/host/runtimes/win/lib/net6.0/runtimes/win/lib",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078145539194,
+      "ctimeNs": 1793030078145539194
+    },
+    {
+      "path": "loader/host/runtimes/win/lib/net6.0/runtimes/win/lib/net6.0",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078145539194,
+      "ctimeNs": 1793030078145539194
+    },
+    {
+      "path": "loader/host/tr",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078145539194,
+      "ctimeNs": 1793030078145539194
+    },
+    {
+      "path": "loader/host/tr/tr",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078149539396,
+      "ctimeNs": 1793030078149539396
+    },
+    {
+      "path": "loader/host/zh-Hans",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078149539396,
+      "ctimeNs": 1793030078149539396
+    },
+    {
+      "path": "loader/host/zh-Hans/zh-Hans",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078149539396,
+      "ctimeNs": 1793030078149539396
+    },
+    {
+      "path": "loader/host/zh-Hant",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078149539396,
+      "ctimeNs": 1793030078149539396
+    },
+    {
+      "path": "loader/host/zh-Hant/zh-Hant",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078149539396,
+      "ctimeNs": 1793030078149539396
+    },
+    {
+      "path": "loader/model",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078549559696,
+      "ctimeNs": 1793030078549559696
+    },
+    {
+      "path": "loader/model/Declarations",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030078509557666,
+      "ctimeNs": 1793030078509557666
+    },
+    {
+      "path": "loader/nuget",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030077781520721,
+      "ctimeNs": 1793030077781520721
+    },
+    {
+      "path": "loader/tmp",
+      "mode": 16877,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030079473606586,
+      "ctimeNs": 1793030079473606586
+    },
+    {
+      "path": "loader/tmp/EU1JMM",
+      "mode": 16832,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030079449605368,
+      "ctimeNs": 1793030079449605368
+    },
+    {
+      "path": "loader/tmp/ZXbpIS",
+      "mode": 16832,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030079117588520,
+      "ctimeNs": 1793030079117588520
+    },
+    {
+      "path": "loader/tmp/ll8XNi",
+      "mode": 16832,
+      "bytes": 4096,
+      "uid": 1000,
+      "gid": 1000,
+      "mtimeNs": 1793030079141589737,
+      "ctimeNs": 1793030079141589737
+    }
+  ],
+  "omittedEntries": [],
+  "excludedContentPolicy": "No x509stores, certificate or private-key contents are read, hashed or archived. Symlinks are omitted without traversal; special files are rejected.",
+  "actualStoreMetadataMembers": [
+    "loader/certificate-before.json",
+    "loader/certificate-after.json",
+    "filter-reset/recording-audit/certificate-post-seal-metadata.json"
+  ],
+  "memberVerification": {
+    "atUtc": "2026-10-26T15:58:42.509137+00:00",
+    "uniquePaths": true,
+    "fileMemberCount": 417,
+    "everySizeAndSha256Matches": true,
+    "sourceMembershipAndMetadataUnchanged": true
+  }
+}

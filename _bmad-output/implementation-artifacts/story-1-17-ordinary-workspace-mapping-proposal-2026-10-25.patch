@@ -1,0 +1,18 @@
+diff --git a/.gitmodules b/.gitmodules
+--- a/.gitmodules
++++ b/.gitmodules
+@@ -38,3 +38,7 @@
+ 	path = references/Hexalith.McpCli
+ 	url = https://github.com/Hexalith/Hexalith.McpCli.git
+ 	update = none
++[submodule "Hexalith.Parties"]
++	path = references/Hexalith.Parties
++	url = https://github.com/Hexalith/Hexalith.Parties.git
++	update = none
+diff --git a/references/Hexalith.Parties b/references/Hexalith.Parties
+new file mode 160000
+index 0000000000000000000000000000000000000000..986a369ec26f6c5194593eb7bce12955eda54149
+--- /dev/null
++++ b/references/Hexalith.Parties
+@@ -0,0 +1 @@
++Subproject commit 986a369ec26f6c5194593eb7bce12955eda54149

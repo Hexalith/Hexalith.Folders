@@ -1,0 +1,118 @@
+{
+  "recordId": "STORY-1-17-COMPOSITION-INTAKE-2026-10-25",
+  "recordedAtUtc": "2026-10-25T15:35:43.223949+00:00",
+  "status": "sealed local evidence; publication/adoption/current tuple/hosted acceptance HOLD",
+  "archive": {
+    "path": "story-1-17-composition-intake-2026-10-25.artifacts.tar.gz",
+    "sha256": "d9ba51c07b2fce5725bad06e2678d287b6e7e32fc203a8230ad6511cf8e29de9",
+    "bytes": 89221187
+  },
+  "memberManifest": {
+    "path": "story-1-17-composition-intake-2026-10-25.members.json",
+    "sha256": "7672b9b27902332e2b97ebd291636a9078e2bf460fc6612233433106c4e3272a",
+    "fileMembersExcludingManifest": 2107
+  },
+  "handoff": {
+    "path": "../story-1-17-composition-intake-handoff-2026-10-25.json",
+    "sha256": "a910bc067033be3f25cf3e0941e918866884ad487eabf3ab3432dab8ef80736e"
+  },
+  "verification": {
+    "path": "story-1-17-composition-intake-2026-10-25.verification.json",
+    "sha256": "1069c63020ad98a6ab486fab7e9f8e46a1f63e82890426176cf162007359476d",
+    "normalReplay": 0,
+    "optimizedReplay": 0,
+    "mutationTests": 31,
+    "mutationTestBreakdown": {
+      "total": 31,
+      "negativeEvidenceControls": 29,
+      "filesystemCopyChecks": 2
+    },
+    "workspaceAndGraphReplay": "Retained pre-review evidence only; final independent extraction/replay to be recorded by parent",
+    "retainedEarlierVerification": {
+      "member": "provenance/pre-review-verification.json",
+      "sha256": "e67394d05fc17cb5f6bc4f36307168d6234e94cc6bbd54cdc82e886a7de4246b",
+      "archiveSha256": "8e306cad1ece6cdc587175700cfba021021698aabebbab3e9e0dda1644139697"
+    }
+  },
+  "sourceReuse": {
+    "bindings": 10049,
+    "retainedMembersVerified": 1564,
+    "statuses": {
+      "unchanged": 9873,
+      "changed": 86,
+      "unavailable": 90
+    },
+    "byScope": {
+      "current-cache": {
+        "unchanged": 671
+      },
+      "current-sdk": {
+        "unchanged": 512
+      },
+      "current-workspace": {
+        "unchanged": 7396,
+        "changed": 86
+      },
+      "retained-capsule-only": {
+        "unchanged": 1294
+      },
+      "unretained-temporary-input": {
+        "unavailable": 90
+      }
+    },
+    "profiles": 231,
+    "byteReuseEligibleProfiles": 114,
+    "policy": "Only unchanged byte bindings/profile facets are reusable. All previous executable outcomes remain labelled historical; current Platform results are fresh. Projects rename has independently proven property/argument equivalence but changed project-file bytes are not marked unchanged."
+  },
+  "preservation": {
+    "repositories": 12,
+    "revisionAndIndexUnchangedDuringImplementation": true,
+    "allExistingTrackedBytesPreservedExcept": [
+      ".gitattributes additive byte-preservation patterns",
+      "references/Hexalith.Projects/src/Hexalith.Projects.Client/Hexalith.Projects.Client.csproj two-line local-property rename"
+    ],
+    "priorReceiptBoundHandoffUnchanged": true
+  },
+  "currentInputs": {
+    "Platform": "5fa798f7d860a021feb8cccc35331271e3c9c802",
+    "directBuilds": "142b06e6d05c94b55ac35e587450c35fcac87590",
+    "platformBuildsPin": "0c735503728e18de93937b1495abebcfa6e33f9a",
+    "PartiesPin": "986a369ec26f6c5194593eb7bce12955eda54149",
+    "tool": "4.35.2"
+  },
+  "outcomes": {
+    "platformBuildProfiles": 2,
+    "pinnedExportCanonicalGraphPasses": 2,
+    "currentOwnerExportCanonicalGraphPasses": 2,
+    "ordinaryWorkspaceGraphFailures": 2,
+    "additionalCompositionTestsPassed": 16,
+    "releasedCliFourOwnerVariantsPassed": 2,
+    "moduleDeclarationsPassed": 3,
+    "moduleDeclarationsMissing": 2,
+    "moduleAdoptionFailures": 5,
+    "projectsPropertyEquivalenceProfiles": 2,
+    "gitDiffCheck": {
+      "Folders": 0,
+      "Projects": 0,
+      "Platform": 2,
+      "limit": "Pre-existing preserved CRLF/trailing-whitespace edits only; see retained log."
+    }
+  },
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false,
+    "stagingChecksExecuted": 0
+  },
+  "stagingChecks": {
+    "total": 14,
+    "executed": 0
+  },
+  "parentStatus": "in-progress",
+  "trackerStatus": "backlog",
+  "scope": "No staging, commit, push, publish, deploy, dependency change, nested initialization, historical evidence rewrite, fabricated owner declarations or owner acceptance.",
+  "reviewHardening": "Replay binds exact observed test identities/results, export/tool/PDB provenance, source preservation and derived audit summaries. No build, graph or hosted operation rerun during evidence-only remediation."
+}

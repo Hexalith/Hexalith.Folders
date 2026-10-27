@@ -1,0 +1,48 @@
+{
+  "archiveSha256": "d9ba51c07b2fce5725bad06e2678d287b6e7e32fc203a8230ad6511cf8e29de9",
+  "memberManifestSha256": "7672b9b27902332e2b97ebd291636a9078e2bf460fc6612233433106c4e3272a",
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "replay.py"
+      ],
+      "cwd": "<capsule>",
+      "exitCode": 0,
+      "output": "PASS: sealed current composition/intake evidence, nonzero checks, exact identities and preserved controls; publication and hosted acceptance remain HOLD.\n",
+      "outputSha256": "dfd859628c1c243c6fd707ff65e5e85b1a2ad03e4581a6b0952f5a1d15cd76ed"
+    },
+    {
+      "command": [
+        "python3",
+        "-O",
+        "replay.py"
+      ],
+      "cwd": "<capsule>",
+      "exitCode": 0,
+      "output": "PASS: sealed current composition/intake evidence, nonzero checks, exact identities and preserved controls; publication and hosted acceptance remain HOLD.\n",
+      "outputSha256": "dfd859628c1c243c6fd707ff65e5e85b1a2ad03e4581a6b0952f5a1d15cd76ed"
+    },
+    {
+      "command": [
+        "python3",
+        "test_replay.py"
+      ],
+      "cwd": "<capsule>",
+      "exitCode": 0,
+      "output": "test_activation_authority_refused (__main__.ReplayMutationTests.test_activation_authority_refused) ... ok\ntest_arbitrary_workspace_failure_refused (__main__.ReplayMutationTests.test_arbitrary_workspace_failure_refused) ... ok\ntest_catalog_corruption_hits_member_integrity_guard (__main__.ReplayMutationTests.test_catalog_corruption_hits_member_integrity_guard) ... ok\ntest_copy_fallback_does_not_hide_other_errors (__main__.ReplayMutationTests.test_copy_fallback_does_not_hide_other_errors) ... ok\ntest_cross_filesystem_copy_fallback_preserves_source (__main__.ReplayMutationTests.test_cross_filesystem_copy_fallback_preserves_source) ... ok\ntest_current_owner_hash_substitution_refused (__main__.ReplayMutationTests.test_current_owner_hash_substitution_refused) ... ok\ntest_current_owner_receipt_substitution_refused (__main__.ReplayMutationTests.test_current_owner_receipt_substitution_refused) ... ok\ntest_current_owner_revision_substitution_refused (__main__.ReplayMutationTests.test_current_owner_revision_substitution_refused) ... ok\ntest_current_tuple_acceptance_refused (__main__.ReplayMutationTests.test_current_tuple_acceptance_refused) ... ok\ntest_duplicate_compiler_document_refused (__main__.ReplayMutationTests.test_duplicate_compiler_document_refused) ... ok\ntest_duplicate_parties_revision_refused (__main__.ReplayMutationTests.test_duplicate_parties_revision_refused) ... ok\ntest_empty_compiler_documents_refused (__main__.ReplayMutationTests.test_empty_compiler_documents_refused) ... ok\ntest_empty_parties_provenance_refused (__main__.ReplayMutationTests.test_empty_parties_provenance_refused) ... ok\ntest_individual_failure_cannot_hide_in_pass_totals (__main__.ReplayMutationTests.test_individual_failure_cannot_hide_in_pass_totals) ... ok\ntest_intake_requirement_counts_derived_from_diagnostics (__main__.ReplayMutationTests.test_intake_requirement_counts_derived_from_diagnostics) ... ok\ntest_intake_source_categories_derived_from_diagnostics (__main__.ReplayMutationTests.test_intake_source_categories_derived_from_diagnostics) ... ok\ntest_missing_materialized_binding_refused (__main__.ReplayMutationTests.test_missing_materialized_binding_refused) ... ok\ntest_nested_members_file_is_not_exempt (__main__.ReplayMutationTests.test_nested_members_file_is_not_exempt) ... ok\ntest_nested_members_in_cache_directory_is_not_exempt (__main__.ReplayMutationTests.test_nested_members_in_cache_directory_is_not_exempt) ... ok\ntest_preservation_index_summary_cannot_hide_drift (__main__.ReplayMutationTests.test_preservation_index_summary_cannot_hide_drift) ... ok\ntest_preservation_summary_cannot_hide_changed_file (__main__.ReplayMutationTests.test_preservation_summary_cannot_hide_changed_file) ... ok\ntest_prior_handoff_snapshot_substitution_refused (__main__.ReplayMutationTests.test_prior_handoff_snapshot_substitution_refused) ... ok\ntest_released_tool_handoff_substitution_refused (__main__.ReplayMutationTests.test_released_tool_handoff_substitution_refused) ... ok\ntest_retained_pdb_audit_coverage_required (__main__.ReplayMutationTests.test_retained_pdb_audit_coverage_required) ... ok\ntest_reuse_binding_status_cannot_be_invented (__main__.ReplayMutationTests.test_reuse_binding_status_cannot_be_invented) ... ok\ntest_reuse_eligibility_must_match_detailed_rows (__main__.ReplayMutationTests.test_reuse_eligibility_must_match_detailed_rows) ... ok\ntest_reuse_summary_must_match_detailed_rows (__main__.ReplayMutationTests.test_reuse_summary_must_match_detailed_rows) ... ok\ntest_source_tooling_handoff_substitution_refused (__main__.ReplayMutationTests.test_source_tooling_handoff_substitution_refused) ... ok\ntest_unrelated_canonical_test_refused (__main__.ReplayMutationTests.test_unrelated_canonical_test_refused) ... ok\ntest_wrong_additional_test_identity_refused (__main__.ReplayMutationTests.test_wrong_additional_test_identity_refused) ... ok\ntest_zero_test_false_pass_refused (__main__.ReplayMutationTests.test_zero_test_false_pass_refused) ... ok\n\n----------------------------------------------------------------------\nRan 31 tests in 18.073s\n\nOK\n",
+      "outputSha256": "1ea782f56ac146e6f98cb4e823f204782f668b672cc4a24261ed8a37c2df1db1"
+    }
+  ],
+  "scope": "Evidence-only review patch: only Python replay and focused mutation/copy tests rerun. Builds, canonical graph executions and workspace replay retained from original qualification. Independent final extraction/replay belongs to parent review.",
+  "testCounts": {
+    "total": 31,
+    "negativeEvidenceControls": 29,
+    "filesystemCopyChecks": 2
+  },
+  "retainedEarlierVerification": {
+    "member": "provenance/pre-review-verification.json",
+    "sha256": "e67394d05fc17cb5f6bc4f36307168d6234e94cc6bbd54cdc82e886a7de4246b",
+    "archiveSha256": "8e306cad1ece6cdc587175700cfba021021698aabebbab3e9e0dda1644139697"
+  }
+}

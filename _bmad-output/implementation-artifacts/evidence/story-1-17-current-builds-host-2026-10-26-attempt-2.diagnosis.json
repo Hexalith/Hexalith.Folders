@@ -1,0 +1,220 @@
+{
+  "actualSdkCommands": 2,
+  "atUtc": "2026-10-26T17:50:39.463492+00:00",
+  "builds": 0,
+  "compilerCommands": 0,
+  "controls": {
+    "ContentHash": null,
+    "T0": null,
+    "activationAuthority": null,
+    "apiAccepted": false,
+    "currentTupleAccepted": false,
+    "hostedAccepted": false,
+    "ordinaryMapping": null,
+    "packageAccepted": false,
+    "parentStatus": "in-progress",
+    "routing": "V1Only",
+    "stagingChecksExecuted": 0,
+    "stagingChecksTotal": 14,
+    "tracker": "backlog"
+  },
+  "copiedFeedPackageCount": 742,
+  "loaderCases": 0,
+  "nuspec": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<package xmlns=\"http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd\">\r\n  <metadata>\r\n    <id>Aspire.AppHost.Sdk</id>\r\n    <version>13.6.3</version>\r\n    <authors>Microsoft</authors>\r\n    <requireLicenseAcceptance>true</requireLicenseAcceptance>\r\n    <license type=\"expression\">MIT</license>\r\n    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>\r\n    <icon>Icon.png</icon>\r\n    <projectUrl>https://github.com/microsoft/aspire</projectUrl>\r\n    <description>Aspire AppHost SDK. Must be referenced by Aspire AppHost projects.</description>\r\n    <copyright>\u00a9 Microsoft Corporation. All rights reserved.</copyright>\r\n    <tags>aspire apphost sdk</tags>\r\n    <serviceable>true</serviceable>\r\n    <packageTypes>\r\n      <packageType name=\"DotnetPlatform\" />\r\n    </packageTypes>\r\n    <repository type=\"git\" url=\"https://github.com/microsoft/aspire\" commit=\"38294b1b31552dae42a516cffa0cbc737ec08976\" />\r\n  </metadata>\r\n</package>",
+  "observation": "SDK 10.0.402 selected successfully; AppHost evaluation then failed with MSB4236. The SDK resolver reported no Aspire.AppHost.Sdk in private-offline, although the exact 13.6.3 nupkg bytes are present. Resolution cause remains unproven; no missing-package or source-compatibility conclusion.",
+  "observedCommand": {
+    "argv": [
+      "/usr/bin/bwrap",
+      "--unshare-all",
+      "--die-with-parent",
+      "--ro-bind",
+      "/",
+      "/",
+      "--tmpfs",
+      "/tmp",
+      "--tmpfs",
+      "/run",
+      "--bind",
+      "/tmp/story117-current-builds-host-jh5ynocl",
+      "/tmp/story117-current-builds-host-jh5ynocl",
+      "--proc",
+      "/proc",
+      "--dev",
+      "/dev",
+      "--seccomp",
+      "3",
+      "--chdir",
+      "/tmp/story117-current-builds-host-jh5ynocl/snapshot",
+      "--",
+      "/home/administrator/.dotnet/dotnet",
+      "msbuild",
+      "/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.AppHost/Hexalith.Builds.Module.AppHost.csproj",
+      "-nologo",
+      "-getProperty:Configuration,UseHexalithProjectReferences,UseNuGetDeps",
+      "-getItem:PackageReference,ProjectReference",
+      "-p:Configuration=Debug",
+      "-p:Story117Qualification=true",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false",
+      "-p:CustomAfterMicrosoftCommonTargets=/tmp/story117-current-builds-host-jh5ynocl/source-references.targets",
+      "-p:Story117EvidenceDirectory=/tmp/story117-current-builds-host-jh5ynocl/graph",
+      "-p:UseSharedCompilation=false",
+      "-p:RestorePackagesPath=/tmp/story117-current-builds-host-jh5ynocl/nuget",
+      "-p:RestoreConfigFile=/tmp/story117-current-builds-host-jh5ynocl/nuget.config",
+      "-p:RestoreSources=/tmp/story117-current-builds-host-jh5ynocl/feed",
+      "-p:VersionSuffix=qualification-20261026",
+      "-p:HexalithBuildsRoot=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Builds",
+      "-p:HexalithEventStoreRoot=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.EventStore",
+      "-p:HexalithEventStoreFromSource=true",
+      "-p:HexalithFrontComposerRoot=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.FrontComposer",
+      "-p:HexalithFrontComposerFromSource=true",
+      "-p:HexalithCommonsRoot=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Commons",
+      "-p:HexalithCommonsFromSource=true",
+      "-p:HexalithPolymorphicSerializationsRoot=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.PolymorphicSerializations",
+      "-p:HexalithPolymorphicSerializationsFromSource=true",
+      "-p:HexalithTenantsRoot=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Tenants",
+      "-p:HexalithTenantsFromSource=true",
+      "-p:HexalithMemoriesRoot=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Memories",
+      "-p:HexalithMemoriesFromSource=true",
+      "-p:HexalithPartiesRoot=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Parties",
+      "-p:HexalithPartiesFromSource=true",
+      "-p:HexalithMcpCliRoot=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.McpCli",
+      "-p:HexalithMcpCliFromSource=true",
+      "-p:HexalithTenantsBasePath=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Tenants/src",
+      "-p:EventStorePath=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.EventStore",
+      "-p:TenantsPath=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Tenants",
+      "-p:PartiesPath=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Parties",
+      "-p:MemoriesPath=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Memories",
+      "-p:CommonsPath=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Commons",
+      "-p:Hexalith1BuildBuildProps=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Builds/Hexalith.Build.props",
+      "-p:Hexalith1BuildPackageProps=/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Builds/Props/Directory.Packages.props"
+    ],
+    "atUtc": "2026-10-26T17:48:06.521515+00:00",
+    "cwd": "/tmp/story117-current-builds-host-jh5ynocl/snapshot",
+    "endedAtUtc": "2026-10-26T17:48:06.971806+00:00",
+    "environment": {
+      "DOTNET_BUNDLE_EXTRACT_BASE_DIR": "/tmp/story117-current-builds-host-jh5ynocl/bundle",
+      "DOTNET_CLI_HOME": "/tmp/story117-current-builds-host-jh5ynocl/dotnet-home",
+      "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+      "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+      "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+      "DOTNET_EnableDiagnostics": "0",
+      "DOTNET_EnableDiagnostics_IPC": "0",
+      "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+      "DOTNET_NOLOGO": "1",
+      "DOTNET_ROOT": "/home/administrator/.dotnet",
+      "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "true",
+      "LANG": "C.UTF-8",
+      "LC_ALL": "C.UTF-8",
+      "MSBUILDDISABLENODEREUSE": "1",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/story117-current-builds-host-jh5ynocl/http-cache",
+      "NUGET_PACKAGES": "/tmp/story117-current-builds-host-jh5ynocl/nuget",
+      "NUGET_PLUGINS_CACHE_PATH": "/tmp/story117-current-builds-host-jh5ynocl/plugin-cache",
+      "PATH": "/home/administrator/.dotnet/tools:/home/administrator/.dotnet:/usr/bin:/bin",
+      "POWERSHELL_TELEMETRY_OPTOUT": "1",
+      "TEMP": "/tmp/story117-current-builds-host-jh5ynocl/tmp",
+      "TMP": "/tmp/story117-current-builds-host-jh5ynocl/tmp",
+      "TMPDIR": "/tmp/story117-current-builds-host-jh5ynocl/tmp",
+      "XDG_CACHE_HOME": "/tmp/story117-current-builds-host-jh5ynocl/cache"
+    },
+    "exitCode": 1,
+    "label": "evaluate-AppHost",
+    "observationLimit": "200ms sampled descendants and owned group; transient or escaped processes can be missed. No whole-machine claim.",
+    "observations": [
+      {
+        "atUtc": "2026-10-26T17:48:06.533584+00:00",
+        "processGroup": 19937,
+        "rootPid": 19937,
+        "rows": [
+          {
+            "pgid": 19937,
+            "pid": 19937,
+            "ppid": 2905,
+            "startTime": "19524566",
+            "state": "S"
+          }
+        ]
+      },
+      {
+        "atUtc": "2026-10-26T17:48:06.745937+00:00",
+        "processGroup": 19937,
+        "rootPid": 19937,
+        "rows": [
+          {
+            "pgid": 19937,
+            "pid": 19937,
+            "ppid": 2905,
+            "startTime": "19524566",
+            "state": "S"
+          },
+          {
+            "pgid": 19937,
+            "pid": 19938,
+            "ppid": 19937,
+            "startTime": "19524566",
+            "state": "S"
+          },
+          {
+            "pgid": 19937,
+            "pid": 19939,
+            "ppid": 19938,
+            "startTime": "19524568",
+            "state": "R"
+          }
+        ]
+      },
+      {
+        "atUtc": "2026-10-26T17:48:06.960029+00:00",
+        "processGroup": 19937,
+        "rootPid": 19937,
+        "rows": []
+      }
+    ],
+    "observedSurvivors": [],
+    "stderr": {
+      "bytes": 1141,
+      "path": "evaluate-AppHost.stderr",
+      "sha256": "f07cb2beea43f5b1c8d1306ea92bc076fa90781be6f4bb44e54268f2dbb134e7"
+    },
+    "stdout": {
+      "bytes": 0,
+      "path": "evaluate-AppHost.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "termGraceSeconds": 5,
+    "timeoutSeconds": 30
+  },
+  "packageDirectoryEntries": [
+    "aspire.apphost.sdk.13.6.3.nupkg"
+  ],
+  "presentSdkPackage": {
+    "bytes": 2046462,
+    "path": "/tmp/story117-current-builds-host-jh5ynocl/feed/aspire.apphost.sdk/13.6.3/aspire.apphost.sdk.13.6.3.nupkg",
+    "sha256": "cb8c5abad85fb542e2bb4807dd31a2ee4c22f56b7762e0258b74a803c1035ad0"
+  },
+  "priorPreparationFailure": {
+    "loaderCases": 0,
+    "retainedUnchanged": true,
+    "sdkCommands": 0
+  },
+  "privateResolverConfig": {
+    "boundary": "Private root packageSources clear replaces earlier machine/user sources; project ancestors were inspected before SDK evaluation.",
+    "configs": [
+      {
+        "bytes": 178,
+        "path": "/tmp/story117-current-builds-host-jh5ynocl/snapshot/NuGet.Config",
+        "sha256": "bf9eaa02d2404742330c48bb42ba1f7f1d6a651c8382caa9e9fa414b5debde19"
+      }
+    ],
+    "effectivePackageSources": {
+      "private-offline": "/tmp/story117-current-builds-host-jh5ynocl/feed"
+    }
+  },
+  "restores": 0,
+  "rootCauseDisposition": "Investigate the private-feed/SDK resolution seam from these retained inputs before seeking any separately permitted continuation. The failed evaluation has not been rerun.",
+  "scope": "Read-only diagnosis after failed AppHost evaluation; no SDK retry or repair",
+  "scopeInterpretation": "Parent implementer: Jerome's approval covers implementation/verification of the conditional sequence. The pre-SDK file-copy defect did not consume the still-unexecuted build/loader authority. Correct only preparation, retain the failed attempt unchanged, then continue the approved sequence with a fresh additive claim. No failed SDK/build/loader gate may be rerun; each loader case remains once only. No new human signature is required for this reversible correction.",
+  "sdkVersionOutput": "10.0.402\n",
+  "stderr": "/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.AppHost/Hexalith.Builds.Module.AppHost.csproj(3,3): error : Could not resolve SDK \"Aspire.AppHost.Sdk\". Exactly one of the probing messages below indicates why we could not resolve the SDK. Investigate and resolve that message to correctly specify the SDK.\n/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.AppHost/Hexalith.Builds.Module.AppHost.csproj(3,3): error :   SDK resolver \"Microsoft.DotNet.MSBuildWorkloadSdkResolver\" returned null.\n/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.AppHost/Hexalith.Builds.Module.AppHost.csproj(3,3): error :   Unable to find package Aspire.AppHost.Sdk. No packages exist with this id in source(s): private-offline\n/tmp/story117-current-builds-host-jh5ynocl/snapshot/references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.AppHost/Hexalith.Builds.Module.AppHost.csproj(3,31): error MSB4236: The SDK 'Aspire.AppHost.Sdk/13.6.3' specified could not be found.\n",
+  "stdout": ""
+}

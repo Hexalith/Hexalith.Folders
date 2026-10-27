@@ -1,0 +1,388 @@
+{
+  "recordId": "STORY-1-17-CLI-4-38-RUNTIME-RESOLUTION-2026-10-26",
+  "recordedAtUtc": "2026-10-26T07:35:02.233198+00:00",
+  "status": "STATIC_PREPARATION_COMPLETE_EXECUTION_UNAUTHORIZED",
+  "sourceTuple": {
+    ".": "43bc73bdf2254008c2547bd3e48f1e8f098a8043",
+    "references/Hexalith.Tenants": "24fb584b8d2b8a3bc7a51fcf8b5a6266e21e53e7",
+    "references/Hexalith.AI.Tools": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+    "references/Hexalith.EventStore": "c5d1c280d8c1c1a207cd159d817f614e93c93130",
+    "references/Hexalith.FrontComposer": "cfa9febc2942666265f23f87b26112c846f625ad",
+    "references/Hexalith.Memories": "7b0c8b5692600e293346eea7a84652eb87e4c346",
+    "references/Hexalith.Commons": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+    "references/Hexalith.Builds": "74932ad0247203797274aba8b7b6366a4bbf92b9",
+    "references/Hexalith.PolymorphicSerializations": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+    "references/Hexalith.Projects": "298f6f6a41b9ce7b67f14c21c724d76832b957a9",
+    "references/Hexalith.Platform": "9869094acc21f9054960a573f884c60ddf3235cd",
+    "references/Hexalith.McpCli": "dc282889e624a4c990faa3f005ad7eaa8db7a473",
+    "references/Hexalith.Parties": "986a369ec26f6c5194593eb7bce12955eda54149"
+  },
+  "candidateSource": "e171c5a788eab183b32683431b084198c9b8d373",
+  "selectedCatalog": {
+    "revision": "022668ac2dd3b0ec4b1b8e99b243debef0eee374",
+    "sha256": "140e161c0ac14183be0cca8babce5cc896355174e1c621979b92d49826bdadb2",
+    "redis": "3.4.5"
+  },
+  "priorCompileReceipt": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-nonlaunch-qualification-2026-10-26.json",
+    "bytes": 198233,
+    "sha256": "2997532260421a485a931a0fb5fbea394f9f7bf03e151c4f0a8d840d84d35b4c"
+  },
+  "priorProposalReceipt": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-platform-tool-catalog-qualification-2026-10-25.json",
+    "bytes": 24183,
+    "sha256": "ce9bc4f746647acc4fa6be900e4ae4e40f6666cc79d65c4dedb1e5e83bd05fb9"
+  },
+  "artifactArchive": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-runtime-resolution-2026-10-26.artifacts.tar.gz",
+    "bytes": 218921,
+    "sha256": "8acb5bd8909a795bdce7773417465cd39e491cf028fabb9252d3e8b53fcb4e3b"
+  },
+  "memberManifest": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-runtime-resolution-2026-10-26.members.json",
+    "bytes": 8975,
+    "sha256": "5bdb9999707523313a39a103e96fd58570ff9febfb48ea8b8fbcae0d6745f2f9"
+  },
+  "membersVerified": 49,
+  "authoredArtifacts": [
+    {
+      "path": "_bmad-output/implementation-artifacts/spec-1-17-cli-4-38-runtime-resolution-decision.md",
+      "bytes": 5297,
+      "sha256": "9944310088ce8cb518c65622858c21ed479fba82e9a325a50589b68914c2958d"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-runtime-resolution-decision-2026-10-26.md",
+      "bytes": 16966,
+      "sha256": "4f69296bee3b37acff36e2716ff5db1633358767ec43920f68d2f37754786bf4"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-runtime-resolution-plan-2026-10-26.json",
+      "bytes": 13719,
+      "sha256": "83fec7a858d1e1a8e9a9e1f514803a7ccb5408f56b1ef15c7c5bad12e4c42e7f"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-proposal-2026-10-26/LoaderProbe.cs",
+      "bytes": 6017,
+      "sha256": "79e9e3b07b5081dc2ae77a8ddf6179550b3b1cff8cd42934e755eb1b4c10b15f"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-proposal-2026-10-26/execute_after_authorization.py",
+      "bytes": 15157,
+      "sha256": "515acde8c304d5ab71eb44a7d84fde1a247ada176c9121eb07e4ecb6c8927463"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-loader-proposal-2026-10-26/inputs.json",
+      "bytes": 194946,
+      "sha256": "91627812dd0741159174e140bc66bde65af29238f6344b982440ba0a16c10ac2"
+    }
+  ],
+  "staticFindings": {
+    "eventStore": "Expected Default-context version/MVID conflict when3.128 demanded; no observed runtime failure or established Parties demand timing.",
+    "redis": "No direct model Redis AssemblyRef or Redis output DLL. Host3 can satisfy assembly2 version floor; API/runtime behavior unproven.",
+    "missingModelAspire": "Host exact13.6.3 identity available; absence alone is not a blocker.",
+    "missingHostServiceDefaults": "Model3.128 fallback candidate exists; optional/transitive behavior unproven.",
+    "mvids": [
+      {
+        "scope": "model",
+        "path": "/tmp/story117-cli438-qualification-20261026-fk5qKp/hosts/platform-model/Hexalith.Platform.Composition.dll",
+        "mvid": "997e5498-0dc8-4e61-b756-5e55dcd2f039",
+        "sha256": "3d793745d43e16e47e056a18e41279abb5f6512666388e11d04dee8629d85ad8"
+      },
+      {
+        "scope": "model",
+        "path": "/tmp/story117-cli438-qualification-20261026-fk5qKp/hosts/platform-model/Hexalith.EventStore.Aspire.dll",
+        "mvid": "231e44ec-e55c-4471-bdea-0c4c40b36d29",
+        "sha256": "7e2720a7940153c83926358494b0e604b0e220ba5b74daee20136a9e2c9badb6"
+      },
+      {
+        "scope": "model",
+        "path": "/tmp/story117-cli438-qualification-20261026-fk5qKp/hosts/platform-model/Hexalith.EventStore.ServiceDefaults.dll",
+        "mvid": "71ba9706-6e70-4854-bfc0-3c3c475db5c3",
+        "sha256": "6207e3ad84abf1df04131ddee057f1a1f07e3e8c832f9685c08b3ec5661fad3b"
+      },
+      {
+        "scope": "host",
+        "path": "/tmp/story117-cli438-qualification-20261026-fk5qKp/tool-4.38.0/tools/net10.0/any/g4-host/Hexalith.EventStore.Aspire.dll",
+        "mvid": "c0a386fc-2a57-4a09-a803-4287f7b6d27e",
+        "sha256": "8c9418926bda7d438e72fe9b083d648909d117305f8ae181b163426603866c38"
+      },
+      {
+        "scope": "host",
+        "path": "/tmp/story117-cli438-qualification-20261026-fk5qKp/tool-4.38.0/tools/net10.0/any/g4-host/Aspire.Hosting.dll",
+        "mvid": "4904eacd-5621-4e18-99a8-232ca027f88e",
+        "sha256": "86507650b7d1ecb6765f5cf46092327a53635bba1eef5e98c4207844ff31cd3b"
+      },
+      {
+        "scope": "host",
+        "path": "/tmp/story117-cli438-qualification-20261026-fk5qKp/tool-4.38.0/tools/net10.0/any/g4-host/StackExchange.Redis.dll",
+        "mvid": "cca8a025-8f2a-4628-aa78-3a9874ac6164",
+        "sha256": "e14460fe50cd699b34c75b9a8b10cdb79c2ed68f4088879afa2e073b7afba502"
+      }
+    ]
+  },
+  "reusedEvidence": {
+    "archives": [
+      {
+        "label": "compile",
+        "members": 1083,
+        "archive": {
+          "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-nonlaunch-qualification-2026-10-26.artifacts.tar.gz",
+          "sha256": "02cf6092abf3de4bad31a609e44502423619795c5d20490a26e2eed1526beeae",
+          "bytes": 33046197
+        },
+        "manifest": {
+          "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-cli-4-38-nonlaunch-qualification-2026-10-26.members.json",
+          "sha256": "f601438b50fd1d0cb70ce72be8e1b6c519fcde55f6d5b3fccdadf4ab93582c6a",
+          "bytes": 181499
+        }
+      },
+      {
+        "label": "prior-proposal",
+        "members": 18,
+        "archive": {
+          "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-platform-tool-catalog-qualification-2026-10-25.artifacts.tar.gz",
+          "sha256": "801f38aec199208bf022ec5dd134603b3e4cd7daa780b167d48ac24a5a7f74e0",
+          "bytes": 8273178
+        },
+        "manifest": {
+          "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-platform-tool-catalog-qualification-2026-10-25.members.json",
+          "sha256": "20ec8bca31d914af429ef880150510879425421fe33262d58e7d5e92322d904a",
+          "bytes": 3072
+        }
+      }
+    ],
+    "priorBindings": [
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25.artifacts.tar.gz",
+        "sha256": "504012dfebd645e604f55469d3369b2b262817479cd6532c11cb867d0516509c",
+        "bytes": 19743175
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25.json",
+        "sha256": "1844ed919e41cf4d7677b924c7a3b23fd7926cf369c5797d38b72dbab5b459b7",
+        "bytes": 3978
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25.members.json",
+        "sha256": "bcecfa15e76bb30398aae64f45633020b046ccccea5feb9c3daac6ef251407ea",
+        "bytes": 66062
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25.parent-verification.json",
+        "sha256": "4370f6a50b9ec1021dc677d832d866ccc50c497cfcafbdf74068c7f939d09be6",
+        "bytes": 16528
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-owner-intake-2026-10-25.verification.json",
+        "sha256": "7b609e0ca2e4954eb6b84147d9ae1e783cebb07e3b3fc216430f338527e2008e",
+        "bytes": 1873
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25.artifacts.tar.gz",
+        "sha256": "d9ba51c07b2fce5725bad06e2678d287b6e7e32fc203a8230ad6511cf8e29de9",
+        "bytes": 89221187
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25.json",
+        "sha256": "65d75f34951d934bca54a0f2a74b59928e9bcd8517a66092fcb2164dda9f657b",
+        "bytes": 4587
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25.members.json",
+        "sha256": "7672b9b27902332e2b97ebd291636a9078e2bf460fc6612233433106c4e3272a",
+        "bytes": 401618
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25.parent-verification.json",
+        "sha256": "ba026e3a4add26195f6e80a9e26b5bfd6c6b342651f1e9e0c5bad0d4a1717129",
+        "bytes": 10252
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-composition-intake-2026-10-25.verification.json",
+        "sha256": "1069c63020ad98a6ab486fab7e9f8e46a1f63e82890426176cf162007359476d",
+        "bytes": 5984
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-ordinary-workspace-mapping-application-2026-10-25.json",
+        "sha256": "d28d9bcd321b67a0267b34f1c017a00aa6b573e19a9fd0be20af9807a6a76b55",
+        "bytes": 122139
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-ordinary-workspace-mapping-proposal-2026-10-25.json",
+        "sha256": "55ca031b7223439330aeb1c4d342d33b62822298aa0040c51508407392168de5",
+        "bytes": 504030
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/story-1-17-ordinary-workspace-mapping-approval-2026-10-25.md",
+        "sha256": "4cb272e9f2c9d5670fe13430a1bc9a5d252fcbafaca1f5f8c4a3c6337af88fd8",
+        "bytes": 2353
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/story-1-17-ordinary-workspace-mapping-proposal-2026-10-25.md",
+        "sha256": "acf1a1762e98eed7d2c9c9f27cc8e2e6e61bd3603a872dc36824f8e4b4220abf",
+        "bytes": 21390
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/story-1-17-ordinary-workspace-mapping-proposal-2026-10-25.patch",
+        "sha256": "1df81ae96d9fbb0e5927e12d68ca41c8e82afd26539defa9c9de8d58feb9ee9e",
+        "bytes": 646
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/story-1-17-owner-intake-handoff-2026-10-25.json",
+        "sha256": "25e870b572043a26073e0a118ad243d80fe790d46b07d926ca13e5d67df58075",
+        "bytes": 34718
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/story-1-17-composition-intake-handoff-2026-10-25.json",
+        "sha256": "a910bc067033be3f25cf3e0941e918866884ad487eabf3ab3432dab8ef80736e",
+        "bytes": 18672
+      }
+    ],
+    "historicalVerifiersRerun": false,
+    "graphTestsRerun": false,
+    "adoptionAuditRerun": false,
+    "compileLimitations": {
+      "proceduralConformance": "Partial: one approved build and metadata checks ran; the planned immediate pre-build SDK executable/global.json identity recheck was not fully enforced.",
+      "repositoryInventoryScope": {
+        "root": "/home/administrator/projects/hexalith/folders",
+        "covers": "Repository tree including ignored/untracked files, regular-file bytes/modes, directory modes, symlink target strings. Git revisions/index entries captured separately.",
+        "excludes": [
+          "All .git contents/marker bytes and ownership",
+          "Traversal through symlinks",
+          "Filesystem outside the repository root, including external caches/configuration/certificate stores"
+        ]
+      },
+      "rawPreservationLabelInterpretation": "preservation.json outsidePrivateDirectoryPreserved means unchanged inventoried repository-tree entries only; gitMarkersPreserved means the same marker path list only. Neither is proof of all external writes being absent or marker ownership/content preservation.",
+      "sdkGate": "Initial SDK identity/hash and version checks succeeded. Immediate pre-build dotnet --version reported 10.0.402, but the driver did not assert that output or rehash executable/global.json then. Matching post-execution hashes do not retroactively satisfy the planned gate.",
+      "environment": "Command records retain argv, cwd, explicit approved environmentOverrides and sdk.json selected inherited SDK variables. Full inherited environment was not captured.",
+      "missingInitialFailureRecord": "The original symlink-failure receipt was overwritten by the later marker failure. Both failure-preflight.json and failure-preflight-marker-scope.json contain the same marker failure. Original driver versions and the subsequent symlink diagnostic survive; they do not replace the missing original receipt.",
+      "modelAspireDllAbsent": "metadata-inventory.json records model-side Aspire.Hosting.dll absent. The passed identity comparison uses the model AssemblyRef and packaged-host DLL, not a model copy or runtime loader result.",
+      "processObservation": "The earlier qualification-result.json survivors array lacks timestamp/method/raw provenance. Use owned-process-group-observation.json for the later timestamped ps check only; it does not attest earlier cleanup or escaped processes.",
+      "sdkCertificateMessage": "logs/sdk-3.stderr reports installation of a development certificate. Post-execution lstat found one real-user store entry predating the run. No before-store baseline exists, so new creation and whole-host preservation are not proven. No contents read or cleanup performed.",
+      "unchangedAcceptance": "Build/reference results remain bounded observations, with EventStore/Redis runtime behavior unresolved and current-tuple/package/hosted acceptance HOLD."
+    }
+  },
+  "validation": {
+    "pythonAstParsed": true,
+    "planAndInputHashesMatch": true,
+    "seccompDataHash": "92b4ad47fbfa2d39d14bcfc40dc3354a2adabcb632a0c0cbe1b1c017b59c3e48",
+    "pureDataPolicyCases": [
+      {
+        "arch": 3221225534,
+        "syscall": 41,
+        "result": 327681
+      },
+      {
+        "arch": 3221225534,
+        "syscall": 42,
+        "result": 327681
+      },
+      {
+        "arch": 3221225534,
+        "syscall": 53,
+        "result": 327681
+      },
+      {
+        "arch": 3221225534,
+        "syscall": 425,
+        "result": 327681
+      },
+      {
+        "arch": 3221225534,
+        "syscall": 1,
+        "result": 2147418112
+      },
+      {
+        "arch": 3221225534,
+        "syscall": 56,
+        "result": 2147418112
+      },
+      {
+        "arch": 3221225534,
+        "syscall": 59,
+        "result": 2147418112
+      },
+      {
+        "arch": 3221225534,
+        "syscall": 257,
+        "result": 2147418112
+      },
+      {
+        "arch": 3221225534,
+        "syscall": 1073741865,
+        "result": 2147483648
+      },
+      {
+        "arch": 1073741827,
+        "syscall": 102,
+        "result": 2147483648
+      }
+    ],
+    "targetAssemblyCompiled": false,
+    "targetAssemblyLoaded": false,
+    "runtimeProbeExecuted": false,
+    "sandboxCapabilityTested": false,
+    "limit": "Static syntax, data and binding checks only; no C# compiler or sandbox process invoked."
+  },
+  "preservation": {
+    "revisionsAndIndicesPreserved": true,
+    "directCheckoutCount": 12,
+    "exactPartiesPreserved": true,
+    "trackedDifferences": [],
+    "stagedDifferences": [],
+    "boundFilesPreserved": 38,
+    "noNestedInitializationPerformed": true,
+    "scope": "Git status/index/revisions and explicitly bound bytes only; no whole-host/all-ignored-files claim."
+  },
+  "limitations": [
+    "Actual host/model resolution, preloading/JIT order, API behavior, runtime prerequisites and ordinary Parties reachability not observed.",
+    "New proposed helper uncompiled/unexecuted, sandbox capability untested. Static AST/BPF data validation is not execution evidence.",
+    "Retained comparative runtime tag source does not attest installed runtime source equivalence; exact commit URL returned404.",
+    "Historical incomplete immediate SDK gate, certificate first-use uncertainty, inherited-environment gap, overwritten original failure, optional missing PDB and process-observation limitations remain unchanged."
+  ],
+  "ownerDecision": {
+    "decisionMaker": "Jerome",
+    "status": "PENDING",
+    "question": "Authorize only the exact two-case loader-only experiment in the bound plan?",
+    "authority": null,
+    "plan": {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-cli-4-38-runtime-resolution-plan-2026-10-26.json",
+      "bytes": 13719,
+      "sha256": "83fec7a858d1e1a8e9a9e1f514803a7ccb5408f56b1ef15c7c5bad12e4c42e7f"
+    }
+  },
+  "proposedPatch": null,
+  "patchDisposition": "No necessary dependency/build-property repair established; no operational patch proposed/applied.",
+  "ordinaryMapping": null,
+  "ContentHash": null,
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false
+  },
+  "parentStatus": "in-progress",
+  "trackerStatus": "backlog",
+  "stagingChecks": {
+    "total": 14,
+    "executed": 0
+  },
+  "historicalAcceptedCli": "4.35.2",
+  "candidateCli": "4.38.0",
+  "currentTupleAccepted": false,
+  "packageAccepted": false,
+  "hostedAccepted": false,
+  "newSdkCommandsExecuted": 0,
+  "newModelBuildsExecuted": 0,
+  "runtimeLaunched": false,
+  "probeExecuted": false,
+  "dependenciesChanged": false,
+  "operationalSourceChanged": false,
+  "staged": false,
+  "committed": false,
+  "pushed": false,
+  "published": false,
+  "deployed": false
+}

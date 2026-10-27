@@ -1,0 +1,554 @@
+{
+  "recordId": "STORY-1-17-RELEASE-READINESS-PARENT-VERIFICATION-2026-10-25",
+  "recordedAtUtc": "2026-10-25T14:18:10.303622+00:00",
+  "status": "Local evidence independently verified; full source/release/composition/hosted readiness remains HOLD at explicit owner prerequisites.",
+  "handoff": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-publication-handoff-2026-10-25.json",
+    "sha256": "54f704ad29f71ab6ea595af85a28e9e5f88f89a31487a3dd6020b1aa046ced6b"
+  },
+  "implementationReceipt": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-readiness-2026-10-25.json",
+    "sha256": "b7e604a235759ffa603dc520643f0ccaed9a79d8c1e1da307eb02b0b945c7461"
+  },
+  "reviewFinalArchive": {
+    "archivePath": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-readiness-2026-10-25.review-final.artifacts.tar.gz",
+    "archiveSha256": "9c9425f0b93e9e6b400f2c49150e42bcc7ba98f199971cf7115ec35de19d48c2",
+    "archiveBytes": 91397343,
+    "manifestSha256": "366f36659ea571feb3c78c400acbf1b2cca62a89aff3a2e8b59a7297b7f333aa",
+    "fileMembersRehashed": 1565
+  },
+  "independentReplay": [
+    {
+      "label": "replay",
+      "command": [
+        "python3",
+        "replay.py"
+      ],
+      "cwd": "/tmp/story117-release-readiness-parent-replay-uxia7gkq",
+      "startedAtUtc": "2026-10-25T14:10:50.437060+00:00",
+      "completedAtUtc": "2026-10-25T14:10:51.330818+00:00",
+      "exitCode": 0,
+      "outputSha256": "f20da67f2547ed7fe2607a6d6d00bd830c982eca10d07c028e0980808ddc3d98",
+      "output": "PASS: retained source/artifact integrity, exact local qualification outcomes, owner handoff and inert controls; no publication/hosted acceptance.\n"
+    },
+    {
+      "label": "optimized-replay",
+      "command": [
+        "python3",
+        "-O",
+        "replay.py"
+      ],
+      "cwd": "/tmp/story117-release-readiness-parent-replay-uxia7gkq",
+      "startedAtUtc": "2026-10-25T14:10:51.330868+00:00",
+      "completedAtUtc": "2026-10-25T14:10:51.950045+00:00",
+      "exitCode": 0,
+      "outputSha256": "f20da67f2547ed7fe2607a6d6d00bd830c982eca10d07c028e0980808ddc3d98",
+      "output": "PASS: retained source/artifact integrity, exact local qualification outcomes, owner handoff and inert controls; no publication/hosted acceptance.\n"
+    },
+    {
+      "label": "replay-regressions",
+      "command": [
+        "python3",
+        "test_replay.py"
+      ],
+      "cwd": "/tmp/story117-release-readiness-parent-replay-uxia7gkq",
+      "startedAtUtc": "2026-10-25T14:10:51.950083+00:00",
+      "completedAtUtc": "2026-10-25T14:10:55.247520+00:00",
+      "exitCode": 0,
+      "outputSha256": "15eab34e5ceb8d76f0249b6e72506c89218e86a594493862ec7c87544687be38",
+      "output": "....\n----------------------------------------------------------------------\nRan 4 tests in 3.243s\n\nOK\n"
+    },
+    {
+      "label": "workspace-rehash",
+      "command": [
+        "python3",
+        "replay.py",
+        "--workspace",
+        "/home/administrator/projects/hexalith/folders"
+      ],
+      "cwd": "/tmp/story117-release-readiness-parent-replay-uxia7gkq",
+      "startedAtUtc": "2026-10-25T14:10:55.247592+00:00",
+      "completedAtUtc": "2026-10-25T14:10:56.482931+00:00",
+      "exitCode": 0,
+      "outputSha256": "f20da67f2547ed7fe2607a6d6d00bd830c982eca10d07c028e0980808ddc3d98",
+      "output": "PASS: retained source/artifact integrity, exact local qualification outcomes, owner handoff and inert controls; no publication/hosted acceptance.\n"
+    }
+  ],
+  "directIndices": {
+    "evidenceIndexEntriesVerified": 12,
+    "handoffSha256": "54f704ad29f71ab6ea595af85a28e9e5f88f89a31487a3dd6020b1aa046ced6b",
+    "receiptSha256": "b7e604a235759ffa603dc520643f0ccaed9a79d8c1e1da307eb02b0b945c7461",
+    "packageArchiveAndRuntimeIdentitiesVerified": 4,
+    "sourceBuiltToolingProfilesVerified": 2,
+    "owningSourcePatchesVerified": 2,
+    "canonicalGraph": {
+      "checks": {
+        "member": "parent-review/canonical-graph-checks.json",
+        "sha256": "c1a1342ac9b2ee63470de53261f71bca66a259b99e6c8c17df35122d78cb2a91",
+        "bytes": 1741
+      },
+      "results": [
+        {
+          "configuration": "debug",
+          "exitCode": 1,
+          "total": 1,
+          "passed": 0,
+          "failed": 1,
+          "failure": "System.IO.InvalidDataException : ../../../../../references/Hexalith.Parties/module/hexalith.module-manifest.v2.json: manifest: Supply an existing readable manifest file.",
+          "xml": {
+            "member": "parent-review/platform-canonical-graph-debug.xml",
+            "sha256": "fe7fde1d27dfda83e906666861a596fd40eeef48c21f04db7bf8823cc41dcebb",
+            "bytes": 3647
+          }
+        },
+        {
+          "configuration": "release",
+          "exitCode": 1,
+          "total": 1,
+          "passed": 0,
+          "failed": 1,
+          "failure": "System.IO.InvalidDataException : ../../../../../references/Hexalith.Parties/module/hexalith.module-manifest.v2.json: manifest: Supply an existing readable manifest file.",
+          "xml": {
+            "member": "parent-review/platform-canonical-graph-release.xml",
+            "sha256": "cc7d81188fb3c98c6bb11b29c432f91af17302f9f101cf63e5b8bd505fb3de09",
+            "bytes": 3509
+          }
+        }
+      ],
+      "DescribeCanonicalOutcomeExecuted": false,
+      "currentCompositionQualified": false,
+      "prerequisite": {
+        "owner": "Platform composition/export owner with Parties module owner",
+        "requiredPath": "references/Hexalith.Platform/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+        "platformDeclaredPartiesRevision": "1ef274ea0471643d83f924147e85ac8326cf6a47",
+        "action": "Provide the owner-qualified Parties declaration/export in the permitted composition inputs and qualify the canonical four-owner graph against the maintained chart. Both profiles currently fail before Describe; no declaration fabrication, dependency initialization or test weakening is authorized."
+      }
+    },
+    "argumentOnlyProfiles": {
+      "member": "indices/argument-only-profiles.json",
+      "sha256": "73ab08b077336c87478e9968628594c03e138f537b812cb0637d5a12fba7c8ac",
+      "bytes": 16506
+    }
+  },
+  "nestedReferencesVerified": 27,
+  "preservationAudit": {
+    "baselineMember": "preservation/before.json",
+    "baselineSha256": "7ae19489a29052ee69ae79cbd6e2e415dfe6ba064811e0a4ca0cbea22d0991db",
+    "trackedFilesCompared": 63761,
+    "unchangedTrackedFiles": 63743,
+    "authorizedChangedExistingFiles": [
+      {
+        "repository": ".",
+        "path": ".gitattributes",
+        "beforeSha256": "bbc14e25919932c006c711d510c056e359edad1a7e42b0118030931f8aa99e9f",
+        "currentSha256": "b5341850286acd680d469b2bbfced1857a79d8b48b12acd38212be2e3f66d145"
+      },
+      {
+        "repository": ".",
+        "path": "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+        "beforeSha256": "d22a6749901c7432ababdefeccb6a8dedbf73118d4733fe11f3c6086615f000f",
+        "currentSha256": "ca298df3ed27156b7c6d170a47b1042ef8453c1e8e03207930d6bbbcc9ab0423"
+      },
+      {
+        "repository": ".",
+        "path": "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md",
+        "beforeSha256": "dfd8e3da292e3db4c406d7b4a78c49852854b3d6fc7decb364d1299a0b36de96",
+        "currentSha256": "579a565c293da1adfb29e626c9a18a0e093e12e598c97921a94b73d084482512"
+      },
+      {
+        "repository": "references/Hexalith.Projects",
+        "path": "tests/Hexalith.Projects.Server.Tests/DelegatedProjectDirectoryRegistrationTests.cs",
+        "beforeSha256": "2acca4a448e786394d88797fc127f7349599b702a3769681db3d91f770d8e6d7",
+        "currentSha256": "42a857284b168e423f95bf3650dbaa38e2d7615eef877cf2016f08eb55b08702"
+      },
+      {
+        "repository": "references/Hexalith.Projects",
+        "path": "tests/Hexalith.Projects.Server.Tests/Queries/DelegatedProjectAdvisoryConversationDirectoryTests.cs",
+        "beforeSha256": "819e5c30e904fbffafc95a3e3b20f35d6a593f155849b03a5891ed42fe4017d5",
+        "currentSha256": "d7151ccc86b97908886941bbada7c5fe836909a7beb2cd36fd98f330729bc005"
+      },
+      {
+        "repository": "references/Hexalith.Projects",
+        "path": "tests/Hexalith.Projects.Server.Tests/Queries/ProjectReadAuthorityFixture.cs",
+        "beforeSha256": "3cf9bae7e92a7d4b95cb4406a4f542eb8e14f2ba9b4129a4f2e977bf7b4b51d3",
+        "currentSha256": "3c6b09d66971e02058f8dc30d07db325f1d75056deb6c929047f10195ff7e35b"
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "path": "src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs",
+        "beforeSha256": "9310c28224e47ad79329edd0432124fa56521791e9646bc9ecea6f4e64801693",
+        "currentSha256": "ff0d90e0a10c6a1dd92b16129a9ca368c690838b43abd833b374f7694cd5a9d6"
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "path": "tests/Hexalith.Platform.Composition.Tests/AgentsHostCompositionTests.cs",
+        "beforeSha256": "260b4e68ca26f0563981b781ca389a717a5920ad98245705f42f85c8fd310fa8",
+        "currentSha256": "e2c9136f10811b325ff55ade0c7089748cbc565180347bc28151d7c71caf8f08"
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "path": "tests/Hexalith.Platform.Composition.Tests/DomainEnrollmentKitTests.cs",
+        "beforeSha256": "5525b9a20cfd65a1e9fedfe061ee0d04e49e18da1e5be1bc1be97dfa35cc6f93",
+        "currentSha256": "f9894cbae247b68a7dad4a02bee36c443ddc7922cf780ee9b3f2661d97667ddb"
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "path": "tests/Hexalith.Platform.Composition.Tests/PlatformConcurrentRunTests.cs",
+        "beforeSha256": "22343c286d45a01ef25336fc2e638746317b3660fe80d469ab69bfc1e2424259",
+        "currentSha256": "930d656af8e2e8ccb3b03c64df2dbc5ac480e59e02598b6024302fb211c39c1f"
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "path": "tests/Hexalith.Platform.Composition.Tests/PlatformDaprDiagnosticsTests.cs",
+        "beforeSha256": "a2eb3a3c558aea36c0124de58ef0a2925d7761ba2dd60f910d7fec78aea6aa29",
+        "currentSha256": "4b758a20ac6e4fa30f4c8d6f1de5c31ea67d432ec57edd24bcc1aa5a839bbe15"
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "path": "tests/Hexalith.Platform.Composition.Tests/PlatformDaprToolchainTests.cs",
+        "beforeSha256": "e422c1692fee1662b0690567c1c3dae05397985a406579e085cdb8b719b8cac5",
+        "currentSha256": "edfbd59b588a88c65a7b508e1fef8707619409a1e34cefbcf38b6f320f44da9d"
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "path": "tests/Hexalith.Platform.Composition.Tests/PlatformLocalRunLifecycleTests.cs",
+        "beforeSha256": "44f25130eef7051cc4be13ffd4a34c83fed5043b4a64c49caddef1fd30c41afc",
+        "currentSha256": "be2e00f18c3ee9cb39e81ba1c61d3746c2c23ba63afa028e6f315979ec523bed"
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "path": "tests/Hexalith.Platform.Composition.Tests/PlatformNativeHostDiagnosticsTests.cs",
+        "beforeSha256": "1c7fe753fd112d25ed4f99c807dddbfba4d428762b486f6b99e21eaccf0ca896",
+        "currentSha256": "7c4a55b3520c509d077196150ec1afa08fc5f9dac8ebe06401d580c055cdaa75"
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "path": "tests/Hexalith.Platform.Composition.Tests/PlatformRetentionBuildIsolationTests.cs",
+        "beforeSha256": "ce391c1e897271c572a809080c19761ea99a64011d1b7f0bbc3841d872bdd2ab",
+        "currentSha256": "ca16c1f347dad071642bce39b8df4a8bacc1660c32d708a08a4cdfb4838beac8"
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "path": "tests/Hexalith.Platform.Composition.Tests/PlatformRetentionProfileTests.cs",
+        "beforeSha256": "40095050b5aad59df7838d3049ccd164384d0743ca14eafcd4c51305858ce955",
+        "currentSha256": "6315b986fc120dc7583eb4eeaf3ca11d119bc018ae4b877a120c88dbbd66f541"
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "path": "tests/Hexalith.Platform.Composition.Tests/PlatformRunIsolationTests.cs",
+        "beforeSha256": "9ffc2a9b469cca17c9bc7b7a047e7eef325958e2d609acabe7f935b88cf33261",
+        "currentSha256": "3d66d0e4a12223a32872c973cdd6c500db93faad0926ec7102a7ff0a658f0783"
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "path": "tests/Hexalith.Platform.Composition.Tests/PlatformTestEnvironmentProvisioningTests.cs",
+        "beforeSha256": "3da33093d09b3eea68f42d3e4ff0e3553c70de15bb494343faa32f76f7c8d13a",
+        "currentSha256": "162dc4d12391a338e7eba9bf6569af10324ffaa74e92117d724c68e08a678019"
+      }
+    ],
+    "repositories": [
+      {
+        "repository": ".",
+        "revision": "2472a50027e8e4f6581b0690828ea9a14dfa9018",
+        "stagedEntriesSha256": "0d29467abc83b74127708a528bd8246ff62ee441d55eddd4a4fb2b76d0333f90",
+        "unchanged": true
+      },
+      {
+        "repository": "references/Hexalith.Tenants",
+        "revision": "14133e96d2c5efb13270580f920133079707398b",
+        "stagedEntriesSha256": "8791cc9002cea3ba1d9623c75a26f7bc8351ded2a4c7151043aab120e54ff2dd",
+        "unchanged": true
+      },
+      {
+        "repository": "references/Hexalith.AI.Tools",
+        "revision": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+        "stagedEntriesSha256": "57c856c08f49ed289d1ed64a1797afd4d00e1bb20b65a979732990b5891cc5dd",
+        "unchanged": true
+      },
+      {
+        "repository": "references/Hexalith.EventStore",
+        "revision": "245ded36b78b960b57728f845f9a8aae62275908",
+        "stagedEntriesSha256": "ef91828b8755a4fd1b156dc5eebacde81087892d4c11e4683b06d578d47b15ae",
+        "unchanged": true
+      },
+      {
+        "repository": "references/Hexalith.FrontComposer",
+        "revision": "80782afc7fc2fd33ee365d4601cb6b5e91d215fa",
+        "stagedEntriesSha256": "0741aee3fa90fd54ead0ab57641c4fe3540a579b5645933a43283b157c558b70",
+        "unchanged": true
+      },
+      {
+        "repository": "references/Hexalith.Memories",
+        "revision": "78657969f4d7d6ccd82c99766296b99ee55bd895",
+        "stagedEntriesSha256": "a9f3fec617929abbb96eac238bde2f8722a5d81b7e532d764b0f8588eec77c80",
+        "unchanged": true
+      },
+      {
+        "repository": "references/Hexalith.Commons",
+        "revision": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+        "stagedEntriesSha256": "c48e93336857e6dbe1f05a85a6c4c18af3da9c2f865a883a57ea7fa1bfba3d5d",
+        "unchanged": true
+      },
+      {
+        "repository": "references/Hexalith.Builds",
+        "revision": "142b06e6d05c94b55ac35e587450c35fcac87590",
+        "stagedEntriesSha256": "96317cd9695223d7aa618f7ffd27c8554f8cee2e6971ef73aefa2311e3b1542c",
+        "unchanged": true
+      },
+      {
+        "repository": "references/Hexalith.PolymorphicSerializations",
+        "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+        "stagedEntriesSha256": "02d4ed751e051abdfcab7d1bf898a1849a30f7522fbf1448099d1d12bc51b470",
+        "unchanged": true
+      },
+      {
+        "repository": "references/Hexalith.Projects",
+        "revision": "94f6ad1f6854df62c8cd15e47d65dc72985f4e79",
+        "stagedEntriesSha256": "e46fe2c4d0c958691c47b5ad45e8f6bb590ad39318f1f326e46d320238373bb8",
+        "unchanged": true
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "revision": "31b9cdbac61e691ab7d76bfbf3758569be542355",
+        "stagedEntriesSha256": "a81909917803b21d2a7f835f49b8086314feadff7daedcd603f3c7c291131383",
+        "unchanged": true
+      },
+      {
+        "repository": "references/Hexalith.McpCli",
+        "revision": "8962e2f2570459dbea2976f789b468aa5c6353c6",
+        "stagedEntriesSha256": "e4232500ab8ba0d968dc4406825bca1cd69b32c2099ca6c57b8fd2a2c8b12a71",
+        "unchanged": true
+      }
+    ],
+    "originalPrefixes": [
+      {
+        "path": "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+        "originalBytes": 90070,
+        "originalSha256": "d22a6749901c7432ababdefeccb6a8dedbf73118d4733fe11f3c6086615f000f",
+        "currentSha256": "ca298df3ed27156b7c6d170a47b1042ef8453c1e8e03207930d6bbbcc9ab0423",
+        "originalPrefixPreserved": true
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md",
+        "originalBytes": 224397,
+        "originalSha256": "dfd8e3da292e3db4c406d7b4a78c49852854b3d6fc7decb364d1299a0b36de96",
+        "currentSha256": "579a565c293da1adfb29e626c9a18a0e093e12e598c97921a94b73d084482512",
+        "originalPrefixPreserved": true
+      }
+    ],
+    "gitattributesOriginalPrefixPreserved": true,
+    "historicalPlanningDependencyConfigurationAndTrackerPreserved": true,
+    "unapprovedChanges": [],
+    "method": "Rehash every originally tracked regular file against the archived baseline; permit only the 18 explicitly reviewed paths; compare exact revision and staged-entry digests; require append-only original document and attribute prefixes."
+  },
+  "concurrentExternalGitTransition": {
+    "initialObservedHead": "67630d3be75a4f5f9b1a5598809efebca4d82c47",
+    "snapshotHead": "2472a50027e8e4f6581b0690828ea9a14dfa9018",
+    "concurrentCommitObserved": true,
+    "gitMutationsByThisRun": false,
+    "note": "Existing offline packet edits were committed externally during inspection. Snapshot index is post-transition. Spec original-prefix hash derived by stripping only this run appended execution-boundary section."
+  },
+  "review": {
+    "layers": {
+      "blindHunter": "11 findings",
+      "edgeCaseHunter": "1 finding",
+      "verificationGap": "No verification gaps found"
+    },
+    "parentReproducedFindings": 1,
+    "findingDispositions": {
+      "Blind 1": "corrected in review-final evidence",
+      "Blind 2": "corrected in review-final evidence",
+      "Blind 3": "corrected in review-final evidence",
+      "Blind 4": "corrected in review-final evidence",
+      "Blind 5": "corrected in review-final evidence",
+      "Blind 6": "corrected in review-final evidence",
+      "Blind 7": "corrected in review-final evidence",
+      "Blind 8": "corrected in review-final evidence",
+      "Blind 9": "corrected in review-final evidence",
+      "Blind 10": "corrected in review-final evidence",
+      "Blind 11": "Canonical graph executed in both profiles and failed on missing Parties declaration; exact result and accountable export prerequisite retained; composition remains unqualified.",
+      "Edge 1": "same portable-seal root cause as Blind 1; corrected",
+      "Parent 1": "rebound unsafe handoff controls now rejected under optimized replay"
+    },
+    "scope": {
+      "originalBaseline": "37d348945b35620da6ba4e524a09bee202712460",
+      "currentContinuationBaseline": "2472a50027e8e4f6581b0690828ea9a14dfa9018",
+      "originalBaselineDiffBytes": 503856181,
+      "originalBaselineDiffSha256": "8c43be3ea0ff6d3d519722ad69a14f0a68199822bd682f2e387cdc9fc8fe0c2b",
+      "continuationDiffBytes": 103211,
+      "continuationDiffSha256": "5689caaa7fc9ef3726786716d9967e4535ce89f6726b2421a6e82dcfccc32f22",
+      "note": "Original baseline includes already reviewed intervening work. Current continuation review includes exact current root edits, untracked artifacts and full Projects/Platform owning-repository diffs. Read-only; no staging."
+    },
+    "finalContinuationDiff": {
+      "sha256": "4902446be3edb7e35590884a34a0a0c17416390ac33717276b90187ebccdf8af",
+      "bytes": 735258,
+      "scope": "Current root and owning-repository changes plus new artifacts before this standalone parent-verification record; original baseline/frozen scope preserved."
+    }
+  },
+  "diffChecks": [
+    {
+      "workingDirectory": ".",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "workingDirectory": "references/Hexalith.Projects",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "workingDirectory": "references/Hexalith.Platform",
+      "command": [
+        "git",
+        "-c",
+        "core.whitespace=cr-at-eol",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "output": ""
+    }
+  ],
+  "qualifiedLocalChecks": {
+    "foldersDebugSourceFullBuild": "passed; zero warnings/errors",
+    "projectsDebugSourceFullBuild": "passed with exact supplied roots/Conversations snapshot; zero warnings/errors",
+    "foldersReleasePackageFullBuild": "passed; zero warnings/errors",
+    "projectsReleasePackageFullBuild": "passed; zero warnings/errors",
+    "platformDebugAndReleaseCompilation": "passed with owning source repairs; zero warnings/errors",
+    "foldersSourceProductionTests": 20,
+    "foldersReleaseServerTests": 81,
+    "authorizationRoutingTests": 71,
+    "contractsFocusedTests": 63,
+    "projectsSourceOwnedStateTests": 140,
+    "projectsRetainedPairTests": 98,
+    "projectsDiagnosticPairTests": 98,
+    "parityCategories": 12,
+    "governance": "23 + 7 + 3",
+    "packetMutationTests": 66,
+    "localDiagnosticPackages": 5,
+    "canonicalPlatformGraph": {
+      "checks": {
+        "member": "parent-review/canonical-graph-checks.json",
+        "sha256": "c1a1342ac9b2ee63470de53261f71bca66a259b99e6c8c17df35122d78cb2a91",
+        "bytes": 1741
+      },
+      "results": [
+        {
+          "configuration": "debug",
+          "exitCode": 1,
+          "total": 1,
+          "passed": 0,
+          "failed": 1,
+          "failure": "System.IO.InvalidDataException : ../../../../../references/Hexalith.Parties/module/hexalith.module-manifest.v2.json: manifest: Supply an existing readable manifest file.",
+          "xml": {
+            "member": "parent-review/platform-canonical-graph-debug.xml",
+            "sha256": "fe7fde1d27dfda83e906666861a596fd40eeef48c21f04db7bf8823cc41dcebb",
+            "bytes": 3647
+          }
+        },
+        {
+          "configuration": "release",
+          "exitCode": 1,
+          "total": 1,
+          "passed": 0,
+          "failed": 1,
+          "failure": "System.IO.InvalidDataException : ../../../../../references/Hexalith.Parties/module/hexalith.module-manifest.v2.json: manifest: Supply an existing readable manifest file.",
+          "xml": {
+            "member": "parent-review/platform-canonical-graph-release.xml",
+            "sha256": "cc7d81188fb3c98c6bb11b29c432f91af17302f9f101cf63e5b8bd505fb3de09",
+            "bytes": 3509
+          }
+        }
+      ],
+      "DescribeCanonicalOutcomeExecuted": false,
+      "currentCompositionQualified": false,
+      "prerequisite": {
+        "owner": "Platform composition/export owner with Parties module owner",
+        "requiredPath": "references/Hexalith.Platform/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+        "platformDeclaredPartiesRevision": "1ef274ea0471643d83f924147e85ac8326cf6a47",
+        "action": "Provide the owner-qualified Parties declaration/export in the permitted composition inputs and qualify the canonical four-owner graph against the maintained chart. Both profiles currently fail before Describe; no declaration fabrication, dependency initialization or test weakening is authorized."
+      }
+    }
+  },
+  "sourceCapture": {
+    "projectConfigurationProfiles": 231,
+    "portablePdbFiles": 231,
+    "portablePdbDocumentChecksums": 17710,
+    "capturedCompilerInputBindings": 10035,
+    "retainedBindingIndexEntries": 10049,
+    "equivalentProfileExpandedImportEvaluations": 132,
+    "argumentOnlyProfiles": {
+      "member": "indices/argument-only-profiles.json",
+      "sha256": "73ab08b077336c87478e9968628594c03e138f537b812cb0637d5a12fba7c8ac",
+      "bytes": 16506
+    }
+  },
+  "remainingOwnerInputs": [
+    {
+      "owner": "Projects maintainer / workspace mapping owner",
+      "source": "references/Hexalith.Projects/Directory.Build.props and the recorded Conversations gitlink",
+      "needed": "Provide the approved ordinary workspace roots for Folders and Conversations. The exact existing Conversations 8444207001d6ad3cd197c2ffba519317effa8b37 snapshot was already used successfully in the explicit isolated full-CI source probe; no additional source approval or dependency update is inferred. The unchanged default workspace command remains a recorded MSB9008/CS0234 failure."
+    },
+    {
+      "owner": "Platform code/workflow owner @jpiquot with Builds/tool owner",
+      "source": "references/Hexalith.Platform/.config/dotnet-tools.json, hexalith-platform.json and retained pass-5 accepted-identities.json",
+      "needed": "Accept/qualify the actual tool 4.35.2 / direct Builds 142b06e6d05c94b55ac35e587450c35fcac87590 / Platform 31b9cdbac61e691ab7d76bfbf3758569be542355 plus local repair / catalog / composed-artifact tuple, including source Tooling identity. Direct and Platform-gitlink catalogs have equal bytes; both differ from accepted-tool source catalog. Version/range, a package hash match, successful compilation and the early refusal test grant no renewed composition acceptance."
+    },
+    {
+      "owner": "Platform composition/export owner with Parties module owner",
+      "source": "parent-review/canonical-graph-checks.json and both XML files",
+      "needed": "Provide the owner-qualified Parties declaration/export in the permitted composition inputs and qualify the canonical four-owner graph against the maintained chart. Both profiles currently fail before Describe; no declaration fabrication, dependency initialization or test weakening is authorized.",
+      "requiredPath": "references/Hexalith.Platform/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+      "partiesRevision": "1ef274ea0471643d83f924147e85ac8326cf6a47"
+    },
+    {
+      "owner": "Platform intake owner with each module owner",
+      "source": "references/Hexalith.Platform/docs/domain-module-enrollment.md and Story 4.8 tracker backlog",
+      "needed": "Resolve current bounded declaration/adoption diagnostics and retain accountable registration/intake. Folders/Projects declarations are absent at the required paths. Separate missing tool pin/hosting inventory, reserved source-selector conventions, source-audit test literals and scans of historical evidence; these are distinct recorded rows requiring owner reconciliation, not authority to rewrite historical evidence or weaken selectors. EventStore/Tenants/Memories declaration validation passes while their adoption audits fail. Human SM-2 and actual ordinary CLI/hosted acceptance remain open."
+    },
+    {
+      "owner": "Folders release operator / protected production reviewer; NuGet creator jpiquot",
+      "source": "docs/operations/release-packages.md and .github/workflows/release.yml",
+      "needed": "After source ownership/review, select the exact committed main tuple, obtain successful exact-source push CI and the protected production-environment review, confirm enabled publication/trusted-publisher prerequisites, and run the existing five-package lane. Its shared action/execution pin is 3639c8d9340fc81d6f8e0a90566a97e56d5d8446. Semantic-release chooses the real release version. Rebuild/reseal that version and verify signed published archives and exact artifacts; do not publish or relabel the unsigned diagnostic version."
+    },
+    {
+      "owner": "Administrator for actual attempt/target evidence, with Platform/module operators",
+      "source": "story-1-17-first-install-decision-2026-10-18.md and current offline proposal",
+      "needed": "Bind target/consumer/retained-data disposition to the acquired qualified attempt lock/epoch; supply exact immutable hosted artifacts, identity/delegation, qualified recovery branch, numeric operational thresholds and actual UTC operators/slots. All fourteen staging checks are unexecuted. First-install scope is already conditionally accepted; existing-v1 discovery selects its original clocks and retirement/reversal gates. No repeated scope approval is requested."
+    },
+    {
+      "owner": "Module and Platform operational qualification owners",
+      "source": "deferred-work.md and accepted first-install/migration decision",
+      "needed": "Retain representative production-latency, exact-release staging, verification/observation/recovery and authorized closure/tracker evidence. Local Redis/Dapr software checks and dated topology health do not supply these."
+    }
+  ],
+  "operationalControl": {
+    "routeMode": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "publicationAuthorized": false,
+    "deploymentAuthorized": false,
+    "trackerTransitionAuthorized": false,
+    "stagingChecksExecuted": 0
+  },
+  "parentStatus": "in-progress",
+  "tracker": "backlog",
+  "initialSealPreserved": {
+    "archive": "evidence/story-1-17-release-readiness-2026-10-25.artifacts.tar.gz",
+    "archiveSha256": "a167fcb21f725a5f689596c8ccc25ec90e68775ed6ca0d828cba90aa5f0741c3",
+    "memberManifest": "evidence/story-1-17-release-readiness-2026-10-25.members.json",
+    "memberManifestSha256": "271e075281e5aa2a0c2cb5ffd2cad10cd5088d149fe1c8c0d1996188ae053e27",
+    "receiptSnapshot": "prior/pre-review-story-1-17-release-readiness-2026-10-25.json"
+  },
+  "scope": "Local qualification, dated released-byte identity and handoff only. No current signed publication, immutable hosted artifact, operational staging/exposure or story/tracker completion is established."
+}

@@ -1,0 +1,95 @@
+{
+  "format": "sha256-file-members-v1",
+  "members": [
+    {
+      "path": "accepted-api-inspection.json",
+      "sha256": "a489a616a6613a31b0e231564b293cfd2add5b75565b41ac4ca15912d921c0ec",
+      "bytes": 6745
+    },
+    {
+      "path": "candidate-api-inspection.json",
+      "sha256": "843a5e6434988813aba017b18920eb5d3026994a1462697f19c26e423b9596d7",
+      "bytes": 30940
+    },
+    {
+      "path": "candidate-release-inventory.json",
+      "sha256": "1405abc0e1476e8b41d275f46369d2034a0e761154b42d39c85acc33ae595786",
+      "bytes": 74432
+    },
+    {
+      "path": "capsule-reuse-evidence.json",
+      "sha256": "16a46759b6f36fcb5f9c5ccfb7e149e4bf08d46d900522b75804c5b8fc3651e0",
+      "bytes": 338567
+    },
+    {
+      "path": "capsule-reuse-inspect.py",
+      "sha256": "ce8b660b9fe5194d7918128e7cbe01cfd47feb09fea023c86463ff915dffe241",
+      "bytes": 5051
+    },
+    {
+      "path": "capture.py",
+      "sha256": "71273a9450d0aad3cadb16f0f94848d02b4e36398e1affa494ed18cc05f32acd",
+      "bytes": 2975
+    },
+    {
+      "path": "cli-tuple-evidence.json",
+      "sha256": "4b618486138afad6527362fa23e12a7312a9696bb90e912a31c2d91da3f32bb2",
+      "bytes": 684480
+    },
+    {
+      "path": "external-transition.json",
+      "sha256": "167e34e90f4170dd183b0b6722319890c0ebd4b342f1dbd92ecad8662986aabe",
+      "bytes": 4197
+    },
+    {
+      "path": "nested-ownership-scan.json",
+      "sha256": "e33530f20d3e65d16a83882ff119cfac896222a5753af76df21759e37dadd8e2",
+      "bytes": 2064
+    },
+    {
+      "path": "package-mode-and-validator-source.json",
+      "sha256": "6ce497efdf166b6a0ac9332569ef5feb543b547c50ac68a191c5e0d258579520",
+      "bytes": 32011
+    },
+    {
+      "path": "platform-delta-evidence.json",
+      "sha256": "227cf820cf44dac79ceb67d7422b9027bcdce23b42e04f00a68dd9d08cb32497",
+      "bytes": 610083
+    },
+    {
+      "path": "preflight.json",
+      "sha256": "26341324955402f526fb2a91fc54ca800d03de26cf22a3dbb26f6d9657a8136f",
+      "bytes": 27905319
+    },
+    {
+      "path": "proposal/spec-1-17-current-platform-tool-catalog-qualification.md",
+      "sha256": "10392c9b42f1dafd2268477753ee16d6e695bb05b1ec7d2b27ce69bc35d13014",
+      "bytes": 6790
+    },
+    {
+      "path": "proposal/story-1-17-current-platform-tool-catalog-qualification-2026-10-25.md",
+      "sha256": "efcab1e1311e1e4df4f4d72918d576a12c7d06d39bdd179e8b37b231cbe2043c",
+      "bytes": 19196
+    },
+    {
+      "path": "proposal/story-1-17-current-platform-tool-catalog-qualification-plan-2026-10-25.json",
+      "sha256": "ca503daf6298cb2e05d5fbe196470df27dc6e7ee1a0cbdcd625c0a173c3e532f",
+      "bytes": 37609
+    },
+    {
+      "path": "review.json",
+      "sha256": "82c19703c05ce7b6f58f32aa8b9c474007f16f40321af10014f9b94f3959dd3e",
+      "bytes": 1985
+    },
+    {
+      "path": "seal.py",
+      "sha256": "edf26d1147814c786618cb8a6ac4f10395cc2e25ecd0bfcbd8bff2441c1d88a3",
+      "bytes": 12694
+    },
+    {
+      "path": "validation.json",
+      "sha256": "f9206a55867a609efe964cd1cd9707bc3d335300a0ae21d83f76e1959dc23537",
+      "bytes": 10846892
+    }
+  ]
+}
