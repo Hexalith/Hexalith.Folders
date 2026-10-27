@@ -1,0 +1,843 @@
+{
+  "capturedUtc": "2026-10-27T21:13:39.790798+00:00",
+  "status": "incomplete-stability-gate-failed",
+  "qualifiedPass": false,
+  "receipt": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-supported-source-host-qualification-resume-2026-10-27.json",
+    "sha256": "6fed2acde4a408bb37f8faafadd887f6689109d4b4ad1e0c901b2e7d09bf0f50"
+  },
+  "repositories": [
+    {
+      "repository": ".",
+      "baselineHead": "c8a727269f87c8daf61c303bfedc07fc795cbe1a",
+      "observedHead": "30024478b78a87c7fb55bf4f6d8b29c4bf4c2091",
+      "baselineIndexSha256": "74961aeb9c943fdf90976af41567ce5edd66e644f5e5829770a893bc8eef2640",
+      "observedIndexSha256": "87370445654dd0060c32f4bff6dc31fa18d84e30a932fa804a1657a936b61c37",
+      "status": "M _bmad-output/implementation-artifacts/spec-1-17-qualify-supported-source-host-graph.md\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-supported-source-host-qualification-resume-2026-10-27.json\n?? _bmad-output/implementation-artifacts/story-1-17-supported-source-host-qualification-resume-2026-10-27.md",
+      "headUnchanged": false,
+      "indexUnchanged": false
+    },
+    {
+      "repository": "references/Hexalith.Tenants",
+      "baselineHead": "7d6413c4a1011b05ea24cdbfa2dd2ff736b632e4",
+      "observedHead": "7d6413c4a1011b05ea24cdbfa2dd2ff736b632e4",
+      "baselineIndexSha256": "7a1f3d26142359f9acc01df8a4694d745a50e789d07856816fb887b756c41347",
+      "observedIndexSha256": "7a1f3d26142359f9acc01df8a4694d745a50e789d07856816fb887b756c41347",
+      "status": "",
+      "committedGitlink": "7d6413c4a1011b05ea24cdbfa2dd2ff736b632e4",
+      "indexedGitlink": "7d6413c4a1011b05ea24cdbfa2dd2ff736b632e4",
+      "aligned": true,
+      "headUnchanged": true,
+      "indexUnchanged": true
+    },
+    {
+      "repository": "references/Hexalith.AI.Tools",
+      "baselineHead": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "observedHead": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "baselineIndexSha256": "77c94fb29c26e5708460809967060cb8f8f507ffed14e932ae05174013c96f9c",
+      "observedIndexSha256": "77c94fb29c26e5708460809967060cb8f8f507ffed14e932ae05174013c96f9c",
+      "status": "",
+      "committedGitlink": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "indexedGitlink": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "aligned": true,
+      "headUnchanged": true,
+      "indexUnchanged": true
+    },
+    {
+      "repository": "references/Hexalith.EventStore",
+      "baselineHead": "aff4efed59ed51ca34e6106030854b8616971521",
+      "observedHead": "aff4efed59ed51ca34e6106030854b8616971521",
+      "baselineIndexSha256": "a069dc7660e07d0afa547f8b1e7de8df26de72aad0bf1415b6d3e87b313254bd",
+      "observedIndexSha256": "a069dc7660e07d0afa547f8b1e7de8df26de72aad0bf1415b6d3e87b313254bd",
+      "status": "",
+      "committedGitlink": "aff4efed59ed51ca34e6106030854b8616971521",
+      "indexedGitlink": "aff4efed59ed51ca34e6106030854b8616971521",
+      "aligned": true,
+      "headUnchanged": true,
+      "indexUnchanged": true
+    },
+    {
+      "repository": "references/Hexalith.FrontComposer",
+      "baselineHead": "dd84589d5fd5aa6aeca3fd8af0b551b6297d11a8",
+      "observedHead": "dd84589d5fd5aa6aeca3fd8af0b551b6297d11a8",
+      "baselineIndexSha256": "889c97e9dfbdf1a87af512be80884271fffe3724ece4540daeb0475fa541015a",
+      "observedIndexSha256": "889c97e9dfbdf1a87af512be80884271fffe3724ece4540daeb0475fa541015a",
+      "status": "",
+      "committedGitlink": "dd84589d5fd5aa6aeca3fd8af0b551b6297d11a8",
+      "indexedGitlink": "dd84589d5fd5aa6aeca3fd8af0b551b6297d11a8",
+      "aligned": true,
+      "headUnchanged": true,
+      "indexUnchanged": true
+    },
+    {
+      "repository": "references/Hexalith.Memories",
+      "baselineHead": "790670897c1fc684d41b980fc5e40934be796122",
+      "observedHead": "790670897c1fc684d41b980fc5e40934be796122",
+      "baselineIndexSha256": "bd203611e505110b4916ccf5795836912cf27cec87af04f2c8c559fb13be9976",
+      "observedIndexSha256": "bd203611e505110b4916ccf5795836912cf27cec87af04f2c8c559fb13be9976",
+      "status": "",
+      "committedGitlink": "790670897c1fc684d41b980fc5e40934be796122",
+      "indexedGitlink": "790670897c1fc684d41b980fc5e40934be796122",
+      "aligned": true,
+      "headUnchanged": true,
+      "indexUnchanged": true
+    },
+    {
+      "repository": "references/Hexalith.Commons",
+      "baselineHead": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "observedHead": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "baselineIndexSha256": "81594052a87e38232911dc5a48935d1cb3dbe9f565abf45cc6228f3ca559bf46",
+      "observedIndexSha256": "81594052a87e38232911dc5a48935d1cb3dbe9f565abf45cc6228f3ca559bf46",
+      "status": "",
+      "committedGitlink": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "indexedGitlink": "1663028fb6d9f46a0bf17919edeb21bb99be1587",
+      "aligned": true,
+      "headUnchanged": true,
+      "indexUnchanged": true
+    },
+    {
+      "repository": "references/Hexalith.Builds",
+      "baselineHead": "05ae0a23adfb516231b31da6d83989bdf229f2f9",
+      "observedHead": "05ae0a23adfb516231b31da6d83989bdf229f2f9",
+      "baselineIndexSha256": "98201f7e0c1d51f1f4fa69a2f6e8e9c4c8d7b0bad5e2a16681c46c12776244d1",
+      "observedIndexSha256": "98201f7e0c1d51f1f4fa69a2f6e8e9c4c8d7b0bad5e2a16681c46c12776244d1",
+      "status": "",
+      "committedGitlink": "05ae0a23adfb516231b31da6d83989bdf229f2f9",
+      "indexedGitlink": "05ae0a23adfb516231b31da6d83989bdf229f2f9",
+      "aligned": true,
+      "headUnchanged": true,
+      "indexUnchanged": true
+    },
+    {
+      "repository": "references/Hexalith.PolymorphicSerializations",
+      "baselineHead": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "observedHead": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "baselineIndexSha256": "99834e9037d6af73bea83dc830ab91d6f25228633456987344d153f3cab98221",
+      "observedIndexSha256": "99834e9037d6af73bea83dc830ab91d6f25228633456987344d153f3cab98221",
+      "status": "",
+      "committedGitlink": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "indexedGitlink": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "aligned": true,
+      "headUnchanged": true,
+      "indexUnchanged": true
+    },
+    {
+      "repository": "references/Hexalith.Projects",
+      "baselineHead": "a3e7ea143fe7494a2d80ccf7073c7f136af66c86",
+      "observedHead": "a3e7ea143fe7494a2d80ccf7073c7f136af66c86",
+      "baselineIndexSha256": "d735b5cbbd61a6d8ebb7be65e91f544a4492209949453f458dafdbfba03c1fb1",
+      "observedIndexSha256": "d735b5cbbd61a6d8ebb7be65e91f544a4492209949453f458dafdbfba03c1fb1",
+      "status": "",
+      "committedGitlink": "a3e7ea143fe7494a2d80ccf7073c7f136af66c86",
+      "indexedGitlink": "a3e7ea143fe7494a2d80ccf7073c7f136af66c86",
+      "aligned": true,
+      "headUnchanged": true,
+      "indexUnchanged": true
+    },
+    {
+      "repository": "references/Hexalith.Platform",
+      "baselineHead": "9658932b0f04d9fc9daf7c30cc0d9afc2146ed7c",
+      "observedHead": "9658932b0f04d9fc9daf7c30cc0d9afc2146ed7c",
+      "baselineIndexSha256": "99ce8f9d3d6279721f90842dd3f69c68f7028a3d452e4073c38cd083868b2e00",
+      "observedIndexSha256": "99ce8f9d3d6279721f90842dd3f69c68f7028a3d452e4073c38cd083868b2e00",
+      "status": "",
+      "committedGitlink": "9658932b0f04d9fc9daf7c30cc0d9afc2146ed7c",
+      "indexedGitlink": "9658932b0f04d9fc9daf7c30cc0d9afc2146ed7c",
+      "aligned": true,
+      "headUnchanged": true,
+      "indexUnchanged": true
+    },
+    {
+      "repository": "references/Hexalith.McpCli",
+      "baselineHead": "8d4a8c07636c1ad065dfc8dc28dbfc956d5deb82",
+      "observedHead": "8d4a8c07636c1ad065dfc8dc28dbfc956d5deb82",
+      "baselineIndexSha256": "2b29b1aa0c8bc22e4acb7cacd281a488fff6182a0fe8c1a91c1b76d3bfcb5ad8",
+      "observedIndexSha256": "2b29b1aa0c8bc22e4acb7cacd281a488fff6182a0fe8c1a91c1b76d3bfcb5ad8",
+      "status": "",
+      "committedGitlink": "8d4a8c07636c1ad065dfc8dc28dbfc956d5deb82",
+      "indexedGitlink": "8d4a8c07636c1ad065dfc8dc28dbfc956d5deb82",
+      "aligned": true,
+      "headUnchanged": true,
+      "indexUnchanged": true
+    },
+    {
+      "repository": "references/Hexalith.Parties",
+      "baselineHead": "c82aa2b2d97b796285c50b609f4b485f21467da3",
+      "observedHead": "c82aa2b2d97b796285c50b609f4b485f21467da3",
+      "baselineIndexSha256": "8d5faa15c9b8451143dd066e18ba25d9c8f93473f648b8c84859898c72340b13",
+      "observedIndexSha256": "8d5faa15c9b8451143dd066e18ba25d9c8f93473f648b8c84859898c72340b13",
+      "status": "",
+      "committedGitlink": "c82aa2b2d97b796285c50b609f4b485f21467da3",
+      "indexedGitlink": "c82aa2b2d97b796285c50b609f4b485f21467da3",
+      "aligned": true,
+      "headUnchanged": true,
+      "indexUnchanged": true
+    }
+  ],
+  "protectedFilesCompared": 7777,
+  "protectedFileChanges": [
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml",
+      "baselineSha256": "d676733292744f76044cd1e3bdef04b4fd4394b94129adf7845737d3f1f6c301",
+      "observedSha256": "d7789dd2abb1c323c6103ffa6692da803eb3f7dbb3fe753ce5490321b773c28c"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/spec-1-17-qualify-supported-source-host-graph.md",
+      "baselineSha256": "4b21cff41843dfd7984fc1813bd228d27b74e10720c5bc0a17db2ebc4a875ffd",
+      "observedSha256": "c67ec65cde7792d270065e4d5bbcdfabda61dbb79aa234208466187476eb00c5"
+    }
+  ],
+  "protectedAuthorityChecks": [
+    {
+      "path": "_bmad-output/implementation-artifacts/sprint-status.yaml",
+      "sha256": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40",
+      "unchanged": true
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/spec-1-17-publish-the-pd10-v2-authorization-contract-spine.md",
+      "sha256": "e00a3503425e8a96ab235255f70175b1e34bed2d6a5a3975723bef17a7653206",
+      "unchanged": true
+    },
+    {
+      "path": "docs/governance/approval-policy.md",
+      "sha256": "156929f0695d364d515dc71adfdf3292903b4f08538e723f6015633655ebd8a4",
+      "unchanged": true
+    },
+    {
+      "path": ".gitmodules",
+      "sha256": "c9daa495deb0a5903771cbbfeef10f6d376a3e521c8f6ad7447aae689c5bcf37",
+      "unchanged": true
+    }
+  ],
+  "frozenIntentUnchanged": true,
+  "specStatus": "in-progress",
+  "newArtifactChecks": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/bin/SourceMappingHelper/debug/Hexalith.Builds.Tooling.dll",
+      "sha256": "adb9f578d4d07d847ade307ef698796d4dec54ef4acce6b6f9aab13e894e7207",
+      "matches": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/bin/SourceMappingHelper/debug/SourceMappingHelper",
+      "sha256": "0fab32bbe93c90fa9a313a68a55b5c59e0621776082e46258896a5147a124174",
+      "matches": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/bin/SourceMappingHelper/debug/SourceMappingHelper.dll",
+      "sha256": "879bef8d3b24df4e3482e04449860d0b26676eadec90aa0e300f6955713f4f02",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-resume-yog4l9xp/baseline.json",
+      "sha256": "73ee5efd97d8b353445c64adc62a067bb464461de8b318981917d3c1cdda53d9",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-resume-yog4l9xp/parent-preservation-current.json",
+      "sha256": "fcd583ee6c0817f2a2f8dc585fda9be1ae1fb6ccc69421b0f6c38a6cdfe3c7dd",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-resume-yog4l9xp/stability-pre-dispatch.json",
+      "sha256": "4788861b89768eaefbd35f467ef23cad3570bf774e6f58cf13b83f9fa5c8b481",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/NuGet.Config",
+      "sha256": "2a775750b0a925a01306bbaa8a7ff2dc5ceffb57f9db466873c8eda286e87d59",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/bin/dotnet",
+      "sha256": "7cfd11018e40acd89f5fd9bea735c8cb813af89be76f4ad8af13c9839ff5e2e3",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/commands.jsonl",
+      "sha256": "c284868bf95c1617439e8a056e85bffe3b73939d173439bbd6524412ce101bb0",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/config.json",
+      "sha256": "2be63a86d387641cac52cb9cf8aa0e1198896061b7a4a5213723c382629ba041",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/driver.py",
+      "sha256": "cebf82720e3b99ec54c8305a527c345f5eb686e360ca969caf5caddd844192e0",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/evidence-post-stop-state.json",
+      "sha256": "3f0ba374343630595a0e6ba6436461168e4d2f203f27eda99d8efc86ad3269f7",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/helper/Program.cs",
+      "sha256": "7780e2a014f146fadebae50ff13df54c08d9bf0ce8278d22599d73f72e37aded",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/helper/SourceMappingHelper.csproj",
+      "sha256": "9aa868689b9a6aaa7501c5ae6680ba31b4aca1b634dc414b0d1c0229db686ad4",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/helper-build-state.json",
+      "sha256": "5fc36d5426535705c7c5b404a259aaabbd1aac197e4597a60ab57a9d8effa23e",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/helper-interception-state.json",
+      "sha256": "22edb0a5d32a8d4f708854d4e95c2ced8578868291f5dc7629dca91e5ab96f66",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/interrupted-build-cleanup.json",
+      "sha256": "e70a1444272b951cbdd1493da394c22b245ac8bf5411464cb23405bb4cce137b",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/logs/evidence-post-stop-preflight.log",
+      "sha256": "ba95978e167165ce6917a56f553c582872b1d96d478e35f2294c38e2968d664b",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/logs/helper-build.log",
+      "sha256": "592820f9573baabc690580e840db5b18f8f369c78497ac9bfdd704556a023f38",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/logs/helper-interception.log",
+      "sha256": "495bb9d1b2b4985b956493fa7d4e2247277703e80eac15f3bc7a83d3e4a8108b",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/logs/original-debug-build.log",
+      "sha256": "167db64aa7e01e2f6088e6842fc4b935ffec8096963e754395d3e41d88964023",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/logs/production-materialization-current-fixture.log",
+      "sha256": "06b699ce5ed6e2f2fa75051fd80e1dce0d4e68adcd000651b7df830c7c70b579",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/logs/production-materialization.log",
+      "sha256": "ea59e08d580bb8eb3356a40ca27d7d0e019e697177a8579863796ccebb8c85f1",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/logs/sdk-version.log",
+      "sha256": "44ea2595bc5a7acabc030531952071226aa70862fd008ed7327d752b39c8513c",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/original-build-process-samples.json",
+      "sha256": "b139877e84cfbaf6adf370be7e001dd0f411625116e30cd5b1cf22f6c1206cb8",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/original-debug-build-private-fixtures-state.json",
+      "sha256": "93622e0c6cd3caf5ede457c6f92a5cc2ab5febf9775890ac6385ad130cf78068",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/original-debug-build-state.json",
+      "sha256": "b62bf0616605e9b22eaf9cec8af69b9f73592b26d83609006600363a0005ff67",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/packages/hexalith.eventstore.aspire/3.128.0/.nupkg.metadata",
+      "sha256": "56928fab78f4969915b5c78663dfbf3be00e2ff01bf8c94d09824e01e01d0a9b",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/packages/hexalith.eventstore.aspire/3.128.0/hexalith.eventstore.aspire.3.128.0.nupkg",
+      "sha256": "522e68bda69b2881417db790fd7938a30e7fa1f0935e1c14e47f675a69c89bda",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/packages/hexalith.eventstore.aspire/3.128.0/hexalith.eventstore.aspire.3.128.0.nupkg.sha512",
+      "sha256": "bb83c14788b831b59c6107b5f4c465b61f58e5f13956ed24d39d55a24289aaab",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/partial-original-assets.json",
+      "sha256": "ddf4099c3369c774e7251400a6cf6b85f06ee3a07b98955c635fee57c98521dd",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/production-materialization-current-fixture-state.json",
+      "sha256": "67b1aabffb9646d130357933b8425b9968b4f03676e541b42a30446ac8af58f0",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/production-materialization-state.json",
+      "sha256": "29c8bcfd7c90c219204424bc0025b0e781917a6a08f4e1bcfcef6d82cd1964d9",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/sdk-children.jsonl",
+      "sha256": "1bfc744b0702c035765d9db792843580f1239a9bda653a5b9300b9a3b36d25fe",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/sdk-version-state.json",
+      "sha256": "56ff9678ef31891e17f15eb410b65b47c186fe43993f55627568a121373453c0",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/workspace/environment.json",
+      "sha256": "a876469d413f29f343f23678247e44f40bb3b7c198494b009588983e78f29115",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/workspace/source-mapping/Hexalith.Folders.Aspire.proj",
+      "sha256": "7977ed929de2eea90d47cff84c3121e54221932f897470b4a72f6687a775afae",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/workspace/source-mapping/SourceMapping.before-targets.props",
+      "sha256": "419a020100729f12e88718d80aac12ce0df76162b2a0f94db5861629bc564fb3",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/workspace/source-mapping/SourceMapping.final.targets",
+      "sha256": "ba7a74f7abeace9b7be49a2d34ed9e2c5e7b4bade9d354f0a6011c0116b07577",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/workspace/source-mapping/SourceMapping.late.props",
+      "sha256": "8f81c51caf272b8003abad85957dddc6e6b4611abf43176df4029e0db8a93625",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/workspace/source-mapping/SourceMapping.props",
+      "sha256": "0363694f252736cdfd0bcf6a567bb077940df16cc966e410153718a552769e82",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/workspace/source-mapping/SourceMapping.targets",
+      "sha256": "39416f2d32b57617a36beeaa0bc67b540182a72883a363c0ea1b783472ff126e",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/workspace/source-mapping/SourceMapping.values.props",
+      "sha256": "9519ef2c59413b176c7e4c9b0f13abffdd1a990a3441ca997c08eb7fbb02e7a4",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/workspace/source-mapping/SourceMapping.values.targets",
+      "sha256": "c84bd5845aff9c530efc6f77bebf0bb7d842522c50491ddc264f0a03bdfbc7c1",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/workspace/source-mapping/__HXW_DefaultCatalog__.proj",
+      "sha256": "7977ed929de2eea90d47cff84c3121e54221932f897470b4a72f6687a775afae",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/workspace/source-mapping/catalog-versions.json",
+      "sha256": "4298e248cdbbb83ac99150e464dd5aa4938d5904bae6749cbb350da021a50d79",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/workspace/source-mapping/mapping.json",
+      "sha256": "5b4132e9432be11040727fca442fc22fed5bc68371c7d42b9e9291baed984fc9",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-supported-resume-xrotea28/workspace/source-mapping/pinned-tree/Props/Directory.Packages.props",
+      "sha256": "bb549d4e0ad37eed3c9f86d7af3fef670af64ad67b739ce02257983e082a4820",
+      "matches": true
+    }
+  ],
+  "historicalArtifactChecks": [
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/preflight.json",
+      "sha256": "b1cd3ca222d11c2779bd7102a877138d3a1d0dbc12c0c2d7a2e4ec22053e343a",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/run.py",
+      "sha256": "063ad07b14ff115d8a6994210baf1a1a4f7f3578aa4f8e31c4a040dba3e18118",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/bin/dotnet",
+      "sha256": "371dfbb2de933d25e865628f9e444f57bd80624d1756be3c2c465c85b77b44fb",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/helper/Program.cs",
+      "sha256": "7780e2a014f146fadebae50ff13df54c08d9bf0ce8278d22599d73f72e37aded",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/helper/SourceMappingHelper.csproj",
+      "sha256": "9aa868689b9a6aaa7501c5ae6680ba31b4aca1b634dc414b0d1c0229db686ad4",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/focused/FocusedModuleTests.csproj",
+      "sha256": "e5b84ab70d816e88e84ba8af2087a5aa35375a8b1e4f7426495d59596b6c465c",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/commands.jsonl",
+      "sha256": "5ca2e1aa153571aa305bf4eac49d9b7c6492f2034501a7eb551215b4256d2c1a",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/blocked-state.json",
+      "sha256": "e019d20c1ecb1df6f33a437e7db402262d9123fe0dfa07fb30780d06e4dc8f86",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/final-source-identities.json",
+      "sha256": "e28e477be90b817ce90573901c239ebd484eb658a099830d2bb2c42361765ed1",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/workspace-sdk-process-samples.json",
+      "sha256": "5e1c04cd14bc643dc128651b0bac7fd34de3b6a7133c4b40d683bb44cc680cd5",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/sdk-children.jsonl",
+      "sha256": "3fa641ed9427e042fa0775607b0e6d41fd7ab547610999bfecdd92abf6f60f07",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/feed-inventory.json",
+      "sha256": "497eeef094dc0471851faf90dc444d882a8782b9605496cebe392cf73eb53b10",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-catalog-tests.log",
+      "sha256": "7e41884303353fedd3f2df3bbeb9d225e0e8cf562aa353652974e5cd550613f4",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-focused-build-audit-corrections-relocated.log",
+      "sha256": "c236a8cd976100aba1667fee46710cddfaa146dd583ae1b2715dcae2e6f666d5",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-focused-build-audit-corrections.log",
+      "sha256": "f114d65386fa5f9d04729f8d4f621546f588ad0d6643947020a87df8a4c9a88c",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-focused-build-catalog-import.log",
+      "sha256": "5c735b4cbe53d33db0f4e2b4f4a45c23676a33b4547b7313bc9a292364361b42",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-focused-build-early-conventions.log",
+      "sha256": "cc836ac247f7f92b9344885979c79793a08b48fa832124c3a017343c13ee70dd",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-focused-build-formatted.log",
+      "sha256": "e1259043aa2905ff7616e1a623849594066093f09157a451755fed3e992bc190",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-focused-build-sdk-reference.log",
+      "sha256": "24d30a0d247ec3c5649f0c98a75710dd190acbfa92a877a803f069acfab9e203",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-focused-build-task-alias.log",
+      "sha256": "d4a0a1c3f6572334082a9fdd199c8f060b3d605b07f1cf57021f4d9c849d9890",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-focused-build.log",
+      "sha256": "2529b78f494edb1b8d612c5e83a0558bc9b02c1d27d7a77b8efada18e36afefe",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-forwarding-recheck.log",
+      "sha256": "cac194f7e82f46ce8e7be465e080109e2a4d56f46e19ed9869a0f7fa1da7ee67",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-launcher-construction.log",
+      "sha256": "f63659779173f57e074679aa6baa2293e0465177c80b364aa46afb7a358ebcc6",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-launcher-final.log",
+      "sha256": "968f3d0c585befa4feeb92f942f0224e3b03b05d42a5630e677b4a8372988730",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-launcher-tests.log",
+      "sha256": "6a1cdf614e1c6e8afff8c4df593fb99cbadee502f0c9cef44d4ce829abbb8c60",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-native-catalog-interception.log",
+      "sha256": "60ab81e724c37f6d972929529bd63e111cfc4c06fe22bb81c89f6901b8ce0b2e",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-workspace-tests-final.log",
+      "sha256": "6b2727ab852354d04598a6dcf52974c2fb870c5203effc65a215f4148fe0bf3f",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/fallback-workspace-tests.log",
+      "sha256": "52c6994ecbaf2b2570cef7f73c31c8acae002074810741b616fa6f4dd2cf9ee4",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/helper-build.log",
+      "sha256": "67d0081bfb8f5a02fe5fdfefc65f7a6f72b1e6fd0b16f2f971e2775580340ab5",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/helper-final-build.log",
+      "sha256": "c7f7e8bbde574e56509e609ab3fc54bef415077eb18042fffc8c812d654f6e21",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/native-helper-interception.log",
+      "sha256": "495bb9d1b2b4985b956493fa7d4e2247277703e80eac15f3bc7a83d3e4a8108b",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/production-materialization.log",
+      "sha256": "69deb9f5978de067af3ed628c51b50996ad39f8104dd1b251f5d1cc8b971c555",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/sdk-version.log",
+      "sha256": "44ea2595bc5a7acabc030531952071226aa70862fd008ed7327d752b39c8513c",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/tooling-bootstrap-path-corrected.log",
+      "sha256": "b8587d49de36e98ef2b5ef49a3a090f73f35680b1bf0f87d056e4fbae5c7979f",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/tooling-bootstrap-style-corrected.log",
+      "sha256": "04965c1e278dd6c5450c13da48189c86fd00b5a63b10b2d5c5c5c0987d6e8020",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/logs/tooling-bootstrap.log",
+      "sha256": "a0581264ecf6f0fbb13ca86a1da7fd66265aa841e3deb41155009e4d8b05e270",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/CatalogVersionTests.xml",
+      "sha256": "c2dab1595d2fe6ac46faa69c304debafed461b7249aff068ef7ae3c66a54cfd3",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/CompositionSdkProcessTests-final.xml",
+      "sha256": "cdca8bc484e28175dc28d25d1d7a19eb6f5cf1bbc7ce6fe6a4193b8dbd2b6434",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/CompositionSdkProcessTests.xml",
+      "sha256": "b6d8004ca6b6b1d922f17a516aa5a66022eb0a647ecfa5412653715d27b009c1",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/WorkspaceMsBuildTests-final.xml",
+      "sha256": "ed5528376499b51a11084c59257e497aa39bf3777f5351cd15f1f0d8011238f3",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/WorkspaceMsBuildTests.xml",
+      "sha256": "7b07c9d7e0f4fa4b392d87213e7c601bfebcc2a9dc8755ec53f22a2f688dcb89",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/catalog-interception.xml",
+      "sha256": "24a4099e5a82396edfd121de4457d7aa2824a59adb2dcc3d52e43c05a64d774c",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/forwarding-recheck.xml",
+      "sha256": "acfe453a264223e6668a55335fb15a64cc8036d248bb5434374a9aa9a9508960",
+      "matches": true
+    },
+    {
+      "path": "/tmp/story117-source-host-qualification-y4qfm8vi/launcher-construction.xml",
+      "sha256": "7bb792e27ea4d7116cc3eec1ff3012ef370d3d12c4bea63e689e47f9191b8008",
+      "matches": true
+    }
+  ],
+  "partialAssetChecks": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.Builds.Module.AppHost/project.assets.json",
+      "sha256": "032f96e4258b6486769eb9a429ca6012eeeef347da10eb4564680606204e417c",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.Builds.Module.Cli/project.assets.json",
+      "sha256": "63242079c27feabd87a74dcec859709cd228793b795479897177cedd4e71584f",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.Builds.Module.EventStoreHost/project.assets.json",
+      "sha256": "cb67fdc172948269be04dd8dc6fb4d4329cb1d804bcb64f28320ec546a2492f0",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.Builds.Module.Tests/project.assets.json",
+      "sha256": "4949cb5989792843fe6628effeb22ad88f381709ab7f1e89a27246cb157398a3",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.Builds.Module.UiHost/project.assets.json",
+      "sha256": "87cf1e4ad08e8c966d453db54f090ba4128ad94b503a49b0d2a3a58f1037e4f2",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.Builds.Tooling/project.assets.json",
+      "sha256": "989652935199304deba888afbc7cb8a40acd7fe73b8a601ace8aeca63ef52ad0",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.Commons.UniqueIds/project.assets.json",
+      "sha256": "9eeccf8edd67d2152b3588aa70895da9e4a78b97c0980615a05e7b2718c571f1",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.EventStore.Admin.Abstractions/project.assets.json",
+      "sha256": "25f86f4ceee950591b90b6a410d532bc62212f55e7ba0788d20398b210344f0b",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.EventStore.Aspire/project.assets.json",
+      "sha256": "d90292ae41ad197853596848a2c86fb413053b04c6eff167ac32ce5a595ef9b3",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.EventStore.Client/project.assets.json",
+      "sha256": "72db20d358242edd5db049d9fa6556de54c493f4e215dd4c6c600f5d6aa3d99f",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.EventStore.Contracts/project.assets.json",
+      "sha256": "1af49bd070c8205c17aca4c5a8e006bc98ddd3dd9c832e5519c3a26ee9ecf867",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.EventStore.DomainService/project.assets.json",
+      "sha256": "e35489d07332decc4c4fdb28d4e92c76c29bd6704d1fdd6785e6fec5014cddfd",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.EventStore.Gateway/project.assets.json",
+      "sha256": "2daf1cbdf5ca81cb6bfc88fe89f3b4f03c0bc65273dca7aea7a52facb92114bd",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.EventStore.Server/project.assets.json",
+      "sha256": "d211dd8d970335553b65143814d7b2c2786429ee8646fbf0446a0e78b6ee3cac",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.EventStore.ServiceDefaults/project.assets.json",
+      "sha256": "3523f7bc311284ba54147a43e713c92bedf09d9bf4025dab678ea3b9832a7a4f",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.FrontComposer.Contracts/project.assets.json",
+      "sha256": "2694c5b473e166d51a2ffdd6e5ac94344db6add319ae322437cb35f535e28235",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.FrontComposer.Contracts.UI/project.assets.json",
+      "sha256": "3580d5da2d7b102c62426b6ba270cfd09847cae9b060c8f0037b9f0516a156fd",
+      "hexalithPackageLibraries": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-supported-resume-xrotea28/original/obj/Hexalith.FrontComposer.Shell/project.assets.json",
+      "sha256": "dbb6fba426961607c74889ec4ac74e51b452b5e462c97a03ab93acefbc69a4cd",
+      "hexalithPackageLibraries": []
+    }
+  ],
+  "testAssemblyExists": false,
+  "originalBuildInterrupted": true,
+  "originalBuildQualifiedPass": false,
+  "originalAssemblyClassGates": "all four unrun; no new test totals",
+  "historicalFocusedEvidence": "180/180 fallback only",
+  "reviewStep04": "not entered; prerequisites incomplete",
+  "matrixAudit": "No new covering tests executed; historical matrix evidence remains fallback only",
+  "sourceChangesThisResume": [],
+  "externalCommit": {
+    "head": "30024478b78a87c7fb55bf4f6d8b29c4bf4c2091",
+    "paths": [
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml",
+      "scripts/pd10-v2-story-owned-paths.txt",
+      "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+      "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+      "tests/shared/EventStore/RecordingDaprClient.cs"
+    ]
+  },
+  "whitespaceChecks": [
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "note": "Existing spec CRLF normalization warning"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "historicalDiffLimitation": {
+    "command": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "f48886763a1b57b30f7767deb9909f741dc812f3"
+    ],
+    "cwd": "/home/administrator/projects/hexalith/folders",
+    "exitCode": 0,
+    "stderr": "warning: in the working copy of '_bmad-output/implementation-artifacts/spec-1-17-qualify-supported-source-host-graph.md', CRLF will be replaced by LF the next time Git touches it\nerror: hash mismatch 6ba02654ca390b3333183962355bd5c5857b8224\n",
+    "handling": "Retained without Git repair; scoped owning-path diff remains available.",
+    "diff": "/tmp/story117-resume-yog4l9xp/baseline-to-resume.diff"
+  },
+  "remainingRequirements": [
+    "Stable HEAD/index identities throughout dependent execution",
+    "Private fixture output override supplied before original build",
+    "Controlled nested catalog SDK children",
+    "Successful original Debug test-project build with production mapping",
+    "All four original-assembly class gates including WorkspaceAppHostTests with zero failures/skips",
+    "Tasks/acceptance/matrix audit and Step 04 review only after passing gates"
+  ],
+  "noGitMutationByWorkflow": true,
+  "noParentTrackerUpdate": true,
+  "finalDocuments": [
+    {
+      "path": "_bmad-output/implementation-artifacts/spec-1-17-qualify-supported-source-host-graph.md",
+      "sha256": "c67ec65cde7792d270065e4d5bbcdfabda61dbb79aa234208466187476eb00c5"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-supported-source-host-qualification-resume-2026-10-27.md",
+      "sha256": "cad554a888f1660dc2c32bc85f64c23269c0e52d766259b4c76dd590ada26b1a"
+    }
+  ]
+}
