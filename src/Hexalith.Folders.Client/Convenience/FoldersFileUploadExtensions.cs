@@ -220,7 +220,8 @@ public static class FoldersFileUploadExtensions
             ByteLength = request.ByteLength,
             InlineContent = request.InlineContent,
             StreamDescriptor = request.StreamDescriptor,
-            ExpectedFileVersion = request.ExpectedFileVersion, ExpectedLockFence = request.ExpectedLockFence,
+            ExpectedFileVersion = request.ExpectedFileVersion,
+            ExpectedLockFence = request.ExpectedLockFence,
             OwnerFileId = request.OwnerFileId,
             FileOperationKind = AddFileRequestFileOperationKind.Add,
         };
@@ -240,7 +241,8 @@ public static class FoldersFileUploadExtensions
             ByteLength = request.ByteLength,
             InlineContent = request.InlineContent,
             StreamDescriptor = request.StreamDescriptor,
-            ExpectedFileVersion = request.ExpectedFileVersion, ExpectedLockFence = request.ExpectedLockFence,
+            ExpectedFileVersion = request.ExpectedFileVersion,
+            ExpectedLockFence = request.ExpectedLockFence,
             OwnerFileId = request.OwnerFileId,
             FileOperationKind = ChangeFileRequestFileOperationKind.Change,
         };

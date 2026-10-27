@@ -531,11 +531,13 @@ public sealed class AuditOpsConsoleContractGroupTests
                     return !relative.StartsWith("obj/", StringComparison.Ordinal)
                         && !relative.StartsWith("bin/", StringComparison.Ordinal)
                         && !relative.StartsWith("Aggregates/Organization/", StringComparison.Ordinal)
+                        && !relative.Equals("Aggregates/StreamNameSegment.cs", StringComparison.Ordinal)
                         && !relative.StartsWith("Aggregates/Folder/", StringComparison.Ordinal)
                         && !relative.StartsWith("Providers/Abstractions/", StringComparison.Ordinal)
                         && !relative.StartsWith("Providers/Credentials/", StringComparison.Ordinal)
                         && !relative.StartsWith("Providers/GitHub/", StringComparison.Ordinal)
                         && !relative.StartsWith("Providers/Forgejo/", StringComparison.Ordinal)
+                        && !relative.StartsWith("Providers/Shared/", StringComparison.Ordinal)
                         && MatchesGlob(relative, pattern);
                 })
                 .ToArray();

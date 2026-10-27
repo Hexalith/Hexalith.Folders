@@ -59,6 +59,8 @@ src/Hexalith.Folders.Client/Convenience/FileUploadDescriptor.cs
 src/Hexalith.Folders.Client/Convenience/FileUploadStreamingRequiredException.cs
 src/Hexalith.Folders.Client/Convenience/FoldersConvenienceServiceCollectionExtensions.cs
 src/Hexalith.Folders.Client/Convenience/FoldersFileUploadExtensions.cs
+src/Hexalith.Folders.Client/Convenience/LegacyIdempotencyPathMetadata.cs
+src/Hexalith.Folders.Client/Convenience/NativeFileUpload.cs
 src/Hexalith.Folders.Client/Convenience/WorkspaceFileStreamUploadExtensions.cs
 src/Hexalith.Folders.Client/FoldersClientModule.cs
 src/Hexalith.Folders.Client/FoldersClientOptions.cs
@@ -66,6 +68,7 @@ src/Hexalith.Folders.Client/FoldersClientServiceCollectionExtensions.cs
 src/Hexalith.Folders.Client/Generated/Client.ResponseCapture.cs
 src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs
 src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs
+src/Hexalith.Folders.Client/Generated/HexalithFoldersNativeClient.g.cs
 src/Hexalith.Folders.Client/Generation/GeneratedClientPostProcessor.cs
 src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj
 src/Hexalith.Folders.Client/Generation/Program.cs
@@ -187,6 +190,15 @@ src/Hexalith.Folders.Server/Content/WorkspaceContentRejectionReader.cs
 src/Hexalith.Folders.Server/Content/WorkspaceContentRetentionEndpoints.cs
 src/Hexalith.Folders.Server/Content/WorkspaceContentState.cs
 src/Hexalith.Folders.Server/Content/WorkspaceContentStateReader.cs
+src/Hexalith.Folders.Server/Content/WorkspaceNativeAddress.cs
+src/Hexalith.Folders.Server/Content/WorkspaceNativeConflictException.cs
+src/Hexalith.Folders.Server/Content/WorkspaceNativeEndpoints.Validation.cs
+src/Hexalith.Folders.Server/Content/WorkspaceNativeEndpoints.cs
+src/Hexalith.Folders.Server/Content/WorkspaceNativeLeaseRequest.cs
+src/Hexalith.Folders.Server/Content/WorkspaceNativeTaskCommand.cs
+src/Hexalith.Folders.Server/Content/WorkspaceOperationEvidence.cs
+src/Hexalith.Folders.Server/Content/WorkspaceOperationEvidenceRequest.cs
+src/Hexalith.Folders.Server/Content/WorkspaceOperationEvidenceResult.cs
 src/Hexalith.Folders.Server/ContextSearch/MemoriesFolderSearchSource.cs
 src/Hexalith.Folders.Server/DuplicateWorkspaceLockRejected.cs
 src/Hexalith.Folders.Server/FolderAuditEndpointFilter.cs
@@ -196,6 +208,7 @@ src/Hexalith.Folders.Server/FolderCanonicalPathIdentifier.cs
 src/Hexalith.Folders.Server/FolderCanonicalSegmentIdentifier.cs
 src/Hexalith.Folders.Server/FolderCommandRejected.cs
 src/Hexalith.Folders.Server/FolderDomainProcessor.ContentBatch.cs
+src/Hexalith.Folders.Server/FolderDomainProcessor.Native.cs
 src/Hexalith.Folders.Server/FolderDomainProcessor.cs
 src/Hexalith.Folders.Server/FolderDomainProjectionHandler.cs
 src/Hexalith.Folders.Server/FolderEventReplay.cs
@@ -207,6 +220,7 @@ src/Hexalith.Folders.Server/FoldersApiRouteTelemetry.cs
 src/Hexalith.Folders.Server/FoldersApiRouting.cs
 src/Hexalith.Folders.Server/FoldersApiRoutingMode.cs
 src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.Content.cs
+src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.Native.cs
 src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
 src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs
 src/Hexalith.Folders.Server/FoldersRequestJsonElementConverter.cs
@@ -418,6 +432,8 @@ src/Hexalith.Folders/Aggregates/Folder/WorkspaceLockAcquisitionService.cs
 src/Hexalith.Folders/Aggregates/Folder/WorkspaceLockReleaseRequest.cs
 src/Hexalith.Folders/Aggregates/Folder/WorkspaceLockReleaseService.cs
 src/Hexalith.Folders/Aggregates/Folder/WorkspaceLockReleased.cs
+src/Hexalith.Folders/Aggregates/Folder/WorkspaceNativeTaskChanged.cs
+src/Hexalith.Folders/Aggregates/Folder/WorkspaceNativeTaskService.cs
 src/Hexalith.Folders/Aggregates/Folder/WorkspacePathPolicyDecision.cs
 src/Hexalith.Folders/Aggregates/Folder/WorkspacePathPolicyEvidenceDecision.cs
 src/Hexalith.Folders/Aggregates/Folder/WorkspacePathPolicyEvidenceRequest.cs
@@ -1148,6 +1164,7 @@ tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs
 tests/Hexalith.Folders.Server.Tests/FoldersContextSearchFacadeRegistrationTests.cs
 tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs
 tests/Hexalith.Folders.Server.Tests/FoldersGatewayTransportTests.cs
+tests/Hexalith.Folders.Server.Tests/FoldersNativeGatewayBearerTests.cs
 tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs
 tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs
 tests/Hexalith.Folders.Server.Tests/FoldersTenantEventHandlerTests.cs
@@ -1209,6 +1226,8 @@ tests/Hexalith.Folders.Server.Tests/WorkspaceContentProductionValidator.cs
 tests/Hexalith.Folders.Server.Tests/WorkspaceContentRejectionMappingTests.cs
 tests/Hexalith.Folders.Server.Tests/WorkspaceContentTransportTestServices.cs
 tests/Hexalith.Folders.Server.Tests/WorkspaceLockEndpointTests.cs
+tests/Hexalith.Folders.Server.Tests/WorkspaceOperationEvidenceTests.Corrections.cs
+tests/Hexalith.Folders.Server.Tests/WorkspaceOperationEvidenceTests.cs
 tests/Hexalith.Folders.Server.Tests/WorkspaceStatusEndpointTests.cs
 tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/CoordinatedSeedEventList.cs
@@ -1402,6 +1421,13 @@ tests/Hexalith.Folders.UI.Tests/WorkspacePageTests.cs
 tests/fixtures/parity-contract.schema.json
 tests/fixtures/parity-contract.yaml
 tests/fixtures/previous-spine.yaml
+tests/shared/NativeContent/NativeContentAuthority.cs
+tests/shared/NativeContent/NativeContentClock.cs
+tests/shared/NativeContent/NativeContentDiagnosticStore.cs
+tests/shared/NativeContent/NativeContentFixture.cs
+tests/shared/NativeContent/NativeContentGateway.cs
+tests/shared/NativeContent/NativeContentSeedAuthority.cs
+tests/shared/NativeContent/NativeContentTimer.cs
 tests/shared/OperationalStatus/OperationalStatusClock.cs
 tests/shared/OperationalStatus/OperationalStatusReadObserver.cs
 tests/shared/OperationalStatus/OperationalStatusSequenceReader.cs

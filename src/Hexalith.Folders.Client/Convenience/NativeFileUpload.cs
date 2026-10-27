@@ -8,9 +8,19 @@ public static class NativeFileUpload
     public static string ComputeLegacyAddIdempotencyKey(string operationId, PathMetadata path, string contentHashReference, string workspaceId, string taskId)
     {
         ArgumentNullException.ThrowIfNull(path);
-        var legacy = new LegacyIdempotencyPathMetadata { NormalizedPath = path.NormalizedPath, DisplayName = path.DisplayName,
-            PathPolicyClass = path.PathPolicyClass, UnicodeNormalization = path.UnicodeNormalization };
-        return FileUpload.ComputeIdempotencyKey(new FileMutationRequest { OperationId = operationId, PathMetadata = legacy,
-            FileOperationKind = FileMutationRequestFileOperationKind.Add, ContentHashReference = contentHashReference }, workspaceId, taskId);
+        var legacy = new LegacyIdempotencyPathMetadata
+        {
+            NormalizedPath = path.NormalizedPath,
+            DisplayName = path.DisplayName,
+            PathPolicyClass = path.PathPolicyClass,
+            UnicodeNormalization = path.UnicodeNormalization
+        };
+        return FileUpload.ComputeIdempotencyKey(new FileMutationRequest
+        {
+            OperationId = operationId,
+            PathMetadata = legacy,
+            FileOperationKind = FileMutationRequestFileOperationKind.Add,
+            ContentHashReference = contentHashReference
+        }, workspaceId, taskId);
     }
 }

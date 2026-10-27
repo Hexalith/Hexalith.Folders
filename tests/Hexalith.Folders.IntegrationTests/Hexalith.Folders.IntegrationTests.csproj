@@ -8,7 +8,7 @@
   <Target Name="PreparePinnedMemoriesTopologyMetadata"
           BeforeTargets="PrepareForBuild"
           Condition="'$(CI)' == 'true'">
-    <Exec Command="git -c submodule.recurse=false submodule update --init --checkout references/Hexalith.Memories"
+    <Exec Command="git -c submodule.recurse=false submodule update --init --checkout references/Hexalith.Memories references/Hexalith.EventStore"
           WorkingDirectory="$(MSBuildProjectDirectory)/../.." />
   </Target>
   <ItemGroup>

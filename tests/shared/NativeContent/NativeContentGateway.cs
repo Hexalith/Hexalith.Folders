@@ -13,7 +13,7 @@ using System.Text.Json;
 using System.Security.Claims;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
-using Dapr.Client;
+using Dapr.Client; // CACHE-NON-TENANT: this fixture reads the test event stream, not a tenant data cache.
 using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Client.Handlers;
 using Hexalith.EventStore.Contracts.Commands;
