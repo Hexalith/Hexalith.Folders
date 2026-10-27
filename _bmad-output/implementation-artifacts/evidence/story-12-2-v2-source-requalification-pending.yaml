@@ -16,8 +16,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: ab66d2ea3c22157fae01c03244c9f39e331ac2d1f443bd5cf7963b4c3294bf4f
-artifact_count: 1451
+candidate_set_sha256: a44580b0bcc6f61cf6ac6325f91754535f99212def5aefcd148e7336dd1fcf3b
+artifact_count: 1452
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -113,8 +113,8 @@ artifacts:
     sha256: e772e1a7cccf1bc5ba890a17d8eced23802ea0303f9b0a98e24feaa6a40aef23
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 103869
-    sha256: 1ca526705287ef7c3bbe7f22a0da160f93c6476014041e57f2148ef415274090
+    bytes: 103916
+    sha256: f8c17962c00bc1db3bb1766f6a000f4082ede7737eaa877e4a124fb52881f3c0
   - path: "src/Hexalith.Folders.Cli/CliApplication.cs"
     kind: file
     bytes: 3443
@@ -4417,8 +4417,8 @@ artifacts:
     sha256: 9e33a89ed0d22e2079301c7687bb1049e8bcdd9d24f804a7c18aedfec49f936d
   - path: "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj"
     kind: file
-    bytes: 6585
-    sha256: 8776986c1e1bdedc2cc0ef12578650bf7e8ef5148301e330f14a1bd63281e1ec
+    bytes: 6487
+    sha256: 34db189a32ad3bc1708d2797ca3d833e6273c365c15394992eeb0b44f0aef196
   - path: "tests/Hexalith.Folders.IntegrationTests/IntegrationSmokeTests.cs"
     kind: file
     bytes: 218
@@ -4713,8 +4713,8 @@ artifacts:
     sha256: 0f763802a96444c891801d93f13d1f2cf003ceeea25722c56a8581b475196bcf
   - path: "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj"
     kind: file
-    bytes: 3380
-    sha256: 23458ae04919a8f74dfd7a2ce6d7255dcdc0bc58dd9874e2e3714ca349e47eb7
+    bytes: 2872
+    sha256: b3b0992dc06039586e44acf69b6ee4bc9fc39992965bfb85e377cd48088c7ddb
   - path: "tests/Hexalith.Folders.Server.Tests/HistoricalMutationAllowingDaprPolicy.cs"
     kind: file
     bytes: 427
@@ -5711,6 +5711,10 @@ artifacts:
     kind: file
     bytes: 78443
     sha256: adbfde06948e3ca89c71a41383d90446628398272706b373d685136cd3e8f237
+  - path: "tests/shared/EventStore/RecordingDaprClient.cs"
+    kind: file
+    bytes: 22965
+    sha256: f97176b84dbd8bab65bf6b99188e6832dd2271e54f6dfd18b02d0352ceba9a3c
   - path: "tests/shared/NativeContent/NativeContentAuthority.cs"
     kind: file
     bytes: 2471

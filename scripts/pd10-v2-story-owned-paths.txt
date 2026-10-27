@@ -1421,6 +1421,7 @@ tests/Hexalith.Folders.UI.Tests/WorkspacePageTests.cs
 tests/fixtures/parity-contract.schema.json
 tests/fixtures/parity-contract.yaml
 tests/fixtures/previous-spine.yaml
+tests/shared/EventStore/RecordingDaprClient.cs
 tests/shared/NativeContent/NativeContentAuthority.cs
 tests/shared/NativeContent/NativeContentClock.cs
 tests/shared/NativeContent/NativeContentDiagnosticStore.cs

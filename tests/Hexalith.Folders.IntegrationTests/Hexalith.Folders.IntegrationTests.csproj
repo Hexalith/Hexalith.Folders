@@ -8,12 +8,12 @@
   <Target Name="PreparePinnedMemoriesTopologyMetadata"
           BeforeTargets="PrepareForBuild"
           Condition="'$(CI)' == 'true'">
-    <Exec Command="git -c submodule.recurse=false submodule update --init --checkout references/Hexalith.Memories references/Hexalith.EventStore"
+    <Exec Command="git -c submodule.recurse=false submodule update --init --checkout references/Hexalith.Memories"
           WorkingDirectory="$(MSBuildProjectDirectory)/../.." />
   </Target>
   <ItemGroup>
     <!-- Reuse the SDK's byte/CAS persistence double; the production content protocol remains under test. -->
-    <Compile Include="../../references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/Projections/RecordingDaprClient.cs" Link="Content/RecordingDaprClient.cs" />
+    <Compile Include="../shared/EventStore/RecordingDaprClient.cs" Link="Content/RecordingDaprClient.cs" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj" />
     <!-- Story 9.1: the Aspire topology test drives the platform EventStore composition (gateway-only
          AddHexalithEventStore + AddEventStoreDomainModule) to assert the full five-sidecar topology. -->

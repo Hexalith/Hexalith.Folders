@@ -6,17 +6,10 @@
     <PackageReference Include="Hexalith.Commons.UniqueIds" ExcludeAssets="all" />
     <ProjectReference Include="$(HexalithCommonsRoot)/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj" />
   </ItemGroup>
-  <!-- CI leaves update=none roots uninitialized. Check out only this root before compiling its test double. -->
-  <Target Name="PreparePinnedEventStoreTestDouble"
-          BeforeTargets="PrepareForBuild"
-          Condition="'$(CI)' == 'true'">
-    <Exec Command="git -c submodule.recurse=false submodule update --init --checkout references/Hexalith.EventStore"
-          WorkingDirectory="$(MSBuildProjectDirectory)/../.." />
-  </Target>
   <ItemGroup>
     <Compile Include="../shared/NativeContent/*.cs" Link="NativeContent/%(Filename)%(Extension)" />
     <ProjectReference Include="../../src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj" />
-    <Compile Include="../../references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/Projections/RecordingDaprClient.cs" Link="Content/RecordingDaprClient.cs" />
+    <Compile Include="../shared/EventStore/RecordingDaprClient.cs" Link="Content/RecordingDaprClient.cs" />
     <!-- Reuse the pinned platform protocol harness; no package version changes. -->
     <ProjectReference Include="$(HexalithEventStoreRoot)/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
     <PackageReference Include="Hexalith.EventStore.Testing" Condition="'$(HexalithEventStoreFromSource)' != 'true'" />
