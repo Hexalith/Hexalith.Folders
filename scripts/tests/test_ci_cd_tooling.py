@@ -29,6 +29,7 @@ class RootSubmoduleCheckoutTests(unittest.TestCase):
     cyclic_modules = {
         "Hexalith.Tenants", "Hexalith.EventStore", "Hexalith.FrontComposer",
         "Hexalith.Memories", "Hexalith.Projects", "Hexalith.Platform", "Hexalith.McpCli",
+        "Hexalith.Parties",
     }
     package_modules = {
         "Hexalith.AI.Tools", "Hexalith.Builds", "Hexalith.Commons", "Hexalith.PolymorphicSerializations",
