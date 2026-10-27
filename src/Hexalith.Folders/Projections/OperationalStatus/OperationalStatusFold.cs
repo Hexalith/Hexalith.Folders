@@ -161,6 +161,7 @@ public static class OperationalStatusFold
         {
             WorkspacePreparationRequested item => item.WorkspaceId,
             FolderWorkspaceLifecycleEventRecorded item => item.WorkspaceId,
+            WorkspaceNativeTaskChanged item => item.WorkspaceId,
             WorkspaceLockAcquired item => item.WorkspaceId,
             WorkspaceLockReleased item => item.WorkspaceId,
             WorkspaceFileMutationAccepted item => item.WorkspaceId,
@@ -169,7 +170,7 @@ public static class OperationalStatusFold
             WorkspaceCommitOutcomeUnknown item => item.WorkspaceId,
             _ => null,
         };
-        bool workspaceEvent = value is WorkspacePreparationRequested or FolderWorkspaceLifecycleEventRecorded
+        bool workspaceEvent = value is WorkspaceNativeTaskChanged or WorkspacePreparationRequested or FolderWorkspaceLifecycleEventRecorded
             or WorkspaceLockAcquired or WorkspaceLockReleased or WorkspaceFileMutationAccepted
             or WorkspaceCommitSucceeded or WorkspaceCommitFailed or WorkspaceCommitOutcomeUnknown;
         if (workspaceEvent && (string.IsNullOrWhiteSpace(workspace)
@@ -238,7 +239,7 @@ public static class OperationalStatusFold
             && state.TaskClosures is not null && state.TaskClosures.All(static item => item.Value is { } closure
                 && !string.IsNullOrWhiteSpace(closure.WorkspaceId) && !string.IsNullOrWhiteSpace(closure.TaskId)
                 && !string.IsNullOrWhiteSpace(closure.OperationId) && !string.IsNullOrWhiteSpace(closure.CorrelationId)
-                && closure.TerminalState is "ready" or "committed" && closure.ClosedAt != default
+                && closure.TerminalState is "ready" or "committed" or "native_completed" && closure.ClosedAt != default
                 && item.Key == FolderState.TaskBindingKey(closure.WorkspaceId, closure.TaskId));
 
     private static OperationalWorkspaceStatus Workspace(FolderState state, long sequence, string digest, DateTimeOffset observed)
@@ -285,8 +286,9 @@ public static class OperationalStatusFold
         string current = FolderStateTransitions.ToWireName(state.WorkspaceLifecycleState!.Value);
         FolderTaskClosure? closed = state.TaskClosures.Values.Where(value => value.TaskId == state.WorkspaceTaskId)
             .OrderBy(value => closedSequences[FolderState.TaskBindingKey(value.WorkspaceId, value.TaskId)]).FirstOrDefault();
-        return new(state.ManagedTenantId!, state.WorkspaceTaskId!, closed?.TerminalState ?? current,
-            closed?.TerminalState ?? (current is "failed" or "inaccessible" ? current : null),
+        string? terminal = closed?.TerminalState == "native_completed" ? "ready" : closed?.TerminalState;
+        return new(state.ManagedTenantId!, state.WorkspaceTaskId!, terminal ?? current,
+            terminal ?? (current is "failed" or "inaccessible" ? current : null),
             closed?.OperationId ?? state.WorkspaceOperationId, closed is null ? Failure(state, current) : null,
             closed is null ? Retry(current) : new(false, "retry_not_required"), null,
             Freshness(closed is null ? sequence : closedSequences[FolderState.TaskBindingKey(closed.WorkspaceId, closed.TaskId)],

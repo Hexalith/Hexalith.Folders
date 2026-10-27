@@ -55,11 +55,26 @@ public sealed class WorkspaceFilePolicySnapshot
         ArgumentNullException.ThrowIfNull(path);
         if (!WorkspacePathPolicyValidator.Validate(path).IsAccepted
             || path.PathPolicyClass is not ("content_allowed" or "metadata_only" or "excluded" or "restricted")) return "restricted";
-        string[] segments = path.NormalizedPath.Split('/');
+        return ClassifyRules(path.NormalizedPath);
+    }
+    /// <summary>Applies the same current rules to a bounded historical address for read-only accepted/absence evidence.</summary>
+    internal string ClassifyHistoricalEvidence(PathMetadata path)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+        if (path.NormalizedPath is not { Length: >= 1 and <= 500 } value || value.StartsWith('/') || value.EndsWith('/')
+            || value.Contains('\\') || value.Any(character => char.IsControl(character)
+                || char.GetUnicodeCategory(character) == System.Globalization.UnicodeCategory.Format)
+            || value.Split('/').Any(segment => segment.Length == 0 || segment is "." or "..")
+            || path.PathPolicyClass is not ("content_allowed" or "metadata_only")) return "restricted";
+        return ClassifyRules(value);
+    }
+    private string ClassifyRules(string path)
+    {
+        string[] segments = path.Split('/');
         if (segments.Any(segment => segment.Equals(".git", StringComparison.OrdinalIgnoreCase))) return "restricted";
-        if (!_includes.Any(rule => Matches(rule, path.NormalizedPath)) || _excludes.Any(rule => Matches(rule, path.NormalizedPath))) return "excluded";
-        if (_restricted.Any(rule => Matches(rule, path.NormalizedPath))) return "restricted";
-        return _metadataOnly.Any(rule => Matches(rule, path.NormalizedPath)) ? "metadata_only" : "content_allowed";
+        if (!_includes.Any(rule => Matches(rule, path)) || _excludes.Any(rule => Matches(rule, path))) return "excluded";
+        if (_restricted.Any(rule => Matches(rule, path))) return "restricted";
+        return _metadataOnly.Any(rule => Matches(rule, path)) ? "metadata_only" : "content_allowed";
     }
     /// <summary>Matches only OQ2's finite anchored segment glob language.</summary>
     public static bool Matches(string pattern, string path)

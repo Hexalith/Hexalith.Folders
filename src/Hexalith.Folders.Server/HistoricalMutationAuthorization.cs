@@ -28,7 +28,7 @@ internal static class HistoricalMutationAuthorization
         ArgumentNullException.ThrowIfNull(app);
         return app.Use(async (context, next) =>
         {
-            if (Content.WorkspaceContentRetentionEndpoints.Matches(context))
+            if (Content.WorkspaceContentRetentionEndpoints.Matches(context) || Content.WorkspaceNativeEndpoints.Matches(context))
             {
                 // The SDK independently checks current administrator authority before any disposition observation/effect.
                 await next(context).ConfigureAwait(false);
@@ -207,7 +207,7 @@ internal static class HistoricalMutationAuthorization
                 : null;
     }
 
-    private static IReadOnlyDictionary<string, string?> ClientControlledValues(
+    internal static IReadOnlyDictionary<string, string?> ClientControlledValues(
         HttpContext context,
         params (string Source, bool IsHeader, string Name)[] sources)
     {

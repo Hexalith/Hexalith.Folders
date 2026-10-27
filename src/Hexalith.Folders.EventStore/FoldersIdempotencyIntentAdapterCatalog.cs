@@ -22,6 +22,7 @@ internal sealed class FoldersIdempotencyIntentAdapterCatalog(IEnumerable<IIdempo
         "Hexalith.Folders.Commands.ConfigureBranchRefPolicy",
         "Hexalith.Folders.Commands.PrepareWorkspace",
         "Hexalith.Folders.Commands.LockWorkspace",
+        "Hexalith.Folders.Commands.ChangeNativeTask",
         "Hexalith.Folders.Commands.ReleaseWorkspaceLock",
         "Hexalith.Folders.Commands.MutateFiles",
         "Hexalith.Folders.Commands.AuthorizeWorkspaceContentErasure",

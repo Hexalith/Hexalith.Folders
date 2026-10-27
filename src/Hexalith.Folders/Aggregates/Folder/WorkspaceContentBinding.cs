@@ -25,6 +25,10 @@ public sealed record WorkspaceContentBinding(string ManagedTenantId, string Fold
     long LockFence, string? ReceiptId, string? ContentHashReference, long? ByteLength, string? MediaType,
     string PolicyVersion, string PolicyDigest, string FileOperationKind, string PathMetadataDigest, bool ContentReadable = false)
 {
+    /// <summary>Gets the exact caller SDK key retained independently of EventStore execution identifiers.</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? AcceptedSdkKey { get; init; }
+
     /// <summary>Derives a bounded, unambiguous per-item source key without extending caller identifiers.</summary>
     public static string BatchItemKey(string commandId, string operationId)
     {

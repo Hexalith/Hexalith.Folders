@@ -63,6 +63,9 @@ public static partial class FoldersDomainServiceEndpoints
             "d9_inline_limit_exceeded" => (413, "input_limit_exceeded", true, "revise_request"),
             "path_validation_failed" => (400, "path_validation_failed", false, "revise_request"),
             "confidential_operation_not_durable" => (422, "validation_error", false, "correct_input"),
+            "native_evidence_changed" or "native_contention" => (409, "concurrency_conflict", true, "retry"),
+            "idempotency_conflict" => (409, "idempotency_conflict", false, "revise_request"),
+            "target_conflict" => (409, "concurrency_conflict", false, "revise_request"),
             "concurrency_conflict" => (409, "concurrency_conflict", false, "revise_request"),
             _ => (400, "validation_error", false, "revise_request"),
         };

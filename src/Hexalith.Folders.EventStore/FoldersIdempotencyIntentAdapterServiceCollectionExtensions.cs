@@ -31,6 +31,7 @@ public static class FoldersIdempotencyIntentAdapterServiceCollectionExtensions
         _ = services.AddIdempotencyIntentAdapter<ConfigureBranchRefPolicyIdempotencyIntentAdapter>();
         _ = services.AddIdempotencyIntentAdapter<PrepareWorkspaceIdempotencyIntentAdapter>();
         _ = services.AddIdempotencyIntentAdapter<LockWorkspaceIdempotencyIntentAdapter>();
+        _ = services.AddIdempotencyIntentAdapter<ChangeNativeTaskIdempotencyIntentAdapter>();
         _ = services.AddIdempotencyIntentAdapter<ReleaseWorkspaceLockIdempotencyIntentAdapter>();
         _ = services.AddIdempotencyIntentAdapter<MutateFilesIdempotencyIntentAdapter>();
         _ = services.AddIdempotencyIntentAdapter<AuthorizeContentErasureIdempotencyIntentAdapter>();

@@ -22,6 +22,7 @@ public sealed class FolderCommandActionTokenMapper(IReadOnlyDictionary<string, F
             ["Hexalith.Folders.Commands.PrepareWorkspace"] = new("prepare_workspace", FolderCommandOperationScopeKind.FolderAggregate),
             ["Hexalith.Folders.Commands.LockWorkspace"] = new("lock_workspace", FolderCommandOperationScopeKind.FolderAggregate),
             [FoldersServerModule.ReleaseWorkspaceLockCommandType] = new("lock_workspace", FolderCommandOperationScopeKind.FolderAggregate),
+            [FoldersServerModule.NativeTaskCommandType] = new("mutate_files", FolderCommandOperationScopeKind.FolderAggregate),
             [FoldersServerModule.AuthorizeContentErasureCommandType] = new("manage_folder_access", FolderCommandOperationScopeKind.FolderAggregate),
             [FoldersServerModule.MutateFilesCommandType] = new("mutate_files", FolderCommandOperationScopeKind.FolderAggregate),
             [FoldersServerModule.CommitWorkspaceCommandType] = new("commit", FolderCommandOperationScopeKind.FolderAggregate),

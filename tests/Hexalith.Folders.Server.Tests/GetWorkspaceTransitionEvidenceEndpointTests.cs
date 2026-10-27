@@ -59,6 +59,7 @@ public sealed class GetWorkspaceTransitionEvidenceEndpointTests
         using JsonDocument document = JsonDocument.Parse(json);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+        Newtonsoft.Json.JsonConvert.DeserializeObject<Hexalith.Folders.Client.Generated.WorkspaceTransitionEvidence>(json)!.LockEvidence.LockFence.ShouldBe(41);
         response.Headers.GetValues("X-Hexalith-Freshness").ShouldContain("snapshot_per_task");
         document.RootElement.GetProperty("workspaceId").GetString().ShouldBe("workspace-a");
         document.RootElement.GetProperty("currentState").GetString().ShouldBe("ready");
@@ -228,7 +229,7 @@ public sealed class GetWorkspaceTransitionEvidenceEndpointTests
             EvidenceAt: Now,
             CorrelationId: "correlation-a",
             TaskId: "task-a",
-            LockEvidence: null,
+            LockEvidence: new WorkspaceLockLeaseMetadata("lock_a", "active", Now.AddMinutes(-1), Now.AddMinutes(-1), Now.AddMinutes(1), "task-a") { LockFence = 41 },
             AuditMetadata: new Dictionary<string, DateTimeOffset>(StringComparer.Ordinal)
             {
                 ["workspace_lifecycle_updated_at"] = Now,

@@ -30,8 +30,8 @@
     <!-- Story 10.5 (Option B): the authorized search facade reads the Memories search index via the typed
          MemoriesClient.SearchAsync, mirroring Hexalith.Tenants.UI. This is the ONLY Folders project besides
          Workers that references Memories; the read path NEVER touches the [Experimental] RAG IngestAsync APIs. -->
-    <ProjectReference Include="$(HexalithMemoriesRoot)\src\Hexalith.Memories.Contracts\Hexalith.Memories.Contracts.csproj" Condition="'$(HexalithMemoriesFromSource)' == 'true'" />
-    <ProjectReference Include="$(HexalithMemoriesRoot)\src\Hexalith.Memories.Client.Rest\Hexalith.Memories.Client.Rest.csproj" Condition="'$(HexalithMemoriesFromSource)' == 'true'" />
+    <ProjectReference Include="$(HexalithMemoriesRoot)\src\Hexalith.Memories.Contracts\Hexalith.Memories.Contracts.csproj" Condition="'$(HexalithMemoriesFromSource)' == 'true'" AdditionalProperties="UseHexalithProjectReferences=false;UseNuGetDeps=true" GlobalPropertiesToRemove="UseHexalithProjectReferences;UseNuGetDeps" />
+    <ProjectReference Include="$(HexalithMemoriesRoot)\src\Hexalith.Memories.Client.Rest\Hexalith.Memories.Client.Rest.csproj" Condition="'$(HexalithMemoriesFromSource)' == 'true'" AdditionalProperties="UseHexalithProjectReferences=false;UseNuGetDeps=true" GlobalPropertiesToRemove="UseHexalithProjectReferences;UseNuGetDeps" />
     <PackageReference Include="Hexalith.Memories.Contracts" Condition="'$(HexalithMemoriesFromSource)' != 'true'" />
     <PackageReference Include="Hexalith.Memories.Client.Rest" Condition="'$(HexalithMemoriesFromSource)' != 'true'" />
   </ItemGroup>

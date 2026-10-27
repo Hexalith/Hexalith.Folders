@@ -1,0 +1,11 @@
+# Native inline content companion
+
+`hexalith.folders.native.v1.yaml` adds bounded native v1 operation evidence, task lease and inline Add transport. The frozen v2 contract and its generated canonical idempotency helpers remain unchanged; v2 remains disabled.
+
+The public addresses `folder:<lowercase SHA256>` and `workspace:<lowercase SHA256>` are resolved only at this explicit native boundary to the corresponding `folder_<digest>` / `workspace_<digest>` owner addresses before tenant/ACL/source operations. Existing canonical owner addresses are accepted unchanged. The mapping preserves the entire digest, never changes tenant identity or the SDK's public workspace input, and does not widen EventStore's aggregate/stream grammar. Returned file IDs and incarnations always come from confirmed source-plus-SDK publication.
+
+Accepted-key evidence compares the exact original task, operation, metadata digest, content hash/length/media type and retained SDK key. It returns original file version/fence and the actual source fingerprint independently of an active lease. Historical publications lacking the retained SDK-key field remain unavailable; they never prove absence. Only an `absent` response obtained under the task's live lease proves version zero. Historical accepted replay acknowledges only the independently confirmed original publication; it does not complete or clean unrelated historical/provider work. New native tasks require explicit source-confirmed native completion.
+
+The externally configured consumer uses dedicated Endpoint, TenantId and static ApiToken settings. Identity provisioning and SDK package publication are separate operational work. The existing pinned 1.3.1 client cannot supply this companion API; Debug source validation is distinct from package-only Release qualification.
+
+Generate the companion with `dotnet build src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj --configuration Debug -p:UseHexalithProjectReferences=true -t:GenerateHexalithFoldersNativeClient -m:1 -nodeReuse:false`. Verify reproducibility with the same command targeting `VerifyHexalithFoldersNativeClient`. Neither target edits the canonical helper generator or publishes packages.

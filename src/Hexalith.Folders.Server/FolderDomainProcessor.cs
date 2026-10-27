@@ -192,6 +192,9 @@ public sealed partial class FolderDomainProcessor(
             return await ProcessReleaseWorkspaceLockAsync(command).ConfigureAwait(false);
         }
 
+        if (command.CommandType == FoldersServerModule.NativeTaskCommandType)
+            return await ProcessNativeTaskAsync(command).ConfigureAwait(false);
+
         if (command.CommandType == FoldersServerModule.AuthorizeContentErasureCommandType)
             return ProcessContentErasure(command);
 
@@ -1254,6 +1257,9 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
+        if (payload.AcceptedSdkKey is { } sdkKey && httpContextAccessor?.HttpContext is { } nativeContext)
+            nativeContext.Items["Folders:AcceptedSdkKey"] = sdkKey;
+
         string taskId = ReadRequiredTaskId(envelope);
         Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
         if (!string.IsNullOrWhiteSpace(envelope.UserId))
@@ -1783,6 +1789,7 @@ public sealed partial class FolderDomainProcessor(
         long? ObservedByteLength,
         string? TaskId)
     {
+        public string? AcceptedSdkKey { get; init; }
         public string? ContentReceiptId { get; init; }
         public long? ExpectedFileVersion { get; init; }
         public long? ExpectedLockFence { get; init; }

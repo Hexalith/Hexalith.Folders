@@ -48,6 +48,7 @@ public static class FoldersServerServiceCollectionExtensions
         services.AddKnownEventPayload<BranchRefPolicyConfigured>();
         services.AddKnownEventPayload<WorkspacePreparationRequested>();
         services.AddKnownEventPayload<FolderWorkspaceLifecycleEventRecorded>();
+        services.AddKnownEventPayload<WorkspaceNativeTaskChanged>();
         services.AddKnownEventPayload<WorkspaceLockAcquired>();
         services.AddKnownEventPayload<WorkspaceLockReleased>();
         services.AddKnownEventPayload<WorkspaceFileMutationAccepted>();
@@ -112,6 +113,7 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddScoped<WorkspaceLockReleaseService>();
         services.AddAuthoritativeContent<WorkspaceContentAuthority>(options => options.MaximumBodyBytes = 1048576);
         services.TryAddScoped<IWorkspaceFilePolicySource, ConfigurationWorkspaceFilePolicySource>();
+        services.TryAddScoped<WorkspaceOperationEvidence>();
         services.TryAddScoped<WorkspaceContentStateReader>();
         services.TryAddScoped<WorkspaceContentRejectionReader>();
         services.TryAddScoped<WorkspaceContentBatch>();

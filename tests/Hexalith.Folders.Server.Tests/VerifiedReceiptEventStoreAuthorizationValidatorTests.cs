@@ -18,6 +18,7 @@ public sealed class VerifiedReceiptEventStoreAuthorizationValidatorTests
 {
     [Theory]
     [InlineData("POST", "/api/v1/folders", true)]
+    [InlineData("POST", "/api/v1/folders/folder-a/workspaces/workspace-a/native/task-lease", false)]
     [InlineData("POST", "/process", false)]
     [InlineData("POST", "/api/v1/unknown", false)]
     [InlineData("GET", "/api/v1/folders", false)]
@@ -51,6 +52,20 @@ public sealed class VerifiedReceiptEventStoreAuthorizationValidatorTests
             .Status.ShouldBe(EventStoreAuthorizationValidationStatus.Denied);
     }
 
+    [Theory]
+    [InlineData("mutate_files")]
+    [InlineData("lock_workspace")]
+    public async Task NativeMutationPreflightUsesTheCurrentHumanPermission(string action)
+    {
+        var context = new DefaultHttpContext { User = new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", "user-a"),
+            new Claim("eventstore:tenant", "tenant-a"), new Claim("eventstore:permission", action)], "Bearer")) };
+        context.Request.Method = "POST"; context.Request.Path = "/api/v1/folders/folder-a/workspaces/workspace-a/native/task-lease";
+        var validator = new VerifiedReceiptEventStoreAuthorizationValidator(new HttpContextAccessor { HttpContext = context });
+        var allowed = new LayeredFolderAuthorizationAllowedContext("tenant-a", "user-a", action, "folder-a", null, "task-a", null, []) { PrincipalId = "user-a" };
+        (await validator.ValidateAsync(new(allowed, "mutation"), TestContext.Current.CancellationToken).ConfigureAwait(true)).Status.ShouldBe(EventStoreAuthorizationValidationStatus.Allowed);
+        ((ClaimsIdentity)context.User.Identity!).RemoveClaim(context.User.FindFirst("eventstore:permission")!);
+        (await validator.ValidateAsync(new(allowed, "mutation"), TestContext.Current.CancellationToken).ConfigureAwait(true)).Status.ShouldBe(EventStoreAuthorizationValidationStatus.Denied);
+    }
     [Fact]
     public async Task SignedMutationReceiptRequiresMatchingTenantSubjectAndAction()
     {

@@ -80,7 +80,8 @@ internal sealed class WorkspaceContentMutationAdapter(IAuthoritativeContentStore
         return new(scope.TenantId, scope.AggregateId, scope.WorkspaceId, taskId, commandId, operationId, fileId,
             version, expectedHead, fence, receipt?.Id, receipt is null ? null : "hashref_" + receipt.Sha256,
             receipt?.ByteLength, receipt?.MediaType, policy.Version, policy.Digest, kind,
-            WorkspacePathPolicyValidator.ComputePathMetadataDigest(path), readable);
+            WorkspacePathPolicyValidator.ComputePathMetadataDigest(path), readable)
+        { AcceptedSdkKey = http.HttpContext?.Items["Folders:AcceptedSdkKey"] as string };
     }
     private static WorkspaceFileContentStoreResult Failed(FolderResultCode code)
         => WorkspaceFileContentStoreResult.Failed with { FailureCode = code };

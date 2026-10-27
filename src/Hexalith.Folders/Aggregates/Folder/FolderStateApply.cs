@@ -31,6 +31,7 @@ public static class FolderStateApply
 
         return folderEvent switch
         {
+            WorkspaceNativeTaskChanged native => WorkspaceNativeTaskService.Apply(state, native) with { IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, native) },
             FolderCreated created => state with
             {
                 IsCreated = true,
@@ -391,6 +392,7 @@ public static class FolderStateApply
 
         return WithWorkspaceTransition(state, accepted, transition, accepted.WorkspaceId, accepted.OperationId) with
         {
+            WorkspaceNativeProviderWork = state.WorkspaceNativeProviderWork || state.WorkspaceNativeLease && accepted.ContentBinding?.AcceptedSdkKey is null,
             ContentPublications = RecordContentPublication(state, accepted),
             FileIdentities = FolderFileIdentityState.Apply(state.FileIdentities, accepted),
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, accepted),

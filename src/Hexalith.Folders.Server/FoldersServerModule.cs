@@ -59,6 +59,8 @@ public static class FoldersServerModule
 
     public const string MutateFilesCommandType = MutateWorkspaceFile.CommandTypeName;
 
+    public const string NativeTaskCommandType = "Hexalith.Folders.Commands.ChangeNativeTask";
+
     public const string AuthorizeContentErasureCommandType = "Hexalith.Folders.Commands.AuthorizeWorkspaceContentErasure";
 
     public const string CommitWorkspaceCommandType = CommitWorkspace.CommandTypeName;

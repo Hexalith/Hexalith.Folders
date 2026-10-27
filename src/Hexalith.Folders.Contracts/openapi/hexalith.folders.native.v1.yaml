@@ -1,0 +1,489 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Folders native inline content companion",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/folders/{folderId}/workspaces/{workspaceId}/native/operation-evidence": {
+      "post": {
+        "operationId": "GetNativeOperationEvidence",
+        "parameters": [
+          {
+            "name": "folderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "X-Correlation-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "X-Hexalith-Task-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NativeEvidenceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authoritative native result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NativeEvidence"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/folders/{folderId}/workspaces/{workspaceId}/native/task-lease": {
+      "post": {
+        "operationId": "ChangeNativeTaskLease",
+        "parameters": [
+          {
+            "name": "folderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "X-Correlation-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "X-Hexalith-Task-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NativeLeaseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authoritative native result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NativeLease"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/folders/{folderId}/workspaces/{workspaceId}/native/files/add": {
+      "post": {
+        "operationId": "AddNativeFile",
+        "parameters": [
+          {
+            "name": "folderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "X-Correlation-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "X-Hexalith-Task-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted; publication must be confirmed separately",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NativeAcceptedCommand"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NativePathMetadata": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "normalizedPath",
+          "displayName",
+          "pathPolicyClass",
+          "unicodeNormalization"
+        ],
+        "properties": {
+          "normalizedPath": {
+            "type": "string",
+            "maxLength": 1024
+          },
+          "displayName": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "pathPolicyClass": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "unicodeNormalization": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      },
+      "NativeEvidenceRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lookupKind",
+          "operationId",
+          "acceptedKey",
+          "pathMetadata",
+          "contentHashReference",
+          "byteLength",
+          "mediaType"
+        ],
+        "properties": {
+          "lookupKind": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "operationId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "acceptedKey": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "pathMetadata": {
+            "$ref": "#/components/schemas/NativePathMetadata"
+          },
+          "contentHashReference": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "byteLength": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "maximum": 262144
+          },
+          "mediaType": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "lockFence": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "legacy": {
+            "type": "boolean"
+          }
+        }
+      },
+      "NativeLeaseRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation",
+          "requestedLeaseSeconds"
+        ],
+        "properties": {
+          "operation": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "requestedLeaseSeconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3600
+          },
+          "lockId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "ownershipProof": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "lockFence": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "operationId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "acceptedKey": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "fingerprint": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      },
+      "NativeEvidence": {
+        "type": "object",
+        "required": [
+          "status",
+          "expectedFileVersion",
+          "lockFence",
+          "completed"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "fileId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "incarnationId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "fingerprint": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "acceptedKey": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "operationId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "contentHashReference": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "mediaType": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "taskId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "commandId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "expectedFileVersion": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fileVersion": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lockFence": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "byteLength": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "lockId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "ownershipProof": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      },
+      "NativeLease": {
+        "type": "object",
+        "required": [
+          "lockId",
+          "ownershipProof",
+          "lockFence",
+          "effectiveAt",
+          "expiresAt",
+          "renewalIntervalSeconds",
+          "authorizationIntervalSeconds"
+        ],
+        "properties": {
+          "lockId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "ownershipProof": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "lockFence": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "effectiveAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "renewalIntervalSeconds": {
+            "type": "integer"
+          },
+          "authorizationIntervalSeconds": {
+            "type": "integer"
+          }
+        }
+      },
+      "NativeAcceptedCommand": {
+        "type": "object",
+        "required": [
+          "acceptedAt",
+          "correlationId",
+          "taskId",
+          "status",
+          "idempotentReplay"
+        ],
+        "properties": {
+          "acceptedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "correlationId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "taskId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "status": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "idempotentReplay": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

@@ -74,6 +74,7 @@ public sealed class WorkspaceLockEndpointTests
         document.RootElement.GetProperty("lockState").GetString().ShouldBe("locked");
         document.RootElement.GetProperty("lease").GetProperty("lockId").GetString().ShouldBe("workspace_lock_a");
         document.RootElement.GetProperty("retryEligibility").GetProperty("reasonCode").GetString().ShouldBe("lock_active");
+        Newtonsoft.Json.JsonConvert.DeserializeObject<Hexalith.Folders.Client.Generated.WorkspaceLockStatus>(json)!.Lease.LockFence.ShouldBe(29);
         json.ShouldNotContain("lockOwnershipProof", Case.Sensitive);
     }
 
@@ -1469,7 +1470,7 @@ public sealed class WorkspaceLockEndpointTests
                 ActionToken: "read_workspace_lock",
                 TaskId: "task-a",
                 CorrelationId: "correlation-a",
-                AuthorizationWatermark: "permission_watermark_v1")));
+                AuthorizationWatermark: "permission_watermark_v1")) { LockFence = 29 });
         return readModel;
     }
 

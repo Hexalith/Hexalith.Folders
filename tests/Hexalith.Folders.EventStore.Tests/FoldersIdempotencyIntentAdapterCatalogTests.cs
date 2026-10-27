@@ -87,6 +87,7 @@ public sealed class FoldersIdempotencyIntentAdapterCatalogTests
         FoldersServerModule.ConfigureBranchRefPolicyCommandType,
         FoldersServerModule.PrepareWorkspaceCommandType,
         FoldersServerModule.LockWorkspaceCommandType,
+        FoldersServerModule.NativeTaskCommandType,
         FoldersServerModule.ReleaseWorkspaceLockCommandType,
         FoldersServerModule.MutateFilesCommandType,
         FoldersServerModule.AuthorizeContentErasureCommandType,

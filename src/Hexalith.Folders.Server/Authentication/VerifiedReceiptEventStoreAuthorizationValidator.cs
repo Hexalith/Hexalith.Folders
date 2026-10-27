@@ -33,7 +33,9 @@ public sealed class VerifiedReceiptEventStoreAuthorizationValidator(IHttpContext
                 && string.Equals(receipt.Subject, request.SafeContext.PrincipalId, StringComparison.Ordinal)
                 && receipt.Permissions.Contains(request.SafeContext.ActionToken, StringComparer.Ordinal))
                 || (httpContext is not null && (HistoricalMutationAuthorization.IsDirectPublicMutation(httpContext)
-                    || Content.WorkspaceContentRetentionEndpoints.Matches(httpContext))
+                    || Content.WorkspaceContentRetentionEndpoints.Matches(httpContext)
+                    || Content.WorkspaceNativeEndpoints.Matches(httpContext)
+                        && request.SafeContext.ActionToken is "mutate_files" or "lock_workspace")
                     && MatchesValidatedHuman(httpContext, request)),
             "strict_read" or "bounded_diagnostic_read" => verifiedRead
                 || (httpContext is not null && (MatchesValidatedHuman(httpContext, request)

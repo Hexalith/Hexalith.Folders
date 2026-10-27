@@ -67,7 +67,8 @@ internal sealed class WorkspaceContentAuthority(LayeredFolderAuthorizationServic
         if (scope.Domain != "folders" || tenant.AuthoritativeTenantId != scope.TenantId
             || principal.Identity?.IsAuthenticated != true || string.IsNullOrWhiteSpace(tenant.PrincipalId))
             throw new UnauthorizedAccessException();
-        string action = operation == ContentOperation.Disposition ? "manage_folder_access"
+        string action = resource is ContentTaskSealRequest ? "mutate_files"
+            : operation == ContentOperation.Disposition ? "manage_folder_access"
             : operation == ContentOperation.Read ? "mutate_files"
             : processAuthorization.Current?.AllowedContext?.ActionToken
                 ?? http.HttpContext?.Items[ActionItem] as string
@@ -77,7 +78,8 @@ internal sealed class WorkspaceContentAuthority(LayeredFolderAuthorizationServic
             ? currentTask as string : PreauthorizedRequestContext.Current?.TaskId;
         string? taskId = resource switch { ContentUploadRequest upload => upload.TaskId,
             ContentUploadVerification upload => upload.TaskId, ContentPublicationRequest publication => publication.TaskId,
-            _ => operation == ContentOperation.Read ? readTaskId : null };
+            ContentTaskSealRequest sealing => sealing.TaskId,
+            _ => operation is ContentOperation.Read or ContentOperation.Recover ? readTaskId : null };
         var context = new LayeredFolderAuthorizationContext(scope.TenantId, tenant.PrincipalId, tenant.PrincipalId,
             action, mutation ? LayeredFolderOperationPolicy.Mutation() : LayeredFolderOperationPolicy.StrictRead(),
             claims.GetEvidence(action), scope.AggregateId, null, taskId, null, null);
@@ -92,12 +94,26 @@ internal sealed class WorkspaceContentAuthority(LayeredFolderAuthorizationServic
             if (_snapshot.ProtectionMode != "non_confidential")
                 throw new WorkspaceContentPolicyException("confidential_operation_not_durable");
         }
+        if (resource is ContentTaskSealRequest seal)
+        {
+            if (operation != ContentOperation.Prepare || seal.LeaseFence <= 0) throw new UnauthorizedAccessException();
+            var lockContext = context with { ActionToken = "lock_workspace", ClaimTransformEvidence = claims.GetEvidence("lock_workspace") };
+            var lockAllowed = await authorization.ReauthorizeTaskMutationAsync(lockContext, cancellationToken).ConfigureAwait(false);
+            if (!lockAllowed.IsAllowed) throw new UnauthorizedAccessException();
+            var current = await source.ReadAsync(scope, cancellationToken).ConfigureAwait(false);
+            if (current.State.WorkspaceId != scope.WorkspaceId || !current.State.WorkspaceNativeLease
+                || current.State.WorkspaceLockHolderTaskId != seal.TaskId || current.State.WorkspaceLockFence != seal.LeaseFence
+                || current.State.IsTaskClosed(scope.WorkspaceId, seal.TaskId) || current.State.WorkspaceNativeProviderWork)
+                throw new ContentConflictException();
+            // Expiry does not revoke exact owned cleanup/completion; it still forbids new uploads.
+        }
         if (operation is ContentOperation.Upload or ContentOperation.InspectUpload && taskId is not null)
         {
             var current = await source.ReadAsync(scope, cancellationToken).ConfigureAwait(false);
             if (current.State.WorkspaceId != scope.WorkspaceId || current.State.WorkspaceLockHolderTaskId != taskId
                 || current.State.IsTaskClosed(scope.WorkspaceId, taskId) || current.State.WorkspaceLockExpiresAt is null
                 || current.State.WorkspaceLockExpiresAt <= clock.GetUtcNow()
+                || resource is ContentUploadRequest { LeaseFence: { } suppliedFence } && suppliedFence != current.State.WorkspaceLockFence
                 || http.HttpContext?.Items["Folders:ContentExpectedFence"] is long expected && expected != current.State.WorkspaceLockFence)
                 throw new ContentConflictException();
         }
@@ -112,14 +128,15 @@ internal sealed class WorkspaceContentAuthority(LayeredFolderAuthorizationServic
         }
     }
 
-    public Task ValidateUploadAsync(ClaimsPrincipal principal, ContentUploadRequest request, ReadOnlyMemory<byte> bytes,
+    public async Task ValidateUploadAsync(ClaimsPrincipal principal, ContentUploadRequest request, ReadOnlyMemory<byte> bytes,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var policy = _snapshot ?? Capture();
         if (policy.ProtectionMode != "non_confidential") throw new WorkspaceContentPolicyException("confidential_operation_not_durable");
         if (bytes.Length > 1048576 || !policies.IsCurrent(policy)) throw new WorkspaceContentPolicyException("file_policy_unavailable");
-        return Task.CompletedTask;
+        await AuthorizeAsync(principal, request.Scope, ContentOperation.Upload, request, cancellationToken).ConfigureAwait(false);
+        if (!policies.IsCurrent(policy)) throw new WorkspaceContentPolicyException("file_policy_unavailable");
     }
 
     public async Task ValidatePreparationAsync(ClaimsPrincipal principal, ContentPublicationRequest request, CancellationToken cancellationToken)

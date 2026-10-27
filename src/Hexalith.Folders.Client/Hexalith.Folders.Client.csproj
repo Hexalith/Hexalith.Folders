@@ -56,4 +56,17 @@
            Text="Generated idempotency helper file is missing: $(HexalithFoldersGeneratedHelpers)" />
     <Touch Files="$(IntermediateOutputPath)HexalithFoldersGeneratedArtifacts.stamp" AlwaysCreate="true" />
   </Target>
+  <Target Name="GenerateHexalithFoldersNativeClient" Condition="'$(DesignTimeBuild)' != 'true'">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="$(NSwagExe_Net100) run nswag-native.json" />
+  </Target>
+  <Target Name="VerifyHexalithFoldersNativeClient">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="$(NSwagExe_Net100) run nswag-native.json /variables:NativeClientOutput=obj/HexalithFoldersNativeClient.verify.cs" />
+    <GetFileHash Files="$(MSBuildProjectDirectory)/Generated/HexalithFoldersNativeClient.g.cs">
+      <Output TaskParameter="Items" ItemName="NativeStoredHash" />
+    </GetFileHash>
+    <GetFileHash Files="$(MSBuildProjectDirectory)/obj/HexalithFoldersNativeClient.verify.cs">
+      <Output TaskParameter="Items" ItemName="NativeRegeneratedHash" />
+    </GetFileHash>
+    <Error Condition="'@(NativeStoredHash->'%(FileHash)')' != '@(NativeRegeneratedHash->'%(FileHash)')'" Text="Native client generation drift detected." />
+  </Target>
 </Project>

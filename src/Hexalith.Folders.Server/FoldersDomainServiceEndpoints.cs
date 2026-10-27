@@ -93,6 +93,7 @@ public static partial class FoldersDomainServiceEndpoints
     {
         ArgumentNullException.ThrowIfNull(endpoints);
         WorkspaceContentRetentionEndpoints.Map(endpoints);
+        WorkspaceNativeEndpoints.Map(endpoints);
 
         endpoints.MapPost("/query", async (QueryEnvelope query, IServiceProvider services, CancellationToken token) =>
         {
@@ -3311,6 +3312,9 @@ public static partial class FoldersDomainServiceEndpoints
                 _ => "content_evidence_invalid",
             }, correlationId, taskId);
         }
+        if (httpContext.Items.ContainsKey("Folders:NativeRequest")
+            && (body.TransportOperation != "PutFileInline" || streamedBytes is not null || body.ByteLength is null or < 0 or > 262144))
+            return ContentProblem("content_evidence_invalid", correlationId, taskId);
         string? receiptId = null;
         try
         {
@@ -3355,7 +3359,7 @@ public static partial class FoldersDomainServiceEndpoints
                     if (bytes.LongLength != body.ByteLength || "hashref_" + Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(bytes)) != body.ContentHashReference)
                         return ContentProblem("content_evidence_invalid", correlationId, taskId);
                     receipt = await store.UploadAsync(httpContext.User,
-                        new(scope, taskId, body.ContentHashReference![8..], bytes.LongLength, validation.MediaType!, body.OperationId),
+                        new ContentUploadRequest(scope, taskId, body.ContentHashReference![8..], bytes.LongLength, validation.MediaType!, body.OperationId) { LeaseFence = body.ExpectedLockFence },
                         new MemoryStream(bytes, writable: false), cancellationToken).ConfigureAwait(false);
                 }
                 else
@@ -3389,6 +3393,7 @@ public static partial class FoldersDomainServiceEndpoints
             validation.ObservedByteLength,
             taskId)
         {
+            AcceptedSdkKey = idempotencyKey,
             ContentReceiptId = receiptId,
             ExpectedFileVersion = body.ExpectedFileVersion,
             ExpectedLockFence = body.ExpectedLockFence,
@@ -3399,8 +3404,7 @@ public static partial class FoldersDomainServiceEndpoints
         SubmitCommandResponse submitted;
         try
         {
-            submitted = await gateway.SubmitCommandAsync(
-                new SubmitCommandRequest(
+            var submission = new SubmitCommandRequest(
                     MessageId: contentCommandId,
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
@@ -3412,8 +3416,10 @@ public static partial class FoldersDomainServiceEndpoints
                     {
                         ["taskId"] = taskId,
                     },
-                    IdempotencyKey: idempotencyKey),
-                cancellationToken).ConfigureAwait(false);
+                    IdempotencyKey: idempotencyKey);
+            if (httpContext.Items.ContainsKey("Folders:NativeRequest"))
+                httpContext.Items[WorkspaceNativeEndpoints.AuthorizedSubmissionItem] = submission;
+            submitted = await gateway.SubmitCommandAsync(submission, cancellationToken).ConfigureAwait(false);
         }
         catch (EventStoreGatewayException ex)
         {
@@ -3677,7 +3683,7 @@ public static partial class FoldersDomainServiceEndpoints
         && value.Length <= 80
         && CommitMessageClassificationRegex.IsMatch(value);
 
-    private static string GenerateCanonicalMessageId()
+    internal static string GenerateCanonicalMessageId()
         => UniqueIdHelper.GenerateSortableUniqueStringId().ToLowerInvariant();
 
     private static FileMutationTransportValidation ValidateFileMutationRequest(FileMutationHttpRequest? body)
@@ -3926,7 +3932,7 @@ public static partial class FoldersDomainServiceEndpoints
         string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
         envelope = new MutationCommandEnvelope(string.Empty, string.Empty, string.Empty, string.Empty);
 
-        if (!FolderCanonicalSegmentIdentifier.IsValid(idempotencyKey)
+        if (!(FolderCanonicalSegmentIdentifier.IsValid(idempotencyKey) || httpContext.Items["Folders:NativeRequest"] is true && WorkspaceNativeAddress.IsSdkKey(idempotencyKey))
             || !FolderCanonicalSegmentIdentifier.IsValid(correlationId)
             || !FolderCanonicalSegmentIdentifier.IsValid(taskId)
             || (folderId is not null && !FolderCanonicalSegmentIdentifier.IsValid(folderId))
@@ -4977,7 +4983,7 @@ public static partial class FoldersDomainServiceEndpoints
                                 result.Lease.AcquiredAt,
                                 result.Lease.EffectiveAt,
                                 result.Lease.ExpiresAt,
-                                result.Lease.HolderRef),
+                                result.Lease.HolderRef, result.Lease.LockFence),
                         new WorkspaceRetryEligibilityResponse(
                             result.RetryEligibility.Retryable,
                             result.RetryEligibility.RetryAfterSeconds,
@@ -5210,7 +5216,7 @@ public static partial class FoldersDomainServiceEndpoints
                                 snapshot.LockEvidence.AcquiredAt,
                                 snapshot.LockEvidence.EffectiveAt,
                                 snapshot.LockEvidence.ExpiresAt,
-                                snapshot.LockEvidence.HolderRef),
+                                snapshot.LockEvidence.HolderRef, snapshot.LockEvidence.LockFence),
                         snapshot.AuditMetadata,
                         new FreshnessMetadataResponse(
                             SnapshotPerTask,
@@ -6350,6 +6356,7 @@ public static partial class FoldersDomainServiceEndpoints
         long? ObservedByteLength,
         string TaskId)
     {
+        public string? AcceptedSdkKey { get; init; }
         public string? ContentReceiptId { get; init; }
         public string? OwnerFileId { get; init; }
         public long? ExpectedFileVersion { get; init; }
@@ -6511,7 +6518,7 @@ public static partial class FoldersDomainServiceEndpoints
         DateTimeOffset AcquiredAt,
         DateTimeOffset EffectiveAt,
         DateTimeOffset ExpiresAt,
-        string? HolderRef);
+        string? HolderRef, long? LockFence);
 
     private sealed record WorkspaceRetryEligibilityResponse(
         bool Retryable,

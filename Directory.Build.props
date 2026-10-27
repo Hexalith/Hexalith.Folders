@@ -7,6 +7,12 @@
     <HexalithMemoriesRoot Condition="'$(HexalithMemoriesRoot)' == '' and Exists('$(MSBuildThisFileDirectory)references\Hexalith.Memories\src\Hexalith.Memories.Contracts')">$(MSBuildThisFileDirectory)references\Hexalith.Memories</HexalithMemoriesRoot>
     <HexalithFrontComposerRoot Condition="'$(HexalithFrontComposerRoot)' == '' and Exists('$(MSBuildThisFileDirectory)references\Hexalith.FrontComposer\src\Hexalith.FrontComposer.Contracts')">$(MSBuildThisFileDirectory)references\Hexalith.FrontComposer</HexalithFrontComposerRoot>
 
+    <HexalithCommonsRoot Condition="'$(HexalithCommonsRoot)' == '' and Exists('$(MSBuildThisFileDirectory)../Hexalith.Commons/src')">$(MSBuildThisFileDirectory)../Hexalith.Commons</HexalithCommonsRoot>
+    <HexalithEventStoreRoot Condition="'$(HexalithEventStoreRoot)' == '' and Exists('$(MSBuildThisFileDirectory)../Hexalith.EventStore/src')">$(MSBuildThisFileDirectory)../Hexalith.EventStore</HexalithEventStoreRoot>
+    <HexalithTenantsRoot Condition="'$(HexalithTenantsRoot)' == '' and Exists('$(MSBuildThisFileDirectory)../Hexalith.Tenants/src')">$(MSBuildThisFileDirectory)../Hexalith.Tenants</HexalithTenantsRoot>
+    <HexalithMemoriesRoot Condition="'$(HexalithMemoriesRoot)' == '' and Exists('$(MSBuildThisFileDirectory)../Hexalith.Memories/src')">$(MSBuildThisFileDirectory)../Hexalith.Memories</HexalithMemoriesRoot>
+    <HexalithFrontComposerRoot Condition="'$(HexalithFrontComposerRoot)' == '' and Exists('$(MSBuildThisFileDirectory)../Hexalith.FrontComposer/src')">$(MSBuildThisFileDirectory)../Hexalith.FrontComposer</HexalithFrontComposerRoot>
+
     <!-- Cross-repo Hexalith platform dependencies: Debug builds use project references to the
          references/ submodule source; Release builds use the centrally pinned NuGet packages in
          Directory.Packages.props. Mirrors the Hexalith.Tenants submodule convention. Force a mode

@@ -71,6 +71,15 @@ public sealed record FolderState(
     public IReadOnlyDictionary<string, string> CommittedContentReferences { get; init; }
         = FrozenDictionary<string, string>.Empty;
 
+    /// <summary>Gets retained exact clean releases, independently of a later lease holder.</summary>
+    public IReadOnlyDictionary<string, long> NativeReleasedLeaseFences { get; init; } = FrozenDictionary<string, long>.Empty;
+
+    /// <summary>Gets whether the current lease was acquired through the native-only task lifecycle.</summary>
+    public bool WorkspaceNativeLease { get; init; }
+
+    /// <summary>Gets whether unrelated provider-side staging makes native completion unsafe.</summary>
+    public bool WorkspaceNativeProviderWork { get; init; }
+
     /// <summary>Gets monotonic lock acquisition fencing, independent of wall-clock regressions.</summary>
     public long WorkspaceLockFence { get; init; }
 

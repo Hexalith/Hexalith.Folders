@@ -2,7 +2,12 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+  <ItemGroup Condition="'$(UseHexalithProjectReferences)' == 'true'">
+    <PackageReference Include="Hexalith.Commons.UniqueIds" ExcludeAssets="all" />
+    <ProjectReference Include="$(HexalithCommonsRoot)/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj" />
+  </ItemGroup>
   <ItemGroup>
+    <Compile Include="../shared/NativeContent/*.cs" Link="NativeContent/%(Filename)%(Extension)" />
     <ProjectReference Include="../../src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj" />
     <Compile Include="$(HexalithEventStoreRoot)/tests/Hexalith.EventStore.Client.Tests/Projections/RecordingDaprClient.cs" Link="Content/RecordingDaprClient.cs" />
     <!-- Reuse the pinned platform protocol harness; no package version changes. -->

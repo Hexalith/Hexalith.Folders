@@ -83,3 +83,14 @@ Verification must prove this document includes the full 11-state catalog, the ev
 ## Deferred implementation
 
 This document does not create or modify `src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs`, aggregate classes, aggregate tests, UI disposition code, CLI/MCP adapters, OpenAPI files, worker behavior, or CI workflow gates.
+
+
+## Approved native inline task completion extension (2026-10-26)
+
+The ChatBot native inline attachment follow-up explicitly authorizes a narrow owner lifecycle alongside C6. `WorkspaceNativeTaskChanged` records acquisition, same-fence renewal, clean release, or source-confirmed native completion. Acquisition starts from `ready`, issues a new owner lock identity and strictly higher fence, and reaches `locked`. Renewal requires the exact live holder/proof/fence and preserves that fence; expiry cannot authorize renewal or takeover.
+
+Native completion moves `locked` or `changes_staged` to `ready` only after the task's exact original SDK key/fingerprint, source publication and incarnation have been confirmed. The EventStore content ledger atomically seals the task against racing upload/preparation admission and rejects unresolved preparations or unaccounted uploads. Provider-side or unbound staging rejects this transition. The single source event closes the task and clears only its identified lease, retaining all immutable bytes/publication bindings. It does not emit `CommitSucceeded` and does not change provider commit semantics. Clean release rejects any task publication, staged upload/preparation or provider work and atomically quiesces only the released lease fence in the SDK ledger. It leaves the logical task open so a retry can acquire a strictly higher fence; writes from the released fence remain denied. Only native completion installs the irreversible whole-task seal and terminal closure.
+
+Completion remains recoverable after response loss or lease expiry. An equivalent already-closed task returns its retained terminal evidence independently of a later holder and never clears that holder. All paths retain fresh `lock_workspace` and `mutate_files` authority, current tenant/path policy checks and C7 ceilings. The canonical C7 approval artifact and its digest remain unchanged.
+
+Native expiry recovery is restricted to the exact native holder and fence. A recorded `LockLeaseExpired` dirty state may complete or release only after the same publication/no-staging checks; other dirty/provider states remain rejected. When an acquire response was lost and that same task's lease expired without publication, one owner command quiesces its exact clean old fence, records release and reacquires a higher fence. Another task cannot take over, and unresolved/native or provider staging prevents recovery.
