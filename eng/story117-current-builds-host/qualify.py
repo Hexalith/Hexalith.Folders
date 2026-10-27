@@ -8,6 +8,7 @@ import argparse
 import datetime
 import ctypes
 import hashlib
+import io
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -1147,31 +1148,84 @@ class Qualification:
 
 
 def archive(work, record_id=PREFIX):
-    """Retain portable diagnostic inputs/logs, assets, compiler inputs and actual outputs."""
+    """Retain unique evidence, complete binlogs and bounded copies of other logs."""
+    plan_path = work / "plan.json"
+    require(not plan_path.is_symlink(), "Archive symlink: plan.json")
+    plan_binding = binding(plan_path) if plan_path.is_file() else None
+    plan = {}
+    if plan_binding:
+        try:
+            plan = json.loads(plan_path.read_text())
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            pass  # Interrupted preparation: retain source copies without a usable plan.
+    sources = {"snapshot/" + item["path"]: item for item in plan.get("sources", [])}
+    log_tail_bytes = 1024 * 1024
+    omission_counts = dict(sourceCopies=0, snapshotBuildOutput=0, privateRuntimeFiles=0, logTails=0)
+    omitted = []
     members = []
     paths = []
+    originals = []
     for path in sorted(work.rglob("*")):
         rel = path.relative_to(work)
+        require(not path.is_symlink(), "Archive symlink: " + str(rel))
+        if path.is_dir():
+            continue
+        require(stat.S_ISREG(path.lstat().st_mode), "Archive special file: " + str(rel))
+        original = binding(path, work)
+        originals.append(original)
+        category = None
         crash_report = rel.parts[0] == "tmp" and rel.name.startswith("MSBuild_pid-") and rel.name.endswith(".failure.txt")
         if rel.parts[0] in {"feed", "nuget", "cache", "http-cache", "plugin-cache", "dotnet-home", "bundle", "tmp"} and not crash_report:
-            continue
-        require(not path.is_symlink(), "Archive symlink: " + str(rel))
-        if path.is_file():
-            require(stat.S_ISREG(path.lstat().st_mode), "Archive special file: " + str(rel))
-            paths.append(path)
-            members.append(binding(path, work))
+            category = "privateRuntimeFiles"
+        elif rel.parts[0] == "snapshot":
+            source = sources.get(str(rel))
+            if source and (original["bytes"], original["sha256"]) == (source["bytes"], source["sha256"]):
+                category = "sourceCopies"
+            elif {"bin", "obj"}.intersection(rel.parts[1:-1]):
+                category = "snapshotBuildOutput"
+            # Keep generated configs/captures and drifted sources as diagnostic evidence.
+        tail = rel.parts[0] == "logs" and path.suffix.lower() != ".binlog" and original["bytes"] > log_tail_bytes
+        if tail:
+            category = "logTails"
+        if category:
+            omission_counts[category] += 1
+            if category != "sourceCopies":
+                omitted.append(dict(original, category=category))
+            if not tail:
+                continue
+        paths.append((path, original, tail))
     target = EVIDENCE / (record_id + ".artifacts.tar.gz")
-    with tarfile.open(target, "x:gz") as output:
-        for path in paths:
-            output.add(path, arcname=str(path.relative_to(work)), recursive=False)
-    for item in members:
-        same(work / item["path"], item)
+    with tarfile.open(target, "x:gz", dereference=True) as output:
+        for path, original, tail in paths:
+            if tail:
+                with path.open("rb") as stream:
+                    stream.seek(-log_tail_bytes, os.SEEK_END)
+                    data = stream.read(log_tail_bytes)
+                require(len(data) == log_tail_bytes, "Incomplete log tail: " + original["path"])
+                info = output.gettarinfo(path, arcname=original["path"])
+                info.size = len(data)
+                output.addfile(info, io.BytesIO(data))
+                members.append(dict(path=original["path"], bytes=len(data), sha256=hashlib.sha256(data).hexdigest()))
+            else:
+                output.add(path, arcname=original["path"], recursive=False)
+                members.append(original)
+    # Recheck archived and omitted inputs against originals, never against tail hashes.
+    for original in originals:
+        same(work / original["path"], original)
+    if plan_binding:
+        same(plan_path, plan_binding)
     write(EVIDENCE / (record_id + ".members.json"), members)
+    omitted_path = EVIDENCE / (record_id + ".omitted.json")
+    write(omitted_path, omitted)
     receipt = dict(recordId=record_id, atUtc=now(), archive=binding(target, EVIDENCE),
         memberManifest=binding(EVIDENCE / (record_id + ".members.json"), EVIDENCE), memberCount=len(members),
+        omittedManifest=binding(omitted_path, EVIDENCE), omissionCounts=omission_counts,
         outcome=json.loads((work / "outcome.json").read_text()),
         preservation=json.loads((work / "preservation.json").read_text()),
-        omissions="Private third-party feed, extracted package/cache, certificate-store contents and temporary home excluded; exact package input hashes remain in plan.")
+        omissions="Source copies matching plan.json sources (path/bytes/sha256) are excluded; see plan sources for their bindings. "
+                  "Snapshot bin/obj output and private third-party feed, extracted package/cache, certificate-store contents and temporary home are excluded. "
+                  "Other snapshot files and MSBuild crash reports are retained. Binlogs are retained whole; other logs over 1 MiB retain only the last 1 MiB at their original archive paths. "
+                  "omittedManifest binds original path/bytes/sha256 for every other excluded or tailed file; live files are unchanged.")
     write(EVIDENCE / (record_id + ".json"), receipt)
     return receipt
 
