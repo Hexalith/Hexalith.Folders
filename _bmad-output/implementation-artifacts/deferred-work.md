@@ -523,14 +523,16 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-17)"), 2026-08-24
 location: JsonDocument
 reason: JSON duplicate-keys detection in corpus / inventory / quarantine fixtures — deferred; relying on `JsonDocument` default behavior is acceptable for fixtures we own and write by hand. Revisit if multiple authors begin merging the corpus concurrently.
-status: open
+status: done 2026-10-28
+resolution: Reject duplicate decoded JSON properties recursively through the shared bounded parser. Verified by SafetyInvariantGateTests; see spec-five-deferred-safety-inputs.md.
 
 ### DW-73: `AssertMetadataOnly` blacklist missing Linux absolute-path roots
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-17)"), 2026-08-24
 location: AssertMetadataOnly
 reason: `AssertMetadataOnly` blacklist missing Linux absolute-path roots (`/var/`, `/tmp/`, `/home/`, `/Users/`) — deferred. The gate runs primarily on Windows today, and the inventory `structured_exclusions` does not yet target Linux runner paths. Revisit when CI matrix expands to Linux/macOS or when a contributor reports a Linux-specific leak class.
-status: open
+status: done 2026-10-28
+resolution: Reject temporary and variable-data absolute paths and the actual checkout path in metadata diagnostics. Verified by SafetyInvariantGateTests; see spec-five-deferred-safety-inputs.md.
 
 ### DW-74: Isolated regeneration does not copy repo-root `nuget.config`
 
@@ -1587,7 +1589,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates round 3 (2026-05-18)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
 reason: File encoding fallback (UTF-16/Latin-1/no-BOM) [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `ScanText` via `File.ReadAllText`] — overlaps prior BOM defer.
-status: open
+status: done 2026-10-28
+resolution: Read every gate input using bounded strict UTF-8 decoding with optional BOM; reject invalid bytes and embedded NUL without exposing file details. Verified by SafetyInvariantGateTests; see spec-five-deferred-safety-inputs.md.
 
 ### DW-233: AssertMetadataOnly Linux absolute-path roots expansion
 
@@ -1669,14 +1672,16 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-18, Round 4)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
 reason: `LoadYamlMapping` / `JsonDocument.Parse` calls lack bounded options (max depth, size cap) [multiple call sites in `tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs`] — defense-in-depth against malformed/oversized fixtures; current fixtures are reviewer-curated.
-status: open
+status: done 2026-10-28
+resolution: Enforce 8 MiB inputs, depth 64, a 100,000-event YAML limit, and alias rejection before representation loading. Verified by SafetyInvariantGateTests; see spec-five-deferred-safety-inputs.md.
 
 ### DW-245: `BoundedDiagnosticException` does not validate `ruleId` against an allowed set nor assert `remediation` through `AssertMetadataOnly`
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-18, Round 4)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
 reason: `BoundedDiagnosticException` does not validate `ruleId` against an allowed set nor assert `remediation` through `AssertMetadataOnly` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `BoundedDiagnosticException`] — tighten if a third caller is added with non-constant inputs.
-status: open
+status: done 2026-10-28
+resolution: Validate approved rule IDs, bounded channel/remediation fields, and metadata-only content; use fixed safe fallback diagnostics. Verified by SafetyInvariantGateTests; see spec-five-deferred-safety-inputs.md.
 
 ### DW-246: `AssertRepositoryRelativePath` does not reject UNC paths
 

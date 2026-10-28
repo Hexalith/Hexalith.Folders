@@ -13,6 +13,8 @@
     "tests/tools/run-contract-spine-gates.ps1",
     "tests/tools/run-safety-invariant-gates.ps1",
     "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs",
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.Inputs.cs",
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.InputTests.cs",
     "src/Hexalith.Folders/Observability",
     "src/Hexalith.Folders.Server/FolderAuditEndpointFilter.cs",
     "src/Hexalith.Folders.Server/AuditEndpoints.cs",
@@ -149,7 +151,9 @@
       "channel": "assertion-messages",
       "owning_story": "1-15-wire-safety-invariant-ci-gates",
       "artifact_sources": [
-        "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs"
+        "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs",
+        "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.Inputs.cs",
+        "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.InputTests.cs"
       ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",

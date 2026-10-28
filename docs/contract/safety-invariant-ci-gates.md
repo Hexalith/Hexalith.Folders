@@ -27,9 +27,15 @@ The existing `contract-spine-gates` workflow invokes `./tests/tools/run-safety-i
 - `tests/fixtures/parity-contract.yaml` and `src/Hexalith.Folders.Client/Generated`: generated-artifact leakage checks only.
 - `docs/contract/*.md`, `.github/workflows/contract-spine.yml`, and `tests/tools/*.ps1`: developer and CI diagnostic surfaces.
 
+Inputs must be strict UTF-8, with an optional UTF-8 BOM, and no embedded NUL characters. Unsupported encodings, invalid bytes, missing or unreadable files, and inputs larger than 8 MiB fail with a fixed metadata-only prerequisite diagnostic. The gate does not guess alternative encodings or replace invalid bytes.
+
+JSON and YAML fixtures have a maximum collection depth of 64. JSON rejects duplicate decoded property names in every object, including objects inside arrays; names remain case-sensitive and independent objects may reuse them. YAML accepts exactly one mapping document, rejects aliases before constructing representation nodes, and permits at most 100,000 parsing events. Parser messages, input fragments, file paths, and inner exceptions are excluded from input-failure diagnostics.
+
 ## Diagnostics
 
 Allowed fields are gate name, hashed repository-relative path, output channel, rule ID, synthetic sample ID, category, classification, owner story, content hash, and remediation hint. The gate must not echo forbidden values, raw payloads, file contents, patch bodies, credential material, generated context payloads, local absolute paths, production URLs, tenant data, provider responses, cursor values, counts, ordering hints, stack traces, raw repository paths, or unauthorized-resource hints.
+
+The bounded exception factory accepts only the four safety rule IDs: `SAFETY-CHANNEL-MISSING`, `SAFETY-PREREQUISITE-DRIFT`, `SAFETY-FORBIDDEN-VALUE`, and `SAFETY-FORBIDDEN-DIAGNOSTIC`. Channel labels are limited to 128 ASCII letters, digits, underscores, dots, colons, or hyphens and start with a letter or digit. Remediation hints are limited to 256 characters without control characters or Unicode line and paragraph separators. Both fields pass the metadata-only check; invalid fields produce a fixed safe diagnostic. Absolute home, user, temporary, variable-data, and checkout paths remain forbidden in diagnostic output, including documentation.
 
 Bounded missing-channel diagnostics:
 

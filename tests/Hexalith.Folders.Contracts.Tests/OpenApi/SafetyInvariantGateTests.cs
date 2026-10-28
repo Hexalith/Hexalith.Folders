@@ -8,7 +8,7 @@ using YamlDotNet.RepresentationModel;
 
 namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 
-public sealed class SafetyInvariantGateTests
+public sealed partial class SafetyInvariantGateTests
 {
     private const string GateName = "safety-invariant";
     private const string OpenApiRelativePath = "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml";
@@ -74,7 +74,7 @@ public sealed class SafetyInvariantGateTests
     [Fact]
     public void SentinelCorpusDeclaresAuthoritativeSyntheticVocabulary()
     {
-        using JsonDocument document = JsonDocument.Parse(ReadRequiredFile(_corpusFilePath));
+        using JsonDocument document = ParseSafetyJson(ReadRequiredFile(_corpusFilePath));
         JsonElement root = document.RootElement;
 
         RequiredString(root, "schema_version").ShouldBe("1.0.0");
@@ -129,7 +129,7 @@ public sealed class SafetyInvariantGateTests
     [Fact]
     public void TelemetrySurfaceVocabularyIsExplicitAndInventoryAddressable()
     {
-        using JsonDocument corpus = JsonDocument.Parse(ReadRequiredFile(_corpusFilePath));
+        using JsonDocument corpus = ParseSafetyJson(ReadRequiredFile(_corpusFilePath));
         string[] surfaces = RequiredArray(corpus.RootElement, "forbidden_output_surfaces").SelectText();
         foreach (string surface in _requiredTelemetrySurfaceNames)
         {
@@ -144,7 +144,7 @@ public sealed class SafetyInvariantGateTests
                 $"AC 17 requires at least one synthetic sentinel to exercise telemetry surface '{surface}'.");
         }
 
-        using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(_inventoryFilePath));
+        using JsonDocument inventory = ParseSafetyJson(ReadRequiredFile(_inventoryFilePath));
         string[] channels = RequiredArray(inventory.RootElement, "channels")
             .EnumerateArray()
             .Select(channel => RequiredString(channel, "channel"))
@@ -161,7 +161,7 @@ public sealed class SafetyInvariantGateTests
         string corpus = ReadRequiredFile(_corpusFilePath);
         AssertMetadataOnly(corpus);
 
-        using JsonDocument quarantine = JsonDocument.Parse(ReadRequiredFile(_quarantineFilePath));
+        using JsonDocument quarantine = ParseSafetyJson(ReadRequiredFile(_quarantineFilePath));
         RequiredBoolean(RequiredObject(quarantine.RootElement, "ownership"), "quarantined_negative_controls").ShouldBeTrue();
 
         foreach (JsonElement control in RequiredArray(quarantine.RootElement, "negative_controls").EnumerateArray())
@@ -172,7 +172,7 @@ public sealed class SafetyInvariantGateTests
             RequiredString(control, "contaminated_payload").ShouldNotBeNullOrWhiteSpace();
         }
 
-        using JsonDocument corpusDocument = JsonDocument.Parse(corpus);
+        using JsonDocument corpusDocument = ParseSafetyJson(corpus);
         string[] negativeParticipants = RequiredArray(corpusDocument.RootElement, "sentinel_samples")
             .EnumerateArray()
             .Where(sample => RequiredArray(sample, "participates_in").SelectText().Contains("negative-control", StringComparer.Ordinal))
@@ -190,7 +190,7 @@ public sealed class SafetyInvariantGateTests
     [Fact]
     public void ChannelInventoryResolvesCoveredSourcesAndBoundsMissingChannels()
     {
-        using JsonDocument document = JsonDocument.Parse(ReadRequiredFile(_inventoryFilePath));
+        using JsonDocument document = ParseSafetyJson(ReadRequiredFile(_inventoryFilePath));
         JsonElement root = document.RootElement;
 
         string[] includeRoots = RequiredArray(root, "include_roots").SelectText();
@@ -258,7 +258,7 @@ public sealed class SafetyInvariantGateTests
     [Fact]
     public void StoryElevenDiagnosticChannelsAreReevaluatedAgainstCurrentArtifacts()
     {
-        using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(_inventoryFilePath));
+        using JsonDocument inventory = ParseSafetyJson(ReadRequiredFile(_inventoryFilePath));
         Dictionary<string, JsonElement> channels = RequiredArray(inventory.RootElement, "channels")
             .EnumerateArray()
             .ToDictionary(channel => RequiredString(channel, "channel"), StringComparer.Ordinal);
@@ -279,7 +279,7 @@ public sealed class SafetyInvariantGateTests
     [Fact]
     public void StoryFourteenTelemetryChannelsAreCoveredByRuntimeArtifacts()
     {
-        using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(_inventoryFilePath));
+        using JsonDocument inventory = ParseSafetyJson(ReadRequiredFile(_inventoryFilePath));
         Dictionary<string, JsonElement> channels = RequiredArray(inventory.RootElement, "channels")
             .EnumerateArray()
             .ToDictionary(channel => RequiredString(channel, "channel"), StringComparer.Ordinal);
@@ -450,7 +450,7 @@ public sealed class SafetyInvariantGateTests
 
     private static SafetyScanDiagnostic[] ScanManifestCoveredArtifacts(IReadOnlyList<SentinelSample> samples)
     {
-        using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(_inventoryFilePath));
+        using JsonDocument inventory = ParseSafetyJson(ReadRequiredFile(_inventoryFilePath));
         HashSet<SafetyScanDiagnostic> diagnostics = [];
         string[] includeRoots = RequiredArray(inventory.RootElement, "include_roots").SelectText();
 
@@ -476,7 +476,7 @@ public sealed class SafetyInvariantGateTests
                         continue;
                     }
 
-                    string text = File.ReadAllText(Path.Combine(_repositoryRootPath, NormalizeForFileSystem(file)));
+                    string text = ReadRequiredFile(Path.Combine(_repositoryRootPath, NormalizeForFileSystem(file)));
                     diagnostics.UnionWith(ScanText(file, channelName, text, samples));
                 }
             }
@@ -490,7 +490,7 @@ public sealed class SafetyInvariantGateTests
         JsonElement quarantineChannel = InventoryChannel("negative-control-quarantine");
         RequiredBoolean(quarantineChannel, "opt_in_scan_forbidden_values").ShouldBeTrue("Negative controls must be explicitly opt-in and separate from normal artifact scans.");
 
-        using JsonDocument document = JsonDocument.Parse(ReadRequiredFile(_quarantineFilePath));
+        using JsonDocument document = ParseSafetyJson(ReadRequiredFile(_quarantineFilePath));
         List<SafetyScanDiagnostic> diagnostics = [];
         foreach (JsonElement control in RequiredArray(document.RootElement, "negative_controls").EnumerateArray())
         {
@@ -506,7 +506,7 @@ public sealed class SafetyInvariantGateTests
 
     private static JsonElement InventoryChannel(string channelName)
     {
-        using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(_inventoryFilePath));
+        using JsonDocument inventory = ParseSafetyJson(ReadRequiredFile(_inventoryFilePath));
         foreach (JsonElement channel in RequiredArray(inventory.RootElement, "channels").EnumerateArray())
         {
             if (RequiredString(channel, "channel") == channelName)
@@ -541,7 +541,7 @@ public sealed class SafetyInvariantGateTests
 
     private static SafetyManifestDiagnostic[] BuildMissingChannelDiagnostics()
     {
-        using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(_inventoryFilePath));
+        using JsonDocument inventory = ParseSafetyJson(ReadRequiredFile(_inventoryFilePath));
         List<SafetyManifestDiagnostic> diagnostics = [];
         foreach (JsonElement channel in RequiredArray(inventory.RootElement, "channels").EnumerateArray())
         {
@@ -565,7 +565,7 @@ public sealed class SafetyInvariantGateTests
 
     private static SentinelSample[] LoadSentinelSamples()
     {
-        using JsonDocument document = JsonDocument.Parse(ReadRequiredFile(_corpusFilePath));
+        using JsonDocument document = ParseSafetyJson(ReadRequiredFile(_corpusFilePath));
         return RequiredArray(document.RootElement, "sentinel_samples")
             .EnumerateArray()
             .Select(sample => new SentinelSample(
@@ -625,7 +625,7 @@ public sealed class SafetyInvariantGateTests
 
     private static readonly Lazy<Regex[]> _structuredExclusionRegexList = new(() =>
     {
-        using JsonDocument inventory = JsonDocument.Parse(File.ReadAllText(_inventoryFilePath));
+        using JsonDocument inventory = ParseSafetyJson(ReadRequiredFile(_inventoryFilePath));
         return RequiredArray(inventory.RootElement, "structured_exclusions")
             .SelectText()
             .Select(pattern => new Regex(BuildGlobRegex(pattern), RegexOptions.Compiled | RegexOptions.CultureInvariant))
@@ -673,16 +673,6 @@ public sealed class SafetyInvariantGateTests
             _repositoryRootPath.Replace("\\", "\\\\", StringComparison.Ordinal),
         ];
 
-        // Strip the repository root prefix before scanning so that on Linux/macOS
-        // CI runners (where _repositoryRootPath may itself begin with /home/ or /Users/)
-        // the generic absolute-path detectors below still fire on a leaked
-        // /home/alice/... or /Users/bob/... path that is not the repo root.
-        string sanitizedValue = value;
-        foreach (string rootMarker in repositoryRootMarkers)
-        {
-            sanitizedValue = sanitizedValue.Replace(rootMarker, "<repo-root>", StringComparison.OrdinalIgnoreCase);
-        }
-
         // Drive-letter PATH markers can appear in cross-platform path examples in
         // documentation; only these two markers are exempt under allowPatternDocumentation.
         string[] absolutePathPatternMarkers = ["C:\\", "D:\\"];
@@ -708,6 +698,8 @@ public sealed class SafetyInvariantGateTests
             "https://prod.",
             "/home/",
             "/Users/",
+            "/var/",
+            "/tmp/",
         ];
 
         IEnumerable<string> forbidden = repositoryRootMarkers.Concat(alwaysForbidden);
@@ -718,7 +710,7 @@ public sealed class SafetyInvariantGateTests
 
         foreach (string forbiddenValue in forbidden)
         {
-            if (sanitizedValue.Contains(forbiddenValue, StringComparison.OrdinalIgnoreCase))
+            if (value.Contains(forbiddenValue, StringComparison.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException($"{GateName}:SAFETY-FORBIDDEN-DIAGNOSTIC: classification=confidential; category=metadata-only-output; remediation=Remove raw sensitive diagnostic material.");
             }
@@ -796,14 +788,6 @@ public sealed class SafetyInvariantGateTests
         {
             throw BoundedDiagnosticException("SAFETY-PREREQUISITE-DRIFT", context, "last_evaluated_at must be on or after 2026-05-18 Round 4 baseline");
         }
-    }
-
-    private static YamlMappingNode LoadYamlMapping(string path)
-    {
-        using StreamReader reader = File.OpenText(path);
-        YamlStream yaml = new();
-        yaml.Load(reader);
-        return yaml.Documents[0].RootNode.ShouldBeOfType<YamlMappingNode>();
     }
 
     private static IEnumerable<Operation> EnumerateOperations(YamlMappingNode root)
@@ -884,12 +868,6 @@ public sealed class SafetyInvariantGateTests
         using StringWriter writer = new();
         stream.Save(writer, false);
         return writer.ToString();
-    }
-
-    private static string ReadRequiredFile(string path)
-    {
-        File.Exists(path).ShouldBeTrue(ToRepositoryPath(path));
-        return File.ReadAllText(path);
     }
 
     private static string ToRepositoryPath(string path) =>
@@ -1010,9 +988,6 @@ public sealed class SafetyInvariantGateTests
             throw BoundedDiagnosticException("SAFETY-FORBIDDEN-DIAGNOSTIC", context, "forbidden resource-existence token was present");
         }
     }
-
-    private static InvalidOperationException BoundedDiagnosticException(string ruleId, string channel, string remediation) =>
-        new($"{GateName}:{ruleId}: channel={channel}; remediation={remediation}.");
 
     private sealed record Operation(string OperationId, YamlMappingNode Node);
 
