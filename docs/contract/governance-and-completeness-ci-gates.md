@@ -15,6 +15,8 @@ OQ4 retains its September 15 catalog identity, reopen wording, and authority rec
 
 The command must be run from the repository root or from the script location. It writes a sanitized discovery report to `_bmad-output/gates/governance-completeness/latest.json`. The report includes gate names, repository-relative canonical inputs, report path, and diagnostic policy only.
 
+Reports are staged in the report directory and published by replacing `latest.json` only after serialization completes. A publication failure exits with code 1 and the bounded `GOVERNANCE-REPORT-WRITE-FAILED` diagnostic, attempts to remove an earlier report, and cleans up the staged file. Treat `latest.json` as invalid after that diagnostic, even if filesystem permissions prevent its removal. When reporting succeeds, the runner preserves the test command's failure exit code.
+
 ## CI Job
 
 The `contract-spine-gates` workflow invokes the same command after restore and build:

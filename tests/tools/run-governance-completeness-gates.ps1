@@ -31,31 +31,55 @@ function Write-GovernanceReport {
         [int]$ExitCode = 0
     )
 
-    [ordered]@{
-        gate = 'governance-completeness'
-        status = $Status
-        exit_code = $ExitCode
-        canonical_inputs = @(
-            'docs/exit-criteria/c0-c13-governance-evidence.yaml',
-            'docs/exit-criteria/c7-lock-authorization-timing.md',
-            'docs/contract/file-context-contract-groups.md',
-            'docs/contract/oq2-file-policy-evidence.yaml',
-            'docs/contract/authorization-matrix.md',
-            'docs/contract/oq3-authorization-evidence.yaml',
-            'docs/contract/provider-compatibility-catalog.md',
-            'docs/contract/oq4-provider-compatibility-evidence.yaml',
-            'docs/governance/approval-policy.md',
-            'tests/fixtures/idempotency-encoding-corpus.json',
-            'tests/fixtures/idempotency-encoding-corpus-consumption.yaml',
-            'tests/fixtures/pattern-example-manifest.yaml',
-            'tests/fixtures/cache-key-exceptions.yaml',
-            'tests/fixtures/parity-contract.yaml',
-            'src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml',
-            'src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml'
-        )
-        report_path = '_bmad-output/gates/governance-completeness/latest.json'
-        diagnostic_policy = 'metadata-only'
-    } | ConvertTo-Json -Depth 5 | Set-Content -Path $reportPath -Encoding utf8NoBOM
+    $temporaryReportPath = Join-Path $reportDirectory ('.latest.' + [Guid]::NewGuid().ToString('N') + '.tmp')
+    try {
+        New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
+        [ordered]@{
+            gate = 'governance-completeness'
+            status = $Status
+            exit_code = $ExitCode
+            canonical_inputs = @(
+                'docs/exit-criteria/c0-c13-governance-evidence.yaml',
+                'docs/exit-criteria/c7-lock-authorization-timing.md',
+                'docs/contract/file-context-contract-groups.md',
+                'docs/contract/oq2-file-policy-evidence.yaml',
+                'docs/contract/authorization-matrix.md',
+                'docs/contract/oq3-authorization-evidence.yaml',
+                'docs/contract/provider-compatibility-catalog.md',
+                'docs/contract/oq4-provider-compatibility-evidence.yaml',
+                'docs/governance/approval-policy.md',
+                'tests/fixtures/idempotency-encoding-corpus.json',
+                'tests/fixtures/idempotency-encoding-corpus-consumption.yaml',
+                'tests/fixtures/pattern-example-manifest.yaml',
+                'tests/fixtures/cache-key-exceptions.yaml',
+                'tests/fixtures/parity-contract.yaml',
+                'src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml',
+                'src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml'
+            )
+            report_path = '_bmad-output/gates/governance-completeness/latest.json'
+            diagnostic_policy = 'metadata-only'
+        } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $temporaryReportPath -Encoding utf8NoBOM
+        [System.IO.File]::Move($temporaryReportPath, $reportPath, $true)
+    }
+    catch {
+        # Never leave an earlier result looking current after publication fails.
+        try {
+            if ([System.IO.File]::Exists($reportPath)) {
+                Remove-Item -LiteralPath $reportPath -Force -ErrorAction Stop
+            }
+        }
+        catch { }
+        [Console]::Error.WriteLine('GOVERNANCE-REPORT-WRITE-FAILED: report publication failed; latest.json is not current.')
+        exit 1
+    }
+    finally {
+        try {
+            if ([System.IO.File]::Exists($temporaryReportPath)) {
+                [System.IO.File]::Delete($temporaryReportPath)
+            }
+        }
+        catch { }
+    }
 }
 
 function Invoke-GovernanceTests {
@@ -86,7 +110,6 @@ try {
     Push-Location $repositoryRoot
     $pushed = $true
 
-    New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
     Write-GovernanceReport -Status 'discovered'
 
     if (-not $SkipRestoreBuild) {

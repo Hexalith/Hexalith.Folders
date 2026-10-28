@@ -2,13 +2,16 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Xml;
+using System.Xml.Linq;
 using Shouldly;
 using Xunit;
+using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 
 namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 
-public sealed class GovernanceCompletenessGateTests
+public sealed partial class GovernanceCompletenessGateTests
 {
     private static readonly string RepositoryRoot = FindRepositoryRoot();
     private static readonly string EvidencePath = Path.Combine(RepositoryRoot, "docs", "exit-criteria", "c0-c13-governance-evidence.yaml");
@@ -2695,6 +2698,11 @@ public sealed class GovernanceCompletenessGateTests
         foreach (YamlMappingNode row in rows)
         {
             string criterion = RequiredScalar(row, "criterion_id");
+            if (counts[criterion] > 1 && Criteria.Contains(criterion, StringComparer.Ordinal))
+            {
+                continue;
+            }
+
             string owner = RequiredScalar(row, "owner");
             string status = RequiredScalar(row, "status");
             string artifact = RequiredScalar(row, "artifact_path");
@@ -2870,11 +2878,11 @@ public sealed class GovernanceCompletenessGateTests
 
     private static bool IsGeneratedOrBuildOutput(string path)
     {
-        string normalized = path.Replace('\\', '/');
-        return normalized.Contains("/bin/", StringComparison.Ordinal)
-            || normalized.Contains("/obj/", StringComparison.Ordinal)
-            || normalized.Contains("/Generated/", StringComparison.Ordinal)
-            || normalized.Contains("/quarantine/", StringComparison.Ordinal);
+        string normalized = "/" + path.Replace('\\', '/');
+        return normalized.Contains("/bin/", StringComparison.OrdinalIgnoreCase)
+            || normalized.Contains("/obj/", StringComparison.OrdinalIgnoreCase)
+            || normalized.Contains("/Generated/", StringComparison.OrdinalIgnoreCase)
+            || normalized.Contains("/quarantine/", StringComparison.OrdinalIgnoreCase);
     }
 
     private static string[] ReadCorpusSampleIds()
@@ -2991,15 +2999,27 @@ public sealed class GovernanceCompletenessGateTests
         return diagnostics.ToArray();
     }
 
-    private static string[] LoadOpenApiOperationIds(string path)
+    private static string[] LoadOpenApiOperationIds(string path) => LoadOpenApiOperationIds(LoadYamlMapping(path));
+
+    private static string[] LoadOpenApiOperationIds(YamlMappingNode root)
     {
-        YamlMappingNode root = LoadYamlMapping(path);
+        if (!root.Children.TryGetValue(new YamlScalarNode("paths"), out YamlNode? pathsNode)
+            || pathsNode is not YamlMappingNode paths)
+        {
+            throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-paths-invalid");
+        }
+
         HashSet<string> methodKeys = new(StringComparer.OrdinalIgnoreCase) { "get", "post", "put", "patch", "delete", "head", "options", "trace" };
         List<string> operations = [];
 
-        foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in RequiredMapping(root, "paths").Children)
+        foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in paths.Children)
         {
-            YamlMappingNode pathItem = pathEntry.Value.ShouldBeOfType<YamlMappingNode>();
+            if (pathEntry.Value is not YamlMappingNode pathItem
+                || pathItem.Children.ContainsKey(new YamlScalarNode("$ref")))
+            {
+                throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-path-item-invalid");
+            }
+
             foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in pathItem.Children)
             {
                 if (methodEntry.Key is not YamlScalarNode keyScalar || string.IsNullOrWhiteSpace(keyScalar.Value))
@@ -3012,12 +3032,20 @@ public sealed class GovernanceCompletenessGateTests
                     continue;
                 }
 
-                if (methodEntry.Value is not YamlMappingNode operationMapping)
+                if (methodEntry.Value is not YamlMappingNode operationMapping
+                    || operationMapping.Children.ContainsKey(new YamlScalarNode("$ref"))
+                    || !operationMapping.Children.TryGetValue(new YamlScalarNode("operationId"), out YamlNode? idNode)
+                    || idNode is not YamlScalarNode id
+                    || string.IsNullOrWhiteSpace(id.Value)
+                    || string.Equals(id.Tag.ToString(), "tag:yaml.org,2002:null", StringComparison.Ordinal)
+                    || (!string.Equals(id.Tag.ToString(), "tag:yaml.org,2002:str", StringComparison.Ordinal)
+                        && (id.Style is ScalarStyle.Plain or ScalarStyle.Any)
+                        && (id.Value == "~" || string.Equals(id.Value, "null", StringComparison.OrdinalIgnoreCase))))
                 {
-                    continue;
+                    throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-operation-invalid");
                 }
 
-                operations.Add(RequiredScalar(operationMapping, "operationId"));
+                operations.Add(id.Value);
             }
         }
 
@@ -3233,13 +3261,38 @@ public sealed class GovernanceCompletenessGateTests
     private static string ToRepositoryPath(string path) =>
         Path.GetRelativePath(RepositoryRoot, path).Replace("\\", "/", StringComparison.Ordinal);
 
-    private static string ReadRootTargetFramework()
+    private static string ReadRootTargetFramework() =>
+        ReadRootTargetFramework(File.ReadAllText(Path.Combine(RepositoryRoot, "Directory.Build.props")));
+
+    private static string ReadRootTargetFramework(string content)
     {
-        string buildPropsPath = Path.Combine(RepositoryRoot, "Directory.Build.props");
-        string content = File.ReadAllText(buildPropsPath);
-        Match match = Regex.Match(content, "<TargetFramework>(?<tfm>[^<]+)</TargetFramework>");
-        match.Success.ShouldBeTrue("Directory.Build.props missing TargetFramework element");
-        return match.Groups["tfm"].Value.Trim();
+        XDocument document;
+        try
+        {
+            document = XDocument.Parse(content);
+        }
+        catch (XmlException)
+        {
+            throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: target-framework-xml-invalid");
+        }
+
+        XElement? project = document.Root;
+        XElement[] declarations = project?.Name.LocalName == "Project"
+            && (project.Name.Namespace == XNamespace.None || project.Name.NamespaceName == "http://schemas.microsoft.com/developer/msbuild/2003")
+            ? project.Elements(project.Name.Namespace + "PropertyGroup")
+                .Where(group => string.IsNullOrWhiteSpace((string?)group.Attribute("Condition")))
+                .SelectMany(group => group.Elements(project.Name.Namespace + "TargetFramework"))
+                .Where(property => string.IsNullOrWhiteSpace((string?)property.Attribute("Condition")))
+                .ToArray()
+            : [];
+
+        if (declarations.Length != 1 || declarations[0].HasElements
+            || !Regex.IsMatch(declarations[0].Value.Trim(), @"\Anet[0-9]+\.[0-9]+(?:-[A-Za-z0-9.]+)?\z", RegexOptions.CultureInvariant))
+        {
+            throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: target-framework-declaration-invalid");
+        }
+
+        return declarations[0].Value.Trim();
     }
 
     private static string FindRepositoryRoot()

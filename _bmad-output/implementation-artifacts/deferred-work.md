@@ -501,7 +501,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:742-790
 reason: `EvaluateExitCriteriaRows` can emit both `exit_criteria_duplicate` and `exit_criteria_malformed` for the same Cx when duplicates exist [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:742-790`] — deferred, noise rather than correctness.
-status: open
+status: done 2026-10-28
+resolution: Duplicate criteria emit one duplicate diagnostic before row metadata validation; malformed unique rows still fail. Covered by focused governance regressions. See spec-five-deferred-governance-inputs.md.
 
 ### DW-70: `FindRepositoryRoot` throws `InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: ...")`
 
@@ -1711,7 +1712,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18, Round 2)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
 reason: `LoadOpenApiOperationIds` crashes on `$ref`-only method operations and on a method-mapping missing `operationId` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs` `LoadOpenApiOperationIds`] — current OpenAPI spec has no `$ref` operations and every operation carries an `operationId`; overlaps Round 2 prerequisite-drift work (Decision #5).
-status: open
+status: done 2026-10-28
+resolution: OpenAPI path and operation shapes are validated explicitly, including YAML nulls and unsupported references; malformed inputs fail with bounded prerequisite-drift diagnostics. See spec-five-deferred-governance-inputs.md.
 
 ### DW-249: `ParseRequiredBoolean` rejects YAML 1.1 numeric booleans
 
@@ -1725,21 +1727,24 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18, Round 2)"), 2026-08-24
 location: tests/tools/run-governance-completeness-gates.ps1
 reason: `Write-GovernanceReport` lacks `try/catch` around the JSON write — a partial write leaves `latest.json` stale while the shell exit code still reflects the original failure [`tests/tools/run-governance-completeness-gates.ps1` `Write-GovernanceReport`] — rare race; harden when a CI consumer reports stale-report incidents.
-status: open
+status: done 2026-10-28
+resolution: Reports are staged and atomically replaced; publication failures return exit 1 with bounded diagnostics, remove stale reports when possible and clean staged files. Real runner tests cover success, test failure, initial/final/failed writes, replacement and directory creation failures. See spec-five-deferred-governance-inputs.md.
 
 ### DW-251: `ReadRootTargetFramework` regex matches the first uncommented `<TargetFramework>` and does not strip XML comments or handle conditioned elements
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18, Round 2)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
 reason: `ReadRootTargetFramework` regex matches the first uncommented `<TargetFramework>` and does not strip XML comments or handle conditioned elements [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs` `ReadRootTargetFramework`] — current `Directory.Build.props` is clean; revisit when conditional TFM authoring lands.
-status: open
+status: done 2026-10-28
+resolution: Root target framework is parsed as XML from exactly one unconditional literal declaration; comments and conditional definitions are ignored, with bounded drift for missing, malformed or ambiguous declarations. See spec-five-deferred-governance-inputs.md.
 
 ### DW-252: `IsGeneratedOrBuildOutput` path-segment check is case-sensitive
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18, Round 2)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
 reason: `IsGeneratedOrBuildOutput` path-segment check is case-sensitive (`/Generated/`, `/bin/`, `/obj/`, `/quarantine/`) [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs` `IsGeneratedOrBuildOutput`] — switch to `OrdinalIgnoreCase` if a generator with non-standard casing is introduced.
-status: open
+status: done 2026-10-28
+resolution: Generated, bin, obj and quarantine directory segments match case-insensitively with POSIX or Windows separators, including leading relative segments; similar source names remain scanned. See spec-five-deferred-governance-inputs.md.
 
 ### DW-253: `accesscontrol.yaml` ships `defaultAction: allow` for every Dapr app with no environment guard
 
@@ -3138,3 +3143,15 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md`
   summary: Measure production namespace-read latency after per-entry fresh authority checks (medium impact, unverified).
   evidence: Each eligible namespace binding now requires a fresh authority round trip within the existing two-second request deadline. No representative namespace-size and dependency-latency measurement is available; validate with the qualified hosted dependency graph before claiming operational performance readiness. Keep the security fence intact; no measured timeout regression is claimed.
+
+- source_spec: `spec-five-deferred-governance-inputs.md`
+  summary: Validate OpenAPI operation-ID scalar types in the governance parity loader.
+  evidence: Independent review reproduced !!int 123 and !!bool true being accepted as operation IDs. The baseline RequiredScalar loader also accepts those typed scalars; DW-248 addresses missing/null/malformed declaration shapes, while full scalar type validation remains inherited work. Preserve explicitly tagged and quoted strings when correcting it.
+
+- source_spec: `spec-five-deferred-governance-inputs.md`
+  summary: Validate OpenAPI path keys and method-key shapes before governance parity enumeration.
+  evidence: The baseline and current loader skip non-scalar method keys and never validate path-key syntax, so malformed key mappings can be omitted from operation enumeration. Follow-up should distinguish permitted path extensions from invalid path/method keys with bounded prerequisite-drift diagnostics.
+
+- source_spec: `spec-five-deferred-governance-inputs.md`
+  summary: Remove raw YAML parser inner exceptions from governance input diagnostics.
+  evidence: LoadYamlStream still attaches YamlException to its bounded InvalidOperationException, allowing test runners to print parser detail. This behavior predates DW-248 and affects every governance YAML consumer. Add malformed-file coverage of complete exception output when hardening the shared loader.
