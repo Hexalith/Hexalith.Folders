@@ -350,11 +350,290 @@ operations:
         File.WriteAllText(baselineOutput, "unchanged baseline sentinel", new UTF8Encoding(false));
 
         GeneratorResult result = RunGeneratorDetailed(mutatedContract, Path.Combine(temp, "parity-contract.yaml"),
-            previousSpinePath: baselineOutput, initializeBaseline: true);
+            previousSpinePath: baselineOutput, initializeBaseline: true, forceBaselineOverwrite: true);
 
         result.ExitCode.ShouldNotBe(0);
         (result.Output + result.Error).ShouldContain("duplicate", Case.Insensitive);
         File.ReadAllText(baselineOutput).ShouldBe("unchanged baseline sentinel");
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void BaselineInitializationRequiresExplicitForceToReplaceExistingOutput(bool existing, bool force)
+    {
+        string temp = NewTempDirectory("hexalith-parity-baseline-force");
+        string baseline = Path.Combine(temp, "previous-spine.yaml");
+        string oracle = Path.Combine(temp, "parity-contract.yaml");
+        if (existing)
+        {
+            File.WriteAllText(baseline, "unchanged baseline sentinel", new UTF8Encoding(false));
+        }
+
+        GeneratorResult result = RunGeneratorDetailed(_openApiFilePath, oracle,
+            previousSpinePath: baseline, initializeBaseline: true, forceBaselineOverwrite: force);
+
+        if (existing && !force)
+        {
+            result.ExitCode.ShouldNotBe(0);
+            (result.Output + result.Error).ShouldContain("--force-baseline-overwrite", Case.Sensitive);
+            File.ReadAllText(baseline).ShouldBe("unchanged baseline sentinel");
+        }
+        else
+        {
+            result.ExitCode.ShouldBe(0, customMessage: result.Output + result.Error);
+            File.ReadAllBytes(baseline).ShouldBe(File.ReadAllBytes(_previousSpineFilePath));
+        }
+
+        File.Exists(oracle).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void BaselineOverwriteFlagRequiresInitialization()
+    {
+        string output = Path.Combine(NewTempDirectory("hexalith-parity-force-without-init"), "parity.yaml");
+
+        GeneratorResult result = RunGeneratorDetailed(_openApiFilePath, output, forceBaselineOverwrite: true);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("--force-baseline-overwrite requires --initialize-baseline", Case.Sensitive);
+        File.Exists(output).ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData("folder_id", "duplicate x-hexalith-audit-metadata-keys")]
+    [InlineData("Folder_id", "violates pattern")]
+    public void GeneratorRejectsDuplicateOrNonCanonicalAuditKeys(string name, string diagnostic)
+    {
+        string temp = NewTempDirectory("hexalith-parity-audit-keys");
+        string contract = WriteMutatedContract(temp, operation =>
+        {
+            RequiredSequence(operation, "x-hexalith-audit-metadata-keys").Add(
+                new YamlMappingNode { { "name", name } });
+        });
+
+        AssertGeneratorRejectsWithoutWriting(contract, temp, diagnostic);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("-taskId")]
+    [InlineData("_taskId")]
+    [InlineData("1taskId")]
+    [InlineData("task.id")]
+    [InlineData("task id")]
+    [InlineData("tâskId")]
+    [InlineData("taskId\n")]
+    public void GeneratorRejectsParameterNamesThatCannotBeSafelyNormalized(string name)
+    {
+        string temp = NewTempDirectory("hexalith-parity-parameter-name");
+        string contract = WriteMutatedContract(temp, operation =>
+        {
+            RequiredSequence(operation, "parameters").Add(
+                new YamlMappingNode { { "name", name }, { "in", "header" } });
+        });
+
+        AssertGeneratorRejectsWithoutWriting(contract, temp, "parameter name");
+    }
+
+    [Theory]
+    [InlineData("-invalid")]
+    [InlineData("1invalid")]
+    [InlineData("")]
+    public void GeneratorRejectsMalformedReferencedParameterNames(string name)
+    {
+        string temp = NewTempDirectory("hexalith-parity-referenced-parameter");
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
+        YamlMappingNode parameter = RequiredMapping(RequiredMapping(root, "components"), "parameters")
+            .Children[new YamlScalarNode("IdempotencyKey")].ShouldBeOfType<YamlMappingNode>();
+        parameter.Children[new YamlScalarNode("name")] = new YamlScalarNode(name);
+        string contract = Path.Combine(temp, "candidate.yaml");
+        using (StreamWriter writer = new(contract, false, new UTF8Encoding(false)))
+        {
+            new YamlStream(new YamlDocument(root)).Save(writer, false);
+        }
+
+        AssertGeneratorRejectsWithoutWriting(contract, temp, "#/components/parameters/IdempotencyKey");
+    }
+
+    [Fact]
+    public void GeneratorRejectsAuditKeyLineBreaksBeforeForcedBaselineReplacement()
+    {
+        string temp = NewTempDirectory("hexalith-parity-audit-baseline");
+        string contract = WriteMutatedContract(temp, operation =>
+        {
+            RequiredSequence(operation, "x-hexalith-audit-metadata-keys").Add(
+                new YamlMappingNode { { "name", "folder_id\n" } });
+        });
+        string baseline = Path.Combine(temp, "previous-spine.yaml");
+        File.WriteAllText(baseline, "unchanged baseline sentinel");
+
+        GeneratorResult result = RunGeneratorDetailed(contract, Path.Combine(temp, "parity.yaml"),
+            previousSpinePath: baseline, initializeBaseline: true, forceBaselineOverwrite: true);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("audit metadata key", Case.Sensitive);
+        File.ReadAllText(baseline).ShouldBe("unchanged baseline sentinel");
+    }
+
+    [Theory]
+    [InlineData("eventually_consistent")]
+    [InlineData("null")]
+    [InlineData("class: eventually_consistent")]
+    [InlineData("class: eventually_consistent\nfreshnessBehavior: bounded\nextra: ignored")]
+    [InlineData("class: unknown\nfreshnessBehavior: bounded")]
+    [InlineData("class: ''\nfreshnessBehavior: bounded")]
+    [InlineData("class: [eventually_consistent]\nfreshnessBehavior: bounded")]
+    [InlineData("class: eventually_consistent\nfreshnessBehavior: {}")]
+    [InlineData("class: eventually_consistent\nfreshnessBehavior: ''")]
+    [InlineData("class: eventually_consistent\nfreshnessBehavior: null")]
+    [InlineData("class: eventually_consistent\nfreshnessBehavior: NULL")]
+    [InlineData("class: eventually_consistent\nfreshnessBehavior: ~")]
+    [InlineData("class: eventually_consistent\nfreshnessBehavior: !!null 'null'")]
+    public void GeneratorReportsPrerequisiteDriftForMalformedReadConsistency(string metadata)
+    {
+        string temp = NewTempDirectory("hexalith-parity-read-consistency");
+        YamlStream yaml = new();
+        yaml.Load(new StringReader(metadata));
+        string contract = WriteMutatedContract(temp,
+            operation => operation.Children[new YamlScalarNode("x-hexalith-read-consistency")] = yaml.Documents[0].RootNode,
+            readOperation: true);
+
+        AssertGeneratorRejectsWithoutWriting(contract, temp, "x-hexalith-read-consistency");
+    }
+
+    [Theory]
+    [InlineData("'null'")]
+    [InlineData("\"line one\\nline two\"")]
+    public void GeneratorAcceptsValidFreshnessStrings(string scalar)
+    {
+        string temp = NewTempDirectory("hexalith-parity-freshness-string");
+        YamlStream yaml = new();
+        yaml.Load(new StringReader(scalar));
+        string contract = WriteMutatedContract(temp, operation =>
+            RequiredMapping(operation, "x-hexalith-read-consistency").Children[new YamlScalarNode("freshnessBehavior")] = yaml.Documents[0].RootNode,
+            readOperation: true);
+
+        GeneratorResult result = RunGeneratorDetailed(contract, Path.Combine(temp, "parity.yaml"));
+
+        result.ExitCode.ShouldBe(0, customMessage: result.Output + result.Error);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void GeneratorRejectsApprovalSourcesThroughFileOrDirectorySymlinks(bool directoryLink)
+    {
+        Assert.SkipWhen(OperatingSystem.IsWindows(), "Unprivileged symbolic-link fixtures run on Unix.");
+        string temp = NewTempDirectory("hexalith-parity-approval-link");
+        string repository = CreateApprovalRepository(temp);
+        string outside = Path.Combine(temp, "outside");
+        Directory.CreateDirectory(outside);
+        File.WriteAllText(Path.Combine(outside, "approval.md"), "synthetic approval");
+        string source;
+        if (directoryLink)
+        {
+            Directory.CreateSymbolicLink(Path.Combine(repository, "linked"), outside);
+            source = "linked/approval.md";
+        }
+        else
+        {
+            File.CreateSymbolicLink(Path.Combine(repository, "linked.md"), Path.Combine(outside, "approval.md"));
+            source = "linked.md";
+        }
+
+        GeneratorResult result = RunGeneratorWithApprovalSource(temp, repository, source);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("approval_source must not traverse symbolic links", Case.Sensitive);
+        File.Exists(Path.Combine(temp, "parity.yaml")).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void GeneratorRejectsApprovalSymlinksBeforeCollapsingParentSegments()
+    {
+        Assert.SkipWhen(OperatingSystem.IsWindows(), "Unprivileged symbolic-link fixtures run on Unix.");
+        string temp = NewTempDirectory("hexalith-parity-approval-parent-link");
+        string repository = CreateApprovalRepository(temp);
+        string outside = Path.Combine(temp, "outside");
+        Directory.CreateDirectory(outside);
+        Directory.CreateSymbolicLink(Path.Combine(repository, "linked"), outside);
+        File.WriteAllText(Path.Combine(repository, "approval.md"), "synthetic inside approval");
+        File.WriteAllText(Path.Combine(temp, "approval.md"), "synthetic outside approval");
+
+        GeneratorResult result = RunGeneratorWithApprovalSource(temp, repository, "linked/../approval.md");
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("approval_source must not traverse symbolic links", Case.Sensitive);
+        File.Exists(Path.Combine(temp, "parity.yaml")).ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ForcedBaselineInitializationRejectsLinkedOutputWithoutChangingCandidate(bool directoryLink)
+    {
+        Assert.SkipWhen(OperatingSystem.IsWindows(), "Unprivileged symbolic-link fixtures run on Unix.");
+        string temp = NewTempDirectory("hexalith-parity-baseline-linked-output");
+        string candidate = Path.Combine(temp, "candidate.yaml");
+        byte[] original = File.ReadAllBytes(_openApiFilePath);
+        File.WriteAllBytes(candidate, original);
+        string baseline;
+        if (directoryLink)
+        {
+            Directory.CreateSymbolicLink(Path.Combine(temp, "linked"), temp);
+            baseline = Path.Combine(temp, "linked", "candidate.yaml");
+        }
+        else
+        {
+            baseline = Path.Combine(temp, "baseline.yaml");
+            File.CreateSymbolicLink(baseline, candidate);
+        }
+
+        GeneratorResult result = RunGeneratorDetailed(candidate, Path.Combine(temp, "parity.yaml"),
+            previousSpinePath: baseline, initializeBaseline: true, forceBaselineOverwrite: true);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("baseline output must not traverse symbolic links", Case.Sensitive);
+        File.ReadAllBytes(candidate).ShouldBe(original);
+        File.Exists(Path.Combine(temp, "parity.yaml")).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void GeneratorUsesPlatformPathComparisonForApprovalSourceContainment()
+    {
+        string temp = NewTempDirectory("hexalith-parity-approval-case");
+        string repository = CreateApprovalRepository(temp);
+        string otherCase = Path.Combine(temp, "REPO");
+        Directory.CreateDirectory(otherCase);
+        File.WriteAllText(Path.Combine(otherCase, "approval.md"), "synthetic approval");
+
+        GeneratorResult result = RunGeneratorWithApprovalSource(temp, repository, "../REPO/approval.md");
+
+        if (OperatingSystem.IsWindows())
+        {
+            result.ExitCode.ShouldBe(0, customMessage: result.Output + result.Error);
+        }
+        else
+        {
+            result.ExitCode.ShouldNotBe(0);
+            (result.Output + result.Error).ShouldContain("approval_source escapes the repository root", Case.Sensitive);
+            File.Exists(Path.Combine(temp, "parity.yaml")).ShouldBeFalse();
+        }
+    }
+
+    [Fact]
+    public void GeneratorAcceptsOrdinaryRepositoryRelativeApprovalSource()
+    {
+        string temp = NewTempDirectory("hexalith-parity-approval-contained");
+        string repository = CreateApprovalRepository(temp);
+        File.WriteAllText(Path.Combine(repository, "approval.md"), "synthetic approval");
+
+        GeneratorResult result = RunGeneratorWithApprovalSource(temp, repository, "approval.md");
+
+        result.ExitCode.ShouldBe(0, customMessage: result.Output + result.Error);
     }
 
     [Fact]
@@ -620,20 +899,81 @@ operations:
     private static int RunGenerator(string contractPath, string outputPath) =>
         RunGeneratorDetailed(contractPath, outputPath).ExitCode;
 
+    private static string WriteMutatedContract(string directory, Action<YamlMappingNode> mutate, bool readOperation = false)
+    {
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
+        YamlMappingNode operation = RequiredMapping(root, "paths").Children.Values
+            .Cast<YamlMappingNode>()
+            .SelectMany(path => path.Children.Values.OfType<YamlMappingNode>())
+            .First(candidate => candidate.Children.ContainsKey(new YamlScalarNode("operationId"))
+                && (!readOperation || candidate.Children.ContainsKey(new YamlScalarNode("x-hexalith-read-consistency"))));
+        mutate(operation);
+        string path = Path.Combine(directory, "candidate.yaml");
+        using StreamWriter writer = new(path, false, new UTF8Encoding(false));
+        new YamlStream(new YamlDocument(root)).Save(writer, false);
+        return path;
+    }
+
+    private static void AssertGeneratorRejectsWithoutWriting(string contract, string directory, string diagnostic)
+    {
+        string output = Path.Combine(directory, "parity.yaml");
+        File.WriteAllText(output, "unchanged oracle sentinel", new UTF8Encoding(false));
+
+        GeneratorResult result = RunGeneratorDetailed(contract, output);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("prerequisite-drift", Case.Sensitive);
+        (result.Output + result.Error).ShouldContain(diagnostic, Case.Sensitive);
+        File.ReadAllText(output).ShouldBe("unchanged oracle sentinel");
+    }
+
+    private static string CreateApprovalRepository(string directory)
+    {
+        string repository = Path.Combine(directory, "repo");
+        string historyDirectory = Path.Combine(repository, "src", "Hexalith.Folders.Contracts", "openapi", "baselines");
+        Directory.CreateDirectory(historyDirectory);
+        File.Copy(Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Contracts", "openapi", "baselines", "hexalith.folders.v1.pd10.yaml"),
+            Path.Combine(historyDirectory, "hexalith.folders.v1.pd10.yaml"));
+        return repository;
+    }
+
+    private static GeneratorResult RunGeneratorWithApprovalSource(string directory, string repository, string source)
+    {
+        string previousSpine = Path.Combine(directory, "previous-spine.yaml");
+        File.WriteAllText(previousSpine, $$"""
+version: synthetic
+operations:
+  - operation_id: RemovedSyntheticOperation
+    method: get
+    path: /api/v1/synthetic/removed
+    deprecation:
+      approved: true
+      rationale: Synthetic removal fixture.
+      approval_reference: synthetic-approval
+      effective_date: 2026-10-28
+      approval_source: '{{source}}'
+""", new UTF8Encoding(false));
+        return RunGeneratorDetailed(_openApiFilePath, Path.Combine(directory, "parity.yaml"),
+            previousSpine, _schemaFilePath, repositoryRoot: repository);
+    }
+
     private static GeneratorResult RunGeneratorDetailed(
         string contractPath,
         string outputPath,
         string? previousSpinePath = null,
         string? schemaPath = null,
-        bool initializeBaseline = false)
+        bool initializeBaseline = false,
+        bool forceBaselineOverwrite = false,
+        string? repositoryRoot = null)
     {
         string previousArgument = previousSpinePath is null ? string.Empty : $" --previous-spine \"{previousSpinePath}\"";
         string schemaArgument = schemaPath is null ? string.Empty : $" --schema \"{schemaPath}\"";
         string baselineArgument = initializeBaseline ? " --initialize-baseline" : string.Empty;
+        string forceArgument = forceBaselineOverwrite ? " --force-baseline-overwrite" : string.Empty;
         ProcessStartInfo info = new()
         {
             FileName = "dotnet",
-            Arguments = $"run --no-restore --no-build --configuration \"{_buildConfiguration}\" --project \"{_generatorProjectPath}\" -- --repository-root \"{_repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}{schemaArgument}{baselineArgument}",
+            Arguments = $"run --no-restore --no-build --configuration \"{_buildConfiguration}\" --project \"{_generatorProjectPath}\" -- --repository-root \"{repositoryRoot ?? _repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}{schemaArgument}{baselineArgument}{forceArgument}",
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,

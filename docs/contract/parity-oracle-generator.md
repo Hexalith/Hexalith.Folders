@@ -44,6 +44,8 @@ Safe provenance is emitted as comments containing content hashes and source name
 
 ## Validation
 
+Baseline initialization requires an explicit v2 candidate `--contract`. It creates a new target; replacing an existing target additionally requires `--force-baseline-overwrite`. Invalid candidates are rejected before replacement. Approval sources must be repository-relative files without symbolic-link or reparse-point traversal. Audit keys must be unique canonical lowercase names, parameter names must normalize without dropping unsupported characters, and read-consistency objects must follow the declared vocabulary.
+
 Focused tests in `tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs` verify operation coverage, row schema requirements and enums, mutating/non-mutating idempotency rules, deterministic bytes, metadata-only output, and fail-closed missing idempotency metadata.
 
 ## AC-To-Test Matrix

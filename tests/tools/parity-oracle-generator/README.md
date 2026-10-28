@@ -15,7 +15,8 @@ Optional arguments:
 --schema <path-to-parity-contract.schema.json>
 --previous-spine <path-to-previous-spine.yaml>
 --output <path-to-parity-contract.yaml>
---initialize-baseline       Snapshot the current OpenAPI as the previous-spine baseline and exit.
+--initialize-baseline       Snapshot an explicitly selected v2 candidate as a new baseline and exit.
+--force-baseline-overwrite  Allow baseline initialization to replace an existing target.
 --allow-empty-baseline      Accept an empty `operations: []` baseline and SKIP symmetric drift
                             detection entirely (no warnings, no rename/move/removal checks).
                             Use only when intentionally resetting the baseline.
@@ -27,10 +28,10 @@ Optional arguments:
 Run once whenever the Contract Spine is intentionally rewritten:
 
 ```text
-dotnet run --project tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj -- --repository-root <repo-root> --initialize-baseline
+dotnet run --project tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj -- --repository-root <repo-root> --contract src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml --previous-spine <new-baseline-path> --initialize-baseline
 ```
 
-The command overwrites `tests/fixtures/previous-spine.yaml` with the captured operation inventory and exits without emitting the parity oracle. Commit the regenerated baseline alongside any intentional contract change so subsequent runs perform meaningful symmetric drift detection.
+The command creates the selected baseline with the captured operation inventory and exits without emitting the parity oracle. An existing target is rejected unless `--force-baseline-overwrite` is also passed; that flag requires `--initialize-baseline`. Candidate validation finishes before an existing baseline is replaced. Baseline output paths must traverse no symbolic links or reparse points, including when overwrite is explicit. Commit the regenerated baseline alongside any intentional contract change so subsequent runs perform meaningful symmetric drift detection.
 
 ## Source Authority
 
@@ -46,7 +47,7 @@ Rows are sorted by `operation_id`, arrays are sorted when source order is not no
 
 ## Failure Behavior
 
-The generator fails closed with `prerequisite_drift` diagnostics for duplicate operation IDs, duplicate routes (same method+path with different operationIds), missing mutating idempotency metadata, non-mutating idempotency metadata, missing read consistency, missing canonical error categories, missing audit metadata keys, audit-key pattern violations (`^[a-z][a-z0-9_]*$`), operationId pattern violations (`^[A-Z][A-Za-z0-9]*$`), control-character values that cannot be safely YAML-encoded, unresolved local OpenAPI `$ref` or path-item `$ref` constructs, unsupported HTTP methods, unparseable previous-spine baselines, `operations: null`, removed/renamed/moved previous-spine operations without an approved deprecation, canonical-error categories with no behavioral-parity mapping, and malformed arguments. HEAD/OPTIONS/TRACE methods and missing `x-hexalith-authorization` or `x-hexalith-parity-dimensions` extensions surface as non-blocking warnings or `reference_pending` markers in the generated oracle's diagnostic header.
+The generator fails closed with `prerequisite_drift` diagnostics for duplicate operation IDs, duplicate routes (same method+path with different operationIds), missing mutating idempotency metadata, non-mutating idempotency metadata, missing read consistency, missing canonical error categories, missing audit metadata keys, duplicate audit keys, audit-key pattern violations (`^[a-z][a-z0-9_]*$`), malformed inline or referenced parameter names (must start with an ASCII letter and contain only ASCII letters, digits, hyphens, or underscores), malformed read-consistency objects (exactly the nonempty, non-null scalar `class` and `freshnessBehavior` fields and a known read class), operationId pattern violations (`^[A-Z][A-Za-z0-9]*$`), control-character values that cannot be safely YAML-encoded, unresolved local OpenAPI `$ref` or path-item `$ref` constructs, unsupported HTTP methods, unparseable previous-spine baselines, `operations: null`, removed/renamed/moved previous-spine operations without an approved deprecation, canonical-error categories with no behavioral-parity mapping, and malformed arguments. HEAD/OPTIONS/TRACE methods and missing `x-hexalith-authorization` or `x-hexalith-parity-dimensions` extensions surface as non-blocking warnings or `reference_pending` markers in the generated oracle's diagnostic header.
 
 ## Handoff
 
@@ -60,3 +61,5 @@ Story 1.14 owns CI workflow wiring and release gates. Epic 5 owns SDK, REST, CLI
 - mutation_rules: Regenerate `tests/fixtures/parity-contract.yaml` from repository inputs; do not hand-edit generated operation rows.
 - non_policy_placeholder: true
 - synthetic_data_only: true
+
+Approved deprecation `approval_source` paths must be relative, exist inside the repository under platform-appropriate path comparison, and traverse no symbolic links or reparse points. Approval path failures use `previous-spine-drift` diagnostics.

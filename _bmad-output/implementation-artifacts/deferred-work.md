@@ -566,7 +566,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-14-wire-contract-spine-drift-and-generated-client-ci-gates (2026-05-17)"), 2026-08-24
 location: tests/tools/parity-oracle-generator/Program.cs:783-801
 reason: Case-sensitivity / symlink edge cases in `ValidateRepositoryRelativeApprovalSource` [`tests/tools/parity-oracle-generator/Program.cs:783-801`]. `OrdinalIgnoreCase` prefix check accepts case-mismatched paths on Linux; not exploitable today (no symlinks in `docs/`).
-status: open
+status: done 2026-10-28
+resolution: Approval sources use platform-appropriate containment and reject symlink/reparse-point traversal before collapsing parent segments; CLI regressions cover directory/file links, case-only sibling roots, and ordinary relative files. See spec-five-deferred-generator-inputs.md.
 
 ### DW-79: Per-file allow-list pattern in negative-scope test
 
@@ -586,7 +587,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generate-the-c13-parity-oracle round 3 (2026-05-17)"), 2026-08-24
 location: tests/tools/parity-oracle-generator/Program.cs --initialize-baseline branch
 reason: `--initialize-baseline` silently overwrites without `--force`/backup [`tests/tools/parity-oracle-generator/Program.cs --initialize-baseline branch`] — UX concern, not correctness. Failing-CI path of least resistance is to nuke the baseline; mitigated socially by sprint review.
-status: open
+status: done 2026-10-28
+resolution: Baseline initialization requires --force-baseline-overwrite for an existing target and uses FileMode.CreateNew without force; linked baseline output paths are rejected; CLI tests cover create/refuse/replace, force without initialization, and invalid-candidate preservation. See spec-five-deferred-generator-inputs.md.
 decision: 2026-08-25 Require force — Add --force-baseline-overwrite or an atomic backup requirement, reject an existing target without it, and cover both paths with focused CLI tests.
 
 ### DW-82: `AuditKey` regex does not check duplicate-after-normalization
@@ -594,7 +596,8 @@ decision: 2026-08-25 Require force — Add --force-baseline-overwrite or an atom
 origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generate-the-c13-parity-oracle round 3 (2026-05-17)"), 2026-08-24
 location: tests/tools/parity-oracle-generator/Program.cs ReadAuditMetadataKeys
 reason: `AuditKey` regex does not check duplicate-after-normalization [`tests/tools/parity-oracle-generator/Program.cs ReadAuditMetadataKeys`] — the lowercase requirement catches mixed-case duplicates today; reopen if the audit-key vocabulary loosens its case rule.
-status: open
+status: done 2026-10-28
+resolution: Duplicate audit-key names fail before sorting instead of being silently deduplicated; strict lowercase vocabulary uses absolute regex anchors, with duplicate, mixed-case, and forced-baseline newline regressions. See spec-five-deferred-generator-inputs.md.
 
 ### DW-83: Argument parser lacks `--` end-of-options sentinel [`tests/tools/parity-oracle-generator/Program.cs GeneratorOptions.Parse`] — not exercised; current callers never pass values starting with `--`.
 
@@ -608,7 +611,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generate-the-c13-parity-oracle round 3 (2026-05-17)"), 2026-08-24
 location: tests/tools/parity-oracle-generator/Program.cs NormalizeName
 reason: `NormalizeName` leading separator/digit silently produces invalid names [`tests/tools/parity-oracle-generator/Program.cs NormalizeName`] — current OpenAPI does not declare parameters with these shapes.
-status: open
+status: done 2026-10-28
+resolution: Inline and referenced parameter names must start with an ASCII letter and contain only ASCII letters/digits/hyphens/underscores; malformed names fail before normalization or output, with empty, separator/digit, punctuation, Unicode, and newline regressions. See spec-five-deferred-generator-inputs.md.
 
 ### DW-85: `read_consistency_class` enum mixes underscore (`not_applicable`) and hyphen (`eventually-consistent`) forms
 
@@ -621,7 +625,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generate-the-c13-parity-oracle round 3 (2026-05-17)"), 2026-08-24
 location: tests/tools/parity-oracle-generator/Program.cs ReadConsistencyClass
 reason: `ReadConsistencyClass` extra-keys / scalar-form produces opaque "value not in enum" rather than `prerequisite_drift:` [`tests/tools/parity-oracle-generator/Program.cs ReadConsistencyClass`] — diagnostic surface improvement only.
-status: open
+status: done 2026-10-28
+resolution: Read-consistency metadata validates the declared two-field mapping, nonempty/non-null scalar values, and known read classes, with prerequisite-drift diagnostics and output-preservation regressions. See spec-five-deferred-generator-inputs.md.
 
 ### DW-87: Provenance hash is YAML-comment + normalized-text
 

@@ -35,9 +35,22 @@ if (options.InitializeBaseline)
         .OrderBy(o => o.OperationId, StringComparer.Ordinal)
         .ToArray();
     ValidateOperationInventory(baselineOps, baselineDiagnostics);
+    if (File.Exists(options.PreviousSpinePath) && !options.ForceBaselineOverwrite)
+    {
+        throw new InvalidOperationException(
+            "prerequisite-drift: baseline already exists; pass --force-baseline-overwrite to replace it intentionally.");
+    }
+    string baselineRoot = Path.GetPathRoot(options.PreviousSpinePath)!;
+    ValidateNoSymbolicLinks(baselineRoot, Path.GetRelativePath(baselineRoot, options.PreviousSpinePath),
+        "prerequisite-drift: baseline output must not traverse symbolic links or reparse points.");
     string baselineYaml = RenderBaseline(baselineOps, options.ContractPath);
     Directory.CreateDirectory(Path.GetDirectoryName(options.PreviousSpinePath) ?? ".");
-    File.WriteAllText(options.PreviousSpinePath, baselineYaml, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+    using (FileStream baselineStream = new(options.PreviousSpinePath,
+        options.ForceBaselineOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write, FileShare.None))
+    using (StreamWriter writer = new(baselineStream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)))
+    {
+        writer.Write(baselineYaml);
+    }
     Console.WriteLine($"Wrote baseline with {baselineOps.Count} operations to {options.PreviousSpinePath}");
     return 0;
 }
@@ -314,7 +327,7 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
 
         string path = rawPath;
         YamlMappingNode pathItem = pathEntry.Value.AsMapping($"path item '{path}'");
-        IReadOnlyList<ParameterModel> pathParameters = EnumerateParameters(pathItem).ToArray();
+        IReadOnlyList<ParameterModel> pathParameters = EnumerateParameters(pathItem, root, $"paths.{path}.parameters").ToArray();
 
         foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in pathItem.Children)
         {
@@ -358,7 +371,7 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
             ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
             ValidateOperationIdShape(operationId);
 
-            IReadOnlyList<ParameterModel> parameters = [.. pathParameters, .. EnumerateParameters(operation)];
+            IReadOnlyList<ParameterModel> parameters = [.. pathParameters, .. EnumerateParameters(operation, root, $"operation {operationId} parameters")];
             string[] tags = ReadStringSequence(operation, "tags").ToArray();
             string[] idempotencyFields = ReadStringSequence(operation, "x-hexalith-idempotency-equivalence").ToArray();
             string[] errorCategories = ReadStringSequence(operation, "x-hexalith-canonical-error-categories")
@@ -367,7 +380,6 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
                 .Order(StringComparer.Ordinal)
                 .ToArray();
             string[] auditKeys = ReadAuditMetadataKeys(operation)
-                .Distinct(StringComparer.Ordinal)
                 .Order(StringComparer.Ordinal)
                 .ToArray();
             string[] statusCodes = ReadResponseStatusCodes(operation, operationId);
@@ -1053,7 +1065,7 @@ static string[] AdapterExpectations(OperationModel operation)
     return adapters.ToArray();
 }
 
-static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping)
+static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping, YamlMappingNode root, string source)
 {
     if (!mapping.Children.TryGetValue(new YamlScalarNode("parameters"), out YamlNode? parametersNode))
     {
@@ -1067,6 +1079,25 @@ static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping)
         if (parameter.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode))
         {
             string referencePath = referenceNode.AsScalar("$ref").Value ?? string.Empty;
+            const string prefix = "#/components/parameters/";
+            if (!referencePath.StartsWith(prefix, StringComparison.Ordinal)
+                || referencePath[prefix.Length..].Contains('/'))
+            {
+                throw new InvalidOperationException($"prerequisite-drift: {source} requires a local component parameter reference.");
+            }
+
+            string componentName = referencePath[prefix.Length..]
+                .Replace("~1", "/", StringComparison.Ordinal).Replace("~0", "~", StringComparison.Ordinal);
+            if (!RequiredMapping(root, "components").Children.TryGetValue(new YamlScalarNode("parameters"), out YamlNode? componentsNode)
+                || componentsNode is not YamlMappingNode components
+                || !components.Children.TryGetValue(new YamlScalarNode(componentName), out YamlNode? componentNode)
+                || componentNode is not YamlMappingNode component
+                || !component.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? nameNode)
+                || nameNode is not YamlScalarNode { Value: { } componentParameterName })
+            {
+                throw new InvalidOperationException($"prerequisite-drift: {source} has an unresolved component parameter name.");
+            }
+            _ = NormalizeName(componentParameterName, $"{source} at {referencePath}");
             string referenceFragment = referencePath.Split('/').Last();
             name = StripParameterReferenceSuffix(referenceFragment);
         }
@@ -1075,7 +1106,7 @@ static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping)
             name = RequiredScalar(parameter, "name");
         }
 
-        yield return new ParameterModel(NormalizeName(name), name);
+        yield return new ParameterModel(NormalizeName(name, source), name);
     }
 }
 
@@ -1155,19 +1186,40 @@ static bool HasNonEmptyExtension(YamlMappingNode operation, string key)
 
 static string? ReadConsistencyClass(YamlMappingNode operation)
 {
-    string? raw = ReadNestedScalar(operation, "x-hexalith-read-consistency", "class");
-    if (raw is null)
+    const string extension = "x-hexalith-read-consistency";
+    if (!operation.Children.TryGetValue(new YamlScalarNode(extension), out YamlNode? node))
     {
         return null;
     }
+    string operationId = RequiredScalar(operation, "operationId");
+
+    if (node is not YamlMappingNode mapping
+        || mapping.Children.Count != 2
+        || !mapping.Children.TryGetValue(new YamlScalarNode("class"), out YamlNode? classNode)
+        || classNode is not YamlScalarNode { Value: { } raw }
+        || string.IsNullOrWhiteSpace(raw)
+        || !mapping.Children.TryGetValue(new YamlScalarNode("freshnessBehavior"), out YamlNode? freshnessNode)
+        || freshnessNode is not YamlScalarNode { Value: { } freshness }
+        || string.IsNullOrWhiteSpace(freshness)
+        || IsYamlNull(freshnessNode))
+    {
+        throw new InvalidOperationException(
+            $"prerequisite-drift: operation {operationId} x-hexalith-read-consistency must contain only non-empty scalar class and freshnessBehavior fields.");
+    }
 
     string normalized = raw.Replace("_", "-", StringComparison.Ordinal);
-    if (normalized == "not-applicable")
+    if (normalized is not ("snapshot-per-task" or "read-your-writes" or "eventually-consistent"))
     {
-        normalized = "not_applicable";
+        throw new InvalidOperationException(
+            $"prerequisite-drift: operation {operationId} x-hexalith-read-consistency class is outside the declared read-consistency vocabulary.");
     }
     return normalized;
 }
+
+static bool IsYamlNull(YamlNode node) => node is YamlScalarNode scalar
+    && (string.Equals(scalar.Tag.ToString(), "tag:yaml.org,2002:null", StringComparison.Ordinal)
+        || ((scalar.Style is ScalarStyle.Plain or ScalarStyle.Any)
+            && (scalar.Value is null or "" or "~" || string.Equals(scalar.Value, "null", StringComparison.OrdinalIgnoreCase))));
 
 static AuthorizationMetadata? ReadAuthorization(YamlMappingNode operation)
 {
@@ -1197,9 +1249,16 @@ static IEnumerable<string> ReadAuditMetadataKeys(YamlMappingNode operation)
         yield break;
     }
 
+    HashSet<string> seen = new(StringComparer.Ordinal);
     foreach (YamlNode item in node.AsSequence("x-hexalith-audit-metadata-keys"))
     {
-        yield return RequiredScalar(item.AsMapping("audit metadata key"), "name");
+        string name = RequiredScalar(item.AsMapping("audit metadata key"), "name");
+        if (!seen.Add(name))
+        {
+            throw new InvalidOperationException($"prerequisite-drift: operation {RequiredScalar(operation, "operationId")} duplicate x-hexalith-audit-metadata-keys name.");
+        }
+
+        yield return name;
     }
 }
 
@@ -1289,7 +1348,7 @@ static string ReadDeprecationEvidenceScalar(YamlMappingNode deprecation, string 
 
 static void ValidateRepositoryRelativeApprovalSource(string repositoryRoot, string approvalSource)
 {
-    if (Path.IsPathFullyQualified(approvalSource) || approvalSource.Contains("://", StringComparison.Ordinal))
+    if (Path.IsPathRooted(approvalSource) || approvalSource.Contains("://", StringComparison.Ordinal))
     {
         throw new InvalidOperationException("previous-spine-drift: approved deprecation approval_source must be a repository-relative path.");
     }
@@ -1299,7 +1358,8 @@ static void ValidateRepositoryRelativeApprovalSource(string repositoryRoot, stri
     string rootWithSeparator = normalizedRoot.EndsWith(Path.DirectorySeparatorChar)
         ? normalizedRoot
         : normalizedRoot + Path.DirectorySeparatorChar;
-    if (!fullSource.StartsWith(rootWithSeparator, StringComparison.OrdinalIgnoreCase))
+    StringComparison pathComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+    if (!fullSource.StartsWith(rootWithSeparator, pathComparison))
     {
         throw new InvalidOperationException("previous-spine-drift: approved deprecation approval_source escapes the repository root.");
     }
@@ -1307,6 +1367,35 @@ static void ValidateRepositoryRelativeApprovalSource(string repositoryRoot, stri
     if (!File.Exists(fullSource))
     {
         throw new InvalidOperationException($"previous-spine-drift: approved deprecation approval_source does not exist: {approvalSource}");
+    }
+
+    ValidateNoSymbolicLinks(normalizedRoot, approvalSource,
+        "previous-spine-drift: approved deprecation approval_source must not traverse symbolic links or reparse points.");
+}
+
+static void ValidateNoSymbolicLinks(string root, string relativePath, string diagnostic)
+{
+    string current = root;
+    foreach (string segment in relativePath.Split([Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar], StringSplitOptions.RemoveEmptyEntries))
+    {
+        current = Path.Combine(current, segment);
+        FileAttributes attributes;
+        try
+        {
+            attributes = File.GetAttributes(current);
+        }
+        catch (FileNotFoundException)
+        {
+            break;
+        }
+        catch (DirectoryNotFoundException)
+        {
+            break;
+        }
+        if ((attributes & FileAttributes.ReparsePoint) != 0)
+        {
+            throw new InvalidOperationException(diagnostic);
+        }
     }
 }
 
@@ -1327,8 +1416,14 @@ static string NormalizePath(string path)
     return trimmed;
 }
 
-static string NormalizeName(string value)
+static string NormalizeName(string value, string source)
 {
+    if (!Regex.IsMatch(value, "\\A[A-Za-z][A-Za-z0-9_-]*\\z", RegexOptions.CultureInvariant))
+    {
+        throw new InvalidOperationException(
+            $"prerequisite-drift: {source} parameter name must start with an ASCII letter and contain only ASCII letters, digits, hyphens, or underscores.");
+    }
+
     StringBuilder builder = new(value.Length);
     for (int i = 0; i < value.Length; i++)
     {
@@ -1495,6 +1590,7 @@ internal sealed record GeneratorOptions(
     string PreviousSpinePath,
     string OutputPath,
     bool InitializeBaseline,
+    bool ForceBaselineOverwrite,
     bool AllowEmptyBaseline)
 {
     public static GeneratorOptions Parse(string[] args)
@@ -1511,7 +1607,7 @@ internal sealed record GeneratorOptions(
                 throw new ArgumentException($"Unexpected positional argument '{token}' at position {i}; arguments must be --key value pairs or --flag.");
             }
 
-            if (token is "--help" or "--initialize-baseline" or "--allow-empty-baseline")
+            if (token is "--help" or "--initialize-baseline" or "--force-baseline-overwrite" or "--allow-empty-baseline")
             {
                 if (!flags.Add(token))
                 {
@@ -1543,7 +1639,7 @@ internal sealed record GeneratorOptions(
 
         if (flags.Contains("--help"))
         {
-            Console.WriteLine("Usage: parity-oracle-generator [--repository-root <path>] [--contract <path>] [--schema <path>] [--previous-spine <path>] [--output <path>] [--initialize-baseline] [--allow-empty-baseline]");
+            Console.WriteLine("Usage: parity-oracle-generator [--repository-root <path>] [--contract <path>] [--schema <path>] [--previous-spine <path>] [--output <path>] [--initialize-baseline] [--force-baseline-overwrite] [--allow-empty-baseline]");
             Environment.Exit(0);
         }
 
@@ -1554,6 +1650,10 @@ internal sealed record GeneratorOptions(
         {
             throw new ArgumentException("--initialize-baseline requires an explicit --contract path; no mutable baseline source is inferred.");
         }
+        if (flags.Contains("--force-baseline-overwrite") && !flags.Contains("--initialize-baseline"))
+        {
+            throw new ArgumentException("--force-baseline-overwrite requires --initialize-baseline.");
+        }
         return new GeneratorOptions(
             RepositoryRoot: repositoryRoot,
             ContractPath: Path.GetFullPath(parsed.GetValueOrDefault("--contract", Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml"))),
@@ -1561,6 +1661,7 @@ internal sealed record GeneratorOptions(
             PreviousSpinePath: Path.GetFullPath(parsed.GetValueOrDefault("--previous-spine", Path.Combine(repositoryRoot, "tests", "fixtures", "previous-spine.yaml"))),
             OutputPath: Path.GetFullPath(parsed.GetValueOrDefault("--output", Path.Combine(repositoryRoot, "tests", "fixtures", "parity-contract.yaml"))),
             InitializeBaseline: flags.Contains("--initialize-baseline"),
+            ForceBaselineOverwrite: flags.Contains("--force-baseline-overwrite"),
             AllowEmptyBaseline: flags.Contains("--allow-empty-baseline"));
     }
 
@@ -1671,7 +1772,7 @@ internal static class YamlExtensions
 internal static class GeneratorConstants
 {
     public static readonly Regex OperationIdPattern = new("^[A-Z][A-Za-z0-9]*$", RegexOptions.Compiled);
-    public static readonly Regex AuditKeyPattern = new("^[a-z][a-z0-9_]*$", RegexOptions.Compiled);
+    public static readonly Regex AuditKeyPattern = new("\\A[a-z][a-z0-9_]*\\z", RegexOptions.Compiled);
 
     // YAML 1.2 recognizes ONLY the literal scalars true/false (case-insensitive). The legacy YAML 1.1
     // aliases (yes/no/on/off/y/n/1/0) are explicitly excluded because previous-spine deprecation entries

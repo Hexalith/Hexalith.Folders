@@ -57,7 +57,7 @@ dotnet run --project tests\tools\parity-oracle-generator\Hexalith.Folders.Parity
 `tests/fixtures/previous-spine.yaml` is refreshed only after an approved public baseline sweep:
 
 ```powershell
-dotnet run --project tests\tools\parity-oracle-generator\Hexalith.Folders.ParityOracleGenerator.csproj -- --initialize-baseline
+dotnet run --project tests\tools\parity-oracle-generator\Hexalith.Folders.ParityOracleGenerator.csproj -- --contract src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml --initialize-baseline --force-baseline-overwrite
 ```
 
 Do not hand-edit generated client files or parity rows. When an operation is intentionally removed or renamed, record an approved deprecation entry in `previous-spine.yaml` with the prior operation ID, rationale, approval reference, effective date, and repository-relative approval source.
