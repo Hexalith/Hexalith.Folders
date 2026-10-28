@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -865,7 +866,7 @@ public sealed partial class SafetyInvariantGateTests
     private static string SerializeYaml(YamlNode node)
     {
         YamlStream stream = new(new YamlDocument(node));
-        using StringWriter writer = new();
+        using StringWriter writer = new(CultureInfo.InvariantCulture);
         stream.Save(writer, false);
         return writer.ToString();
     }

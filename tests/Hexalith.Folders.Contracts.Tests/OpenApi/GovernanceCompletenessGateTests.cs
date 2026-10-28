@@ -3009,11 +3009,28 @@ public sealed partial class GovernanceCompletenessGateTests
             throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-paths-invalid");
         }
 
-        HashSet<string> methodKeys = new(StringComparer.OrdinalIgnoreCase) { "get", "post", "put", "patch", "delete", "head", "options", "trace" };
+        HashSet<string> methodKeys = new(StringComparer.Ordinal) { "get", "post", "put", "patch", "delete", "head", "options", "trace" };
+        HashSet<string> metadataKeys = new(StringComparer.Ordinal) { "summary", "description", "parameters", "servers" };
         List<string> operations = [];
 
         foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in paths.Children)
         {
+            if (!IsOpenApiString(pathEntry.Key))
+            {
+                throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-path-key-invalid");
+            }
+
+            string pathKey = ((YamlScalarNode)pathEntry.Key).Value!;
+            if (IsOpenApiExtension(pathKey))
+            {
+                continue;
+            }
+
+            if (!pathKey.StartsWith("/", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-path-key-invalid");
+            }
+
             if (pathEntry.Value is not YamlMappingNode pathItem
                 || pathItem.Children.ContainsKey(new YamlScalarNode("$ref")))
             {
@@ -3022,35 +3039,66 @@ public sealed partial class GovernanceCompletenessGateTests
 
             foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in pathItem.Children)
             {
-                if (methodEntry.Key is not YamlScalarNode keyScalar || string.IsNullOrWhiteSpace(keyScalar.Value))
+                if (!IsOpenApiString(methodEntry.Key))
+                {
+                    throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-method-key-invalid");
+                }
+
+                string methodKey = ((YamlScalarNode)methodEntry.Key).Value!;
+                if (metadataKeys.Contains(methodKey) || IsOpenApiExtension(methodKey))
                 {
                     continue;
                 }
 
-                if (!methodKeys.Contains(keyScalar.Value!))
+                if (!methodKeys.Contains(methodKey))
                 {
-                    continue;
+                    throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-method-key-invalid");
                 }
 
                 if (methodEntry.Value is not YamlMappingNode operationMapping
                     || operationMapping.Children.ContainsKey(new YamlScalarNode("$ref"))
                     || !operationMapping.Children.TryGetValue(new YamlScalarNode("operationId"), out YamlNode? idNode)
-                    || idNode is not YamlScalarNode id
-                    || string.IsNullOrWhiteSpace(id.Value)
-                    || string.Equals(id.Tag.ToString(), "tag:yaml.org,2002:null", StringComparison.Ordinal)
-                    || (!string.Equals(id.Tag.ToString(), "tag:yaml.org,2002:str", StringComparison.Ordinal)
-                        && (id.Style is ScalarStyle.Plain or ScalarStyle.Any)
-                        && (id.Value == "~" || string.Equals(id.Value, "null", StringComparison.OrdinalIgnoreCase))))
+                    || !IsOpenApiString(idNode))
                 {
                     throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-operation-invalid");
                 }
 
-                operations.Add(id.Value);
+                operations.Add(((YamlScalarNode)idNode).Value!);
             }
         }
 
         return operations.Order(StringComparer.Ordinal).ToArray();
     }
+
+    private static bool IsOpenApiExtension(string key) =>
+        key.Length > 2 && key.StartsWith("x-", StringComparison.Ordinal);
+
+    private static bool IsOpenApiString(YamlNode node)
+    {
+        if (node is not YamlScalarNode scalar || string.IsNullOrWhiteSpace(scalar.Value))
+        {
+            return false;
+        }
+
+        string tag = scalar.Tag.ToString();
+        if (tag is "tag:yaml.org,2002:str" or "!")
+        {
+            return true;
+        }
+
+        if (!scalar.Tag.IsEmpty && tag != "?")
+        {
+            return false;
+        }
+
+        // The representation model keeps untagged plain scalars as text. Resolve the
+        // YAML 1.2 core non-string forms without culture-dependent numeric parsing.
+        return scalar.Style is not (ScalarStyle.Plain or ScalarStyle.Any)
+            || !NonStringYamlCoreScalarPattern().IsMatch(scalar.Value);
+    }
+
+    [GeneratedRegex(@"\A(?:~|null|Null|NULL|true|True|TRUE|false|False|FALSE|0o[0-7]+|0x[0-9a-fA-F]+|[-+]?(?:\.[0-9]+|[0-9]+(?:\.[0-9]*)?)(?:[eE][-+]?[0-9]+)?|[-+]?\.(?:inf|Inf|INF)|\.(?:nan|NaN|NAN))\z", RegexOptions.CultureInvariant | RegexOptions.NonBacktracking)]
+    private static partial Regex NonStringYamlCoreScalarPattern();
 
     private static YamlMappingNode[] LoadParityRows(string path)
     {
@@ -3094,15 +3142,45 @@ public sealed partial class GovernanceCompletenessGateTests
         return row;
     }
 
-    private static YamlMappingNode CloneRow(YamlMappingNode row)
+    private static YamlMappingNode CloneRow(YamlMappingNode row) =>
+        (YamlMappingNode)CloneYamlNode(row, new Dictionary<YamlNode, YamlNode>(ReferenceEqualityComparer.Instance));
+
+    private static YamlNode CloneYamlNode(YamlNode node, Dictionary<YamlNode, YamlNode> copies)
     {
-        YamlStream stream = new(new YamlDocument(row));
-        using StringWriter writer = new();
-        stream.Save(writer, false);
-        using StringReader reader = new(writer.ToString());
-        YamlStream copy = new();
-        copy.Load(reader);
-        return copy.Documents[0].RootNode.ShouldBeOfType<YamlMappingNode>();
+        if (copies.TryGetValue(node, out YamlNode? copy))
+        {
+            return copy;
+        }
+
+        copy = node switch
+        {
+            YamlScalarNode scalar => new YamlScalarNode(scalar.Value) { Style = scalar.Style },
+            YamlSequenceNode sequence => new YamlSequenceNode { Style = sequence.Style },
+            YamlMappingNode mapping => new YamlMappingNode { Style = mapping.Style },
+            _ => throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: yaml-node-kind-unsupported"),
+        };
+        copy.Tag = node.Tag;
+        copy.Anchor = node.Anchor;
+        copies.Add(node, copy);
+
+        // Aliases share a node in the representation graph, including recursive
+        // collections. Register each copy before walking its children.
+        if (node is YamlMappingNode sourceMapping && copy is YamlMappingNode targetMapping)
+        {
+            foreach (KeyValuePair<YamlNode, YamlNode> child in sourceMapping.Children)
+            {
+                targetMapping.Add(CloneYamlNode(child.Key, copies), CloneYamlNode(child.Value, copies));
+            }
+        }
+        else if (node is YamlSequenceNode sourceSequence && copy is YamlSequenceNode targetSequence)
+        {
+            foreach (YamlNode child in sourceSequence.Children)
+            {
+                targetSequence.Add(CloneYamlNode(child, copies));
+            }
+        }
+
+        return copy;
     }
 
     private static void SetScalar(YamlMappingNode row, string key, string value) =>
@@ -3168,9 +3246,9 @@ public sealed partial class GovernanceCompletenessGateTests
             yaml.Load(reader);
             return yaml;
         }
-        catch (YamlDotNet.Core.YamlException ex)
+        catch (YamlDotNet.Core.YamlException)
         {
-            throw new InvalidOperationException($"GOVERNANCE-PREREQUISITE-DRIFT: yaml-malformed: {ToRepositoryPath(path)}", ex);
+            throw new InvalidOperationException($"GOVERNANCE-PREREQUISITE-DRIFT: yaml-malformed: {ToRepositoryPath(path)}");
         }
     }
 

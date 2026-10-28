@@ -494,7 +494,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:991-1000
 reason: `CloneRow` round-trips YAML through serialize/parse and drops anchors, tags, and comments [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:991-1000`] — deferred, only used by negative-control tests; revisit if production validators start caring about tag/anchor metadata.
-status: open
+status: done 2026-10-28
+resolution: Replaced serialize/parse cloning after a regression reproduced collection-tag loss. A reference-identity graph clone preserves scalar/collection tags, anchors, styles, shared and recursive aliases, distinct equal nodes and mutation isolation. Comments are unavailable after initial parsing. See spec-five-deferred-yaml-governance.md.
 
 ### DW-69: `EvaluateExitCriteriaRows` can emit both `exit_criteria_duplicate` and `exit_criteria_malformed` for the same Cx when duplicates exist
 
@@ -1705,7 +1706,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-18, Round 4)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
 reason: `SerializeYaml` constructs `StringWriter` without `CultureInfo.InvariantCulture` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `SerializeYaml`] — YamlDotNet writes strings literally for the fields the gate scans; revisit if numeric YAML enters the corpus.
-status: open
+status: done 2026-10-28
+resolution: Safety YAML serialization explicitly uses CultureInfo.InvariantCulture. French, Arabic and Turkish culture regressions pin stable output and numeric/tagged scalar round trips. See spec-five-deferred-yaml-governance.md.
 
 ### DW-248: `LoadOpenApiOperationIds` crashes on `$ref`-only method operations and on a method-mapping missing `operationId`
 
@@ -3147,11 +3149,30 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-governance-inputs.md`
   summary: Validate OpenAPI operation-ID scalar types in the governance parity loader.
   evidence: Independent review reproduced !!int 123 and !!bool true being accepted as operation IDs. The baseline RequiredScalar loader also accepts those typed scalars; DW-248 addresses missing/null/malformed declaration shapes, while full scalar type validation remains inherited work. Preserve explicitly tagged and quoted strings when correcting it.
+  status: done 2026-10-28
+  resolution: OpenAPI operation IDs must resolve to YAML 1.2 core strings; explicit non-string/custom tags and plain null/boolean/numeric values fail with bounded drift. Quoted, !!str and non-specific ! strings remain valid. See spec-five-deferred-yaml-governance.md.
 
 - source_spec: `spec-five-deferred-governance-inputs.md`
   summary: Validate OpenAPI path keys and method-key shapes before governance parity enumeration.
   evidence: The baseline and current loader skip non-scalar method keys and never validate path-key syntax, so malformed key mappings can be omitted from operation enumeration. Follow-up should distinguish permitted path extensions from invalid path/method keys with bounded prerequisite-drift diagnostics.
+  status: done 2026-10-28
+  resolution: Enumeration validates scalar string keys, leading-slash paths, lowercase HTTP methods and permitted path metadata/non-empty x- extensions before counting operations. Invalid keys fail with bounded drift instead of being silently skipped. See spec-five-deferred-yaml-governance.md.
 
 - source_spec: `spec-five-deferred-governance-inputs.md`
   summary: Remove raw YAML parser inner exceptions from governance input diagnostics.
   evidence: LoadYamlStream still attaches YamlException to its bounded InvalidOperationException, allowing test runners to print parser detail. This behavior predates DW-248 and affects every governance YAML consumer. Add malformed-file coverage of complete exception output when hardening the shared loader.
+  status: done 2026-10-28
+  resolution: Malformed YAML rethrows only a bounded prerequisite-drift diagnostic without the parser inner exception. File-level undefined-alias, malformed-sequence and duplicate-key regressions inspect complete exception output for input-marker leakage. See spec-five-deferred-yaml-governance.md.
+
+
+- source_spec: `spec-five-deferred-yaml-governance.md`
+  summary: Normalize string-tagged structural YAML keys during governance required-field and reference lookups.
+  evidence: Independent review reproduced valid !!str paths and !!str operationId keys being rejected, while !!str $ref bypasses the unsupported-reference check. Required-key dictionary lookups behave identically at baseline 8272bc5071c5b7ee8f2a971130372dd160e14771; path/method key validation and operation-ID value typing do not alter those inherited lookups. Follow-up should compare resolved string meaning consistently and retain bounded diagnostics.
+
+- source_spec: `spec-five-deferred-yaml-governance.md`
+  summary: Validate collection tags as well as representation-node kinds in governance OpenAPI input loading.
+  evidence: Independent review reproduced paths: !!str { /synthetic: { get: { operationId: Hidden } } } and get: !!str { operationId: Hidden } being accepted because collection admission checks only YamlMappingNode. The same checks exist at baseline 8272bc5071c5b7ee8f2a971130372dd160e14771. Follow-up should reject incompatible collection tags with bounded diagnostics while preserving standard mapping tags.
+
+- source_spec: `spec-five-deferred-yaml-governance.md`
+  summary: Validate the value shapes of known OpenAPI path-item metadata in a dedicated schema-validation follow-up.
+  evidence: Independent review reproduced summary: { operationId: Hidden } being ignored beside a valid operation. The baseline also skips metadata values, and this change deliberately validates enumeration keys and operation declarations only. Documentation now states that summary, description, parameters and servers are skipped during enumeration. Follow-up can enforce string/sequence metadata shapes without treating nested metadata as operations.

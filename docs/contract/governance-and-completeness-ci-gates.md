@@ -17,6 +17,8 @@ The command must be run from the repository root or from the script location. It
 
 Reports are staged in the report directory and published by replacing `latest.json` only after serialization completes. A publication failure exits with code 1 and the bounded `GOVERNANCE-REPORT-WRITE-FAILED` diagnostic, attempts to remove an earlier report, and cleans up the staged file. Treat `latest.json` as invalid after that diagnostic, even if filesystem permissions prevent its removal. When reporting succeeds, the runner preserves the test command's failure exit code.
 
+OpenAPI enumeration requires string operation IDs, path keys beginning with `/`, and lowercase HTTP method keys. Operation-ID values may be quoted or explicitly string-tagged; untagged plain scalars use YAML 1.2 core type resolution. Non-empty `x-` extensions and the path-item `summary`, `description`, `parameters`, and `servers` fields are skipped during operation enumeration. Invalid path/method keys or operation declarations fail with bounded prerequisite-drift reasons. Malformed YAML diagnostics omit parser inner exceptions so complete exception output cannot echo input values. Row-clone regressions preserve tags, anchors, aliases, styles, and mutation isolation; comments are unavailable after the initial YAML representation-model parse.
+
 ## CI Job
 
 The `contract-spine-gates` workflow invokes the same command after restore and build:
