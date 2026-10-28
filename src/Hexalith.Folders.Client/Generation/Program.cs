@@ -9,6 +9,11 @@ using static Hexalith.Folders.Client.Generation.Shared.YamlContractLoader;
 
 Dictionary<string, string> arguments = ParseArguments(args);
 string repositoryRoot = RequiredArgument(arguments, "--repository-root");
+if (string.IsNullOrWhiteSpace(repositoryRoot) || !Path.IsPathFullyQualified(repositoryRoot))
+{
+    throw new ArgumentException("--repository-root must be a fully qualified path.");
+}
+
 string contractPath = RequiredArgument(arguments, "--contract");
 string configurationPath = RequiredArgument(arguments, "--configuration");
 string outputPath = RequiredArgument(arguments, "--output");
@@ -230,7 +235,7 @@ static FieldModel ResolveField(
     }
 
     string rootProperty = ToPropertyName(bodyParts[0]);
-    return new FieldModel(field, $"{rootProperty} is not null", $"{rootProperty}?.{string.Join(".", bodyParts.Skip(1).Select(ToPropertyName))}");
+    return new FieldModel(field, $"{rootProperty} is not null", string.Join("?.", bodyParts.Select(ToPropertyName)));
 }
 
 static bool SchemaMatchesLogicalPrefix(string schemaName, string prefix)
@@ -302,7 +307,7 @@ static IEnumerable<OperationModel> EnumerateOperations(YamlMappingNode root)
     {
         string path = pathEntry.Key.ShouldBeScalar("path").Value ?? string.Empty;
         YamlMappingNode pathItem = pathEntry.Value.ShouldBeMapping("path item");
-        IReadOnlyList<ParameterModel> pathParameters = EnumerateParameters(pathItem).ToArray();
+        IReadOnlyList<ParameterModel> pathParameters = EnumerateParameters(root, pathItem).ToArray();
 
         foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in pathItem.Children)
         {
@@ -315,7 +320,7 @@ static IEnumerable<OperationModel> EnumerateOperations(YamlMappingNode root)
             YamlMappingNode operation = methodEntry.Value.ShouldBeMapping("operation");
             string operationId = RequiredScalar(operation, "operationId");
             ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
-            List<ParameterModel> parameters = [.. pathParameters, .. EnumerateParameters(operation)];
+            List<ParameterModel> parameters = [.. pathParameters, .. EnumerateParameters(root, operation)];
             string? requestSchema = TryReadRequestSchema(operation);
             IReadOnlyList<string> fields = ReadStringSequence(operation, "x-hexalith-idempotency-equivalence");
             IReadOnlyList<string> problemTuples = ReadProblemTuples(root, operation, method, requestSchema, parameters);
@@ -514,7 +519,7 @@ static YamlMappingNode ResolveLocalMapping(YamlMappingNode root, YamlMappingNode
     return current.ShouldBeMapping("local reference target");
 }
 
-static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping)
+static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode root, YamlMappingNode mapping)
 {
     if (!mapping.Children.TryGetValue(new YamlScalarNode("parameters"), out YamlNode? parametersNode))
     {
@@ -526,16 +531,43 @@ static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping)
         YamlMappingNode parameter = parameterNode.ShouldBeMapping("parameter");
         if (parameter.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode))
         {
+            const string ParameterPrefix = "#/components/parameters/";
             string reference = referenceNode.ShouldBeScalar("$ref").Value ?? string.Empty;
-            string name = reference.Split('/').Last();
+            if (!reference.StartsWith(ParameterPrefix, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("Parameter $ref must have the form '#/components/parameters/<Name>'.");
+            }
+
+            string name = reference[ParameterPrefix.Length..];
+            if (string.IsNullOrWhiteSpace(name) || name.Contains('/', StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("Parameter $ref must identify a non-empty single parameter name.");
+            }
+
+            _ = ReadParameterName(ResolveLocalMapping(root, parameter));
             yield return new ParameterModel(NormalizeName(name), name);
         }
         else if (parameter.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? nameNode))
         {
-            string name = nameNode.ShouldBeScalar("name").Value ?? string.Empty;
+            string name = ReadParameterName(parameter);
             yield return new ParameterModel(NormalizeName(name), name);
         }
+        else
+        {
+            throw new InvalidOperationException("Parameter must declare a name or a local parameter $ref.");
+        }
     }
+}
+
+static string ReadParameterName(YamlMappingNode parameter)
+{
+    if (!parameter.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? nameNode)
+        || string.IsNullOrWhiteSpace(nameNode.ShouldBeScalar("Parameter name").Value))
+    {
+        throw new InvalidOperationException("Parameter name must be non-empty.");
+    }
+
+    return nameNode.ShouldBeScalar("Parameter name").Value!;
 }
 
 // TryReadRequestSchema is provided by YamlContractLoader (imported via `using static`).

@@ -174,7 +174,10 @@ public static class HexalithIdempotencyHasher
         return builder.ToString();
     }
 
-    private static void RejectControlCharacters(string value, string context)
+    /// <summary>Rejects unsafe characters in canonical identifiers.</summary>
+    /// <param name="value">The non-null identifier to validate.</param>
+    /// <param name="context">The identifier's diagnostic label.</param>
+    internal static void RejectControlCharacters(string value, string context)
     {
         for (int i = 0; i < value.Length; i++)
         {
@@ -207,21 +210,24 @@ public static class HexalithIdempotencyHasher
 
     private static void EnsureDeclaredOrder(IReadOnlyList<IdempotencyField> fields)
     {
-        string? previous = null;
         HashSet<string> seen = new(StringComparer.Ordinal);
         foreach (IdempotencyField field in fields)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(field.Path);
             RejectControlCharacters(field.Path, "field path");
+            if (!seen.Add(field.Path))
+            {
+                throw new InvalidOperationException($"Duplicate idempotency field '{field.Path}'.");
+            }
+        }
+
+        string? previous = null;
+        foreach (IdempotencyField field in fields)
+        {
             if (previous is not null && string.CompareOrdinal(previous, field.Path) > 0)
             {
                 throw new InvalidOperationException(
                     $"Idempotency fields must be in ordinal-ascending order (matches spine declaration): '{previous}' must come after '{field.Path}'.");
-            }
-
-            if (!seen.Add(field.Path))
-            {
-                throw new InvalidOperationException($"Duplicate idempotency field '{field.Path}'.");
             }
 
             previous = field.Path;
@@ -306,14 +312,5 @@ public static class HexalithIdempotencyHasher
             property.NullValueHandling = NullValueHandling.Include;
             return property;
         }
-    }
-}
-
-public readonly record struct IdempotencyField(string Path, bool Present, object? Value)
-{
-    public string ToCanonicalLine()
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(Path);
-        return "field=" + HexalithIdempotencyHasher.Escape(Path) + ";present=" + Present.ToString(CultureInfo.InvariantCulture).ToLowerInvariant() + ";value=" + (Present ? HexalithIdempotencyHasher.Canonicalize(Value) : "omitted");
     }
 }

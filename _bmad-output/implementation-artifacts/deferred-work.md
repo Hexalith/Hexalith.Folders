@@ -764,7 +764,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Program.cs:9-13
 reason: `--repository-root` argument not validated for absolute-path-ness inside the generator (`src/Hexalith.Folders.Client/Generation/Program.cs:9-13`).
-status: open
+status: done 2026-10-28
+resolution: `Generation/Program.cs` rejects blank or non-fully-qualified roots before input reads or output writes. `GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs` covers blank, dot, relative and parent-relative inputs and unchanged existing artifacts.
 
 ### DW-107: Generator test `HelperGenerationTargetRegeneratesWhenContractSpineChanges` writes mutated spine via `Encoding.UTF8` with BOM preamble
 
@@ -791,7 +792,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:308-312
 reason: `IdempotencyField.ToCanonicalLine()` bypasses `RejectControlCharacters` (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:308-312`). Direct callers (e.g. Story 1.13 oracle) skip validation.
-status: open
+status: done 2026-10-28
+resolution: `Idempotency/IdempotencyField.cs` calls the existing identifier validator directly. Client generation regressions require identical direct/Compute rejection for controls, BOM, line separators and malformed surrogates, while preserving value escaping, valid Unicode paths and omitted/null encodings.
 
 ### DW-111: Generation subproject offline-build reliance (`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:46`)
 
@@ -811,7 +813,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 2 (2026-05-15)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Program.cs:201-211
 reason: Defensive validation for empty parameter `$ref` / empty `name` scalar (`src/Hexalith.Folders.Client/Generation/Program.cs:201-211`) — spine currently has neither; defensive only.
-status: open
+status: done 2026-10-28
+resolution: `EnumerateParameters` rejects blank/missing inline or referenced names, missing reference targets and malformed/nonlocal parameter references before publication. Client generation regressions verify both output artifacts remain unchanged on rejection, preserve legal non-helper punctuation names and pin canonical isolated regeneration to committed bytes.
 
 ### DW-114: Defensive validation for zero-document YAML (`src/Hexalith.Folders.Client/Generation/Program.cs:398-400`) — spine always has at least one document; `yaml.Documents[0]` is safe in practice.
 
@@ -830,7 +833,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 2 (2026-05-15)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Program.cs:130
 reason: Multi-level nested-path NRE risk (`src/Hexalith.Folders.Client/Generation/Program.cs:130`) — `Root?.A.B.C` is null-safe only on the first hop; revisit if spine adds 3+ level equivalence paths.
-status: open
+status: done 2026-10-28
+resolution: `ResolveField` emits null propagation at every nested hop while retaining root-based presence. `GeneratedNestedHelperHandlesNullAtEveryDepthAndRetainsPresenceSemantics` compiles and executes the actual emitted helper for absent root, null intermediate, null leaf and a supplied leaf; hashes match canonical expected fields.
 
 ### DW-117: W1: P-Schema-9 normalization incomplete across earlier-story digest/correlation patterns
 
@@ -1468,7 +1472,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1375-1394
 reason: `EnsureDeclaredOrder` duplicate-after-sort message wording [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1375-1394`] — cosmetic; order check fires before duplicate check for differently-cased equal names.
-status: open
+status: done 2026-10-28
+resolution: `EnsureDeclaredOrder` checks exact duplicates before ordering. `DuplicateFieldDiagnosticPrecedesOrderDiagnosticWithoutChangingCaseSensitivity` pins duplicate-first diagnostics and ordinal case-sensitive identity: differently cased paths are distinct and remain subject to ordinal ordering.
 
 ### DW-214: `ResolveField` perf nit — rebuilds `operationParameters` per field [`src/Hexalith.Folders.Client/Generation/Program.cs:616-638`] — micro-optimization; field counts per operation are small.
 

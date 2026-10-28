@@ -18,7 +18,7 @@ using static Hexalith.Folders.Client.Generation.Shared.YamlContractLoader;
 
 namespace Hexalith.Folders.Client.Tests;
 
-public sealed class ClientGenerationTests
+public sealed partial class ClientGenerationTests
 {
     private static readonly string RepositoryRoot = LocateRepositoryRoot();
     private static readonly string BuildConfiguration = typeof(ClientGenerationTests).Assembly
