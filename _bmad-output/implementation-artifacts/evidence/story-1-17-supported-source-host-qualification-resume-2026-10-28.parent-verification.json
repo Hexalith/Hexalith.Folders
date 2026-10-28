@@ -1,0 +1,132 @@
+{
+  "capturedUtc": "2026-10-28T14:23:00.744163+00:00",
+  "finalTests": 202,
+  "finalSourceFilesUnchanged": 6,
+  "repositoryHeadAndIndexIdentitiesStable": 13,
+  "repositories": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders",
+      "head": "5fb5cfcfcda10044faccc71b48f8a3d6c08c5b87",
+      "indexSha256": "c46fe1ec284cdc7bdecee24dd71fcc947e2cd4d3d17893ee5f75b767379a0088",
+      "ownedChangedFiles": [
+        ".gitattributes",
+        "_bmad-output/implementation-artifacts/spec-1-17-qualify-supported-source-host-graph.md",
+        "_bmad-output/implementation-artifacts/spec-1-17-supported-source-host-mapping.md"
+      ]
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "head": "7ddb864cda5e942925b056391617eae4895c1253",
+      "indexSha256": "12072a4190682b8bf28e96bf9be7e1f7efcba62de799f93c7bedcd685c20e51e",
+      "ownedChangedFiles": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.AI.Tools",
+      "head": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "indexSha256": "77c94fb29c26e5708460809967060cb8f8f507ffed14e932ae05174013c96f9c",
+      "ownedChangedFiles": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "head": "36c78f3435d2d492a73f1b0707cf865c8735d740",
+      "indexSha256": "6b82424e9f50c2ef6f88df561efd2b00091f710c2d2c4f74d321cf8fac8251cb",
+      "ownedChangedFiles": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "head": "5f665c4d38afb2255a7dde4620330e09824a40a1",
+      "indexSha256": "0d3d7799177341a45f168fed0987f5a80abd04ab277b003aebf9445cbabc961c",
+      "ownedChangedFiles": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+      "head": "72c36c7113c750c8b809f9d72b945a2a8c2d4555",
+      "indexSha256": "bce07b61c510eb3ec110d7e870368e9fa111566c76ecff89150e4738d4b7e73b",
+      "ownedChangedFiles": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons",
+      "head": "3edfbdafc7d4fa915286dce8a37dc4cc7c06085a",
+      "indexSha256": "812b418d2da25de8b6845c05b11ca34daa814495386d37f153227644325d3324",
+      "ownedChangedFiles": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "head": "e4e4568aa59050b5890c60ff4a1f39bcc83399b4",
+      "indexSha256": "08fb32ee507195c7c3533609ed504083624cf45496c95d8baebe25272f0f0b58",
+      "ownedChangedFiles": [
+        "src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingReconciliationTask.cs",
+        "test/Hexalith.Builds.Module.Tests/CompositionSdkProcess.cs",
+        "test/Hexalith.Builds.Module.Tests/CompositionSdkProcessTests.cs",
+        "test/Hexalith.Builds.Module.Tests/Hexalith.Builds.Module.Tests.csproj",
+        "test/Hexalith.Builds.Module.Tests/Workspace/WorkspaceAppHostTests.cs",
+        "test/Hexalith.Builds.Module.Tests/Workspace/WorkspaceMsBuildTests.cs"
+      ]
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations",
+      "head": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "indexSha256": "99834e9037d6af73bea83dc830ab91d6f25228633456987344d153f3cab98221",
+      "ownedChangedFiles": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "head": "0e45105476902fcfce1f8dbd8416d7234bb16b41",
+      "indexSha256": "b7bd244da469f01bf214ac04ee072076f87fea2e7754c157675a83918b007d05",
+      "ownedChangedFiles": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "head": "8de90958bc41b7fd01b7ed22b8ab364447a800e4",
+      "indexSha256": "4167e4f8d110a3f68915e8ad14313178a75599e065819c26d7a37a45de95548d",
+      "ownedChangedFiles": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "head": "2d7311cbbcc592c0ea0348463037389251d1cb4b",
+      "indexSha256": "21be84bfca63b12e92e0edc4a4e79b0ffa51f98ce14a938de578f435adac79a1",
+      "ownedChangedFiles": []
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties",
+      "head": "9239c531f3b0cbb4a998c419e537463b597ff14b",
+      "indexSha256": "78f8d505e3e5dc3b4ffdeb3c96da8a01aa1d2d096c4895443920a6b78bcb42db",
+      "ownedChangedFiles": []
+    }
+  ],
+  "protectedFilesUnchanged": [
+    "_bmad-output/implementation-artifacts/sprint-status.yaml",
+    "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+    "docs/governance/approval-policy.md",
+    "_bmad-output/planning-artifacts/planning-story-manifest.yaml",
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml",
+    ".gitmodules",
+    "Directory.Packages.props"
+  ],
+  "localSliceStatuses": "done; exact working-copy frozen blocks and original baseline identifiers preserved",
+  "lineEndingAudit": "Git stores normalized LF. Original working-copy bytes were reconstructed only when their SHA-256 matched the captured before-image; exact frozen blocks then matched. A preliminary direct Git-blob/working-byte comparison was rejected rather than treating CRLF normalization as an intent change.",
+  "parentStoryStatus": "in-progress",
+  "trackerStatus": "backlog",
+  "routingPolicy": "V1Only",
+  "T0": null,
+  "activationAuthority": null,
+  "stagingExecuted": 0,
+  "stagingRequired": 14,
+  "receiptSha256": "77486ab9c0aef516641d341e8f5eaaccb279c2363a16d5147ed2b5ea9aa93a18",
+  "replayScriptSha256": "511a6917475aa90095f198172e97420dc1df19ff70ec86a6ac906b508d89fc35",
+  "normalAndOptimizedReplay": "PASS: 236 final + 154 pre-review retained members; 202 passed, zero skipped/not-run",
+  "corruptionProbe": {
+    "command": [
+      "/usr/bin/python3",
+      "-O",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/verify-story-1-17-source-host-qualification-2026-10-28.py",
+      "/tmp/story117-final-negative-mprbq7k3/receipt.json"
+    ],
+    "exitCode": 1,
+    "expectedError": "Archive SHA-256 mismatch",
+    "originalArchiveUnchanged": true
+  },
+  "archivePolicy": "Both archives remain ignored local evidence; sizes/SHA-256 recorded in receipt",
+  "historicalAuditLimitation": "Separate broad baseline diff retains existing Parties commit-object hash mismatch; current owned changes and test gates are verified",
+  "noWorkspaceGitWrites": true
+}

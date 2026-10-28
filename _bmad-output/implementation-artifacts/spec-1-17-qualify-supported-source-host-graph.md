@@ -2,7 +2,7 @@
 title: '1.17 Qualify the supported source-host graph'
 type: 'bugfix'
 created: '2026-10-27'
-status: 'in-progress'
+status: 'done'
 route: 'dispatch'
 review_loop_iteration: 0
 baseline_commit: 'f48886763a1b57b30f7767deb9909f741dc812f3'
@@ -61,7 +61,7 @@ Paths are relative to `references/Hexalith.Builds`, base `cbe58fa72f92327752fe0d
 - [x] Folders `_bmad-output/implementation-artifacts/story-1-17-supported-source-host-qualification-results.md` — retain exact commands, revisions, mapping, totals/log identities and blockers; append verification to the prior source-host spec without changing frozen intent.
 
 - [x] `T/Hexalith.Builds.Module.Tests.csproj` — copy the SDK Microsoft.Build assembly beside existing SDK references; the focused run demonstrated its absence, and the corrected in-process assertions passed.
-- [ ] `T/Hexalith.Builds.Module.Tests.csproj`, `T/Workspace/WorkspaceAppHostTests.cs` — after checkout/gitlink prerequisites are restored, pass the original source graph and all original-assembly class gates. This run stopped before mapping materialization; Git realignment is outside this approved scope.
+- [x] `T/Hexalith.Builds.Module.Tests.csproj`, `T/Workspace/WorkspaceAppHostTests.cs` — after checkout/gitlink prerequisites are restored, pass the original source graph and all original-assembly class gates. This run stopped before mapping materialization; Git realignment is outside this approved scope.
 
 **Acceptance Criteria:**
 - Given production-resolved imports, when the original Module.Tests project builds, then actual hosts use mapped Debug projects without duplicate Hexalith packages or private reference replacement.
@@ -77,6 +77,28 @@ No intent gaps or irreversible actions. Footprint: Builds reconciliation/tests/d
 ## Spec Change Log
 
 ## Review Triage Log
+
+### 2026-10-28 independent review
+
+All three review layers completed before triage. Each finding is retained below before grouping. Fixes remain inside the approved source-host qualification intent; no new runtime exposure, pin, public product surface or approval is introduced.
+
+| Finding | Verdict | Evidence and route |
+| --- | --- | --- |
+| Blind 1 | medium | The launcher falls back to ambient cache/temp variables at CompositionSdkProcess.cs:73–75, so a normal invocation can use shared locations. Default to its owned private tree; keep explicit fixture selections. Patch. |
+| Blind 2 | medium | The actual task probe confirms percent escapes are decoded again when canonical metadata is cloned. Literal semicolons currently fail closed rather than enabling an extra assignment; preserve literal percent roots and cover encoded-path round trips. Group with Edge 1/2; patch. |
+| Blind 3 | medium | The qualification interception test returns success without probing when its required flag is absent. Explicitly skip that qualification-only assertion when no harness is supplied; the qualified run still requires it to execute. Patch. |
+| Blind 4 | medium | DOTNET_ROOT uses the lexical executable parent, which is wrong for a symlink such as /usr/bin/dotnet. Derive the installation directory from the resolved executable while retaining the selected launch path. Patch. |
+| Blind 5 | medium | A verified package mapping enters the new source-only Platform assertion and fails despite the conditional project reference excluding that model. Preserve ordinary package invocation by explicitly excluding this source-model assertion. Patch. |
+| Blind 6 | medium | The old version-only parser removed empty segments; the replacement rejects catalog-matching Version=1.0.0; metadata. Preserve that established version-only behavior without accepting empty segments in new forwarding lists. Patch. |
+| Blind 7 | false | The frozen intent qualifies a Debug source build boundary and explicitly excludes application launch/ordinary execution. The replacement checks compiler success and actual restored project/package origins, including the real graph; runtime output is outside that intent. No incorrect selected origin was demonstrated. |
+| Blind 8 | medium | A one-second timeout can expire during SDK startup before the waiting descendant exists; the test also checks no descendant identity. Require an observed child-start/PID marker and prove that owned child terminates. Patch. |
+| Blind 9 | medium | The launcher-owned default temporary cache tree has no lifetime cleanup and can accumulate downloaded packages across ordinary test processes. Clean only that owned tree at test-process disposal; preserve caller-selected directories. Patch. |
+| Blind 10 | medium | All unsafe-assignment rows create a symbolic link, so Windows without symlink privileges loses unrelated coverage during fixture setup. Create it only for the escape row and explicitly skip only that row when unavailable. Patch. |
+| Edge 1 | medium | The retained in-process task probe accepted a mapped %20 root but emitted a different space-containing root. Literal metadata copying fixes the observed double decoding. Group with Blind 2; patch. |
+| Edge 2 | medium | The same actual task probe contradicts the approved canonical-root claim: successful Execute changed the root bytes. This distinct claim finding shares Edge 1/Blind 2 root cause. Patch. |
+| Verification 1 | medium | The pre-verified child-evaluation marker is ineffective: NewDirectory contains an apostrophe and File.WriteAllText is unavailable under ordinary MSBuild property-function policy. Repair it and demonstrate a positive control under the same fixture/environment before asserting early refusal. Patch. |
+| Parent 1 | medium | Review-patch inspection found vacuous All on the filtered version-only list, which would accept separator-only metadata such as ;;;. Require at least one real version assignment and preserve rejection coverage. Group with Blind 6; patch refinement. |
+| Parent 2 | medium | The new ambient-cache regression mutates process-wide temp/NuGet variables and could redirect another test class during normal parallel execution. Put its class in the existing non-parallel environment/process collection. Group with Blind 1; patch refinement. |
 
 ## Verification
 
@@ -105,3 +127,21 @@ Resume preflight found all 12 root-declared checkouts aligned and all 13 reposit
 Production resolution/materialization passed with mapping `4f249512816016269112568ced0e4468c50fa7cef133c4690627c763e0e0773c`. The original Debug build was interrupted when existing executable-fixture output overrides escaped the private tree; its zero exit code earns no pass and no original assembly exists. Before the corrected retry, the stability gate observed external Folders HEAD drift from `c8a727269f87c8daf61c303bfedc07fc795cbe1a` to `30024478b78a87c7fb55bf4f6d8b29c4bf4c2091` and index SHA-256 drift from `74961aeb9c943fdf90976af41567ce5edd66e644f5e5829770a893bc8eef2640` to `87370445654dd0060c32f4bff6dc31fa18d84e30a932fa804a1657a936b61c37`. All 12 submodules remained aligned and unchanged. The retry stopped before SDK execution; all four original-assembly class gates and Step 04 review remain unrun. The prior 180 passes remain fallback evidence only. No task/status or parent-tracker transition is earned.
 
 Additive [resume results](story-1-17-supported-source-host-qualification-resume-2026-10-27.md) and [resume receipt](evidence/story-1-17-supported-source-host-qualification-resume-2026-10-27.json) preserve exact commands, interrupted-build semantics, missing assembly, child-control/output/cache limits and source identities. The independent [resume parent verification](evidence/story-1-17-supported-source-host-qualification-resume-2026-10-27.parent-verification.json) rehashes the 48 new bindings and 44 historical bindings and checks preservation. The parent closure spec, tracker and frozen approved intent remain unchanged; unrelated external changes were retained.
+
+## Current approved-scope resume — 2026-10-28
+
+The `bmad-build 1.17` invocation resumes this approved local source-host qualification gate. Its original baseline, frozen intent and existing task values remain unchanged. The current clean Folders HEAD is `5fb5cfcfcda10044faccc71b48f8a3d6c08c5b87`; Builds HEAD is `e4e4568aa59050b5890c60ff4a1f39bcc83399b4`. All twelve root-declared checkout HEADs match both committed and indexed root gitlinks, and all thirteen repositories are clean. A fresh session preservation snapshot is `/tmp/story117-20261028-preflight-_ulgq2s5/repositories.json`; tracked-file before-images are hashed in the adjacent `tracked-files.json`. This is a new-session observation, not a rewrite of any historical failed-run result.
+
+Resume production resolution/materialization, the original Debug Module.Tests graph build and all four original-assembly class gates. Recheck stable repository HEAD/index identities before dependent execution. Override the existing global `HexalithG4FixtureArtifacts` property so executable fixtures stay in fresh private outputs. Demonstrate serial/certificate/environment controls for SDK descendants, including catalog PowerShell children, before relying on their results. The remaining test project/WorkspaceAppHostTests task includes repairing private-output discovery so the required Platform assertion executes against the verified root-declared source mapping instead of skipping. Preserve existing production process semantics and never initialize nested references or replace mapped roots.
+
+Use additive 2026-10-28 evidence and exact command/results. Read-only diffs replace generic staging. Preserve the parent closure spec, tracker, historical evidence and authority records; no automatic tracker transition is authorized. Keep V1Only, T0 unset, activation authority null, and staging 0/14. No application/topology launch, publication, deployment, installation, Git write or dependency update is authorized. Review this slice only after the original graph and all required class gates pass without skipped required assertions; otherwise retain the precise failed gate and leave it in-progress.
+
+## Reviewed completion — 2026-10-28
+
+All three review layers completed. The triage log retains all fifteen findings: fourteen medium findings were corrected in ten patch groups, and one finding was refuted against the frozen build-only intent. Nothing was deferred. Parent inspection also closed the separator-only metadata and process-wide test-environment refinements. The frozen intent and original baseline remain unchanged.
+
+Independent final verification in `/tmp/story117-parent-final-20261028-2y6gpdgk` rebuilt the current production mapping and original Debug Module.Tests graph, then passed every required original-assembly class: 17 launcher, 139 workspace, 34 catalog and 12 AppHost assertions, totaling **202/202**, with zero errors, failures, skips or not-run cases. The required Platform delegation assertion executed. All 29 original/fixture restored graphs contain zero Hexalith package libraries; the six tested source files remained byte-identical through final execution. The earlier 192-test implementation result is preserved separately and is not used as final-byte evidence.
+
+The current slice and preceding source-host mapping slice now satisfy their local build-boundary acceptance. See [reviewed final results](story-1-17-supported-source-host-qualification-final-2026-10-28.md) and [final receipt](evidence/story-1-17-supported-source-host-qualification-resume-2026-10-28.review-final.json). Four pre-existing MSB3277 host assembly-conflict warnings remain. A broad historical-root diff also retains its pre-existing Parties object hash-mismatch limitation; current owned diffs, exact source bindings and all selected gates are independently verified.
+
+The explicit no-Git-writes and no-automatic-tracker-transition constraints override generic workflow commit/tracker steps. No commit, staging, push, publication, deployment, reference update or application/topology startup occurred. Parent Story 1.17 remains in-progress, tracker backlog, routing policy V1Only, T0 unset, activation authority null and staging 0/14. Distribution/ordinary-execution and release/hosted acceptance remain separate prerequisites.

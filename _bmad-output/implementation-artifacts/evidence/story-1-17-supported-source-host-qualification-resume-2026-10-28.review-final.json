@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 2,
+  "status": "reviewed local source-host qualification passed",
+  "totalPassed": 202,
+  "storyCompletionClaim": false,
+  "protectedAuthority": {
+    "parentStory": "in-progress",
+    "tracker": "backlog",
+    "routingPolicy": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "stagingExecuted": 0,
+    "stagingRequired": 14
+  },
+  "portableEvidence": {
+    "archive": "story-1-17-supported-source-host-qualification-resume-2026-10-28.review-final.artifacts.tar.gz",
+    "archiveSha256": "5bc2187b88f7e6dfb95c634345da104f9f0d4330339eea4a5e7d48578c5b4292",
+    "manifest": "story-1-17-supported-source-host-qualification-resume-2026-10-28.review-final.members.json",
+    "manifestSha256": "08b839c0f35a427e691d1947abd14c8630f95b7f4b71df161bcb5698869bf132",
+    "memberCount": 236,
+    "receiptDataMember": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/receipt-data.json",
+    "archiveBytes": 10016005,
+    "manifestBytes": 92981,
+    "archiveStorage": "Ignored local evidence archive, per archives-out-of-git.md; copy to this recorded filename before replay in another checkout."
+  },
+  "preReviewEvidence": {
+    "archive": "story-1-17-supported-source-host-qualification-resume-2026-10-28.pre-review.artifacts.tar.gz",
+    "archiveSha256": "7870dc94160629be3d03e3698a094c682c22c95d8d5916b92ea36b654cc1f52d",
+    "manifest": "story-1-17-supported-source-host-qualification-resume-2026-10-28.pre-review.members.json",
+    "manifestSha256": "ad208b4a4a8fba7b592525cd86e5d6db3f63ba6fd154979ae6cc1c933da9c552",
+    "archiveBytes": 9696575,
+    "manifestBytes": 60283,
+    "archiveStorage": "Ignored local evidence archive, per archives-out-of-git.md; copy to this recorded filename before replay in another checkout."
+  },
+  "retentionLimit": "Selected commands, imports, source files, XML, assets and output bindings are retained. This is not a full compiler/PDB capture or complete cache/output byte closure. The pre-review 192-test result and superseded attempts remain distinct from final 202-test evidence.",
+  "archivePolicy": "Archives remain outside Git; committed text records bind their size and SHA-256. No external archive copy or upload was made."
+}

@@ -1,0 +1,1421 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/.editorconfig",
+      "sha256": "9e856d3ffe3a2e0d5f67f983c51ecf068dff11b91c0b63fa8e4cc14dd59d67f8",
+      "bytes": 2322,
+      "member": "retained/home/administrator/projects/hexalith/folders/.editorconfig"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/.gitattributes",
+      "sha256": "1e924bdfcf66fdbe398f3db517c56cf49d64d5bd70648b3b27e88f4c125dcd42",
+      "bytes": 4897,
+      "member": "retained/home/administrator/projects/hexalith/folders/.gitattributes"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/.gitmodules",
+      "sha256": "c9daa495deb0a5903771cbbfeef10f6d376a3e521c8f6ad7447aae689c5bcf37",
+      "bytes": 1683,
+      "member": "retained/home/administrator/projects/hexalith/folders/.gitmodules"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/Directory.Build.props",
+      "sha256": "1bd4bc72cb51c4a18baf3e925f9f2daa350cd1d821f67764d840e96928b166f9",
+      "bytes": 7922,
+      "member": "retained/home/administrator/projects/hexalith/folders/Directory.Build.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/Directory.Build.targets",
+      "sha256": "142ee531ce5bf030f68c057ac43153ca912da76bb9bca4666f7ca92574ae578a",
+      "bytes": 3002,
+      "member": "retained/home/administrator/projects/hexalith/folders/Directory.Build.targets"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/Directory.Packages.props",
+      "sha256": "e1db25004bcd791d0b45efd5e43c11564b8f716b599f47c7a0e6083b75a0eafa",
+      "bytes": 1311,
+      "member": "retained/home/administrator/projects/hexalith/folders/Directory.Packages.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+      "sha256": "ca298df3ed27156b7c6d170a47b1042ef8453c1e8e03207930d6bbbcc9ab0423",
+      "bytes": 106308,
+      "member": "retained/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-qualify-supported-source-host-graph.md",
+      "sha256": "5b9da111cabc199bf3a9d7f92a3073cf9475ff5bf39eab2f20e1b7daacb32f95",
+      "bytes": 20949,
+      "member": "retained/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-qualify-supported-source-host-graph.md"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-supported-source-host-mapping.md",
+      "sha256": "94a4ad2c8666398d2ba5e6176a016ac408b5b452cf4fd9492a335a1b623ac943",
+      "bytes": 9794,
+      "member": "retained/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-supported-source-host-mapping.md"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/sprint-status.yaml",
+      "sha256": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40",
+      "bytes": 37619,
+      "member": "retained/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/sprint-status.yaml"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml",
+      "sha256": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+      "bytes": 42920,
+      "member": "retained/home/administrator/projects/hexalith/folders/_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/planning-artifacts/planning-story-manifest.yaml",
+      "sha256": "ba04ee232dcf74da85127af481336c8a17539cf7b0a17e4b1e95bba7aab84837",
+      "bytes": 178764,
+      "member": "retained/home/administrator/projects/hexalith/folders/_bmad-output/planning-artifacts/planning-story-manifest.yaml"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/docs/governance/approval-policy.md",
+      "sha256": "156929f0695d364d515dc71adfdf3292903b4f08538e723f6015633655ebd8a4",
+      "bytes": 2640,
+      "member": "retained/home/administrator/projects/hexalith/folders/docs/governance/approval-policy.md"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/global.json",
+      "sha256": "47b842a8d37355ae2684a808d95964d3c607be8870f1c902428f852fc06328ef",
+      "bytes": 170,
+      "member": "retained/home/administrator/projects/hexalith/folders/global.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/fixture/obj/P0Fixture.Inventory/project.assets.json",
+      "sha256": "a7da99fb3484604d40952e94efda8761bb8c2a301e5fa3957314bf1e4dd94c42",
+      "bytes": 142744,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/fixture/obj/P0Fixture.Inventory/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/fixture/obj/P0Fixture.Inventory.Descriptor/project.assets.json",
+      "sha256": "0f57c523a18df3710a12ba916140ca78f167eeb84c9fef58ae1fbd0326916825",
+      "bytes": 50887,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/fixture/obj/P0Fixture.Inventory.Descriptor/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/fixture/obj/P0Fixture.Orders/project.assets.json",
+      "sha256": "a017b0dfa90d711c2e5dd2f1089013f720cd3e52311ecbaaaedbe3ff15d5db27",
+      "bytes": 142726,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/fixture/obj/P0Fixture.Orders/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/fixture/obj/P0Fixture.Orders.Descriptor/project.assets.json",
+      "sha256": "8c08080ada8ba606ca6c042352ad5c90b4e801c779d381b69f858a5d11e1df87",
+      "bytes": 50869,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/fixture/obj/P0Fixture.Orders.Descriptor/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/fixture/obj/P0Fixture.Ui/project.assets.json",
+      "sha256": "157f82a790d7870915d1412071295fdf3bc4760780dd745756d4e7bbe7459004",
+      "bytes": 51913,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/fixture/obj/P0Fixture.Ui/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/fixture/obj/P0Fixture.Ui.Descriptor/project.assets.json",
+      "sha256": "a913f6136ab11b875557e185968db6adc5221939711f10e1df529d3549197f24",
+      "bytes": 50845,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/fixture/obj/P0Fixture.Ui.Descriptor/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/Hexalith.Builds.Tooling/debug/Hexalith.Builds.Tooling.deps.json",
+      "sha256": "8908265f32b864cbd63d0ebe75f66897e83e70e499802715d72f191fe3274257",
+      "bytes": 7088,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/Hexalith.Builds.Tooling/debug/Hexalith.Builds.Tooling.deps.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/Hexalith.Builds.Tooling/debug/Hexalith.Builds.Tooling.dll",
+      "sha256": "ec6e846104c147e4bdba8c92cb50c5269841a3d44e93b04820e242d39047ce77",
+      "bytes": 1597952,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/Hexalith.Builds.Tooling/debug/Hexalith.Builds.Tooling.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/Hexalith.Builds.Tooling/debug/Hexalith.Builds.Tooling.pdb",
+      "sha256": "c56db1902a377b3ce8d9a2becdc797cd33d8bc53b8106ea20937530b789e60fe",
+      "bytes": 357928,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/Hexalith.Builds.Tooling/debug/Hexalith.Builds.Tooling.pdb"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/Hexalith.Builds.Tooling/debug/Hexalith.Builds.Tooling.xml",
+      "sha256": "f0034113e4cc5ce98c65103d728b4fce15691313b3ecd5fd0daa1822290f85bf",
+      "bytes": 632585,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/Hexalith.Builds.Tooling/debug/Hexalith.Builds.Tooling.xml"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Hexalith.Builds.Tooling.dll",
+      "sha256": "ec6e846104c147e4bdba8c92cb50c5269841a3d44e93b04820e242d39047ce77",
+      "bytes": 1597952,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Hexalith.Builds.Tooling.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Hexalith.Builds.Tooling.pdb",
+      "sha256": "c56db1902a377b3ce8d9a2becdc797cd33d8bc53b8106ea20937530b789e60fe",
+      "bytes": 357928,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Hexalith.Builds.Tooling.pdb"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Hexalith.Builds.Tooling.xml",
+      "sha256": "f0034113e4cc5ce98c65103d728b4fce15691313b3ecd5fd0daa1822290f85bf",
+      "bytes": 632585,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Hexalith.Builds.Tooling.xml"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Humanizer.dll",
+      "sha256": "2769ed8265b691a5482c72506ed274dc52446fa1641997a8c12c66f5b9263d39",
+      "bytes": 643760,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Humanizer.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Json.More.dll",
+      "sha256": "80b6cd50331fa2ded4fbacdbf80dcedd2b142dee679df227c30299d2a3c3840f",
+      "bytes": 54272,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Json.More.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/JsonPointer.Net.dll",
+      "sha256": "4d7ce7739bc0bf8df69778f4545c390a6c06fd11c8f583ae166f0fdc6e9c3123",
+      "bytes": 25600,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/JsonPointer.Net.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/JsonSchema.Net.dll",
+      "sha256": "fa3837e24b420d190b933c04d7426bf6c42f3cace1a12bb125408b1eb0ffb5f2",
+      "bytes": 307712,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/JsonSchema.Net.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+      "sha256": "7d07e2588a256ae5983af6a2e64eac603cb81d8f224dbea5e65eda8d67258175",
+      "bytes": 65872,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Microsoft.Extensions.DependencyInjection.Abstractions.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Microsoft.Extensions.Logging.Abstractions.dll",
+      "sha256": "d0a3cce0caf2bdda4af7d54135a321b45438015947fd902d7c2e6a0a30730c55",
+      "bytes": 66856,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/Microsoft.Extensions.Logging.Abstractions.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/NuGet.Versioning.dll",
+      "sha256": "fc2f75a7a5f3be9b4c3dcfc21644b871bb5a41ada8615c92d778713d2a310670",
+      "bytes": 62264,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/NuGet.Versioning.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/RESPite.dll",
+      "sha256": "ac0814df565f247cf848bed4901724d50882581625bf4036b525570fc157241e",
+      "bytes": 116736,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/RESPite.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/SourceMappingHelper",
+      "sha256": "0fab32bbe93c90fa9a313a68a55b5c59e0621776082e46258896a5147a124174",
+      "bytes": 78192,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/SourceMappingHelper"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/SourceMappingHelper.deps.json",
+      "sha256": "3967f8110f47ad88951f217223e128c5c9a822f8f3bc205e7b9592c2d4764c54",
+      "bytes": 7506,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/SourceMappingHelper.deps.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/SourceMappingHelper.dll",
+      "sha256": "aeaca1d0d55492e38457bef5fb161ed6eb050ebcb9c2532db8e66802f113f832",
+      "bytes": 16384,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/SourceMappingHelper.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/SourceMappingHelper.pdb",
+      "sha256": "640406efdeafdb5c62face5bc94646c42a700b9365c3043d20ec2ff5108add5b",
+      "bytes": 12416,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/SourceMappingHelper.pdb"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/SourceMappingHelper.runtimeconfig.json",
+      "sha256": "f9bc8e9f0c46247078ed47309f19a7576b4b94e4300e9de0003917d6bd2d667a",
+      "bytes": 259,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/SourceMappingHelper.runtimeconfig.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/StackExchange.Redis.dll",
+      "sha256": "374863d1f723c434ba1bafb86ec9863e0a5688da5c38fbd2b3e4d7680067950b",
+      "bytes": 2357760,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/StackExchange.Redis.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/System.IO.Hashing.dll",
+      "sha256": "550d10bb0ba785057915fb0ecbc6a3e8802fdee2e2ac22d80966691ccb11e2ff",
+      "bytes": 56144,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/System.IO.Hashing.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/YamlDotNet.dll",
+      "sha256": "d618138109a40e4a7250e49e2abad8c450e3636bee18d7499ab231e37fa9150a",
+      "bytes": 300032,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/bin/SourceMappingHelper/debug/YamlDotNet.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/obj/Hexalith.Builds.Tooling/debug/platform-version-catalog.build.txt",
+      "sha256": "cab6020276d45028f57cc2a2addaac274d70ba90bd16a0f5456fc234da647d04",
+      "bytes": 372,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/obj/Hexalith.Builds.Tooling/debug/platform-version-catalog.build.txt"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/obj/Hexalith.Builds.Tooling/debug/platform-version-catalog.json",
+      "sha256": "a76bd68d61443392cd2f07c5a886abf8198e29699864729b3247e7138d2c64c0",
+      "bytes": 538,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/helper/obj/Hexalith.Builds.Tooling/debug/platform-version-catalog.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests",
+      "sha256": "c34a4c7a92bf5c8a39e55b2990f640d33761ece445647d3b2185b1fee20c5fef",
+      "bytes": 78192,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.deps.json",
+      "sha256": "e330c3d960ea8f367cfb11b35abc1a134113ddbb7147551a340a2ad84b9c34e2",
+      "bytes": 152109,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.deps.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+      "sha256": "f33e7d7e59403eab5bf7cc85b5422f4f0f3434542dd7653ed95adaac7f19c38e",
+      "bytes": 2295808,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.pdb",
+      "sha256": "f9137e30f70b304d238237845dd9026787e2ad90edbc19d31f14e21392b446df",
+      "bytes": 421264,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.pdb"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.runtimeconfig.json",
+      "sha256": "4761a312947a31a30aec259d9ee6f10407d89806d812cd102f3b3aec250dc8b4",
+      "bytes": 416,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.runtimeconfig.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Tooling.dll",
+      "sha256": "00d4ce93d0ecd7990e30a146968e21a6c3221b180071372d4749ca8cd145585d",
+      "bytes": 1597952,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Tooling.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Tooling.pdb",
+      "sha256": "9cbe5e8c9d1f2e1fa80c75ecccf554a251d6c3ecea18858a9c24b2914160ef04",
+      "bytes": 357928,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Tooling.pdb"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Platform.Composition.dll",
+      "sha256": "4695f6b1db0e269d15df0bcd6076125c8cd6c1bb9beaf875522fc43caff4a6a1",
+      "bytes": 410112,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Platform.Composition.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Microsoft.Build.Framework.dll",
+      "sha256": "2a6faa9b9ea8ecc97719af8db1486da63ad6654182276f16cfef62a1b38a0a54",
+      "bytes": 2243880,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Microsoft.Build.Framework.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Microsoft.Build.Utilities.Core.dll",
+      "sha256": "8b37952e0fab5e45357a47875f8fd874d28a5e7c6efbef6b5b25fd3056b55cfa",
+      "bytes": 512808,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Microsoft.Build.Utilities.Core.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Microsoft.Build.dll",
+      "sha256": "bd5661ed2de5d28ca6c6e119febf181e8df76315a851a14e473937da8b0287e7",
+      "bytes": 6413608,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Builds.Module.Tests/debug/Microsoft.Build.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Platform.Composition/debug/Hexalith.Platform.Composition.dll",
+      "sha256": "4695f6b1db0e269d15df0bcd6076125c8cd6c1bb9beaf875522fc43caff4a6a1",
+      "bytes": 410112,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/bin/Hexalith.Platform.Composition/debug/Hexalith.Platform.Composition.dll"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Builds.Module.AppHost/project.assets.json",
+      "sha256": "f8548fa3a0700274c9178ba283c8351de514bb8c2308fb743ac8f1277feaf4c1",
+      "bytes": 268410,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Builds.Module.AppHost/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Builds.Module.Cli/project.assets.json",
+      "sha256": "6c75f42ceb47567c38206c0742ebbcb16fb1a8de69cdbdcba8c647eaf0219092",
+      "bytes": 75904,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Builds.Module.Cli/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Builds.Module.EventStoreHost/project.assets.json",
+      "sha256": "9844dfd64b29b7469b44e38527971342047a3a81055a45c66231a928a315a5b6",
+      "bytes": 161413,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Builds.Module.EventStoreHost/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Builds.Module.Tests/project.assets.json",
+      "sha256": "8e105b7c9baefaea38beea1d5d4309f967e20e4dab140bf66675de969c42538d",
+      "bytes": 462381,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Builds.Module.Tests/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Builds.Module.UiHost/project.assets.json",
+      "sha256": "415dfb8b74d8bd967373058a4562a3bd261495b3cadd8f4ee50a5ff0d3776baa",
+      "bytes": 94561,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Builds.Module.UiHost/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Builds.Tooling/project.assets.json",
+      "sha256": "496b10496d3405f5cedf42fe6cced5d06800acbd3b1c3771f383336546b1ead0",
+      "bytes": 71235,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Builds.Tooling/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Commons.UniqueIds/project.assets.json",
+      "sha256": "822a0df34dc7efb5789241260924d4ff85fcef7b88e349852986fcc26f35d0f1",
+      "bytes": 38171,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Commons.UniqueIds/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.Admin.Abstractions/project.assets.json",
+      "sha256": "4e72b26e756916fe2dfbc84fc3d07473e1406cb63b7d6c1fba033e9f1ceb5d58",
+      "bytes": 40183,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.Admin.Abstractions/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.Aspire/project.assets.json",
+      "sha256": "f6f685eecf62b2fcfe9035fc17bf259a4a16f3382d29e78740ef431ed62e9b80",
+      "bytes": 209380,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.Aspire/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.Client/project.assets.json",
+      "sha256": "bb45dbf70abd6e774fd5a65eb9c076730c176197e103223bb4f0ed36c7fadddc",
+      "bytes": 100014,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.Client/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.Contracts/project.assets.json",
+      "sha256": "b2b8157e870a888158137ba76cb66c3e3cf9382810f6f9cd0fa158b0ea7280f1",
+      "bytes": 39449,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.Contracts/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.DomainService/project.assets.json",
+      "sha256": "c35dafbfa27b9af318af9a06e2687d97846598d7eb544ea68d6a749e2feab1e5",
+      "bytes": 131105,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.DomainService/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.Gateway/project.assets.json",
+      "sha256": "e9f7fc3d3c89db5e470c0ab9ce0681af412c32d9f44e4f4fd3f4ebad662db403",
+      "bytes": 153808,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.Gateway/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.Server/project.assets.json",
+      "sha256": "d5edceb850f341b2df3614bbfe0111ece35c12c4972212fbf92107f8ca6f1058",
+      "bytes": 182425,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.Server/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.ServiceDefaults/project.assets.json",
+      "sha256": "861ef7ec9975c8595ca43cd46a67eb48abe1db28c095a5fa60cd3f792da9dffc",
+      "bytes": 110362,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.EventStore.ServiceDefaults/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.FrontComposer.Contracts/project.assets.json",
+      "sha256": "e459081d42b3fac7d43d6c9388ac406b8e788474a714641fb64809b6263543e8",
+      "bytes": 90226,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.FrontComposer.Contracts/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.FrontComposer.Contracts.UI/project.assets.json",
+      "sha256": "7e67dab01354b5d5c72afd6ecbd3ca4efdaa10ec4e84213bd59a7f053c1f5c05",
+      "bytes": 53215,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.FrontComposer.Contracts.UI/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.FrontComposer.Shell/project.assets.json",
+      "sha256": "7c723406055f70d8c1b55d11a7a45170f6d0286a88c151132a6cb8a427aa25a9",
+      "bytes": 83236,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.FrontComposer.Shell/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Platform.Composition/project.assets.json",
+      "sha256": "47748903cc50bc54dfaa745a0325f6411ebd0c785ff779fc86c75181f9707293",
+      "bytes": 302612,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Platform.Composition/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Platform.Custody/project.assets.json",
+      "sha256": "4d19758984455937cf8e5f3882332f8ac0a5ec04db7a8c4cd4ac198b9b347a8b",
+      "bytes": 65758,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Platform.Custody/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Platform.Custody.Component/project.assets.json",
+      "sha256": "76b0c5f319f9d608ec9c3ec811331c89e666e5a7a013b8e7d44ce0df8f68bc62",
+      "bytes": 96028,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Platform.Custody.Component/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Platform.Secrets.Runtime/project.assets.json",
+      "sha256": "8b93cfaa5534e760ededdcd54001797356d5605e505eea45b9110e0e536bb9c3",
+      "bytes": 104837,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Platform.Secrets.Runtime/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Platform.Works.Runtime/project.assets.json",
+      "sha256": "511a459f513d97a9c2c5dd75a9d99c2eb672fa4b9a96b1631ebffaf01e84f676",
+      "bytes": 131577,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story117-parent-final-20261028-2y6gpdgk/original/obj/Hexalith.Platform.Works.Runtime/project.assets.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.editorconfig",
+      "sha256": "e49be9fedb13fe305e692c2c022b3a5571f00050b107b06c9f1d450c171eb25a",
+      "bytes": 12618,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.editorconfig"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.gitattributes",
+      "sha256": "08319a46e2399d81f63ba1f7b24485174fef762b199c12bd0a5045ea5a14b66c",
+      "bytes": 1258,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.gitattributes"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/Directory.Build.props",
+      "sha256": "87831265b6dc7e43269e0638f6fc875230861e6283d383ec803472f4e749f59d",
+      "bytes": 724,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/Directory.Build.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/Directory.Packages.props",
+      "sha256": "c3d41f4a1a5d0f9fbc0e40ba0997ace2f8c22b996864f864d6cd1bff2b4e9515",
+      "bytes": 152,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/Directory.Packages.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/global.json",
+      "sha256": "4ec97d7c7e6bee864d2da2c965f18b94b0bd84e71058427f1f6fa69ee6824652",
+      "bytes": 139,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/global.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingReconciliationTask.cs",
+      "sha256": "66a6263b7a3d05a740f1474ee1c3525085d165495824e52f4e97585ccf593d1a",
+      "bytes": 24416,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingReconciliationTask.cs"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/CompositionSdkProcess.cs",
+      "sha256": "f80442d68459374377716a7995bfb0305ec9cbd4030ae4c84d4b8759e7cc6434",
+      "bytes": 6837,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/CompositionSdkProcess.cs"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/CompositionSdkProcessTests.cs",
+      "sha256": "5cf262deb55a2ac68fc8d40de5db76b6c360234e9fc4ba23bbf1b655c7723369",
+      "bytes": 20702,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/CompositionSdkProcessTests.cs"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Hexalith.Builds.Module.Tests.csproj",
+      "sha256": "9e71dda75656fd497b27e6a94e3bc9c6e6d3892213beef6053747ae524e1d74b",
+      "bytes": 3059,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Hexalith.Builds.Module.Tests.csproj"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Workspace/WorkspaceAppHostTests.cs",
+      "sha256": "c3a8fa7d5130f35f05ebfb77242929e88f5cb23f98cfa6ce67ba696d1c7a8ead",
+      "bytes": 27300,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Workspace/WorkspaceAppHostTests.cs"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Workspace/WorkspaceMsBuildTests.cs",
+      "sha256": "8542f32de0aa76faae0c64e4f0cf75dcefbc8904f64f0d53682914ae349c2d3a",
+      "bytes": 164826,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Workspace/WorkspaceMsBuildTests.cs"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/.editorconfig",
+      "sha256": "06ae89e580e6220f2377ac12dda53e74c32dd03ba14c414a43f2ea94ebcf45bd",
+      "bytes": 364,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/.editorconfig"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/Directory.Build.props",
+      "sha256": "ffb19d377edfe0a607849724609af381d33387916c6e7d3b67fb9aba9af22064",
+      "bytes": 4499,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/Directory.Build.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/Directory.Packages.props",
+      "sha256": "760cdba154a0ee038d86e05ab7b6b01d9bf909167d9b6aa94a523cd2010f369a",
+      "bytes": 1118,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/Directory.Packages.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/global.json",
+      "sha256": "4ec97d7c7e6bee864d2da2c965f18b94b0bd84e71058427f1f6fa69ee6824652",
+      "bytes": 139,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/global.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.editorconfig",
+      "sha256": "d0188d02b2600d6311f50144b669176b869fb311d4dcfa98eddc2431fe1b3435",
+      "bytes": 2538,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.editorconfig"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.gitattributes",
+      "sha256": "55ed3d5a98a91413112d47842ae5632f1854ba3d9a0e8129a40421285b4c1a2d",
+      "bytes": 846,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.gitattributes"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/Directory.Build.props",
+      "sha256": "66b2d5f9b4b60ef17fff045881badc565fcca6e4dfb51919aee760feebb6f477",
+      "bytes": 9578,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/Directory.Build.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/Directory.Build.targets",
+      "sha256": "885421587712f3e0042f3ea41545fa1df76ae0985aafaf454fbdf7668cb1daca",
+      "bytes": 10676,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/Directory.Build.targets"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/Directory.Packages.props",
+      "sha256": "4fe25096ceefd11e8ffffe1ab6a1854e18ac36c853a6805fa72285433b03b638",
+      "bytes": 1484,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/Directory.Packages.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/global.json",
+      "sha256": "4d68d33fed8fe6c461c285b1e8c6db3c58c7cd951a61c0c8e26f60fc0da507c7",
+      "bytes": 148,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/global.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/.editorconfig",
+      "sha256": "f2442fb3bc79a7e7152388e67f08d97f668729e17836b5d53c52d127231bd4dc",
+      "bytes": 3670,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/.editorconfig"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/.gitattributes",
+      "sha256": "b63905fb94becd364b681123bacfac88fb4a93a208e07b0f312110823dd658e8",
+      "bytes": 492,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/.gitattributes"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/Directory.Build.props",
+      "sha256": "0ae97dad08f104f5edabdb37dc6afeb8ac6611027d99cbab19914dc11bfa201b",
+      "bytes": 3172,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/Directory.Build.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/Directory.Build.targets",
+      "sha256": "585a7853c484893da270f3c0615d513aa5973c0e52278dab112c3b9a6c1f51b2",
+      "bytes": 1065,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/Directory.Build.targets"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/Directory.Packages.props",
+      "sha256": "a09ea43f8da9c0362c4f4cb05adcc7b985bff7ce6c0815c7d14f9674ca7b6c8a",
+      "bytes": 1405,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/Directory.Packages.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/deps.local.props",
+      "sha256": "07c76e25a9b3a9c0a8575c978e09e35094f76966119befe62d669cab7e7d4940",
+      "bytes": 5411,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/deps.local.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/global.json",
+      "sha256": "4d68d33fed8fe6c461c285b1e8c6db3c58c7cd951a61c0c8e26f60fc0da507c7",
+      "bytes": 148,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/global.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/.editorconfig",
+      "sha256": "792434f98c2fa39b66e53edb3faf54757d30feba46413f8303309ad2c9ec52ef",
+      "bytes": 215,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/.editorconfig"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/.gitattributes",
+      "sha256": "4da03dad933b5083f1459209e591f8611e5e6784bd06276a2cc5675029e159b0",
+      "bytes": 1877,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/.gitattributes"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/Directory.Build.props",
+      "sha256": "7adc3e7dc6f3023953ab1f516af7c849c8569bd3811c160322a23ff19bef61d0",
+      "bytes": 2110,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/Directory.Build.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/Directory.Packages.props",
+      "sha256": "168d3c552300017ddbba0ecb7ef30f7d77c66e2e1b3369b8111cdb11a2f1f0b0",
+      "bytes": 1124,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/Directory.Packages.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/global.json",
+      "sha256": "4ec97d7c7e6bee864d2da2c965f18b94b0bd84e71058427f1f6fa69ee6824652",
+      "bytes": 139,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/global.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/.editorconfig",
+      "sha256": "4df7e37a52919fbd6cbd8ad7b30f29d3805db9246a62f6f786120fcb7c164459",
+      "bytes": 2312,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/.editorconfig"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/.gitattributes",
+      "sha256": "029ddaeb432003580eda5f261642669f5a8f3649bfdd8a991ce73a7efcd8c484",
+      "bytes": 1073,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/.gitattributes"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/Directory.Build.props",
+      "sha256": "9ea564e52fe87e974297d72f73fe5b04380bd7b5e57faf6e656cdc73be5c3bb1",
+      "bytes": 11523,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/Directory.Build.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/Directory.Build.targets",
+      "sha256": "0bb92dee5beeb02399ec642d3a87079bbbc672583c5c8a68d8843d4cf70b60e4",
+      "bytes": 1229,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/Directory.Build.targets"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/Directory.Packages.props",
+      "sha256": "ddb5c6e74e73a9e8a6a24679a6af7e0dd0df9e1e8cc749bb21444c83b681f7d1",
+      "bytes": 1085,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/Directory.Packages.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/global.json",
+      "sha256": "c2ff1625f3dd8899ea9340e224ab42299677cd09e04310f42e9e2577fb916b04",
+      "bytes": 170,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/global.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/.editorconfig",
+      "sha256": "bf153a1f5c75d634a1c574864eade9a3e011cb0781dc12c7337d75db5531d53c",
+      "bytes": 2895,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/.editorconfig"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/.gitattributes",
+      "sha256": "881041961322b9693f3ce49ae35f3e2f99b4c696badc2b0ffb18ead5a96af830",
+      "bytes": 226,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/.gitattributes"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/Directory.Build.props",
+      "sha256": "bf62c34f8c128c9782cf04bc1e74cbcf60d792052cc41938e19472c2faf76ecb",
+      "bytes": 3035,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/Directory.Build.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/Directory.Build.targets",
+      "sha256": "47c78eccee132867be6a3ea5f2f7adc4b60b36dd5c622fc2ac7e9a200e931fec",
+      "bytes": 11479,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/Directory.Build.targets"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/Directory.Packages.props",
+      "sha256": "0ba2bea0017e61b644f56e170604fe4e73a77fc6db7bec5e254dac4fa0ae6bd5",
+      "bytes": 1727,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/Directory.Packages.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/global.json",
+      "sha256": "4ec97d7c7e6bee864d2da2c965f18b94b0bd84e71058427f1f6fa69ee6824652",
+      "bytes": 139,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/global.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/.gitattributes",
+      "sha256": "f9453c3d2f63d29993ec8300dc675c926284457d1a239eb81388ff6f11f79ce8",
+      "bytes": 1958,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/.gitattributes"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/Directory.Build.props",
+      "sha256": "e07baf3cf5b11bf417590e268087202935b0f07d81f041d3d9a541f70e3bd20f",
+      "bytes": 1389,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/Directory.Build.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/Directory.Build.targets",
+      "sha256": "2aba9feae72b95412779c70691e4408cf80829f84882c748b6541f16a027b439",
+      "bytes": 271,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/Directory.Build.targets"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/Directory.Packages.props",
+      "sha256": "71bbbb3b3bf472b00e24c0fa29130ee60851f9c929b8e2e0f32ae19c6c1c8b29",
+      "bytes": 789,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/Directory.Packages.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/global.json",
+      "sha256": "4ec97d7c7e6bee864d2da2c965f18b94b0bd84e71058427f1f6fa69ee6824652",
+      "bytes": 139,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/global.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/hexalith-platform.json",
+      "sha256": "3ba6c30a8d602bbc3216f0a4f9f90fb9e1f2e11ea985b4fb5058c3611149fb23",
+      "bytes": 68,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/hexalith-platform.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations/.editorconfig",
+      "sha256": "09a63945b656d5dbb5d3ac73ec70de36cb7f9d34bfd56718f3a3813a0632fc19",
+      "bytes": 690,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations/.editorconfig"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations/Directory.Build.props",
+      "sha256": "f60bcdefad1b54da5d0733bcad38c25c275d5b3a654bcde991e4a25325241991",
+      "bytes": 2348,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations/Directory.Build.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations/Directory.Packages.props",
+      "sha256": "097ea10e0c553cc868ddf1509a8e664ba0188414dc9e78406179c80864ad4db3",
+      "bytes": 1140,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations/Directory.Packages.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations/global.json",
+      "sha256": "4ec97d7c7e6bee864d2da2c965f18b94b0bd84e71058427f1f6fa69ee6824652",
+      "bytes": 139,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations/global.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/.editorconfig",
+      "sha256": "b703637e2bf829f7628ac63a6b11761e55a4e23a6d29e4520ca1a262cf06d4ea",
+      "bytes": 2370,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/.editorconfig"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/.gitattributes",
+      "sha256": "4c7f33e65cf1140fc847c61f7957edcd7e5d77db6e000047253811798cd1ca68",
+      "bytes": 24,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/.gitattributes"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/Directory.Build.props",
+      "sha256": "dd28973111bdb352af15b6e46c0793fe4137d94a6c68c122e0ecdce8fb27ca67",
+      "bytes": 8708,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/Directory.Build.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/Directory.Packages.props",
+      "sha256": "db026ea147622209d4280cc35d27de75f3c2c5f480e8502272a2376ea0f07d5e",
+      "bytes": 1264,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/Directory.Packages.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/global.json",
+      "sha256": "b3d0d3699172a60245e1a76a4350fe82acb05595e90b7082df5409aafce12b94",
+      "bytes": 179,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/global.json"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/.editorconfig",
+      "sha256": "e6abdf623931e9e74a9302f05d3dc5dc561ba94aa6168c03b68f0dc95340985f",
+      "bytes": 2349,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/.editorconfig"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/.gitattributes",
+      "sha256": "181c53348fa08c7809cd41a5740822e2a6cbcf630d1cf54db34d750b275c5373",
+      "bytes": 501,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/.gitattributes"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/Directory.Build.props",
+      "sha256": "968c378634e39e12e19ced8368f199a11620a377ba8b3e2a24909e0a1195cf86",
+      "bytes": 17989,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/Directory.Build.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/Directory.Build.targets",
+      "sha256": "79acd6770023305871cb975cc1d8db1506d9e398902214c064a22ad3db0a49b4",
+      "bytes": 4191,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/Directory.Build.targets"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/Directory.Packages.props",
+      "sha256": "c8351c554ea90792eae487eadd8d6a08faeb0719e62341a929d81f7f44fdcd08",
+      "bytes": 1163,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/Directory.Packages.props"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/global.json",
+      "sha256": "4ec97d7c7e6bee864d2da2c965f18b94b0bd84e71058427f1f6fa69ee6824652",
+      "bytes": 139,
+      "member": "retained/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/global.json"
+    },
+    {
+      "path": "/tmp/story117-20261028-preflight-_ulgq2s5/edge-case-probe-observations.json",
+      "sha256": "589cfb62762443bf4f121def348e5d54dcd22f63633c3c15232ae72cb10b9bbc",
+      "bytes": 1524,
+      "member": "retained/tmp/story117-20261028-preflight-_ulgq2s5/edge-case-probe-observations.json"
+    },
+    {
+      "path": "/tmp/story117-20261028-preflight-_ulgq2s5/historical-baseline.diff",
+      "sha256": "4c476dd1f90d6686f4f853e73de910d780d2ba57c8a721057a568a443644d06d",
+      "bytes": 1109286,
+      "member": "retained/tmp/story117-20261028-preflight-_ulgq2s5/historical-baseline.diff"
+    },
+    {
+      "path": "/tmp/story117-20261028-preflight-_ulgq2s5/historical-diff-object-observation.json",
+      "sha256": "fe3f6d79da09ca3fb8129c2c705ab82dcf3103058dd37e57b5f8c7816a9500f1",
+      "bytes": 577,
+      "member": "retained/tmp/story117-20261028-preflight-_ulgq2s5/historical-diff-object-observation.json"
+    },
+    {
+      "path": "/tmp/story117-20261028-preflight-_ulgq2s5/parent-tracked-preservation.json",
+      "sha256": "90b0b66c9dec372528666c74668d23e2cde53cc5318d4b4aa82c9a4380274d44",
+      "bytes": 1192,
+      "member": "retained/tmp/story117-20261028-preflight-_ulgq2s5/parent-tracked-preservation.json"
+    },
+    {
+      "path": "/tmp/story117-20261028-preflight-_ulgq2s5/repositories.json",
+      "sha256": "5fffd13b6a234c18889e0fc195bb374a7efa782598ab71de60d5e05a635c36e0",
+      "bytes": 15133,
+      "member": "retained/tmp/story117-20261028-preflight-_ulgq2s5/repositories.json"
+    },
+    {
+      "path": "/tmp/story117-20261028-preflight-_ulgq2s5/review-inputs.json",
+      "sha256": "f2bbe1a142cfa08ba44e04cf3e51c6346d4fefef31b27bad120560b1b83d5227",
+      "bytes": 903,
+      "member": "retained/tmp/story117-20261028-preflight-_ulgq2s5/review-inputs.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/CompositionSdkProcessTests-state.json",
+      "sha256": "193580bfbd3f763f384ded5e9947a8e694ac6512997d6b0fdf12f345be195dcd",
+      "bytes": 4945,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/CompositionSdkProcessTests-state.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/CompositionSdkProcessTests.xml",
+      "sha256": "87a8bc938c5c52417476dfd67a2c24978b3adda23cc98580e41704b74c7ca44a",
+      "bytes": 11630,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/CompositionSdkProcessTests.xml"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/NuGet.Config",
+      "sha256": "2a775750b0a925a01306bbaa8a7ff2dc5ceffb57f9db466873c8eda286e87d59",
+      "bytes": 178,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/NuGet.Config"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/Workspace.CatalogVersionTests-state.json",
+      "sha256": "c3218635abe1febe0facd41b421a557cc7ea75b2a644e6ea98e982096a6b108f",
+      "bytes": 4945,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/Workspace.CatalogVersionTests-state.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/Workspace.CatalogVersionTests.xml",
+      "sha256": "67ebe030a3957817fe45f9428d1252a9cd90a42d35a7b844fec2d9668b7bcdea",
+      "bytes": 22478,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/Workspace.CatalogVersionTests.xml"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/Workspace.WorkspaceAppHostTests-state.json",
+      "sha256": "b0c7f5216f0ed3134ac5e845dcdbc36b870370a046b687cda407bfb8dd9f77f1",
+      "bytes": 4945,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/Workspace.WorkspaceAppHostTests-state.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/Workspace.WorkspaceAppHostTests.xml",
+      "sha256": "b339f751953032ad6fc72e90652de81139cd00d4390ef33bbb843c277754882b",
+      "bytes": 9023,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/Workspace.WorkspaceAppHostTests.xml"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/Workspace.WorkspaceMsBuildTests-state.json",
+      "sha256": "9e108dcb28ee7f51b2b587c03786e572c03a809bc369f0cd28950c04e099911e",
+      "bytes": 4945,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/Workspace.WorkspaceMsBuildTests-state.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/Workspace.WorkspaceMsBuildTests.xml",
+      "sha256": "af4977f96ff4e08fa6372bf26832ef8acfcb65f4e84bbb04e0106f1548423f93",
+      "bytes": 96772,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/Workspace.WorkspaceMsBuildTests.xml"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/apphost-parent-command.log",
+      "sha256": "726bfce530dbcf7dd83bf2ab9e82f6c37cf96f5137c1a57be7ef7961817e86af",
+      "bytes": 1824,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/apphost-parent-command.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/bin/dotnet",
+      "sha256": "6eb981bb9ff99d78ed099932b38fc0f9902c1162cc5b761be5a5f7a8e729ea60",
+      "bytes": 1374,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/bin/dotnet"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/bin/pwsh",
+      "sha256": "6eb981bb9ff99d78ed099932b38fc0f9902c1162cc5b761be5a5f7a8e729ea60",
+      "bytes": 1374,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/bin/pwsh"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/builds-current.patch",
+      "sha256": "0779b46b89848cbc3705a77ce45eee7cf84651b78646f1ccf8a371ba611656f7",
+      "bytes": 38452,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/builds-current.patch"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/catalog-parent-command.log",
+      "sha256": "14afa854d980f4e6e6d60e455be584cca4e6e329c915e27db92ac4c665d9d43e",
+      "bytes": 1542,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/catalog-parent-command.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/commands.jsonl",
+      "sha256": "7c5eb25e3cb4b5c1da4447e74e5a48b21eb1f9d873e675d4a68e0d18bfe6d1cf",
+      "bytes": 20474,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/commands.jsonl"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/config.json",
+      "sha256": "9bb27a167cf551d5268ed3eb0388ae2ca6f02913e49ea74417faca84dfa32ab7",
+      "bytes": 2439,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/config.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/driver.py",
+      "sha256": "0291587851ff2d57b8497bbed16c3a4e0423e279a9efc507e64cbd63fafc3310",
+      "bytes": 4673,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/driver.py"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/helper/Program.cs",
+      "sha256": "57d558f0b957c316335ee9b6ef5335e696911cb4e5d245b759e26c49a69ef0e0",
+      "bytes": 1941,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/helper/Program.cs"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/helper/SourceMappingHelper.csproj",
+      "sha256": "9aa868689b9a6aaa7501c5ae6680ba31b4aca1b634dc414b0d1c0229db686ad4",
+      "bytes": 434,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/helper/SourceMappingHelper.csproj"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/helper-build-state.json",
+      "sha256": "f6e2bf306a6842f3540367e086a749f41603b1bc80d30c99e5025d5f9b697949",
+      "bytes": 4945,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/helper-build-state.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/helper-interception-state.json",
+      "sha256": "8c1569f67d74d6d5e7655de0547bbb3aff571b9a5cd866434327de784bcda640",
+      "bytes": 4945,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/helper-interception-state.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/independent-class-and-source-audit.json",
+      "sha256": "73476e499570b137ae0396c5bfe065b2256bd7476aa069d7b23ed555c5d367d9",
+      "bytes": 7015,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/independent-class-and-source-audit.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/launcher-parent-command.log",
+      "sha256": "ffbc176a0938985f4d24cb7ce34107a30b4fb4fbab8f388c490778e00cb441ff",
+      "bytes": 1530,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/launcher-parent-command.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/logs/CompositionSdkProcessTests.log",
+      "sha256": "83977720860a87a05293a14fbda065bfb3690be31194c0606698bde65d8df5f0",
+      "bytes": 760,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/logs/CompositionSdkProcessTests.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/logs/Workspace.CatalogVersionTests.log",
+      "sha256": "81f20e9321cc48e3c6294bcbb27ef472e2146bd13492e1b6c6e1408c1e27a97f",
+      "bytes": 760,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/logs/Workspace.CatalogVersionTests.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/logs/Workspace.WorkspaceAppHostTests.log",
+      "sha256": "7f7534fb8dbabb2c40dd68a5e6e2b44d37da153ed083b256593d9403f832b2cc",
+      "bytes": 1035,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/logs/Workspace.WorkspaceAppHostTests.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/logs/Workspace.WorkspaceMsBuildTests.log",
+      "sha256": "702dc4965363a37104267df16ba9f508aaa1ea9362292387e0e64532589de90f",
+      "bytes": 762,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/logs/Workspace.WorkspaceMsBuildTests.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/logs/helper-build.log",
+      "sha256": "e941c2d29b5741a66b308dfbae8c4d396eba1dda043655f59eb03cfeeb00c068",
+      "bytes": 986,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/logs/helper-build.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/logs/helper-interception.log",
+      "sha256": "75f420934c7f223ea368fb63b05c39ae15e55f1a5fd40b9f5f073346045e2609",
+      "bytes": 133,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/logs/helper-interception.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/logs/original-debug-build-private-fixtures.log",
+      "sha256": "23b9d2bfd89b68cd5f9e7f9e9b2c8c1ee9140c88ff8c883568088eef247bb852",
+      "bytes": 53769,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/logs/original-debug-build-private-fixtures.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/logs/production-materialization.log",
+      "sha256": "31e916f7bc2a096d09c847e0476dfd8a97225e951edf91e7b01a5ec825cb1dd9",
+      "bytes": 4239,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/logs/production-materialization.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/logs/sdk-version.log",
+      "sha256": "44ea2595bc5a7acabc030531952071226aa70862fd008ed7327d752b39c8513c",
+      "bytes": 9,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/logs/sdk-version.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/mapping-parent-command.log",
+      "sha256": "315aadf9384bf385db1288780ee91a678f78505b5a27e28ec08e1f6cec9c9487",
+      "bytes": 7995,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/mapping-parent-command.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/original-build-parent-command.log",
+      "sha256": "56bdf14b9c0e9252c1eb04726a1c4a76ca335fcd64d9a2192a85144b17b6aa34",
+      "bytes": 13100,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/original-build-parent-command.log"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/original-debug-build-private-fixtures-state.json",
+      "sha256": "2ac87a33410a04510c186a8bf229faa313228b72c176bd47a1c3bb6e1c6095c1",
+      "bytes": 4945,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/original-debug-build-private-fixtures-state.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/parent-final-tracked-preservation.json",
+      "sha256": "a2c19c79e8de6d9d36772d6d78e15e279c2ce00a3418e65d9bef9356a50eb9e0",
+      "bytes": 2664,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/parent-final-tracked-preservation.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/post-final-gates-state.json",
+      "sha256": "ce36b303f273d655f329089ee3640775fb66f23b60cc693a3827d00abaf87f75",
+      "bytes": 4945,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/post-final-gates-state.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/production-materialization-state.json",
+      "sha256": "926e59a4d76f3ecaed826ea83d035490e2ce53a20457415a9ac62b44c64b6047",
+      "bytes": 4945,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/production-materialization-state.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/receipt-data.json",
+      "sha256": "4a16de2c27dfe8b94f17692cd4d837a0a4e686c1ff468188ce6896b228ee8147",
+      "bytes": 88887,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/receipt-data.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/run-final.py",
+      "sha256": "e142dbdbcce9a000588804aec9a940d35174817b0171277302b6a728166a0ba3",
+      "bytes": 3289,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/run-final.py"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/sdk-children.jsonl",
+      "sha256": "acf6e21a982e467bf5e3be10512bde2c495b254d03f7668738d0e6677c6beabd",
+      "bytes": 126109,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/sdk-children.jsonl"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/sdk-version-state.json",
+      "sha256": "e61fb9405b87121b3e19628b4f0291eab75f725dd2f876c11efcdaf25a2e9162",
+      "bytes": 4945,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/sdk-version-state.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/source-inputs-before-final-tests.json",
+      "sha256": "7fd22f21e9488fb85cffc523353991807e3f39455f6d1a1ffeaa72a6065e7df4",
+      "bytes": 1604,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/source-inputs-before-final-tests.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/whitespace-checks.json",
+      "sha256": "64fd1f0abed5b70ac4cad5f82150ea80d6e30a2522be62b357e3a54d409682cd",
+      "bytes": 764,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/whitespace-checks.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/environment.json",
+      "sha256": "06c4fab4e71e7e7f919e295373d42cf82361433c8aa210b7acf122cd93f20821",
+      "bytes": 811,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/environment.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/Hexalith.EventStore.CatalogConstruction.proj",
+      "sha256": "299ff5591121088f65e8c597a3cdf5e248866b9d05af56cf71aaed024c2d519e",
+      "bytes": 152,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/Hexalith.EventStore.CatalogConstruction.proj"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/Hexalith.EventStore.QueryRouting.Tests.proj",
+      "sha256": "299ff5591121088f65e8c597a3cdf5e248866b9d05af56cf71aaed024c2d519e",
+      "bytes": 152,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/Hexalith.EventStore.QueryRouting.Tests.proj"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/Hexalith.EventStore.Server.LiveSidecar.Tests.proj",
+      "sha256": "299ff5591121088f65e8c597a3cdf5e248866b9d05af56cf71aaed024c2d519e",
+      "bytes": 152,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/Hexalith.EventStore.Server.LiveSidecar.Tests.proj"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/Hexalith.EventStore.Server.Tests.proj",
+      "sha256": "299ff5591121088f65e8c597a3cdf5e248866b9d05af56cf71aaed024c2d519e",
+      "bytes": 152,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/Hexalith.EventStore.Server.Tests.proj"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/Hexalith.Folders.Aspire.proj",
+      "sha256": "299ff5591121088f65e8c597a3cdf5e248866b9d05af56cf71aaed024c2d519e",
+      "bytes": 152,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/Hexalith.Folders.Aspire.proj"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.before-targets.props",
+      "sha256": "d341ef19bac95e4fc3596c4077e557144d26e88e109d0590ccef6b31af0c1ed9",
+      "bytes": 3481,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.before-targets.props"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.final.targets",
+      "sha256": "f0dbcb04c4ecb5c3ad7ae9a08dc42709590b6ef86ea3caf95236fbc03ed842d5",
+      "bytes": 9117,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.final.targets"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.late.props",
+      "sha256": "9c25c2a6cf9504b1d8684b3ed36a430dd949065ddfbaf83ac09f8454b1ec6431",
+      "bytes": 7005,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.late.props"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.props",
+      "sha256": "0363694f252736cdfd0bcf6a567bb077940df16cc966e410153718a552769e82",
+      "bytes": 98,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.props"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.targets",
+      "sha256": "84eb4b6701cbea5f6020046c8c1f4ea880d34883982309aeec7bad315b207bb1",
+      "bytes": 984,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.targets"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.values.props",
+      "sha256": "daff5b7f9376c559fcbaeef2fc06db144345883236725d3c5e270c329bd567a5",
+      "bytes": 5562,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.values.props"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.values.targets",
+      "sha256": "45c96d04a56117746d4ab1731a019a9923e648ab1475855f25a2a0ae1a1f4e3f",
+      "bytes": 98940,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/SourceMapping.values.targets"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/__HXW_DefaultCatalog__.proj",
+      "sha256": "299ff5591121088f65e8c597a3cdf5e248866b9d05af56cf71aaed024c2d519e",
+      "bytes": 152,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/__HXW_DefaultCatalog__.proj"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/catalog-versions.json",
+      "sha256": "28d9ecfbabc51c99b45f5a7dc230de7a56f76cca73b304ab451629d4115bf078",
+      "bytes": 83621,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/catalog-versions.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/mapping.json",
+      "sha256": "07d1ca059c91e207fecb9d1ebdd3c33ef058b99a6a0245f22bec404c44aa2f2c",
+      "bytes": 4105,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/mapping.json"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/pinned-tree/Props/Directory.Packages.props",
+      "sha256": "ab4e8a7519abfcfbb8bc101756a8ee6fac78973d7468fa82742c75456526b1c7",
+      "bytes": 30718,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/pinned-tree/Props/Directory.Packages.props"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/routing-catalog.cs.proj",
+      "sha256": "299ff5591121088f65e8c597a3cdf5e248866b9d05af56cf71aaed024c2d519e",
+      "bytes": 152,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace/source-mapping/routing-catalog.cs.proj"
+    },
+    {
+      "path": "/tmp/story117-parent-final-20261028-2y6gpdgk/workspace-parent-command.log",
+      "sha256": "4acb820305dde87ad6229b31642704debdaec171fefcf3815920b59a0617c2a5",
+      "bytes": 1553,
+      "member": "retained/tmp/story117-parent-final-20261028-2y6gpdgk/workspace-parent-command.log"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/commands.jsonl",
+      "sha256": "5796c9f347f02ee2a7c077fdcf4c98a0697f52ac2537065fed33718e3cbdab6f",
+      "bytes": 28682,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/commands.jsonl"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/config.json",
+      "sha256": "0fecdf01458b439f94b6e5023673328071a7543a078a41344baa85df7f61d8c6",
+      "bytes": 3209,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/config.json"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/focused-summary.json",
+      "sha256": "5a26f1e2c2fa7abed20b19bfd56d21cf3ff099e7afd861a921aff3fc42ed0840",
+      "bytes": 2672,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/focused-summary.json"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/forwarded-literal.xml",
+      "sha256": "e2bbe68363e56d26e7c3deb981d651b1b69a8d704070ffd7c375779f06fba8e0",
+      "bytes": 5401,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/forwarded-literal.xml"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/interception-no-harness-skip.xml",
+      "sha256": "546dee6ec330abf38159e0f112875ec116b3c9abc503ac40bd7721b70a512d1c",
+      "bytes": 1828,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/interception-no-harness-skip.xml"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/launcher.xml",
+      "sha256": "707d64a0c48302e90402da14537f23a68756df88a4cfd6439eeece9bedbda465",
+      "bytes": 11637,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/launcher.xml"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/logs/focused-test-project-build-refined.log",
+      "sha256": "022da94ead1a318b63d93d20cd3391f166aca8a6b89dc2f5c6aee27261f28b03",
+      "bytes": 49146,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/logs/focused-test-project-build-refined.log"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/logs/focused-test-project-build.log",
+      "sha256": "dc929eecd01d9285204f6bd2f570ff9c4cc61d76be4b9435455ddab06ce01836",
+      "bytes": 57051,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/logs/focused-test-project-build.log"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/logs/focused-tests-only-compile-fixture-layout.log",
+      "sha256": "410db76049f4fb4bd739faec06ffcfc48a14ace1bc584574721feeefa5919d4a",
+      "bytes": 487,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/logs/focused-tests-only-compile-fixture-layout.log"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/logs/focused-tests-only-compile.log",
+      "sha256": "d6304cc80a402ff70ba53cedfc28bd0fabce98edec749730063fd3430ee61488",
+      "bytes": 934,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/logs/focused-tests-only-compile.log"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/logs/forwarded-literal.log",
+      "sha256": "a703ecefdd61e11ef19713440f80b06cd44fbe366e250e3d9184b43e19daa632",
+      "bytes": 759,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/logs/forwarded-literal.log"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/logs/interception-no-harness-skip.log",
+      "sha256": "e316d7385d57888ae7a3012a9e04258d93e32a85ae6d245cfc6953696bd27b0e",
+      "bytes": 1001,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/logs/interception-no-harness-skip.log"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/logs/launcher.log",
+      "sha256": "bcdad735696db694a7647b29d289b6ed5e6f59936e5af1da3483dee966fe2a85",
+      "bytes": 760,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/logs/launcher.log"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/logs/package-skip-fixture.log",
+      "sha256": "df91bd4efdd8733bbf0b23314a9bada804c47deed30ea1581fc0eaa6d2f75e4d",
+      "bytes": 133,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/logs/package-skip-fixture.log"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/logs/package-source-assertion-skip.log",
+      "sha256": "75adc00acef7425dcda57912278ca0e557baf83d938ad7db07421988d453cb78",
+      "bytes": 1008,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/logs/package-source-assertion-skip.log"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/logs/platform-source.log",
+      "sha256": "7cc6a825d1631375ad8755006dbdaceee0eebe2ff2e9cc111691ce9804e5394b",
+      "bytes": 758,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/logs/platform-source.log"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/logs/workspace-targeted.log",
+      "sha256": "a19a7616b61277f2f63434202ba8e7ef786064671987be5ac513e367294aa536",
+      "bytes": 7752,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/logs/workspace-targeted.log"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/package-source-assertion-skip.xml",
+      "sha256": "89e4f099af366f480eaa073fe13bf5408717065f95717051a39590dda5f6c42f",
+      "bytes": 1960,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/package-source-assertion-skip.xml"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/platform-source.xml",
+      "sha256": "0c4e146f8b7d915f2447ec2191ae5801a4a784777ea3536d38b88bad82272093",
+      "bytes": 1836,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/platform-source.xml"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/sdk-children.jsonl",
+      "sha256": "35718132913b0bd41d4cc93e9913219feea4dec2fc28d99e44bad29cec244557",
+      "bytes": 31855,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/sdk-children.jsonl"
+    },
+    {
+      "path": "/tmp/story117-review-fixes-20261028-um8bzqcn/workspace-targeted.xml",
+      "sha256": "c6b0e996b1715013e93c939a91af2793bacdb04cdac6b7ef4106ed7b42c82604",
+      "bytes": 25942,
+      "member": "retained/tmp/story117-review-fixes-20261028-um8bzqcn/workspace-targeted.xml"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 title: '1.17 Support the Builds source-host dependency graph'
 type: 'bugfix'
 created: '2026-10-27'
-status: 'in-progress'
+status: 'done'
 route: 'dispatch'
 review_loop_iteration: 0
 baseline_commit: '98222637c0e5df4dbb753a51845bb32a06282da9'
@@ -54,8 +54,8 @@ Paths are relative to `references/Hexalith.Builds` unless marked Folders; base `
 
 - [x] `src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingMaterializer.cs` — make source-tree EventStoreHost/UiHost exclusions package-mode only; preserve generated-host exclusions.
 - [x] `src/hosts/Hexalith.Builds.Module.AppHost/Hexalith.Builds.Module.AppHost.csproj` — mark EventStore.Aspire with `IsAspireProjectResource="false"` so reconciliation retains library behavior.
-- [ ] `test/Hexalith.Builds.Module.Tests/Workspace/WorkspaceMsBuildTests.cs` — replace both-mode exclusion expectations; test every matrix row with materialized imports, evaluated references and controlled fixtures. Verify real host declarations/metadata without private reference replacement.
-- [ ] `test/Hexalith.Builds.Module.Tests/Workspace/CatalogVersionTests.cs` — preserve package-host refusal coverage.
+- [x] `test/Hexalith.Builds.Module.Tests/Workspace/WorkspaceMsBuildTests.cs` — replace both-mode exclusion expectations; test every matrix row with materialized imports, evaluated references and controlled fixtures. Verify real host declarations/metadata without private reference replacement.
+- [x] `test/Hexalith.Builds.Module.Tests/Workspace/CatalogVersionTests.cs` — preserve package-host refusal coverage.
 - [x] `README.md` — document source-host mapping behavior, package/generated exclusions and the prebuilt AppHost limitation.
 - [x] Folders `_bmad-output/implementation-artifacts/story-1-17-supported-source-host-mapping-results.md` — record changes, commands/results, revisions and remaining prerequisites.
 
@@ -85,3 +85,9 @@ Build `test/Hexalith.Builds.Module.Tests/Hexalith.Builds.Module.Tests.csproj` wi
 2026-10-27 current attempt: verification incomplete; exact commands, environment gap, broad-gate blocker and preservation evidence are recorded in the [results](story-1-17-supported-source-host-mapping-results.md) and [receipt](evidence/story-1-17-supported-source-host-mapping-2026-10-27.json). The frozen intent is unchanged.
 
 2026-10-27 qualification follow-up: source forwarding validation and controlled SDK children are implemented. The reused independent runner passed 14 launcher, 132 workspace and 34 catalog tests (180 total, zero failed/skipped). Production resolution refused external checkout/gitlink drift before materialization; the original Debug graph and all original-assembly class gates, including WorkspaceAppHostTests, remain unrun. No mapping was substituted and no resolver replay or Git mutation ran. This slice remains incomplete; its frozen intent is unchanged. See [qualification results](story-1-17-supported-source-host-qualification-results.md) and [receipt](evidence/story-1-17-supported-source-host-qualification-2026-10-27.json).
+
+## Qualification and review completion — 2026-10-28
+
+The approved follow-up source-host qualification is complete after three independent review layers and correction of all retained defects. Its independent final original Debug graph build passed; original-assembly launcher/workspace/catalog/AppHost classes passed **202/202**, zero failed/skipped/not-run, including the mapped-source Platform assertion. All 29 restored graph assets contain zero Hexalith package libraries. This closes the two previously unchecked verification tasks and this local source-host mapping slice; the original baseline and frozen intent are unchanged. Dated failed attempts and their receipts remain unchanged.
+
+See [reviewed final results](story-1-17-supported-source-host-qualification-final-2026-10-28.md) and [final receipt](evidence/story-1-17-supported-source-host-qualification-resume-2026-10-28.review-final.json). Source Debug compilation remains distinct from distribution, ordinary application startup, signed packages and hosted acceptance. Parent Story 1.17/tracker/authority/routing/staging values remain unchanged; no Git write or operational activation occurred.
