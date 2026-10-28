@@ -1697,10 +1697,15 @@ public sealed partial class GovernanceCompletenessGateTests
 
         // Optional per-criterion review-by / expiry date: if present it must be a valid date strictly
         // in the future, so an approval cannot sit indefinitely past its own declared re-review date.
-        if (approval.Children.TryGetValue(new YamlScalarNode("review_by"), out YamlNode? reviewByNode)
-            && reviewByNode is YamlScalarNode { Value: { Length: > 0 } } reviewByScalar)
+        KeyValuePair<YamlNode, YamlNode>[] reviewByEntries = approval.Children
+            .Where(entry => entry.Key is YamlScalarNode { Value: "review_by" })
+            .ToArray();
+        if (reviewByEntries.Length > 0)
         {
-            if (!DateOnly.TryParseExact(reviewByScalar.Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly reviewBy))
+            if (reviewByEntries.Length != 1
+                || !IsYamlString(reviewByEntries[0].Key)
+                || !IsYamlString(reviewByEntries[0].Value)
+                || !DateOnly.TryParseExact(((YamlScalarNode)reviewByEntries[0].Value).Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly reviewBy))
             {
                 diagnostics.Add(new("exit-criteria", "approval_date_invalid", criterion, path));
             }
@@ -3003,24 +3008,20 @@ public sealed partial class GovernanceCompletenessGateTests
 
     private static string[] LoadOpenApiOperationIds(YamlMappingNode root)
     {
-        if (!root.Children.TryGetValue(new YamlScalarNode("paths"), out YamlNode? pathsNode)
-            || pathsNode is not YamlMappingNode paths)
+        Dictionary<string, YamlNode> rootFields = ReadOpenApiFields(root, "openapi-paths-invalid");
+        if (!rootFields.TryGetValue("paths", out YamlNode? pathsNode))
         {
             throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-paths-invalid");
         }
 
+        Dictionary<string, YamlNode> paths = ReadOpenApiFields(pathsNode, "openapi-paths-invalid", "openapi-path-key-invalid");
         HashSet<string> methodKeys = new(StringComparer.Ordinal) { "get", "post", "put", "patch", "delete", "head", "options", "trace" };
         HashSet<string> metadataKeys = new(StringComparer.Ordinal) { "summary", "description", "parameters", "servers" };
         List<string> operations = [];
 
-        foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in paths.Children)
+        foreach (KeyValuePair<string, YamlNode> pathEntry in paths)
         {
-            if (!IsOpenApiString(pathEntry.Key))
-            {
-                throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-path-key-invalid");
-            }
-
-            string pathKey = ((YamlScalarNode)pathEntry.Key).Value!;
+            string pathKey = pathEntry.Key;
             if (IsOpenApiExtension(pathKey))
             {
                 continue;
@@ -3031,21 +3032,29 @@ public sealed partial class GovernanceCompletenessGateTests
                 throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-path-key-invalid");
             }
 
-            if (pathEntry.Value is not YamlMappingNode pathItem
-                || pathItem.Children.ContainsKey(new YamlScalarNode("$ref")))
+            Dictionary<string, YamlNode> pathItem = ReadOpenApiFields(pathEntry.Value, "openapi-path-item-invalid", "openapi-method-key-invalid");
+            if (pathItem.ContainsKey("$ref"))
             {
                 throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-path-item-invalid");
             }
 
-            foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in pathItem.Children)
+            foreach (KeyValuePair<string, YamlNode> methodEntry in pathItem)
             {
-                if (!IsOpenApiString(methodEntry.Key))
+                string methodKey = methodEntry.Key;
+                if (metadataKeys.Contains(methodKey))
                 {
-                    throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-method-key-invalid");
+                    bool valid = methodKey is "summary" or "description"
+                        ? IsYamlString(methodEntry.Value, allowEmpty: true)
+                        : methodEntry.Value is YamlSequenceNode && HasYamlCollectionTag(methodEntry.Value, "seq");
+                    if (!valid)
+                    {
+                        throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-path-metadata-invalid");
+                    }
+
+                    continue;
                 }
 
-                string methodKey = ((YamlScalarNode)methodEntry.Key).Value!;
-                if (metadataKeys.Contains(methodKey) || IsOpenApiExtension(methodKey))
+                if (IsOpenApiExtension(methodKey))
                 {
                     continue;
                 }
@@ -3055,10 +3064,10 @@ public sealed partial class GovernanceCompletenessGateTests
                     throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-method-key-invalid");
                 }
 
-                if (methodEntry.Value is not YamlMappingNode operationMapping
-                    || operationMapping.Children.ContainsKey(new YamlScalarNode("$ref"))
-                    || !operationMapping.Children.TryGetValue(new YamlScalarNode("operationId"), out YamlNode? idNode)
-                    || !IsOpenApiString(idNode))
+                Dictionary<string, YamlNode> operation = ReadOpenApiFields(methodEntry.Value, "openapi-operation-invalid");
+                if (operation.ContainsKey("$ref")
+                    || !operation.TryGetValue("operationId", out YamlNode? idNode)
+                    || !IsYamlString(idNode))
                 {
                     throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-operation-invalid");
                 }
@@ -3070,12 +3079,36 @@ public sealed partial class GovernanceCompletenessGateTests
         return operations.Order(StringComparer.Ordinal).ToArray();
     }
 
+    private static Dictionary<string, YamlNode> ReadOpenApiFields(YamlNode node, string reason, string? keyReason = null)
+    {
+        if (node is not YamlMappingNode mapping || !HasYamlCollectionTag(node, "map"))
+        {
+            throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: " + reason);
+        }
+
+        Dictionary<string, YamlNode> fields = new(StringComparer.Ordinal);
+        foreach (KeyValuePair<YamlNode, YamlNode> entry in mapping.Children)
+        {
+            if (!IsYamlString(entry.Key)
+                || !fields.TryAdd(((YamlScalarNode)entry.Key).Value!, entry.Value))
+            {
+                throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: " + (keyReason ?? reason));
+            }
+        }
+
+        return fields;
+    }
+
+    private static bool HasYamlCollectionTag(YamlNode node, string kind) =>
+        node.Tag.IsEmpty || node.Tag.ToString() is "?" or "!" || node.Tag.ToString() == "tag:yaml.org,2002:" + kind;
+
     private static bool IsOpenApiExtension(string key) =>
         key.Length > 2 && key.StartsWith("x-", StringComparison.Ordinal);
 
-    private static bool IsOpenApiString(YamlNode node)
+    private static bool IsYamlString(YamlNode node, bool allowEmpty = false)
     {
-        if (node is not YamlScalarNode scalar || string.IsNullOrWhiteSpace(scalar.Value))
+        if (node is not YamlScalarNode scalar || scalar.Value is null
+            || (!allowEmpty && string.IsNullOrWhiteSpace(scalar.Value)))
         {
             return false;
         }
@@ -3094,7 +3127,7 @@ public sealed partial class GovernanceCompletenessGateTests
         // The representation model keeps untagged plain scalars as text. Resolve the
         // YAML 1.2 core non-string forms without culture-dependent numeric parsing.
         return scalar.Style is not (ScalarStyle.Plain or ScalarStyle.Any)
-            || !NonStringYamlCoreScalarPattern().IsMatch(scalar.Value);
+            || (scalar.Value.Length > 0 && !NonStringYamlCoreScalarPattern().IsMatch(scalar.Value));
     }
 
     [GeneratedRegex(@"\A(?:~|null|Null|NULL|true|True|TRUE|false|False|FALSE|0o[0-7]+|0x[0-9a-fA-F]+|[-+]?(?:\.[0-9]+|[0-9]+(?:\.[0-9]*)?)(?:[eE][-+]?[0-9]+)?|[-+]?\.(?:inf|Inf|INF)|\.(?:nan|NaN|NAN))\z", RegexOptions.CultureInvariant | RegexOptions.NonBacktracking)]

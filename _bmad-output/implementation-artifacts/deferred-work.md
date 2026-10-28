@@ -518,7 +518,8 @@ decision: 2026-08-25 Preserve drift status — Emit structured prerequisite_drif
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-17)"), 2026-08-24
 location: File.ReadAllText
 reason: Encoding/BOM handling in `File.ReadAllText` calls inside `SafetyInvariantGateTests` — deferred, low likelihood any scanned file in the safety scope is non-UTF-8 today; revisit when scan inputs broaden beyond JSON/YAML/Markdown sources we author.
-status: open
+status: done 2026-10-28
+resolution: Verified the existing strict UTF-8 ReadRequiredFile/DecodeSafetyText path; File.ReadAllText no longer appears in the safety gate. Existing TextInputAcceptsStrictUtf8WithOptionalBom, TextInputRejectsUnsupportedEncodingsAndReplacementFallback and FileInputEnforcesSizeEncodingAndSafeReadFailures cover optional UTF-8 BOM, invalid/unsupported encoding, file size and safe read failures. See spec-five-deferred-yaml-shapes.md.
 
 ### DW-72: JSON duplicate-keys detection in corpus / inventory / quarantine fixtures
 
@@ -2721,6 +2722,8 @@ archived: 2026-09-18
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq1-approve-lock-authorization-timing.md`
   summary: Make generic governance approval evaluation reject a present malformed or empty `review_by` value.
   evidence: The pre-existing evaluator validates only a non-empty scalar `review_by`; an empty scalar or mapping is silently ignored. C7 does not currently use `review_by`, so this belongs to generic governance hardening.
+  status: done 2026-10-28
+  resolution: In the generic evaluator, review_by keys resolve by string meaning and semantic duplicates fail closed. A present value must resolve to a nonempty string containing an exact ISO date strictly after today. Null, empty, non-scalar, incompatible-tag and malformed dates return one bounded approval_date_invalid diagnostic; missing and future values remain valid, while today/past values are stale. C7 retains its separate evaluator. See spec-five-deferred-yaml-shapes.md.
 
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq2-publish-canonical-file-policy-vocabulary-and-behavior.md`
   summary: Make generic typed Problem Details projection fail closed for success-category or otherwise incoherent error bodies.
@@ -3168,11 +3171,25 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-yaml-governance.md`
   summary: Normalize string-tagged structural YAML keys during governance required-field and reference lookups.
   evidence: Independent review reproduced valid !!str paths and !!str operationId keys being rejected, while !!str $ref bypasses the unsupported-reference check. Required-key dictionary lookups behave identically at baseline 8272bc5071c5b7ee8f2a971130372dd160e14771; path/method key validation and operation-ID value typing do not alter those inherited lookups. Follow-up should compare resolved string meaning consistently and retain bounded diagnostics.
+  status: done 2026-10-28
+  resolution: OpenAPI structural mappings use resolved string keys, admit quoted/!!str/non-specific string keys, reject semantically duplicate keys and detect tagged $ref declarations with bounded drift. Shared non-OpenAPI lookup semantics are unchanged. See spec-five-deferred-yaml-shapes.md.
 
 - source_spec: `spec-five-deferred-yaml-governance.md`
   summary: Validate collection tags as well as representation-node kinds in governance OpenAPI input loading.
   evidence: Independent review reproduced paths: !!str { /synthetic: { get: { operationId: Hidden } } } and get: !!str { operationId: Hidden } being accepted because collection admission checks only YamlMappingNode. The same checks exist at baseline 8272bc5071c5b7ee8f2a971130372dd160e14771. Follow-up should reject incompatible collection tags with bounded diagnostics while preserving standard mapping tags.
+  status: done 2026-10-28
+  resolution: Root, paths, path-item and operation mappings require compatible map tags as well as node kinds. Metadata sequences likewise require compatible seq tags. Standard and non-specific tags remain valid; incompatible/custom structural collection tags fail with bounded drift. See spec-five-deferred-yaml-shapes.md.
 
 - source_spec: `spec-five-deferred-yaml-governance.md`
   summary: Validate the value shapes of known OpenAPI path-item metadata in a dedicated schema-validation follow-up.
   evidence: Independent review reproduced summary: { operationId: Hidden } being ignored beside a valid operation. The baseline also skips metadata values, and this change deliberately validates enumeration keys and operation declarations only. Documentation now states that summary, description, parameters and servers are skipped during enumeration. Follow-up can enforce string/sequence metadata shapes without treating nested metadata as operations.
+  status: done 2026-10-28
+  resolution: Path summary/description require YAML strings, including empty or explicitly tagged strings, while parameters/servers require compatible sequences. Malformed immediate value shapes produce openapi-path-metadata-invalid; extensions remain unrestricted. Nested Parameter/Server schema validation is outside this shape check. See spec-five-deferred-yaml-shapes.md.
+
+- source_spec: `spec-five-deferred-yaml-shapes.md`
+  summary: Apply optional review-date validation to the dedicated C7 approval evaluator before C7 starts declaring review_by.
+  evidence: Independent review confirmed that ApprovalBackedCriteriaCarryExactHistoricalApprovalRecords excludes C7 and EvaluateC7DecisionEvidence never inspects review_by, so adding a malformed/expired C7 date would currently be ignored. This is inherited and C7 currently declares no review_by. The generic-evaluator fix preserves its scope; consolidate or invoke the bounded optional-date check from both routes in a follow-up without changing approved evidence.
+
+- source_spec: `spec-five-deferred-yaml-shapes.md`
+  summary: Bound governance YAML parser argument errors for invalid Unicode code points.
+  evidence: Independent review reproduced a file containing value: "\UFFFFFFFF" escaping LoadYamlStream as ArgumentOutOfRangeException with parser detail. The inherited loader catches only YamlException; SafetyInvariantGateTests already catches ArgumentException for the same parser path. Add a file-backed regression and bounded conversion in the governance loader; this is separate from structural-key and collection-shape validation.
