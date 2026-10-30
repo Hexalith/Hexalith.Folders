@@ -89,3 +89,6 @@ _bmad-output/implementation-artifacts/evidence/verify-story-1-17-source-host-qua
 # Current Debug distribution qualification scripts and byte-bound receipts.
 eng/story117-source-distribution/** text eol=lf
 _bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29* -text
+
+# Preserve additive production model qualification commands, receipts and capsules.
+_bmad-output/implementation-artifacts/evidence/story-1-17-production-source-model-2026-10-30* -text

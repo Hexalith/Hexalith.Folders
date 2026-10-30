@@ -1,0 +1,2217 @@
+{
+  "schemaVersion": 1,
+  "recordId": "story-1-17-production-source-model-2026-10-30-qualified",
+  "privateWorkspace": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz",
+  "result": {
+    "schemaVersion": 1,
+    "qualification": "incomplete",
+    "protectedAuthority": {
+      "parentStory": "in-progress",
+      "tracker": "backlog",
+      "routingPolicy": "V1Only",
+      "T0": null,
+      "activationAuthority": null,
+      "stagingExecuted": 0,
+      "stagingRequired": 14
+    },
+    "ordinaryStartup": "pending",
+    "signedDistribution": "pending",
+    "operationalAcceptance": "pending",
+    "commands": [
+      {
+        "label": "sdk-version",
+        "argv": [
+          "/home/administrator/.dotnet/dotnet",
+          "--version"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_HOST_PATH": "/home/administrator/.dotnet/dotnet",
+          "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+          "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+          "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp"
+        },
+        "timeoutSeconds": 30,
+        "launched": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "pid": 1921198,
+        "seconds": 0.119,
+        "log": {
+          "path": "logs/sdk-version.log",
+          "bytes": 9,
+          "sha256": "00922204861c9366b1259b84337ee228d58ec876604bb149e82c077108ce3be2"
+        },
+        "processes": {
+          "path": "processes/sdk-version.json",
+          "bytes": 1804,
+          "sha256": "ba1040bca5c888de81e9b27a3d91d929d69c82541189488803c2abe623915f78"
+        }
+      },
+      {
+        "label": "helper-build",
+        "argv": [
+          "/home/administrator/.dotnet/dotnet",
+          "build",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/helper/DistributionProbe.csproj",
+          "--configuration",
+          "Debug",
+          "--artifacts-path",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original",
+          "-p:RestoreConfigFile=/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/NuGet.Config",
+          "-p:NuGetAudit=false",
+          "-p:MinVerVersionOverride=1.0.0",
+          "-p:VersionSuffix=20261030162228",
+          "-p:HexalithG4FixtureArtifacts=/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/fixtures/",
+          "-m:1",
+          "-nr:false",
+          "-p:BuildInParallel=false",
+          "-p:RestoreBuildInParallel=false",
+          "-p:UseSharedCompilation=false",
+          "-v:diag",
+          "-bl:/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/logs/original-DistributionProbe.binlog"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_HOST_PATH": "/home/administrator/.dotnet/dotnet",
+          "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+          "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+          "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp"
+        },
+        "timeoutSeconds": 900,
+        "launched": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "pid": 1922867,
+        "seconds": 75.347,
+        "log": {
+          "path": "logs/helper-build.log",
+          "bytes": 13415397,
+          "sha256": "87c103a95314080b96d87fac0bddb482a8db78c41ef5d071830d10221f295cf7"
+        },
+        "processes": {
+          "path": "processes/helper-build.json",
+          "bytes": 103007,
+          "sha256": "667d468b72ebe849c0c942b4ef28d7e2a2596be8f6c2cbf89029e5e812e52948"
+        }
+      },
+      {
+        "label": "production-controls",
+        "argv": [
+          "/home/administrator/.dotnet/dotnet",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/DistributionProbe.dll",
+          "production-controls",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_HOST_PATH": "/home/administrator/.dotnet/dotnet",
+          "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+          "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+          "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp"
+        },
+        "timeoutSeconds": 900,
+        "launched": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "pid": 1950720,
+        "seconds": 0.07,
+        "log": {
+          "path": "logs/production-controls.log",
+          "bytes": 1485,
+          "sha256": "9d115ad25e7b2233c3d1f9d81e32d976923f38943972b22497932c65eabd4704"
+        },
+        "processes": {
+          "path": "processes/production-controls.json",
+          "bytes": 2044,
+          "sha256": "72779e0bd60b8430519b5ac8c291ce9b76d480f55252be2806678116d4128c7c"
+        }
+      },
+      {
+        "label": "cli-build",
+        "argv": [
+          "/home/administrator/.dotnet/dotnet",
+          "build",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Module.Cli/Hexalith.Builds.Module.Cli.csproj",
+          "--configuration",
+          "Debug",
+          "--artifacts-path",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original",
+          "-p:RestoreConfigFile=/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/NuGet.Config",
+          "-p:NuGetAudit=false",
+          "-p:MinVerVersionOverride=1.0.0",
+          "-p:VersionSuffix=20261030162228",
+          "-p:HexalithG4FixtureArtifacts=/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/fixtures/",
+          "-m:1",
+          "-nr:false",
+          "-p:BuildInParallel=false",
+          "-p:RestoreBuildInParallel=false",
+          "-p:UseSharedCompilation=false",
+          "-v:diag",
+          "-bl:/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/logs/original-Hexalith.Builds.Module.Cli.binlog"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_HOST_PATH": "/home/administrator/.dotnet/dotnet",
+          "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+          "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+          "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp"
+        },
+        "timeoutSeconds": 900,
+        "launched": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "pid": 1953459,
+        "seconds": 15.456,
+        "log": {
+          "path": "logs/cli-build.log",
+          "bytes": 14988805,
+          "sha256": "b07732d35adf04a7fe779b4416e0c949053f6c5194b1ae30c48ca5ba08b78944"
+        },
+        "processes": {
+          "path": "processes/cli-build.json",
+          "bytes": 62621,
+          "sha256": "8c6e6766cd07992d026ee061ee40acaad7cd2ec26fa351f317661cc3ee4d9404"
+        }
+      },
+      {
+        "label": "prepare-build",
+        "argv": [
+          "/home/administrator/.dotnet/dotnet",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Hexalith.Builds.Module.Cli.dll",
+          "prepare-build",
+          "--manifest",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+          "--workspace",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace",
+          "--mode",
+          "source",
+          "--output",
+          "json"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_HOST_PATH": "/home/administrator/.dotnet/dotnet",
+          "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+          "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+          "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp"
+        },
+        "timeoutSeconds": 900,
+        "launched": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "pid": 1971401,
+        "seconds": 10.206,
+        "log": {
+          "path": "logs/prepare-build.log",
+          "bytes": 2543,
+          "sha256": "21c7b292c3657ceac7fdcbc4ed832062a3ebebfce294909d4633df4757b0245a"
+        },
+        "processes": {
+          "path": "processes/prepare-build.json",
+          "bytes": 6164,
+          "sha256": "33f67a5fc0b94f71431bcddda5970172d787447ba68b44f155504428e36fcfd4"
+        }
+      },
+      {
+        "label": "production-model",
+        "argv": [
+          "/home/administrator/.dotnet/dotnet",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/DistributionProbe.dll",
+          "production-model",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/mapping.json",
+          "0f2de28351b53cd045ce7926ac66a08275b592f344ba02632ef5bd555921d5c0",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_HOST_PATH": "/home/administrator/.dotnet/dotnet",
+          "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+          "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+          "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp"
+        },
+        "timeoutSeconds": 900,
+        "launched": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "pid": 1980420,
+        "seconds": 59.729,
+        "log": {
+          "path": "logs/production-model.log",
+          "bytes": 263,
+          "sha256": "fc45b520d00cd09f43f39f1768b8172a840a1fe3b22ac862b887da3c537c053c"
+        },
+        "processes": {
+          "path": "processes/production-model.json",
+          "bytes": 595607,
+          "sha256": "d7955951b3f437a549da64a9c80378c48000e81f5b0b14219a3b6da13198f3ce"
+        }
+      },
+      {
+        "label": "original-test-build",
+        "argv": [
+          "/home/administrator/.dotnet/dotnet",
+          "build",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Hexalith.Builds.Module.Tests.csproj",
+          "--configuration",
+          "Debug",
+          "--artifacts-path",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original",
+          "-p:RestoreConfigFile=/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/NuGet.Config",
+          "-p:NuGetAudit=false",
+          "-p:MinVerVersionOverride=1.0.0",
+          "-p:VersionSuffix=20261030162228",
+          "-p:HexalithG4FixtureArtifacts=/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/fixtures/",
+          "-m:1",
+          "-nr:false",
+          "-p:BuildInParallel=false",
+          "-p:RestoreBuildInParallel=false",
+          "-p:UseSharedCompilation=false",
+          "-v:diag",
+          "-bl:/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/logs/original-Hexalith.Builds.Module.Tests.binlog"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_HOST_PATH": "/home/administrator/.dotnet/dotnet",
+          "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+          "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+          "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp",
+          "CustomBeforeDirectoryBuildProps": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.targets",
+          "CustomAfterMicrosoftCommonProps": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.props",
+          "CustomBeforeDirectoryBuildTargets": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.before-targets.props",
+          "CustomAfterDirectoryBuildTargets": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.late.props",
+          "AfterMicrosoftNETSdkTargets": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.final.targets",
+          "HEXALITH_SOURCE_MAPPING_HASH": "0f2de28351b53cd045ce7926ac66a08275b592f344ba02632ef5bd555921d5c0",
+          "Configuration": "Debug"
+        },
+        "timeoutSeconds": 900,
+        "launched": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "pid": 2005060,
+        "seconds": 218.26,
+        "log": {
+          "path": "logs/original-test-build.log",
+          "bytes": 340940114,
+          "sha256": "2247085d23a0292635ba108e204cf400abb30ac4a1314d45818c4aabf8529709"
+        },
+        "processes": {
+          "path": "processes/original-test-build.json",
+          "bytes": 1660243,
+          "sha256": "3cade755502e800102592fff3839c049db6049c18f31e63e2151ae8170477104"
+        }
+      },
+      {
+        "label": "discover-Workspace.PlatformModelCatalogTests",
+        "argv": [
+          "/home/administrator/.dotnet/dotnet",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+          "-list",
+          "full/json",
+          "-preEnumerateTheories",
+          "-class",
+          "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+          "-parallel",
+          "none",
+          "-noColor"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_HOST_PATH": "/home/administrator/.dotnet/dotnet",
+          "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+          "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+          "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp"
+        },
+        "timeoutSeconds": 900,
+        "launched": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "pid": 2093800,
+        "seconds": 0.268,
+        "log": {
+          "path": "logs/discover-Workspace.PlatformModelCatalogTests.log",
+          "bytes": 16264,
+          "sha256": "b1ca7897b65628f94805d1aa6b3af9c0af88393d967c174f7c0612a8064495af"
+        },
+        "processes": {
+          "path": "processes/discover-Workspace.PlatformModelCatalogTests.json",
+          "bytes": 2165,
+          "sha256": "78860181a1ac635d5ae5b44f935304a6debf6553df2b01fb929f14c51935f0b4"
+        }
+      },
+      {
+        "label": "class-Workspace.PlatformModelCatalogTests",
+        "argv": [
+          "/home/administrator/.dotnet/dotnet",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+          "-class",
+          "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+          "-parallel",
+          "none",
+          "-xml",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/Workspace.PlatformModelCatalogTests.xml"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_HOST_PATH": "/home/administrator/.dotnet/dotnet",
+          "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+          "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+          "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp"
+        },
+        "timeoutSeconds": 900,
+        "launched": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "pid": 2095446,
+        "seconds": 35.264,
+        "log": {
+          "path": "logs/class-Workspace.PlatformModelCatalogTests.log",
+          "bytes": 760,
+          "sha256": "2d4173bfe673a4932ccaea7fb6224899230451017c30e884560c547c979d8a46"
+        },
+        "processes": {
+          "path": "processes/class-Workspace.PlatformModelCatalogTests.json",
+          "bytes": 2095333,
+          "sha256": "dceeec0b9ee53ad845a7e6ea4ebb5385a4d20fecb7c70a72eebe3f1e33c02fd0"
+        }
+      },
+      {
+        "label": "discover-CompositionSdkProcessTests",
+        "argv": [
+          "/home/administrator/.dotnet/dotnet",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+          "-list",
+          "full/json",
+          "-preEnumerateTheories",
+          "-class",
+          "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+          "-method-",
+          "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.QualificationCatalogProbeInterceptionIsEstablishedAsync",
+          "-parallel",
+          "none",
+          "-noColor"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_HOST_PATH": "/home/administrator/.dotnet/dotnet",
+          "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+          "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+          "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp"
+        },
+        "timeoutSeconds": 900,
+        "launched": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "pid": 2122526,
+        "seconds": 0.268,
+        "log": {
+          "path": "logs/discover-CompositionSdkProcessTests.log",
+          "bytes": 8982,
+          "sha256": "527cc259719e6215abd926c67a146a9cde98b4b753a9abae736ccc1366f3811d"
+        },
+        "processes": {
+          "path": "processes/discover-CompositionSdkProcessTests.json",
+          "bytes": 2299,
+          "sha256": "0560facf60fb5ea3a943ee447ed8058cd50975a931749fd9b75aa8367b6eae0b"
+        }
+      },
+      {
+        "label": "class-CompositionSdkProcessTests",
+        "argv": [
+          "/home/administrator/.dotnet/dotnet",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+          "-class",
+          "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+          "-method-",
+          "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.QualificationCatalogProbeInterceptionIsEstablishedAsync",
+          "-parallel",
+          "none",
+          "-xml",
+          "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/CompositionSdkProcessTests.xml"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/home/administrator/.dotnet",
+          "DOTNET_HOST_PATH": "/home/administrator/.dotnet/dotnet",
+          "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+          "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+          "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp"
+        },
+        "timeoutSeconds": 900,
+        "launched": true,
+        "exitCode": 1,
+        "timedOut": false,
+        "pid": 2124489,
+        "seconds": 17.665,
+        "log": {
+          "path": "logs/class-CompositionSdkProcessTests.log",
+          "bytes": 16075,
+          "sha256": "932a45b122481cba7f93590fc7fdf3f9bb3ae3dc59abd24b3d980f7bc4ec223e"
+        },
+        "processes": {
+          "path": "processes/class-CompositionSdkProcessTests.json",
+          "bytes": 41885,
+          "sha256": "b645b325a25773e1dbb7a0643e0626d5a279797c639eac09b2806ef116df5905"
+        }
+      }
+    ],
+    "lane": "unwrapped production model",
+    "initialRepositories": [
+      {
+        "path": ".",
+        "revision": "a5f1cd8bebba3f09d698ea6682b1531179bb3a3b",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/index",
+          "bytes": 2594290,
+          "sha256": "d53b588389005fb5abc9bfc3a7875f7bcdaf81c296e38bfb21337723137628f6"
+        },
+        "stageEntriesSha256": "7c85178bbc0ab59fb95749ccab1d50c7bb0e9dc25edf6caa600545700b88f01f",
+        "indexFlagsSha256": "fd495b551c67857fe50ce46ad7de3f2bb207c9570db429c960e3b48502ba2f71"
+      },
+      {
+        "path": "references/Hexalith.Tenants",
+        "revision": "0d469d7c8fedc383f6258cbf2798e62cf9847304",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Tenants/index",
+          "bytes": 661975,
+          "sha256": "92f394e665269217d5eff910ce9def2cb9a4974bdd61235f53f092acfa435451"
+        },
+        "stageEntriesSha256": "bab3d800ae8f6872bb98157460ca94756dba9c13c6f73d9e349af62c242bfec9",
+        "indexFlagsSha256": "009797b36a8e8387c6238ccae95dc8c1cebf869db1555636b4f3333d58e77040",
+        "rootGitlink": "0d469d7c8fedc383f6258cbf2798e62cf9847304",
+        "indexedGitlink": "0d469d7c8fedc383f6258cbf2798e62cf9847304"
+      },
+      {
+        "path": "references/Hexalith.AI.Tools",
+        "revision": "70dbf73e80787299c832d30d911b16b105ab194d",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.AI.Tools/index",
+          "bytes": 4197,
+          "sha256": "08223fa9bc88b6fef3d6460b9289cd2b32b3089d8669b4a26336fa1bb8604253"
+        },
+        "stageEntriesSha256": "d17b30d7ed350757dd9e25a055d4a330b81c221abbb9542be52eeebe3b6d0023",
+        "indexFlagsSha256": "492c992993184c5a58bb872f4f227e730c44da4d631399d78b3bf2954e916c0a",
+        "rootGitlink": "70dbf73e80787299c832d30d911b16b105ab194d",
+        "indexedGitlink": "70dbf73e80787299c832d30d911b16b105ab194d"
+      },
+      {
+        "path": "references/Hexalith.EventStore",
+        "revision": "7b1df62102efb19da03553a890c62eb5ad6aeafe",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.EventStore/index",
+          "bytes": 1375079,
+          "sha256": "a244c6e8ea0e220ca401008afb782629eaaca1b0621be95539a77730347ed1fc"
+        },
+        "stageEntriesSha256": "f5a072206fe3e0bbb05d8acba650b74630c10e48c55ad913314a7c54bf09aeaf",
+        "indexFlagsSha256": "468b3f930c96ad56507faae5296f1af4ee0065149a6df6323ff447c0dc8a503a",
+        "rootGitlink": "7b1df62102efb19da03553a890c62eb5ad6aeafe",
+        "indexedGitlink": "7b1df62102efb19da03553a890c62eb5ad6aeafe"
+      },
+      {
+        "path": "references/Hexalith.FrontComposer",
+        "revision": "7ce4ec5270a06fe8284e811c22fbf4cb50b17bf6",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.FrontComposer/index",
+          "bytes": 903405,
+          "sha256": "185157fcb2670f6b9a4cf7336cfab0a7aa291b6947e3bd579777976dd9b13658"
+        },
+        "stageEntriesSha256": "fef0b29c2b101271813630e735f97db2ca878604a7f0e169373c6561cef7a234",
+        "indexFlagsSha256": "604280986e641da566f759632e31bf9bc8f72c184ae3c742569eb66762839c83",
+        "rootGitlink": "7ce4ec5270a06fe8284e811c22fbf4cb50b17bf6",
+        "indexedGitlink": "7ce4ec5270a06fe8284e811c22fbf4cb50b17bf6"
+      },
+      {
+        "path": "references/Hexalith.Memories",
+        "revision": "9ea24458f949589bb8e59f9334161009487509d1",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Memories/index",
+          "bytes": 899373,
+          "sha256": "a7ca735960caa0d88de2243aa7912297e86c15a985b25800ef5f551229312293"
+        },
+        "stageEntriesSha256": "1fab581f9798a135c4361d4e567f3170942f3b5b59a2ec0c918bd088f2f7bd55",
+        "indexFlagsSha256": "b7c2b7a5443d4d91d16fe747cd91dad41b407ac0943fc94393f55a2d80ae5b4a",
+        "rootGitlink": "9ea24458f949589bb8e59f9334161009487509d1",
+        "indexedGitlink": "9ea24458f949589bb8e59f9334161009487509d1"
+      },
+      {
+        "path": "references/Hexalith.Commons",
+        "revision": "3edfbdafc7d4fa915286dce8a37dc4cc7c06085a",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Commons/index",
+          "bytes": 30329,
+          "sha256": "812b418d2da25de8b6845c05b11ca34daa814495386d37f153227644325d3324"
+        },
+        "stageEntriesSha256": "909067f8bff4f2cd92d437444db0269de8a9a5c190fd592a6922bec33a6364e2",
+        "indexFlagsSha256": "109a1563a3c298c6a1e980a49061f0271b3b2caac068013edd4b44a35e97cbc0",
+        "rootGitlink": "3edfbdafc7d4fa915286dce8a37dc4cc7c06085a",
+        "indexedGitlink": "3edfbdafc7d4fa915286dce8a37dc4cc7c06085a"
+      },
+      {
+        "path": "references/Hexalith.Builds",
+        "revision": "144af4c6ccfacdc4f5eaff5823093e5a403e8c69",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Builds/index",
+          "bytes": 501905,
+          "sha256": "c6e5c84ca85dca2941eee7351eef37a83b0a87fe875cee213deb75f1643b977e"
+        },
+        "stageEntriesSha256": "89939473460058ec0733cae52d6106ccb543399466f6c5d2f16ea349b6f64a26",
+        "indexFlagsSha256": "72be53e1f6d1ef2ce4f9b14a1ce2b513913c29015af462cca723da844c8990c2",
+        "rootGitlink": "144af4c6ccfacdc4f5eaff5823093e5a403e8c69",
+        "indexedGitlink": "144af4c6ccfacdc4f5eaff5823093e5a403e8c69"
+      },
+      {
+        "path": "references/Hexalith.PolymorphicSerializations",
+        "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/references/Hexalith.PolymorphicSerializations/index",
+          "bytes": 8831,
+          "sha256": "99834e9037d6af73bea83dc830ab91d6f25228633456987344d153f3cab98221"
+        },
+        "stageEntriesSha256": "02d4ed751e051abdfcab7d1bf898a1849a30f7522fbf1448099d1d12bc51b470",
+        "indexFlagsSha256": "0e1f1b32b300ddb5a40638d500d958937d2e0e92649b824e5b1c51ee0a270cb8",
+        "rootGitlink": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+        "indexedGitlink": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0"
+      },
+      {
+        "path": "references/Hexalith.Projects",
+        "revision": "0338d6ebf9f1be1bd38a8745759984d2066da5e7",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/references/Hexalith.Projects/index",
+          "bytes": 1541384,
+          "sha256": "6022d1f855e1ad0e54fe6e1436ec91729b12fb26603266cd747a8d92c4755c66"
+        },
+        "stageEntriesSha256": "365f19c664d27ef8c71f3e37f62c79dddebe43bd136edf14eadd7be3ee484897",
+        "indexFlagsSha256": "0232b3eb442049b7b5c0992d80edde95047255c674920dab71209a9dc97866cd",
+        "rootGitlink": "0338d6ebf9f1be1bd38a8745759984d2066da5e7",
+        "indexedGitlink": "0338d6ebf9f1be1bd38a8745759984d2066da5e7"
+      },
+      {
+        "path": "references/Hexalith.Platform",
+        "revision": "72904e8ea63b7f6dc8901c09d526479e56fcc841",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Platform/index",
+          "bytes": 2113391,
+          "sha256": "f11032964343f8feba52ce992f79d970d8c7e1283836d4c0881b5c28caa1a530"
+        },
+        "stageEntriesSha256": "dacab8624f60583557e18ae56ef6642718ff65d0d3d23a716184297fc548f30e",
+        "indexFlagsSha256": "7f6b69958d1132135be7054ea8d304f73ca0819aad20c4789ecfc2117a6dbf5c",
+        "rootGitlink": "72904e8ea63b7f6dc8901c09d526479e56fcc841",
+        "indexedGitlink": "72904e8ea63b7f6dc8901c09d526479e56fcc841"
+      },
+      {
+        "path": "references/Hexalith.McpCli",
+        "revision": "c99aebe4a93ca611a443c83f031ef1c02bd499b7",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.McpCli/index",
+          "bytes": 2404234,
+          "sha256": "67d6191c6fe7ba13e5e42add5ee9ad400b94ff1d0b4b3bff48deedeecf8be527"
+        },
+        "stageEntriesSha256": "6511bf952e4dbb728f97fef60ee351a888e5b885903ab610d15e37d4edfc5d83",
+        "indexFlagsSha256": "8fa9c662816ab9c2dbffd3475c3e566ac79d34569d6df1529e3a9ed7e4a27da8",
+        "rootGitlink": "c99aebe4a93ca611a443c83f031ef1c02bd499b7",
+        "indexedGitlink": "c99aebe4a93ca611a443c83f031ef1c02bd499b7"
+      },
+      {
+        "path": "references/Hexalith.Parties",
+        "revision": "784215a8fe91b4d5ae00eb65ab61d3b9507ca0c2",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Parties/index",
+          "bytes": 1181728,
+          "sha256": "eade74721eb24fc995e06777109183a6ad84525daa0bef192ed4cc50fa8a6939"
+        },
+        "stageEntriesSha256": "8e674558adb2f9389d0a1ed75402a6cdfde1a5041ca30b82838b0df01f040c8e",
+        "indexFlagsSha256": "4a99868598d2488d3062591cf2b2bce548222dcf69c42e14a0226093b80e33a4",
+        "rootGitlink": "784215a8fe91b4d5ae00eb65ab61d3b9507ca0c2",
+        "indexedGitlink": "784215a8fe91b4d5ae00eb65ab61d3b9507ca0c2"
+      }
+    ],
+    "environment": {
+      "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+      "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+      "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+      "DOTNET_NOLOGO": "1",
+      "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+      "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+      "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+      "MSBUILDDISABLENODEREUSE": "1",
+      "HOME": "/home/administrator",
+      "LANG": "C.UTF-8",
+      "DOTNET_ROOT": "/home/administrator/.dotnet",
+      "DOTNET_HOST_PATH": "/home/administrator/.dotnet/dotnet",
+      "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+      "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+      "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+      "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+      "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch",
+      "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+      "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+      "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp"
+    },
+    "privateArtifacts": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts",
+    "protectedAuthorityEvidence": {
+      "values": {
+        "parentStory": "in-progress",
+        "tracker": "backlog",
+        "routingPolicy": "V1Only",
+        "T0": null,
+        "activationAuthority": null,
+        "stagingExecuted": 0,
+        "stagingRequired": 14
+      },
+      "files": [
+        {
+          "path": "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+          "bytes": 106308,
+          "sha256": "ca298df3ed27156b7c6d170a47b1042ef8453c1e8e03207930d6bbbcc9ab0423"
+        },
+        {
+          "path": "_bmad-output/implementation-artifacts/sprint-status.yaml",
+          "bytes": 37619,
+          "sha256": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40"
+        },
+        {
+          "path": "eng/story117-platform-qualification-current/configuration.proposed.json",
+          "bytes": 49204,
+          "sha256": "c0b8697672e7ea27370bbb9b0078c9e922042945467be0e7a7fa7d33c28b8d1c"
+        },
+        {
+          "path": "eng/story117-platform-qualification-current/staging-checks.json",
+          "bytes": 30153,
+          "sha256": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51"
+        }
+      ]
+    },
+    "historicalEvidence": {
+      "status": "not reused",
+      "reason": "Historical wrapper and fixed SDK assumptions are excluded; no historical case earns current credit."
+    },
+    "protectedCopies": [
+      {
+        "source": {
+          "path": "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+          "bytes": 106308,
+          "sha256": "ca298df3ed27156b7c6d170a47b1042ef8453c1e8e03207930d6bbbcc9ab0423"
+        },
+        "retained": {
+          "path": "protected/0.md",
+          "bytes": 106308,
+          "sha256": "ca298df3ed27156b7c6d170a47b1042ef8453c1e8e03207930d6bbbcc9ab0423"
+        }
+      },
+      {
+        "source": {
+          "path": "_bmad-output/implementation-artifacts/sprint-status.yaml",
+          "bytes": 37619,
+          "sha256": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40"
+        },
+        "retained": {
+          "path": "protected/1.yaml",
+          "bytes": 37619,
+          "sha256": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40"
+        }
+      },
+      {
+        "source": {
+          "path": "eng/story117-platform-qualification-current/configuration.proposed.json",
+          "bytes": 49204,
+          "sha256": "c0b8697672e7ea27370bbb9b0078c9e922042945467be0e7a7fa7d33c28b8d1c"
+        },
+        "retained": {
+          "path": "protected/2.json",
+          "bytes": 49204,
+          "sha256": "c0b8697672e7ea27370bbb9b0078c9e922042945467be0e7a7fa7d33c28b8d1c"
+        }
+      },
+      {
+        "source": {
+          "path": "eng/story117-platform-qualification-current/staging-checks.json",
+          "bytes": 30153,
+          "sha256": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51"
+        },
+        "retained": {
+          "path": "protected/3.json",
+          "bytes": 30153,
+          "sha256": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51"
+        }
+      }
+    ],
+    "proposedOrdinaryInvocation": {
+      "environment": {
+        "HEXALITH_G4_APPHOST": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/distribution/AppHost/Hexalith.Builds.Module.AppHost.dll"
+      },
+      "argv": [
+        "/home/administrator/.dotnet/dotnet",
+        "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/distribution/CLI/Hexalith.Builds.Module.Cli.dll",
+        "debug",
+        "--manifest",
+        "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+        "--mode",
+        "source",
+        "--output",
+        "json"
+      ],
+      "manifest": {
+        "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+        "bytes": 12797,
+        "sha256": "0fd4457a1801fa13053ef8821eb16a0cfcc6a5edac94b6ce89e8f220e8a30511"
+      },
+      "status": "blocked proposal; planned artifacts are unmaterialized until all qualification gates pass; not executed",
+      "prerequisites": [
+        "Preserve and recheck the approved synchronized checkout/index tuple and the separately recorded committed root gitlinks",
+        "Complete the original source Debug graph, required original-assembly tests, compilation-only model and sealed factory-selection gates",
+        "Recheck all repository, source, catalog, SDK and sealed artifact identities",
+        "Approve and qualify ordinary startup and actual tool/catalog/composition/module intake",
+        "Qualify runtime/API compatibility, target/data, hosted identity, observation and recovery; obtain exact signed distribution and operational acceptance"
+      ]
+    },
+    "sdkVersion": "10.0.403",
+    "productionControlObservation": {
+      "FileName": "dotnet",
+      "arguments": [],
+      "environment": {
+        "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+        "HOME": "/home/administrator",
+        "LANG": "C.UTF-8",
+        "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+        "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+        "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp",
+        "DOTNET_ROOT": "/home/administrator/.dotnet",
+        "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+        "DOTNET_NOLOGO": "1",
+        "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+        "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+        "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+        "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+        "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+        "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+        "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+        "MSBUILDDISABLENODEREUSE": "1",
+        "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+        "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+        "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch"
+      }
+    },
+    "apiInputBindings": [
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/DistributionProbe",
+          "bytes": 78192,
+          "sha256": "3f417d853588e29981c48f8009bdae62f60950eab625ff9ee57e8d7e5e823d46"
+        },
+        "retainedPath": "distribution/Helper/DistributionProbe"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/DistributionProbe.deps.json",
+          "bytes": 7530,
+          "sha256": "eda36bb3f36bcbfa0a13a0b649fc50607df5b5eaf9e3dee03bd8d222fe7766ed"
+        },
+        "retainedPath": "distribution/Helper/DistributionProbe.deps.json"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/DistributionProbe.dll",
+          "bytes": 25600,
+          "sha256": "890c63b3e35d3c7e82fb8ba636bcf8e544787c55ed61d4c2d7c74f8f2d0e8e0f"
+        },
+        "retainedPath": "distribution/Helper/DistributionProbe.dll"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/DistributionProbe.pdb",
+          "bytes": 13296,
+          "sha256": "720929120d1217ba7c6acb707269469d116691fc42140adf2f2ca151be843c6f"
+        },
+        "retainedPath": "distribution/Helper/DistributionProbe.pdb"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/DistributionProbe.runtimeconfig.json",
+          "bytes": 259,
+          "sha256": "f9bc8e9f0c46247078ed47309f19a7576b4b94e4300e9de0003917d6bd2d667a"
+        },
+        "retainedPath": "distribution/Helper/DistributionProbe.runtimeconfig.json"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/Hexalith.Builds.Tooling.dll",
+          "bytes": 1734144,
+          "sha256": "169db5ece02cdb474bff62f4cedcd84f4b7b8fbaaac851743243534c0274e4ec"
+        },
+        "retainedPath": "distribution/Helper/Hexalith.Builds.Tooling.dll"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/Hexalith.Builds.Tooling.pdb",
+          "bytes": 385612,
+          "sha256": "2f556eb4655ad3e872455a533810fefea962999ed82be3d205652bdd93f4ccb6"
+        },
+        "retainedPath": "distribution/Helper/Hexalith.Builds.Tooling.pdb"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/Hexalith.Builds.Tooling.xml",
+          "bytes": 675491,
+          "sha256": "235ee48f0f6d05b0efbd38b2196d0be66b5eb023a1fda7ad9aa0ea98044a7864"
+        },
+        "retainedPath": "distribution/Helper/Hexalith.Builds.Tooling.xml"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/Humanizer.dll",
+          "bytes": 643760,
+          "sha256": "2769ed8265b691a5482c72506ed274dc52446fa1641997a8c12c66f5b9263d39"
+        },
+        "retainedPath": "distribution/Helper/Humanizer.dll"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/Json.More.dll",
+          "bytes": 54272,
+          "sha256": "80b6cd50331fa2ded4fbacdbf80dcedd2b142dee679df227c30299d2a3c3840f"
+        },
+        "retainedPath": "distribution/Helper/Json.More.dll"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/JsonPointer.Net.dll",
+          "bytes": 25600,
+          "sha256": "4d7ce7739bc0bf8df69778f4545c390a6c06fd11c8f583ae166f0fdc6e9c3123"
+        },
+        "retainedPath": "distribution/Helper/JsonPointer.Net.dll"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/JsonSchema.Net.dll",
+          "bytes": 307712,
+          "sha256": "fa3837e24b420d190b933c04d7426bf6c42f3cace1a12bb125408b1eb0ffb5f2"
+        },
+        "retainedPath": "distribution/Helper/JsonSchema.Net.dll"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+          "bytes": 65872,
+          "sha256": "7d07e2588a256ae5983af6a2e64eac603cb81d8f224dbea5e65eda8d67258175"
+        },
+        "retainedPath": "distribution/Helper/Microsoft.Extensions.DependencyInjection.Abstractions.dll"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/Microsoft.Extensions.Logging.Abstractions.dll",
+          "bytes": 66856,
+          "sha256": "d0a3cce0caf2bdda4af7d54135a321b45438015947fd902d7c2e6a0a30730c55"
+        },
+        "retainedPath": "distribution/Helper/Microsoft.Extensions.Logging.Abstractions.dll"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/NuGet.Versioning.dll",
+          "bytes": 62264,
+          "sha256": "fc2f75a7a5f3be9b4c3dcfc21644b871bb5a41ada8615c92d778713d2a310670"
+        },
+        "retainedPath": "distribution/Helper/NuGet.Versioning.dll"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/RESPite.dll",
+          "bytes": 116736,
+          "sha256": "ac0814df565f247cf848bed4901724d50882581625bf4036b525570fc157241e"
+        },
+        "retainedPath": "distribution/Helper/RESPite.dll"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/StackExchange.Redis.dll",
+          "bytes": 2357760,
+          "sha256": "374863d1f723c434ba1bafb86ec9863e0a5688da5c38fbd2b3e4d7680067950b"
+        },
+        "retainedPath": "distribution/Helper/StackExchange.Redis.dll"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/System.IO.Hashing.dll",
+          "bytes": 56144,
+          "sha256": "550d10bb0ba785057915fb0ecbc6a3e8802fdee2e2ac22d80966691ccb11e2ff"
+        },
+        "retainedPath": "distribution/Helper/System.IO.Hashing.dll"
+      },
+      {
+        "role": "Helper",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/YamlDotNet.dll",
+          "bytes": 300032,
+          "sha256": "d618138109a40e4a7250e49e2abad8c450e3636bee18d7499ab231e37fa9150a"
+        },
+        "retainedPath": "distribution/Helper/YamlDotNet.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Hexalith.Builds.Module.Cli",
+          "bytes": 78192,
+          "sha256": "ec8a9838667ae77372263979a95de8c769fa65f7769dabb6fe5219cd1af389e8"
+        },
+        "retainedPath": "distribution/CLI/Hexalith.Builds.Module.Cli"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Hexalith.Builds.Module.Cli.deps.json",
+          "bytes": 9520,
+          "sha256": "5576f0c0dceacffd8496e374dd36026031a1949cb26b7fa75fb1aaa46d7e102b"
+        },
+        "retainedPath": "distribution/CLI/Hexalith.Builds.Module.Cli.deps.json"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Hexalith.Builds.Module.Cli.dll",
+          "bytes": 40960,
+          "sha256": "9acd5dc3b979053dc17a8831e151f9fb447079812e3247b5d06c46c6bb2e0199"
+        },
+        "retainedPath": "distribution/CLI/Hexalith.Builds.Module.Cli.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Hexalith.Builds.Module.Cli.pdb",
+          "bytes": 18336,
+          "sha256": "e10c23007832edd8b0649c8f64805344116dbae46789af8bcb983da10007b917"
+        },
+        "retainedPath": "distribution/CLI/Hexalith.Builds.Module.Cli.pdb"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Hexalith.Builds.Module.Cli.runtimeconfig.json",
+          "bytes": 259,
+          "sha256": "f9bc8e9f0c46247078ed47309f19a7576b4b94e4300e9de0003917d6bd2d667a"
+        },
+        "retainedPath": "distribution/CLI/Hexalith.Builds.Module.Cli.runtimeconfig.json"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Hexalith.Builds.Module.Cli.xml",
+          "bytes": 1315,
+          "sha256": "1643482025fc9b41baa6eeb42d84ac27ab61ba929c298022a45dd048102047db"
+        },
+        "retainedPath": "distribution/CLI/Hexalith.Builds.Module.Cli.xml"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Hexalith.Builds.Tooling.dll",
+          "bytes": 1734144,
+          "sha256": "169db5ece02cdb474bff62f4cedcd84f4b7b8fbaaac851743243534c0274e4ec"
+        },
+        "retainedPath": "distribution/CLI/Hexalith.Builds.Tooling.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Hexalith.Builds.Tooling.pdb",
+          "bytes": 385612,
+          "sha256": "2f556eb4655ad3e872455a533810fefea962999ed82be3d205652bdd93f4ccb6"
+        },
+        "retainedPath": "distribution/CLI/Hexalith.Builds.Tooling.pdb"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Hexalith.Builds.Tooling.xml",
+          "bytes": 675491,
+          "sha256": "235ee48f0f6d05b0efbd38b2196d0be66b5eb023a1fda7ad9aa0ea98044a7864"
+        },
+        "retainedPath": "distribution/CLI/Hexalith.Builds.Tooling.xml"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Humanizer.dll",
+          "bytes": 643760,
+          "sha256": "2769ed8265b691a5482c72506ed274dc52446fa1641997a8c12c66f5b9263d39"
+        },
+        "retainedPath": "distribution/CLI/Humanizer.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Json.More.dll",
+          "bytes": 54272,
+          "sha256": "80b6cd50331fa2ded4fbacdbf80dcedd2b142dee679df227c30299d2a3c3840f"
+        },
+        "retainedPath": "distribution/CLI/Json.More.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/JsonPointer.Net.dll",
+          "bytes": 25600,
+          "sha256": "4d7ce7739bc0bf8df69778f4545c390a6c06fd11c8f583ae166f0fdc6e9c3123"
+        },
+        "retainedPath": "distribution/CLI/JsonPointer.Net.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/JsonSchema.Net.dll",
+          "bytes": 307712,
+          "sha256": "fa3837e24b420d190b933c04d7426bf6c42f3cace1a12bb125408b1eb0ffb5f2"
+        },
+        "retainedPath": "distribution/CLI/JsonSchema.Net.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+          "bytes": 65872,
+          "sha256": "7d07e2588a256ae5983af6a2e64eac603cb81d8f224dbea5e65eda8d67258175"
+        },
+        "retainedPath": "distribution/CLI/Microsoft.Extensions.DependencyInjection.Abstractions.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/Microsoft.Extensions.Logging.Abstractions.dll",
+          "bytes": 66856,
+          "sha256": "d0a3cce0caf2bdda4af7d54135a321b45438015947fd902d7c2e6a0a30730c55"
+        },
+        "retainedPath": "distribution/CLI/Microsoft.Extensions.Logging.Abstractions.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/NuGet.Versioning.dll",
+          "bytes": 62264,
+          "sha256": "fc2f75a7a5f3be9b4c3dcfc21644b871bb5a41ada8615c92d778713d2a310670"
+        },
+        "retainedPath": "distribution/CLI/NuGet.Versioning.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/RESPite.dll",
+          "bytes": 116736,
+          "sha256": "ac0814df565f247cf848bed4901724d50882581625bf4036b525570fc157241e"
+        },
+        "retainedPath": "distribution/CLI/RESPite.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/StackExchange.Redis.dll",
+          "bytes": 2357760,
+          "sha256": "374863d1f723c434ba1bafb86ec9863e0a5688da5c38fbd2b3e4d7680067950b"
+        },
+        "retainedPath": "distribution/CLI/StackExchange.Redis.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/System.CommandLine.dll",
+          "bytes": 151352,
+          "sha256": "313d3376dca9c0e5eaf6f78118b765f1f877ae280056ecf56131bb19cfca8a90"
+        },
+        "retainedPath": "distribution/CLI/System.CommandLine.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/System.IO.Hashing.dll",
+          "bytes": 56144,
+          "sha256": "550d10bb0ba785057915fb0ecbc6a3e8802fdee2e2ac22d80966691ccb11e2ff"
+        },
+        "retainedPath": "distribution/CLI/System.IO.Hashing.dll"
+      },
+      {
+        "role": "CLI",
+        "source": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Cli/debug/YamlDotNet.dll",
+          "bytes": 300032,
+          "sha256": "d618138109a40e4a7250e49e2abad8c450e3636bee18d7499ab231e37fa9150a"
+        },
+        "retainedPath": "distribution/CLI/YamlDotNet.dll"
+      }
+    ],
+    "productionMapping": {
+      "Mode": "source",
+      "Root": "/home/administrator/projects/hexalith/folders",
+      "ActiveModule": "Hexalith.Parties",
+      "Entries": [
+        {
+          "Identity": "Hexalith.AI.Tools",
+          "Origin": "source",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.AI.Tools"
+        },
+        {
+          "Identity": "Hexalith.Builds",
+          "Origin": "source",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds"
+        },
+        {
+          "Identity": "Hexalith.Commons",
+          "Origin": "source",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons"
+        },
+        {
+          "Identity": "Hexalith.EventStore",
+          "Origin": "source",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore"
+        },
+        {
+          "Identity": "Hexalith.FrontComposer",
+          "Origin": "source",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer"
+        },
+        {
+          "Identity": "Hexalith.McpCli",
+          "Origin": "source",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli"
+        },
+        {
+          "Identity": "Hexalith.Memories",
+          "Origin": "source",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories"
+        },
+        {
+          "Identity": "Hexalith.Parties",
+          "Origin": "source",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties"
+        },
+        {
+          "Identity": "Hexalith.Platform",
+          "Origin": "source",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform"
+        },
+        {
+          "Identity": "Hexalith.PolymorphicSerializations",
+          "Origin": "source",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations"
+        },
+        {
+          "Identity": "Hexalith.Projects",
+          "Origin": "source",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects"
+        },
+        {
+          "Identity": "Hexalith.Tenants",
+          "Origin": "source",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants"
+        }
+      ],
+      "HasGit": true,
+      "PlatformIdentity": {
+        "Commit": "72904e8ea63b7f6dc8901c09d526479e56fcc841",
+        "CompositionCommit": "72904e8ea63b7f6dc8901c09d526479e56fcc841",
+        "CheckoutCommit": "72904e8ea63b7f6dc8901c09d526479e56fcc841",
+        "PlatformPath": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+        "ReleaseTag": null,
+        "CatalogCommit": "2980efdf51f305dc5c39bb854261c252d13465f5",
+        "ToolVersionRange": "[4.38.3, 5.0.0-0)",
+        "RecordPath": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/hexalith-platform.json",
+        "IsPlatformRepository": false
+      },
+      "IdentityFindings": [
+        {
+          "RuleId": "HXW011",
+          "Message": "Platform identity 72904e8ea63b7f6dc8901c09d526479e56fcc841 has no local v<SemVer> release tag.",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+          "Hint": "Fetch Platform tags, then retry."
+        },
+        {
+          "RuleId": "HXW009",
+          "Message": "Builds catalog '/home/administrator/projects/hexalith/folders/references/Hexalith.Builds' is staged 144af4c6ccfacdc4f5eaff5823093e5a403e8c69, checked out 144af4c6ccfacdc4f5eaff5823093e5a403e8c69, dirty; Platform 72904e8ea63b7f6dc8901c09d526479e56fcc841 pins 2980efdf51f305dc5c39bb854261c252d13465f5.",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+          "Hint": null
+        },
+        {
+          "RuleId": "HXW010",
+          "Message": "Tool version 1.0.0-20261030162228 is outside Platform range [4.38.3, 5.0.0-0) at '/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/hexalith-platform.json'.",
+          "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/hexalith-platform.json",
+          "Hint": null
+        }
+      ],
+      "ContentHash": "0f2de28351b53cd045ce7926ac66a08275b592f344ba02632ef5bd555921d5c0"
+    },
+    "productionEnvironment": {
+      "CustomBeforeDirectoryBuildProps": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.targets",
+      "CustomAfterMicrosoftCommonProps": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.props",
+      "CustomBeforeDirectoryBuildTargets": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.before-targets.props",
+      "CustomAfterDirectoryBuildTargets": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.late.props",
+      "AfterMicrosoftNETSdkTargets": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.final.targets",
+      "HEXALITH_SOURCE_MAPPING_HASH": "0f2de28351b53cd045ce7926ac66a08275b592f344ba02632ef5bd555921d5c0",
+      "Configuration": "Debug"
+    },
+    "preparation": {
+      "status": "prepared",
+      "outcome": {
+        "exitCode": "Success",
+        "phase": "None",
+        "category": "None",
+        "ruleId": null
+      },
+      "diagnostics": [
+        {
+          "ruleId": "HXW011",
+          "phase": "Prerequisite",
+          "category": "None",
+          "message": "Platform identity 72904e8ea63b7f6dc8901c09d526479e56fcc841 has no local v<SemVer> release tag.",
+          "field": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+          "hint": "Fetch Platform tags, then retry.",
+          "source": null,
+          "location": null,
+          "row": null
+        },
+        {
+          "ruleId": "HXW009",
+          "phase": "Prerequisite",
+          "category": "None",
+          "message": "Builds catalog '/home/administrator/projects/hexalith/folders/references/Hexalith.Builds' is staged 144af4c6ccfacdc4f5eaff5823093e5a403e8c69, checked out 144af4c6ccfacdc4f5eaff5823093e5a403e8c69, dirty; Platform 72904e8ea63b7f6dc8901c09d526479e56fcc841 pins 2980efdf51f305dc5c39bb854261c252d13465f5.",
+          "field": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+          "hint": null,
+          "source": null,
+          "location": null,
+          "row": null
+        },
+        {
+          "ruleId": "HXW010",
+          "phase": "Prerequisite",
+          "category": "None",
+          "message": "Tool version 1.0.0-20261030162228 is outside Platform range [4.38.3, 5.0.0-0) at '/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/hexalith-platform.json'.",
+          "field": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/hexalith-platform.json",
+          "hint": null,
+          "source": null,
+          "location": null,
+          "row": null
+        }
+      ],
+      "buildPreparation": {
+        "workspace": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace",
+        "mode": "source",
+        "mappingHash": "0f2de28351b53cd045ce7926ac66a08275b592f344ba02632ef5bd555921d5c0",
+        "environment": {
+          "CustomBeforeDirectoryBuildProps": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.targets",
+          "CustomAfterMicrosoftCommonProps": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.props",
+          "CustomBeforeDirectoryBuildTargets": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.before-targets.props",
+          "CustomAfterDirectoryBuildTargets": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.late.props",
+          "AfterMicrosoftNETSdkTargets": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.final.targets",
+          "HEXALITH_SOURCE_MAPPING_HASH": "0f2de28351b53cd045ce7926ac66a08275b592f344ba02632ef5bd555921d5c0",
+          "Configuration": "Debug"
+        }
+      }
+    },
+    "modelAssembly": {
+      "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/hosts/platform-model/Hexalith.Platform.Composition.dll",
+      "bytes": 416768,
+      "sha256": "c40fb6f12eaabf104a2561c5311ec40d884be407e77f9a7f1d3ba7aa924888ce"
+    },
+    "modelChild": {
+      "pid": 1980529,
+      "argv": [
+        "dotnet",
+        "build",
+        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj",
+        "--configuration",
+        "Debug",
+        "--output",
+        "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/hosts/platform-model",
+        "--artifacts-path",
+        "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/build/platform-model",
+        "-p:BuildsToolingAssemblyPath=/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/DistributionProbe/debug/Hexalith.Builds.Tooling.dll",
+        "-p:NuGetAudit=false",
+        "-p:MinVerVersionOverride=1.0.0",
+        "-nodeReuse:false",
+        "-p:UseSharedCompilation=false",
+        "-m:1",
+        "-p:BuildInParallel=false",
+        "-p:RestoreBuildInParallel=false",
+        "-p:AlternateCommonProps=/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.model-common.props",
+        "-p:ImportDirectoryPackagesProps=false",
+        "-p:CentralPackageVersionsFileImported=true",
+        "-p:DirectoryPackagesPropsPath=/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/pinned-tree/Props/Directory.Packages.props"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "executable": "/home/administrator/.dotnet/dotnet",
+      "environment": {
+        "PATH": "/home/administrator/.dotnet:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+        "HOME": "/home/administrator",
+        "LANG": "C.UTF-8",
+        "TMPDIR": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmpdir",
+        "TEMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/temp",
+        "TMP": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/tmp",
+        "DOTNET_ROOT": "/home/administrator/.dotnet",
+        "DOTNET_CLI_HOME": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/dotnet_cli_home",
+        "DOTNET_NOLOGO": "1",
+        "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+        "NUGET_PACKAGES": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_packages",
+        "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+        "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+        "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+        "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+        "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+        "MSBUILDDISABLENODEREUSE": "1",
+        "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_http_cache_path",
+        "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_plugins_cache_path",
+        "NUGET_SCRATCH": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/nuget_scratch",
+        "CustomBeforeDirectoryBuildProps": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.targets",
+        "CustomAfterMicrosoftCommonProps": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.props",
+        "CustomBeforeDirectoryBuildTargets": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.before-targets.props",
+        "CustomAfterDirectoryBuildTargets": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.late.props",
+        "AfterMicrosoftNETSdkTargets": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/source-mapping/SourceMapping.final.targets",
+        "HEXALITH_SOURCE_MAPPING_HASH": "0f2de28351b53cd045ce7926ac66a08275b592f344ba02632ef5bd555921d5c0",
+        "Configuration": "Debug"
+      }
+    },
+    "modelAssets": [
+      {
+        "file": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/build/platform-model/obj/Hexalith.Commons.UniqueIds/project.assets.json",
+          "bytes": 38328,
+          "sha256": "6452a68c64e793340cb9897aa02044f83adccd99065e71614065d2d94b141e73"
+        },
+        "sourceProjects": [],
+        "hexalithPackages": [],
+        "retained": {
+          "path": "assets/model/0/project.assets.json",
+          "bytes": 38328,
+          "sha256": "6452a68c64e793340cb9897aa02044f83adccd99065e71614065d2d94b141e73"
+        }
+      },
+      {
+        "file": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/build/platform-model/obj/Hexalith.EventStore.Aspire/project.assets.json",
+          "bytes": 208963,
+          "sha256": "1699cdcb510aebf384080c2dc8ca994e44754a28028eb6584c89bd21d3d42b4a"
+        },
+        "sourceProjects": [
+          "Hexalith.Commons.UniqueIds/1.0.0",
+          "Hexalith.EventStore.Contracts/3.128.4"
+        ],
+        "hexalithPackages": [],
+        "retained": {
+          "path": "assets/model/1/project.assets.json",
+          "bytes": 208963,
+          "sha256": "1699cdcb510aebf384080c2dc8ca994e44754a28028eb6584c89bd21d3d42b4a"
+        }
+      },
+      {
+        "file": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/build/platform-model/obj/Hexalith.EventStore.Client/project.assets.json",
+          "bytes": 98735,
+          "sha256": "e011c2a2874aa61a9bb589afea1a6136d6861aedb9963822e7a8f6af8545b8e0"
+        },
+        "sourceProjects": [
+          "Hexalith.Commons.UniqueIds/1.0.0",
+          "Hexalith.EventStore.Contracts/3.128.4"
+        ],
+        "hexalithPackages": [],
+        "retained": {
+          "path": "assets/model/2/project.assets.json",
+          "bytes": 98735,
+          "sha256": "e011c2a2874aa61a9bb589afea1a6136d6861aedb9963822e7a8f6af8545b8e0"
+        }
+      },
+      {
+        "file": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/build/platform-model/obj/Hexalith.EventStore.Contracts/project.assets.json",
+          "bytes": 39454,
+          "sha256": "f8c7fc5ad37db7e16c073d65ce374411545587111f8dc2069cc55c52fc39e166"
+        },
+        "sourceProjects": [
+          "Hexalith.Commons.UniqueIds/1.0.0"
+        ],
+        "hexalithPackages": [],
+        "retained": {
+          "path": "assets/model/3/project.assets.json",
+          "bytes": 39454,
+          "sha256": "f8c7fc5ad37db7e16c073d65ce374411545587111f8dc2069cc55c52fc39e166"
+        }
+      },
+      {
+        "file": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/build/platform-model/obj/Hexalith.EventStore.DomainService/project.assets.json",
+          "bytes": 128416,
+          "sha256": "80e74f348f9c6add5ac5e3b5cda264a298cd0b91878864f6af12e26dbe902a07"
+        },
+        "sourceProjects": [
+          "Hexalith.Commons.UniqueIds/1.0.0",
+          "Hexalith.EventStore.Client/3.128.4",
+          "Hexalith.EventStore.Contracts/3.128.4",
+          "Hexalith.EventStore.ServiceDefaults/3.128.4"
+        ],
+        "hexalithPackages": [],
+        "retained": {
+          "path": "assets/model/4/project.assets.json",
+          "bytes": 128416,
+          "sha256": "80e74f348f9c6add5ac5e3b5cda264a298cd0b91878864f6af12e26dbe902a07"
+        }
+      },
+      {
+        "file": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/build/platform-model/obj/Hexalith.EventStore.ServiceDefaults/project.assets.json",
+          "bytes": 109788,
+          "sha256": "83957c7e0870870084e836940d5d45002641a1ef81ad62d055785a7e3c0e9575"
+        },
+        "sourceProjects": [
+          "Hexalith.Commons.UniqueIds/1.0.0",
+          "Hexalith.EventStore.Contracts/3.128.4"
+        ],
+        "hexalithPackages": [],
+        "retained": {
+          "path": "assets/model/5/project.assets.json",
+          "bytes": 109788,
+          "sha256": "83957c7e0870870084e836940d5d45002641a1ef81ad62d055785a7e3c0e9575"
+        }
+      },
+      {
+        "file": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/build/platform-model/obj/Hexalith.Platform.Composition/project.assets.json",
+          "bytes": 294839,
+          "sha256": "82023a16ec503de62b4fac1e7ec882f1a10c65a03eb35b8a83c6c522ee8103c4"
+        },
+        "sourceProjects": [
+          "Hexalith.Commons.UniqueIds/1.0.0",
+          "Hexalith.EventStore.Aspire/3.128.4",
+          "Hexalith.EventStore.Client/3.128.4",
+          "Hexalith.EventStore.Contracts/3.128.4",
+          "Hexalith.EventStore.DomainService/3.128.4",
+          "Hexalith.EventStore.ServiceDefaults/3.128.4",
+          "Hexalith.Platform.Custody/1.0.0",
+          "Hexalith.Platform.Custody.Component/1.0.0",
+          "Hexalith.Platform.Secrets.Runtime/1.0.0",
+          "Hexalith.Platform.Works.Runtime/1.0.0"
+        ],
+        "hexalithPackages": [],
+        "retained": {
+          "path": "assets/model/6/project.assets.json",
+          "bytes": 294839,
+          "sha256": "82023a16ec503de62b4fac1e7ec882f1a10c65a03eb35b8a83c6c522ee8103c4"
+        }
+      },
+      {
+        "file": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/build/platform-model/obj/Hexalith.Platform.Custody/project.assets.json",
+          "bytes": 65761,
+          "sha256": "e08e2d27928912e400f6eba8143d1ce4c20c8a99f2bedd2a95be51efb60c44d3"
+        },
+        "sourceProjects": [
+          "Hexalith.Commons.UniqueIds/1.0.0",
+          "Hexalith.EventStore.Contracts/3.128.4"
+        ],
+        "hexalithPackages": [],
+        "retained": {
+          "path": "assets/model/7/project.assets.json",
+          "bytes": 65761,
+          "sha256": "e08e2d27928912e400f6eba8143d1ce4c20c8a99f2bedd2a95be51efb60c44d3"
+        }
+      },
+      {
+        "file": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/build/platform-model/obj/Hexalith.Platform.Custody.Component/project.assets.json",
+          "bytes": 94109,
+          "sha256": "b849741513c2ac0c01cc32daa2a66995354fcb40d3cbcd413ad0b2701e8a3f0d"
+        },
+        "sourceProjects": [
+          "Hexalith.Commons.UniqueIds/1.0.0",
+          "Hexalith.EventStore.Contracts/3.128.4",
+          "Hexalith.Platform.Custody/1.0.0"
+        ],
+        "hexalithPackages": [],
+        "retained": {
+          "path": "assets/model/8/project.assets.json",
+          "bytes": 94109,
+          "sha256": "b849741513c2ac0c01cc32daa2a66995354fcb40d3cbcd413ad0b2701e8a3f0d"
+        }
+      },
+      {
+        "file": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/build/platform-model/obj/Hexalith.Platform.Secrets.Runtime/project.assets.json",
+          "bytes": 102801,
+          "sha256": "ae7ca24d5c814fdcb712c0ed610df9837f00637d766e8d2e9c86562ad94f2485"
+        },
+        "sourceProjects": [
+          "Hexalith.Commons.UniqueIds/1.0.0",
+          "Hexalith.EventStore.Client/3.128.4",
+          "Hexalith.EventStore.Contracts/3.128.4",
+          "Hexalith.Platform.Custody/1.0.0",
+          "Hexalith.Platform.Custody.Component/1.0.0"
+        ],
+        "hexalithPackages": [],
+        "retained": {
+          "path": "assets/model/9/project.assets.json",
+          "bytes": 102801,
+          "sha256": "ae7ca24d5c814fdcb712c0ed610df9837f00637d766e8d2e9c86562ad94f2485"
+        }
+      },
+      {
+        "file": {
+          "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/workspace/build/platform-model/obj/Hexalith.Platform.Works.Runtime/project.assets.json",
+          "bytes": 128615,
+          "sha256": "74fd16a08c7ae98a7a69850faba66e197bf5b8f18bb8c91967d8f231e8219b0e"
+        },
+        "sourceProjects": [
+          "Hexalith.Commons.UniqueIds/1.0.0",
+          "Hexalith.EventStore.Client/3.128.4",
+          "Hexalith.EventStore.Contracts/3.128.4",
+          "Hexalith.EventStore.DomainService/3.128.4",
+          "Hexalith.EventStore.ServiceDefaults/3.128.4"
+        ],
+        "hexalithPackages": [],
+        "retained": {
+          "path": "assets/model/10/project.assets.json",
+          "bytes": 128615,
+          "sha256": "74fd16a08c7ae98a7a69850faba66e197bf5b8f18bb8c91967d8f231e8219b0e"
+        }
+      }
+    ],
+    "modelCompiler": {
+      "path": "model-compiler.json",
+      "bytes": 435661,
+      "sha256": "6d491c7713e2a4d1602aa52b260320c6a01ddcff43692c67a3a74c0fddd33f5e"
+    },
+    "testClasses": [
+      {
+        "name": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+        "total": 28,
+        "passed": 28,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "notRun": 0,
+        "discovered": 28,
+        "report": {
+          "path": "Workspace.PlatformModelCatalogTests.xml",
+          "bytes": 20232,
+          "sha256": "08798107f47efe5b6c90923a5a79b6d0de29a81fffad80ae319863a4835abacb"
+        }
+      }
+    ],
+    "classDiscoveries": {
+      "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests": {
+        "file": {
+          "path": "logs/discover-Workspace.PlatformModelCatalogTests.log",
+          "bytes": 16264,
+          "sha256": "b1ca7897b65628f94805d1aa6b3af9c0af88393d967c174f7c0612a8064495af"
+        },
+        "cases": [
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildAppliesPinnedCatalogOnceBeforeOwnerPropsAsync(mode: Package, changeLiveCatalog: False)",
+            "ID": "19fc6b647dd5f2e517e38861bf376ba6a304dcbe1115281d07d2675695f3451b",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildAppliesPinnedCatalogOnceBeforeOwnerPropsAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildAppliesPinnedCatalogOnceBeforeOwnerPropsAsync(mode: Package, changeLiveCatalog: True)",
+            "ID": "38c7d570fde7ba57bca92d583e158ddd41acdd06193cfbed49aa1507edcfafeb",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildAppliesPinnedCatalogOnceBeforeOwnerPropsAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildAppliesPinnedCatalogOnceBeforeOwnerPropsAsync(mode: Source, changeLiveCatalog: False)",
+            "ID": "eb9be1a55891b7c25bdcf8a7722a0f8a1a4442906d1239df43627b672fa654a9",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildAppliesPinnedCatalogOnceBeforeOwnerPropsAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildAppliesPinnedCatalogOnceBeforeOwnerPropsAsync(mode: Source, changeLiveCatalog: True)",
+            "ID": "2b3ccef4607ee3fe26a0868dcf5484fab2c34ba0e58cfbd094bc62173207c7fb",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildAppliesPinnedCatalogOnceBeforeOwnerPropsAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesChangedProductionCommonPropsAsync(mode: Package, remove: False)",
+            "ID": "6a0d19470d0c29ac2bfa1690736fa3023d40afd6bf21b8407a2597687b18e8e4",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesChangedProductionCommonPropsAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesChangedProductionCommonPropsAsync(mode: Package, remove: True)",
+            "ID": "f2bd17ac09f0f6fbb30a9e48ce72da96c76eea915c0c65b9aa63ac3ee521df79",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesChangedProductionCommonPropsAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesChangedProductionCommonPropsAsync(mode: Source, remove: False)",
+            "ID": "86924a98a59692819ab8571460601cee60dac40584b4902d8a18f1f41ccc4301",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesChangedProductionCommonPropsAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesChangedProductionCommonPropsAsync(mode: Source, remove: True)",
+            "ID": "a2e3d87aafc556358ce5b81646787c232954afb8ad7833002ce7e564a798f58c",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesChangedProductionCommonPropsAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesImportedCatalogClosureDriftAsync(mode: Package, drift: \"changed\")",
+            "ID": "62e9ac5908179b6a1349ffc1acd80be290226f427e388f885c97965f714a0d86",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesImportedCatalogClosureDriftAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesImportedCatalogClosureDriftAsync(mode: Package, drift: \"deleted\")",
+            "ID": "e995800a8f5c24af7f70d3d2718cc0c8803fc3e2c2233f874d8d4ae7b5ff5c20",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesImportedCatalogClosureDriftAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesImportedCatalogClosureDriftAsync(mode: Package, drift: \"optional\")",
+            "ID": "aa558d840de984ff5ccb9e34364da2d5c182f1108ce2b5fbabb7bb10428ad10f",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesImportedCatalogClosureDriftAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesImportedCatalogClosureDriftAsync(mode: Source, drift: \"changed\")",
+            "ID": "98f5a1c4bfe1fdbf3971db9f048f415503ebb3a727a1dfba081ec785acbf5cde",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesImportedCatalogClosureDriftAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesImportedCatalogClosureDriftAsync(mode: Source, drift: \"deleted\")",
+            "ID": "0f73b2b67ee7b35d8a5cb05c677d548db8455d9fa78860d78745faf563e7446a",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesImportedCatalogClosureDriftAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesImportedCatalogClosureDriftAsync(mode: Source, drift: \"optional\")",
+            "ID": "b8ac3b248f51d6603b6591e39b97dd58c2ed874904891001b24a8d063b7a8690",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesImportedCatalogClosureDriftAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Package, drift: \"bytes\")",
+            "ID": "87068d111b3c8916b11bb185099cd379036ee68c842b660d253994afea115605",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Package, drift: \"catalog\")",
+            "ID": "6d2a67f3ddde8421d91f4b76c4f995438bfd65010af6254b86627fe7c47a3076",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Package, drift: \"mapping\")",
+            "ID": "0d430753a09aa2ce9f8f4d6b71b81ee818720dc4e542dd2128bf3dfc0a4b64d3",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Package, drift: \"mode\")",
+            "ID": "c8926db7f879df28ade82c5acdac763c1ec0f0a3d63133de60d63459296e8d95",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Package, drift: \"path\")",
+            "ID": "481e9dbf0cef50bdf415600df6ca4d55b4f1ab240f2631d4a044d15387056c88",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Package, drift: \"pin\")",
+            "ID": "93be5ca8568a8ff8fe5403bb245ed9592c12506ba17b82b038cf875a533f2f84",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Package, drift: \"snapshot\")",
+            "ID": "a90b2fe245af6ac4f328618f4e8123c66faaea6bc014a6229c6f5257e218006d",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Source, drift: \"bytes\")",
+            "ID": "e0d90c746d247971dfbb9bd994864b68b43dae37b2b1ed48e031bed22521e009",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Source, drift: \"catalog\")",
+            "ID": "84e28b20494936b89161b42073d99396cf5391bbf751bbee25b3b9640a14486c",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Source, drift: \"mapping\")",
+            "ID": "99ca64eda29713111abbf0e45cb1458c82fbad620b9a94362bb6c6666dcfd022",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Source, drift: \"mode\")",
+            "ID": "e71f07da391b8b1ff2bbae62eb0f8164999508d32297508f51d6d3410e82a137",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Source, drift: \"path\")",
+            "ID": "8942638cf3dd5154dc0526e4fd50452c3964b839f701e4fe7aff0dfb7f7cfbf7",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Source, drift: \"pin\")",
+            "ID": "2188458004129988736348b1fc3b10c846586d1fbe6c845884be5c629cb79d91",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests.ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync(mode: Source, drift: \"snapshot\")",
+            "ID": "edeef809a36cdfa3fe49e734f78053e37e6e5a3b76f17936b111b9ae4d6c4bc7",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+            "Method": "ModelBuildRefusesMissingOrAlteredCatalogAuthorityAsync",
+            "Explicit": false
+          }
+        ]
+      },
+      "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests": {
+        "file": {
+          "path": "logs/discover-CompositionSdkProcessTests.log",
+          "bytes": 8982,
+          "sha256": "527cc259719e6215abd926c67a146a9cde98b4b753a9abae736ccc1366f3811d"
+        },
+        "cases": [
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.DefaultDirectoriesIgnoreAmbientSelections",
+            "ID": "5aaa34c1c70e13aac68a92af7566c6f2c5c1daf2fe7cd012170b6c11716e659a",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "DefaultDirectoriesIgnoreAmbientSelections",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.InvalidExplicitSelectionRefusesBeforeExecution(executable: \"/nonexistent-sdk/dotnet\")",
+            "ID": "5e6febfe0a25340ca9fbe7c388556fbb107d1ad6fd2f66c1cb95a8541e71bb74",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "InvalidExplicitSelectionRefusesBeforeExecution",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.InvalidExplicitSelectionRefusesBeforeExecution(executable: \"dotnet\")",
+            "ID": "71742e69aaa0917be7a97c4abc57423768c50578e1f06c082fc2259b067fde97",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "InvalidExplicitSelectionRefusesBeforeExecution",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.InvalidExplicitSelectionRefusesBeforeExecution(executable: \"relative/dotnet\")",
+            "ID": "39f455c1fac8119975a0c7044c4f2a9067111992563c3ba2b7c7169dd74bef2a",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "InvalidExplicitSelectionRefusesBeforeExecution",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.OwnedDirectoriesAreRemovedWhenProcessExitsAsync",
+            "ID": "abb45a4743a64a21c347e36cab41574e805719e306bb73a27163d8f47ae1426d",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "OwnedDirectoriesAreRemovedWhenProcessExitsAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.ProductionBareDotnetChildUsesExplicitControlsAsync",
+            "ID": "b4af98f845c83b5d28b5549f2a010a06dcb5c45f647751988e2458cbc41f086a",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "ProductionBareDotnetChildUsesExplicitControlsAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.SdkChildObservesExplicitControlsAsync",
+            "ID": "f93f5aa7b1b0761a04adbaf9713e927a72392960aabddcc97a4f2dc827bcc7a4",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "SdkChildObservesExplicitControlsAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.SdkChildStopsAtExplicitBoundAsync",
+            "ID": "8532d3aaf9b3fa14abcd0c138984b02442b45fed4831133ceebcd9b8c8d6fa70",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "SdkChildStopsAtExplicitBoundAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.SelectedSdkReportsPinnedVersionAsync",
+            "ID": "1fa194e75f4cda081b6d02c0489bda1a58221868447e8e37738d7fb9d0b2adc0",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "SelectedSdkReportsPinnedVersionAsync",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.StartDescriptionScrubsUnrelatedInheritedValues",
+            "ID": "3fe6788fa84c8fd4c45b712f7046d16e15ffb62aaeaa5f4be851ee7b40cb7c3d",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "StartDescriptionScrubsUnrelatedInheritedValues",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.StartDescriptionUsesCommandSpecificControls(command: \"--version\", serial: False)",
+            "ID": "a7c1628f61dd184294d05803807a366611fe0c14224b6182ed125feba87085ad",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "StartDescriptionUsesCommandSpecificControls",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.StartDescriptionUsesCommandSpecificControls(command: \"build\", serial: True)",
+            "ID": "ed5ac73cfd55917c4324d7d00762524785ae362ee53ca47b41fa93c695848e7b",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "StartDescriptionUsesCommandSpecificControls",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.StartDescriptionUsesCommandSpecificControls(command: \"exec\", serial: False)",
+            "ID": "4eec5a7ba7de83f414240996c3eabd30add1cb39e2f22c987b17733832c3c761",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "StartDescriptionUsesCommandSpecificControls",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.StartDescriptionUsesCommandSpecificControls(command: \"msbuild\", serial: True)",
+            "ID": "8ce40ba99ce7b12d0145ed34da1606ddaf4e6602ccac850fe431bab56e179e18",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "StartDescriptionUsesCommandSpecificControls",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.StartDescriptionUsesCommandSpecificControls(command: \"pack\", serial: True)",
+            "ID": "d8dc4b227a537cdc57efdbea9d6e85ed1e4e127eb535d9c672badd21a3d7b411",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "StartDescriptionUsesCommandSpecificControls",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.StartDescriptionUsesCommandSpecificControls(command: \"restore\", serial: True)",
+            "ID": "b6785b2afa3e1d83cfcdfbc10bb62383a2fd2fffb07aebb32600d13bfb4cdd2b",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "StartDescriptionUsesCommandSpecificControls",
+            "Explicit": false
+          },
+          {
+            "Assembly": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+            "DisplayName": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.SymlinkSelectionUsesPhysicalInstallationAsync",
+            "ID": "3c76688b4ee6897cd8970f0546a62b0506a41a0af6c84eb8ab8bc13b85a514de",
+            "Class": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+            "Method": "SymlinkSelectionUsesPhysicalInstallationAsync",
+            "Explicit": false
+          }
+        ]
+      }
+    },
+    "originalRunner": {
+      "path": "/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll",
+      "bytes": 2672128,
+      "sha256": "c2354d75dad60dbb2c9d70546e525e4fa73a6d53cf04b3af2905ee07e2049067"
+    },
+    "excludedHistoricalInterception": {
+      "method": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.QualificationCatalogProbeInterceptionIsEstablishedAsync",
+      "credit": false,
+      "reason": "Historical interception mechanism is forbidden in the production lane; separate production bare-dotnet assertion runs fresh."
+    },
+    "preservation": {
+      "status": "failed-or-unknown",
+      "errors": [
+        "Certificate-store metadata drift"
+      ],
+      "repositoryCount": 13,
+      "boundSourceCount": 24026
+    },
+    "firstFailure": {
+      "type": "GateFailure",
+      "detail": "Command failed: class-CompositionSdkProcessTests; argv=['/home/administrator/.dotnet/dotnet', '/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/artifacts/original/bin/Hexalith.Builds.Module.Tests/debug/Hexalith.Builds.Module.Tests.dll', '-class', 'Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests', '-method-', 'Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests.QualificationCatalogProbeInterceptionIsEstablishedAsync', '-parallel', 'none', '-xml', '/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/CompositionSdkProcessTests.xml']; result=1; log=/tmp/story-1-17-production-source-model-2026-10-30-qualified-wn4znwhz/logs/class-CompositionSdkProcessTests.log",
+      "owner": "first failing command/input owner; see exact command and retained log",
+      "dependentExecutionStopped": true
+    },
+    "historicalPreservation": {
+      "status": "verified",
+      "files": 237
+    }
+  },
+  "archive": {
+    "path": "story-1-17-production-source-model-2026-10-30-qualified.artifacts.tar.gz",
+    "bytes": 127619384,
+    "sha256": "6b71705ba05ee16ec2ab877ba6f11a78f5f070590e5a4005d32f619349fb8383"
+  },
+  "memberManifest": {
+    "path": "story-1-17-production-source-model-2026-10-30-qualified.members.json",
+    "bytes": 316010,
+    "sha256": "cc75620df8a2babe73e4df47b8df922f43d8f894f0a300a2bd943bafff3d7ca1"
+  },
+  "memberCount": 1562,
+  "scope": "Unwrapped production BuildModelAsync compilation/fixture/PE evidence only; no startup, runtime, accepted-tool, signed-release or operational credit."
+}

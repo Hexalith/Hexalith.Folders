@@ -1,0 +1,197 @@
+[
+  {
+    "path": "NuGet.Config",
+    "bytes": 140,
+    "sha256": "17f8588bd0874138a10e92eb9efee6e346a173591124ab57872f019475f8f81a"
+  },
+  {
+    "path": "baseline-diff-0.patch",
+    "bytes": 15032,
+    "sha256": "882f3c4ed60ca7b599e48b5827ce12ef7ed3a6204a34944549cbca68a7234551"
+  },
+  {
+    "path": "baseline-diff-1.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-10.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-11.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-12.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-2.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-3.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-4.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-5.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-6.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-7.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-8.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-9.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "certificate-stores-after.json",
+    "bytes": 6172,
+    "sha256": "9fd7ade232ec0da19fbaa980ccbb5191e1af38cca42c279f64734c333d83c1f3"
+  },
+  {
+    "path": "certificate-stores-before.json",
+    "bytes": 6172,
+    "sha256": "9fd7ade232ec0da19fbaa980ccbb5191e1af38cca42c279f64734c333d83c1f3"
+  },
+  {
+    "path": "commands.json",
+    "bytes": 8170,
+    "sha256": "88c8a17cc8b4033b17097a7f586cc82f10b30d8c34c63835a8a21d543086ba30"
+  },
+  {
+    "path": "harness/Probe.cs",
+    "bytes": 4877,
+    "sha256": "221f5d1369e02a4468f8cfb8d95f924fa19dc225e6b90a4418135449d6a94a40"
+  },
+  {
+    "path": "harness/README.md",
+    "bytes": 4715,
+    "sha256": "f9485272da7ab280413b0a018a8f77048641273b8c5718c63a47c2614edbf55b"
+  },
+  {
+    "path": "harness/capture_compiler.py",
+    "bytes": 6694,
+    "sha256": "a6e2c5264927dc874066c8694f6a6beffe10d277ad354c8960efd91c9a04f229"
+  },
+  {
+    "path": "harness/qualify.py",
+    "bytes": 74504,
+    "sha256": "32ff5174c3e62808dfbd1dea5f545de5500544d27ff33ed85c1e5d8b9345d7da"
+  },
+  {
+    "path": "harness/qualify_model.py",
+    "bytes": 16814,
+    "sha256": "cfd0b33ccdc435a784746c9a1bd4590fc31bc193450fc4065a44e70510d0f422"
+  },
+  {
+    "path": "harness/sdk_child.py",
+    "bytes": 2385,
+    "sha256": "81f367a7733f0c8f29f0f03b33c12ad20aa0339ff94334288eaeea91b97a844d"
+  },
+  {
+    "path": "harness/test_compiler_capture.py",
+    "bytes": 3236,
+    "sha256": "446abd1868188f6ba1e423153e4563bf63dea727940a70731ef5d7ee11a16bca"
+  },
+  {
+    "path": "harness/test_qualification.py",
+    "bytes": 40958,
+    "sha256": "a4e48d2545d76082c9164b95ac0d01402bb4114ef609a09d4d7822a8f72fb9e9"
+  },
+  {
+    "path": "harness/verify.py",
+    "bytes": 31268,
+    "sha256": "9eca8502777956c856532b58d4740dd43ad82f4def4a2810e0096237687f1c64"
+  },
+  {
+    "path": "helper/DistributionProbe.csproj",
+    "bytes": 406,
+    "sha256": "0c20539246cd0bbc5d67f3f4777c62b582a3b179fed1225157b5d8c4c66d7529"
+  },
+  {
+    "path": "helper/Program.cs",
+    "bytes": 4877,
+    "sha256": "221f5d1369e02a4468f8cfb8d95f924fa19dc225e6b90a4418135449d6a94a40"
+  },
+  {
+    "path": "logs/bootstrap-DistributionProbe.binlog",
+    "bytes": 574039,
+    "sha256": "d6603024e019788e79bfcb5a18172b112973728b8e665db871df4b588a026063"
+  },
+  {
+    "path": "logs/helper-build.log",
+    "bytes": 13522964,
+    "sha256": "8d2732fc402322a2d514e27128dcee4fe3000935946f5a175f448a756e281a0c"
+  },
+  {
+    "path": "logs/production-controls.log",
+    "bytes": 898,
+    "sha256": "81d5bd50ba37e83364c696e1c72810ea73f8dad66d496b77997802d2ae066249"
+  },
+  {
+    "path": "logs/sdk-version.log",
+    "bytes": 9,
+    "sha256": "00922204861c9366b1259b84337ee228d58ec876604bb149e82c077108ce3be2"
+  },
+  {
+    "path": "processes/helper-build.json",
+    "bytes": 105111,
+    "sha256": "d77ea825aa4cacb228aadadd36492e302ebeab7c1cf1de3d2c34644d373e8b51"
+  },
+  {
+    "path": "processes/production-controls.json",
+    "bytes": 2144,
+    "sha256": "a42ea30c2da1c147cce3791f0570569a796e9d9ed5b011126c64c11240924172"
+  },
+  {
+    "path": "processes/sdk-version.json",
+    "bytes": 1892,
+    "sha256": "643dd1ff269e0c6acff2af1619ca360c6acf9193574f3f3bc0643e3fce5d5579"
+  },
+  {
+    "path": "repository-baseline.json",
+    "bytes": 8393,
+    "sha256": "9276b0d2aa24782a53b790bdc493de34f6c7a5ba73b12141e2ba8429ef6e8497"
+  },
+  {
+    "path": "result.json",
+    "bytes": 23866,
+    "sha256": "c070292ea1b65b9d90b156f2d6fcfb69b5e50aa6f756ad29076611472f79a14d"
+  },
+  {
+    "path": "sdk-bindings.json",
+    "bytes": 1261808,
+    "sha256": "61f2e045633ec754f21b0fe966321008601dc2cf95037383bde2abaaee459d26"
+  },
+  {
+    "path": "source-baseline.json",
+    "bytes": 5304526,
+    "sha256": "518e0eb6731378f64aa92dfd90666cc2c49b6a0b05adba4c0d5c96c043e5b2e9"
+  }
+]

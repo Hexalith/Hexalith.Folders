@@ -20,6 +20,17 @@ if (args[0] == "map")
     await File.WriteAllTextAsync(Path.Combine(args[2], "environment.json"), JsonSerializer.Serialize(SourceMappingMaterializer.Environment(mapping, args[2]), json));
     Console.WriteLine(JsonSerializer.Serialize(mapping, json));
 }
+else if (args[0] == "production-controls")
+{
+    System.Diagnostics.ProcessStartInfo start = CompositionProcess.CreateStartInfo("dotnet", [], args[1], null);
+    Console.WriteLine(JsonSerializer.Serialize(new { start.FileName, arguments = start.ArgumentList.ToArray(), environment = start.Environment.ToDictionary(pair => pair.Key, pair => pair.Value) }, json));
+}
+else if (args[0] == "production-model")
+{
+    SourceMapping mapping = SourceMapping.LoadVerified(args[1], args[2]);
+    string assembly = await PlatformManifestCommand.BuildModelAsync(mapping, args[3], DateTimeOffset.UtcNow.AddMinutes(12), cancellation.Token);
+    Console.WriteLine(JsonSerializer.Serialize(new { assembly, evidence = "unwrapped production BuildModelAsync; compilation only; no startup/runtime/tool acceptance" }, json));
+}
 else if (args[0] == "model")
 {
     SourceMapping mapping = SourceMapping.LoadVerified(args[1], args[2]);

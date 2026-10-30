@@ -4,55 +4,66 @@
 
 ## Goal
 
-Enable developers and AI agents to prepare, lock, modify, query, commit, and diagnose tenant-scoped repository workspaces through a deterministic task lifecycle. Preserve staged work across interruption, expose trustworthy failure and recovery evidence, and prove durable behavior through the deployed production path.
+Developers and AI agents can prepare, lock, modify, query, commit, and diagnose repository-backed workspaces with deterministic lifecycle and failure behavior. Success is a provider-confirmed commit or a truthful blocked state, without mixed writes, silent repair, or cross-tenant leakage. This epic owns the transitions and transition evidence. Seed, in-memory, unavailable, and fake-provider results are not completion.
 
 ## Stories
 
-- Story 4.1: Implement Folder aggregate state machine with C6 transition matrix
-- Story 4.2: Prepare workspace from a ready repository-backed folder
+- Story 4.1: Folder aggregate state machine
+- Story 4.2: Prepare workspace from a ready repository
 - Story 4.3: Acquire task-scoped workspace lock
-- Story 4.4: Inspect lock state and release the workspace lock
-- Story 4.5: Enforce workspace path policy before file mutations
-- Story 4.6: Add and change files with inline and streamed content transport
-- Story 4.7: Remove files with metadata-only events and provider-safe ordering
+- Story 4.4: Inspect and release the workspace lock
+- Story 4.5: Enforce workspace path policy
+- Story 4.6: Add and change files with inline and streamed transport
+- Story 4.7: Remove files with metadata-only events
 - Story 4.8: Query file context with policy boundaries
 - Story 4.9: Inspect workspace and projection currency
-- Story 4.10: Surface workspace cleanup status without repair automation
-- Story 4.11: Propagate idempotency keys, correlation, and task IDs
-- Story 4.12: Commit workspace changes with unknown-outcome reconciliation
-- Story 4.13: Surface canonical errors and operational evidence after failure
+- Story 4.10: Surface cleanup status without repair
+- Story 4.11: Propagate idempotency, correlation, and task IDs
+- Story 4.12: Commit with unknown-outcome reconciliation
+- Story 4.13: Surface canonical errors after failure
 - Story 4.14: Emit metadata-only audit and observability
-- Story 4.15: Validate lifecycle replay and projection determinism
+- Story 4.15: Validate lifecycle replay determinism
 - Story 4.16: Validate lifecycle security boundaries
-- Story 4.17: Seed lifecycle capacity test harness
-- Story 4.18: EventStore-backed workspace transition-evidence projection
-- Story 4.19: Prove durable workspace prepare and lock lifecycle
-- Story 4.20: Prove durable file mutation and bounded-context lifecycle
-- Story 4.21: Prove real commit, retry, conflict, and unknown-outcome reconciliation
-- Story 4.22: Implement the PD11 Guard-Discriminated Lifecycle
+- Story 4.17: Seed lifecycle capacity harness
+- Story 4.18: EventStore-backed transition-evidence projection
+- Story 4.19: Prove durable prepare and lock
+- Story 4.20: Prove durable mutation and bounded context
+- Story 4.21: Prove commit, conflict, and reconciliation
+- Story 4.22: Guard-discriminated lifecycle
+- Story 4.23: Canonical lock identity and C7 lock timing
 
 ## Requirements & Constraints
 
-- Preparation requires readiness, binding, ref policy, fresh authorization, and task context. One task owns its workspace and produces at most one successful durable commit. Mutations stage work without auto-commit; commit requires known policy-valid outcomes and provider-confirmed durability.
-- Authorize before protected lookup; enforce path policy before content execution. Fresh negative authority gets canonical safe denial; stale/unavailable/conflicting/incomplete authority gets canonical authority-unavailable. Task identifiers confer no authority.
-- Failure evidence includes lifecycle/lock state, safe cause, retry eligibility, client action, task/operation/correlation identity, timestamps, and freshness/checkpoint. Events, projections, audit, and diagnostics exclude bodies, diffs, secrets, provider payloads, and unauthorized existence. C9 classifies paths, refs, repository names, and commit messages; confidential values become correlation tokens before persistence.
-- Context bounds: 100 paths, 2,000 tree entries, 500 search/glob results, 262,144 bytes per range, 1,048,576 aggregate bytes, two seconds. Truncation is explicit and never silently affects content/ranges.
-- Completion requires populated deployed projections, restart survival, empty-checkpoint replay, isolation, denial, conflict, failure, timeout/unknown-outcome, and boundary evidence. Seed, in-memory, unavailable, safe-empty, and fake-only evidence cannot prove it.
+Prepare only with valid readiness, binding, branch/ref policy, fresh authorization, and task context. Failure is inspectable and has no unauthorized side effect.
+
+Lock identity is managed tenant + canonical provider/repository identity + normalized target ref. Aliases collide; other tenants do not. Folder, workspace, and task IDs are metadata. No canonical identity fails closed. Lock state is unlocked, locked, expired, stale, or revoked. Deny before any side effect, with one metadata-only audit record and no takeover. Release needs the originating task, ownership proof, and no staged changes. An unexpired equivalent retry is one result; an expired key does not run.
+
+Renew at 30s, revalidate at 15s and before renewal or mutation, revoke within 60s of the upstream timestamp, and move expired to stale at the inclusive 60s boundary. Overrides may only tighten to a positive whole number of seconds. Renewal is owner-only on the versioned surface. A revoked instance never reactivates. Stale authority fails closed and keeps staged work.
+
+No auto-commit. Move or rename is add plus remove, and only inside a prepared, freshly authorized, locked workspace. Reject a path escape without echoing the path. Use closed file policy ASCII/500/NFC.
+
+After authorization, context caps are 100 paths, 2000 tree entries, 500 search/glob results, 262144 range bytes, 1048576 aggregate bytes, and 2 seconds. Truncation is explicit. Indexes are not authoritative.
+
+Commit only on provider-confirmed durable remote/ref update. unknown_provider_outcome allows at most five read-only checks in 15 minutes; then reconciliation_required blocks retry, mutation, takeover, and cleanup.
+
+States: requested, preparing, ready, locked, changes_staged, dirty, committed, failed, inaccessible, unknown_provider_outcome, reconciliation_required. Transitions are (state, event, guard); omissions reject as state_transition_invalid. Retryable unconfirmed commit failure stays dirty with staged work; non-retryable failure is failed. Restored readiness returns to dirty only when staged content is inside the recovery deadline, to ready only when clean, and otherwise waits for eligible cleanup. Only the server-resolved originating task resumes. Clean dirty returns to ready only on the stale-lease event. Operator discard, retry-success, and mark-failed reject. Pair-only behavior is historical, and reapproval is pending.
+
+Cleanup starts after terminal closure and no active task, uses a fresh seven-day window, and cancels on resume. Recovery expiry never deletes. Keep dirty, unknown, reconciliation-required, legal-hold, and nonterminal work. No repair. Record the originating task, principal, and separate recovery and cleanup clocks.
+
+Mutations require an idempotency key; reads reject one. Equivalent unexpired intent replays, conflict hides prior intent, and expiry does not run. Commit replay lasts seven years; other mutation replay lasts 24 hours. Carry correlation and task IDs, and authorize before admission.
+
+Return final state, retry eligibility, correlation, a sanitized reason, and a client action. Denial is not retryable; unavailable authority is. Neither reveals existence.
+
+No contents, diffs, tokens, credentials, secrets, or hidden existence in events, logs, traces, metrics, projections, audit, diagnostics, or errors. Redacted, withheld, unknown, missing, and unavailable stay distinct. Confidential values become non-reversible tokens at write.
 
 ## Technical Decisions
 
-- Consume Hexalith.EventStore commands, ordered events, projection/replay SDK seams; avoid local platform infrastructure. Checkouts are disposable caches; locks, idempotency, fencing, checkpoints, and reconciliation authority remain durable across replicas/restart.
-- Writer identity is managed tenant + canonical provider/repository + normalized ref token; aliases collide. Folder/workspace/task IDs are metadata. Lock vocabulary: `unlocked`, `locked`, `expired`, `stale`, `revoked`.
-- Total `(state, event, guard)` evaluation uses durable server-resolved evidence; unlisted branches reject with `state_transition_invalid`. Preserve staged work on retryable failure, lock loss, and revocation; only the originating authorized task resumes it under a new lock.
-- `unknown_provider_outcome` is `auto-recovering`: at most five read-only checks within fifteen minutes precede unresolved escalation to `reconciliation_required`/`awaiting-human`. Blind retry and operator discard/retry-success/mark-failed remain unsupported.
-- Recovery deadlines never authorize deletion. Cleanup requires terminal closure, no active task, a fresh seven-day window, no legal hold, and cancellation on legitimate resume. Dirty/unresolved work remains protected.
-- Tenant-scoped EventStore idempotency follows authorization/validation: equivalent live intent replays, differing intent conflicts, expired keys stay consumed. Reads reject keys; replay revalidates authority.
-- Ordered-event rebuilds are deterministic; external-clock freshness/stale-lock calculations are excluded from equivalence. Separate availability/freshness/classified evidence from operational authority.
+Lifecycle state stays on the folder aggregate. Preparation and retries run in workers or process managers. The working copy is disposable. Transition evidence rebuilds from ordered durable events, survives restart, and populates only the correct tenant. Deployed proof uses the shared verification lane. Inline JSON stops at 256 KB, then stream; no Base64. Both Git providers share one retryable classifier. Local success is not a commit. Stale-lease and lock renewal have no historical route.
 
 ## UX & Interaction Patterns
 
-Views remain read-only and workspace-centered, showing scope, authorization, and freshness before diagnosis. Distinguish lifecycle, lock, disposition, availability, and disclosure. Label staged/confirmed durability and stale, unavailable, redacted, withheld, unknown, and missing evidence with accessible cues. Show bounded automatic confirmation before human escalation.
+Keep lifecycle, lock, disposition, folder lifecycle, freshness, and visibility separate. Dispositions: available, auto-recovering, degraded-but-serving, awaiting-human, terminal-until-intervention. Requested, preparing, committed, and active unknown_provider_outcome are auto-recovering; ready is available unless freshness exceeds 500 ms; locked and changes_staged are degraded-but-serving; dirty is degraded while resumable or clean, otherwise awaiting-human; failed and inaccessible are terminal until intervention. reconciliation_required is awaiting-human and is not success or failure. The console is read-only: no retry, repair, or discard. Do not use color alone.
 
 ## Cross-Story Dependencies
 
-Epic 3 supplies readiness/binding; Epic 12 supplies durability. Story 4.18 follows 12.1–12.2 and 4.22; 4.22 follows 1.17 v2 authorization and C6/C3 decisions. Durable prepare/lock proof consumes 12.3/12.6; mutation/context proof consumes 12.7 and approved file/authorization policy; commit proof consumes 12.4 and prior lifecycle proof. Epic 6 owns diagnostic projections/console journeys; 11.10 owns platform seam adoption without product projections. Preserve earlier component evidence.
+Execution rank orders delivery. Durable events, content, restart replay, real Git, and mutation idempotency precede positive completion. This epic owns lifecycle rules and transition evidence. The trust console owns diagnostics. Parity must not fork the lifecycle. Metadata search is not file, workspace, or audit truth. The versioned contract precedes guarded transitions and lock renewal. Canonical lock identity and approved timing precede deployed prepare-and-lock proof. File-policy design is closed; runtime proof is not.

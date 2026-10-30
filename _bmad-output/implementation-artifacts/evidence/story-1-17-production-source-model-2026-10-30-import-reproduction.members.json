@@ -1,0 +1,347 @@
+[
+  {
+    "path": "NuGet.Config",
+    "bytes": 140,
+    "sha256": "17f8588bd0874138a10e92eb9efee6e346a173591124ab57872f019475f8f81a"
+  },
+  {
+    "path": "baseline-diff-0.patch",
+    "bytes": 14763,
+    "sha256": "586c500c0ef8f7d48d46a7c9724c77469523321a5bee9664f2639aa52c888437"
+  },
+  {
+    "path": "baseline-diff-1.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-10.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-11.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-12.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-2.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-3.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-4.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-5.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-6.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-7.patch",
+    "bytes": 2798,
+    "sha256": "fa5cd35ff44d1c0579d34dcf7bf67ad2ca3887269f29bc12a73424d8c4f30a65"
+  },
+  {
+    "path": "baseline-diff-8.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-9.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "certificate-stores-after.json",
+    "bytes": 6172,
+    "sha256": "9fd7ade232ec0da19fbaa980ccbb5191e1af38cca42c279f64734c333d83c1f3"
+  },
+  {
+    "path": "certificate-stores-before.json",
+    "bytes": 6172,
+    "sha256": "9fd7ade232ec0da19fbaa980ccbb5191e1af38cca42c279f64734c333d83c1f3"
+  },
+  {
+    "path": "commands.json",
+    "bytes": 19617,
+    "sha256": "6992bf49e4da64b85b0049d417c7ba0e4a4390908157e9d56f43bf61b18df340"
+  },
+  {
+    "path": "harness/Probe.cs",
+    "bytes": 4877,
+    "sha256": "221f5d1369e02a4468f8cfb8d95f924fa19dc225e6b90a4418135449d6a94a40"
+  },
+  {
+    "path": "harness/README.md",
+    "bytes": 4715,
+    "sha256": "f9485272da7ab280413b0a018a8f77048641273b8c5718c63a47c2614edbf55b"
+  },
+  {
+    "path": "harness/capture_compiler.py",
+    "bytes": 6694,
+    "sha256": "a6e2c5264927dc874066c8694f6a6beffe10d277ad354c8960efd91c9a04f229"
+  },
+  {
+    "path": "harness/qualify.py",
+    "bytes": 74504,
+    "sha256": "32ff5174c3e62808dfbd1dea5f545de5500544d27ff33ed85c1e5d8b9345d7da"
+  },
+  {
+    "path": "harness/qualify_model.py",
+    "bytes": 17074,
+    "sha256": "f03b7aeb45364e401efad60d0868cdbf0b58580187fcbf2e0e3bcbe222885ab4"
+  },
+  {
+    "path": "harness/sdk_child.py",
+    "bytes": 2385,
+    "sha256": "81f367a7733f0c8f29f0f03b33c12ad20aa0339ff94334288eaeea91b97a844d"
+  },
+  {
+    "path": "harness/test_compiler_capture.py",
+    "bytes": 3236,
+    "sha256": "446abd1868188f6ba1e423153e4563bf63dea727940a70731ef5d7ee11a16bca"
+  },
+  {
+    "path": "harness/test_qualification.py",
+    "bytes": 40958,
+    "sha256": "a4e48d2545d76082c9164b95ac0d01402bb4114ef609a09d4d7822a8f72fb9e9"
+  },
+  {
+    "path": "harness/verify.py",
+    "bytes": 31268,
+    "sha256": "9eca8502777956c856532b58d4740dd43ad82f4def4a2810e0096237687f1c64"
+  },
+  {
+    "path": "helper/DistributionProbe.csproj",
+    "bytes": 406,
+    "sha256": "0c20539246cd0bbc5d67f3f4777c62b582a3b179fed1225157b5d8c4c66d7529"
+  },
+  {
+    "path": "helper/Program.cs",
+    "bytes": 4877,
+    "sha256": "221f5d1369e02a4468f8cfb8d95f924fa19dc225e6b90a4418135449d6a94a40"
+  },
+  {
+    "path": "logs/bootstrap-DistributionProbe.binlog",
+    "bytes": 573828,
+    "sha256": "77677a50c9157c40b5c6c7183dd3cf4e56f3d5511f3d3dcff7d2a6d7e73da0b9"
+  },
+  {
+    "path": "logs/bootstrap-Hexalith.Builds.Module.Cli.binlog",
+    "bytes": 605677,
+    "sha256": "878e34a815b7db092763dc4de60df92791fc3fb45ffb1874e151b27576a2822f"
+  },
+  {
+    "path": "logs/cli-build.log",
+    "bytes": 15032087,
+    "sha256": "7a04d8bc50324f562133c1b7a52e0e68a0efcb6d6ee0995886131f4667f2ed23"
+  },
+  {
+    "path": "logs/helper-build.log",
+    "bytes": 13513330,
+    "sha256": "e2fd9de80595b9eebce193cccd22780e98079c10dbe55ac38a377c5f5c92c196"
+  },
+  {
+    "path": "logs/prepare-build.log",
+    "bytes": 2603,
+    "sha256": "712092d57128fb0b4242d4a8c44480e9bffa148354decfcb6d8c9877ff3a2f28"
+  },
+  {
+    "path": "logs/production-controls.log",
+    "bytes": 1565,
+    "sha256": "b2f8c266f0a07dc655ecaa6fe8daabfbfe7ed1a00608d67250bc53981fcaddd3"
+  },
+  {
+    "path": "logs/production-model.log",
+    "bytes": 1274,
+    "sha256": "79f8b5ac86657838916bebb6b9fc4d4326ff2fcc2cc3431bd697603e831b605d"
+  },
+  {
+    "path": "logs/sdk-version.log",
+    "bytes": 9,
+    "sha256": "00922204861c9366b1259b84337ee228d58ec876604bb149e82c077108ce3be2"
+  },
+  {
+    "path": "processes/cli-build.json",
+    "bytes": 64109,
+    "sha256": "14800d3c6fb44fc52cc82d2c4db4e3aced4564baa5ccaa795cc9defca9f028f0"
+  },
+  {
+    "path": "processes/helper-build.json",
+    "bytes": 104922,
+    "sha256": "fa693d3252afd49a1d2a4a693129f9c1241e0e194e5eb0a644656bf05fbd1223"
+  },
+  {
+    "path": "processes/prepare-build.json",
+    "bytes": 7776,
+    "sha256": "0e8f2b33ac1c315743403802e29079cc21299335efaa5b331d43bb0643a93f3e"
+  },
+  {
+    "path": "processes/production-controls.json",
+    "bytes": 2137,
+    "sha256": "b1de1abfbe842a9cc3c0a3d3fff95654f89d925bab9813212e9e8b4b606aa8ab"
+  },
+  {
+    "path": "processes/production-model.json",
+    "bytes": 6523,
+    "sha256": "9e8bf033fa618c92d7005b55a637a75b384a24e37bceb829df3aa4263200f327"
+  },
+  {
+    "path": "processes/sdk-version.json",
+    "bytes": 1884,
+    "sha256": "b85eae90bb470eb3505f99b6a0a6493d94ad6588a8d0ea6f2ad5e8930e4b6342"
+  },
+  {
+    "path": "repository-baseline.json",
+    "bytes": 8393,
+    "sha256": "9276b0d2aa24782a53b790bdc493de34f6c7a5ba73b12141e2ba8429ef6e8497"
+  },
+  {
+    "path": "result.json",
+    "bytes": 45346,
+    "sha256": "d520e6da09aeead7dfa268b2c7a6e37e2ca86d8da162320d39400f472e8767e0"
+  },
+  {
+    "path": "sdk-bindings.json",
+    "bytes": 1261808,
+    "sha256": "61f2e045633ec754f21b0fe966321008601dc2cf95037383bde2abaaee459d26"
+  },
+  {
+    "path": "source-baseline.json",
+    "bytes": 5304526,
+    "sha256": "ace89944ea600ab139e1071f96ee62ec61435e6838d62f59831e4eb326a890d9"
+  },
+  {
+    "path": "workspace/build/platform-model/obj/Hexalith.Commons.UniqueIds/project.assets.json",
+    "bytes": 38368,
+    "sha256": "c813bbbc377b8b2e650fe0587a98756271f96b3b0c4bc10d03ff9a14bcafb940"
+  },
+  {
+    "path": "workspace/build/platform-model/obj/Hexalith.EventStore.Aspire/project.assets.json",
+    "bytes": 209003,
+    "sha256": "b673008e802617434cf9922c6d5995bdec8e0983f28b6a5c6ca386c4efe8dd6f"
+  },
+  {
+    "path": "workspace/build/platform-model/obj/Hexalith.EventStore.Client/project.assets.json",
+    "bytes": 98775,
+    "sha256": "1dc8f2bc192e829ba59087896619fc302463fde9fd27a202cd109a4bbc2ece63"
+  },
+  {
+    "path": "workspace/build/platform-model/obj/Hexalith.EventStore.Contracts/project.assets.json",
+    "bytes": 39494,
+    "sha256": "f1717f97de7f63f7c4299ab4adca4f70bb31ee91f2eb3adb88e04b8730ff3cc4"
+  },
+  {
+    "path": "workspace/build/platform-model/obj/Hexalith.EventStore.DomainService/project.assets.json",
+    "bytes": 128456,
+    "sha256": "4b80c025b6abe538944a21e17e88b10e32f60ee4ce60b117fd69137de3d2727e"
+  },
+  {
+    "path": "workspace/build/platform-model/obj/Hexalith.EventStore.ServiceDefaults/project.assets.json",
+    "bytes": 109828,
+    "sha256": "fa2d1d1a5a5d8ceed376b086e0415c5b71d5385a623e736b24816df0bd776ac9"
+  },
+  {
+    "path": "workspace/build/platform-model/obj/Hexalith.Platform.Composition/project.assets.json",
+    "bytes": 294879,
+    "sha256": "cbcec68f7bbc6dd80ec3b7198269c5fbc7d615b21619b329aaf673ec6d03542b"
+  },
+  {
+    "path": "workspace/build/platform-model/obj/Hexalith.Platform.Custody/project.assets.json",
+    "bytes": 65801,
+    "sha256": "b91d9a91807c42327d1d716cec313de2a511bb9d10e6d74bb3fe210f23e41a15"
+  },
+  {
+    "path": "workspace/build/platform-model/obj/Hexalith.Platform.Custody.Component/project.assets.json",
+    "bytes": 94149,
+    "sha256": "ab144c1df51a8ad5249e97a40bc3dfaf8634eda8d4e0a4935d8f290479220952"
+  },
+  {
+    "path": "workspace/build/platform-model/obj/Hexalith.Platform.Secrets.Runtime/project.assets.json",
+    "bytes": 102841,
+    "sha256": "feb222e6672cb07f502d557f74b51538357e3b173ac093852d044bfa0eef3826"
+  },
+  {
+    "path": "workspace/build/platform-model/obj/Hexalith.Platform.Works.Runtime/project.assets.json",
+    "bytes": 128655,
+    "sha256": "f228f77327aedbec9a022f09b5cbde05d3e6cb0b4b439c7448f1cfb5f052db7f"
+  },
+  {
+    "path": "workspace/source-mapping/Hexalith.Folders.Aspire.proj",
+    "bytes": 187,
+    "sha256": "f189a19b6802b693be7818f0b8ee79108c0dd17443ed7d059dca8a9c1b4bc696"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.before-targets.props",
+    "bytes": 3516,
+    "sha256": "5d0c34172a8af9a9e47a1ce408d7dea955bcb71a8314132a1a77599af69703e8"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.final.targets",
+    "bytes": 9152,
+    "sha256": "b62ec27f854763076695acbd5c7f20ce640d62bc7099e4d0173721b3cd0a15a6"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.late.props",
+    "bytes": 7076,
+    "sha256": "356251f218b490fc75c7a90f5164dfb891fbeaa90b01ea9a45a4454340250e4c"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.props",
+    "bytes": 98,
+    "sha256": "0363694f252736cdfd0bcf6a567bb077940df16cc966e410153718a552769e82"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.targets",
+    "bytes": 912,
+    "sha256": "3daedb64079f70b4886bc1f6c22f502934aebad9ddcfbf98d2bc71e3791e5792"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.values.props",
+    "bytes": 5598,
+    "sha256": "570a3461d9d44bc0f45f0feacc0a1afa0c3b6ced38b2e63c5391b5559d49340d"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.values.targets",
+    "bytes": 100278,
+    "sha256": "bd6cf1f9c3fb5db61c438413f023efb27327c90583f7b1788b10ffb98ddbd5cc"
+  },
+  {
+    "path": "workspace/source-mapping/__HXW_DefaultCatalog__.proj",
+    "bytes": 187,
+    "sha256": "f189a19b6802b693be7818f0b8ee79108c0dd17443ed7d059dca8a9c1b4bc696"
+  },
+  {
+    "path": "workspace/source-mapping/catalog-versions.json",
+    "bytes": 24156,
+    "sha256": "d68d9c67c54e25c6a54829a29ade82673510c3397200f3ba41d9f40e92c66237"
+  },
+  {
+    "path": "workspace/source-mapping/mapping.json",
+    "bytes": 4106,
+    "sha256": "986fc3b0ead1524fcde1a7e9058a202e67239dd6794ee8f1e80dd9fe8920cda8"
+  },
+  {
+    "path": "workspace/source-mapping/pinned-tree/Props/Directory.Packages.props",
+    "bytes": 30080,
+    "sha256": "6fe71e98fcf73c64e347886e4481ac79471bf4b6151f36eeb03926b22f7db65e"
+  }
+]
