@@ -1,0 +1,891 @@
+{
+  "schemaVersion": 1,
+  "scope": "Diagnostic Debug/source distribution only; no public command, application or topology executed",
+  "receipt": {
+    "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.json",
+    "bytes": 319793,
+    "sha256": "a2643624ecc07a75a4f4377b8f073047c37388c20ef64164748c991b417282cb"
+  },
+  "archive": {
+    "path": "story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.artifacts.tar.gz",
+    "bytes": 150346250,
+    "sha256": "525dc40e41e71f86bbe85b853c67e4368b787d6fdf1ce5796163e1d2d2d555dd"
+  },
+  "memberManifest": {
+    "path": "story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.members.json",
+    "bytes": 1134664,
+    "sha256": "b25ee025a20b6b5bca5a3b8bafc75dccf440fe6f06f26f4e0ebb1717754d74e1"
+  },
+  "privateWorkspace": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60",
+  "sourceCodeBindings": [
+    {
+      "path": ".gitattributes",
+      "bytes": 5446,
+      "sha256": "019b90201fa7baa0765a10f6e550a5714baa4b4969c5ca84599f4b05615d961b"
+    },
+    {
+      "path": "eng/story117-source-distribution/capture_compiler.py",
+      "bytes": 6285,
+      "sha256": "30f7756f6e8ab380af3d2494dfa2a64569eb36d847e9432e6daabc1e792a8d09"
+    },
+    {
+      "path": "eng/story117-source-distribution/qualify.py",
+      "bytes": 68970,
+      "sha256": "a4d002d086dce09ea39e13284111a294fe3fc5d9d7e806fa697b339d95f985fe"
+    },
+    {
+      "path": "eng/story117-source-distribution/sdk_child.py",
+      "bytes": 2385,
+      "sha256": "81f367a7733f0c8f29f0f03b33c12ad20aa0339ff94334288eaeea91b97a844d"
+    },
+    {
+      "path": "eng/story117-source-distribution/test_compiler_capture.py",
+      "bytes": 2703,
+      "sha256": "e4dc33cb18abc737ac25d723933807e240b7ed1bd0eadab241abf63720e756e3"
+    },
+    {
+      "path": "eng/story117-source-distribution/test_qualification.py",
+      "bytes": 16494,
+      "sha256": "372fda7e018a9d1abfccc76afdd8cb0959d072d30ebe3d159e8863bb64cf05e1"
+    },
+    {
+      "path": "eng/story117-source-distribution/verify.py",
+      "bytes": 16867,
+      "sha256": "a097c70d762e64ef0c6d2d7789ea181b20342e0138ccefdd7399a2e11dca5955"
+    },
+    {
+      "path": "eng/story117-source-distribution/Probe.cs",
+      "bytes": 4071,
+      "sha256": "4c77cc273493f0c4a2c8e34a31fdf03033308e09fcf7b505b06131692d798023"
+    },
+    {
+      "path": "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingReconciliationTask.cs",
+      "bytes": 24095,
+      "sha256": "6e219a6ca96320823212d5cfce5c0e041cb45c09761592646dc1083d32bf16df"
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/CompositionCommandOptionsTests.cs",
+      "bytes": 7021,
+      "sha256": "3be72ea53d4609b17b8e7d9d0de0e360579be2340353c1740ce08920a6eb5bc0"
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Workspace/PlatformModelCatalogTests.cs",
+      "bytes": 16821,
+      "sha256": "b02cf9f2a11880ae642e96cc6139bc8d9c4d3dbb3a59c3f90816ecee9a99d37b"
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Workspace/WorkspaceMsBuildTests.cs",
+      "bytes": 163423,
+      "sha256": "7da5b87cb988437704e8f84cd5044a4c7888a30f083c17e592377c5a885ddf35"
+    }
+  ],
+  "originalGraphRefresh": {
+    "command": "original-debug-graph-refresh",
+    "restore": false,
+    "before": {
+      "path": "graph-refresh-before.json",
+      "bytes": 1584400,
+      "sha256": "5a572d2f126b2c0fb01ec32c8af9227693824f5664f94e2c18fa2afd2ff74d83"
+    },
+    "after": {
+      "path": "graph-refresh-after.json",
+      "bytes": 1584400,
+      "sha256": "711c927dfcfe2e95134db03aa86dfb4f3e9a7567cee10f94f5d008ed4f3f6700"
+    },
+    "boundFiles": 5349,
+    "criticalFiles": 4926,
+    "criticalInputsUnchanged": true,
+    "compilerCommands": {
+      "path": "graph-refresh-compiler-commands.json",
+      "bytes": 1413250,
+      "sha256": "7aaf45406935672de96ad7843aa20aa798a13a667abeabb49fde3d72c0e77b39"
+    },
+    "actualCompilations": 26,
+    "changes": {
+      "path": "graph-refresh-changes.json",
+      "bytes": 7929,
+      "sha256": "2dcf4c4d63cc9cd17b1d754a5c236e200c8fb4200f135c687d59ae2280da8be3"
+    },
+    "changedNonTestOutputFiles": 10,
+    "cases": "241 previously executed cases reused after exact complete runner/helper/deps/Tooling/direct and auxiliary compiler input equality; no test case re-executed",
+    "affectedGates": "Private application output differences receive fresh model, sealing, selection and PE gates; no runtime/loader credit"
+  },
+  "originalAssemblyCases": {
+    "total": 241,
+    "passed": 241,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "notRun": 0,
+    "classes": [
+      {
+        "name": "Hexalith.Builds.ModuleTool.Tests.CompositionCommandOptionsTests",
+        "total": 8,
+        "passed": 8,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "notRun": 0,
+        "discovered": 8,
+        "report": {
+          "path": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/CompositionCommandOptionsTests.xml",
+          "bytes": 6137,
+          "sha256": "d040654ece45a01ff808161d126b8f76cf1f26296d51a15318b72cb3c61bfaff"
+        }
+      },
+      {
+        "name": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+        "total": 14,
+        "passed": 14,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "notRun": 0,
+        "discovered": 14,
+        "report": {
+          "path": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/CompositionSdkProcessTests.xml",
+          "bytes": 9995,
+          "sha256": "9720732f10cb292736cc0bbd72a9ac4f458fb7285718dea4a876ee680505d29e"
+        }
+      },
+      {
+        "name": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+        "total": 24,
+        "passed": 24,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "notRun": 0,
+        "discovered": 24,
+        "report": {
+          "path": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/Workspace.PlatformModelCatalogTests.xml",
+          "bytes": 17646,
+          "sha256": "7ee46010d77ac93a90a90fd93bb9028ea000464d14dd9aa7d4551b51e69a3076"
+        }
+      },
+      {
+        "name": "Hexalith.Builds.ModuleTool.Tests.Workspace.WorkspaceMsBuildTests",
+        "total": 150,
+        "passed": 150,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "notRun": 0,
+        "discovered": 150,
+        "report": {
+          "path": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/Workspace.WorkspaceMsBuildTests.xml",
+          "bytes": 104414,
+          "sha256": "bd74a075d40672c0a63ebe081c69f0f9c0bbf3e4cfc7d68875d634811d8ecabf"
+        }
+      },
+      {
+        "name": "Hexalith.Builds.ModuleTool.Tests.Workspace.CatalogVersionTests",
+        "total": 34,
+        "passed": 34,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "notRun": 0,
+        "discovered": 34,
+        "report": {
+          "path": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/Workspace.CatalogVersionTests.xml",
+          "bytes": 22526,
+          "sha256": "adad1168f10c15d98aa61277af1db58188812f07149c97c7f2779685334e9844"
+        }
+      },
+      {
+        "name": "Hexalith.Builds.ModuleTool.Tests.Workspace.WorkspaceAppHostTests",
+        "total": 11,
+        "passed": 11,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "notRun": 0,
+        "discovered": 11,
+        "report": {
+          "path": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/Workspace.WorkspaceAppHostTests.xml",
+          "bytes": 8450,
+          "sha256": "7cc66721de803a04db03d7155df1a9361b2c27c6b4802a197fd5f805aca8e159"
+        }
+      }
+    ],
+    "reuse": "Executed against the repaired original assembly in approved-parser-style; final actual graph recompilation preserves complete runner/helper and direct/auxiliary compiler input bytes and exact Csc arguments"
+  },
+  "excludedByFrozenBoundary": [
+    {
+      "method": "Hexalith.Builds.ModuleTool.Tests.Workspace.WorkspaceAppHostTests.PlatformPlanDelegatesToThePinnedModelAsync",
+      "reason": "Loads the actual Platform model and reaches ComposeRun; this spec permits compilation/PE inspection only; no current compatibility credit"
+    }
+  ],
+  "sdkVersion": "10.0.402",
+  "versionSuffix": "20261029180946",
+  "mappingHash": "a5b882b8b8577edbafc50dacd54598a135dd51b5d5d18cc363e6a0f4f0447c66",
+  "sourceOrigins": [
+    {
+      "Identity": "Hexalith.AI.Tools",
+      "Origin": "source",
+      "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.AI.Tools"
+    },
+    {
+      "Identity": "Hexalith.Builds",
+      "Origin": "source",
+      "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds"
+    },
+    {
+      "Identity": "Hexalith.Commons",
+      "Origin": "source",
+      "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons"
+    },
+    {
+      "Identity": "Hexalith.EventStore",
+      "Origin": "source",
+      "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore"
+    },
+    {
+      "Identity": "Hexalith.FrontComposer",
+      "Origin": "source",
+      "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer"
+    },
+    {
+      "Identity": "Hexalith.McpCli",
+      "Origin": "source",
+      "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli"
+    },
+    {
+      "Identity": "Hexalith.Memories",
+      "Origin": "source",
+      "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories"
+    },
+    {
+      "Identity": "Hexalith.Parties",
+      "Origin": "source",
+      "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties"
+    },
+    {
+      "Identity": "Hexalith.Platform",
+      "Origin": "source",
+      "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform"
+    },
+    {
+      "Identity": "Hexalith.PolymorphicSerializations",
+      "Origin": "source",
+      "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations"
+    },
+    {
+      "Identity": "Hexalith.Projects",
+      "Origin": "source",
+      "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects"
+    },
+    {
+      "Identity": "Hexalith.Tenants",
+      "Origin": "source",
+      "Path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants"
+    }
+  ],
+  "catalog": {
+    "Commit": "3659a44d86c08645215689eaeff8b3624d357dd5",
+    "CompositionCommit": "965b00249b473d602a663f1f48be39424f996337",
+    "CheckoutCommit": "965b00249b473d602a663f1f48be39424f996337",
+    "PlatformPath": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+    "ReleaseTag": null,
+    "CatalogCommit": "4ebd4d869fe1d3958d73e586bcaa74bd86e2ce42",
+    "ToolVersionRange": "[4.35.2, 5.0.0-0)",
+    "RecordPath": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/hexalith-platform.json",
+    "IsPlatformRepository": false
+  },
+  "modelImportComposition": {
+    "wrapper": {
+      "path": "model-common.props",
+      "bytes": 278,
+      "sha256": "60ab68b6b289c92ec39393a1eb5ecfa1cc693f3e02aae0385e2bc71bf5f5c954"
+    },
+    "pinnedCatalog": {
+      "path": "workspace/source-mapping/pinned-tree/Props/Directory.Packages.props",
+      "bytes": 30710,
+      "sha256": "a09050d807c86e0646775836500c040a2e52b74553b04d52a98c2102a7fa9f12"
+    },
+    "order": [
+      "SDK.props AlternateCommonProps",
+      "exact bound pinned catalog",
+      "genuine installed Microsoft.Common.props",
+      "genuine production SourceMapping.targets",
+      "unchanged owner Directory.Build.props"
+    ],
+    "scope": "Qualification-only SDK import composition; no production imports rewritten or validation suppressed"
+  },
+  "modelImportTrace": {
+    "log": {
+      "path": "logs/sdk-child-1979012.log",
+      "bytes": 120743505,
+      "sha256": "db28d4bbd2f3f87bb26c4b04f9d4a808c69143efa283058527ddbee541e715f3"
+    },
+    "rows": [
+      {
+        "line": 37,
+        "text": "Importing project \"/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/model-common.props\" into project \"/home/administrator/.dotnet/sdk/10.0.402/Sdks/Microsoft.NET.Sdk/Sdk/Sdk.props\" at (48,3)."
+      },
+      {
+        "line": 38,
+        "text": "Importing project \"/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/pinned-tree/Props/Directory.Packages.props\" into project \"/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/model-common.props\" at (1,10)."
+      },
+      {
+        "line": 40,
+        "text": "Importing project \"/home/administrator/.dotnet/sdk/10.0.402/Current/Microsoft.Common.props\" into project \"/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/model-common.props\" at (1,178)."
+      },
+      {
+        "line": 41,
+        "text": "Importing project \"/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/SourceMapping.targets\" into project \"/home/administrator/.dotnet/sdk/10.0.402/Current/Microsoft.Common.props\" at (32,3)."
+      },
+      {
+        "line": 4786,
+        "text": "Using \"SourceMappingValidationTask\" task from assembly \"/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story-1-17-current-debug-distribution-2026-10-29-approved-parser-style-y84wsf5z/original/bin/DistributionProbe/debug/Hexalith.Builds.Tooling.dll\"."
+      },
+      {
+        "line": 11023,
+        "text": "Importing project \"/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/Directory.Build.props\" into project \"/home/administrator/.dotnet/sdk/10.0.402/Current/Microsoft.Common.props\" at (34,3)."
+      },
+      {
+        "line": 11024,
+        "text": "Project \"$(HexalithBuildPackageVersions1)\" was not imported by \"/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/Directory.Build.props\" at (8,5), due to false condition; (Exists('$(HexalithBuildPackageVersions1)') And '$(HexalithVersionsLoaded)' != 'true') was evaluated as (Exists('/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/references/Hexalith.Builds/Props/Directory.Packages.props') And 'true' != 'true')."
+      }
+    ],
+    "interpretation": "Exact pinned catalog precedes unchanged owner props; genuine mapping task registration and validation execute; owner live-catalog imports naturally refuse duplicate import"
+  },
+  "modelChildControls": {
+    "kind": "sdk",
+    "target": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/sdk-layout/dotnet",
+    "incomingArguments": [
+      "build",
+      "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj",
+      "--configuration",
+      "Debug",
+      "--output",
+      "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/hosts/platform-model",
+      "--artifacts-path",
+      "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/build/platform-model",
+      "-p:BuildsToolingAssemblyPath=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story-1-17-current-debug-distribution-2026-10-29-approved-parser-style-y84wsf5z/original/bin/DistributionProbe/debug/Hexalith.Builds.Tooling.dll",
+      "-p:NuGetAudit=false",
+      "-p:MinVerVersionOverride=1.0.0",
+      "-nodeReuse:false",
+      "-p:UseSharedCompilation=false",
+      "-p:CustomBeforeDirectoryBuildProps=/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/pinned-tree/Props/Directory.Packages.props",
+      "-p:ImportDirectoryPackagesProps=false",
+      "-p:CentralPackageVersionsFileImported=true",
+      "-p:DirectoryPackagesPropsPath=/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/pinned-tree/Props/Directory.Packages.props"
+    ],
+    "addedArguments": [
+      "-m:1",
+      "-nr:false",
+      "-p:BuildInParallel=false",
+      "-p:RestoreBuildInParallel=false",
+      "-p:UseSharedCompilation=false",
+      "-p:AlternateCommonProps=/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/model-common.props",
+      "-p:CustomBeforeDirectoryBuildProps=/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/SourceMapping.targets",
+      "-p:RestoreConfigFile=/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/NuGet.Config",
+      "-p:CustomAfterMicrosoftCommonTargets=/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/capture.targets",
+      "-p:VersionSuffix=20261029180946",
+      "-v:diag",
+      "-bl:/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/logs/model-sdk.binlog"
+    ],
+    "incomingEnvironment": {
+      "PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/bin:/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/sdk-layout:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+      "HOME": "/home/administrator",
+      "LANG": "C.UTF-8",
+      "TMPDIR": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/tmpdir",
+      "TEMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/temp",
+      "TMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/tmp",
+      "DOTNET_ROOT": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/sdk-layout",
+      "DOTNET_CLI_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/dotnet_cli_home",
+      "DOTNET_NOLOGO": "1",
+      "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+      "NUGET_PACKAGES": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/nuget_packages"
+    },
+    "addedEnvironment": {
+      "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+      "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+      "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+      "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+      "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+      "MSBUILDDISABLENODEREUSE": "1",
+      "DOTNET_HOST_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/sdk-layout/dotnet",
+      "HEXALITH_TEST_DOTNET_EXECUTABLE": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/sdk-layout/dotnet",
+      "HEXALITH_TEST_SDK_INTERCEPTION_REQUIRED": "true",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/nuget_http_cache_path",
+      "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/nuget_plugins_cache_path",
+      "NUGET_SCRATCH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/nuget_scratch",
+      "XDG_CACHE_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/xdg-cache",
+      "XDG_CONFIG_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/xdg-config",
+      "PSModuleAnalysisCachePath": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/powershell-cache/ModuleAnalysisCache",
+      "QualificationCompilerCapture": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/compiler/model",
+      "CustomBeforeDirectoryBuildProps": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/SourceMapping.targets",
+      "CustomAfterMicrosoftCommonProps": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/SourceMapping.props",
+      "CustomBeforeDirectoryBuildTargets": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/SourceMapping.before-targets.props",
+      "CustomAfterDirectoryBuildTargets": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/SourceMapping.late.props",
+      "AfterMicrosoftNETSdkTargets": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/SourceMapping.final.targets",
+      "HEXALITH_SOURCE_MAPPING_HASH": "a5b882b8b8577edbafc50dacd54598a135dd51b5d5d18cc363e6a0f4f0447c66",
+      "Configuration": "Debug",
+      "AlternateCommonProps": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/model-common.props"
+    },
+    "effectiveEnvironment": {
+      "PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/bin:/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/sdk-layout:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+      "HOME": "/home/administrator",
+      "LANG": "C.UTF-8",
+      "TMPDIR": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/tmpdir",
+      "TEMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/temp",
+      "TMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/tmp",
+      "DOTNET_ROOT": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/sdk-layout",
+      "DOTNET_CLI_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/dotnet_cli_home",
+      "DOTNET_NOLOGO": "1",
+      "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+      "NUGET_PACKAGES": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/nuget_packages",
+      "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+      "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+      "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+      "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+      "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+      "MSBUILDDISABLENODEREUSE": "1",
+      "DOTNET_HOST_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/sdk-layout/dotnet",
+      "HEXALITH_TEST_DOTNET_EXECUTABLE": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/sdk-layout/dotnet",
+      "HEXALITH_TEST_SDK_INTERCEPTION_REQUIRED": "true",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/nuget_http_cache_path",
+      "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/nuget_plugins_cache_path",
+      "NUGET_SCRATCH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/nuget_scratch",
+      "XDG_CACHE_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/xdg-cache",
+      "XDG_CONFIG_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/xdg-config",
+      "PSModuleAnalysisCachePath": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/powershell-cache/ModuleAnalysisCache",
+      "QualificationCompilerCapture": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/compiler/model",
+      "CustomBeforeDirectoryBuildProps": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/SourceMapping.targets",
+      "CustomAfterMicrosoftCommonProps": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/SourceMapping.props",
+      "CustomBeforeDirectoryBuildTargets": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/SourceMapping.before-targets.props",
+      "CustomAfterDirectoryBuildTargets": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/SourceMapping.late.props",
+      "AfterMicrosoftNETSdkTargets": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/SourceMapping.final.targets",
+      "HEXALITH_SOURCE_MAPPING_HASH": "a5b882b8b8577edbafc50dacd54598a135dd51b5d5d18cc363e6a0f4f0447c66",
+      "Configuration": "Debug",
+      "AlternateCommonProps": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/model-common.props"
+    },
+    "effectiveArguments": [
+      "build",
+      "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj",
+      "--configuration",
+      "Debug",
+      "--output",
+      "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/hosts/platform-model",
+      "--artifacts-path",
+      "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/build/platform-model",
+      "-p:BuildsToolingAssemblyPath=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/.artifacts/story-1-17-current-debug-distribution-2026-10-29-approved-parser-style-y84wsf5z/original/bin/DistributionProbe/debug/Hexalith.Builds.Tooling.dll",
+      "-p:NuGetAudit=false",
+      "-p:MinVerVersionOverride=1.0.0",
+      "-nodeReuse:false",
+      "-p:UseSharedCompilation=false",
+      "-p:CustomBeforeDirectoryBuildProps=/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/pinned-tree/Props/Directory.Packages.props",
+      "-p:ImportDirectoryPackagesProps=false",
+      "-p:CentralPackageVersionsFileImported=true",
+      "-p:DirectoryPackagesPropsPath=/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/pinned-tree/Props/Directory.Packages.props",
+      "-m:1",
+      "-nr:false",
+      "-p:BuildInParallel=false",
+      "-p:RestoreBuildInParallel=false",
+      "-p:UseSharedCompilation=false",
+      "-p:AlternateCommonProps=/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/model-common.props",
+      "-p:CustomBeforeDirectoryBuildProps=/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/workspace/source-mapping/SourceMapping.targets",
+      "-p:RestoreConfigFile=/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/NuGet.Config",
+      "-p:CustomAfterMicrosoftCommonTargets=/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/capture.targets",
+      "-p:VersionSuffix=20261029180946",
+      "-v:diag",
+      "-bl:/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/logs/model-sdk.binlog"
+    ],
+    "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+    "pid": 1979012,
+    "sdkExecuted": true,
+    "log": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/logs/sdk-child-1979012.log"
+  },
+  "outputs": {
+    "CLI": {
+      "path": "distribution/CLI/Hexalith.Builds.Module.Cli.dll",
+      "bytes": 37376,
+      "sha256": "ad9c1364e904c87fe9ec7dbc268c876669313e53b3ca24400bd73261b63af036"
+    },
+    "Tooling": {
+      "path": "distribution/Tooling/Hexalith.Builds.Tooling.dll",
+      "bytes": 1649664,
+      "sha256": "0e75aac6103a117dbdbcf9fd0ef3782f92f0753c238e3c040902160638cd2e03"
+    },
+    "AppHost": {
+      "path": "distribution/AppHost/Hexalith.Builds.Module.AppHost.dll",
+      "bytes": 100864,
+      "sha256": "93922862aea173c4f1c7e73717ca23dc541452bd06582250599b119879fab3d9"
+    },
+    "EventStoreHost": {
+      "path": "distribution/EventStoreHost/Hexalith.Builds.Module.EventStoreHost.dll",
+      "bytes": 32256,
+      "sha256": "79f7cbfd737685b38e9153b622f1ea72374867bb168a44894c615e8c8190cc7c"
+    },
+    "UiHost": {
+      "path": "distribution/UiHost/Hexalith.Builds.Module.UiHost.dll",
+      "bytes": 17408,
+      "sha256": "159ef5dd1f461bf241eb4408e9ab1b473e3fed994ea14dfa17e2f1f29834a184"
+    },
+    "Model": {
+      "path": "distribution/Model/Hexalith.Platform.Composition.dll",
+      "bytes": 417280,
+      "sha256": "15178c7df9b61b6de013363962a82525c838b78d02fd08e2a46b39e7b64de9ab"
+    }
+  },
+  "outputSeal": {
+    "path": "output-seal.json",
+    "bytes": 64088,
+    "sha256": "a32e9ecde0cc23730a034ff054e452af9518d5940836e7a3d31aa4410bc8ef78"
+  },
+  "peMetadata": {
+    "path": "pe-metadata.json",
+    "bytes": 173557,
+    "sha256": "a24a910747e9c2105c9c9a08d95e3c61247c9476671ad7b41b7c489a000c6b84"
+  },
+  "modelReferenceIdentities": {
+    "model": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/distribution/Model/Hexalith.Platform.Composition.dll",
+    "references": [
+      {
+        "name": "System.Runtime",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "System.Collections",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Aspire.Hosting",
+        "version": "13.6.4.0",
+        "culture": "neutral",
+        "publicKeyToken": "cc7b13ffcd2ddd51"
+      },
+      {
+        "name": "Hexalith.Builds.Tooling",
+        "version": "1.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "null"
+      },
+      {
+        "name": "CommunityToolkit.Aspire.Hosting.Dapr",
+        "version": "13.6.2.0",
+        "culture": "neutral",
+        "publicKeyToken": "null"
+      },
+      {
+        "name": "System.Net.Sockets",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "System.Text.RegularExpressions",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "System.Text.Json",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "cc7b13ffcd2ddd51"
+      },
+      {
+        "name": "Hexalith.Platform.Secrets.Runtime",
+        "version": "1.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "null"
+      },
+      {
+        "name": "System.Threading",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "System.Security.Cryptography",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "System.ComponentModel",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Microsoft.Extensions.DependencyInjection.Abstractions",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "adb9793829ddae60"
+      },
+      {
+        "name": "System.Text.Encoding.Extensions",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Hexalith.Platform.Custody",
+        "version": "1.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "null"
+      },
+      {
+        "name": "System.Diagnostics.Process",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "YamlDotNet",
+        "version": "18.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "ec19458f3c15af5e"
+      },
+      {
+        "name": "Microsoft.Extensions.Hosting.Abstractions",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "adb9793829ddae60"
+      },
+      {
+        "name": "System.Linq",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "System.Runtime.InteropServices",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Hexalith.EventStore.Aspire",
+        "version": "3.128.3.0",
+        "culture": "neutral",
+        "publicKeyToken": "null"
+      },
+      {
+        "name": "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "adb9793829ddae60"
+      },
+      {
+        "name": "System.Net.Security",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Microsoft.Extensions.Configuration.Abstractions",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "adb9793829ddae60"
+      },
+      {
+        "name": "Hexalith.EventStore.ServiceDefaults",
+        "version": "3.128.3.0",
+        "culture": "neutral",
+        "publicKeyToken": "null"
+      },
+      {
+        "name": "Microsoft.Extensions.Options",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "adb9793829ddae60"
+      },
+      {
+        "name": "System.Runtime.Numerics",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Microsoft.Extensions.Http",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "adb9793829ddae60"
+      },
+      {
+        "name": "System.Net.Http",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Microsoft.Extensions.Configuration",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "adb9793829ddae60"
+      },
+      {
+        "name": "System.Memory",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "cc7b13ffcd2ddd51"
+      },
+      {
+        "name": "System.Collections.Immutable",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Microsoft.Extensions.Configuration.Binder",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "adb9793829ddae60"
+      },
+      {
+        "name": "Aspire.Hosting.Kubernetes",
+        "version": "13.6.4.0",
+        "culture": "neutral",
+        "publicKeyToken": "cc7b13ffcd2ddd51"
+      },
+      {
+        "name": "Microsoft.Extensions.Diagnostics.HealthChecks",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "adb9793829ddae60"
+      },
+      {
+        "name": "System.Net.Primitives",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Microsoft.Extensions.Hosting",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "adb9793829ddae60"
+      },
+      {
+        "name": "Microsoft.Extensions.Logging.Abstractions",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "adb9793829ddae60"
+      },
+      {
+        "name": "Hexalith.Platform.Works.Runtime",
+        "version": "1.0.0.0",
+        "culture": "neutral",
+        "publicKeyToken": "null"
+      }
+    ],
+    "hexalithMatches": [
+      {
+        "reference": {
+          "name": "Hexalith.Builds.Tooling",
+          "version": "1.0.0.0",
+          "culture": "neutral",
+          "publicKeyToken": "null"
+        },
+        "output": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/distribution/Model/Hexalith.Builds.Tooling.dll"
+      },
+      {
+        "reference": {
+          "name": "Hexalith.Platform.Secrets.Runtime",
+          "version": "1.0.0.0",
+          "culture": "neutral",
+          "publicKeyToken": "null"
+        },
+        "output": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/distribution/Model/Hexalith.Platform.Secrets.Runtime.dll"
+      },
+      {
+        "reference": {
+          "name": "Hexalith.Platform.Custody",
+          "version": "1.0.0.0",
+          "culture": "neutral",
+          "publicKeyToken": "null"
+        },
+        "output": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/distribution/Model/Hexalith.Platform.Custody.dll"
+      },
+      {
+        "reference": {
+          "name": "Hexalith.EventStore.Aspire",
+          "version": "3.128.3.0",
+          "culture": "neutral",
+          "publicKeyToken": "null"
+        },
+        "output": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/distribution/Model/Hexalith.EventStore.Aspire.dll"
+      },
+      {
+        "reference": {
+          "name": "Hexalith.EventStore.ServiceDefaults",
+          "version": "3.128.3.0",
+          "culture": "neutral",
+          "publicKeyToken": "null"
+        },
+        "output": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/distribution/Model/Hexalith.EventStore.ServiceDefaults.dll"
+      },
+      {
+        "reference": {
+          "name": "Hexalith.Platform.Works.Runtime",
+          "version": "1.0.0.0",
+          "culture": "neutral",
+          "publicKeyToken": "null"
+        },
+        "output": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/distribution/Model/Hexalith.Platform.Works.Runtime.dll"
+      }
+    ],
+    "scope": "PE metadata identities only; no application assembly was loaded; runtime compatibility remains pending"
+  },
+  "proposedOrdinaryInvocation": {
+    "environment": {
+      "HEXALITH_G4_APPHOST": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/distribution/AppHost/Hexalith.Builds.Module.AppHost.dll"
+    },
+    "argv": [
+      "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/sdk-layout/dotnet",
+      "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/distribution/CLI/Hexalith.Builds.Module.Cli.dll",
+      "debug",
+      "--manifest",
+      "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+      "--mode",
+      "source",
+      "--output",
+      "json"
+    ],
+    "manifest": {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+      "bytes": 12797,
+      "sha256": "0fd4457a1801fa13053ef8821eb16a0cfcc6a5edac94b6ce89e8f220e8a30511"
+    },
+    "status": "sealed diagnostic source artifacts selected; ordinary startup proposal only; not executed",
+    "prerequisites": [
+      "Recheck all repository, source, catalog, SDK and sealed artifact identities",
+      "Approve and qualify ordinary startup and actual tool/catalog/composition/module intake",
+      "Qualify runtime/API compatibility, target/data, hosted identity, observation and recovery; obtain exact signed distribution and operational acceptance"
+    ]
+  },
+  "preservation": {
+    "status": "verified",
+    "errors": [],
+    "repositoryCount": 13,
+    "boundSourceCount": 83009
+  },
+  "protectedAuthority": {
+    "parentStory": "in-progress",
+    "tracker": "backlog",
+    "routingPolicy": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "stagingExecuted": 0,
+    "stagingRequired": 14
+  },
+  "ordinaryStartup": "pending",
+  "acceptedToolReplacement": "pending",
+  "signedDistribution": "pending",
+  "operationalAcceptance": "pending",
+  "limitations": [
+    "Source-mode HXW008/009/010/011 findings remain; diagnostic tool version is outside accepted Platform range",
+    "Existing MSB3277 Redis version warnings remain; metadata equality gives no runtime/API compatibility credit",
+    "EventStore.Server/Gateway implementation/PDB debug identities vary under exact supplied compiler inputs; current files are freshly hashed and inspected, without runtime/loader claims"
+  ]
+}

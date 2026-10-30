@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "qualification": "incomplete",
+  "authorizedSync": {
+    "updated": 8,
+    "alreadyCurrent": 4,
+    "stageZeroGitlinksMatchAllTwelveCheckouts": true,
+    "stagedPaths": [
+      "references/Hexalith.Builds",
+      "references/Hexalith.EventStore",
+      "references/Hexalith.FrontComposer",
+      "references/Hexalith.McpCli",
+      "references/Hexalith.Parties",
+      "references/Hexalith.Platform",
+      "references/Hexalith.Projects",
+      "references/Hexalith.Tenants"
+    ],
+    "localBuildsMainPreserved": true
+  },
+  "repositoriesVerified": 13,
+  "sourceBindingsAudited": 82982,
+  "knownPostExecutionOwnedChanges": [
+    "_bmad-output/implementation-artifacts/story-1-17-current-debug-distribution-results.md",
+    "eng/story117-source-distribution/README.md",
+    "eng/story117-source-distribution/qualify.py",
+    "eng/story117-source-distribution/verify.py"
+  ],
+  "parentGuardResults": {
+    "normal": 28,
+    "optimized": 28,
+    "status": "passed"
+  },
+  "parentFinalReplayNormal": {
+    "qualification": "incomplete",
+    "verifiedMembers": 4353,
+    "supplementaryFactoryTests": 0,
+    "currentOriginalAssemblyTests": {
+      "total": 224,
+      "passed": 223,
+      "failed": 1,
+      "skipped": 0,
+      "errors": 0,
+      "notRun": 0
+    },
+    "originalAssemblyAcceptance": false,
+    "commandExecutionCount": 0
+  },
+  "parentFinalReplayOptimized": {
+    "alreadyExecuted": true,
+    "verifiedMembers": 4353,
+    "sameIncompleteOutcome": true
+  },
+  "productionSourceUnchanged": {
+    "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingReconciliationTask.cs",
+    "bytes": 23900,
+    "sha256": "f7dd1e71c45678de9e3565d581db9f89a7159e2e0c1054dd34bb1d7fa439d7ea"
+  },
+  "productionPatchApplied": false,
+  "patchDryRun": {
+    "argv": [
+      "git",
+      "apply",
+      "--check",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-proposed-reconciliation.patch"
+    ],
+    "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+    "exitCode": 0
+  },
+  "verifiedFinalReceipt": {
+    "path": "story-1-17-current-debug-distribution-2026-10-29-synchronized-final.json",
+    "bytes": 307024,
+    "sha256": "53b931d8b6266612b3dc237de74f8b661abe9e87b9c8fc5ee4990aa1b9bfbfc9"
+  },
+  "protectedAuthority": {
+    "values": {
+      "parentStory": "in-progress",
+      "tracker": "backlog",
+      "routingPolicy": "V1Only",
+      "T0": null,
+      "activationAuthority": null,
+      "stagingExecuted": 0,
+      "stagingRequired": 14
+    },
+    "files": [
+      {
+        "path": "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+        "bytes": 106308,
+        "sha256": "ca298df3ed27156b7c6d170a47b1042ef8453c1e8e03207930d6bbbcc9ab0423"
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/sprint-status.yaml",
+        "bytes": 37619,
+        "sha256": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40"
+      },
+      {
+        "path": "eng/story117-platform-qualification-current/configuration.proposed.json",
+        "bytes": 49204,
+        "sha256": "c0b8697672e7ea27370bbb9b0078c9e922042945467be0e7a7fa7d33c28b8d1c"
+      },
+      {
+        "path": "eng/story117-platform-qualification-current/staging-checks.json",
+        "bytes": 30153,
+        "sha256": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51"
+      }
+    ]
+  },
+  "diffChecks": [
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "workflowReviewEntered": false,
+  "pending": "Separately authorize the concrete parser repair, rebuild and complete qualification before Step 04 review"
+}

@@ -1,0 +1,678 @@
+{
+  "schemaVersion": 1,
+  "receipt": {
+    "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.json",
+    "bytes": 319793,
+    "sha256": "a2643624ecc07a75a4f4377b8f073047c37388c20ef64164748c991b417282cb"
+  },
+  "handoff": {
+    "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-qualified-handoff.json",
+    "bytes": 40607,
+    "sha256": "757d3aa8d6101957fa7d50bdc4da529e180330f1cd7d7851bed25401404a6569"
+  },
+  "outcome": "passed diagnostic Debug/source qualification; operational holds unchanged",
+  "checks": [
+    {
+      "label": "normal replay",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.json"
+      ],
+      "exitCode": 0,
+      "output": "{\"qualification\": \"passed\", \"verifiedMembers\": 4952, \"originalAssemblyTests\": 241, \"commandExecutionCount\": 0}\n"
+    },
+    {
+      "label": "normal guards",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-source-distribution",
+        "-p",
+        "test_*.py"
+      ],
+      "exitCode": 0,
+      "output": ".....................................\n----------------------------------------------------------------------\nRan 37 tests in 0.432s\n\nOK\n"
+    },
+    {
+      "label": "optimized replay",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.json"
+      ],
+      "exitCode": 0,
+      "output": "{\"qualification\": \"passed\", \"verifiedMembers\": 4952, \"originalAssemblyTests\": 241, \"commandExecutionCount\": 0}\n"
+    },
+    {
+      "label": "optimized guards",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-source-distribution",
+        "-p",
+        "test_*.py"
+      ],
+      "exitCode": 0,
+      "output": ".....................................\n----------------------------------------------------------------------\nRan 37 tests in 0.428s\n\nOK\n"
+    },
+    {
+      "label": "corrupt outer archive False",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "/tmp/story117-current-corruption-5zy4k3yo/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.json"
+      ],
+      "exitCode": 2,
+      "output": "Evidence replay refused: Archive SHA-256 mismatch\n"
+    },
+    {
+      "label": "corrupt outer archive True",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "/tmp/story117-current-corruption-5zy4k3yo/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.json"
+      ],
+      "exitCode": 2,
+      "output": "Evidence replay refused: Archive SHA-256 mismatch\n"
+    },
+    {
+      "label": "corrupt retained member with rebound outer hash False",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "/tmp/story117-current-corruption-5zy4k3yo/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.json"
+      ],
+      "exitCode": 2,
+      "output": "Evidence replay refused: Member SHA-256 mismatch: result.json\n"
+    },
+    {
+      "label": "corrupt retained member with rebound outer hash True",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "/tmp/story117-current-corruption-5zy4k3yo/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.json"
+      ],
+      "exitCode": 2,
+      "output": "Evidence replay refused: Member SHA-256 mismatch: result.json\n"
+    },
+    {
+      "label": "git diff --check /home/administrator/projects/hexalith/folders",
+      "argv": [
+        "git",
+        "-C",
+        "/home/administrator/projects/hexalith/folders",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "label": "git diff --check /home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "argv": [
+        "git",
+        "-C",
+        "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "output": ""
+    }
+  ],
+  "currentSourceCodeBindings": [
+    {
+      "path": ".gitattributes",
+      "bytes": 5446,
+      "sha256": "019b90201fa7baa0765a10f6e550a5714baa4b4969c5ca84599f4b05615d961b"
+    },
+    {
+      "path": "eng/story117-source-distribution/capture_compiler.py",
+      "bytes": 6285,
+      "sha256": "30f7756f6e8ab380af3d2494dfa2a64569eb36d847e9432e6daabc1e792a8d09"
+    },
+    {
+      "path": "eng/story117-source-distribution/qualify.py",
+      "bytes": 68970,
+      "sha256": "a4d002d086dce09ea39e13284111a294fe3fc5d9d7e806fa697b339d95f985fe"
+    },
+    {
+      "path": "eng/story117-source-distribution/sdk_child.py",
+      "bytes": 2385,
+      "sha256": "81f367a7733f0c8f29f0f03b33c12ad20aa0339ff94334288eaeea91b97a844d"
+    },
+    {
+      "path": "eng/story117-source-distribution/test_compiler_capture.py",
+      "bytes": 2703,
+      "sha256": "e4dc33cb18abc737ac25d723933807e240b7ed1bd0eadab241abf63720e756e3"
+    },
+    {
+      "path": "eng/story117-source-distribution/test_qualification.py",
+      "bytes": 16494,
+      "sha256": "372fda7e018a9d1abfccc76afdd8cb0959d072d30ebe3d159e8863bb64cf05e1"
+    },
+    {
+      "path": "eng/story117-source-distribution/verify.py",
+      "bytes": 16867,
+      "sha256": "a097c70d762e64ef0c6d2d7789ea181b20342e0138ccefdd7399a2e11dca5955"
+    },
+    {
+      "path": "eng/story117-source-distribution/Probe.cs",
+      "bytes": 4071,
+      "sha256": "4c77cc273493f0c4a2c8e34a31fdf03033308e09fcf7b505b06131692d798023"
+    },
+    {
+      "path": "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingReconciliationTask.cs",
+      "bytes": 24095,
+      "sha256": "6e219a6ca96320823212d5cfce5c0e041cb45c09761592646dc1083d32bf16df"
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/CompositionCommandOptionsTests.cs",
+      "bytes": 7021,
+      "sha256": "3be72ea53d4609b17b8e7d9d0de0e360579be2340353c1740ce08920a6eb5bc0"
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Workspace/PlatformModelCatalogTests.cs",
+      "bytes": 16821,
+      "sha256": "b02cf9f2a11880ae642e96cc6139bc8d9c4d3dbb3a59c3f90816ecee9a99d37b"
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Workspace/WorkspaceMsBuildTests.cs",
+      "bytes": 163423,
+      "sha256": "7da5b87cb988437704e8f84cd5044a4c7888a30f083c17e592377c5a885ddf35"
+    }
+  ],
+  "repositoryState": [
+    {
+      "path": ".",
+      "revision": "c3d295b15cd3e0c5f675d014033256458860603f",
+      "index": {
+        "path": "/home/administrator/projects/hexalith/folders/.git/index",
+        "bytes": 2583786,
+        "sha256": "7a7954e0b8c05ff11467a9c1652b8b36b05459e178ea0daea0fcb0c3385ee11c"
+      },
+      "stageEntriesSha256": "88ec502588382e358b040134be30a54a636920c4c8e12fea3016b8d53a40356f",
+      "indexFlagsSha256": "6a644d0be55be08fac4d921cbe5e6eb759e30d82e0e402b51695351ffc17823b"
+    },
+    {
+      "path": "references/Hexalith.Tenants",
+      "revision": "95e9a6cce041c30311baf6703e06289beafca2c6",
+      "index": {
+        "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Tenants/index",
+        "bytes": 657428,
+        "sha256": "cab45f221ad3bd8e2e0750c9b8887a99ed043a907576bb92e7319ef10e09e2f1"
+      },
+      "stageEntriesSha256": "e3a2784a47e8f0efea687e35c8c8472c542dc366fe85a53af7515281ce179cd8",
+      "indexFlagsSha256": "3f9703e630f082e4530f17fe1a68bb6330d9df5af4fce1187364f98725a71ee0",
+      "rootGitlink": "f61c6678cf9ac3d50240b0b1afd7aa261e611eaf",
+      "indexedGitlink": "95e9a6cce041c30311baf6703e06289beafca2c6"
+    },
+    {
+      "path": "references/Hexalith.AI.Tools",
+      "revision": "70dbf73e80787299c832d30d911b16b105ab194d",
+      "index": {
+        "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.AI.Tools/index",
+        "bytes": 4197,
+        "sha256": "08223fa9bc88b6fef3d6460b9289cd2b32b3089d8669b4a26336fa1bb8604253"
+      },
+      "stageEntriesSha256": "d17b30d7ed350757dd9e25a055d4a330b81c221abbb9542be52eeebe3b6d0023",
+      "indexFlagsSha256": "492c992993184c5a58bb872f4f227e730c44da4d631399d78b3bf2954e916c0a",
+      "rootGitlink": "70dbf73e80787299c832d30d911b16b105ab194d",
+      "indexedGitlink": "70dbf73e80787299c832d30d911b16b105ab194d"
+    },
+    {
+      "path": "references/Hexalith.EventStore",
+      "revision": "5945ba8b3575f76597075e460bb9a973453272ea",
+      "index": {
+        "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.EventStore/index",
+        "bytes": 1368887,
+        "sha256": "a144e77516352221d799c3f4359cfc119a3073d047d4df863b205b2b041c23b4"
+      },
+      "stageEntriesSha256": "06c1915e83a50afdc38e75bfe1a4c10ed1517afd0c0e1651f796f61c6237ebf4",
+      "indexFlagsSha256": "b64ea9b59e6607f03a8ffa5dc27e29504c20379968b9ccfb23c9635557582186",
+      "rootGitlink": "4cf93f91e760e2d09e4fc64e1bd33a3c0a79a24d",
+      "indexedGitlink": "5945ba8b3575f76597075e460bb9a973453272ea"
+    },
+    {
+      "path": "references/Hexalith.FrontComposer",
+      "revision": "7319f44bcf02b67d7ee09a315ba8aa9c7251b1f6",
+      "index": {
+        "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.FrontComposer/index",
+        "bytes": 903109,
+        "sha256": "1a16e695f6207452e6378d3b004829b05b426403452989f7a59565f568d05bc0"
+      },
+      "stageEntriesSha256": "66effc1ec357dff1566d8f1def4ae454a75213d70ef821b7c7dc88c38d123b70",
+      "indexFlagsSha256": "b90de1a70ee4b080df17f7ee39f47bddc63a7b2f1f9d9d24b5c03bddcbaf5453",
+      "rootGitlink": "612d23485d7e2845d22102621a38d6c904e1ea90",
+      "indexedGitlink": "7319f44bcf02b67d7ee09a315ba8aa9c7251b1f6"
+    },
+    {
+      "path": "references/Hexalith.Memories",
+      "revision": "daa06183c0c9baa8bda71df259a7264d34684e2a",
+      "index": {
+        "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Memories/index",
+        "bytes": 899373,
+        "sha256": "836daee86cc27e45cb05d3f968942f1e64c3acd3340de4463e41b07d0cfdf0a6"
+      },
+      "stageEntriesSha256": "44c38f72f52e3e98f718bbae0710f21c97ee7f076e4cd59fbef805372943f967",
+      "indexFlagsSha256": "b7c2b7a5443d4d91d16fe747cd91dad41b407ac0943fc94393f55a2d80ae5b4a",
+      "rootGitlink": "daa06183c0c9baa8bda71df259a7264d34684e2a",
+      "indexedGitlink": "daa06183c0c9baa8bda71df259a7264d34684e2a"
+    },
+    {
+      "path": "references/Hexalith.Commons",
+      "revision": "3edfbdafc7d4fa915286dce8a37dc4cc7c06085a",
+      "index": {
+        "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Commons/index",
+        "bytes": 30329,
+        "sha256": "812b418d2da25de8b6845c05b11ca34daa814495386d37f153227644325d3324"
+      },
+      "stageEntriesSha256": "909067f8bff4f2cd92d437444db0269de8a9a5c190fd592a6922bec33a6364e2",
+      "indexFlagsSha256": "109a1563a3c298c6a1e980a49061f0271b3b2caac068013edd4b44a35e97cbc0",
+      "rootGitlink": "3edfbdafc7d4fa915286dce8a37dc4cc7c06085a",
+      "indexedGitlink": "3edfbdafc7d4fa915286dce8a37dc4cc7c06085a"
+    },
+    {
+      "path": "references/Hexalith.Builds",
+      "revision": "e38700b3a8de8ef57342688e9dfbbe3f573201ff",
+      "index": {
+        "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Builds/index",
+        "bytes": 495486,
+        "sha256": "405587b68add3511a83744b2415d535cded2866a731c0f3477b8cf2c515af97b"
+      },
+      "stageEntriesSha256": "1c54a8030d5f3d60d0536a30aff3ccd79e8889c6ed3369b7cbbe8d6cb1d3edb6",
+      "indexFlagsSha256": "d621135c7440aa288e9ad4db5d4d016144988a29667df1b586dde75ac180c803",
+      "rootGitlink": "aa46f0c534206b4645b8d9eef08c9a90e1ab540e",
+      "indexedGitlink": "e38700b3a8de8ef57342688e9dfbbe3f573201ff"
+    },
+    {
+      "path": "references/Hexalith.PolymorphicSerializations",
+      "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "index": {
+        "path": "/home/administrator/projects/hexalith/folders/.git/modules/references/Hexalith.PolymorphicSerializations/index",
+        "bytes": 8831,
+        "sha256": "99834e9037d6af73bea83dc830ab91d6f25228633456987344d153f3cab98221"
+      },
+      "stageEntriesSha256": "02d4ed751e051abdfcab7d1bf898a1849a30f7522fbf1448099d1d12bc51b470",
+      "indexFlagsSha256": "0e1f1b32b300ddb5a40638d500d958937d2e0e92649b824e5b1c51ee0a270cb8",
+      "rootGitlink": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "indexedGitlink": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0"
+    },
+    {
+      "path": "references/Hexalith.Projects",
+      "revision": "0338d6ebf9f1be1bd38a8745759984d2066da5e7",
+      "index": {
+        "path": "/home/administrator/projects/hexalith/folders/.git/modules/references/Hexalith.Projects/index",
+        "bytes": 1541384,
+        "sha256": "6022d1f855e1ad0e54fe6e1436ec91729b12fb26603266cd747a8d92c4755c66"
+      },
+      "stageEntriesSha256": "365f19c664d27ef8c71f3e37f62c79dddebe43bd136edf14eadd7be3ee484897",
+      "indexFlagsSha256": "0232b3eb442049b7b5c0992d80edde95047255c674920dab71209a9dc97866cd",
+      "rootGitlink": "22c99ad1ae0aa88cd563f2d85346c9d680acc2ca",
+      "indexedGitlink": "0338d6ebf9f1be1bd38a8745759984d2066da5e7"
+    },
+    {
+      "path": "references/Hexalith.Platform",
+      "revision": "965b00249b473d602a663f1f48be39424f996337",
+      "index": {
+        "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Platform/index",
+        "bytes": 1926052,
+        "sha256": "daff72e98e22e4baff7f13f70bc55028e5541e22a54258089d896c691cc475a9"
+      },
+      "stageEntriesSha256": "0c152c931358f234cdea06a0eb8e342d54d203cba1a06a7948ba7886fa0f19ef",
+      "indexFlagsSha256": "11b63de782a4dd2cded9694a71c12edc044ba0d41153a29ee4e451e35b5635b2",
+      "rootGitlink": "3659a44d86c08645215689eaeff8b3624d357dd5",
+      "indexedGitlink": "965b00249b473d602a663f1f48be39424f996337"
+    },
+    {
+      "path": "references/Hexalith.McpCli",
+      "revision": "9199391a6f22ffca0fb46f23d9891efedc2abbc3",
+      "index": {
+        "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.McpCli/index",
+        "bytes": 2404114,
+        "sha256": "2451aed677699d2c80a19bc4eb4d45939c71675aba2ba6c7f14909eec5f02cff"
+      },
+      "stageEntriesSha256": "fb7e44f908b33d1857b19e0cd65d87503c218f2807368339e7182e271bfa11a9",
+      "indexFlagsSha256": "4ff3e37ed4c7b6676663836a0d94b6ab104d8b04b0dc48d0d3ba5bf02cc2be92",
+      "rootGitlink": "9ba8e5bd0e213501b39d33cedf46859566fc89a4",
+      "indexedGitlink": "9199391a6f22ffca0fb46f23d9891efedc2abbc3"
+    },
+    {
+      "path": "references/Hexalith.Parties",
+      "revision": "784215a8fe91b4d5ae00eb65ab61d3b9507ca0c2",
+      "index": {
+        "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Parties/index",
+        "bytes": 1181728,
+        "sha256": "eade74721eb24fc995e06777109183a6ad84525daa0bef192ed4cc50fa8a6939"
+      },
+      "stageEntriesSha256": "8e674558adb2f9389d0a1ed75402a6cdfde1a5041ca30b82838b0df01f040c8e",
+      "indexFlagsSha256": "4a99868598d2488d3062591cf2b2bce548222dcf69c42e14a0226093b80e33a4",
+      "rootGitlink": "ce66f530f4d0e208fe5d6fe83ea277f7de2aa407",
+      "indexedGitlink": "784215a8fe91b4d5ae00eb65ab61d3b9507ca0c2"
+    }
+  ],
+  "sourceAudit": {
+    "boundFiles": 83009,
+    "unchangedExceptPostExecutionRecording": true,
+    "postExecutionRecordingChanges": [
+      {
+        "before": {
+          "path": "_bmad-output/implementation-artifacts/story-1-17-current-debug-distribution-results.md",
+          "bytes": 7486,
+          "sha256": "d237dba57343a2a0e3f221a87cf790ac9e2da02727e602db59ff2f3d48485312"
+        },
+        "after": {
+          "path": "_bmad-output/implementation-artifacts/story-1-17-current-debug-distribution-results.md",
+          "bytes": 7811,
+          "sha256": "264e99a652af66d273aa1c71bfe2f4562a28b0ac24b98d0879579f629f7c5bf1"
+        }
+      },
+      {
+        "before": {
+          "path": "eng/story117-source-distribution/README.md",
+          "bytes": 3836,
+          "sha256": "f63accc03e972c91010ed370aebb4232940ce2ccb920d431ff40929ff09ac791"
+        },
+        "after": {
+          "path": "eng/story117-source-distribution/README.md",
+          "bytes": 3850,
+          "sha256": "4c01edfaa7d14cb56ac5315ea5d4c7d47ee7b46ca987fc8b57f906e0f93844da"
+        }
+      }
+    ]
+  },
+  "sourceDocumentationBindings": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/eng/story117-source-distribution/README.md",
+      "bytes": 3850,
+      "sha256": "4c01edfaa7d14cb56ac5315ea5d4c7d47ee7b46ca987fc8b57f906e0f93844da"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-current-debug-distribution-results.md",
+      "bytes": 7811,
+      "sha256": "264e99a652af66d273aa1c71bfe2f4562a28b0ac24b98d0879579f629f7c5bf1"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-current-debug-distribution-synchronized-results-2026-10-29.md",
+      "bytes": 7486,
+      "sha256": "d237dba57343a2a0e3f221a87cf790ac9e2da02727e602db59ff2f3d48485312"
+    }
+  ],
+  "preservedStagedGitlinks": [
+    "references/Hexalith.Builds",
+    "references/Hexalith.EventStore",
+    "references/Hexalith.FrontComposer",
+    "references/Hexalith.McpCli",
+    "references/Hexalith.Parties",
+    "references/Hexalith.Platform",
+    "references/Hexalith.Projects",
+    "references/Hexalith.Tenants"
+  ],
+  "preservedBuildsMain": "aa46f0c534206b4645b8d9eef08c9a90e1ab540e",
+  "certificateStoreMetadataUnchanged": true,
+  "debugIdentityVariation": [
+    {
+      "before": {
+        "path": "/tmp/story-1-17-current-debug-distribution-2026-10-29-model-common-composition-rh6nfejt/distribution/EventStoreHost/Hexalith.EventStore.Server.dll",
+        "bytes": 4624384,
+        "sha256": "2e844fafa691efebe6b8f9bbea29a79f1bd108ef29414846c17ee7ece4814af1"
+      },
+      "after": {
+        "path": "distribution/EventStoreHost/Hexalith.EventStore.Server.dll",
+        "bytes": 4624384,
+        "sha256": "eac8228689685c29ca7305755529fa1c91a2da3da68f2484f0046c338223c5d4"
+      },
+      "changedBytes": 72,
+      "allowedRegions": [
+        {
+          "kind": "coff-timestamp",
+          "offset": 136,
+          "bytes": 4
+        },
+        {
+          "kind": "module-mvid",
+          "offset": 4188580,
+          "bytes": 16
+        },
+        {
+          "kind": "debug-entry-timestamp",
+          "offset": 4620908,
+          "bytes": 4
+        },
+        {
+          "kind": "codeview-id",
+          "offset": 4620992,
+          "bytes": 16
+        },
+        {
+          "kind": "debug-entry-timestamp",
+          "offset": 4620936,
+          "bytes": 4
+        },
+        {
+          "kind": "pdb-checksum",
+          "offset": 4621260,
+          "bytes": 32
+        },
+        {
+          "kind": "debug-entry-timestamp",
+          "offset": 4620964,
+          "bytes": 4
+        }
+      ],
+      "allOtherBytesIdentical": true,
+      "scope": "Metadata/PDB linkage variation only; no runtime claim"
+    },
+    {
+      "before": {
+        "path": "/tmp/story-1-17-current-debug-distribution-2026-10-29-model-common-composition-rh6nfejt/distribution/EventStoreHost/Hexalith.EventStore.Gateway.dll",
+        "bytes": 918528,
+        "sha256": "4bf5db47d4f224a775281e242e3bde0c74be3931962f931a5dad585dd1f2a192"
+      },
+      "after": {
+        "path": "distribution/EventStoreHost/Hexalith.EventStore.Gateway.dll",
+        "bytes": 918528,
+        "sha256": "2201b8ab677cf6708e23da837e2fedfc24c5b619d664ea1f3af5d8c1bffacd64"
+      },
+      "changedBytes": 72,
+      "allowedRegions": [
+        {
+          "kind": "coff-timestamp",
+          "offset": 136,
+          "bytes": 4
+        },
+        {
+          "kind": "module-mvid",
+          "offset": 812504,
+          "bytes": 16
+        },
+        {
+          "kind": "debug-entry-timestamp",
+          "offset": 915752,
+          "bytes": 4
+        },
+        {
+          "kind": "codeview-id",
+          "offset": 915836,
+          "bytes": 16
+        },
+        {
+          "kind": "debug-entry-timestamp",
+          "offset": 915780,
+          "bytes": 4
+        },
+        {
+          "kind": "pdb-checksum",
+          "offset": 916106,
+          "bytes": 32
+        },
+        {
+          "kind": "debug-entry-timestamp",
+          "offset": 915808,
+          "bytes": 4
+        }
+      ],
+      "allOtherBytesIdentical": true,
+      "scope": "Metadata/PDB linkage variation only; no runtime claim"
+    }
+  ],
+  "historicalBindings": [
+    {
+      "receipt": {
+        "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-approved-parser.json",
+        "bytes": 31884,
+        "sha256": "6ad13cea8bcd267a0a442593baffb38b4495fdf0fe3a6891daef970d83185201"
+      },
+      "archive": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-approved-parser.artifacts.tar.gz",
+        "bytes": 13892909,
+        "sha256": "e760780ca0532c30e74adb22cd27b6d49606d3d6d140bb445ee5250b9b82d029"
+      },
+      "memberManifest": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-approved-parser.members.json",
+        "bytes": 23906,
+        "sha256": "cbe6db3fff251f4b6fcc705750c0662aadbf092ff8aaa103a4ba963d1207a216"
+      }
+    },
+    {
+      "receipt": {
+        "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-approved-parser-style.json",
+        "bytes": 316504,
+        "sha256": "8858517d0f58e25aa43d45750d18dd7834ebd7e00b3175706c007207627689c9"
+      },
+      "archive": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-approved-parser-style.artifacts.tar.gz",
+        "bytes": 45011326,
+        "sha256": "0b90e8424163ea6fa8da6a6beb3732b40c9487b1ec9d57df837042c9153b45e2"
+      },
+      "memberManifest": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-approved-parser-style.members.json",
+        "bytes": 114361,
+        "sha256": "2c1b6301103716ac17a5e5b416a2963776dd17d146dbabd6dc6b14d172a26dc8"
+      }
+    },
+    {
+      "receipt": {
+        "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-model-import-controls.json",
+        "bytes": 331868,
+        "sha256": "59e1c958f1a3a1cb5fe0561a56239b9b3696e0eb2d0db237af068c50759faac4"
+      },
+      "archive": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-model-import-controls.artifacts.tar.gz",
+        "bytes": 37199397,
+        "sha256": "7472ea5afcd5b2fe32733f2bf9e09f40dadc5b57c1c795f2dadbebfc4777c668"
+      },
+      "memberManifest": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-model-import-controls.members.json",
+        "bytes": 97867,
+        "sha256": "eaecbbf3a5aa2d0954514604f21f8541686b66528d72b677407a9878761f6579"
+      }
+    },
+    {
+      "receipt": {
+        "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-model-common-composition.json",
+        "bytes": 373805,
+        "sha256": "6c6f9ad542af14c14596139c7b4ab4eaeed4721d5a3ab0704b807acd8d06b690"
+      },
+      "archive": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-model-common-composition.artifacts.tar.gz",
+        "bytes": 138284274,
+        "sha256": "a2c503cb25b8d0decdea36dad6d21336362e5763ca2f1da671c84aaf59eba4d4"
+      },
+      "memberManifest": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-model-common-composition.members.json",
+        "bytes": 1128837,
+        "sha256": "1806acb9ecd2ca8a46c89c94c12ec78a5171a6178e01dc28911dee646bd5d92f"
+      }
+    },
+    {
+      "receipt": {
+        "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-graph-refresh-model.json",
+        "bytes": 273437,
+        "sha256": "77710164fd48997a9ab1e885a939cd0ae0fb86745a27494f4700475d553a92dd"
+      },
+      "archive": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-graph-refresh-model.artifacts.tar.gz",
+        "bytes": 46305529,
+        "sha256": "4fff7c3f77708cd0521a3a2e4b496b3857a91d283424ac17cba584fea385c2ad"
+      },
+      "memberManifest": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-graph-refresh-model.members.json",
+        "bytes": 104933,
+        "sha256": "7770309671f75e993801d3d00925120b10ce680eaaf688790fe1a525d796503f"
+      }
+    },
+    {
+      "receipt": {
+        "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.json",
+        "bytes": 319793,
+        "sha256": "a2643624ecc07a75a4f4377b8f073047c37388c20ef64164748c991b417282cb"
+      },
+      "archive": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.artifacts.tar.gz",
+        "bytes": 150346250,
+        "sha256": "525dc40e41e71f86bbe85b853c67e4368b787d6fdf1ce5796163e1d2d2d555dd"
+      },
+      "memberManifest": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.members.json",
+        "bytes": 1134664,
+        "sha256": "b25ee025a20b6b5bca5a3b8bafc75dccf440fe6f06f26f4e0ebb1717754d74e1"
+      }
+    },
+    {
+      "receipt": {
+        "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-synchronized-final.json",
+        "bytes": 307024,
+        "sha256": "53b931d8b6266612b3dc237de74f8b661abe9e87b9c8fc5ee4990aa1b9bfbfc9"
+      },
+      "archive": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-synchronized-final.artifacts.tar.gz",
+        "bytes": 123197376,
+        "sha256": "a64b8e7b910d208a77b3a809bc47970cf5ba46a1e62f955ba919e87552eb139d"
+      },
+      "memberManifest": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-synchronized-final.members.json",
+        "bytes": 996132,
+        "sha256": "212a320d87267ca3fef05aca4c2b5ff1df9de897bf4f1126bd5f213a29026bed"
+      }
+    }
+  ],
+  "protectedAuthority": {
+    "parentStory": "in-progress",
+    "tracker": "backlog",
+    "routingPolicy": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "stagingExecuted": 0,
+    "stagingRequired": 14
+  },
+  "ordinaryStartup": "pending",
+  "signedDistribution": "pending",
+  "operationalAcceptance": "pending",
+  "workflowReview": "parent agent remains responsible for required review and task audit; no tracker transition"
+}

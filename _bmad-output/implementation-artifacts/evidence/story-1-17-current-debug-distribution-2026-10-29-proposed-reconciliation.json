@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "status": "unapplied proposal",
+  "owner": "Hexalith.Builds workspace source mapping",
+  "buildsRevision": "e38700b3a8de8ef57342688e9dfbbe3f573201ff",
+  "source": {
+    "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingReconciliationTask.cs",
+    "bytes": 23900,
+    "sha256": "f7dd1e71c45678de9e3565d581db9f89a7159e2e0c1054dd34bb1d7fa439d7ea"
+  },
+  "upstreamCompatibilityCommit": "992850be21cc8b7b10e06cde85e9cc0d0f1f9e1f",
+  "patch": {
+    "path": "story-1-17-current-debug-distribution-2026-10-29-proposed-reconciliation.patch",
+    "bytes": 1268,
+    "sha256": "eca67b920401b3e168eea2848217a67de389021a0770e04b6f2e36b14176cb67"
+  },
+  "validation": {
+    "argv": [
+      "git",
+      "apply",
+      "--check",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-proposed-reconciliation.patch"
+    ],
+    "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "sourceUnchanged": true,
+  "applied": false
+}

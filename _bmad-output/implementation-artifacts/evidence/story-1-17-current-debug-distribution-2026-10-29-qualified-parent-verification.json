@@ -1,0 +1,86 @@
+{
+  "qualification": "passed",
+  "originalAssemblyCases": 241,
+  "guards": {
+    "normal": 37,
+    "optimized": 37
+  },
+  "parentReplay": {
+    "normal": {
+      "qualification": "passed",
+      "verifiedMembers": 4952,
+      "originalAssemblyTests": 241,
+      "commandExecutionCount": 0
+    },
+    "optimizedAlreadyExecuted": true
+  },
+  "repositoryCount": 13,
+  "currentSourceBindingsVerified": true,
+  "operationalHolds": {
+    "parentStory": "in-progress",
+    "tracker": "backlog",
+    "routingPolicy": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "stagingExecuted": 0,
+    "stagingRequired": 14
+  },
+  "sixOutputRoles": {
+    "CLI": {
+      "path": "distribution/CLI/Hexalith.Builds.Module.Cli.dll",
+      "bytes": 37376,
+      "sha256": "ad9c1364e904c87fe9ec7dbc268c876669313e53b3ca24400bd73261b63af036"
+    },
+    "Tooling": {
+      "path": "distribution/Tooling/Hexalith.Builds.Tooling.dll",
+      "bytes": 1649664,
+      "sha256": "0e75aac6103a117dbdbcf9fd0ef3782f92f0753c238e3c040902160638cd2e03"
+    },
+    "AppHost": {
+      "path": "distribution/AppHost/Hexalith.Builds.Module.AppHost.dll",
+      "bytes": 100864,
+      "sha256": "93922862aea173c4f1c7e73717ca23dc541452bd06582250599b119879fab3d9"
+    },
+    "EventStoreHost": {
+      "path": "distribution/EventStoreHost/Hexalith.Builds.Module.EventStoreHost.dll",
+      "bytes": 32256,
+      "sha256": "79f7cbfd737685b38e9153b622f1ea72374867bb168a44894c615e8c8190cc7c"
+    },
+    "UiHost": {
+      "path": "distribution/UiHost/Hexalith.Builds.Module.UiHost.dll",
+      "bytes": 17408,
+      "sha256": "159ef5dd1f461bf241eb4408e9ab1b473e3fed994ea14dfa17e2f1f29834a184"
+    },
+    "Model": {
+      "path": "distribution/Model/Hexalith.Platform.Composition.dll",
+      "bytes": 417280,
+      "sha256": "15178c7df9b61b6de013363962a82525c838b78d02fd08e2a46b39e7b64de9ab"
+    }
+  },
+  "actualSelection": {
+    "AppHostAssemblyPath": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/distribution/AppHost/Hexalith.Builds.Module.AppHost.dll",
+    "DescriptorChildEntryAssemblyPath": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/distribution/CLI/Hexalith.Builds.Module.Cli.dll",
+    "hostBinding": {
+      "path": "distribution/AppHost/Hexalith.Builds.Module.AppHost.dll",
+      "bytes": 100864,
+      "sha256": "93922862aea173c4f1c7e73717ca23dc541452bd06582250599b119879fab3d9"
+    },
+    "evidence": "supported factory API selection only; no public command or host was run"
+  },
+  "diffChecks": [
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "exitCode": 0
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "exitCode": 0
+    }
+  ],
+  "workflowReview": "pending",
+  "sourceBindingsAudited": 83009,
+  "knownPostExecutionRecordingChanges": [
+    "_bmad-output/implementation-artifacts/story-1-17-current-debug-distribution-results.md",
+    "eng/story117-source-distribution/README.md"
+  ]
+}

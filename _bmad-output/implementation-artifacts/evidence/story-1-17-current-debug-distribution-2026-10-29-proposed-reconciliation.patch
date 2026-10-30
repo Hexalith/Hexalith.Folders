@@ -1,0 +1,19 @@
+diff --git a/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingReconciliationTask.cs b/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingReconciliationTask.cs
+--- a/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingReconciliationTask.cs
++++ b/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingReconciliationTask.cs
+@@ -347,7 +347,14 @@
+         string? version = PackageVersions.FirstOrDefault(item => item.ItemSpec.Equals(retainedId, StringComparison.OrdinalIgnoreCase))?.GetMetadata("Version");
+         HashSet<string> assigned = new(StringComparer.OrdinalIgnoreCase);
+         List<string> assignments = [];
+-        foreach (string assignment in canonical.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
++        string[] fields = canonical.Split(';', StringSplitOptions.TrimEntries);
++        // Permit one list terminator while retaining leading or interior empty fields for refusal.
++        if (fields[^1].Length == 0)
++        {
++            fields = fields[..^1];
++        }
++
++        foreach (string assignment in fields)
+         {
+             int equals = assignment.IndexOf('=', StringComparison.Ordinal);
+             if (equals <= 0 || equals == assignment.Length - 1)

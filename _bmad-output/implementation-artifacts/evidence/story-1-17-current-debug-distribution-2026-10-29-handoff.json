@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "qualification": "incomplete",
+  "sourceReceipt": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-apphost-launch.json",
+    "bytes": 29482,
+    "sha256": "6000530212ef31dc48ead6a2e9235a20daecceff06de7d26db7ab6f5e9269360"
+  },
+  "independentDiagnosticReceipt": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-focused-final.json",
+    "bytes": 37010,
+    "sha256": "663f33c395e7dccdb889ca25ca3eb67608ac3fad48edbb9a35c0c50cd98356c6"
+  },
+  "catalogBlocker": {
+    "owner": "Platform/Builds catalog object availability",
+    "observations": [
+      {
+        "argv": [
+          "git",
+          "-C",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+          "cat-file",
+          "-t",
+          "4ebd4d869fe1d3958d73e586bcaa74bd86e2ce42"
+        ],
+        "environmentAddition": {
+          "GIT_OPTIONAL_LOCKS": "0"
+        },
+        "exitCode": 128,
+        "stdout": "",
+        "stderr": "fatal: git cat-file: could not get object info\n"
+      },
+      {
+        "argv": [
+          "git",
+          "-C",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+          "show",
+          "4ebd4d869fe1d3958d73e586bcaa74bd86e2ce42:Props/Directory.Packages.props"
+        ],
+        "environmentAddition": {
+          "GIT_OPTIONAL_LOCKS": "0"
+        },
+        "exitCode": 128,
+        "stdout": "",
+        "stderr": "fatal: path 'Props/Directory.Packages.props' exists on disk, but not in '4ebd4d869fe1d3958d73e586bcaa74bd86e2ce42'\n"
+      },
+      {
+        "argv": [
+          "git",
+          "-C",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+          "ls-tree",
+          "-z",
+          "4ebd4d869fe1d3958d73e586bcaa74bd86e2ce42",
+          "--",
+          "Props/Directory.Packages.props"
+        ],
+        "environmentAddition": {
+          "GIT_OPTIONAL_LOCKS": "0"
+        },
+        "exitCode": 128,
+        "stdout": "",
+        "stderr": "fatal: not a tree object\n"
+      }
+    ],
+    "requiredRepair": "Separately approve restoration of the verified pinned object/import closure in the same root Builds repository, or a distinct proposal to repair invalid pin authority; no fetch, object write, pin change or fallback is authorized here"
+  },
+  "proposedOrdinaryInvocation": {
+    "environment": {
+      "HEXALITH_G4_APPHOST": "/tmp/story-1-17-current-debug-distribution-2026-10-29-focused-final-3md8uz3u/distribution/AppHost/Hexalith.Builds.Module.AppHost.dll"
+    },
+    "argv": [
+      "/tmp/story-1-17-current-debug-distribution-2026-10-29-focused-final-3md8uz3u/sdk-layout/dotnet",
+      "/tmp/story-1-17-current-debug-distribution-2026-10-29-focused-final-3md8uz3u/distribution/CLI/Hexalith.Builds.Module.Cli.dll",
+      "debug",
+      "--manifest",
+      "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+      "--mode",
+      "source",
+      "--output",
+      "json"
+    ],
+    "manifest": {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+      "bytes": 12797,
+      "sha256": "0fd4457a1801fa13053ef8821eb16a0cfcc6a5edac94b6ce89e8f220e8a30511"
+    },
+    "status": "blocked proposal; planned artifacts are unmaterialized until all qualification gates pass; not executed",
+    "prerequisites": [
+      "Restore verified availability of the pinned Builds catalog object and import closure through a separate owner-approved proposal",
+      "Complete the original source Debug graph, required original-assembly tests, compilation-only model and sealed factory-selection gates",
+      "Recheck all repository, source, catalog, SDK and sealed artifact identities",
+      "Approve and qualify ordinary startup and actual tool/catalog/composition/module intake",
+      "Qualify runtime/API compatibility, target/data, hosted identity, observation and recovery; obtain exact signed distribution and operational acceptance"
+    ]
+  },
+  "artifactSelection": {
+    "status": "unresolved; planned paths are unmaterialized",
+    "owner": "Builds qualification owner",
+    "reason": "Catalog materialization stopped before the original CLI/host build",
+    "CLI": null,
+    "AppHost": null,
+    "model": null,
+    "currentCandidateRuntimeCompatibility": "unqualified"
+  },
+  "protectedAuthority": {
+    "parentStory": "in-progress",
+    "tracker": "backlog",
+    "routingPolicy": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "stagingExecuted": 0,
+    "stagingRequired": 14
+  },
+  "remainingPrerequisites": [
+    "Restore verified availability of the pinned Builds catalog object and import closure through a separate owner-approved proposal",
+    "Complete the original source Debug graph, required original-assembly tests, compilation-only model and sealed factory-selection gates",
+    "Recheck all repository, source, catalog, SDK and sealed artifact identities",
+    "Approve and qualify ordinary startup and actual tool/catalog/composition/module intake",
+    "Qualify runtime/API compatibility, target/data, hosted identity, observation and recovery; obtain exact signed distribution and operational acceptance"
+  ],
+  "authority": "Proposal only; no ordinary command executed; accepted-tool replacement, signed distribution and operational acceptance remain pending"
+}

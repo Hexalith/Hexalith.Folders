@@ -1,0 +1,343 @@
+{
+  "schemaVersion": 1,
+  "scope": "Post-review validation of the bounded local Debug distribution slice; target SDK/C# execution receipts remain immutable",
+  "qualification": "passed",
+  "targetReceipt": {
+    "path": "story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.json",
+    "bytes": 319793,
+    "sha256": "a2643624ecc07a75a4f4377b8f073047c37388c20ef64164748c991b417282cb"
+  },
+  "targetArchive": {
+    "path": "story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.artifacts.tar.gz",
+    "bytes": 150346250,
+    "sha256": "525dc40e41e71f86bbe85b853c67e4368b787d6fdf1ce5796163e1d2d2d555dd"
+  },
+  "guards": {
+    "normal": {
+      "count": 53,
+      "exitCode": 0
+    },
+    "optimized": {
+      "count": 53,
+      "exitCode": 0
+    },
+    "command": "python3 -B [-O] -m unittest discover -s eng/story117-source-distribution -p 'test_*.py' -q"
+  },
+  "replay": {
+    "normal": {
+      "qualification": "passed",
+      "verifiedMembers": 4952,
+      "originalAssemblyTests": 241,
+      "commandExecutionCount": 0
+    },
+    "optimized": {
+      "qualification": "passed",
+      "verifiedMembers": 4952,
+      "originalAssemblyTests": 241,
+      "commandExecutionCount": 0
+    }
+  },
+  "review": {
+    "reviewers": 3,
+    "findings": 14,
+    "patchedFindings": [
+      "B1",
+      "B2",
+      "B3",
+      "B4",
+      "B5",
+      "B6",
+      "B8",
+      "B9",
+      "B10",
+      "E1",
+      "E2",
+      "E3",
+      "V1"
+    ],
+    "refutedFindings": [
+      "B7"
+    ],
+    "patchGroups": 11,
+    "deferred": []
+  },
+  "repositoryCount": 13,
+  "repositoryTupleUnchanged": true,
+  "preservedBuildsMain": "aa46f0c534206b4645b8d9eef08c9a90e1ab540e",
+  "stagedGitlinks": [
+    "references/Hexalith.Builds",
+    "references/Hexalith.EventStore",
+    "references/Hexalith.FrontComposer",
+    "references/Hexalith.McpCli",
+    "references/Hexalith.Parties",
+    "references/Hexalith.Platform",
+    "references/Hexalith.Projects",
+    "references/Hexalith.Tenants"
+  ],
+  "sourceBindingsAudited": 83009,
+  "documentedPostExecutionChanges": [
+    {
+      "before": {
+        "path": "_bmad-output/implementation-artifacts/spec-1-17-qualify-current-debug-distribution.md",
+        "bytes": 14524,
+        "sha256": "6f10314707672a86990b6488966a3799c01d787ec8d6a0f6236f9be47e240751"
+      },
+      "after": {
+        "path": "_bmad-output/implementation-artifacts/spec-1-17-qualify-current-debug-distribution.md",
+        "bytes": 23703,
+        "sha256": "eaf1580ed2edc00a3237c6d48b22e194df58d83f7a66d1340e64ff43626beb4b"
+      }
+    },
+    {
+      "before": {
+        "path": "_bmad-output/implementation-artifacts/story-1-17-current-debug-distribution-results.md",
+        "bytes": 7486,
+        "sha256": "d237dba57343a2a0e3f221a87cf790ac9e2da02727e602db59ff2f3d48485312"
+      },
+      "after": {
+        "path": "_bmad-output/implementation-artifacts/story-1-17-current-debug-distribution-results.md",
+        "bytes": 8953,
+        "sha256": "ba245e6b0ea237648a541df33501d345033e5a8d5acca1676d220d673bbd7c3b"
+      }
+    },
+    {
+      "before": {
+        "path": "eng/story117-source-distribution/README.md",
+        "bytes": 3836,
+        "sha256": "f63accc03e972c91010ed370aebb4232940ce2ccb920d431ff40929ff09ac791"
+      },
+      "after": {
+        "path": "eng/story117-source-distribution/README.md",
+        "bytes": 4715,
+        "sha256": "f9485272da7ab280413b0a018a8f77048641273b8c5718c63a47c2614edbf55b"
+      }
+    },
+    {
+      "before": {
+        "path": "eng/story117-source-distribution/capture_compiler.py",
+        "bytes": 6285,
+        "sha256": "30f7756f6e8ab380af3d2494dfa2a64569eb36d847e9432e6daabc1e792a8d09"
+      },
+      "after": {
+        "path": "eng/story117-source-distribution/capture_compiler.py",
+        "bytes": 6694,
+        "sha256": "a6e2c5264927dc874066c8694f6a6beffe10d277ad354c8960efd91c9a04f229"
+      }
+    },
+    {
+      "before": {
+        "path": "eng/story117-source-distribution/qualify.py",
+        "bytes": 68970,
+        "sha256": "a4d002d086dce09ea39e13284111a294fe3fc5d9d7e806fa697b339d95f985fe"
+      },
+      "after": {
+        "path": "eng/story117-source-distribution/qualify.py",
+        "bytes": 74504,
+        "sha256": "32ff5174c3e62808dfbd1dea5f545de5500544d27ff33ed85c1e5d8b9345d7da"
+      }
+    },
+    {
+      "before": {
+        "path": "eng/story117-source-distribution/test_compiler_capture.py",
+        "bytes": 2703,
+        "sha256": "e4dc33cb18abc737ac25d723933807e240b7ed1bd0eadab241abf63720e756e3"
+      },
+      "after": {
+        "path": "eng/story117-source-distribution/test_compiler_capture.py",
+        "bytes": 3236,
+        "sha256": "446abd1868188f6ba1e423153e4563bf63dea727940a70731ef5d7ee11a16bca"
+      }
+    },
+    {
+      "before": {
+        "path": "eng/story117-source-distribution/test_qualification.py",
+        "bytes": 16494,
+        "sha256": "372fda7e018a9d1abfccc76afdd8cb0959d072d30ebe3d159e8863bb64cf05e1"
+      },
+      "after": {
+        "path": "eng/story117-source-distribution/test_qualification.py",
+        "bytes": 40958,
+        "sha256": "a4e48d2545d76082c9164b95ac0d01402bb4114ef609a09d4d7822a8f72fb9e9"
+      }
+    },
+    {
+      "before": {
+        "path": "eng/story117-source-distribution/verify.py",
+        "bytes": 16867,
+        "sha256": "a097c70d762e64ef0c6d2d7789ea181b20342e0138ccefdd7399a2e11dca5955"
+      },
+      "after": {
+        "path": "eng/story117-source-distribution/verify.py",
+        "bytes": 31268,
+        "sha256": "9eca8502777956c856532b58d4740dd43ad82f4def4a2810e0096237687f1c64"
+      }
+    }
+  ],
+  "addedRecordingPaths": [
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.json",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled.members.json",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-qualified-handoff.json",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-qualified-parent-verification.json",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-qualified-verification.json",
+    "_bmad-output/implementation-artifacts/story-1-17-current-debug-distribution-synchronized-results-2026-10-29.md"
+  ],
+  "removedInputPaths": [],
+  "controlRecomputation": [
+    {
+      "journal": {
+        "path": "/tmp/story-1-17-current-debug-distribution-2026-10-29-graph-recompiled-40rnyh60/sdk-children.jsonl",
+        "bytes": 77796,
+        "sha256": "0bdb28768b1ff26e4c3c4eeaac497a7ce0657deaa60b7d9e365627fd0accff58"
+      },
+      "observations": 11,
+      "argumentsAndEnvironmentExact": true,
+      "supersededModelObservationsExcluded": 0
+    },
+    {
+      "journal": {
+        "path": "/tmp/story-1-17-current-debug-distribution-2026-10-29-model-common-composition-rh6nfejt/sdk-children.jsonl",
+        "bytes": 60513,
+        "sha256": "7ef279b792a2256a1e4b0b79424baea4fe5f66c6741d625786e8b07f93867c1f"
+      },
+      "observations": 8,
+      "argumentsAndEnvironmentExact": true,
+      "supersededModelObservationsExcluded": 1
+    },
+    {
+      "journal": {
+        "path": "/tmp/story-1-17-current-debug-distribution-2026-10-29-approved-parser-style-y84wsf5z/sdk-children.jsonl",
+        "bytes": 623860,
+        "sha256": "8d1c5cca6e8db2db0dfbaefa26ca326fcaa65c7ca93c5c593333bb57455c291f"
+      },
+      "observations": 90,
+      "argumentsAndEnvironmentExact": true,
+      "supersededModelObservationsExcluded": 5
+    }
+  ],
+  "controlRecomputationNote": "Read-only evaluation of the revised wrapper on recorded inputs. The final config is restored to each recorded phase by dropping the model-only QualificationCompilerCapture property before model compilation. No SDK/recorded command was executed.",
+  "targetExecution": "The 241 original-assembly cases and real SDK compilation were not rerun after Python-only review patches. All C# source, test/helper/child-launcher bytes, sealed outputs and recorded SDK argument/environment behavior remain bound; stricter replay checks the full actual case identities and provenance.",
+  "operationalHolds": {
+    "parentStory": "in-progress",
+    "tracker": "backlog",
+    "routingPolicy": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "stagingExecuted": 0,
+    "stagingRequired": 14
+  },
+  "diffChecks": [
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": [
+        "git",
+        "--no-optional-locks",
+        "diff",
+        "--check",
+        "HEAD"
+      ],
+      "exitCode": 0
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "command": [
+        "git",
+        "--no-optional-locks",
+        "diff",
+        "--check",
+        "HEAD"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "currentHarnessBindings": [
+    {
+      "path": "eng/story117-source-distribution/Probe.cs",
+      "bytes": 4071,
+      "sha256": "4c77cc273493f0c4a2c8e34a31fdf03033308e09fcf7b505b06131692d798023"
+    },
+    {
+      "path": "eng/story117-source-distribution/README.md",
+      "bytes": 4715,
+      "sha256": "f9485272da7ab280413b0a018a8f77048641273b8c5718c63a47c2614edbf55b"
+    },
+    {
+      "path": "eng/story117-source-distribution/capture_compiler.py",
+      "bytes": 6694,
+      "sha256": "a6e2c5264927dc874066c8694f6a6beffe10d277ad354c8960efd91c9a04f229"
+    },
+    {
+      "path": "eng/story117-source-distribution/qualify.py",
+      "bytes": 74504,
+      "sha256": "32ff5174c3e62808dfbd1dea5f545de5500544d27ff33ed85c1e5d8b9345d7da"
+    },
+    {
+      "path": "eng/story117-source-distribution/sdk_child.py",
+      "bytes": 2385,
+      "sha256": "81f367a7733f0c8f29f0f03b33c12ad20aa0339ff94334288eaeea91b97a844d"
+    },
+    {
+      "path": "eng/story117-source-distribution/test_compiler_capture.py",
+      "bytes": 3236,
+      "sha256": "446abd1868188f6ba1e423153e4563bf63dea727940a70731ef5d7ee11a16bca"
+    },
+    {
+      "path": "eng/story117-source-distribution/test_qualification.py",
+      "bytes": 40958,
+      "sha256": "a4e48d2545d76082c9164b95ac0d01402bb4114ef609a09d4d7822a8f72fb9e9"
+    },
+    {
+      "path": "eng/story117-source-distribution/verify.py",
+      "bytes": 31268,
+      "sha256": "9eca8502777956c856532b58d4740dd43ad82f4def4a2810e0096237687f1c64"
+    }
+  ],
+  "boundedSpec": {
+    "status": "done",
+    "file": {
+      "path": "_bmad-output/implementation-artifacts/spec-1-17-qualify-current-debug-distribution.md",
+      "bytes": 23703,
+      "sha256": "eaf1580ed2edc00a3237c6d48b22e194df58d83f7a66d1340e64ff43626beb4b"
+    },
+    "frozenApprovedIntentSha256": "ab0c01716bbf14ebf5ad7274d32ff44c8c5871a0eba0451a734371d8035670f4",
+    "parentStoryCompleted": false,
+    "trackerTransitionPerformed": false,
+    "commitCreated": false,
+    "pushPerformed": false
+  },
+  "documentationBindings": [
+    {
+      "path": "eng/story117-source-distribution/README.md",
+      "bytes": 4715,
+      "sha256": "f9485272da7ab280413b0a018a8f77048641273b8c5718c63a47c2614edbf55b"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-current-debug-distribution-results.md",
+      "bytes": 8953,
+      "sha256": "ba245e6b0ea237648a541df33501d345033e5a8d5acca1676d220d673bbd7c3b"
+    }
+  ],
+  "unchangedTargetSourceBindings": [
+    {
+      "path": "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingReconciliationTask.cs",
+      "bytes": 24095,
+      "sha256": "6e219a6ca96320823212d5cfce5c0e041cb45c09761592646dc1083d32bf16df"
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/CompositionCommandOptionsTests.cs",
+      "bytes": 7021,
+      "sha256": "3be72ea53d4609b17b8e7d9d0de0e360579be2340353c1740ce08920a6eb5bc0"
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Workspace/PlatformModelCatalogTests.cs",
+      "bytes": 16821,
+      "sha256": "b02cf9f2a11880ae642e96cc6139bc8d9c4d3dbb3a59c3f90816ecee9a99d37b"
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Workspace/WorkspaceMsBuildTests.cs",
+      "bytes": 163423,
+      "sha256": "7da5b87cb988437704e8f84cd5044a4c7888a30f083c17e592377c5a885ddf35"
+    }
+  ],
+  "reviewResolution": "Three independent reviews completed; thirteen actionable findings patched in eleven groups, B7 refuted, no deferrals. See bounded spec Review Triage Log and Review resolutions.",
+  "recordingNote": "This additive review verification is written after its input audit and therefore does not self-bind. Existing execution receipts and archives are unchanged."
+}

@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "qualification": "incomplete",
+  "sourceDiff": "/tmp/story117-distribution-parent-j0p2q3_j.diff",
+  "protectedAuthority": {
+    "values": {
+      "parentStory": "in-progress",
+      "tracker": "backlog",
+      "routingPolicy": "V1Only",
+      "T0": null,
+      "activationAuthority": null,
+      "stagingExecuted": 0,
+      "stagingRequired": 14
+    },
+    "files": [
+      {
+        "path": "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+        "bytes": 106308,
+        "sha256": "ca298df3ed27156b7c6d170a47b1042ef8453c1e8e03207930d6bbbcc9ab0423"
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/sprint-status.yaml",
+        "bytes": 37619,
+        "sha256": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40"
+      },
+      {
+        "path": "eng/story117-platform-qualification-current/configuration.proposed.json",
+        "bytes": 49204,
+        "sha256": "c0b8697672e7ea27370bbb9b0078c9e922042945467be0e7a7fa7d33c28b8d1c"
+      },
+      {
+        "path": "eng/story117-platform-qualification-current/staging-checks.json",
+        "bytes": 30153,
+        "sha256": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51"
+      }
+    ]
+  },
+  "repositoriesVerified": 13,
+  "sourceBindingsAudited": 80090,
+  "knownPostExecutionVerifierChange": [
+    "eng/story117-source-distribution/verify.py"
+  ],
+  "receiptArtifactBindingsVerified": 15,
+  "parentFocusedFactoryExecution": {
+    "argv": [
+      "/tmp/story-1-17-current-debug-distribution-2026-10-29-focused-final-3md8uz3u/artifacts/focused/bin/FactorySelection/debug/Hexalith.Builds.Module.Tests",
+      "-class",
+      "Hexalith.Builds.ModuleTool.Tests.CompositionCommandOptionsTests",
+      "-parallel",
+      "none",
+      "-xml",
+      "/tmp/story117-distribution-parent-audit-s99d7g6h/factory.xml"
+    ],
+    "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+    "exitCode": 0,
+    "result": {
+      "name": "Hexalith.Builds.ModuleTool.Tests.CompositionCommandOptionsTests",
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "report": {
+        "path": "/tmp/story117-distribution-parent-audit-s99d7g6h/factory.xml",
+        "bytes": 6063,
+        "sha256": "d61e986751307d46662af3eabff0a119f6e77a668e080d7f87349e6c01ea4181"
+      }
+    },
+    "log": {
+      "path": "/tmp/story117-distribution-parent-audit-s99d7g6h/factory.log",
+      "bytes": 758,
+      "sha256": "04e0b797752c633d54a796aafb4af9f83f4f802e64e1e37bc0b4832979fe5407"
+    }
+  },
+  "parentGuardTests": {
+    "normal": 16,
+    "optimized": 16,
+    "result": "passed"
+  },
+  "parentFinalReplay": {
+    "normal": {
+      "qualification": "incomplete",
+      "verifiedMembers": 469,
+      "supplementaryFactoryTests": 8,
+      "originalAssemblyAcceptance": false,
+      "commandExecutionCount": 0
+    },
+    "optimizedCommandAlreadyExecuted": true
+  },
+  "originalAssemblyModelDistributionAcceptance": false,
+  "fullWorkflowReviewEntered": false,
+  "blocker": "Platform-selected Builds commit 4ebd4d869fe1d3958d73e586bcaa74bd86e2ce42 is absent from the approved root Builds object database"
+}

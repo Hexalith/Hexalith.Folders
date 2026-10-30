@@ -1,0 +1,2387 @@
+[
+  {
+    "path": "CompositionCommandOptionsTests.xml",
+    "bytes": 6137,
+    "sha256": "d040654ece45a01ff808161d126b8f76cf1f26296d51a15318b72cb3c61bfaff"
+  },
+  {
+    "path": "CompositionSdkProcessTests.xml",
+    "bytes": 9995,
+    "sha256": "9720732f10cb292736cc0bbd72a9ac4f458fb7285718dea4a876ee680505d29e"
+  },
+  {
+    "path": "NuGet.Config",
+    "bytes": 140,
+    "sha256": "17f8588bd0874138a10e92eb9efee6e346a173591124ab57872f019475f8f81a"
+  },
+  {
+    "path": "Workspace.CatalogVersionTests.xml",
+    "bytes": 22526,
+    "sha256": "adad1168f10c15d98aa61277af1db58188812f07149c97c7f2779685334e9844"
+  },
+  {
+    "path": "Workspace.PlatformModelCatalogTests.xml",
+    "bytes": 17646,
+    "sha256": "7ee46010d77ac93a90a90fd93bb9028ea000464d14dd9aa7d4551b51e69a3076"
+  },
+  {
+    "path": "Workspace.WorkspaceAppHostTests.xml",
+    "bytes": 8450,
+    "sha256": "7cc66721de803a04db03d7155df1a9361b2c27c6b4802a197fd5f805aca8e159"
+  },
+  {
+    "path": "Workspace.WorkspaceMsBuildTests.xml",
+    "bytes": 104414,
+    "sha256": "bd74a075d40672c0a63ebe081c69f0f9c0bbf3e4cfc7d68875d634811d8ecabf"
+  },
+  {
+    "path": "assets/original/0/project.assets.json",
+    "bytes": 142979,
+    "sha256": "c94e82bcc6617ede5d92df1d3375b3955d66b90e2eb4ac695822f964095bf0a7"
+  },
+  {
+    "path": "assets/original/1/project.assets.json",
+    "bytes": 51077,
+    "sha256": "ab12f3d6555fec4990ad8fbaf501d6e71a40d785c0ebaf185a70f27852d63286"
+  },
+  {
+    "path": "assets/original/10/project.assets.json",
+    "bytes": 161648,
+    "sha256": "a5f98811801494954aaea12fdd877b76cf8ec2aedbe0dbacbf664e4bbc053213"
+  },
+  {
+    "path": "assets/original/11/project.assets.json",
+    "bytes": 383502,
+    "sha256": "4c60ad116cb02da57c0bc97aa812d84198012f48324fae9e6607401d886f7572"
+  },
+  {
+    "path": "assets/original/12/project.assets.json",
+    "bytes": 94901,
+    "sha256": "fb27d6a432f97c04f5c1c35fa66181db3d8f6b5a851a43bb2210e147659e030a"
+  },
+  {
+    "path": "assets/original/13/project.assets.json",
+    "bytes": 71410,
+    "sha256": "acb0752ca98460305f4563eee4331f874ab1387da8f07108ebad11ae72a12c75"
+  },
+  {
+    "path": "assets/original/14/project.assets.json",
+    "bytes": 38361,
+    "sha256": "4cb94b634e3902dfc529668f0dc1b87ab0f5f05941118ecc063a69454300396b"
+  },
+  {
+    "path": "assets/original/15/project.assets.json",
+    "bytes": 40403,
+    "sha256": "a140c4ccefbb622f476be1661fea72b139bf60f2e4bb6848385b487db6cb5dc7"
+  },
+  {
+    "path": "assets/original/16/project.assets.json",
+    "bytes": 212969,
+    "sha256": "adbea38c2fb473bddd6f6cd2ca6e0628dbd2ea9d8b6adc0bb241129b7dc40e13"
+  },
+  {
+    "path": "assets/original/17/project.assets.json",
+    "bytes": 100234,
+    "sha256": "3c0713f4f626ad215c3187f5b021d991b0a336939febb0634f588ebc85dc07fc"
+  },
+  {
+    "path": "assets/original/18/project.assets.json",
+    "bytes": 39669,
+    "sha256": "2b641140ee3dd700b5f9ad519ceeaeafd6af3a5ec89e1b6e1b9e78de8e6be5a0"
+  },
+  {
+    "path": "assets/original/19/project.assets.json",
+    "bytes": 131325,
+    "sha256": "66c83f83b5677b5a969006e1e7d479bb467b8ff29ce8a50aa5dc6b87d0dc964c"
+  },
+  {
+    "path": "assets/original/2/project.assets.json",
+    "bytes": 71918,
+    "sha256": "1a6272c5e7cd9aa822ed4060b73ff700110c4eebba2f383cc5015fe359ce5e0f"
+  },
+  {
+    "path": "assets/original/20/project.assets.json",
+    "bytes": 154028,
+    "sha256": "659cb0b9dc7f71782176863cf69d6826a9ed1eaf470634e55d9fa0396b648d65"
+  },
+  {
+    "path": "assets/original/21/project.assets.json",
+    "bytes": 182645,
+    "sha256": "0eec89018b16458d7b5ec1f05953b269dee2aa5502fd9223e219b7e5f43910b2"
+  },
+  {
+    "path": "assets/original/22/project.assets.json",
+    "bytes": 110582,
+    "sha256": "f6976275f4c309c1cd45d443619c418ef57a27d2ef3af357f730b954d9cdf86f"
+  },
+  {
+    "path": "assets/original/23/project.assets.json",
+    "bytes": 90419,
+    "sha256": "2225c7eba98b5e414e5769103ec6e6448156f477203d8ba77973e69d97ffe52e"
+  },
+  {
+    "path": "assets/original/24/project.assets.json",
+    "bytes": 53450,
+    "sha256": "057ac023fbf65fb9ff1075a3b4efedd580e450344ae2b7781bf5f35c0f5802b3"
+  },
+  {
+    "path": "assets/original/25/project.assets.json",
+    "bytes": 83531,
+    "sha256": "870f0cdf18524c139bd48c27fc59b5d30c787f2725f0721878bc7d20b9f414f1"
+  },
+  {
+    "path": "assets/original/3/project.assets.json",
+    "bytes": 142961,
+    "sha256": "ae4ced1e83abcf2c5ba11f9b7699299ba589764b3a95b3bd34deb415f5b6d612"
+  },
+  {
+    "path": "assets/original/4/project.assets.json",
+    "bytes": 51059,
+    "sha256": "b56226098044cde4294af6b3e44d0fc310eb5aa41addc4521e678d4f3075ef14"
+  },
+  {
+    "path": "assets/original/5/project.assets.json",
+    "bytes": 52148,
+    "sha256": "35e1dca90e5e9fa30bc53e5937e0acc29f4d286a6c51e34408c673d230530a38"
+  },
+  {
+    "path": "assets/original/6/project.assets.json",
+    "bytes": 51035,
+    "sha256": "e24c6050b33b956c1da038b1e2bc90591d75a720cd20d9616d7e5e34ae699bc0"
+  },
+  {
+    "path": "assets/original/7/project.assets.json",
+    "bytes": 41882,
+    "sha256": "edacb4baee141666445a015d2d419a65577b1cba7ffe30d9658fe5228847b15e"
+  },
+  {
+    "path": "assets/original/8/project.assets.json",
+    "bytes": 271590,
+    "sha256": "4b8f593bdfcb6850d9ce3f656f4c6b28976e0d3e3f8e912ee3c7815bcad5e196"
+  },
+  {
+    "path": "assets/original/9/project.assets.json",
+    "bytes": 76079,
+    "sha256": "b90d3b87b8bf4f93cacfc669b47140697e0f7c50afdfab7eaa3c91ee2ed7d4a4"
+  },
+  {
+    "path": "authorized-synchronization.json",
+    "bytes": 5768,
+    "sha256": "4232e3a7bad1e134b1b61061cefe019c713380195677c58b7fe0d9aeb89f2e46"
+  },
+  {
+    "path": "baseline-diff-0.patch",
+    "bytes": 3533,
+    "sha256": "83b124b12e462d503a12f72ff1ea6197401045bb87e145244e834cf86616df2e"
+  },
+  {
+    "path": "baseline-diff-1.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-10.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-11.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-12.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-2.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-3.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-4.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-5.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-6.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-7.patch",
+    "bytes": 11363,
+    "sha256": "c7201a0bc831129880c7a65e023672cc4cf820203bd34250d1017d53e5f3ac1d"
+  },
+  {
+    "path": "baseline-diff-8.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-9.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "bin/dotnet",
+    "bytes": 321,
+    "sha256": "ff77d2dadc6244af39f2b3cbe276ea63f7fe77d8ba49053b9d16b2e63cad72a1"
+  },
+  {
+    "path": "bin/pwsh",
+    "bytes": 322,
+    "sha256": "6e0ca0d876579561df5e4cdb569606d7b00e5356487f900e69e15718abe57476"
+  },
+  {
+    "path": "capture.targets",
+    "bytes": 391,
+    "sha256": "33e0bf75b2c9fb635bd02cf0a02652cae29c156e6947cd98015f9706907370b1"
+  },
+  {
+    "path": "certificate-stores-after.json",
+    "bytes": 6172,
+    "sha256": "59147215d03fe01137e500dc85e4f270a73d3b5d73dc8c7d69a03dc3a0d46df4"
+  },
+  {
+    "path": "certificate-stores-before.json",
+    "bytes": 6172,
+    "sha256": "59147215d03fe01137e500dc85e4f270a73d3b5d73dc8c7d69a03dc3a0d46df4"
+  },
+  {
+    "path": "commands.json",
+    "bytes": 12247,
+    "sha256": "992f9d6d2f7bda64030aa241d270a6da0e97c763badca5d98b9c639714a3147b"
+  },
+  {
+    "path": "compiler/bootstrap/DistributionProbe.net10.0.txt",
+    "bytes": 23000,
+    "sha256": "2e6ebe36ab7cd8949f20658a43f1eec86587d4903c37ad1b573ae24625a27990"
+  },
+  {
+    "path": "compiler/bootstrap/Hexalith.Builds.Tooling.net10.0.txt",
+    "bytes": 54263,
+    "sha256": "9879ac4209bdccf98c9e59077c9bfa0aa8f2bd04237c71d0b294782fbc59ecf6"
+  },
+  {
+    "path": "compiler/helper/DistributionProbe.net10.0.txt",
+    "bytes": 22996,
+    "sha256": "4de23c71ba471ec0b65903e564b41920daaf3e1e97d99fcab1cb3043a766ec45"
+  },
+  {
+    "path": "compiler/helper/Hexalith.Builds.Tooling.net10.0.txt",
+    "bytes": 54260,
+    "sha256": "56526d46392015c72c2d82462bc0548af6843f112e419fe4671b77393f1b868b"
+  },
+  {
+    "path": "compiler/model/Hexalith.Commons.UniqueIds.net10.0.txt",
+    "bytes": 21065,
+    "sha256": "ee7bba40b063901f17cb2fbcc6e370eb764fa7282fbc3754e39766c322ef5994"
+  },
+  {
+    "path": "compiler/model/Hexalith.EventStore.Aspire.net10.0.txt",
+    "bytes": 51336,
+    "sha256": "434d1ea10b5362948a50de6e802c445f3eff9c3835260ce4edac4e2020548c78"
+  },
+  {
+    "path": "compiler/model/Hexalith.EventStore.Client.net10.0.txt",
+    "bytes": 76153,
+    "sha256": "ff00783059162dd6c859020e5618b99241605c3cf7f6de038916f1a762e26cb2"
+  },
+  {
+    "path": "compiler/model/Hexalith.EventStore.Contracts.net10.0.txt",
+    "bytes": 77164,
+    "sha256": "15d85cf8f9bb3631478f3a506b1bf20abbd35c0526b1fae07e96211f8a2a9f92"
+  },
+  {
+    "path": "compiler/model/Hexalith.EventStore.DomainService.net10.0.txt",
+    "bytes": 84535,
+    "sha256": "aa09ef3c81f0c0a2d6f5b15063a7076a26d1a51eeff0bb87892cee22ff94dd54"
+  },
+  {
+    "path": "compiler/model/Hexalith.EventStore.ServiceDefaults.net10.0.txt",
+    "bytes": 59865,
+    "sha256": "3b724385f6cdb93f88cbe33b8fa9015b4fa501cd59532839c5e43882fd15b1e6"
+  },
+  {
+    "path": "compiler/model/Hexalith.Platform.Composition.net10.0.txt",
+    "bytes": 64356,
+    "sha256": "82acc54ef7d83cb2a711cb6a778d6d4a9dd565ef92dd7c6c4c1594828b71cdf1"
+  },
+  {
+    "path": "compiler/model/Hexalith.Platform.Custody.Component.net10.0.txt",
+    "bytes": 44250,
+    "sha256": "5793782d2c4914f312f1b1bebb5d8f3bb438b7f726560da2cf11ca5f0c59da07"
+  },
+  {
+    "path": "compiler/model/Hexalith.Platform.Custody.net10.0.txt",
+    "bytes": 66822,
+    "sha256": "fc3f3d60c54135976bcfe204b744ab59daf4860c4a19479b6307e9ff75b7bf70"
+  },
+  {
+    "path": "compiler/model/Hexalith.Platform.Secrets.Runtime.net10.0.txt",
+    "bytes": 76738,
+    "sha256": "ff2a8435411fd0344d66b95a370a00836b91f1464701a9b7d489d40624899e13"
+  },
+  {
+    "path": "compiler/model/Hexalith.Platform.Works.Runtime.net10.0.txt",
+    "bytes": 50929,
+    "sha256": "0bf4d90cec2fce0a15401e3ba9dd46b0c5ba847a4c71ca7e3f67ab56e6be0ef2"
+  },
+  {
+    "path": "compiler/original/Hexalith.Builds.Module.AppHost.net10.0.txt",
+    "bytes": 51561,
+    "sha256": "e08e13aac6c5affc82c51c85aabfe0f3deb1d6212e074ae2d084316e5add0a31"
+  },
+  {
+    "path": "compiler/original/Hexalith.Builds.Module.Cli.net10.0.txt",
+    "bytes": 23519,
+    "sha256": "22277b440110c49975e87ec3cb6d6cc813f564bb5fb81ae865c347c69ffb2738"
+  },
+  {
+    "path": "compiler/original/Hexalith.Builds.Module.EventStoreHost.net10.0.txt",
+    "bytes": 53030,
+    "sha256": "301cdc0859e6c6776ff1b95147448e0f6b5c18f94cefb53c6856b72d49bc93c8"
+  },
+  {
+    "path": "compiler/original/Hexalith.Builds.Module.Tests.net10.0.txt",
+    "bytes": 71906,
+    "sha256": "e4c69cede350a5ac16a0e07beb11cd18ac68f86e24a0c2d687b035bb436c1c59"
+  },
+  {
+    "path": "compiler/original/Hexalith.Builds.Module.UiHost.net10.0.txt",
+    "bytes": 45771,
+    "sha256": "dd913e136e1fbb8c47164773747955973d9a094a252b28bcc7c3767f8f2e2999"
+  },
+  {
+    "path": "compiler/original/Hexalith.Builds.Tooling.net10.0.txt",
+    "bytes": 54260,
+    "sha256": "56526d46392015c72c2d82462bc0548af6843f112e419fe4671b77393f1b868b"
+  },
+  {
+    "path": "compiler/original/Hexalith.Commons.UniqueIds.net10.0.txt",
+    "bytes": 21224,
+    "sha256": "5728902966c0db5b4722336a71215eb4f80136d44b396aa8cc9f2650291957da"
+  },
+  {
+    "path": "compiler/original/Hexalith.EventStore.Admin.Abstractions.net10.0.txt",
+    "bytes": 39608,
+    "sha256": "5e49f74cc0a76a60ae142bbaf810910a8a17793ed96e14c07a544181b75040c9"
+  },
+  {
+    "path": "compiler/original/Hexalith.EventStore.Aspire.net10.0.txt",
+    "bytes": 53679,
+    "sha256": "b9cb3566240ad39c420259e730697619130c3fa89c671f51c6ae0d5fb1055531"
+  },
+  {
+    "path": "compiler/original/Hexalith.EventStore.Client.net10.0.txt",
+    "bytes": 76345,
+    "sha256": "6d221b1f5611d712d11d84400aae48365941d4f7ec172b19a08456f255e6fc11"
+  },
+  {
+    "path": "compiler/original/Hexalith.EventStore.Contracts.net10.0.txt",
+    "bytes": 77377,
+    "sha256": "a40df21e9f496cf647702c6591273a3758ffa8732362b4c3794c298ce8fb4ef0"
+  },
+  {
+    "path": "compiler/original/Hexalith.EventStore.DomainService.net10.0.txt",
+    "bytes": 84781,
+    "sha256": "c354994ddf4d96c2f101f08b1a7724593e65bd32523e8c0dd5a1dda90356428e"
+  },
+  {
+    "path": "compiler/original/Hexalith.EventStore.Gateway.net10.0.txt",
+    "bytes": 71960,
+    "sha256": "e05c4033a13fa68dfeaa728909891349c008daf31789abfbb622d8b311e5b64c"
+  },
+  {
+    "path": "compiler/original/Hexalith.EventStore.Server.net10.0.txt",
+    "bytes": 167026,
+    "sha256": "04e3654613743e94ebb9f58c8d2e84827efdc81b7e1382a1a764de87cc5f150b"
+  },
+  {
+    "path": "compiler/original/Hexalith.EventStore.ServiceDefaults.net10.0.txt",
+    "bytes": 60039,
+    "sha256": "d5ac158f6d27fe457c29c16b076cd49fe978ee9f5a767c4f661ccd97c806e6e5"
+  },
+  {
+    "path": "compiler/original/Hexalith.FrontComposer.Contracts.UI.net10.0.txt",
+    "bytes": 43327,
+    "sha256": "f73b3c814bfd2c08b31e842aef0e1ae0494ffe5a8319129c0d41badaf9cb27ab"
+  },
+  {
+    "path": "compiler/original/Hexalith.FrontComposer.Contracts.net10.0.txt",
+    "bytes": 42020,
+    "sha256": "43929d9be1f2c3a4f45f62ab3e76d42a6c29bcbccff2ae5a0b82617fca68f255"
+  },
+  {
+    "path": "compiler/original/Hexalith.FrontComposer.Shell.net10.0.txt",
+    "bytes": 120901,
+    "sha256": "f398736f25bbf56275b806fbb538dec96282602ca41e91307afaefb1795ac340"
+  },
+  {
+    "path": "compiler/original/P0Fixture.Inventory.Descriptor.net10.0.txt",
+    "bytes": 20953,
+    "sha256": "e324e14a3bba1d9dd61120df4c712c4a2a928704a9e6558a39df750db63d1f74"
+  },
+  {
+    "path": "compiler/original/P0Fixture.Inventory.net10.0.txt",
+    "bytes": 50652,
+    "sha256": "b113fe90a1cdde1eef7a1aee7e50f22618eaa803355e1b9d24cba7005d53dd59"
+  },
+  {
+    "path": "compiler/original/P0Fixture.NativeMetadataProbe.net10.0.txt",
+    "bytes": 23096,
+    "sha256": "96cc7dc005aac715844fef40d08a225cf7335a7895dba7b41caecaa03d78ca7f"
+  },
+  {
+    "path": "compiler/original/P0Fixture.Orders.Descriptor.net10.0.txt",
+    "bytes": 20935,
+    "sha256": "07892193f0c0f62e74a3b4c80b7cb4b639442c6fd104155cf6bc5499933d836f"
+  },
+  {
+    "path": "compiler/original/P0Fixture.Orders.net10.0.txt",
+    "bytes": 50609,
+    "sha256": "9beb800fcb1463a2bfc8a520a1417f66758ba9a414fd4e4667b6ff98df3a488c"
+  },
+  {
+    "path": "compiler/original/P0Fixture.Ui.Descriptor.net10.0.txt",
+    "bytes": 20907,
+    "sha256": "4a396cacbf203207fea360d6e42e529d7b1fd2f743d8be4ffaf71c4935ebb0aa"
+  },
+  {
+    "path": "compiler/original/P0Fixture.Ui.net10.0.txt",
+    "bytes": 21560,
+    "sha256": "fac49a089087c092a5928ebd71605c7eadf4ba0dabca7665aafc0c6c8e7a6c8e"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.Builds.Module.AppHost.net10.0.txt",
+    "bytes": 51561,
+    "sha256": "e08e13aac6c5affc82c51c85aabfe0f3deb1d6212e074ae2d084316e5add0a31"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.Builds.Module.Cli.net10.0.txt",
+    "bytes": 23519,
+    "sha256": "22277b440110c49975e87ec3cb6d6cc813f564bb5fb81ae865c347c69ffb2738"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.Builds.Module.EventStoreHost.net10.0.txt",
+    "bytes": 53030,
+    "sha256": "301cdc0859e6c6776ff1b95147448e0f6b5c18f94cefb53c6856b72d49bc93c8"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.Builds.Module.Tests.net10.0.txt",
+    "bytes": 71906,
+    "sha256": "e4c69cede350a5ac16a0e07beb11cd18ac68f86e24a0c2d687b035bb436c1c59"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.Builds.Module.UiHost.net10.0.txt",
+    "bytes": 45771,
+    "sha256": "dd913e136e1fbb8c47164773747955973d9a094a252b28bcc7c3767f8f2e2999"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.Builds.Tooling.net10.0.txt",
+    "bytes": 54260,
+    "sha256": "56526d46392015c72c2d82462bc0548af6843f112e419fe4671b77393f1b868b"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.Commons.UniqueIds.net10.0.txt",
+    "bytes": 21224,
+    "sha256": "5728902966c0db5b4722336a71215eb4f80136d44b396aa8cc9f2650291957da"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.EventStore.Admin.Abstractions.net10.0.txt",
+    "bytes": 39608,
+    "sha256": "5e49f74cc0a76a60ae142bbaf810910a8a17793ed96e14c07a544181b75040c9"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.EventStore.Aspire.net10.0.txt",
+    "bytes": 53679,
+    "sha256": "b9cb3566240ad39c420259e730697619130c3fa89c671f51c6ae0d5fb1055531"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.EventStore.Client.net10.0.txt",
+    "bytes": 76345,
+    "sha256": "6d221b1f5611d712d11d84400aae48365941d4f7ec172b19a08456f255e6fc11"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.EventStore.Contracts.net10.0.txt",
+    "bytes": 77377,
+    "sha256": "a40df21e9f496cf647702c6591273a3758ffa8732362b4c3794c298ce8fb4ef0"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.EventStore.DomainService.net10.0.txt",
+    "bytes": 84781,
+    "sha256": "c354994ddf4d96c2f101f08b1a7724593e65bd32523e8c0dd5a1dda90356428e"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.EventStore.Gateway.net10.0.txt",
+    "bytes": 71960,
+    "sha256": "e05c4033a13fa68dfeaa728909891349c008daf31789abfbb622d8b311e5b64c"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.EventStore.Server.net10.0.txt",
+    "bytes": 167026,
+    "sha256": "04e3654613743e94ebb9f58c8d2e84827efdc81b7e1382a1a764de87cc5f150b"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.EventStore.ServiceDefaults.net10.0.txt",
+    "bytes": 60039,
+    "sha256": "d5ac158f6d27fe457c29c16b076cd49fe978ee9f5a767c4f661ccd97c806e6e5"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.FrontComposer.Contracts.UI.net10.0.txt",
+    "bytes": 43327,
+    "sha256": "f73b3c814bfd2c08b31e842aef0e1ae0494ffe5a8319129c0d41badaf9cb27ab"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.FrontComposer.Contracts.net10.0.txt",
+    "bytes": 42020,
+    "sha256": "43929d9be1f2c3a4f45f62ab3e76d42a6c29bcbccff2ae5a0b82617fca68f255"
+  },
+  {
+    "path": "compiler/refresh/Hexalith.FrontComposer.Shell.net10.0.txt",
+    "bytes": 120901,
+    "sha256": "f398736f25bbf56275b806fbb538dec96282602ca41e91307afaefb1795ac340"
+  },
+  {
+    "path": "compiler/refresh/P0Fixture.Inventory.Descriptor.net10.0.txt",
+    "bytes": 20953,
+    "sha256": "e324e14a3bba1d9dd61120df4c712c4a2a928704a9e6558a39df750db63d1f74"
+  },
+  {
+    "path": "compiler/refresh/P0Fixture.Inventory.net10.0.txt",
+    "bytes": 50652,
+    "sha256": "b113fe90a1cdde1eef7a1aee7e50f22618eaa803355e1b9d24cba7005d53dd59"
+  },
+  {
+    "path": "compiler/refresh/P0Fixture.NativeMetadataProbe.net10.0.txt",
+    "bytes": 23096,
+    "sha256": "96cc7dc005aac715844fef40d08a225cf7335a7895dba7b41caecaa03d78ca7f"
+  },
+  {
+    "path": "compiler/refresh/P0Fixture.Orders.Descriptor.net10.0.txt",
+    "bytes": 20935,
+    "sha256": "07892193f0c0f62e74a3b4c80b7cb4b639442c6fd104155cf6bc5499933d836f"
+  },
+  {
+    "path": "compiler/refresh/P0Fixture.Orders.net10.0.txt",
+    "bytes": 50609,
+    "sha256": "9beb800fcb1463a2bfc8a520a1417f66758ba9a414fd4e4667b6ff98df3a488c"
+  },
+  {
+    "path": "compiler/refresh/P0Fixture.Ui.Descriptor.net10.0.txt",
+    "bytes": 20907,
+    "sha256": "4a396cacbf203207fea360d6e42e529d7b1fd2f743d8be4ffaf71c4935ebb0aa"
+  },
+  {
+    "path": "compiler/refresh/P0Fixture.Ui.net10.0.txt",
+    "bytes": 21560,
+    "sha256": "fac49a089087c092a5928ebd71605c7eadf4ba0dabca7665aafc0c6c8e7a6c8e"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/015ba21db0bee916c5b3d54b1dd482d3e72df948adc7bf5bd401c8913938be6d/FcProjectionStaleNotice.razor",
+    "bytes": 5681,
+    "sha256": "015ba21db0bee916c5b3d54b1dd482d3e72df948adc7bf5bd401c8913938be6d"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/03473f29df8c9b0cdcf7c47683a94202646d24fc4983e67e3ace605bd20cdf11/Home.razor",
+    "bytes": 377,
+    "sha256": "03473f29df8c9b0cdcf7c47683a94202646d24fc4983e67e3ace605bd20cdf11"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0361b4de5f54d0b35473007a92b3614bd11bc003215c38a3c882c9e323691bf2/Hexalith.FrontComposer.Shell.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 23325,
+    "sha256": "0361b4de5f54d0b35473007a92b3614bd11bc003215c38a3c882c9e323691bf2"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0363694f252736cdfd0bcf6a567bb077940df16cc966e410153718a552769e82/SourceMapping.props",
+    "bytes": 98,
+    "sha256": "0363694f252736cdfd0bcf6a567bb077940df16cc966e410153718a552769e82"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/04145942ca8966d30680bb6c12833fac89ec95384b7bb62ba1fdcf331f10efbc/Microsoft.AspNetCore.App.Analyzers.dll",
+    "bytes": 264016,
+    "sha256": "04145942ca8966d30680bb6c12833fac89ec95384b7bb62ba1fdcf331f10efbc"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/053d21ae877f50dd543b96879a5eb867780daa9d3b784d8c183e322f1c570e9b/FcModuleLandingPage.razor",
+    "bytes": 1705,
+    "sha256": "053d21ae877f50dd543b96879a5eb867780daa9d3b784d8c183e322f1c570e9b"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/05c4598ff0860ade8e798139b2b255e0347302dcfd280cf8857ac53a7efa9ca1/Hexalith.EventStore.Admin.Abstractions.AssemblyInfo.cs",
+    "bytes": 1342,
+    "sha256": "05c4598ff0860ade8e798139b2b255e0347302dcfd280cf8857ac53a7efa9ca1"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0609f1331d13d6ac7fa8a65dfaaafe546957eb453ef1c5acedb6847f323d97f5/hexalith.release-records.v1.json",
+    "bytes": 44381,
+    "sha256": "0609f1331d13d6ac7fa8a65dfaaafe546957eb453ef1c5acedb6847f323d97f5"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/06ae89e580e6220f2377ac12dda53e74c32dd03ba14c414a43f2ea94ebcf45bd/.editorconfig",
+    "bytes": 364,
+    "sha256": "06ae89e580e6220f2377ac12dda53e74c32dd03ba14c414a43f2ea94ebcf45bd"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/06d6804f3b111e803edd0d9142b03f36df344e26e2d71e50e2291fe15039daa4/hexalith.module-manifest.v2.json",
+    "bytes": 29840,
+    "sha256": "06d6804f3b111e803edd0d9142b03f36df344e26e2d71e50e2291fe15039daa4"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/081ca50c51b2514ff640fa11fb2d4f24ee6fe603e95bd11688b50099fbf3e415/Hexalith.FrontComposer.Shell.Resources.DevMode.DevModeStrings.resources",
+    "bytes": 1298,
+    "sha256": "081ca50c51b2514ff640fa11fb2d4f24ee6fe603e95bd11688b50099fbf3e415"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0849289161e657df453e3a4e382fe14666253d0af9bdb929f7d6bbb128d1c513/ILLink.CodeFixProvider.dll",
+    "bytes": 35152,
+    "sha256": "0849289161e657df453e3a4e382fe14666253d0af9bdb929f7d6bbb128d1c513"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/08c46cfca81b4d71b3159f78b8d7bd2530ae87c18050a3d5c46fee0fdf0270f0/vs-threading.MainThreadAssertingMethods.txt",
+    "bytes": 56,
+    "sha256": "08c46cfca81b4d71b3159f78b8d7bd2530ae87c18050a3d5c46fee0fdf0270f0"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0a54da28ae92695415a9f4e094ee8b7c8ab987fb6d3af2891ce1ee79166bab2f/FcSystemThemeWatcher.razor",
+    "bytes": 450,
+    "sha256": "0a54da28ae92695415a9f4e094ee8b7c8ab987fb6d3af2891ce1ee79166bab2f"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0ae1a2dc007e615ed66627c384c03c5f8b4c8609b61c9727bfac4dfcfdd06f15/Hexalith.FrontComposer.Contracts.AssemblyInfo.cs",
+    "bytes": 1236,
+    "sha256": "0ae1a2dc007e615ed66627c384c03c5f8b4c8609b61c9727bfac4dfcfdd06f15"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0ba6bdb17867ac3c83d081751d38fc47e3b40026b5332626aac2b7f014edda3d/ILLink.RoslynAnalyzer.dll",
+    "bytes": 507176,
+    "sha256": "0ba6bdb17867ac3c83d081751d38fc47e3b40026b5332626aac2b7f014edda3d"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0c4f4c3cf9595bf28f43006eaa0423fba1b4f837f69e5f7ed409b1ae8b222758/P0Fixture.Inventory.AssemblyInfo.cs",
+    "bytes": 1268,
+    "sha256": "0c4f4c3cf9595bf28f43006eaa0423fba1b4f837f69e5f7ed409b1ae8b222758"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0c5fbf6e08ffa6f8d330f5015d00bfda0170c5bb3cdc977d44606b3a0f8d4406/Hexalith.Builds.Module.UiHost.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 3899,
+    "sha256": "0c5fbf6e08ffa6f8d330f5015d00bfda0170c5bb3cdc977d44606b3a0f8d4406"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34/Hexalith.EventStore.Admin.Abstractions.sourcelink.json",
+    "bytes": 204,
+    "sha256": "0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34/Hexalith.EventStore.Aspire.sourcelink.json",
+    "bytes": 204,
+    "sha256": "0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34/Hexalith.EventStore.Client.sourcelink.json",
+    "bytes": 204,
+    "sha256": "0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34/Hexalith.EventStore.Contracts.sourcelink.json",
+    "bytes": 204,
+    "sha256": "0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34/Hexalith.EventStore.DomainService.sourcelink.json",
+    "bytes": 204,
+    "sha256": "0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34/Hexalith.EventStore.Gateway.sourcelink.json",
+    "bytes": 204,
+    "sha256": "0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34/Hexalith.EventStore.Server.sourcelink.json",
+    "bytes": 204,
+    "sha256": "0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34/Hexalith.EventStore.ServiceDefaults.sourcelink.json",
+    "bytes": 204,
+    "sha256": "0cb566cab3c81db29564fd83975d80774f46c72bdc214ccd936edf1a8949bd34"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0d20cdc2414c42e5d353064d6c8b38abe473bc23ef76a55af1cc047cf48f2358/StackExchange.Redis.Build.dll",
+    "bytes": 121856,
+    "sha256": "0d20cdc2414c42e5d353064d6c8b38abe473bc23ef76a55af1cc047cf48f2358"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0eb2e1008eb95f8ac281c4044815cfe0d7ce940250612ca494d8e04facc2d98e/FcPageLayout.razor",
+    "bytes": 438,
+    "sha256": "0eb2e1008eb95f8ac281c4044815cfe0d7ce940250612ca494d8e04facc2d98e"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0f575a3bf26acc416ca71cf2dd8b0ed29a8df0b38cd23c7007f4f1a38dafa396/Roslynator_Formatting_Analyzers_Roslynator.Workspaces.Common.dll",
+    "bytes": 159744,
+    "sha256": "0f575a3bf26acc416ca71cf2dd8b0ed29a8df0b38cd23c7007f4f1a38dafa396"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0f8ec27602525504ce3fbbb4f38f25d2df790099b04e57c188915ff2b75a054e/FcRouteBodyLayout.razor",
+    "bytes": 99,
+    "sha256": "0f8ec27602525504ce3fbbb4f38f25d2df790099b04e57c188915ff2b75a054e"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0facec57610941c4aad6039d67936b80b4aed94193d6ba3a4a1276a3356d235a/Fluxor.Blazor.Web.Analyzers.dll",
+    "bytes": 14848,
+    "sha256": "0facec57610941c4aad6039d67936b80b4aed94193d6ba3a4a1276a3356d235a"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/0fc80c5fccee9e5d97c359cd7e975a1a7782789a11ff3842204d1ee3ade68bff/FcCommandBlockedOutcome.razor",
+    "bytes": 2781,
+    "sha256": "0fc80c5fccee9e5d97c359cd7e975a1a7782789a11ff3842204d1ee3ade68bff"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/106f2d22fef687fd27c1ea6e3f18a4d7fce07edcfcde33c65e330803bff874bb/EmbeddedAttribute.cs",
+    "bytes": 137,
+    "sha256": "106f2d22fef687fd27c1ea6e3f18a4d7fce07edcfcde33c65e330803bff874bb"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/1138195972042a2bdb6a96bd0c5b5a75b425ad0ba03bf5fa34e0cf92334d6b1e/FcSettingsButton.razor",
+    "bytes": 1073,
+    "sha256": "1138195972042a2bdb6a96bd0c5b5a75b425ad0ba03bf5fa34e0cf92334d6b1e"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/14df47359bd376f885b274f0f23d3771eaaa097a9e23025d3c6b72bb5c5aacc0/Hexalith.Builds.Module.EventStoreHost.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 3144,
+    "sha256": "14df47359bd376f885b274f0f23d3771eaaa097a9e23025d3c6b72bb5c5aacc0"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/14ee64d36f33ed8e5e03874ea0fa7cdd1832c7f18f34ca3dc4505203fde3a2bc/FcProjectionGlobalSearch.razor",
+    "bytes": 551,
+    "sha256": "14ee64d36f33ed8e5e03874ea0fa7cdd1832c7f18f34ca3dc4505203fde3a2bc"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/156adce8dc996703c0966f6e564a17a094f4c53747b20b648669f8ed83bbc300/FcProjectionEmptyPlaceholder.razor",
+    "bytes": 1953,
+    "sha256": "156adce8dc996703c0966f6e564a17a094f4c53747b20b648669f8ed83bbc300"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/15bc8e515a35a76b6bd34ef5458c18ec3f1f027ac58e124af9cf53daf61cd682/Nerdbank.MessagePack.Analyzers.dll",
+    "bytes": 103424,
+    "sha256": "15bc8e515a35a76b6bd34ef5458c18ec3f1f027ac58e124af9cf53daf61cd682"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/16e26c9813441ea37afe3fed2b7a711ef17a91bc23016c072a7534b3c4639d4c/Roslynator_Analyzers_Roslynator.Workspaces.Common.dll",
+    "bytes": 159744,
+    "sha256": "16e26c9813441ea37afe3fed2b7a711ef17a91bc23016c072a7534b3c4639d4c"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/18f4c3193313c7cecfe4f8291f1e28d2140a2843c3416c50d807a560e0cbbeb6/Dapr.Common.Generators.dll",
+    "bytes": 35328,
+    "sha256": "18f4c3193313c7cecfe4f8291f1e28d2140a2843c3416c50d807a560e0cbbeb6"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/196da84d800895ad06002eadeafb272f2bbaa6cc4d28230b7dfdef7af7bcdea0/Hexalith.EventStore.Contracts.AssemblyInfo.cs",
+    "bytes": 1854,
+    "sha256": "196da84d800895ad06002eadeafb272f2bbaa6cc4d28230b7dfdef7af7bcdea0"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/1a5ad8644f04ccd2fdddc88040c612550062305cb874ba700c5aa65fe0de1590/AnalyzerReleases.Unshipped.md",
+    "bytes": 4230,
+    "sha256": "1a5ad8644f04ccd2fdddc88040c612550062305cb874ba700c5aa65fe0de1590"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/1f4c33a358639b504083cffd03caee45b642d83e05fb45de9d8defd9ac9312d7/Microsoft.Gen.Metrics.dll",
+    "bytes": 82232,
+    "sha256": "1f4c33a358639b504083cffd03caee45b642d83e05fb45de9d8defd9ac9312d7"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/1faea7e8c500a1c0bcc9b4ad80622c2216c6e7395f340da11de64c91870978e7/Roslynator.Formatting.Analyzers.CodeFixes.dll",
+    "bytes": 74240,
+    "sha256": "1faea7e8c500a1c0bcc9b4ad80622c2216c6e7395f340da11de64c91870978e7"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/203f44cba3287e72507cc690215aa8d5feeae5c93b91d4e6d42853cbc5fde3f0/ModelContextProtocol.Analyzers.dll",
+    "bytes": 39936,
+    "sha256": "203f44cba3287e72507cc690215aa8d5feeae5c93b91d4e6d42853cbc5fde3f0"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/206a1dd2d92f05c8c977f2a86bc283fbbf519e69abf17808be1daee9a2642fe3/DefaultResultWriters.cs",
+    "bytes": 1094,
+    "sha256": "206a1dd2d92f05c8c977f2a86bc283fbbf519e69abf17808be1daee9a2642fe3"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/20b6e4c533fbb02eb755052c817552a49f27f7182d61a68b47358fbf2d228db4/Hexalith.EventStore.Admin.Abstractions.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 914,
+    "sha256": "20b6e4c533fbb02eb755052c817552a49f27f7182d61a68b47358fbf2d228db4"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/20d1ab874e2b6464a19323ce0d019c79ee02adedde2838bad96675566e547cda/Hexalith.Builds.Module.AppHost.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 1013,
+    "sha256": "20d1ab874e2b6464a19323ce0d019c79ee02adedde2838bad96675566e547cda"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/20e5c87f1912915c12099189eba08c7a6325b52fa55e520f3deb4d55913e53ee/FcFreshnessIndicator.razor",
+    "bytes": 1290,
+    "sha256": "20e5c87f1912915c12099189eba08c7a6325b52fa55e520f3deb4d55913e53ee"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/211c94c7dd793b1867d2a0a9a4115622b2f7a435fc3fa8417dc19394fd37b5f2/P0Fixture.Orders.AssemblyInfo.cs",
+    "bytes": 1259,
+    "sha256": "211c94c7dd793b1867d2a0a9a4115622b2f7a435fc3fa8417dc19394fd37b5f2"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/21ba6b69bac3f351fdb17c6b7a23223a2e85fbfdf0d9d633af30c13240813660/FcAggregateListPage.razor",
+    "bytes": 1488,
+    "sha256": "21ba6b69bac3f351fdb17c6b7a23223a2e85fbfdf0d9d633af30c13240813660"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/2373d21e96535d129227ef9058ea08758d3eaa4a29abd78c471eb1c81a598c5a/SelfRegisteredExtensions.cs",
+    "bytes": 1161,
+    "sha256": "2373d21e96535d129227ef9058ea08758d3eaa4a29abd78c471eb1c81a598c5a"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/2418e5705646f1580dd2fe23d42b7560f82e3df72d53b346bbadf0b1f19459fe/Microsoft.Interop.SourceGeneration.dll",
+    "bytes": 462632,
+    "sha256": "2418e5705646f1580dd2fe23d42b7560f82e3df72d53b346bbadf0b1f19459fe"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/24d0ab56778e928413e8c92f39f3f983e0c366f3e0c0b2aa9645c8dee0c4f7e4/FcHomeDirectory.razor",
+    "bytes": 8465,
+    "sha256": "24d0ab56778e928413e8c92f39f3f983e0c366f3e0c0b2aa9645c8dee0c4f7e4"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/25820caea73a0761e482efd560f68d5029f68643407543fdc139a8f04e8389cd/Hexalith.Builds.Tooling.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 930,
+    "sha256": "25820caea73a0761e482efd560f68d5029f68643407543fdc139a8f04e8389cd"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/281a891d89de384c0b0c59f372cf629840b7b62a940c4d1378ddfe86aacf49df/FrontComposerNavigation.razor",
+    "bytes": 17333,
+    "sha256": "281a891d89de384c0b0c59f372cf629840b7b62a940c4d1378ddfe86aacf49df"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/29f8242df1e5b7cec9427b7b289a0affc22fcfca3e5e3da9a2052b5361aa2095/FcProjectionLoadingSkeleton.razor",
+    "bytes": 2676,
+    "sha256": "29f8242df1e5b7cec9427b7b289a0affc22fcfca3e5e3da9a2052b5361aa2095"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/2a56dd01955a4ea669578664104d4e3e285ee715b645c5178cf753854d0af08f/Hexalith.Commons.UniqueIds.AssemblyInfo.cs",
+    "bytes": 1358,
+    "sha256": "2a56dd01955a4ea669578664104d4e3e285ee715b645c5178cf753854d0af08f"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/2b07aadd7b35e1804c27b1dc59c555ea321908be0438b0d91fd8358598e32b1b/FcFilterEmptyState.razor",
+    "bytes": 632,
+    "sha256": "2b07aadd7b35e1804c27b1dc59c555ea321908be0438b0d91fd8358598e32b1b"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/2c0ed0b7aeab030572830f3fd2be2b17757ee45057d17cd3a24e32de98c202b6/Humanizer.Analyzers.dll",
+    "bytes": 35512,
+    "sha256": "2c0ed0b7aeab030572830f3fd2be2b17757ee45057d17cd3a24e32de98c202b6"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/2c114431575a80e74f3448dbf85c697cd77bb09f6ecb0c9b5c35f42b5990601c/FcProjectionSubtitle.razor",
+    "bytes": 202,
+    "sha256": "2c114431575a80e74f3448dbf85c697cd77bb09f6ecb0c9b5c35f42b5990601c"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/2c7e0c7f022fd4c2548b605ce8d5ddbdf5979e701b1cfcce708c6a02599e1075/Microsoft.CodeAnalysis.CodeStyle.Fixes.dll",
+    "bytes": 1113936,
+    "sha256": "2c7e0c7f022fd4c2548b605ce8d5ddbdf5979e701b1cfcce708c6a02599e1075"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/2e07b1cff2ddd58f1e280f2bd9f004455e0e15d3bf29a496e905257bd1b44735/Aspire.Hosting.Analyzers.dll",
+    "bytes": 51000,
+    "sha256": "2e07b1cff2ddd58f1e280f2bd9f004455e0e15d3bf29a496e905257bd1b44735"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/2f9b0c63e7f7dffda31d356f52cc0cf22482ff3dc1051fe59b743612a5c3b0d5/Hexalith.FrontComposer.Shell.Resources.FcShellResources.fr.resources",
+    "bytes": 24490,
+    "sha256": "2f9b0c63e7f7dffda31d356f52cc0cf22482ff3dc1051fe59b743612a5c3b0d5"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/30c3847cb390e24e3066daa2ec58fdde74bf905920119d0afd648e150de3238c/FcDevModeOverlay.razor",
+    "bytes": 6912,
+    "sha256": "30c3847cb390e24e3066daa2ec58fdde74bf905920119d0afd648e150de3238c"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/330bb59bed62bcb80c87979e358db740bba710d195319a4abb76baa21d9dbcd2/FcValidationSummary.razor",
+    "bytes": 1935,
+    "sha256": "330bb59bed62bcb80c87979e358db740bba710d195319a4abb76baa21d9dbcd2"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/33d52acab2c0515837731aa56a4b9a1c37be28a004bf44f1f4c3bcf0a011451a/Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll",
+    "bytes": 125792,
+    "sha256": "33d52acab2c0515837731aa56a4b9a1c37be28a004bf44f1f4c3bcf0a011451a"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/3498bc1dd1646f9ca8808536448366bb69e7078d2a4c0bc96f3671d146d26a44/hexalith.check-suite.v1.json",
+    "bytes": 3749,
+    "sha256": "3498bc1dd1646f9ca8808536448366bb69e7078d2a4c0bc96f3671d146d26a44"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/3573f7a58bfbf6e796f5560b8f6d0d7d5d9950e783768d0910a185eac9f38cbb/Hexalith.Builds.Module.Cli.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 900,
+    "sha256": "3573f7a58bfbf6e796f5560b8f6d0d7d5d9950e783768d0910a185eac9f38cbb"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/3575c82b4f92eee5a55ecb3690324acfa3ff02c0f76f7ad84b29288078cae253/SourceMapping.targets",
+    "bytes": 480,
+    "sha256": "3575c82b4f92eee5a55ecb3690324acfa3ff02c0f76f7ad84b29288078cae253"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563/Hexalith.Builds.Module.AppHost.sourcelink.json",
+    "bytes": 196,
+    "sha256": "36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563/Hexalith.Builds.Module.Cli.sourcelink.json",
+    "bytes": 196,
+    "sha256": "36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563/Hexalith.Builds.Module.EventStoreHost.sourcelink.json",
+    "bytes": 196,
+    "sha256": "36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563/Hexalith.Builds.Module.Tests.sourcelink.json",
+    "bytes": 196,
+    "sha256": "36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563/Hexalith.Builds.Module.UiHost.sourcelink.json",
+    "bytes": 196,
+    "sha256": "36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563/Hexalith.Builds.Tooling.sourcelink.json",
+    "bytes": 196,
+    "sha256": "36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563/P0Fixture.Inventory.Descriptor.sourcelink.json",
+    "bytes": 196,
+    "sha256": "36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563/P0Fixture.Inventory.sourcelink.json",
+    "bytes": 196,
+    "sha256": "36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563/P0Fixture.NativeMetadataProbe.sourcelink.json",
+    "bytes": 196,
+    "sha256": "36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563/P0Fixture.Orders.Descriptor.sourcelink.json",
+    "bytes": 196,
+    "sha256": "36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563/P0Fixture.Orders.sourcelink.json",
+    "bytes": 196,
+    "sha256": "36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563/P0Fixture.Ui.Descriptor.sourcelink.json",
+    "bytes": 196,
+    "sha256": "36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563/P0Fixture.Ui.sourcelink.json",
+    "bytes": 196,
+    "sha256": "36162680f78d45ccf1571bf0366be5493f88b802bcb2308dd8acb24f9b5f9563"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/388779199609200bf00d42dcaf886e1ccf05558e2a5e417e3b631e6b888c998c/FcMaxItemsCapNotice.razor",
+    "bytes": 660,
+    "sha256": "388779199609200bf00d42dcaf886e1ccf05558e2a5e417e3b631e6b888c998c"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/38d937990fe9b3ebeedfce5e3e4b68204230e09b1bbf2ccf3cf83d44df6dda61/XunitAutoGeneratedEntryPoint.cs",
+    "bytes": 813,
+    "sha256": "38d937990fe9b3ebeedfce5e3e4b68204230e09b1bbf2ccf3cf83d44df6dda61"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/3ba99d8b7990134d864380b25e34da338959d825880a2144748cfb94d71fb3fe/Microsoft.Extensions.Logging.Generators.dll",
+    "bytes": 80168,
+    "sha256": "3ba99d8b7990134d864380b25e34da338959d825880a2144748cfb94d71fb3fe"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/3ea8e37993c2d010762f21c6c9cc6866a26f8553de1b2caa7f68ab8d9740f0ed/Hexalith.Builds.Module.UiHost.GlobalUsings.g.cs",
+    "bytes": 680,
+    "sha256": "3ea8e37993c2d010762f21c6c9cc6866a26f8553de1b2caa7f68ab8d9740f0ed"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/3f217a2091f32c2afe2a24f130b57c7d2367e42f41f3aecf2a29727707a4dfae/FcFieldPlaceholder.razor",
+    "bytes": 756,
+    "sha256": "3f217a2091f32c2afe2a24f130b57c7d2367e42f41f3aecf2a29727707a4dfae"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/40089537a63c8ae1aee1623668ddf738bc68615f0239c8951560b94d64eafa92/Microsoft.Extensions.Options.SourceGeneration.dll",
+    "bytes": 134440,
+    "sha256": "40089537a63c8ae1aee1623668ddf738bc68615f0239c8951560b94d64eafa92"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/43247711c6d8602345c1a4a1b863ed9c5b74cef085052454de7cb717d2f122d6/Hexalith.FrontComposer.Contracts.UI.sourcelink.json",
+    "bytes": 210,
+    "sha256": "43247711c6d8602345c1a4a1b863ed9c5b74cef085052454de7cb717d2f122d6"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/43247711c6d8602345c1a4a1b863ed9c5b74cef085052454de7cb717d2f122d6/Hexalith.FrontComposer.Contracts.sourcelink.json",
+    "bytes": 210,
+    "sha256": "43247711c6d8602345c1a4a1b863ed9c5b74cef085052454de7cb717d2f122d6"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/43247711c6d8602345c1a4a1b863ed9c5b74cef085052454de7cb717d2f122d6/Hexalith.FrontComposer.Shell.sourcelink.json",
+    "bytes": 210,
+    "sha256": "43247711c6d8602345c1a4a1b863ed9c5b74cef085052454de7cb717d2f122d6"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/44ab5ee213bb080d381812556fe51ff4f0c8e5a8cbe9d316517e780572a3e6e0/Microsoft.CodeAnalysis.CSharp.CodeStyle.Fixes.dll",
+    "bytes": 938280,
+    "sha256": "44ab5ee213bb080d381812556fe51ff4f0c8e5a8cbe9d316517e780572a3e6e0"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/4535b7d25a73af60ac44b7f5209d907111296cb0122b1c9d030b6ebff05807f3/FcAnyAuthorized.razor",
+    "bytes": 102,
+    "sha256": "4535b7d25a73af60ac44b7f5209d907111296cb0122b1c9d030b6ebff05807f3"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/455007b1133d11adbfafd7c0ee90eda23ee786c35aabf43020b30c0bf3cd10b9/FcFilterSummary.razor",
+    "bytes": 540,
+    "sha256": "455007b1133d11adbfafd7c0ee90eda23ee786c35aabf43020b30c0bf3cd10b9"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/46e5531194c7001d700ef8b01008d839f66744de551213df3a518811283ae79e/FcScopeBlocked.razor",
+    "bytes": 552,
+    "sha256": "46e5531194c7001d700ef8b01008d839f66744de551213df3a518811283ae79e"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/4849c29c3fd0b56770ae7a239a87f25f710ff6a47bfde009461bb6dabe8a3f47/csc",
+    "bytes": 78192,
+    "sha256": "4849c29c3fd0b56770ae7a239a87f25f710ff6a47bfde009461bb6dabe8a3f47"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/48711e40156f5855ed890cd4765524a18ea618ca37ee8e9f06a4397931860e8e/Hexalith.Builds.Module.Tests.AssemblyInfo.cs",
+    "bytes": 1255,
+    "sha256": "48711e40156f5855ed890cd4765524a18ea618ca37ee8e9f06a4397931860e8e"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/49bd6382c3fdae10755e18e0e1fc4ba520c47bebf752d477bc8fb07a6f91b6c9/Hexalith.EventStore.DomainService.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 904,
+    "sha256": "49bd6382c3fdae10755e18e0e1fc4ba520c47bebf752d477bc8fb07a6f91b6c9"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/4c85c70099a7898e030c5b5baa2dd88d9114d4bb7468dc4ed3bb83cd4180889d/FcProjectionConnectionStatus.razor",
+    "bytes": 3724,
+    "sha256": "4c85c70099a7898e030c5b5baa2dd88d9114d4bb7468dc4ed3bb83cd4180889d"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/4db98792d54b056a76fcfdc91acf9fc8828f60e6102a9f4c1c3209cb95a161f9/P0Fixture.Orders.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 3126,
+    "sha256": "4db98792d54b056a76fcfdc91acf9fc8828f60e6102a9f4c1c3209cb95a161f9"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/503ba2e22f97c77be9b0091cbbf7e068dcaff68e4916146d81adc398712fdd90/Microsoft.Interop.JavaScript.JSImportGenerator.dll",
+    "bytes": 136488,
+    "sha256": "503ba2e22f97c77be9b0091cbbf7e068dcaff68e4916146d81adc398712fdd90"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/5238d399ac4eda103bea540aff23108bf1b0a1c0976e17bc0a3c177049d763bf/App.razor",
+    "bytes": 387,
+    "sha256": "5238d399ac4eda103bea540aff23108bf1b0a1c0976e17bc0a3c177049d763bf"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/5486ee3928bc84eb0668afdd2d836c5df26f029b83d4ac5964daa447753c6fbe/FcPageHeader.razor",
+    "bytes": 3474,
+    "sha256": "5486ee3928bc84eb0668afdd2d836c5df26f029b83d4ac5964daa447753c6fbe"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/5643dd65d76433091aa19b24b406a3c75c2be8030c2990b418c33e3495323d42/StyleCop.Analyzers.CodeFixes.dll",
+    "bytes": 638976,
+    "sha256": "5643dd65d76433091aa19b24b406a3c75c2be8030c2990b418c33e3495323d42"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/5826e9f8c9eef92cd20e406d6c1fde7e3f11048d99c14f7e6dae50ab00d426e6/Microsoft.AspNetCore.Razor.Utilities.Shared.dll",
+    "bytes": 540968,
+    "sha256": "5826e9f8c9eef92cd20e406d6c1fde7e3f11048d99c14f7e6dae50ab00d426e6"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/598d36bdeec14ee497123c340b2af6dbc0b0e7488f70580dab918916bcbc28e6/Hexalith.Builds.Module.Cli.AssemblyInfo.cs",
+    "bytes": 1270,
+    "sha256": "598d36bdeec14ee497123c340b2af6dbc0b0e7488f70580dab918916bcbc28e6"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/5a24daf2c50f6c05cfd655b2d0883e74d192499367698b2a12678025762ea08e/Hexalith.Builds.Module.AppHost.GlobalUsings.g.cs",
+    "bytes": 306,
+    "sha256": "5a24daf2c50f6c05cfd655b2d0883e74d192499367698b2a12678025762ea08e"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/5c11211f37f0fe9d272e317b9d799a7a15b4c4111dfcff80d59ca163abdce944/_Imports.razor",
+    "bytes": 479,
+    "sha256": "5c11211f37f0fe9d272e317b9d799a7a15b4c4111dfcff80d59ca163abdce944"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/5f775566f26ae1680020c092822fd912571c95450d371c805e8fe9ab43415071/MessagePack.Analyzers.CodeFixes.dll",
+    "bytes": 41984,
+    "sha256": "5f775566f26ae1680020c092822fd912571c95450d371c805e8fe9ab43415071"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/5faa5fddcb1287bddac5271e4ceaf3545063956893c01f7a51d7fe831c0d1e25/Microsoft.Interop.ComInterfaceGenerator.dll",
+    "bytes": 328528,
+    "sha256": "5faa5fddcb1287bddac5271e4ceaf3545063956893c01f7a51d7fe831c0d1e25"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/601fe46afab2fe3741023099b468aa374ea5ae8d0ad0bcef5fbcf038262fc960/StyleCop.Analyzers.dll",
+    "bytes": 1466368,
+    "sha256": "601fe46afab2fe3741023099b468aa374ea5ae8d0ad0bcef5fbcf038262fc960"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/61f9c959498c3ec3ff165839bef588799505ee22ef3939a70b74facc0ad3d238/Microsoft.CodeAnalysis.CSharp.CodeStyle.dll",
+    "bytes": 738128,
+    "sha256": "61f9c959498c3ec3ff165839bef588799505ee22ef3939a70b74facc0ad3d238"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/61fbf9cc56a4a0da4cc2aa770f846746d1adf5573a46541c2111f39fbca2ab94/P0Fixture.Orders.Descriptor.AssemblyInfo.cs",
+    "bytes": 1297,
+    "sha256": "61fbf9cc56a4a0da4cc2aa770f846746d1adf5573a46541c2111f39fbca2ab94"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/62dab52ef2f6f884474f1bf37bf9fdb071c9a028995e8f302ed5f1dab6c0faab/P0Fixture.NativeMetadataProbe.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 936,
+    "sha256": "62dab52ef2f6f884474f1bf37bf9fdb071c9a028995e8f302ed5f1dab6c0faab"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/63b807ee75d3a12b715efb01d3ff034b9662a33aac308acbbae1f4bc0d30b977/P0Fixture.Ui.AssemblyInfo.cs",
+    "bytes": 1261,
+    "sha256": "63b807ee75d3a12b715efb01d3ff034b9662a33aac308acbbae1f4bc0d30b977"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/63c25037e5cce0e85eb938b59f84faf2214c01dc8a68e0735519df8c7d4dd0e7/Microsoft.CodeAnalysis.CodeStyle.dll",
+    "bytes": 1867048,
+    "sha256": "63c25037e5cce0e85eb938b59f84faf2214c01dc8a68e0735519df8c7d4dd0e7"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/6802879d29fbd66de6ce2ecb81e1baba7f406ff670e602a87a69a39c270a40d1/FcDensityApplier.razor",
+    "bytes": 542,
+    "sha256": "6802879d29fbd66de6ce2ecb81e1baba7f406ff670e602a87a69a39c270a40d1"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/69b18523745887f4682309ffe1b2094c818726330c3cd25bb4cb1a8a58dcf6f4/FcLifecycleWrapper.razor",
+    "bytes": 13089,
+    "sha256": "69b18523745887f4682309ffe1b2094c818726330c3cd25bb4cb1a8a58dcf6f4"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/6b6db4e43d905e2b587e72e271207a1707c89f3ea022b729548290451f67dd46/Hexalith.EventStore.Server.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 890,
+    "sha256": "6b6db4e43d905e2b587e72e271207a1707c89f3ea022b729548290451f67dd46"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/6c4b2550786f59d2a9014d092690cd0507ccd4454ff16a49cd43395abdb9d0ab/PolyType.SourceGenerator.dll",
+    "bytes": 410112,
+    "sha256": "6c4b2550786f59d2a9014d092690cd0507ccd4454ff16a49cd43395abdb9d0ab"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/6d15ab6ae267337ebcbb0922709754ec85cad5485bfd64367618163338df954d/P0Fixture.Inventory.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 3138,
+    "sha256": "6d15ab6ae267337ebcbb0922709754ec85cad5485bfd64367618163338df954d"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/6fd0163187662828b7c33ecbd6ad518582a7a5779bae122d474962b4bb3945b1/Hexalith.EventStore.Aspire.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 998,
+    "sha256": "6fd0163187662828b7c33ecbd6ad518582a7a5779bae122d474962b4bb3945b1"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/721da95e2f6f734b11a672ce509c68d617b641c6a979751ec6539e0a4c75a8cd/Hexalith.Builds.Module.EventStoreHost.GlobalUsings.g.cs",
+    "bytes": 625,
+    "sha256": "721da95e2f6f734b11a672ce509c68d617b641c6a979751ec6539e0a4c75a8cd"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/721da95e2f6f734b11a672ce509c68d617b641c6a979751ec6539e0a4c75a8cd/Hexalith.EventStore.Gateway.GlobalUsings.g.cs",
+    "bytes": 625,
+    "sha256": "721da95e2f6f734b11a672ce509c68d617b641c6a979751ec6539e0a4c75a8cd"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/721da95e2f6f734b11a672ce509c68d617b641c6a979751ec6539e0a4c75a8cd/P0Fixture.Inventory.GlobalUsings.g.cs",
+    "bytes": 625,
+    "sha256": "721da95e2f6f734b11a672ce509c68d617b641c6a979751ec6539e0a4c75a8cd"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/721da95e2f6f734b11a672ce509c68d617b641c6a979751ec6539e0a4c75a8cd/P0Fixture.Orders.GlobalUsings.g.cs",
+    "bytes": 625,
+    "sha256": "721da95e2f6f734b11a672ce509c68d617b641c6a979751ec6539e0a4c75a8cd"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/72a62facb81615e26222aa4b2046e7a31279ca97b6c0be2417e4b1b51c4fecaf/Roslynator.Formatting.Analyzers.dll",
+    "bytes": 75776,
+    "sha256": "72a62facb81615e26222aa4b2046e7a31279ca97b6c0be2417e4b1b51c4fecaf"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/7310594fd1f04a4697c65b04fa046e371dd5c86bc586eab67f75b5d78efa93c9/Hexalith.EventStore.Client.AssemblyInfo.cs",
+    "bytes": 2188,
+    "sha256": "7310594fd1f04a4697c65b04fa046e371dd5c86bc586eab67f75b5d78efa93c9"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/73b2f25d094fc2345dc6825ff9058ca7aab7b84172f03292d3bb9a4770fd7a17/FcSurfaceStatus.razor",
+    "bytes": 5941,
+    "sha256": "73b2f25d094fc2345dc6825ff9058ca7aab7b84172f03292d3bb9a4770fd7a17"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/7437a0f669089435931833a9646eba1d3c70704fe3fb777ac84d892c3401177d/P0Fixture.Ui.Descriptor.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 893,
+    "sha256": "7437a0f669089435931833a9646eba1d3c70704fe3fb777ac84d892c3401177d"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/754b1ab65c7b1ebbaffdb630f9df00654c8e6dab11adb5f3f7e1cce6b37c94b6/FcSettingsDialog.razor",
+    "bytes": 5222,
+    "sha256": "754b1ab65c7b1ebbaffdb630f9df00654c8e6dab11adb5f3f7e1cce6b37c94b6"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/76cdc496c518791a593ecf2a69b3fdd0dded266c611b1f59c23dc6edee8d5a0f/hexalith.check-result.v1.json",
+    "bytes": 3602,
+    "sha256": "76cdc496c518791a593ecf2a69b3fdd0dded266c611b1f59c23dc6edee8d5a0f"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/782d55fdf659d7cf65b28c6bdb120ce661dca2f6c8839648a459415f4c52b936/Hexalith.FrontComposer.Contracts.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 1176,
+    "sha256": "782d55fdf659d7cf65b28c6bdb120ce661dca2f6c8839648a459415f4c52b936"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/799480b488cba3c2b66f20b78fad76432cd423cd5c460de7252ad9131359d00c/platform-version-catalog.json",
+    "bytes": 538,
+    "sha256": "799480b488cba3c2b66f20b78fad76432cd423cd5c460de7252ad9131359d00c"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/7c9f5d8b414be3a71c8c0515b9455b94a7dff9510053516d9a0b6d2d207a1236/Hexalith.EventStore.DomainService.AssemblyInfo.cs",
+    "bytes": 2030,
+    "sha256": "7c9f5d8b414be3a71c8c0515b9455b94a7dff9510053516d9a0b6d2d207a1236"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/7ca824574735f40699d2a53ac8c4bdcab58036abd07861538c3509ec797b8a89/FcDensityAnnouncer.razor",
+    "bytes": 734,
+    "sha256": "7ca824574735f40699d2a53ac8c4bdcab58036abd07861538c3509ec797b8a89"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/821585131a2581284a6991dccf4002a874d5a5622b6e7a355cb5a60099295461/FcDestructiveConfirmationDialog.razor",
+    "bytes": 2611,
+    "sha256": "821585131a2581284a6991dccf4002a874d5a5622b6e7a355cb5a60099295461"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/822ee51a8eb768f1b56cd4a36f0be7744f9de5880b3ac16df43bd518dca2e680/Nerdbank.MessagePack.Analyzers.CodeFixes.dll",
+    "bytes": 52736,
+    "sha256": "822ee51a8eb768f1b56cd4a36f0be7744f9de5880b3ac16df43bd518dca2e680"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/831f77576003b68672633925a1d4d659b5abb833aef59302b1b7f1bad1c96633/P0Fixture.Inventory.Descriptor.AssemblyInfo.cs",
+    "bytes": 1303,
+    "sha256": "831f77576003b68672633925a1d4d659b5abb833aef59302b1b7f1bad1c96633"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/83de8d78a074833e940c21f3437a5c4b4e3ad27a73bce65f4b66adef5bfedfdb/SonarAnalyzer.CSharp.dll",
+    "bytes": 4484440,
+    "sha256": "83de8d78a074833e940c21f3437a5c4b4e3ad27a73bce65f4b66adef5bfedfdb"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/843a406a2734cc5cbdd7365a6362b4f9073c439971ce348c6a313632cd5b177c/analysislevel_10_default.globalconfig",
+    "bytes": 398,
+    "sha256": "843a406a2734cc5cbdd7365a6362b4f9073c439971ce348c6a313632cd5b177c"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/846db76758e105b18f663d17d59953f197851ac148eb2b8c89e1256447f4c840/Hexalith.Builds.Module.UiHost.AssemblyInfo.cs",
+    "bytes": 1322,
+    "sha256": "846db76758e105b18f663d17d59953f197851ac148eb2b8c89e1256447f4c840"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/84f8c1e53299f6a41aba20a3fed47a657724a878abc2c8f237e5f24db2c48dfb/ModelContextProtocol.Analyzers.dll",
+    "bytes": 39936,
+    "sha256": "84f8c1e53299f6a41aba20a3fed47a657724a878abc2c8f237e5f24db2c48dfb"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/86284dac86603c8b62e88521d185c76495734ded58a78be63b57cef173fd882f/ValidatableTypeAttribute.cs",
+    "bytes": 276,
+    "sha256": "86284dac86603c8b62e88521d185c76495734ded58a78be63b57cef173fd882f"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/866342de0fb9304d29a168912a5eba2682e572276b5248b694fdf04a4388c0b1/xunit.analyzers.dll",
+    "bytes": 387848,
+    "sha256": "866342de0fb9304d29a168912a5eba2682e572276b5248b694fdf04a4388c0b1"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/86fa6cbb0eaa6b8b65aa82894e207d23cd92a72b344742dde8841befb0f88619/FcExpandedRowHiddenBanner.razor",
+    "bytes": 1546,
+    "sha256": "86fa6cbb0eaa6b8b65aa82894e207d23cd92a72b344742dde8841befb0f88619"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/88fa31a0b864358bbfd85b7447b4b281cca6c850f9f46d3e2a17013ccb957bc3/Hexalith.Builds.Module.EventStoreHost.AssemblyInfo.cs",
+    "bytes": 1451,
+    "sha256": "88fa31a0b864358bbfd85b7447b4b281cca6c850f9f46d3e2a17013ccb957bc3"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8c9645ea79c419306eda7349b82f3e08eca426df085e866e97eadd870f3ae257/xunit.analyzers.fixes.dll",
+    "bytes": 251144,
+    "sha256": "8c9645ea79c419306eda7349b82f3e08eca426df085e866e97eadd870f3ae257"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/Hexalith.Builds.Module.Cli.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/Hexalith.Builds.Module.Tests.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/Hexalith.Builds.Tooling.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/Hexalith.Commons.UniqueIds.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/Hexalith.EventStore.Admin.Abstractions.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/Hexalith.EventStore.Aspire.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/Hexalith.EventStore.Client.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/Hexalith.EventStore.Contracts.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/Hexalith.EventStore.DomainService.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/Hexalith.EventStore.Server.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/Hexalith.EventStore.ServiceDefaults.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/Hexalith.FrontComposer.Contracts.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/Hexalith.FrontComposer.Contracts.UI.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/P0Fixture.Inventory.Descriptor.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/P0Fixture.NativeMetadataProbe.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/P0Fixture.Orders.Descriptor.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/P0Fixture.Ui.Descriptor.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592/P0Fixture.Ui.GlobalUsings.g.cs",
+    "bytes": 231,
+    "sha256": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/8fc6ebd9872d44fe578cdcadd64603c130b6cee363a4017003b7d6fec84569d2/FcStatusIcon.razor",
+    "bytes": 460,
+    "sha256": "8fc6ebd9872d44fe578cdcadd64603c130b6cee363a4017003b7d6fec84569d2"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/9131a7a2a34e43e6d3af23cc5de95f6e6c4be2a6a47ac84fbc020209a1b11952/_AppHost.ProjectMetadata.g.cs",
+    "bytes": 927,
+    "sha256": "9131a7a2a34e43e6d3af23cc5de95f6e6c4be2a6a47ac84fbc020209a1b11952"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/932a4f39d8494c071949ab6cc57f41ade491de5b0bc9d122e4e2576e5366fa0f/FcPageTabs.razor",
+    "bytes": 1804,
+    "sha256": "932a4f39d8494c071949ab6cc57f41ade491de5b0bc9d122e4e2576e5366fa0f"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/9336ba1d683c5a0f7e17d661490c9f03eab077cf32170d78ce41a8f99233824c/FcStatusBadge.razor",
+    "bytes": 806,
+    "sha256": "9336ba1d683c5a0f7e17d661490c9f03eab077cf32170d78ce41a8f99233824c"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/939148fec6c3b9b996dd07780c8a1d7564a73e7a48889b1cdea715f72f9ca44e/Microsoft.AspNetCore.App.SourceGenerators.dll",
+    "bytes": 20304,
+    "sha256": "939148fec6c3b9b996dd07780c8a1d7564a73e7a48889b1cdea715f72f9ca44e"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/93a134f6cd766b03b2f4d7c9b1fbf4ddadf963470175e359f16ea7f02d7545d2/FcFormAbandonmentGuard.razor",
+    "bytes": 2167,
+    "sha256": "93a134f6cd766b03b2f4d7c9b1fbf4ddadf963470175e359f16ea7f02d7545d2"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/93a26d13aa414711067a04baeb2505654f18a6febfef5cbbd3789162507f86e4/analysislevel_11_all_warnaserror.globalconfig",
+    "bytes": 31126,
+    "sha256": "93a26d13aa414711067a04baeb2505654f18a6febfef5cbbd3789162507f86e4"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/9773678febac38025fae837154341d9036ce8aa94e66b0d30c7e15ee668d7e39/hexalith.test-result.v1.json",
+    "bytes": 46488,
+    "sha256": "9773678febac38025fae837154341d9036ce8aa94e66b0d30c7e15ee668d7e39"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/97b298ce6c88deec8828e9e7e4d6b65b686086347f58533939423bcc88704c4e/FcAccountMenu.razor",
+    "bytes": 3316,
+    "sha256": "97b298ce6c88deec8828e9e7e4d6b65b686086347f58533939423bcc88704c4e"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/9a426735fe047d8d7d17cca61d8b0457bf5e5a56b57c906c3b6d6c95b24a72da/FcSlowQueryNotice.razor",
+    "bytes": 670,
+    "sha256": "9a426735fe047d8d7d17cca61d8b0457bf5e5a56b57c906c3b6d6c95b24a72da"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/9afa0bb97474b7183a4cc228b6cd33f76eeb663881e7fd4f1bd816c72c82c18b/FcAggregateDetailPage.razor",
+    "bytes": 1919,
+    "sha256": "9afa0bb97474b7183a4cc228b6cd33f76eeb663881e7fd4f1bd816c72c82c18b"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/9b158074cbbaf1ce178bf85db32a42dd70db4ca32738ff5986386f417a0ad6ec/Hexalith.EventStore.ServiceDefaults.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 908,
+    "sha256": "9b158074cbbaf1ce178bf85db32a42dd70db4ca32738ff5986386f417a0ad6ec"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/9c90b953e381cb885f8653efae546c789fc79221088c86cbfefdd5ba767dc2b3/Microsoft.Gen.Logging.dll",
+    "bytes": 135480,
+    "sha256": "9c90b953e381cb885f8653efae546c789fc79221088c86cbfefdd5ba767dc2b3"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/9d16a729e2e4914cc88dcda6945296c0132a03708577f4378d2a8dc287fe2cba/hexalith.check-invocation.v1.json",
+    "bytes": 3738,
+    "sha256": "9d16a729e2e4914cc88dcda6945296c0132a03708577f4378d2a8dc287fe2cba"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/9e856d3ffe3a2e0d5f67f983c51ecf068dff11b91c0b63fa8e4cc14dd59d67f8/.editorconfig",
+    "bytes": 2322,
+    "sha256": "9e856d3ffe3a2e0d5f67f983c51ecf068dff11b91c0b63fa8e4cc14dd59d67f8"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/9ebd178ed060347ecf28d657c6cf0df5f61e221add97e0fcc333a36203aca2e5/FcPaletteTriggerButton.razor",
+    "bytes": 901,
+    "sha256": "9ebd178ed060347ecf28d657c6cf0df5f61e221add97e0fcc333a36203aca2e5"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/a06eb28d9f5ba6487977502b710f321c27ed1ead161b8679f063658af13101d0/Hexalith.EventStore.Gateway.AssemblyInfo.cs",
+    "bytes": 1702,
+    "sha256": "a06eb28d9f5ba6487977502b710f321c27ed1ead161b8679f063658af13101d0"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/a10b854ba9565e1ca6d8c38dce4edd9cac710c3f956887448ff9617b07990340/StreamJsonRpc.Analyzers.dll",
+    "bytes": 164704,
+    "sha256": "a10b854ba9565e1ca6d8c38dce4edd9cac710c3f956887448ff9617b07990340"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/a3c70bf2bb016dbf7024f1faab737a0f1970693cf6121353d5dc63975b6e34f8/FcHomeRouteView.razor",
+    "bytes": 465,
+    "sha256": "a3c70bf2bb016dbf7024f1faab737a0f1970693cf6121353d5dc63975b6e34f8"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/a4ca4be7d368f39a51ae0b335a10b92ff3d9dbaba267110263672fbf7057283d/Microsoft.CodeAnalysis.NetAnalyzers.dll",
+    "bytes": 5439272,
+    "sha256": "a4ca4be7d368f39a51ae0b335a10b92ff3d9dbaba267110263672fbf7057283d"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/a4f3b2ace04c8dda0411a708b59a015bc1b489ed2508c0e99832aa9c7d21440f/FcColumnFilterCell.razor",
+    "bytes": 713,
+    "sha256": "a4f3b2ace04c8dda0411a708b59a015bc1b489ed2508c0e99832aa9c7d21440f"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/a65fc1b5eff815d2ba7e5541bcf64b15dd2199767335338523f17f9f8115087a/System.Text.RegularExpressions.Generator.dll",
+    "bytes": 371496,
+    "sha256": "a65fc1b5eff815d2ba7e5541bcf64b15dd2199767335338523f17f9f8115087a"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/a6f38711b95a230bafa7c860722cb4c6b5b93d4823c3c170fdc2e0d4796829f2/Roslynator_Formatting_Analyzers_Roslynator.CSharp.dll",
+    "bytes": 333312,
+    "sha256": "a6f38711b95a230bafa7c860722cb4c6b5b93d4823c3c170fdc2e0d4796829f2"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/a7992217dd583827df7d66a2a37baebc4e910da7524a7b8f82682103bf570292/FcDensityPreviewPanel.razor",
+    "bytes": 3771,
+    "sha256": "a7992217dd583827df7d66a2a37baebc4e910da7524a7b8f82682103bf570292"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/a8f34fe1b9bc15b1794015b5d8babbc070b3096947d46716c52351397447b54f/hexalith.module-run-evidence.v1.json",
+    "bytes": 17555,
+    "sha256": "a8f34fe1b9bc15b1794015b5d8babbc070b3096947d46716c52351397447b54f"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/abaa78f8cb55cd2b06078d2f0bb9db73ce0e7466d7dac1367954f4bce9592130/FcPageToolbar.razor",
+    "bytes": 4883,
+    "sha256": "abaa78f8cb55cd2b06078d2f0bb9db73ce0e7466d7dac1367954f4bce9592130"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/acf721222bb610e14f3e985127ca4d07be5f6d3acad4dc20beec13d6db4166a1/StreamJsonRpc.Analyzers.CodeFixes.dll",
+    "bytes": 39776,
+    "sha256": "acf721222bb610e14f3e985127ca4d07be5f6d3acad4dc20beec13d6db4166a1"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/ae93da66548cd25ce5b5393d7e6e9b8afc6c8f7b328e0fb056153134926b8b6d/FrontComposerShell.razor",
+    "bytes": 12134,
+    "sha256": "ae93da66548cd25ce5b5393d7e6e9b8afc6c8f7b328e0fb056153134926b8b6d"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/af08c3b942feccb4af62c41ef7f1489513f31468ea0ec35974b84798fe3c9e89/Microsoft.AspNetCore.Components.Analyzers.dll",
+    "bytes": 58152,
+    "sha256": "af08c3b942feccb4af62c41ef7f1489513f31468ea0ec35974b84798fe3c9e89"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/af17fbac51b2321704fc2f76183e58f08a1eac91a2474bf00e8de2e71a569029/.editorconfig",
+    "bytes": 3971,
+    "sha256": "af17fbac51b2321704fc2f76183e58f08a1eac91a2474bf00e8de2e71a569029"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/af78b681fc32e1c6b0b9c27c331b6499acf5937dd1d0c47c96e2cf11b882d708/FcPendingCommandSummary.razor",
+    "bytes": 1439,
+    "sha256": "af78b681fc32e1c6b0b9c27c331b6499acf5937dd1d0c47c96e2cf11b882d708"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/afd38ab82658f12e5c69a88c2e756c499febcb8999daebc1e3a06e931b46a82a/FcRouteFailureHeading.razor",
+    "bytes": 710,
+    "sha256": "afd38ab82658f12e5c69a88c2e756c499febcb8999daebc1e3a06e931b46a82a"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/b02424a730eaea2e1fd7556d193749e07d0085f25ded0e25bf10d27cfb354393/Microsoft.Interop.LibraryImportGenerator.dll",
+    "bytes": 261928,
+    "sha256": "b02424a730eaea2e1fd7556d193749e07d0085f25ded0e25bf10d27cfb354393"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/b2b7ed7ed2ebdaeeb8d8ce4acbdbc1a0ad7b3e706ad78fec8b4acfd3b0476360/Hexalith.FrontComposer.Shell.GlobalUsings.g.cs",
+    "bytes": 286,
+    "sha256": "b2b7ed7ed2ebdaeeb8d8ce4acbdbc1a0ad7b3e706ad78fec8b4acfd3b0476360"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/b2d0129d73c81f594b93bc8950a40a8d1845ed6791fb1cfef28ec9ab747049d4/Roslynator_Analyzers_Roslynator.CSharp.dll",
+    "bytes": 333312,
+    "sha256": "b2d0129d73c81f594b93bc8950a40a8d1845ed6791fb1cfef28ec9ab747049d4"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/b44cd8a9faf271b804d0f672cb16a1c8a8eb98004ac9e458a224bab99c429cf2/Hexalith.globalconfig",
+    "bytes": 10831,
+    "sha256": "b44cd8a9faf271b804d0f672cb16a1c8a8eb98004ac9e458a224bab99c429cf2"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/b5590b47e97e80e0c038bcad611081d03612b0353b4c4daead211f1de27de943/FcRouteFocus.razor",
+    "bytes": 120,
+    "sha256": "b5590b47e97e80e0c038bcad611081d03612b0353b4c4daead211f1de27de943"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/b5b9f7360ad596ff111e6e23a3f39a7354d332e244692ac4ddf7e4eeb844f9c9/FcContentLabel.razor",
+    "bytes": 580,
+    "sha256": "b5b9f7360ad596ff111e6e23a3f39a7354d332e244692ac4ddf7e4eeb844f9c9"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/b7268471104178e3750ef11cdbd383f82d8ed61f6d45fa879b7022d0b0abac0f/P0Fixture.Ui.Descriptor.AssemblyInfo.cs",
+    "bytes": 1281,
+    "sha256": "b7268471104178e3750ef11cdbd383f82d8ed61f6d45fa879b7022d0b0abac0f"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/b99df70e4becfd35ec1e1eba4c058ca7f51891e30499f351f0e9ff62ff587cf4/Microsoft.CodeAnalysis.Razor.Compiler.dll",
+    "bytes": 4001104,
+    "sha256": "b99df70e4becfd35ec1e1eba4c058ca7f51891e30499f351f0e9ff62ff587cf4"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/badfe4696d5dabef41b97fd774652cceabbc8907c11e3932b8f3cd509ae2f5ec/Microsoft.AspNetCore.OpenApi.SourceGenerators.dll",
+    "bytes": 118568,
+    "sha256": "badfe4696d5dabef41b97fd774652cceabbc8907c11e3932b8f3cd509ae2f5ec"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/bbd8d11655855d5471c68677405791427b2ee1e93c5ac6a3152022dc42418d6a/FcCustomizationDiagnosticPanel.razor",
+    "bytes": 6702,
+    "sha256": "bbd8d11655855d5471c68677405791427b2ee1e93c5ac6a3152022dc42418d6a"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/bd1b9be3e54d731624f24f97f2d53b7b931d0c984e59a97d0e0e173c040bd1bb/Hexalith.EventStore.ServiceDefaults.AssemblyInfo.cs",
+    "bytes": 1696,
+    "sha256": "bd1b9be3e54d731624f24f97f2d53b7b931d0c984e59a97d0e0e173c040bd1bb"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/bd50a254ffb9be20634143f6c3f647222712c24e948d3b9aee80635b8d0891a6/Roslynator_Formatting_Analyzers_Roslynator.CSharp.Workspaces.dll",
+    "bytes": 73216,
+    "sha256": "bd50a254ffb9be20634143f6c3f647222712c24e948d3b9aee80635b8d0891a6"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/bd8cf7471a3812a3bad80217ad64aaaf5ba54ed91282a6e569d14f51eafb57e2/Hexalith.FrontComposer.Contracts.UI.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 1182,
+    "sha256": "bd8cf7471a3812a3bad80217ad64aaaf5ba54ed91282a6e569d14f51eafb57e2"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/bf1e46acc773991037daaae20dff1d815faf4af13ab7887d88339609607ff357/hexalith.test-environment.v1.json",
+    "bytes": 37361,
+    "sha256": "bf1e46acc773991037daaae20dff1d815faf4af13ab7887d88339609607ff357"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/c02d744921e22a6b3b58c469dec92fab890166dda692c4dbea8052e30de856e3/Roslynator.CSharp.Analyzers.CodeFixes.dll",
+    "bytes": 431616,
+    "sha256": "c02d744921e22a6b3b58c469dec92fab890166dda692c4dbea8052e30de856e3"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/c042dd12f724c60c71c046430cc278463c082e42e85c7b3933127fa14ec682ad/System.Reactive.Analyzers.dll",
+    "bytes": 48080,
+    "sha256": "c042dd12f724c60c71c046430cc278463c082e42e85c7b3933127fa14ec682ad"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/c0b6d55522fd56ab1a54ff9f1e9903f2d9f6ab8eede51ea0473543e2888d27e6/Roslynator_Analyzers_Roslynator.CSharp.Workspaces.dll",
+    "bytes": 73216,
+    "sha256": "c0b6d55522fd56ab1a54ff9f1e9903f2d9f6ab8eede51ea0473543e2888d27e6"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/c3205a88c5e846001dc3a02f8e3f5989437d8bba7821b9b6d9082b078f20b32d/P0Fixture.Ui.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 902,
+    "sha256": "c3205a88c5e846001dc3a02f8e3f5989437d8bba7821b9b6d9082b078f20b32d"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/c4f77386ee832fad74d956c5061d946e0472f419e055dffaa54b41b310e616eb/vs-threading.SyncMethodsToExcludeFromVSTHRD103.frameworks.txt",
+    "bytes": 485,
+    "sha256": "c4f77386ee832fad74d956c5061d946e0472f419e055dffaa54b41b310e616eb"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/c4f90380a485aeea2a4c23812ce196122c9662c8238e363c710c311c91b6a9aa/Hexalith.Builds.Tooling.AssemblyInfo.cs",
+    "bytes": 1319,
+    "sha256": "c4f90380a485aeea2a4c23812ce196122c9662c8238e363c710c311c91b6a9aa"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/c56497c645487732b4c66bd81faec2156267a70c37550f7af865b388e2808059/Hexalith.FrontComposer.Shell.AssemblyInfo.cs",
+    "bytes": 1329,
+    "sha256": "c56497c645487732b4c66bd81faec2156267a70c37550f7af865b388e2808059"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/c6bb79cfcaf7775d4eec18e01a9556548cad454fa8e55e0f6571c18675b35568/Hexalith.Commons.UniqueIds.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 897,
+    "sha256": "c6bb79cfcaf7775d4eec18e01a9556548cad454fa8e55e0f6571c18675b35568"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/c7fc4253d0bc1643fd5267de53a741d3d8c15c3b6d9ad105eeedc2125554ad37/Hexalith.EventStore.Aspire.AssemblyInfo.cs",
+    "bytes": 1450,
+    "sha256": "c7fc4253d0bc1643fd5267de53a741d3d8c15c3b6d9ad105eeedc2125554ad37"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/cc04e50563104d65b769cf8b5f62ab2840201895b4160f420ac674693dabf366/Microsoft.AspNetCore.Analyzers.dll",
+    "bytes": 42320,
+    "sha256": "cc04e50563104d65b769cf8b5f62ab2840201895b4160f420ac674693dabf366"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/cc1d1e901e8b672350ecb05e0464ffe332e8f3f8f872e0dd2a4bd08dde325bf4/Hexalith.Builds.Module.EventStoreHost.MvcApplicationPartsAssemblyInfo.cs",
+    "bytes": 1115,
+    "sha256": "cc1d1e901e8b672350ecb05e0464ffe332e8f3f8f872e0dd2a4bd08dde325bf4"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/cd3e0d888ad6c2387236f76e94017e5f0d82c2f8d4eace38965ced00c2d43bd1/FcAuthorizedCommandRegion.razor",
+    "bytes": 317,
+    "sha256": "cd3e0d888ad6c2387236f76e94017e5f0d82c2f8d4eace38965ced00c2d43bd1"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/cd5c3e0cf989f85248d55a9eebd6425339284c9bd7e494da40ebcf238498f258/Microsoft.AspNetCore.App.CodeFixes.dll",
+    "bytes": 59176,
+    "sha256": "cd5c3e0cf989f85248d55a9eebd6425339284c9bd7e494da40ebcf238498f258"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/cd6891f935c5abeadefdb848c8aaa88ae99a2ee95ab614e40aaddc18ae9cb5f9/Microsoft.VisualStudio.Threading.Analyzers.CSharp.dll",
+    "bytes": 125320,
+    "sha256": "cd6891f935c5abeadefdb848c8aaa88ae99a2ee95ab614e40aaddc18ae9cb5f9"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/cdbc72af27bd9b7220f0e9eb45dd078c72872a3222353899c1bd4b2092b4ff3a/stylecop.json",
+    "bytes": 1000,
+    "sha256": "cdbc72af27bd9b7220f0e9eb45dd078c72872a3222353899c1bd4b2092b4ff3a"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/ced0339f1fa017714fd8646ceb0b036644fe9cba26bab967a89399f60d7f408f/Roslynator_Formatting_Analyzers_Roslynator.Core.dll",
+    "bytes": 186368,
+    "sha256": "ced0339f1fa017714fd8646ceb0b036644fe9cba26bab967a89399f60d7f408f"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/cf3a085cc84ab7eb18ba833a65a6d6d8236b6c842963e846ab141631bda4ea81/Roslynator_Analyzers_Roslynator.Core.dll",
+    "bytes": 186368,
+    "sha256": "cf3a085cc84ab7eb18ba833a65a6d6d8236b6c842963e846ab141631bda4ea81"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/cf674f625ae9a7b4eb23192c348aeb8fe6745d0a4770bc72f1c275e9ec5b96ba/FcPaletteResultList.razor",
+    "bytes": 9533,
+    "sha256": "cf674f625ae9a7b4eb23192c348aeb8fe6745d0a4770bc72f1c275e9ec5b96ba"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/cff7e5777bc1f68d7adf04b5031b4a75cfe3d65253c1b1a9c04324faba8d55f3/FcExpandInRowDetail.razor",
+    "bytes": 884,
+    "sha256": "cff7e5777bc1f68d7adf04b5031b4a75cfe3d65253c1b1a9c04324faba8d55f3"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/d0188d02b2600d6311f50144b669176b869fb311d4dcfa98eddc2431fe1b3435/.editorconfig",
+    "bytes": 2538,
+    "sha256": "d0188d02b2600d6311f50144b669176b869fb311d4dcfa98eddc2431fe1b3435"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/d17ed8f82717fc1f0f79d35bf35f694ad36acf2d85c9f11c8fbce6393a6aa54a/P0Fixture.Orders.Descriptor.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 897,
+    "sha256": "d17ed8f82717fc1f0f79d35bf35f694ad36acf2d85c9f11c8fbce6393a6aa54a"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/d3d59399b12e776d7f313f3fca4cd2bda42600ba95a088fd91461c5f743a2574/Hexalith.EventStore.Gateway.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 892,
+    "sha256": "d3d59399b12e776d7f313f3fca4cd2bda42600ba95a088fd91461c5f743a2574"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/d4fbbe1a1dd3c842254a313ae6e06b014dad236dbeb37fedc39493004277eed8/FcHamburgerToggle.razor",
+    "bytes": 2287,
+    "sha256": "d4fbbe1a1dd3c842254a313ae6e06b014dad236dbeb37fedc39493004277eed8"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/d602b2e9445cd12894bd4a1bf49e9f4bbe689c2f0f849656f68901eb8a3faacc/Microsoft.AspNetCore.Mvc.Analyzers.dll",
+    "bytes": 52560,
+    "sha256": "d602b2e9445cd12894bd4a1bf49e9f4bbe689c2f0f849656f68901eb8a3faacc"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/d674cedfb1510270e6558c98ce178032c75cc472fcefb8a42bcef4d8bb284a28/Roslynator.CSharp.Analyzers.dll",
+    "bytes": 364544,
+    "sha256": "d674cedfb1510270e6558c98ce178032c75cc472fcefb8a42bcef4d8bb284a28"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/d75d16d1064c16b67851ec605d49cf9c3ae62e6532e99d066dfc92164af56a1c/DistributionProbe.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 865,
+    "sha256": "d75d16d1064c16b67851ec605d49cf9c3ae62e6532e99d066dfc92164af56a1c"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/d8db7c472e095b8f3b5548dce33e4967939af1748ba9d6cac8605c2dc882aa7d/Roslynator_Analyzers_Roslynator.Common.dll",
+    "bytes": 251904,
+    "sha256": "d8db7c472e095b8f3b5548dce33e4967939af1748ba9d6cac8605c2dc882aa7d"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/d9087e1da3b4625b23b3dd9db360584f00a95743d5c1e029e0e9625f7f8e12f3/Microsoft.Extensions.Validation.ValidationsGenerator.dll",
+    "bytes": 118608,
+    "sha256": "d9087e1da3b4625b23b3dd9db360584f00a95743d5c1e029e0e9625f7f8e12f3"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/d99bf7de551d6caec9029605001a06a287c52a24b13a633f136717b6de7b2719/FcDevModeToggleButton.razor",
+    "bytes": 1448,
+    "sha256": "d99bf7de551d6caec9029605001a06a287c52a24b13a633f136717b6de7b2719"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/da4a411487e14ab7a8903c56ef5187f4e65276a281c03db80907814ce211668e/Hexalith.Builds.Module.AppHost.AssemblyInfo.cs",
+    "bytes": 2675,
+    "sha256": "da4a411487e14ab7a8903c56ef5187f4e65276a281c03db80907814ce211668e"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/da7031170934d0783ad9d535ecdcc85f26c755fee4a7b06871e5d6a85df4811c/P0Fixture.NativeMetadataProbe.AssemblyInfo.cs",
+    "bytes": 1160,
+    "sha256": "da7031170934d0783ad9d535ecdcc85f26c755fee4a7b06871e5d6a85df4811c"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/db74b035bb33e53f478e6e8fabe87edc703a4059afee12a9db7f03a0d5d59467/FcNewItemIndicator.razor",
+    "bytes": 817,
+    "sha256": "db74b035bb33e53f478e6e8fabe87edc703a4059afee12a9db7f03a0d5d59467"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/dc563267709974f88bc9fb88124dba63c521f7fc226d906e0621cb39e135f257/P0Fixture.Inventory.MvcApplicationPartsAssemblyInfo.cs",
+    "bytes": 785,
+    "sha256": "dc563267709974f88bc9fb88124dba63c521f7fc226d906e0621cb39e135f257"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/dc563267709974f88bc9fb88124dba63c521f7fc226d906e0621cb39e135f257/P0Fixture.Orders.MvcApplicationPartsAssemblyInfo.cs",
+    "bytes": 785,
+    "sha256": "dc563267709974f88bc9fb88124dba63c521f7fc226d906e0621cb39e135f257"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/dda89aa214ee24a94b62cf6981c4a0ef7c4d62e063a2be1d9b3365f795aabc6f/vs-threading.LegacyThreadSwitchingMembers.txt",
+    "bytes": 252,
+    "sha256": "dda89aa214ee24a94b62cf6981c4a0ef7c4d62e063a2be1d9b3365f795aabc6f"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/ddbce281451f65db35919e955c421080def4752b1cba031cd7d0f5e2ccbf1804/Hexalith.FrontComposer.Contracts.UI.AssemblyInfo.cs",
+    "bytes": 1373,
+    "sha256": "ddbce281451f65db35919e955c421080def4752b1cba031cd7d0f5e2ccbf1804"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/ddf9e3af76d396ad159b6b9ab9022525ca4fc86a3e0a821c9e94730ddfe616e9/Roslynator_Formatting_Analyzers_Roslynator.Workspaces.Core.dll",
+    "bytes": 299520,
+    "sha256": "ddf9e3af76d396ad159b6b9ab9022525ca4fc86a3e0a821c9e94730ddfe616e9"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/de484275b704d7784b1f9731ba92847b8b8a7692cb78d343618f58a7b2ad56f9/Hexalith_Builds_Module_UiHost.ProjectMetadata.g.cs",
+    "bytes": 1435,
+    "sha256": "de484275b704d7784b1f9731ba92847b8b8a7692cb78d343618f58a7b2ad56f9"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e0cb10d83b27a43c40999404d89d21ab83d35d4f539ca07898dca7939c3f0e8a/_Imports.razor",
+    "bytes": 182,
+    "sha256": "e0cb10d83b27a43c40999404d89d21ab83d35d4f539ca07898dca7939c3f0e8a"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e110bb9fe21ca6c3120a00382c773a086d62a008a0b0d2b76d08416f27d92bf2/DefaultRunnerReporters.cs",
+    "bytes": 1018,
+    "sha256": "e110bb9fe21ca6c3120a00382c773a086d62a008a0b0d2b76d08416f27d92bf2"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e12982fbdfe40ca25d782f67e9d9b094d9fa1b89ab83e0ad1b4b116a0783643a/analysislevel_10_recommended.globalconfig",
+    "bytes": 14754,
+    "sha256": "e12982fbdfe40ca25d782f67e9d9b094d9fa1b89ab83e0ad1b4b116a0783643a"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e1a1bf646551c419469a30e13eb8cb99149a877cfcf5d23587dfc86a8161b347/FcProjectionFailure.razor",
+    "bytes": 788,
+    "sha256": "e1a1bf646551c419469a30e13eb8cb99149a877cfcf5d23587dfc86a8161b347"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e1bba06fdd1b160bb806cce62afe90d94bde92281fc7b0af5184680e848ea0b6/FcLiveRegion.razor",
+    "bytes": 1036,
+    "sha256": "e1bba06fdd1b160bb806cce62afe90d94bde92281fc7b0af5184680e848ea0b6"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e216c3d91480f0a720d9ab978dbb230ae4ee28ad11c9575fa6e7835bb26e7b2b/FcStatusFilterChips.razor",
+    "bytes": 1432,
+    "sha256": "e216c3d91480f0a720d9ab978dbb230ae4ee28ad11c9575fa6e7835bb26e7b2b"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e26887e35ca09f315ab12f7bdd60f758ac16f8b70483122c9914dedb3497c466/FcHomeCard.razor",
+    "bytes": 4421,
+    "sha256": "e26887e35ca09f315ab12f7bdd60f758ac16f8b70483122c9914dedb3497c466"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855/vs-threading.MembersRequiringMainThread.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e49be9fedb13fe305e692c2c022b3a5571f00050b107b06c9f1d450c171eb25a/.editorconfig",
+    "bytes": 12618,
+    "sha256": "e49be9fedb13fe305e692c2c022b3a5571f00050b107b06c9f1d450c171eb25a"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e4a344606e44430bb2cf79cd910b3c91f4985d89e04fd34959d96bd6e28b94ec/Microsoft.VisualStudio.Threading.Analyzers.dll",
+    "bytes": 138632,
+    "sha256": "e4a344606e44430bb2cf79cd910b3c91f4985d89e04fd34959d96bd6e28b94ec"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e4ba10fb5ad826cf4feb0643c7b5284c208f04ee94470a63c78a932f39c0123f/Roslynator_Analyzers_Roslynator.Workspaces.Core.dll",
+    "bytes": 298496,
+    "sha256": "e4ba10fb5ad826cf4feb0643c7b5284c208f04ee94470a63c78a932f39c0123f"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e703844e5de11820560e2b198212d58cad437e0475380d5f67b60a0dcf07c299/MessagePack.SourceGenerator.dll",
+    "bytes": 300032,
+    "sha256": "e703844e5de11820560e2b198212d58cad437e0475380d5f67b60a0dcf07c299"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e78e0f9ee99bf5f0ad27493c274da9cc5f799f3ed716a4bd6b9e8cbe53ebbd61/Hexalith.FrontComposer.Shell.Resources.DevMode.DevModeStrings.fr.resources",
+    "bytes": 1395,
+    "sha256": "e78e0f9ee99bf5f0ad27493c274da9cc5f799f3ed716a4bd6b9e8cbe53ebbd61"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e7bf4c9f5cc31139a86fd085df06ce4daccd2109430b899a06e4bcc63a55fe27/StackExchange.Redis.CodeFixes.dll",
+    "bytes": 23552,
+    "sha256": "e7bf4c9f5cc31139a86fd085df06ce4daccd2109430b899a06e4bcc63a55fe27"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/e9c47adae71ace31b91bf021620d2fc521891d0f2893f1742885d3d7bd6ca929/FcColumnPrioritizer.razor",
+    "bytes": 2573,
+    "sha256": "e9c47adae71ace31b91bf021620d2fc521891d0f2893f1742885d3d7bd6ca929"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/ea1171e2b9af61737f74aed27d2b9527cf1e8903840cd6ba5fc25e03f332d5d6/vs-threading.MainThreadSwitchingMethods.txt",
+    "bytes": 84,
+    "sha256": "ea1171e2b9af61737f74aed27d2b9527cf1e8903840cd6ba5fc25e03f332d5d6"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/eac2678eed1cf2461d441cd0fdcaa7331c33ab30b44708e5c49c77f09208321d/analysislevelstyle_all.globalconfig",
+    "bytes": 19880,
+    "sha256": "eac2678eed1cf2461d441cd0fdcaa7331c33ab30b44708e5c49c77f09208321d"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/eb3c828c83597a30c8253fa13baadba69c90bafcea84d60236adc39b73e0be02/FcDevModeAnnotation.razor",
+    "bytes": 2160,
+    "sha256": "eb3c828c83597a30c8253fa13baadba69c90bafcea84d60236adc39b73e0be02"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/eb3dd6dae44582fc2519cf1ce8e7f4a530907ac38d1578d0d50d93a222a39089/Microsoft.Extensions.Options.SourceGeneration.dll",
+    "bytes": 134440,
+    "sha256": "eb3dd6dae44582fc2519cf1ce8e7f4a530907ac38d1578d0d50d93a222a39089"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/eb8c7440d9cb0edd5b2430c58c679b684f8fde584a14b39df344bd36b17b0d2c/FcFilterResetButton.razor",
+    "bytes": 500,
+    "sha256": "eb8c7440d9cb0edd5b2430c58c679b684f8fde584a14b39df344bd36b17b0d2c"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/ed64f100d99a44e23c1353f388ff773b5e93a5c464597a58c344781a2c6aeb67/Hexalith.EventStore.Client.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 890,
+    "sha256": "ed64f100d99a44e23c1353f388ff773b5e93a5c464597a58c344781a2c6aeb67"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/ee75c4afdf9612888edb46f9b4249cff95a4705176cb5f74fe0892539a0ec6b7/Hexalith_Builds_Module_EventStoreHost.ProjectMetadata.g.cs",
+    "bytes": 1475,
+    "sha256": "ee75c4afdf9612888edb46f9b4249cff95a4705176cb5f74fe0892539a0ec6b7"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/ef5a5953798e30f09a14d784d365b39743d354a1b8b5499d468af94300825791/Hexalith.EventStore.Contracts.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 896,
+    "sha256": "ef5a5953798e30f09a14d784d365b39743d354a1b8b5499d468af94300825791"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/f12014fa6cb498e6da10320089727934adfb95937fc644069469db27cf195c0f/Microsoft.Extensions.Logging.Generators.dll",
+    "bytes": 80168,
+    "sha256": "f12014fa6cb498e6da10320089727934adfb95937fc644069469db27cf195c0f"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/f175f192aa3adb7c14a301d18ea5645563feb6bde928ea434f2bf62f9bbaa8c3/FcCommandPalette.razor",
+    "bytes": 3507,
+    "sha256": "f175f192aa3adb7c14a301d18ea5645563feb6bde928ea434f2bf62f9bbaa8c3"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/f2a1200e2f266004143b93b477c66bd5c51faa9172c74c1331702ff4e69ef318/Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll",
+    "bytes": 206160,
+    "sha256": "f2a1200e2f266004143b93b477c66bd5c51faa9172c74c1331702ff4e69ef318"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/f53fd31c753fb82f2ea6c0f066c0420fafc8cc6b424c95fbc57d9dee223c9022/Hexalith.EventStore.Server.AssemblyInfo.cs",
+    "bytes": 3317,
+    "sha256": "f53fd31c753fb82f2ea6c0f066c0420fafc8cc6b424c95fbc57d9dee223c9022"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/f79c1ad9a9fc76110b3655f5bfb5ff4e3168e9addceff05b937c0796f0ec34eb/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+    "bytes": 196,
+    "sha256": "f79c1ad9a9fc76110b3655f5bfb5ff4e3168e9addceff05b937c0796f0ec34eb"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/f85431509d7cdca36b1246dec3c8eeeb3be4eeb8648b2ef63f0db649327332f5/FcLayoutBreakpointWatcher.razor",
+    "bytes": 671,
+    "sha256": "f85431509d7cdca36b1246dec3c8eeeb3be4eeb8648b2ef63f0db649327332f5"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/f9ecaa900f2d428c6e42e11bd65da2383b5e7ade7b408aafe739c5a2fca050c9/Hexalith.Builds.Module.Tests.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 1229,
+    "sha256": "f9ecaa900f2d428c6e42e11bd65da2383b5e7ade7b408aafe739c5a2fca050c9"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/fbaccfb2dd8122e3602b36cbf62e462c3833f6a7d17f140fd330759f02d89501/FcThemeToggle.razor",
+    "bytes": 2141,
+    "sha256": "fbaccfb2dd8122e3602b36cbf62e462c3833f6a7d17f140fd330759f02d89501"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/fca48a0c117433275413a48ad69ba2db7001244974e2dad0c75bfc5eb951017c/FcDesaturatedBadge.razor",
+    "bytes": 346,
+    "sha256": "fca48a0c117433275413a48ad69ba2db7001244974e2dad0c75bfc5eb951017c"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/fd987a5efd9d896c2dfc1ca771a035ba464bce5269f9c20c9857872aad77b2bd/Hexalith.Commons.UniqueIds.sourcelink.json",
+    "bytes": 198,
+    "sha256": "fd987a5efd9d896c2dfc1ca771a035ba464bce5269f9c20c9857872aad77b2bd"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/fe92e46a9417a84d54865c122877faefb3dcb458d8e96ddc67e1b1aa93d3bb2a/Roslynator_Formatting_Analyzers_Roslynator.Common.dll",
+    "bytes": 251904,
+    "sha256": "fe92e46a9417a84d54865c122877faefb3dcb458d8e96ddc67e1b1aa93d3bb2a"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/ff23bc71c4143eddc782400a68789885a424ffb0bdcbcd7ccd8264cee730d3d1/System.Text.Json.SourceGeneration.dll",
+    "bytes": 203048,
+    "sha256": "ff23bc71c4143eddc782400a68789885a424ffb0bdcbcd7ccd8264cee730d3d1"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/ff4ce2bf8f13aa322c94dec1296514a763f8ff9633444b13e574ed176863050b/FcRouteUnavailable.razor",
+    "bytes": 682,
+    "sha256": "ff4ce2bf8f13aa322c94dec1296514a763f8ff9633444b13e574ed176863050b"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/ffc1c3bdfc4119bc143a6491a7a21519817ea6358b07bb15a83f1acf3b180435/P0Fixture.Inventory.Descriptor.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 900,
+    "sha256": "ffc1c3bdfc4119bc143a6491a7a21519817ea6358b07bb15a83f1acf3b180435"
+  },
+  {
+    "path": "compiler-auxiliary-bytes/ffcf642b7b5d51a1ff9554a1c0e823335ebf9adf44400ae304b572c90be8a1e8/Hexalith.FrontComposer.Shell.Resources.FcShellResources.resources",
+    "bytes": 22596,
+    "sha256": "ffcf642b7b5d51a1ff9554a1c0e823335ebf9adf44400ae304b572c90be8a1e8"
+  },
+  {
+    "path": "compiler-auxiliary-inputs.json",
+    "bytes": 2637035,
+    "sha256": "cebc90cd6284c194341e0b801196367e1fd4c9282284c06dc9b88d90898e2bd3"
+  },
+  {
+    "path": "compiler-auxiliary-source-result.json",
+    "bytes": 261234,
+    "sha256": "df2c127f9b94b8a4029c4258bcc07295dfe5ceb0bac55260e9ff25520300fb06"
+  },
+  {
+    "path": "config.json",
+    "bytes": 3811,
+    "sha256": "063f283f2410aead3c72377d6ecd35792012797171fc51cdb407a42e540ba062"
+  },
+  {
+    "path": "graph-refresh-after.json",
+    "bytes": 1499410,
+    "sha256": "dcc305b74889527de005a0310e857a801a105bff001d7ee56a944d786428540b"
+  },
+  {
+    "path": "graph-refresh-before.json",
+    "bytes": 1499410,
+    "sha256": "7ba3ded8aaac894d7fc54386430fe428d019d3def1befbf1c0b479858d081e14"
+  },
+  {
+    "path": "harness/Probe.cs",
+    "bytes": 4071,
+    "sha256": "4c77cc273493f0c4a2c8e34a31fdf03033308e09fcf7b505b06131692d798023"
+  },
+  {
+    "path": "harness/README.md",
+    "bytes": 3836,
+    "sha256": "f63accc03e972c91010ed370aebb4232940ce2ccb920d431ff40929ff09ac791"
+  },
+  {
+    "path": "harness/__pycache__/qualify.cpython-314.pyc",
+    "bytes": 109172,
+    "sha256": "de02f2f4c5c5a345b9ae96adb912b2363fcd3b09c617cce421ba5c690e0a557b"
+  },
+  {
+    "path": "harness/capture_compiler.py",
+    "bytes": 6285,
+    "sha256": "30f7756f6e8ab380af3d2494dfa2a64569eb36d847e9432e6daabc1e792a8d09"
+  },
+  {
+    "path": "harness/qualify.py",
+    "bytes": 65820,
+    "sha256": "affc42aefa65a180a873f6f9d22af7f454d4e475dcc197bc3521483ed1240266"
+  },
+  {
+    "path": "harness/sdk_child.py",
+    "bytes": 2385,
+    "sha256": "81f367a7733f0c8f29f0f03b33c12ad20aa0339ff94334288eaeea91b97a844d"
+  },
+  {
+    "path": "harness/test_compiler_capture.py",
+    "bytes": 2703,
+    "sha256": "e4dc33cb18abc737ac25d723933807e240b7ed1bd0eadab241abf63720e756e3"
+  },
+  {
+    "path": "harness/test_qualification.py",
+    "bytes": 16494,
+    "sha256": "372fda7e018a9d1abfccc76afdd8cb0959d072d30ebe3d159e8863bb64cf05e1"
+  },
+  {
+    "path": "harness/verify.py",
+    "bytes": 16867,
+    "sha256": "a097c70d762e64ef0c6d2d7789ea181b20342e0138ccefdd7399a2e11dca5955"
+  },
+  {
+    "path": "helper/DistributionProbe.csproj",
+    "bytes": 406,
+    "sha256": "0c20539246cd0bbc5d67f3f4777c62b582a3b179fed1225157b5d8c4c66d7529"
+  },
+  {
+    "path": "helper/Program.cs",
+    "bytes": 4071,
+    "sha256": "4c77cc273493f0c4a2c8e34a31fdf03033308e09fcf7b505b06131692d798023"
+  },
+  {
+    "path": "logs/bootstrap-build.log",
+    "bytes": 13754886,
+    "sha256": "e870e5c58382cac950e16ba5447335d691745fc55f994346a754a4b4930f613e"
+  },
+  {
+    "path": "logs/current-api-helper-build.log",
+    "bytes": 13250197,
+    "sha256": "c935b1ab3c3330f5dfaeb5a60cf7dc108d696cb2cc5246ed74ac4a0f0b5c4db7"
+  },
+  {
+    "path": "logs/discover-CompositionCommandOptionsTests.log",
+    "bytes": 4927,
+    "sha256": "a5cd8b3b4dd066fa4182f37dcbaebbb67a1f60e5c6db614e926ba52308472a2e"
+  },
+  {
+    "path": "logs/discover-CompositionSdkProcessTests.log",
+    "bytes": 8630,
+    "sha256": "fd0e52958a9164668ed2a68bfba6604f42496f5f341f5f295945e5c7510e1679"
+  },
+  {
+    "path": "logs/discover-Workspace.CatalogVersionTests.log",
+    "bytes": 20930,
+    "sha256": "831531f61679c345c77f27ee9e1552b3227783b303303fcf47ab145f7f46369c"
+  },
+  {
+    "path": "logs/discover-Workspace.PlatformModelCatalogTests.log",
+    "bytes": 15996,
+    "sha256": "421541c24b81a77341577a016f9a3aa0167f0191cb1a13ae8768be6f16b76ef6"
+  },
+  {
+    "path": "logs/discover-Workspace.WorkspaceAppHostTests.log",
+    "bytes": 7023,
+    "sha256": "51d46fc64cb930d641091a4f6642b2da43358fadb58b993ff258d0138355fab5"
+  },
+  {
+    "path": "logs/discover-Workspace.WorkspaceMsBuildTests.log",
+    "bytes": 100086,
+    "sha256": "81aed74e5ea1222c22094373dc787bdad5210083acc12059e4692dfd2bdc7d88"
+  },
+  {
+    "path": "logs/original-Hexalith.Builds.Module.Tests.binlog",
+    "bytes": 2945126,
+    "sha256": "f869a2c25bed21bf0001dcc6d5044572cdf53d20c2f269e7ef1a5c698023c0a9"
+  },
+  {
+    "path": "logs/original-debug-build.log",
+    "bytes": 286290335,
+    "sha256": "04ba106bcf892f7d8b7341ff55a3eabaa8217ac105efa2b0d48c0372470db5ba"
+  },
+  {
+    "path": "logs/original-debug-graph-refresh.log",
+    "bytes": 192203447,
+    "sha256": "cda69da5f2a1b6e20adff52c66f349f8fb76c1a5b291d15796a892f7eb567e90"
+  },
+  {
+    "path": "logs/pwsh-child-1830098.log",
+    "bytes": 170,
+    "sha256": "d7520054a09a359ce8f67f3de7c6405795d7b3b40eed606caf5ea8e51305f044"
+  },
+  {
+    "path": "logs/resume-production-mapping.log",
+    "bytes": 4414,
+    "sha256": "9861a4679b2c255243c077d033a2e492a5780163dc1b323b54b0e615495c99ad"
+  },
+  {
+    "path": "logs/resume-sdk-version.log",
+    "bytes": 9,
+    "sha256": "44ea2595bc5a7acabc030531952071226aa70862fd008ed7327d752b39c8513c"
+  },
+  {
+    "path": "logs/sdk-child-1826044.log",
+    "bytes": 330857,
+    "sha256": "4316b119436864d91b74d8222b6de75ce4b26a676b140826b540048f10cfc2eb"
+  },
+  {
+    "path": "logs/sdk-child-1826067.log",
+    "bytes": 330857,
+    "sha256": "4316b119436864d91b74d8222b6de75ce4b26a676b140826b540048f10cfc2eb"
+  },
+  {
+    "path": "logs/sdk-child-1826100.log",
+    "bytes": 330857,
+    "sha256": "4316b119436864d91b74d8222b6de75ce4b26a676b140826b540048f10cfc2eb"
+  },
+  {
+    "path": "logs/sdk-child-1826231.log",
+    "bytes": 330857,
+    "sha256": "4316b119436864d91b74d8222b6de75ce4b26a676b140826b540048f10cfc2eb"
+  },
+  {
+    "path": "logs/sdk-child-1826239.log",
+    "bytes": 330857,
+    "sha256": "4316b119436864d91b74d8222b6de75ce4b26a676b140826b540048f10cfc2eb"
+  },
+  {
+    "path": "logs/sdk-child-1826268.log",
+    "bytes": 330848,
+    "sha256": "681c3ae16bcf6d456e36183128c0600262104c743c16fc6e204f080e0933b871"
+  },
+  {
+    "path": "logs/sdk-child-1826277.log",
+    "bytes": 330857,
+    "sha256": "4316b119436864d91b74d8222b6de75ce4b26a676b140826b540048f10cfc2eb"
+  },
+  {
+    "path": "logs/sdk-child-1830106.log",
+    "bytes": 170,
+    "sha256": "d7520054a09a359ce8f67f3de7c6405795d7b3b40eed606caf5ea8e51305f044"
+  },
+  {
+    "path": "original-test-runner/Hexalith.Builds.Module.Tests",
+    "bytes": 78192,
+    "sha256": "c34a4c7a92bf5c8a39e55b2990f640d33761ece445647d3b2185b1fee20c5fef"
+  },
+  {
+    "path": "original-test-runner/Hexalith.Builds.Module.Tests.deps.json",
+    "bytes": 100372,
+    "sha256": "4e2737411b79bf196063eb072c087f02b1d3fea825d64e2a8389d523c360d4de"
+  },
+  {
+    "path": "original-test-runner/Hexalith.Builds.Module.Tests.dll",
+    "bytes": 2426880,
+    "sha256": "f1d0a3ceedc1b5ced0b3eacdbb79bfe40fdfd1c207e9c135425c27ba081a446c"
+  },
+  {
+    "path": "original-test-runner/Hexalith.Builds.Module.Tests.pdb",
+    "bytes": 440528,
+    "sha256": "779f203cba6d84cd865bc25146a0041071a277be6e152e1623abe16f974d2070"
+  },
+  {
+    "path": "original-test-runner/Hexalith.Builds.Module.Tests.runtimeconfig.json",
+    "bytes": 416,
+    "sha256": "4761a312947a31a30aec259d9ee6f10407d89806d812cd102f3b3aec250dc8b4"
+  },
+  {
+    "path": "original-test-runner/Hexalith.Builds.Tooling.dll",
+    "bytes": 1649664,
+    "sha256": "0e75aac6103a117dbdbcf9fd0ef3782f92f0753c238e3c040902160638cd2e03"
+  },
+  {
+    "path": "repository-baseline.json",
+    "bytes": 8393,
+    "sha256": "7b770332f1b8b353f683ec8cf42acf37ce03dba01a361e2d229fdc166bce090d"
+  },
+  {
+    "path": "result.json",
+    "bytes": 265324,
+    "sha256": "735bfad7e9f6d93f96c20091f390f3c9d209d65fa3ce72da18c4c9e10bb375e3"
+  },
+  {
+    "path": "reuse-qualify.py.patch",
+    "bytes": 3971,
+    "sha256": "bcc0031c82c2fb276842de8e8df570038566bc35593e6cb928562b5236375a3d"
+  },
+  {
+    "path": "reuse-test_qualification.py.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "sdk-bindings.json",
+    "bytes": 1320247,
+    "sha256": "970c4f7a8d177df13249957eb2b793cfcc74610f829d5b5db37cf016807c28d5"
+  },
+  {
+    "path": "sdk-children.jsonl",
+    "bytes": 67187,
+    "sha256": "5b3aac562b8a9dbabcf4a96a448c9244358282aba06efaa0974feebc2066651f"
+  },
+  {
+    "path": "sdk-layout/dotnet",
+    "bytes": 71744,
+    "sha256": "634efbf2414144d140d6f59d167342c8b3b53b4c34346ed786dd0470ddc9a3cb"
+  },
+  {
+    "path": "source-baseline.json",
+    "bytes": 20536896,
+    "sha256": "20dcdd6b966f569442cc5c9e9533e302c5205c55d065f9f6abbd26a06a4cbff5"
+  },
+  {
+    "path": "workspace/environment.json",
+    "bytes": 1001,
+    "sha256": "d29b48d276376c5058f74fbd06cc2bbf551955b31ae6946822430bb97af4fcf7"
+  },
+  {
+    "path": "workspace/source-mapping/Hexalith.EventStore.CatalogConstruction.proj",
+    "bytes": 190,
+    "sha256": "2577939612bf40066a22c538f9513b03013a85088eb91effa4c3d0e6126d4cc0"
+  },
+  {
+    "path": "workspace/source-mapping/Hexalith.EventStore.QueryRouting.Tests.proj",
+    "bytes": 190,
+    "sha256": "2577939612bf40066a22c538f9513b03013a85088eb91effa4c3d0e6126d4cc0"
+  },
+  {
+    "path": "workspace/source-mapping/Hexalith.EventStore.Server.LiveSidecar.Tests.proj",
+    "bytes": 190,
+    "sha256": "2577939612bf40066a22c538f9513b03013a85088eb91effa4c3d0e6126d4cc0"
+  },
+  {
+    "path": "workspace/source-mapping/Hexalith.EventStore.Server.Tests.proj",
+    "bytes": 190,
+    "sha256": "2577939612bf40066a22c538f9513b03013a85088eb91effa4c3d0e6126d4cc0"
+  },
+  {
+    "path": "workspace/source-mapping/Hexalith.Folders.Aspire.proj",
+    "bytes": 190,
+    "sha256": "2577939612bf40066a22c538f9513b03013a85088eb91effa4c3d0e6126d4cc0"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.before-targets.props",
+    "bytes": 3519,
+    "sha256": "e4d46ac4ade6177a52a716eda0f12352c914aefb717a47d076d62ff79ad6034f"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.final.targets",
+    "bytes": 9155,
+    "sha256": "897b18a006a9f2896baeb8392426b8e71f0a57462d5fcb983dbbdec91dc6ced9"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.late.props",
+    "bytes": 7081,
+    "sha256": "d56c85ab4d3d6f85978927686e461f27e5e1e9ea0f9d6792905a35bcddd67ee9"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.props",
+    "bytes": 98,
+    "sha256": "0363694f252736cdfd0bcf6a567bb077940df16cc966e410153718a552769e82"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.targets",
+    "bytes": 1104,
+    "sha256": "611fe37667f9607f77069d277dbb313be2ea468530f72a4d76f94d4b614b3dd2"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.values.props",
+    "bytes": 5600,
+    "sha256": "49497874d700707020f54a8216ccc15eb3f11f28b1038218ecfc5693dbc0b0eb"
+  },
+  {
+    "path": "workspace/source-mapping/SourceMapping.values.targets",
+    "bytes": 100384,
+    "sha256": "2a8ebc9e3da39e293712be4a700b719ccf2d93f1273962e170e622530608125b"
+  },
+  {
+    "path": "workspace/source-mapping/__HXW_DefaultCatalog__.proj",
+    "bytes": 190,
+    "sha256": "2577939612bf40066a22c538f9513b03013a85088eb91effa4c3d0e6126d4cc0"
+  },
+  {
+    "path": "workspace/source-mapping/catalog-versions.json",
+    "bytes": 83551,
+    "sha256": "ef8f10fd14bd7af60383f4cba8f3fe2a839a1de71864dedeaa2a4aedd420ed1c"
+  },
+  {
+    "path": "workspace/source-mapping/mapping.json",
+    "bytes": 4413,
+    "sha256": "ad0c1cbac3352e62ec21a5f772bb0c674109c20263bb819c80a37927b28449e2"
+  },
+  {
+    "path": "workspace/source-mapping/pinned-tree/Props/Directory.Packages.props",
+    "bytes": 30710,
+    "sha256": "a09050d807c86e0646775836500c040a2e52b74553b04d52a98c2102a7fa9f12"
+  },
+  {
+    "path": "workspace/source-mapping/routing-catalog.cs.proj",
+    "bytes": 190,
+    "sha256": "2577939612bf40066a22c538f9513b03013a85088eb91effa4c3d0e6126d4cc0"
+  }
+]

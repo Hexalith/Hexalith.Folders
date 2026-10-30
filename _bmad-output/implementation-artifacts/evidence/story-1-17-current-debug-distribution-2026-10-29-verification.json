@@ -1,0 +1,406 @@
+{
+  "schemaVersion": 1,
+  "qualification": "incomplete",
+  "repositoryHeadIndexAndRootGitlinkPreservation": true,
+  "repositoryCount": 13,
+  "sourceBaselineCount": 80090,
+  "postExecutionOwnedReplayChange": [
+    {
+      "path": "eng/story117-source-distribution/verify.py",
+      "detail": "Input identity drift: /home/administrator/projects/hexalith/folders/eng/story117-source-distribution/verify.py"
+    }
+  ],
+  "protectedAuthority": {
+    "values": {
+      "parentStory": "in-progress",
+      "tracker": "backlog",
+      "routingPolicy": "V1Only",
+      "T0": null,
+      "activationAuthority": null,
+      "stagingExecuted": 0,
+      "stagingRequired": 14
+    },
+    "files": [
+      {
+        "path": "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+        "bytes": 106308,
+        "sha256": "ca298df3ed27156b7c6d170a47b1042ef8453c1e8e03207930d6bbbcc9ab0423"
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/sprint-status.yaml",
+        "bytes": 37619,
+        "sha256": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40"
+      },
+      {
+        "path": "eng/story117-platform-qualification-current/configuration.proposed.json",
+        "bytes": 49204,
+        "sha256": "c0b8697672e7ea27370bbb9b0078c9e922042945467be0e7a7fa7d33c28b8d1c"
+      },
+      {
+        "path": "eng/story117-platform-qualification-current/staging-checks.json",
+        "bytes": 30153,
+        "sha256": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51"
+      }
+    ]
+  },
+  "receipts": [
+    {
+      "receipt": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29.json",
+        "bytes": 15404,
+        "sha256": "61a8465b68c5908740ded6743caee63ecd1f18f43457d30f4f05f051af468fb4"
+      },
+      "archive": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29.artifacts.tar.gz",
+        "bytes": 3837679,
+        "sha256": "b1d59266f4908e93e1dcf921c91a6437611cf39fb76d2307c7d4ee50306f6e0c"
+      },
+      "memberManifest": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29.members.json",
+        "bytes": 4736,
+        "sha256": "28b8cd0c11a6a708ccb59bc6d8009cd8ea65a2bbd3337f0b2002e2b756612e1c"
+      },
+      "members": 33,
+      "qualification": "incomplete"
+    },
+    {
+      "receipt": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-sdk-10-0-402.json",
+        "bytes": 27550,
+        "sha256": "8125f329a41845fae9c44d1b3e9fe8752d3047aa582dd4650762294b06a2a346"
+      },
+      "archive": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-sdk-10-0-402.artifacts.tar.gz",
+        "bytes": 5277397,
+        "sha256": "d7840ce55895d3bce267929d1b1c4a9544f504330dd152bfed0e56cf0b83319b"
+      },
+      "memberManifest": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-sdk-10-0-402.members.json",
+        "bytes": 6820,
+        "sha256": "dde699144d894278a6498cc126d0ded9a247daef8ea18e57b8960cdc64d5e6f6"
+      },
+      "members": 46,
+      "qualification": "incomplete"
+    },
+    {
+      "receipt": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-apphost-launch.json",
+        "bytes": 29482,
+        "sha256": "6000530212ef31dc48ead6a2e9235a20daecceff06de7d26db7ab6f5e9269360"
+      },
+      "archive": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-apphost-launch.artifacts.tar.gz",
+        "bytes": 5320686,
+        "sha256": "dc884ac806fa4388618272d0193e0aa5e470ee938f8ff2847bf36f60bf73fdb9"
+      },
+      "memberManifest": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-apphost-launch.members.json",
+        "bytes": 7322,
+        "sha256": "b0537f4fa3dd3bc447382cefa5260b1528bffa6bf0151c7df67d725946b3c8f5"
+      },
+      "members": 49,
+      "qualification": "incomplete"
+    },
+    {
+      "receipt": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-focused-factory.json",
+        "bytes": 29988,
+        "sha256": "763e199220c6e1edd3eae1f74df4ef6b10b93ff0eba636219e874a9271f148a3"
+      },
+      "archive": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-focused-factory.artifacts.tar.gz",
+        "bytes": 4745542,
+        "sha256": "45bbda881fc79361eb8abf80cbcb14d01ddd8e10c934b0760cf2d33897c4f827"
+      },
+      "memberManifest": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-focused-factory.members.json",
+        "bytes": 5739,
+        "sha256": "e962057abe811a9270c0fa5a06037643aa2797b437003a21da2d895ab01c7c56"
+      },
+      "members": 39,
+      "qualification": "incomplete"
+    },
+    {
+      "receipt": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-focused-final.json",
+        "bytes": 37010,
+        "sha256": "663f33c395e7dccdb889ca25ca3eb67608ac3fad48edbb9a35c0c50cd98356c6"
+      },
+      "archive": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-focused-final.artifacts.tar.gz",
+        "bytes": 17502848,
+        "sha256": "362fe9443130d63a81df3ef1347cd0e1d7f69776f704a4a9ef38d7a199394af3"
+      },
+      "memberManifest": {
+        "path": "story-1-17-current-debug-distribution-2026-10-29-focused-final.members.json",
+        "bytes": 104925,
+        "sha256": "d1dd3b9ccb2bd8a987130b23d9abb5d4a322bb30d214d9aca63f99ed98a51106"
+      },
+      "members": 469,
+      "qualification": "incomplete"
+    }
+  ],
+  "replays": [
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-apphost-launch.json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 49, \"supplementaryFactoryTests\": 0, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-apphost-launch.json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 49, \"supplementaryFactoryTests\": 0, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-focused-factory.json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 39, \"supplementaryFactoryTests\": 0, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-focused-factory.json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 39, \"supplementaryFactoryTests\": 0, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-focused-final.json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 469, \"supplementaryFactoryTests\": 8, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-focused-final.json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 469, \"supplementaryFactoryTests\": 8, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-sdk-10-0-402.json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 46, \"supplementaryFactoryTests\": 0, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-sdk-10-0-402.json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 46, \"supplementaryFactoryTests\": 0, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29.json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 33, \"supplementaryFactoryTests\": 0, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29.json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 33, \"supplementaryFactoryTests\": 0, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": ""
+    }
+  ],
+  "actualOptimizedCorruptionProbe": {
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-O",
+      "eng/story117-source-distribution/verify.py",
+      "--receipt",
+      "/tmp/story117-distribution-corruption-hor0jaow/story-1-17-current-debug-distribution-2026-10-29-focused-final.json"
+    ],
+    "exitCode": 2,
+    "stdout": "Evidence replay refused: Archive SHA-256 mismatch\n",
+    "stderr": "",
+    "originalArchiveUnchanged": true,
+    "temporaryCopyRemovedAtEnd": true
+  },
+  "currentHarnessAndFactoryBytes": [
+    {
+      "path": ".gitattributes",
+      "bytes": 5446,
+      "sha256": "019b90201fa7baa0765a10f6e550a5714baa4b4969c5ca84599f4b05615d961b"
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/CompositionCommandOptionsTests.cs",
+      "bytes": 7021,
+      "sha256": "3be72ea53d4609b17b8e7d9d0de0e360579be2340353c1740ce08920a6eb5bc0"
+    },
+    {
+      "path": "eng/story117-source-distribution/Probe.cs",
+      "bytes": 4071,
+      "sha256": "4c77cc273493f0c4a2c8e34a31fdf03033308e09fcf7b505b06131692d798023"
+    },
+    {
+      "path": "eng/story117-source-distribution/README.md",
+      "bytes": 3025,
+      "sha256": "06bf1aa4fed0e1919c6e3ef3597f9239937a49c429fa8f2c9a783f59545ab887"
+    },
+    {
+      "path": "eng/story117-source-distribution/qualify.py",
+      "bytes": 45598,
+      "sha256": "3d3293e1fede8c3b49f018ab05f64de18a1b38eb8a40a186a18aca0944538ebb"
+    },
+    {
+      "path": "eng/story117-source-distribution/sdk_child.py",
+      "bytes": 2385,
+      "sha256": "81f367a7733f0c8f29f0f03b33c12ad20aa0339ff94334288eaeea91b97a844d"
+    },
+    {
+      "path": "eng/story117-source-distribution/test_qualification.py",
+      "bytes": 9719,
+      "sha256": "db4ae144702532a937df6edc4247c79ace56cde2d3ddfb580662af406bdef61e"
+    },
+    {
+      "path": "eng/story117-source-distribution/verify.py",
+      "bytes": 10565,
+      "sha256": "739af37061d115b0871f9725f74656033b8861b7f3236141635f8a52007c294e"
+    }
+  ],
+  "whitespaceChecks": [
+    {
+      "path": ".gitattributes",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "meaning": "No whitespace diagnostics; --no-index returns 1 for differing files"
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/CompositionCommandOptionsTests.cs",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "meaning": "No whitespace diagnostics; --no-index returns 1 for differing files"
+    },
+    {
+      "path": "eng/story117-source-distribution/Probe.cs",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "meaning": "No whitespace diagnostics; --no-index returns 1 for differing files"
+    },
+    {
+      "path": "eng/story117-source-distribution/README.md",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "meaning": "No whitespace diagnostics; --no-index returns 1 for differing files"
+    },
+    {
+      "path": "eng/story117-source-distribution/qualify.py",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "meaning": "No whitespace diagnostics; --no-index returns 1 for differing files"
+    },
+    {
+      "path": "eng/story117-source-distribution/sdk_child.py",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "meaning": "No whitespace diagnostics; --no-index returns 1 for differing files"
+    },
+    {
+      "path": "eng/story117-source-distribution/test_qualification.py",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "meaning": "No whitespace diagnostics; --no-index returns 1 for differing files"
+    },
+    {
+      "path": "eng/story117-source-distribution/verify.py",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "meaning": "No whitespace diagnostics; --no-index returns 1 for differing files"
+    }
+  ],
+  "owningRepositoryDiffChecks": [
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "scope": "Independent factory diagnostics and byte-bound incomplete qualification; no original-assembly/model/distribution/runtime acceptance"
+}

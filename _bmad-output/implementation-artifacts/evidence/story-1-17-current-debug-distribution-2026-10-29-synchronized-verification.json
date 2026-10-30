@@ -1,0 +1,611 @@
+{
+  "schemaVersion": 2,
+  "qualification": "incomplete",
+  "currentClassOutcomes": [
+    {
+      "name": "Hexalith.Builds.ModuleTool.Tests.CompositionCommandOptionsTests",
+      "discovered": 8,
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "not-run": 0,
+      "report": {
+        "path": "CompositionCommandOptionsTests.xml",
+        "bytes": 6157,
+        "sha256": "1591f7c1a7ffb2d34e44d4c2c43987ddb5bc199bd60878fa075f9cf1c47794ef"
+      }
+    },
+    {
+      "name": "Hexalith.Builds.ModuleTool.Tests.CompositionSdkProcessTests",
+      "discovered": 14,
+      "total": 14,
+      "passed": 14,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "not-run": 0,
+      "report": {
+        "path": "CompositionSdkProcessTests.xml",
+        "bytes": 9995,
+        "sha256": "fa95a238d3681e6c4973a876048d57cf32ff526642f3f382420281975ca1ac86"
+      }
+    },
+    {
+      "name": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformModelCatalogTests",
+      "discovered": 24,
+      "total": 24,
+      "passed": 24,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "not-run": 0,
+      "report": {
+        "path": "Workspace.PlatformModelCatalogTests.xml",
+        "bytes": 17646,
+        "sha256": "f0d9354940c6c9242a5feec87d453251c7e265bbb464ead591ccbe5ce5017c92"
+      }
+    },
+    {
+      "name": "Hexalith.Builds.ModuleTool.Tests.Workspace.WorkspaceMsBuildTests",
+      "discovered": 133,
+      "total": 133,
+      "passed": 132,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0,
+      "not-run": 0,
+      "report": {
+        "path": "Workspace.WorkspaceMsBuildTests.xml",
+        "bytes": 93795,
+        "sha256": "2cd2223f6043d92c7d8af5498bb8ce32a90b63821414c09a60a87c5e3e350e9a"
+      }
+    },
+    {
+      "name": "Hexalith.Builds.ModuleTool.Tests.Workspace.CatalogVersionTests",
+      "discovered": 34,
+      "total": 34,
+      "passed": 34,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "not-run": 0,
+      "report": {
+        "path": "independent-Workspace.CatalogVersionTests.xml",
+        "bytes": 22529,
+        "sha256": "87a5202c69ac1ff7bccf0f4c26377df9256e57366a371f05dfa55fbf951dc86d"
+      }
+    },
+    {
+      "name": "Hexalith.Builds.ModuleTool.Tests.Workspace.WorkspaceAppHostTests",
+      "discovered": 11,
+      "total": 11,
+      "passed": 11,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "not-run": 0,
+      "report": {
+        "path": "independent-Workspace.WorkspaceAppHostTests.xml",
+        "bytes": 8447,
+        "sha256": "7c4c13c4d98ef20a73033c8091b9af6638399679c924a15750e63811de6bdfcf"
+      }
+    }
+  ],
+  "totals": {
+    "total": 224,
+    "passed": 223,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  "repositoryIdentitiesPreserved": 13,
+  "committedAndIndexedRootGitlinksPreserved": 12,
+  "sourceBindingsAudited": 82982,
+  "ownedPostExecutionEvidenceChanges": [
+    {
+      "path": "_bmad-output/implementation-artifacts/story-1-17-current-debug-distribution-results.md",
+      "detail": "Input identity drift: /home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/story-1-17-current-debug-distribution-results.md"
+    },
+    {
+      "path": "eng/story117-source-distribution/README.md",
+      "detail": "Input identity drift: /home/administrator/projects/hexalith/folders/eng/story117-source-distribution/README.md"
+    },
+    {
+      "path": "eng/story117-source-distribution/qualify.py",
+      "detail": "Input identity drift: /home/administrator/projects/hexalith/folders/eng/story117-source-distribution/qualify.py"
+    },
+    {
+      "path": "eng/story117-source-distribution/verify.py",
+      "detail": "Input identity drift: /home/administrator/projects/hexalith/folders/eng/story117-source-distribution/verify.py"
+    }
+  ],
+  "protectedAuthority": {
+    "values": {
+      "parentStory": "in-progress",
+      "tracker": "backlog",
+      "routingPolicy": "V1Only",
+      "T0": null,
+      "activationAuthority": null,
+      "stagingExecuted": 0,
+      "stagingRequired": 14
+    },
+    "files": [
+      {
+        "path": "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+        "bytes": 106308,
+        "sha256": "ca298df3ed27156b7c6d170a47b1042ef8453c1e8e03207930d6bbbcc9ab0423"
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/sprint-status.yaml",
+        "bytes": 37619,
+        "sha256": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40"
+      },
+      {
+        "path": "eng/story117-platform-qualification-current/configuration.proposed.json",
+        "bytes": 49204,
+        "sha256": "c0b8697672e7ea27370bbb9b0078c9e922042945467be0e7a7fa7d33c28b8d1c"
+      },
+      {
+        "path": "eng/story117-platform-qualification-current/staging-checks.json",
+        "bytes": 30153,
+        "sha256": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51"
+      }
+    ]
+  },
+  "branches": {
+    "preservedBuildsLocalMain": "aa46f0c534206b4645b8d9eef08c9a90e1ab540e"
+  },
+  "productionParserUnchanged": {
+    "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingReconciliationTask.cs",
+    "bytes": 23900,
+    "sha256": "f7dd1e71c45678de9e3565d581db9f89a7159e2e0c1054dd34bb1d7fa439d7ea"
+  },
+  "productionPatchApplied": false,
+  "proposedPatchDryRun": {
+    "argv": [
+      "git",
+      "apply",
+      "--check",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-proposed-reconciliation.patch"
+    ],
+    "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "currentHarnessAndOwnedTestBytes": [
+    {
+      "path": "eng/story117-source-distribution/capture_compiler.py",
+      "bytes": 6285,
+      "sha256": "30f7756f6e8ab380af3d2494dfa2a64569eb36d847e9432e6daabc1e792a8d09"
+    },
+    {
+      "path": "eng/story117-source-distribution/qualify.py",
+      "bytes": 51935,
+      "sha256": "73025dea8e4d5967357f7f685d394c324aefe06e02a0ce406f91aac9f3ad8d44"
+    },
+    {
+      "path": "eng/story117-source-distribution/sdk_child.py",
+      "bytes": 2385,
+      "sha256": "81f367a7733f0c8f29f0f03b33c12ad20aa0339ff94334288eaeea91b97a844d"
+    },
+    {
+      "path": "eng/story117-source-distribution/test_compiler_capture.py",
+      "bytes": 2703,
+      "sha256": "e4dc33cb18abc737ac25d723933807e240b7ed1bd0eadab241abf63720e756e3"
+    },
+    {
+      "path": "eng/story117-source-distribution/test_qualification.py",
+      "bytes": 12199,
+      "sha256": "82164716515673e0d44f94b70e2899485391ff610f7ae8dba69fea3a441a8296"
+    },
+    {
+      "path": "eng/story117-source-distribution/verify.py",
+      "bytes": 16867,
+      "sha256": "a097c70d762e64ef0c6d2d7789ea181b20342e0138ccefdd7399a2e11dca5955"
+    },
+    {
+      "path": "eng/story117-source-distribution/Probe.cs",
+      "bytes": 4071,
+      "sha256": "4c77cc273493f0c4a2c8e34a31fdf03033308e09fcf7b505b06131692d798023"
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/CompositionCommandOptionsTests.cs",
+      "bytes": 7021,
+      "sha256": "3be72ea53d4609b17b8e7d9d0de0e360579be2340353c1740ce08920a6eb5bc0"
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Workspace/PlatformModelCatalogTests.cs",
+      "bytes": 16821,
+      "sha256": "b02cf9f2a11880ae642e96cc6139bc8d9c4d3dbb3a59c3f90816ecee9a99d37b"
+    }
+  ],
+  "currentResults": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-current-debug-distribution-results.md",
+    "bytes": 7486,
+    "sha256": "d237dba57343a2a0e3f221a87cf790ac9e2da02727e602db59ff2f3d48485312"
+  },
+  "currentHandoff": {
+    "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-synchronized-handoff.json",
+    "bytes": 18287,
+    "sha256": "2848fc1b716ae7a9b3bc81e680ca84748e6dac0e7282b951c5b70b4583eb2449"
+  },
+  "owningRepositoryDiffChecks": [
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "archivePolicy": "ignored local archives; no external copy/upload",
+  "scope": "Actual original graph/classes and independent diagnostics; first production gate preserved; no model/ordinary/hosted acceptance",
+  "replays": [
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-apphost-launch.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 49, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 0, \"passed\": 0, \"failed\": 0, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-apphost-launch.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 49, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 0, \"passed\": 0, \"failed\": 0, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-focused-factory.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 39, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 0, \"passed\": 0, \"failed\": 0, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-focused-factory.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 39, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 0, \"passed\": 0, \"failed\": 0, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-focused-final.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 469, \"supplementaryFactoryTests\": 8, \"currentOriginalAssemblyTests\": {\"total\": 0, \"passed\": 0, \"failed\": 0, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-focused-final.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 469, \"supplementaryFactoryTests\": 8, \"currentOriginalAssemblyTests\": {\"total\": 0, \"passed\": 0, \"failed\": 0, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-sdk-10-0-402.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 46, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 0, \"passed\": 0, \"failed\": 0, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-sdk-10-0-402.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 46, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 0, \"passed\": 0, \"failed\": 0, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-synchronized-current-evidence.json"
+      ],
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "stdout": "Evidence replay refused: Compiler auxiliary source-result snapshot mismatch\n",
+      "stderr": "",
+      "meaning": "Superseded preliminary auxiliary snapshot pointer is rejected"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-synchronized-current-evidence.json"
+      ],
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "stdout": "Evidence replay refused: Compiler auxiliary source-result snapshot mismatch\n",
+      "stderr": "",
+      "meaning": "Superseded preliminary auxiliary snapshot pointer is rejected"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-synchronized-final.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 4353, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 224, \"passed\": 223, \"failed\": 1, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-synchronized-final.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 4353, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 224, \"passed\": 223, \"failed\": 1, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-synchronized-fixtures.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 184, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 179, \"passed\": 178, \"failed\": 1, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-synchronized-fixtures.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 184, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 179, \"passed\": 178, \"failed\": 1, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-synchronized-independent.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 229, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 224, \"passed\": 223, \"failed\": 1, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-synchronized-independent.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 229, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 224, \"passed\": 223, \"failed\": 1, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-synchronized.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 177, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 46, \"passed\": 42, \"failed\": 4, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29-synchronized.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 177, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 46, \"passed\": 42, \"failed\": 4, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 33, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 0, \"passed\": 0, \"failed\": 0, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 33, \"supplementaryFactoryTests\": 0, \"currentOriginalAssemblyTests\": {\"total\": 0, \"passed\": 0, \"failed\": 0, \"skipped\": 0, \"errors\": 0, \"notRun\": 0}, \"originalAssemblyAcceptance\": false, \"commandExecutionCount\": 0}\n",
+      "stderr": "",
+      "meaning": "Byte and available class-evidence replay"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "eng/story117-source-distribution/verify.py",
+        "--receipt",
+        "/tmp/story117-synchronized-corruption-jwq7zw6_/story-1-17-current-debug-distribution-2026-10-29-synchronized-final.json"
+      ],
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "stdout": "Evidence replay refused: Archive SHA-256 mismatch\n",
+      "stderr": "",
+      "originalArchiveUnchanged": true
+    }
+  ],
+  "guardVerification": {
+    "normal": {
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-source-distribution",
+        "-p",
+        "test_*.py",
+        "-q"
+      ],
+      "tests": 28,
+      "passed": 28,
+      "exitCode": 0
+    },
+    "optimized": {
+      "command": [
+        "python3",
+        "-B",
+        "-O",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-source-distribution",
+        "-p",
+        "test_*.py",
+        "-q"
+      ],
+      "tests": 28,
+      "passed": 28,
+      "exitCode": 0
+    }
+  },
+  "finalReceipt": {
+    "path": "story-1-17-current-debug-distribution-2026-10-29-synchronized-final.json",
+    "bytes": 307024,
+    "sha256": "53b931d8b6266612b3dc237de74f8b661abe9e87b9c8fc5ee4990aa1b9bfbfc9"
+  }
+}

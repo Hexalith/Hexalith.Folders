@@ -85,3 +85,7 @@ _bmad-output/implementation-artifacts/evidence/story-1-17-current-builds-host-*/
 # Preserve exact bytes of the new source-host qualification capsules and manifests.
 _bmad-output/implementation-artifacts/evidence/story-1-17-supported-source-host-qualification-resume-2026-10-28* -text
 _bmad-output/implementation-artifacts/evidence/verify-story-1-17-source-host-qualification-2026-10-28.py text eol=lf
+
+# Current Debug distribution qualification scripts and byte-bound receipts.
+eng/story117-source-distribution/** text eol=lf
+_bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribution-2026-10-29* -text

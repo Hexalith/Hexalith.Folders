@@ -1,0 +1,247 @@
+[
+  {
+    "path": "NuGet.Config",
+    "bytes": 140,
+    "sha256": "17f8588bd0874138a10e92eb9efee6e346a173591124ab57872f019475f8f81a"
+  },
+  {
+    "path": "artifacts/bootstrap/obj/DistributionProbe/project.assets.json",
+    "bytes": 41757,
+    "sha256": "c4a60ee0b05f4efdc927fcf97d89b9460189b2b6bbf1d6aa45886981862093ea"
+  },
+  {
+    "path": "artifacts/bootstrap/obj/Hexalith.Builds.Tooling/project.assets.json",
+    "bytes": 71311,
+    "sha256": "6b1f3c3a65576d1362045a1249869d0fa5ed22da912e381fd0decd463b0c21db"
+  },
+  {
+    "path": "baseline-diff-0.patch",
+    "bytes": 773,
+    "sha256": "bf4c2d032cf4989e4abdea5faba4f34c313b81452a21bba8d270b74a09850d89"
+  },
+  {
+    "path": "baseline-diff-1.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-10.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-11.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-12.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-2.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-3.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-4.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-5.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-6.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-7.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-8.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-9.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "bin/dotnet",
+    "bytes": 311,
+    "sha256": "02950f8a6980b72f6e3b3734dbd77479b804897ca336d52d7621f745c94bf96e"
+  },
+  {
+    "path": "bin/pwsh",
+    "bytes": 312,
+    "sha256": "ffa546e7f310fc5b188f99c9dbc6705667b13c9468229448e830dc4536fa17de"
+  },
+  {
+    "path": "capture.targets",
+    "bytes": 391,
+    "sha256": "33e0bf75b2c9fb635bd02cf0a02652cae29c156e6947cd98015f9706907370b1"
+  },
+  {
+    "path": "certificate-stores-after.json",
+    "bytes": 6172,
+    "sha256": "121a312219e44bf8a061627c1814c07989ab38c669e18e2d0201e462b4bb36f0"
+  },
+  {
+    "path": "certificate-stores-before.json",
+    "bytes": 6172,
+    "sha256": "121a312219e44bf8a061627c1814c07989ab38c669e18e2d0201e462b4bb36f0"
+  },
+  {
+    "path": "commands.json",
+    "bytes": 13547,
+    "sha256": "2722e6f35a060b505db0c9fb150cd09198725ee6cedca103632081fc45eb3fd9"
+  },
+  {
+    "path": "compiler/bootstrap/DistributionProbe.net10.0.txt",
+    "bytes": 22612,
+    "sha256": "4450a5d98146acf2d6b42bf74daa1f508ac6a134983d0c29bc633d0f7b8ac394"
+  },
+  {
+    "path": "compiler/bootstrap/Hexalith.Builds.Tooling.net10.0.txt",
+    "bytes": 53029,
+    "sha256": "2a4077bb9054d77c5c3c3f8f62336263515a7c9374d01d8c2fc060398b1c97d4"
+  },
+  {
+    "path": "config.json",
+    "bytes": 3660,
+    "sha256": "d135c8b6b4339271766b8c3f3cdf19c4c728669c3bc62584c81419f90fd87cd4"
+  },
+  {
+    "path": "harness/Probe.cs",
+    "bytes": 4071,
+    "sha256": "4c77cc273493f0c4a2c8e34a31fdf03033308e09fcf7b505b06131692d798023"
+  },
+  {
+    "path": "harness/__pycache__/qualify.cpython-314.pyc",
+    "bytes": 64808,
+    "sha256": "3d729f6d36b40221e3834b087b4ca5983f4af7d46e49e654757d8caa179514eb"
+  },
+  {
+    "path": "harness/qualify.py",
+    "bytes": 36478,
+    "sha256": "19b748efc5cc02aeeb901dbdeb9166ec7d892b1f153f3efb4d85a3f04814167e"
+  },
+  {
+    "path": "harness/sdk_child.py",
+    "bytes": 2385,
+    "sha256": "81f367a7733f0c8f29f0f03b33c12ad20aa0339ff94334288eaeea91b97a844d"
+  },
+  {
+    "path": "harness/test_qualification.py",
+    "bytes": 8607,
+    "sha256": "32a16839d2d49605f49b2c5c9a3c78e7bcaa0335e8134b008f288167fcf71894"
+  },
+  {
+    "path": "harness/verify.py",
+    "bytes": 9043,
+    "sha256": "21492bef39b27eca78b15802eafdcb7ea973d598819d7f52badccac73184c1f0"
+  },
+  {
+    "path": "helper/DistributionProbe.csproj",
+    "bytes": 406,
+    "sha256": "0c20539246cd0bbc5d67f3f4777c62b582a3b179fed1225157b5d8c4c66d7529"
+  },
+  {
+    "path": "helper/Program.cs",
+    "bytes": 4071,
+    "sha256": "4c77cc273493f0c4a2c8e34a31fdf03033308e09fcf7b505b06131692d798023"
+  },
+  {
+    "path": "logs/bootstrap-build.log",
+    "bytes": 13570545,
+    "sha256": "1b9af3a849dbd2de4dcd76a9db30f9352aa1121840543c746674cda410e8f0d4"
+  },
+  {
+    "path": "logs/bootstrap.binlog",
+    "bytes": 582166,
+    "sha256": "0dd311076a160b6c151838ff3b0867eee272bf89cd7c9fd4541e71a3a844f870"
+  },
+  {
+    "path": "logs/production-mapping.log",
+    "bytes": 1813,
+    "sha256": "e4edfd997b44aa92d7c2bdb57ec0b9bb98b6deff2b81419b39713cf2abdfb28b"
+  },
+  {
+    "path": "logs/pwsh-child-648355.log",
+    "bytes": 170,
+    "sha256": "d7520054a09a359ce8f67f3de7c6405795d7b3b40eed606caf5ea8e51305f044"
+  },
+  {
+    "path": "logs/sdk-child-648363.log",
+    "bytes": 170,
+    "sha256": "d7520054a09a359ce8f67f3de7c6405795d7b3b40eed606caf5ea8e51305f044"
+  },
+  {
+    "path": "logs/sdk-info.log",
+    "bytes": 3336,
+    "sha256": "8dd7514dccd2546df1696520dc95f95d4435407bc0ce694f3c7a89c2f77f1f51"
+  },
+  {
+    "path": "logs/sdk-version.log",
+    "bytes": 9,
+    "sha256": "44ea2595bc5a7acabc030531952071226aa70862fd008ed7327d752b39c8513c"
+  },
+  {
+    "path": "repository-baseline.json",
+    "bytes": 8393,
+    "sha256": "07d7fcd9399396e10609d44a1ddae1ff3d09c173c59961c7f41681261665205e"
+  },
+  {
+    "path": "result.json",
+    "bytes": 27497,
+    "sha256": "7a27669761dbf074ce7b199bdf4904ac2407cd2f078db47bbba9d0fa1329e4b4"
+  },
+  {
+    "path": "sdk-bindings.json",
+    "bytes": 1298142,
+    "sha256": "00f97e23c1e019b59e8b119c027e29a2ca0614bb678ca775343c1c6c9dd953cf"
+  },
+  {
+    "path": "sdk-children.jsonl",
+    "bytes": 20810,
+    "sha256": "b2a5d1fad52543d716c68c2f31ef597264620869b4c19f9e53f0ab0e8c2d99a1"
+  },
+  {
+    "path": "sdk-layout/dotnet",
+    "bytes": 71744,
+    "sha256": "634efbf2414144d140d6f59d167342c8b3b53b4c34346ed786dd0470ddc9a3cb"
+  },
+  {
+    "path": "source-baseline.json",
+    "bytes": 19680066,
+    "sha256": "5619a84786976bdddf2293f658a3043f8523ae995fb1e563e0ec42719cb5422e"
+  },
+  {
+    "path": "workspace/source-mapping/mapping.json",
+    "bytes": 4468,
+    "sha256": "d2547ab847ce23e3b5599422b936af63eaacee8fd25864c818e4343048442b02"
+  },
+  {
+    "path": "xdg-cache/powershell/StartupProfileData-NonInteractive",
+    "bytes": 124572,
+    "sha256": "6ae880a474265e6b4c2e7ec22e5785d19ca02be210fea281efe37c81234851df"
+  },
+  {
+    "path": "xdg-cache/powershell/telemetry.uuid",
+    "bytes": 16,
+    "sha256": "0345cca0cbcef74e2ed341117a23043e5632d9f327c4b69c9d176b0645ae0c36"
+  }
+]

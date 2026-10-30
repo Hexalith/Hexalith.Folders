@@ -1,0 +1,167 @@
+[
+  {
+    "path": "NuGet.Config",
+    "bytes": 140,
+    "sha256": "17f8588bd0874138a10e92eb9efee6e346a173591124ab57872f019475f8f81a"
+  },
+  {
+    "path": "baseline-diff-0.patch",
+    "bytes": 773,
+    "sha256": "bf4c2d032cf4989e4abdea5faba4f34c313b81452a21bba8d270b74a09850d89"
+  },
+  {
+    "path": "baseline-diff-1.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-10.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-11.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-12.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-2.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-3.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-4.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-5.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-6.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-7.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-8.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-diff-9.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "bin/dotnet",
+    "bytes": 281,
+    "sha256": "192269192fcfade8e24b653518d0f457572a691c83b705e0658b28a6a9df2466"
+  },
+  {
+    "path": "bin/pwsh",
+    "bytes": 282,
+    "sha256": "e3bc63d6aadb398e66122a9302a803a100782f2fad185179784e7d50ea192171"
+  },
+  {
+    "path": "capture.targets",
+    "bytes": 391,
+    "sha256": "33e0bf75b2c9fb635bd02cf0a02652cae29c156e6947cd98015f9706907370b1"
+  },
+  {
+    "path": "certificate-stores-after.json",
+    "bytes": 6172,
+    "sha256": "121a312219e44bf8a061627c1814c07989ab38c669e18e2d0201e462b4bb36f0"
+  },
+  {
+    "path": "certificate-stores-before.json",
+    "bytes": 6172,
+    "sha256": "121a312219e44bf8a061627c1814c07989ab38c669e18e2d0201e462b4bb36f0"
+  },
+  {
+    "path": "commands.json",
+    "bytes": 2193,
+    "sha256": "a6db8060c3a8576b0117eacb6cce52d0daa0280d98850b3c97e42dddbe02c2fb"
+  },
+  {
+    "path": "config.json",
+    "bytes": 2720,
+    "sha256": "fb9eafa0accc78c67956b665ac42f5c50f8fdbe1b670c429801741428d8abd17"
+  },
+  {
+    "path": "harness/Probe.cs",
+    "bytes": 4071,
+    "sha256": "4c77cc273493f0c4a2c8e34a31fdf03033308e09fcf7b505b06131692d798023"
+  },
+  {
+    "path": "harness/qualify.py",
+    "bytes": 34702,
+    "sha256": "e2afc65cc9a911360f51a4fc0a5c1fcaf15ee4a3dd0493b32d1327f3206009ca"
+  },
+  {
+    "path": "harness/sdk_child.py",
+    "bytes": 2385,
+    "sha256": "81f367a7733f0c8f29f0f03b33c12ad20aa0339ff94334288eaeea91b97a844d"
+  },
+  {
+    "path": "harness/test_qualification.py",
+    "bytes": 8607,
+    "sha256": "32a16839d2d49605f49b2c5c9a3c78e7bcaa0335e8134b008f288167fcf71894"
+  },
+  {
+    "path": "harness/verify.py",
+    "bytes": 9043,
+    "sha256": "21492bef39b27eca78b15802eafdcb7ea973d598819d7f52badccac73184c1f0"
+  },
+  {
+    "path": "helper/DistributionProbe.csproj",
+    "bytes": 406,
+    "sha256": "0c20539246cd0bbc5d67f3f4777c62b582a3b179fed1225157b5d8c4c66d7529"
+  },
+  {
+    "path": "helper/Program.cs",
+    "bytes": 4071,
+    "sha256": "4c77cc273493f0c4a2c8e34a31fdf03033308e09fcf7b505b06131692d798023"
+  },
+  {
+    "path": "logs/sdk-version.log",
+    "bytes": 9,
+    "sha256": "00922204861c9366b1259b84337ee228d58ec876604bb149e82c077108ce3be2"
+  },
+  {
+    "path": "repository-baseline.json",
+    "bytes": 8393,
+    "sha256": "07d7fcd9399396e10609d44a1ddae1ff3d09c173c59961c7f41681261665205e"
+  },
+  {
+    "path": "result.json",
+    "bytes": 13843,
+    "sha256": "e2dbd0835493199c726dd7af97962e4d7098758399af3f2ed67b53c6142cfb44"
+  },
+  {
+    "path": "sdk-bindings.json",
+    "bytes": 1028461,
+    "sha256": "45106601f0d10a608306ebc9a2b44e46b36513c3609f93647df3d1b5c025c361"
+  },
+  {
+    "path": "source-baseline.json",
+    "bytes": 19679122,
+    "sha256": "f59820a63a53bef2b5de316565ac5a05e30c030626e860d75814dd7722a896dd"
+  }
+]

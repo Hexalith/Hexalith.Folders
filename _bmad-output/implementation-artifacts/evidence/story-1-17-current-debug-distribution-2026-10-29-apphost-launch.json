@@ -1,0 +1,477 @@
+{
+  "schemaVersion": 1,
+  "recordId": "story-1-17-current-debug-distribution-2026-10-29-apphost-launch",
+  "archive": {
+    "path": "story-1-17-current-debug-distribution-2026-10-29-apphost-launch.artifacts.tar.gz",
+    "bytes": 5320686,
+    "sha256": "dc884ac806fa4388618272d0193e0aa5e470ee938f8ff2847bf36f60bf73fdb9"
+  },
+  "memberManifest": {
+    "path": "story-1-17-current-debug-distribution-2026-10-29-apphost-launch.members.json",
+    "bytes": 7322,
+    "sha256": "b0537f4fa3dd3bc447382cefa5260b1528bffa6bf0151c7df67d725946b3c8f5"
+  },
+  "memberCount": 49,
+  "result": {
+    "schemaVersion": 1,
+    "qualification": "incomplete",
+    "protectedAuthority": {
+      "parentStory": "in-progress",
+      "tracker": "backlog",
+      "routingPolicy": "V1Only",
+      "T0": null,
+      "activationAuthority": null,
+      "stagingExecuted": 0,
+      "stagingRequired": 14
+    },
+    "ordinaryStartup": "pending",
+    "signedDistribution": "pending",
+    "operationalAcceptance": "pending",
+    "commands": [
+      {
+        "label": "sdk-version",
+        "argv": [
+          "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+          "--version"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout",
+          "DOTNET_HOST_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+          "HEXALITH_TEST_DOTNET_EXECUTABLE": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+          "HEXALITH_TEST_SDK_INTERCEPTION_REQUIRED": "true",
+          "PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/bin:/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/tmpdir",
+          "TEMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/temp",
+          "TMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/tmp",
+          "XDG_CACHE_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/xdg-cache",
+          "XDG_CONFIG_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/xdg-config",
+          "PSModuleAnalysisCachePath": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/powershell-cache/ModuleAnalysisCache"
+        },
+        "timeoutSeconds": 30,
+        "launched": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "pid": 642767,
+        "seconds": 0.169,
+        "log": {
+          "path": "logs/sdk-version.log",
+          "bytes": 9,
+          "sha256": "44ea2595bc5a7acabc030531952071226aa70862fd008ed7327d752b39c8513c"
+        }
+      },
+      {
+        "label": "sdk-info",
+        "argv": [
+          "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+          "--info"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout",
+          "DOTNET_HOST_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+          "HEXALITH_TEST_DOTNET_EXECUTABLE": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+          "HEXALITH_TEST_SDK_INTERCEPTION_REQUIRED": "true",
+          "PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/bin:/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/tmpdir",
+          "TEMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/temp",
+          "TMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/tmp",
+          "XDG_CACHE_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/xdg-cache",
+          "XDG_CONFIG_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/xdg-config",
+          "PSModuleAnalysisCachePath": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/powershell-cache/ModuleAnalysisCache"
+        },
+        "timeoutSeconds": 30,
+        "launched": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "pid": 645802,
+        "seconds": 0.218,
+        "log": {
+          "path": "logs/sdk-info.log",
+          "bytes": 3336,
+          "sha256": "8dd7514dccd2546df1696520dc95f95d4435407bc0ce694f3c7a89c2f77f1f51"
+        }
+      },
+      {
+        "label": "bootstrap-build",
+        "argv": [
+          "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+          "build",
+          "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/helper/DistributionProbe.csproj",
+          "--configuration",
+          "Debug",
+          "--artifacts-path",
+          "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/artifacts/bootstrap",
+          "-p:RestoreConfigFile=/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/NuGet.Config",
+          "-p:NuGetAudit=false",
+          "-p:MinVerVersionOverride=1.0.0",
+          "-p:CustomAfterMicrosoftCommonTargets=/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/capture.targets",
+          "-p:QualificationCompilerCapture=/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/compiler/bootstrap",
+          "-p:HexalithG4FixtureArtifacts=/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/artifacts/fixture/",
+          "-m:1",
+          "-nr:false",
+          "-p:BuildInParallel=false",
+          "-p:RestoreBuildInParallel=false",
+          "-p:UseSharedCompilation=false",
+          "-v:diag",
+          "-bl:/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/logs/bootstrap.binlog"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout",
+          "DOTNET_HOST_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+          "HEXALITH_TEST_DOTNET_EXECUTABLE": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+          "HEXALITH_TEST_SDK_INTERCEPTION_REQUIRED": "true",
+          "PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/bin:/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/tmpdir",
+          "TEMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/temp",
+          "TMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/tmp",
+          "XDG_CACHE_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/xdg-cache",
+          "XDG_CONFIG_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/xdg-config",
+          "PSModuleAnalysisCachePath": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/powershell-cache/ModuleAnalysisCache"
+        },
+        "timeoutSeconds": 900,
+        "launched": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "pid": 648319,
+        "seconds": 37.537,
+        "log": {
+          "path": "logs/bootstrap-build.log",
+          "bytes": 13570545,
+          "sha256": "1b9af3a849dbd2de4dcd76a9db30f9352aa1121840543c746674cda410e8f0d4"
+        }
+      },
+      {
+        "label": "production-mapping",
+        "argv": [
+          "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/artifacts/bootstrap/bin/DistributionProbe/debug/DistributionProbe",
+          "map",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/test/fixtures/module/executable/hexalith.module-manifest.v1.json",
+          "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/workspace"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+        "environment": {
+          "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+          "DOTNET_NOLOGO": "1",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "HOME": "/home/administrator",
+          "LANG": "C.UTF-8",
+          "DOTNET_ROOT": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout",
+          "DOTNET_HOST_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+          "HEXALITH_TEST_DOTNET_EXECUTABLE": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+          "HEXALITH_TEST_SDK_INTERCEPTION_REQUIRED": "true",
+          "PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/bin:/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+          "DOTNET_CLI_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/dotnet_cli_home",
+          "NUGET_PACKAGES": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_packages",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_http_cache_path",
+          "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_plugins_cache_path",
+          "NUGET_SCRATCH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_scratch",
+          "TMPDIR": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/tmpdir",
+          "TEMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/temp",
+          "TMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/tmp",
+          "XDG_CACHE_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/xdg-cache",
+          "XDG_CONFIG_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/xdg-config",
+          "PSModuleAnalysisCachePath": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/powershell-cache/ModuleAnalysisCache"
+        },
+        "timeoutSeconds": 300,
+        "launched": true,
+        "exitCode": -6,
+        "timedOut": false,
+        "pid": 660363,
+        "seconds": 1.17,
+        "log": {
+          "path": "logs/production-mapping.log",
+          "bytes": 1813,
+          "sha256": "e4edfd997b44aa92d7c2bdb57ec0b9bb98b6deff2b81419b39713cf2abdfb28b"
+        }
+      }
+    ],
+    "sdkSelection": {
+      "installedHost": {
+        "path": "/home/administrator/.dotnet/dotnet",
+        "bytes": 71744,
+        "sha256": "634efbf2414144d140d6f59d167342c8b3b53b4c34346ed786dd0470ddc9a3cb"
+      },
+      "privateHost": {
+        "path": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+        "bytes": 71744,
+        "sha256": "634efbf2414144d140d6f59d167342c8b3b53b4c34346ed786dd0470ddc9a3cb"
+      },
+      "sdkVersion": "10.0.402",
+      "sdkDirectory": "/home/administrator/.dotnet/sdk/10.0.402",
+      "mechanism": "Private copied dotnet host with only the existing 10.0.402 SDK directory exposed; runtime/reference-pack directories remain read-only inputs"
+    },
+    "initialRepositories": [
+      {
+        "path": ".",
+        "revision": "c3d295b15cd3e0c5f675d014033256458860603f",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/index",
+          "bytes": 2583829,
+          "sha256": "b2f389bb78b23c5f44d2ec4589d87272b80b439762aabbd3f5bd7879fb612b9f"
+        },
+        "stageEntriesSha256": "15d65fd31e93ba8cefc6ec23b5d1db8fceb557b81c391287922814c5d3607dd5",
+        "indexFlagsSha256": "6a644d0be55be08fac4d921cbe5e6eb759e30d82e0e402b51695351ffc17823b"
+      },
+      {
+        "path": "references/Hexalith.Tenants",
+        "revision": "f61c6678cf9ac3d50240b0b1afd7aa261e611eaf",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Tenants/index",
+          "bytes": 647526,
+          "sha256": "90a20b22b5e8db780ac3daa334599811e3a0c3905971b6f2660615fe56ebda44"
+        },
+        "stageEntriesSha256": "70e52ecbb4fb7c3e388173778a6e1bda0908eeedb747323821a348774cd9c5f2",
+        "indexFlagsSha256": "9b4a31499c7635c139572b5d14c5b11b54cc5f2684299efdcbfe061ef529880e",
+        "rootGitlink": "f61c6678cf9ac3d50240b0b1afd7aa261e611eaf",
+        "indexedGitlink": "f61c6678cf9ac3d50240b0b1afd7aa261e611eaf"
+      },
+      {
+        "path": "references/Hexalith.AI.Tools",
+        "revision": "70dbf73e80787299c832d30d911b16b105ab194d",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.AI.Tools/index",
+          "bytes": 4197,
+          "sha256": "08223fa9bc88b6fef3d6460b9289cd2b32b3089d8669b4a26336fa1bb8604253"
+        },
+        "stageEntriesSha256": "d17b30d7ed350757dd9e25a055d4a330b81c221abbb9542be52eeebe3b6d0023",
+        "indexFlagsSha256": "492c992993184c5a58bb872f4f227e730c44da4d631399d78b3bf2954e916c0a",
+        "rootGitlink": "70dbf73e80787299c832d30d911b16b105ab194d",
+        "indexedGitlink": "70dbf73e80787299c832d30d911b16b105ab194d"
+      },
+      {
+        "path": "references/Hexalith.EventStore",
+        "revision": "4cf93f91e760e2d09e4fc64e1bd33a3c0a79a24d",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.EventStore/index",
+          "bytes": 1365975,
+          "sha256": "9d11651b1369784c25f09072fa15b5f1df289999fca53633449939304716f051"
+        },
+        "stageEntriesSha256": "769ff0c8dd95a3ce4283721a6e942d8037385cb00404531a410c43534402bf22",
+        "indexFlagsSha256": "273fe9bd2d89af1055d88878b2e802f03ad97e86e1ebab2ad2658d15828a53dc",
+        "rootGitlink": "4cf93f91e760e2d09e4fc64e1bd33a3c0a79a24d",
+        "indexedGitlink": "4cf93f91e760e2d09e4fc64e1bd33a3c0a79a24d"
+      },
+      {
+        "path": "references/Hexalith.FrontComposer",
+        "revision": "612d23485d7e2845d22102621a38d6c904e1ea90",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.FrontComposer/index",
+          "bytes": 902821,
+          "sha256": "632c8bdd21ec58b6df1e25a2228fdc0a39d9b43d7eb9900d420b16007281b4ac"
+        },
+        "stageEntriesSha256": "b781bc7bcfc10e4559de2048404c0eb5daab64981616abd81618f7da82b6a502",
+        "indexFlagsSha256": "d3fa5126b6a04ef975dbe02f506550240c49811ce80d2ffec216d2656b6f4157",
+        "rootGitlink": "612d23485d7e2845d22102621a38d6c904e1ea90",
+        "indexedGitlink": "612d23485d7e2845d22102621a38d6c904e1ea90"
+      },
+      {
+        "path": "references/Hexalith.Memories",
+        "revision": "daa06183c0c9baa8bda71df259a7264d34684e2a",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Memories/index",
+          "bytes": 899373,
+          "sha256": "836daee86cc27e45cb05d3f968942f1e64c3acd3340de4463e41b07d0cfdf0a6"
+        },
+        "stageEntriesSha256": "44c38f72f52e3e98f718bbae0710f21c97ee7f076e4cd59fbef805372943f967",
+        "indexFlagsSha256": "b7c2b7a5443d4d91d16fe747cd91dad41b407ac0943fc94393f55a2d80ae5b4a",
+        "rootGitlink": "daa06183c0c9baa8bda71df259a7264d34684e2a",
+        "indexedGitlink": "daa06183c0c9baa8bda71df259a7264d34684e2a"
+      },
+      {
+        "path": "references/Hexalith.Commons",
+        "revision": "3edfbdafc7d4fa915286dce8a37dc4cc7c06085a",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Commons/index",
+          "bytes": 30329,
+          "sha256": "812b418d2da25de8b6845c05b11ca34daa814495386d37f153227644325d3324"
+        },
+        "stageEntriesSha256": "909067f8bff4f2cd92d437444db0269de8a9a5c190fd592a6922bec33a6364e2",
+        "indexFlagsSha256": "109a1563a3c298c6a1e980a49061f0271b3b2caac068013edd4b44a35e97cbc0",
+        "rootGitlink": "3edfbdafc7d4fa915286dce8a37dc4cc7c06085a",
+        "indexedGitlink": "3edfbdafc7d4fa915286dce8a37dc4cc7c06085a"
+      },
+      {
+        "path": "references/Hexalith.Builds",
+        "revision": "aa46f0c534206b4645b8d9eef08c9a90e1ab540e",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Builds/index",
+          "bytes": 493643,
+          "sha256": "fd175c7555fb47a571d03ccdc89c74405b5c91f33793e9a129dda61c5fe9d751"
+        },
+        "stageEntriesSha256": "92a9b843ad447781087b093c24ad8c630589fb18d396f14c9d26e512b8e81192",
+        "indexFlagsSha256": "bf4cb9d9a8257d46a57b71a00241d023b4e3c3755e9bc408d777cbbe80d9eef5",
+        "rootGitlink": "aa46f0c534206b4645b8d9eef08c9a90e1ab540e",
+        "indexedGitlink": "aa46f0c534206b4645b8d9eef08c9a90e1ab540e"
+      },
+      {
+        "path": "references/Hexalith.PolymorphicSerializations",
+        "revision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/references/Hexalith.PolymorphicSerializations/index",
+          "bytes": 8831,
+          "sha256": "99834e9037d6af73bea83dc830ab91d6f25228633456987344d153f3cab98221"
+        },
+        "stageEntriesSha256": "02d4ed751e051abdfcab7d1bf898a1849a30f7522fbf1448099d1d12bc51b470",
+        "indexFlagsSha256": "0e1f1b32b300ddb5a40638d500d958937d2e0e92649b824e5b1c51ee0a270cb8",
+        "rootGitlink": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+        "indexedGitlink": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0"
+      },
+      {
+        "path": "references/Hexalith.Projects",
+        "revision": "22c99ad1ae0aa88cd563f2d85346c9d680acc2ca",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/references/Hexalith.Projects/index",
+          "bytes": 1378397,
+          "sha256": "599a2a785623cfa31a9466e6c72dbb5b71e41c185b3dd8e3f5021fc542ca66a5"
+        },
+        "stageEntriesSha256": "b994fe1423a847ee078d6fe445a47609307591bb37e6441da035151ccffa465d",
+        "indexFlagsSha256": "412ff8c8fc9ff43617b0823ebda3a2e042ac2967f9721c82dec1cc2722cac2a5",
+        "rootGitlink": "22c99ad1ae0aa88cd563f2d85346c9d680acc2ca",
+        "indexedGitlink": "22c99ad1ae0aa88cd563f2d85346c9d680acc2ca"
+      },
+      {
+        "path": "references/Hexalith.Platform",
+        "revision": "3659a44d86c08645215689eaeff8b3624d357dd5",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Platform/index",
+          "bytes": 1905189,
+          "sha256": "182ad69bebca028e85dd65f273d2c2d289b5d1a37568660eed14931942800526"
+        },
+        "stageEntriesSha256": "cad2a3d8c95c13fbe65aaf36a092304e2b580796252d89ec8813e9814906c7ce",
+        "indexFlagsSha256": "87f0f933375619535828f7aee2d3eff608108c09382dad08f073f34e897d9e6e",
+        "rootGitlink": "3659a44d86c08645215689eaeff8b3624d357dd5",
+        "indexedGitlink": "3659a44d86c08645215689eaeff8b3624d357dd5"
+      },
+      {
+        "path": "references/Hexalith.McpCli",
+        "revision": "9ba8e5bd0e213501b39d33cedf46859566fc89a4",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.McpCli/index",
+          "bytes": 1996247,
+          "sha256": "825a051cf989a8927db5a83c89df30c0111c3c9e5781355df201b8a10b542375"
+        },
+        "stageEntriesSha256": "67e7d418da03dfcaf7e7592e3d4c22a901ce811214e0a51725c2238247868ebf",
+        "indexFlagsSha256": "f10c0f4588ad100cd2ad1337eb1139b8e32d1c7b1acd3fbb5a76eb875f120441",
+        "rootGitlink": "9ba8e5bd0e213501b39d33cedf46859566fc89a4",
+        "indexedGitlink": "9ba8e5bd0e213501b39d33cedf46859566fc89a4"
+      },
+      {
+        "path": "references/Hexalith.Parties",
+        "revision": "ce66f530f4d0e208fe5d6fe83ea277f7de2aa407",
+        "index": {
+          "path": "/home/administrator/projects/hexalith/folders/.git/modules/Hexalith.Parties/index",
+          "bytes": 1181370,
+          "sha256": "2aadde055d5df51a00d1e1872d029989a445154f6bc738f86d77b15b83ca782d"
+        },
+        "stageEntriesSha256": "3bb3d0c75e0984a815b664dd3254683c785dace7433c6707220fec3f5022ff24",
+        "indexFlagsSha256": "705f338da854baf3e9c950655ae5f167dd47c26cd54c2c03c15e50ac19ce3bae",
+        "rootGitlink": "ce66f530f4d0e208fe5d6fe83ea277f7de2aa407",
+        "indexedGitlink": "ce66f530f4d0e208fe5d6fe83ea277f7de2aa407"
+      }
+    ],
+    "environment": {
+      "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+      "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+      "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+      "DOTNET_NOLOGO": "1",
+      "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
+      "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+      "DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE": "true",
+      "MSBUILDDISABLENODEREUSE": "1",
+      "HOME": "/home/administrator",
+      "LANG": "C.UTF-8",
+      "DOTNET_ROOT": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout",
+      "DOTNET_HOST_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+      "HEXALITH_TEST_DOTNET_EXECUTABLE": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout/dotnet",
+      "HEXALITH_TEST_SDK_INTERCEPTION_REQUIRED": "true",
+      "PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/bin:/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/sdk-layout:/home/administrator/.dotnet/tools:/usr/local/bin:/usr/bin:/bin",
+      "DOTNET_CLI_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/dotnet_cli_home",
+      "NUGET_PACKAGES": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_packages",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_http_cache_path",
+      "NUGET_PLUGINS_CACHE_PATH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_plugins_cache_path",
+      "NUGET_SCRATCH": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/nuget_scratch",
+      "TMPDIR": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/tmpdir",
+      "TEMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/temp",
+      "TMP": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/tmp",
+      "XDG_CACHE_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/xdg-cache",
+      "XDG_CONFIG_HOME": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/xdg-config",
+      "PSModuleAnalysisCachePath": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/powershell-cache/ModuleAnalysisCache"
+    },
+    "sdkBindings": {
+      "path": "sdk-bindings.json",
+      "bytes": 1298142,
+      "sha256": "00f97e23c1e019b59e8b119c027e29a2ca0614bb678ca775343c1c6c9dd953cf"
+    },
+    "preservation": {
+      "status": "verified",
+      "errors": [],
+      "repositoryCount": 13,
+      "boundSourceCount": 80086
+    },
+    "firstFailure": {
+      "type": "GateFailure",
+      "detail": "Command failed: production-mapping; argv=['/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/artifacts/bootstrap/bin/DistributionProbe/debug/DistributionProbe', 'map', '/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/test/fixtures/module/executable/hexalith.module-manifest.v1.json', '/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/workspace']; result=-6; log=/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_/logs/production-mapping.log",
+      "owner": "first failing command/input owner; see exact command and retained log",
+      "dependentExecutionStopped": true
+    },
+    "historicalEvidence": {
+      "status": "dated evidence only",
+      "reason": "Current root revisions and source inputs advanced; historical loader/source-host results grant no current distribution/runtime compatibility credit."
+    }
+  },
+  "privateWorkspace": "/tmp/story-1-17-current-debug-distribution-2026-10-29-apphost-launch-0di82_1_",
+  "archivePolicy": "Ignored local archive per archives-out-of-git.md. No external copy/upload; copy to this filename before replay elsewhere.",
+  "retention": "Complete sealed CLI/Tooling/three-host/model outputs, selected assets, actual compiler source/reference bytes, catalog/imports, commands and full logs/binlogs. Third-party caches and unrelated build intermediates are omitted."
+}
