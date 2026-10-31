@@ -1,0 +1,9 @@
+{
+  "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-nss-live-validation-2026-10-31.artifacts.tar.gz",
+  "bytes": 35667456,
+  "sha256": "a7e163e6896883ea95eb0ac116483fccd8b44fa0e500df9a016a310a36a759d2",
+  "member_manifest": "capsule.members.json",
+  "member_count": 96,
+  "archive_ignored_by_repository_policy": true,
+  "qualification": "incomplete"
+}

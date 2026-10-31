@@ -78,6 +78,25 @@ BPF_ARRAY(counters, u64, 12);
 BPF_ARRAY(enabled, u64, 1);
 BPF_PERF_OUTPUT(events);
 
+/* Volatile stores prevent LLVM from lowering large map-value resets to a
+ * memset call, which the BPF backend cannot emit. Both layouts are word-sized. */
+_Static_assert(sizeof(struct context) % sizeof(u64) == 0, "context word alignment");
+_Static_assert(sizeof(struct identity) % sizeof(u64) == 0, "identity word alignment");
+_Static_assert(sizeof(struct event) == 3304, "Python event ABI");
+static __always_inline void clear_context(struct context *context)
+{
+    volatile u64 *words = (volatile u64 *)context;
+#pragma unroll
+    for (int n = 0; n < sizeof(*context) / sizeof(u64); n++) words[n] = 0;
+}
+
+static __always_inline void clear_identity(struct identity *identity)
+{
+    volatile u64 *words = (volatile u64 *)identity;
+#pragma unroll
+    for (int n = 0; n < sizeof(*identity) / sizeof(u64); n++) words[n] = 0;
+}
+
 /* counters: submissions, submit errors, map errors, overwrites, unmatched
  * returns, read errors, truncated paths, deadline pairs, excluded, starts,
  * successful pair completions, identity errors. */
@@ -235,7 +254,7 @@ static __always_inline struct event *fresh(u32 op)
     if (!on || !*on) return NULL;
     struct context *context = scratch.lookup(&zero);
     if (!context) { count(2); return NULL; }
-    __builtin_memset(context, 0, sizeof(*context));
+    clear_context(context);
     struct event *e = &context->event;
     e->op = op;
     e->entry_ns = now;
@@ -416,7 +435,7 @@ static __always_inline int lifecycle(void *ctx, u32 op, struct task_struct *task
     struct event *e = fresh(op);
     if (!e) return 0;
     if (creator) identify(&e->fork_creator, creator, op);
-    __builtin_memset(&e->process, 0, sizeof(e->process));
+    clear_identity(&e->process);
     identify(&e->process, task, op);
     e->old_pid = old_pid;
     e->return_ns = e->entry_ns;

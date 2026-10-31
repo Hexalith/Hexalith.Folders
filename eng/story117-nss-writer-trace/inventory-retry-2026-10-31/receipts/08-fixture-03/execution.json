@@ -1,0 +1,47 @@
+{
+  "duration_seconds": 60,
+  "workload_executed": false,
+  "outcomes": [],
+  "owner_start_ticks": 22738755,
+  "collector_pid": 94430,
+  "collector_start_ticks": 22740855,
+  "boot_id": "9013c8e5-d08a-4fd8-868d-2b9b0302fa27",
+  "launched_monotonic_ns": 227408551552791,
+  "stop_signal": 2,
+  "collector_exit": 2,
+  "finished_monotonic_ns": 227430031525424,
+  "thread_private": {
+    "identity": {
+      "pid": 94418,
+      "tid": 94429,
+      "uid": 0,
+      "task_start_ticks": 22740855,
+      "start_ticks": 22740851,
+      "executable": "/usr/bin/python3.14",
+      "executable_device": [
+        8,
+        48
+      ],
+      "executable_inode": 12409
+    },
+    "fd": 6,
+    "file": {
+      "path": "/var/tmp/story117-nss-retry.ubgn0d7i/synthetic-08-fixture-03/nssdb/key4.db",
+      "device": [
+        8,
+        48
+      ],
+      "inode": 9430074
+    },
+    "unshared": true
+  },
+  "unsupported": [
+    "already-writable MAP_SHARED stores",
+    "page-mkwrite gives no content credit",
+    "async/io_uring",
+    "__kernel_write fixture trigger unavailable",
+    "generic filemap fault not guaranteed",
+    "PMU entry dispatch/recursion and paired omissions",
+    "actual VM suspend untested"
+  ]
+}

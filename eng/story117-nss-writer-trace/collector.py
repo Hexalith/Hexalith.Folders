@@ -28,6 +28,8 @@ PROC_ROOT = Path("/proc")
 MAX_DURATION = 900
 MAX_BYTES = 256 * 1024 * 1024
 RESERVE_BYTES = 64 * 1024
+DESCRIPTOR_CACHE_ENTRIES = 4096
+DESCRIPTOR_CACHE_BYTES = 4 * 1024 * 1024
 EXT4_MAGIC = 0xEF53
 PATH_PARTS = 12
 PATH_PART_LEN = 48
@@ -476,6 +478,26 @@ def fdinfo(path):
     return details
 
 
+def shared_task_resource(first_tid, second_tid, resource):
+    """Confirm sharing with Linux x86-64 kcmp; unknown requires inventory."""
+    if PROC_ROOT != Path("/proc") or platform.machine() != "x86_64":
+        return None
+    libc = ctypes.CDLL(None, use_errno=True)
+    libc.syscall.restype = ctypes.c_long
+    result = libc.syscall(ctypes.c_long(312), ctypes.c_int(first_tid),
+                          ctypes.c_int(second_tid), ctypes.c_int(resource),
+                          ctypes.c_ulong(0), ctypes.c_ulong(0))
+    return None if result < 0 else result == 0
+
+
+def shared_descriptor_table(first_tid, second_tid):
+    return shared_task_resource(first_tid, second_tid, 2)  # KCMP_FILES
+
+
+def shared_memory_map(first_tid, second_tid):
+    return shared_task_resource(first_tid, second_tid, 1)  # KCMP_VM
+
+
 def snapshot_process(pid, emit, errors=None):
     errors = [] if errors is None else errors
     root = PROC_ROOT / str(pid)
@@ -497,10 +519,54 @@ def snapshot_process(pid, emit, errors=None):
     emit({"kind": "process", **before, "parent": parent, "clock_ticks_per_second": os.sysconf("SC_CLK_TCK"),
           "start_identity_note": "proc ticks are rounded; kernel events carry exact group-leader boottime ns"})
 
+    descriptor_reference = mapping_reference = None
+    descriptor_cache, descriptor_cache_bytes, descriptor_observations = {}, 0, 0
+
+    def check_task_identity(task_root, scope, require_live=False):
+        current = proc_stat((task_root / "stat").read_text())
+        if (scope["tid"], scope["task_start_ticks"]) != (current["pid"], current["start_ticks"]):
+            raise ValueError("task reused during snapshot")
+        if require_live and current["state"] in ("Z", "X"):
+            raise ValueError("task exited during shared-resource observation")
+
+    def reference_record(reference):
+        return {**reference["scope"], "started_monotonic_ns": reference["started_monotonic_ns"],
+                "completed_monotonic_ns": reference["completed_monotonic_ns"]}
+
     def observe_task(task_root, task_before):
+        nonlocal descriptor_reference, mapping_reference, descriptor_cache_bytes, descriptor_observations
         tid = task_before["pid"]
         scope = {"pid": pid, "tid": tid, "group_leader_start_ticks": before["start_ticks"],
                  "task_start_ticks": task_before["start_ticks"]}
+        task_error_count = len(errors)
+
+        def confirm_sharing(reference, checker):
+            # A numeric TID alone cannot identify the previously observed task.
+            # Bracket kcmp with both identities, including its final proof.
+            check_task_identity(reference["task_root"], reference["scope"], require_live=True)
+            check_task_identity(task_root, scope, require_live=True)
+            shared = checker(reference["scope"]["tid"], tid) is True
+            check_task_identity(reference["task_root"], reference["scope"], require_live=True)
+            check_task_identity(task_root, scope, require_live=True)
+            return shared
+
+        shared_tables, shared_maps = False, False
+        table_proof_before = mapping_proof_before = None
+        for reference, checker, observation in (
+                (descriptor_reference, shared_descriptor_table, "descriptor-table"),
+                (mapping_reference, shared_memory_map, "shared-mappings")):
+            if reference is None:
+                continue
+            try:
+                shared = confirm_sharing(reference, checker)
+                proof_time = time.monotonic_ns()
+                if observation == "descriptor-table":
+                    shared_tables, table_proof_before = shared, proof_time
+                else:
+                    shared_maps, mapping_proof_before = shared, proof_time
+            except (OSError, ValueError) as exc:
+                problem(exc, tid=tid, observation=observation + "-reference-before",
+                        reference=reference_record(reference))
         def observe_exe():
             try:
                 return link_identity(task_root / "exe")
@@ -514,11 +580,15 @@ def snapshot_process(pid, emit, errors=None):
         except (OSError, ValueError) as exc:
             problem(exc, tid=tid, observation="executable-before")
         emit({"kind": "task", **scope, "comm": task_before["comm"], "executable": executable})
+        descriptors_started = time.monotonic_ns()
+        descriptor_error_count = len(errors)
         try:
             # Do not sort/exhaust this iterator: its own FD must remain open
             # until the live self-descriptor has actually been inspected.
             with os.scandir(task_root / "fd") as entries:
                 for entry in entries:
+                    if shared_tables:
+                        break
                     if not entry.name.isdecimal():
                         continue
                     try:
@@ -534,39 +604,92 @@ def snapshot_process(pid, emit, errors=None):
                     except (OSError, ValueError) as exc:
                         problem(exc, tid=tid, fd=int(entry.name), observation="descriptor")
                         continue
-                    emit({"kind": "descriptor", **scope, "fd": int(entry.name), "path": first.pop("path"),
-                          "metadata": first, "fd_metadata": first_info, "identity_rechecked": True})
-        except OSError as exc:
+                    payload = {"path": first.pop("path"), "metadata": first, "fd_metadata": first_info}
+                    key = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+                    descriptor_observations += 1
+                    observation = {**scope, "fd": int(entry.name), "observation_id": descriptor_observations,
+                                   "observed_monotonic_ns": time.monotonic_ns(), "identity_rechecked": True}
+                    reference = descriptor_cache.get(key)
+                    if reference is not None:
+                        emit({"kind": "descriptor_reference", **observation, "reference": reference,
+                              "scope_note": "exact path/metadata/fd_metadata payload reobserved after fresh checks"})
+                    else:
+                        emit({"kind": "descriptor", **observation, **payload})
+                        if (len(descriptor_cache) < DESCRIPTOR_CACHE_ENTRIES and
+                                descriptor_cache_bytes + len(key) <= DESCRIPTOR_CACHE_BYTES):
+                            descriptor_cache[key] = {name: value for name, value in observation.items()
+                                                     if name != "identity_rechecked"}
+                            descriptor_cache_bytes += len(key)
+        except (OSError, ValueError) as exc:
             problem(exc, tid=tid, observation="descriptor-table")
+        descriptors_completed = time.monotonic_ns()
+        descriptor_complete = len(errors) == descriptor_error_count
+        maps_started = time.monotonic_ns()
+        mapping_error_count = len(errors)
         try:
-            with (task_root / "maps").open() as stream:
-                for line in stream:
-                    try:
-                        parts = line.split(None, 5)
-                        if len(parts) < 5:
-                            raise ValueError("malformed proc maps")
-                        if len(parts[1]) != 4 or parts[1][3] != "s":
+            if not shared_maps:
+                stream = (task_root / "maps").open()
+            else:
+                stream = None
+            if stream is not None:
+                with stream:
+                    for line in stream:
+                        try:
+                            parts = line.split(None, 5)
+                            if len(parts) < 5:
+                                raise ValueError("malformed proc maps")
+                            if len(parts[1]) != 4 or parts[1][3] != "s":
+                                continue
+                            major, minor = (int(part, 16) for part in parts[3].split(":"))
+                            row = {"kind": "shared_mapping", **scope, "range": parts[0], "permissions": parts[1],
+                                   "offset": parts[2], "device": {"major": major, "minor": minor},
+                                   "inode": int(parts[4]), "path": parts[5].rstrip("\n") if len(parts) == 6 else ""}
+                        except ValueError as exc:
+                            problem(exc, tid=tid, observation="shared-mapping")
                             continue
-                        major, minor = (int(part, 16) for part in parts[3].split(":"))
-                        row = {"kind": "shared_mapping", **scope, "range": parts[0], "permissions": parts[1],
-                               "offset": parts[2], "device": {"major": major, "minor": minor},
-                               "inode": int(parts[4]), "path": parts[5].rstrip("\n") if len(parts) == 6 else ""}
-                    except ValueError as exc:
-                        problem(exc, tid=tid, observation="shared-mapping")
-                        continue
-                    emit(row)
+                        emit(row)
         except OSError as exc:
             problem(exc, tid=tid, observation="shared-mappings")
+        maps_completed = time.monotonic_ns()
+        mapping_complete = len(errors) == mapping_error_count
+        identity_complete = False
         try:
             final_exe = observe_exe()
             exe_token = lambda item: None if item is None else (item["path"], item["device"], item["inode"])
             if exe_token(executable) != exe_token(final_exe):
                 raise ValueError("executable identity changed across task snapshot")
-            task_after = proc_stat((task_root / "stat").read_text())
-            if (tid, task_before["start_ticks"]) != (task_after["pid"], task_after["start_ticks"]):
-                raise ValueError("task reused during snapshot")
+            check_task_identity(task_root, scope, require_live=task_before["state"] not in ("Z", "X"))
+            identity_complete = True
         except (OSError, ValueError) as exc:
             problem(exc, tid=tid, observation="task-final-identity")
+        for shared, reference, checker, observation, kind, proof, proof_before in (
+                (shared_tables, descriptor_reference, shared_descriptor_table, "descriptor-table",
+                 "descriptor_table_reference", "KCMP_FILES", table_proof_before),
+                (shared_maps, mapping_reference, shared_memory_map, "shared-mappings",
+                 "shared_mapping_reference", "KCMP_VM", mapping_proof_before)):
+            if not shared:
+                continue
+            try:
+                if not confirm_sharing(reference, checker):
+                    raise ValueError("shared " + observation + " changed across task observation")
+                if identity_complete:
+                    emit({"kind": kind, **scope, "reference_tid": reference["scope"]["tid"],
+                          "reference": reference_record(reference), "proof": proof,
+                          "proof_before_monotonic_ns": proof_before, "proof_after_monotonic_ns": time.monotonic_ns(),
+                          "reference_identity_rechecked": True, "task_identity_rechecked": True,
+                          "scope_note": "sharing confirmed at proof times; metadata retains the original source observation interval; intervening changes are not excluded"})
+            except (OSError, ValueError) as exc:
+                problem(exc, tid=tid, observation=observation, reference=reference_record(reference))
+        if not shared_maps:
+            emit({"kind": "shared_mapping_inventory", **scope, "started_monotonic_ns": maps_started,
+                  "completed_monotonic_ns": maps_completed, "complete": mapping_complete and identity_complete})
+        if identity_complete and len(errors) == task_error_count and task_before["state"] not in ("Z", "X"):
+            if descriptor_reference is None and descriptor_complete:
+                descriptor_reference = {"task_root": task_root, "scope": scope,
+                                        "started_monotonic_ns": descriptors_started, "completed_monotonic_ns": descriptors_completed}
+            if mapping_reference is None and mapping_complete:
+                mapping_reference = {"task_root": task_root, "scope": scope,
+                                     "started_monotonic_ns": maps_started, "completed_monotonic_ns": maps_completed}
     try:
         with os.scandir(root / "task") as tasks:
             for task in tasks:
@@ -612,14 +735,17 @@ def snapshot_inventory(output, phase, nss_dir, errors, deadline_ns=None, pump=No
             pump()
         output.write(name, {"observed_monotonic_ns": time.monotonic_ns(), **value})
     emit({"kind": "snapshot_start", "phase": phase})
-    pids = sorted(int(item.name) for item in PROC_ROOT.iterdir() if item.name.isdecimal())
-    for pid in pids:
-        try:
-            snapshot_process(pid, emit, errors)
-        except (OSError, ValueError) as exc:
-            error = {"kind": "snapshot_error", "pid": pid, "error": type(exc).__name__, "detail": str(exc)}
-            errors.append(error)
-            emit(error)
+    with os.scandir(PROC_ROOT) as processes:
+        for entry in processes:
+            if not entry.name.isdecimal():
+                continue
+            pid = int(entry.name)
+            try:
+                snapshot_process(pid, emit, errors)
+            except (OSError, ValueError) as exc:
+                error = {"kind": "snapshot_error", "pid": pid, "error": type(exc).__name__, "detail": str(exc)}
+                errors.append(error)
+                emit(error)
     nss_safe = True
     nss_identities = {}
     for path in (nss_dir.parent, nss_dir):
@@ -838,7 +964,8 @@ def capture(args):
                        for phase in ("before", "after")}
     before_errors, after_errors = snapshot_states["before"]["errors"], snapshot_states["after"]["errors"]
     counters, profile, unfinished = {}, {"complete": False, "errors": ["not attached"]}, 0
-    stats = {"events": 0, "successful_mutation_records": 0, "perf_lost": 0}
+    stats = {"events": 0, "successful_mutation_records": 0, "perf_lost": 0,
+             "observed_event_sizes": {}}
     ready = False
     cleanup_ok = False
     calibration = clock_sample()
@@ -856,11 +983,17 @@ def capture(args):
         if stop["overflow"]:
             return
         try:
-            if size != ctypes.sizeof(Event):
+            event_size = ctypes.sizeof(Event)
+            # PERF_SAMPLE_RAW includes padding after its u32 size so that the
+            # full raw field is 8-byte aligned (Linux perf_sample_save_raw_data).
+            padded_size = ((event_size + 4 + 7) & ~7) - 4
+            sizes = stats["observed_event_sizes"]
+            sizes[str(size)] = sizes.get(str(size), 0) + 1
+            if size not in (event_size, padded_size):
                 uncertainties.add("event ABI size mismatch")
                 stop["requested"] = True
                 return
-            event = Event.from_buffer_copy(ctypes.string_at(data, size))
+            event = Event.from_buffer_copy(ctypes.string_at(data, event_size))
             if not started_ns <= event.entry_ns <= event.return_ns < deadline_ns:
                 uncertainties.add("event outside kernel monotonic deadline/order")
                 stop["requested"] = True
@@ -878,7 +1011,7 @@ def capture(args):
             uncertainties.add("event decode/write failure: " + type(exc).__name__ + ": " + str(exc))
             stop["requested"] = True
 
-    def lost_callback(cpu, lost):
+    def lost_callback(lost):
         stats["perf_lost"] += int(lost)
 
     def sample_clock_if_due():
@@ -993,7 +1126,10 @@ def capture(args):
             try:
                 for index, key in enumerate(COUNTERS):
                     counters[key] = int(bpf["counters"][ctypes.c_int(index)].value)
-                unfinished = sum(1 for _ in bpf["pairs"].items())
+                # Only keys are needed. BCC's reflected ctypes leaf drops the
+                # second dimension of parts[12][48]; reading values through
+                # that undersized type can corrupt Python memory.
+                unfinished = sum(1 for _ in bpf["pairs"].keys())
                 profile = read_profile(owned_return_names(bpf))
             except Exception as exc:
                 errors.append("kernel accounting: " + str(exc))
@@ -1005,6 +1141,9 @@ def capture(args):
         if not stop["overflow"]:
             try:
                 snapshot_all(output, "after", nss_dir, state=snapshot_states["after"])
+            except OutputLimit as exc:
+                stop["overflow"] = True
+                errors.append("after snapshot: " + str(exc))
             except Exception as exc:
                 errors.append("after snapshot: " + str(exc))
         else:

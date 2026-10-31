@@ -1,0 +1,11 @@
+{
+  "collector_python_source_sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+  "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+  "rendered_bpf_sha256": "4d49fdb5b6c98c4fb6c797fec5e16af8da8d6b6873a1ccc31ebd9570bd972cfd",
+  "bcc_version": "0.35.0",
+  "bcc_version_observation": "module __version__",
+  "python_version": "3.14.4",
+  "python_executable": "/usr/bin/python3",
+  "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+  "errors": []
+}

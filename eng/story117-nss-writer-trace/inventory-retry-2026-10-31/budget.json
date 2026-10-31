@@ -1,0 +1,43 @@
+{
+  "previous_allocated_seconds": 553,
+  "additional_limit": 347,
+  "allocated_seconds": 346,
+  "attempts": [
+    {
+      "name": "08-fixture-01",
+      "duration": 60
+    },
+    {
+      "name": "08-fixture-02",
+      "duration": 60
+    },
+    {
+      "name": "08-fixture-03",
+      "duration": 60
+    },
+    {
+      "name": "08-fixture-04",
+      "duration": 60
+    },
+    {
+      "name": "08-fixture-05",
+      "duration": 60
+    },
+    {
+      "name": "11-signal",
+      "duration": 25
+    },
+    {
+      "name": "12-paused-deadline-loss",
+      "duration": 15
+    },
+    {
+      "name": "13-setup-deadline",
+      "duration": 1
+    },
+    {
+      "name": "14-overflow",
+      "duration": 5
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+error: /virtual/main.c:265:5: in function enter_vfs_write i32 (ptr): A call to built-in function 'memset' is not supported.
+

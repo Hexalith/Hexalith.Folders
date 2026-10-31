@@ -1,0 +1,70 @@
+{
+  "collector_sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+  "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+  "capture_source_bindings": [
+    {
+      "attempt": "11-signal",
+      "collector_matches": true,
+      "bpf_matches": true,
+      "rendered_bpf_sha256": "e1493a6b5207299b45bf53ae62652158b5bcfe3e1fe914b6fed768ef7cdde11e"
+    },
+    {
+      "attempt": "08-fixture-03",
+      "collector_matches": true,
+      "bpf_matches": true,
+      "rendered_bpf_sha256": "7316328be9ab4a9fb2fa2dde60429cc1872b4283fe3bdc0a0b5a4e06b032024d"
+    },
+    {
+      "attempt": "12-paused-deadline-loss",
+      "collector_matches": true,
+      "bpf_matches": true,
+      "rendered_bpf_sha256": "1edeb2079f314568f31cabe74d88ed4d49ec16e36b6c01d990297f4f50201641"
+    },
+    {
+      "attempt": "08-fixture-01",
+      "collector_matches": true,
+      "bpf_matches": true,
+      "rendered_bpf_sha256": "a5982b7c1b4e25cb1a480685f8162a4c5c2323231c777b4c4a7c59b4a4b37791"
+    },
+    {
+      "attempt": "08-fixture-04",
+      "collector_matches": true,
+      "bpf_matches": true,
+      "rendered_bpf_sha256": "f1ee39331fe8567c551b69153e3b4a77a91de707cb09330dcd081a3f5b035cda"
+    },
+    {
+      "attempt": "14-overflow",
+      "collector_matches": true,
+      "bpf_matches": true,
+      "rendered_bpf_sha256": "4d49fdb5b6c98c4fb6c797fec5e16af8da8d6b6873a1ccc31ebd9570bd972cfd"
+    },
+    {
+      "attempt": "08-fixture-02",
+      "collector_matches": true,
+      "bpf_matches": true,
+      "rendered_bpf_sha256": "c6af22d9d1ef6e4f405d6efe89534addc45b94869957547a1dc8f29f0affdec5"
+    },
+    {
+      "attempt": "08-fixture-05",
+      "collector_matches": true,
+      "bpf_matches": true,
+      "rendered_bpf_sha256": "f1b4c1d7914313e81264205b3481c9739baa09e7f6736ae4d97ee33ded8e9bc1"
+    },
+    {
+      "attempt": "13-setup-deadline",
+      "collector_matches": true,
+      "bpf_matches": true,
+      "rendered_bpf_sha256": "0094e40c93d7c1481c868e58dea134ed1793b3c37671015299423561f2a63b9e"
+    }
+  ],
+  "all_capture_sources_match": true,
+  "head": "89c610e7791455a71740cd0ee394a263adc9ec5f",
+  "index_sha256": "d1f9c60f3f154a20effcb4af665f2a3ed2f3e3699ddfb7f4e595241c9f4c512c",
+  "matches_recorded_external_checkpoint": true,
+  "changed_from_turn_baseline": [
+    "eng/story117-nss-writer-trace/collector.py",
+    "eng/story117-nss-writer-trace/test_collector.py"
+  ],
+  "ast_and_format_checks_pass": true,
+  "live_capture_seconds_added_after_346": 0
+}

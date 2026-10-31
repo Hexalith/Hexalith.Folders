@@ -1,0 +1,58 @@
+{
+  "errors": [
+    {
+      "kind": "snapshot_error",
+      "pid": 3876096,
+      "error": "FileNotFoundError",
+      "detail": "[Errno 2] No such file or directory: '/proc/3876096/stat'"
+    },
+    {
+      "kind": "snapshot_error",
+      "pid": 3877057,
+      "error": "FileNotFoundError",
+      "detail": "[Errno 2] No such file or directory: '/proc/3877057/stat'"
+    },
+    {
+      "kind": "snapshot_error",
+      "pid": 3879841,
+      "error": "FileNotFoundError",
+      "detail": "[Errno 2] No such file or directory: '/proc/3879841/stat'"
+    },
+    {
+      "kind": "snapshot_error",
+      "pid": 3880111,
+      "error": "FileNotFoundError",
+      "detail": "[Errno 2] No such file or directory: '/proc/3880111/stat'"
+    },
+    {
+      "kind": "snapshot_error",
+      "pid": 4043100,
+      "error": "FileNotFoundError",
+      "detail": "[Errno 2] No such file or directory: '/proc/4043100/task/4043100/fd/879'",
+      "tid": 4043100,
+      "fd": 879,
+      "observation": "descriptor"
+    }
+  ],
+  "started": true,
+  "completed": true,
+  "partial": false,
+  "error_count": 5,
+  "elapsed_seconds": 5.656331884,
+  "bytes": 28346410,
+  "tracing_imported": false,
+  "record_counts": {
+    "snapshot_start": 1,
+    "process": 629,
+    "task": 5146,
+    "descriptor": 14322,
+    "descriptor_reference": 10113,
+    "shared_mapping_inventory": 630,
+    "descriptor_table_reference": 4516,
+    "shared_mapping_reference": 4516,
+    "shared_mapping": 21473,
+    "snapshot_error": 5,
+    "nss_metadata": 2,
+    "snapshot_end": 1
+  }
+}

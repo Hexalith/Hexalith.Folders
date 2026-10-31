@@ -1,0 +1,123 @@
+make: Entering directory '/var/tmp/story117-wsl-headers.pyOhVksU/source'
+make[1]: Entering directory '/var/tmp/story117-wsl-headers.pyOhVksU/build'
+  GEN     Makefile
+  HOSTCC  scripts/basic/fixdep
+  HOSTCC  scripts/kconfig/conf.o
+  HOSTCC  scripts/kconfig/confdata.o
+  HOSTCC  scripts/kconfig/expr.o
+  LEX     scripts/kconfig/lexer.lex.c
+  YACC    scripts/kconfig/parser.tab.[ch]
+  HOSTCC  scripts/kconfig/lexer.lex.o
+  HOSTCC  scripts/kconfig/menu.o
+  HOSTCC  scripts/kconfig/parser.tab.o
+  HOSTCC  scripts/kconfig/preprocess.o
+  HOSTCC  scripts/kconfig/symbol.o
+  HOSTCC  scripts/kconfig/util.o
+  HOSTLD  scripts/kconfig/conf
+#
+# configuration written to .config
+#
+  GEN     Makefile
+  SYSHDR  arch/x86/include/generated/uapi/asm/unistd_32.h
+  SYSHDR  arch/x86/include/generated/uapi/asm/unistd_64.h
+  SYSHDR  arch/x86/include/generated/uapi/asm/unistd_x32.h
+  SYSTBL  arch/x86/include/generated/asm/syscalls_32.h
+  SYSHDR  arch/x86/include/generated/asm/unistd_32_ia32.h
+  SYSHDR  arch/x86/include/generated/asm/unistd_64_x32.h
+  SYSTBL  arch/x86/include/generated/asm/syscalls_64.h
+  SYSTBL  arch/x86/include/generated/asm/syscalls_x32.h
+  HYPERCALLS arch/x86/include/generated/asm/xen-hypercalls.h
+  HOSTCC  arch/x86/tools/relocs_32.o
+  HOSTCC  arch/x86/tools/relocs_64.o
+  HOSTCC  arch/x86/tools/relocs_common.o
+  HOSTLD  arch/x86/tools/relocs
+  HOSTCC  scripts/genksyms/genksyms.o
+  YACC    scripts/genksyms/parse.tab.[ch]
+  HOSTCC  scripts/genksyms/parse.tab.o
+  LEX     scripts/genksyms/lex.lex.c
+  HOSTCC  scripts/genksyms/lex.lex.o
+  HOSTLD  scripts/genksyms/genksyms
+  HOSTCC  scripts/selinux/genheaders/genheaders
+  HOSTCC  scripts/selinux/mdp/mdp
+  HOSTCC  scripts/kallsyms
+  HOSTCC  scripts/sorttable
+  HOSTCC  scripts/asn1_compiler
+  UPD     include/config/kernel.release
+  WRAP    arch/x86/include/generated/uapi/asm/bpf_perf_event.h
+  WRAP    arch/x86/include/generated/uapi/asm/errno.h
+  WRAP    arch/x86/include/generated/uapi/asm/fcntl.h
+  WRAP    arch/x86/include/generated/uapi/asm/ioctl.h
+  WRAP    arch/x86/include/generated/uapi/asm/ioctls.h
+  WRAP    arch/x86/include/generated/uapi/asm/ipcbuf.h
+  WRAP    arch/x86/include/generated/uapi/asm/param.h
+  WRAP    arch/x86/include/generated/uapi/asm/poll.h
+  WRAP    arch/x86/include/generated/uapi/asm/resource.h
+  WRAP    arch/x86/include/generated/uapi/asm/socket.h
+  WRAP    arch/x86/include/generated/uapi/asm/sockios.h
+  WRAP    arch/x86/include/generated/uapi/asm/termbits.h
+  WRAP    arch/x86/include/generated/uapi/asm/termios.h
+  WRAP    arch/x86/include/generated/uapi/asm/types.h
+  WRAP    arch/x86/include/generated/asm/early_ioremap.h
+  WRAP    arch/x86/include/generated/asm/export.h
+  WRAP    arch/x86/include/generated/asm/mcs_spinlock.h
+  WRAP    arch/x86/include/generated/asm/irq_regs.h
+  WRAP    arch/x86/include/generated/asm/kmap_size.h
+  WRAP    arch/x86/include/generated/asm/local64.h
+  WRAP    arch/x86/include/generated/asm/mmiowb.h
+  WRAP    arch/x86/include/generated/asm/module.lds.h
+  WRAP    arch/x86/include/generated/asm/rwonce.h
+  WRAP    arch/x86/include/generated/asm/unaligned.h
+  UPD     include/generated/uapi/linux/version.h
+  UPD     include/generated/utsrelease.h
+  UPD     include/generated/compile.h
+  CC      scripts/mod/empty.o
+  HOSTCC  scripts/mod/mk_elfconfig
+  MKELF   scripts/mod/elfconfig.h
+  HOSTCC  scripts/mod/modpost.o
+  CC      scripts/mod/devicetable-offsets.s
+  UPD     scripts/mod/devicetable-offsets.h
+  HOSTCC  scripts/mod/file2alias.o
+  HOSTCC  scripts/mod/sumversion.o
+  HOSTCC  scripts/mod/symsearch.o
+  HOSTLD  scripts/mod/modpost
+  UPD     include/generated/timeconst.h
+  CC      kernel/bounds.s
+  UPD     include/generated/bounds.h
+  CC      arch/x86/kernel/asm-offsets.s
+  UPD     include/generated/asm-offsets.h
+  CALL    /var/tmp/story117-wsl-headers.pyOhVksU/source/scripts/checksyscalls.sh
+  CHKSHA1 /var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/atomic/atomic-arch-fallback.h
+  CHKSHA1 /var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/atomic/atomic-instrumented.h
+  CHKSHA1 /var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/atomic/atomic-long.h
+mkdir -p /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool && make O=/var/tmp/story117-wsl-headers.pyOhVksU/build subdir=tools/objtool --no-print-directory -C objtool 
+gcc   -o /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/fixdep /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/fixdep-in.o
+rm -f /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/libsubcmd.a && ar rcs /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/libsubcmd.a /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/libsubcmd-in.o
+\
+		if [ ! -d '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/' ]; then install -d -m 755 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/'; fi; install exec-cmd.h -m 644 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/'
+\
+		if [ ! -d '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/' ]; then install -d -m 755 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/'; fi; install help.h -m 644 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/'
+\
+		if [ ! -d '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/' ]; then install -d -m 755 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/'; fi; install pager.h -m 644 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/'
+\
+		if [ ! -d '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/' ]; then install -d -m 755 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/'; fi; install parse-options.h -m 644 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/'
+\
+		if [ ! -d '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/' ]; then install -d -m 755 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/'; fi; install run-command.h -m 644 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/include/subcmd/'
+gcc /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/objtool-in.o -lelf /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/libsubcmd.a   -o /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/objtool
+mkdir -p /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids && make O=/var/tmp/story117-wsl-headers.pyOhVksU/build subdir=tools/bpf/resolve_btfids --no-print-directory -C bpf/resolve_btfids 
+/var/tmp/story117-wsl-headers.pyOhVksU/source/scripts/bpf_doc.py --header \
+	--file /var/tmp/story117-wsl-headers.pyOhVksU/source/tools/include/uapi/linux/bpf.h > /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/bpf_helper_defs.h
+libbpf.c: In function ‘resolve_full_path’:
+libbpf.c:11241:35: error: assignment discards ‘const’ qualifier from pointer target type [-Werror=discarded-qualifiers]
+11241 |                         next_path = strchr(s, ':');
+      |                                   ^
+cc1: all warnings being treated as errors
+make[7]: *** [/var/tmp/story117-wsl-headers.pyOhVksU/source/tools/build/Makefile.build:98: /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/staticobjs/libbpf.o] Error 1
+make[6]: *** [Makefile:157: /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/staticobjs/libbpf-in.o] Error 2
+make[5]: *** [Makefile:63: /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids//libbpf/libbpf.a] Error 2
+make[4]: *** [Makefile:76: bpf/resolve_btfids] Error 2
+make[3]: *** [/var/tmp/story117-wsl-headers.pyOhVksU/source/Makefile:1362: tools/bpf/resolve_btfids] Error 2
+make[2]: *** [/var/tmp/story117-wsl-headers.pyOhVksU/source/Makefile:359: __build_one_by_one] Error 2
+make[1]: *** [/var/tmp/story117-wsl-headers.pyOhVksU/source/Makefile:234: __sub-make] Error 2
+make[1]: Leaving directory '/var/tmp/story117-wsl-headers.pyOhVksU/build'
+make: *** [Makefile:234: __sub-make] Error 2
+make: Leaving directory '/var/tmp/story117-wsl-headers.pyOhVksU/source'

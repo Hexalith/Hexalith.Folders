@@ -1,0 +1,13 @@
+bc	1.07.1-4build1
+bison	2:3.8.2+dfsg-1ubuntu0.26.04.1
+ca-certificates	20260816ubuntu0.26.04.1
+curl	8.18.0-1ubuntu2.8
+dwarves	1.31-2ubuntu1
+flex	2.6.4-8.2build2
+gcc	4:15.2.0-5ubuntu1
+libbpfcc:amd64	0.35.0+ds-1ubuntu2
+libclang-cpp21	1:21.1.8-6ubuntu1
+libelf-dev:amd64	0.194-4
+libllvm21:amd64	1:21.1.8-6ubuntu1
+libssl-dev:amd64	3.5.5-1ubuntu3.7
+python3-bpfcc	0.35.0+ds-1ubuntu2

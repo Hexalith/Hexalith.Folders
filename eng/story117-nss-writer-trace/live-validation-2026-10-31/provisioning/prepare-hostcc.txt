@@ -1,0 +1,93 @@
+make: Entering directory '/var/tmp/story117-wsl-headers.pyOhVksU/source'
+make[1]: Entering directory '/var/tmp/story117-wsl-headers.pyOhVksU/build'
+  GEN     Makefile
+  HOSTCC  scripts/basic/fixdep
+  HOSTCC  scripts/kconfig/conf.o
+  HOSTCC  scripts/kconfig/confdata.o
+  HOSTCC  scripts/kconfig/expr.o
+  HOSTCC  scripts/kconfig/lexer.lex.o
+  HOSTCC  scripts/kconfig/menu.o
+  HOSTCC  scripts/kconfig/parser.tab.o
+  HOSTCC  scripts/kconfig/preprocess.o
+  HOSTCC  scripts/kconfig/symbol.o
+  HOSTCC  scripts/kconfig/util.o
+  HOSTLD  scripts/kconfig/conf
+#
+# No change to .config
+#
+  GEN     Makefile
+  HOSTCC  arch/x86/tools/relocs_32.o
+  HOSTCC  arch/x86/tools/relocs_64.o
+  HOSTCC  arch/x86/tools/relocs_common.o
+  HOSTLD  arch/x86/tools/relocs
+  HOSTCC  scripts/genksyms/genksyms.o
+  HOSTCC  scripts/genksyms/parse.tab.o
+  HOSTCC  scripts/genksyms/lex.lex.o
+  HOSTLD  scripts/genksyms/genksyms
+  HOSTCC  scripts/selinux/genheaders/genheaders
+  HOSTCC  scripts/selinux/mdp/mdp
+  HOSTCC  scripts/kallsyms
+  HOSTCC  scripts/sorttable
+  HOSTCC  scripts/asn1_compiler
+  HOSTCC  scripts/mod/mk_elfconfig
+  MKELF   scripts/mod/elfconfig.h
+  HOSTCC  scripts/mod/modpost.o
+  HOSTCC  scripts/mod/file2alias.o
+  HOSTCC  scripts/mod/sumversion.o
+  HOSTCC  scripts/mod/symsearch.o
+  HOSTLD  scripts/mod/modpost
+  CALL    /var/tmp/story117-wsl-headers.pyOhVksU/source/scripts/checksyscalls.sh
+mkdir -p /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool && make O=/var/tmp/story117-wsl-headers.pyOhVksU/build subdir=tools/objtool --no-print-directory -C objtool 
+/var/tmp/story117-wsl-headers.pyOhVksU/hostcc   -o /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/fixdep /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/fixdep-in.o
+rm -f /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/libsubcmd.a && ar rcs /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/libsubcmd.a /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/libsubcmd-in.o
+make[6]: 'install_headers' is up to date.
+/var/tmp/story117-wsl-headers.pyOhVksU/hostcc /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/objtool-in.o -lelf /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/libsubcmd/libsubcmd.a   -o /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool/objtool
+mkdir -p /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids && make O=/var/tmp/story117-wsl-headers.pyOhVksU/build subdir=tools/bpf/resolve_btfids --no-print-directory -C bpf/resolve_btfids 
+rm -f /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/libbpf.a; ar rcs /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/libbpf.a /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/staticobjs/libbpf-in.o
+\
+		if [ ! -d ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf' ]; then install -d -m 755 ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'; fi; install -m 644 bpf.h ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'
+\
+		if [ ! -d ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf' ]; then install -d -m 755 ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'; fi; install -m 644 libbpf.h ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'
+\
+		if [ ! -d ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf' ]; then install -d -m 755 ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'; fi; install -m 644 btf.h ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'
+\
+		if [ ! -d ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf' ]; then install -d -m 755 ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'; fi; install -m 644 libbpf_common.h ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'
+\
+		if [ ! -d ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf' ]; then install -d -m 755 ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'; fi; install -m 644 libbpf_legacy.h ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'
+\
+		if [ ! -d ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf' ]; then install -d -m 755 ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'; fi; install -m 644 bpf_helpers.h ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'
+\
+		if [ ! -d ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf' ]; then install -d -m 755 ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'; fi; install -m 644 bpf_tracing.h ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'
+\
+		if [ ! -d ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf' ]; then install -d -m 755 ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'; fi; install -m 644 bpf_endian.h ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'
+\
+		if [ ! -d ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf' ]; then install -d -m 755 ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'; fi; install -m 644 bpf_core_read.h ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'
+\
+		if [ ! -d ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf' ]; then install -d -m 755 ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'; fi; install -m 644 skel_internal.h ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'
+\
+		if [ ! -d ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf' ]; then install -d -m 755 ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'; fi; install -m 644 libbpf_version.h ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'
+\
+		if [ ! -d ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf' ]; then install -d -m 755 ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'; fi; install -m 644 usdt.bpf.h ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'
+\
+		if [ ! -d ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf' ]; then install -d -m 755 ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'; fi; install -m 644 /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/bpf_helper_defs.h ''/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libbpf/'/include/bpf'
+/var/tmp/story117-wsl-headers.pyOhVksU/hostcc   -o /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/fixdep /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/fixdep-in.o
+rm -f /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd/libsubcmd.a && ar rcs /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd/libsubcmd.a /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd/libsubcmd-in.o
+\
+		if [ ! -d '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/' ]; then install -d -m 755 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/'; fi; install exec-cmd.h -m 644 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/'
+\
+		if [ ! -d '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/' ]; then install -d -m 755 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/'; fi; install help.h -m 644 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/'
+\
+		if [ ! -d '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/' ]; then install -d -m 755 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/'; fi; install pager.h -m 644 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/'
+\
+		if [ ! -d '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/' ]; then install -d -m 755 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/'; fi; install parse-options.h -m 644 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/'
+\
+		if [ ! -d '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/' ]; then install -d -m 755 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/'; fi; install run-command.h -m 644 '/var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids/libsubcmd//include/subcmd/'
+  GEN     Makefile
+  CALL    /var/tmp/story117-wsl-headers.pyOhVksU/source/scripts/checksyscalls.sh
+mkdir -p /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/objtool && make O=/var/tmp/story117-wsl-headers.pyOhVksU/build subdir=tools/objtool --no-print-directory -C objtool 
+make[6]: 'install_headers' is up to date.
+mkdir -p /var/tmp/story117-wsl-headers.pyOhVksU/build/tools/bpf/resolve_btfids && make O=/var/tmp/story117-wsl-headers.pyOhVksU/build subdir=tools/bpf/resolve_btfids --no-print-directory -C bpf/resolve_btfids 
+make[6]: 'install_headers' is up to date.
+  LDS     scripts/module.lds
+make[1]: Leaving directory '/var/tmp/story117-wsl-headers.pyOhVksU/build'
+make: Leaving directory '/var/tmp/story117-wsl-headers.pyOhVksU/source'

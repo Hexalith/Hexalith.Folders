@@ -1,0 +1,161 @@
+make: Entering directory '/var/tmp/story117-wsl-headers.pyOhVksU/source'
+make[1]: Entering directory '/var/tmp/story117-wsl-headers.pyOhVksU/build'
+  GEN     Makefile
+  HOSTCC  scripts/basic/fixdep
+  HOSTCC  scripts/kconfig/conf.o
+  HOSTCC  scripts/kconfig/confdata.o
+  HOSTCC  scripts/kconfig/expr.o
+  HOSTCC  scripts/kconfig/lexer.lex.o
+  HOSTCC  scripts/kconfig/menu.o
+  HOSTCC  scripts/kconfig/parser.tab.o
+  HOSTCC  scripts/kconfig/preprocess.o
+  HOSTCC  scripts/kconfig/symbol.o
+  HOSTCC  scripts/kconfig/util.o
+  HOSTLD  scripts/kconfig/conf
+#
+# No change to .config
+#
+  GEN     Makefile
+  HOSTCC  arch/x86/tools/relocs_32.o
+  HOSTCC  arch/x86/tools/relocs_64.o
+  HOSTCC  arch/x86/tools/relocs_common.o
+  HOSTLD  arch/x86/tools/relocs
+  HOSTCC  scripts/genksyms/genksyms.o
+  HOSTCC  scripts/genksyms/parse.tab.o
+  HOSTCC  scripts/genksyms/lex.lex.o
+  HOSTLD  scripts/genksyms/genksyms
+  HOSTCC  scripts/selinux/genheaders/genheaders
+  HOSTCC  scripts/selinux/mdp/mdp
+  HOSTCC  scripts/kallsyms
+  HOSTCC  scripts/sorttable
+  HOSTCC  scripts/asn1_compiler
+In file included from /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h:360,
+                 from /usr/include/x86_64-linux-gnu/bits/fcntl.h:61,
+                 from /usr/include/fcntl.h:35,
+                 from /var/tmp/story117-wsl-headers.pyOhVksU/source/scripts/asn1_compiler.c:16:
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/falloc.h:13:9: error: unknown type name ‘__s16’; did you mean ‘__bf16’?
+   13 |         __s16           l_type;
+      |         ^~~~~
+      |         __bf16
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/falloc.h:14:9: error: unknown type name ‘__s16’; did you mean ‘__bf16’?
+   14 |         __s16           l_whence;
+      |         ^~~~~
+      |         __bf16
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/falloc.h:15:9: error: unknown type name ‘__s64’
+   15 |         __s64           l_start;
+      |         ^~~~~
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/falloc.h:16:9: error: unknown type name ‘__s64’
+   16 |         __s64           l_len;          /* len == 0 means until end of file */
+      |         ^~~~~
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/falloc.h:17:9: error: unknown type name ‘__s32’
+   17 |         __s32           l_sysid;
+      |         ^~~~~
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/falloc.h:18:9: error: unknown type name ‘__u32’
+   18 |         __u32           l_pid;
+      |         ^~~~~
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/falloc.h:19:9: error: unknown type name ‘__s32’
+   19 |         __s32           l_pad[4];       /* reserved area */
+      |         ^~~~~
+In file included from /var/tmp/story117-wsl-headers.pyOhVksU/source/scripts/asn1_compiler.c:12:
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/stddef.h:11:9: error: expected identifier before numeric constant
+   11 |         false   = 0,
+      |         ^~~~~
+In file included from /usr/include/linux/openat2.h:5,
+                 from /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h:468:
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/types.h:20:33: error: conflicting types for ‘fd_set’; have ‘__kernel_fd_set’
+   20 | typedef __kernel_fd_set         fd_set;
+      |                                 ^~~~~~
+In file included from /usr/include/x86_64-linux-gnu/sys/types.h:179,
+                 from /usr/include/stdlib.h:518,
+                 from /var/tmp/story117-wsl-headers.pyOhVksU/source/scripts/asn1_compiler.c:10:
+/usr/include/x86_64-linux-gnu/sys/select.h:70:5: note: previous declaration of ‘fd_set’ with type ‘fd_set’
+   70 |   } fd_set;
+      |     ^~~~~~
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/types.h:21:33: error: conflicting types for ‘dev_t’; have ‘__kernel_dev_t’ {aka ‘unsigned int’}
+   21 | typedef __kernel_dev_t          dev_t;
+      |                                 ^~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:59:17: note: previous declaration of ‘dev_t’ with type ‘dev_t’ {aka ‘long unsigned int’}
+   59 | typedef __dev_t dev_t;
+      |                 ^~~~~
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/types.h:25:33: error: conflicting types for ‘nlink_t’; have ‘u32’ {aka ‘unsigned int’}
+   25 | typedef u32                     nlink_t;
+      |                                 ^~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:74:19: note: previous declaration of ‘nlink_t’ with type ‘nlink_t’ {aka ‘long unsigned int’}
+   74 | typedef __nlink_t nlink_t;
+      |                   ^~~~~~~
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/types.h:31:33: error: conflicting types for ‘timer_t’; have ‘__kernel_timer_t’ {aka ‘int’}
+   31 | typedef __kernel_timer_t        timer_t;
+      |                                 ^~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/sys/types.h:130:
+/usr/include/x86_64-linux-gnu/bits/types/timer_t.h:7:19: note: previous declaration of ‘timer_t’ with type ‘timer_t’ {aka ‘void *’}
+    7 | typedef __timer_t timer_t;
+      |                   ^~~~~~~
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/types.h:35:33: error: ‘_Bool’ cannot be defined via ‘typedef’
+   35 | typedef _Bool                   bool;
+      |                                 ^~~~
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/types.h:35:33: note: ‘_Bool’ is a keyword with ‘-std=c99’ onwards
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/types.h:52:33: error: conflicting types for ‘loff_t’; have ‘__kernel_loff_t’ {aka ‘long long int’}
+   52 | typedef __kernel_loff_t         loff_t;
+      |                                 ^~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:42:18: note: previous declaration of ‘loff_t’ with type ‘loff_t’ {aka ‘long int’}
+   42 | typedef __loff_t loff_t;
+      |                  ^~~~~~
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/types.h:113:33: error: conflicting types for ‘uint64_t’; have ‘u64’ {aka ‘long long unsigned int’}
+  113 | typedef u64                     uint64_t;
+      |                                 ^~~~~~~~
+In file included from /usr/include/stdint.h:41,
+                 from /usr/lib/gcc/x86_64-linux-gnu/15/include/stdint.h:11,
+                 from /var/tmp/story117-wsl-headers.pyOhVksU/source/scripts/asn1_compiler.c:11:
+/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:27:20: note: previous declaration of ‘uint64_t’ with type ‘uint64_t’ {aka ‘long unsigned int’}
+   27 | typedef __uint64_t uint64_t;
+      |                    ^~~~~~~~
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/types.h:114:33: error: conflicting types for ‘u_int64_t’; have ‘u64’ {aka ‘long long unsigned int’}
+  114 | typedef u64                     u_int64_t;
+      |                                 ^~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:161:20: note: previous declaration of ‘u_int64_t’ with type ‘u_int64_t’ {aka ‘long unsigned int’}
+  161 | typedef __uint64_t u_int64_t;
+      |                    ^~~~~~~~~
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/types.h:115:33: error: conflicting types for ‘int64_t’; have ‘s64’ {aka ‘long long int’}
+  115 | typedef s64                     int64_t;
+      |                                 ^~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155:
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of ‘int64_t’ with type ‘int64_t’ {aka ‘long int’}
+   27 | typedef __int64_t int64_t;
+      |                   ^~~~~~~
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/types.h:132:13: error: conflicting types for ‘blkcnt_t’; have ‘u64’ {aka ‘long long unsigned int’}
+  132 | typedef u64 blkcnt_t;
+      |             ^~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:192:20: note: previous declaration of ‘blkcnt_t’ with type ‘blkcnt_t’ {aka ‘long int’}
+  192 | typedef __blkcnt_t blkcnt_t;     /* Type to count number of disk blocks.  */
+      |                    ^~~~~~~~
+In file included from /var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/stat.h:6,
+                 from /usr/include/x86_64-linux-gnu/bits/statx.h:31,
+                 from /usr/include/x86_64-linux-gnu/sys/stat.h:465,
+                 from /var/tmp/story117-wsl-headers.pyOhVksU/source/scripts/asn1_compiler.c:17:
+/usr/include/x86_64-linux-gnu/asm/stat.h:83:8: error: redefinition of ‘struct stat’
+   83 | struct stat {
+      |        ^~~~
+In file included from /usr/include/x86_64-linux-gnu/bits/stat.h:25,
+                 from /usr/include/fcntl.h:78:
+/usr/include/x86_64-linux-gnu/bits/struct_stat.h:26:8: note: originally defined here
+   26 | struct stat
+      |        ^~~~
+/usr/include/x86_64-linux-gnu/asm/stat.h:97:33: error: expected ‘:’, ‘,’, ‘;’, ‘}’ or ‘__attribute__’ before ‘.’ token
+   97 |         __kernel_ulong_t        st_atime;
+      |                                 ^~~~~~~~
+/usr/include/x86_64-linux-gnu/asm/stat.h:132:23: error: expected ‘:’, ‘,’, ‘;’, ‘}’ or ‘__attribute__’ before ‘.’ token
+  132 |         unsigned int  st_atime;
+      |                       ^~~~~~~~
+In file included from /var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/time.h:5,
+                 from /var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/stat.h:19:
+/var/tmp/story117-wsl-headers.pyOhVksU/source/include/linux/cache.h:6:10: fatal error: asm/cache.h: No such file or directory
+    6 | #include <asm/cache.h>
+      |          ^~~~~~~~~~~~~
+compilation terminated.
+make[4]: *** [/var/tmp/story117-wsl-headers.pyOhVksU/source/scripts/Makefile.host:114: scripts/asn1_compiler] Error 1
+make[3]: *** [/var/tmp/story117-wsl-headers.pyOhVksU/source/Makefile:1190: scripts] Error 2
+make[2]: *** [/var/tmp/story117-wsl-headers.pyOhVksU/source/Makefile:359: __build_one_by_one] Error 2
+make[1]: *** [/var/tmp/story117-wsl-headers.pyOhVksU/source/Makefile:234: __sub-make] Error 2
+make[1]: Leaving directory '/var/tmp/story117-wsl-headers.pyOhVksU/build'
+make: *** [Makefile:234: __sub-make] Error 2
+make: Leaving directory '/var/tmp/story117-wsl-headers.pyOhVksU/source'

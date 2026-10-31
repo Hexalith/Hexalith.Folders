@@ -1,0 +1,16 @@
+{
+  "attached": false,
+  "bcc_module_found_without_import": true,
+  "btf_present": true,
+  "capture_verified": false,
+  "kernel_release": "6.6.87.2-microsoft-standard-WSL2",
+  "matching_headers": "/lib/modules/6.6.87.2-microsoft-standard-WSL2/build",
+  "matching_headers_present": true,
+  "missing": [],
+  "mode": "offline-check",
+  "note": "Presence does not verify compilation, symbol availability or attachment.",
+  "prepared_header_release": "6.6.87.2-microsoft-standard-WSL2",
+  "prepared_headers_match": true,
+  "python": "/usr/bin/python3",
+  "tracing_imported": false
+}

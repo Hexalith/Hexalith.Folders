@@ -1,0 +1,9 @@
+#!/bin/sh
+for source_arg do
+    case "$source_arg" in
+        libbpf.c|*/libbpf.c)
+            exec gcc -std=gnu11 -include /var/tmp/story117-wsl-headers.pyOhVksU/host-glibc-compat.h "$@"
+            ;;
+    esac
+done
+exec gcc -std=gnu11 "$@"

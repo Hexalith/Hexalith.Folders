@@ -1,0 +1,126 @@
+{
+  "schema": "story117-nss-writer-receipt-v1",
+  "frozen": {
+    "qualification": "incomplete",
+    "parent": "in-progress",
+    "tracker": "backlog",
+    "productionControl": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "staging": "0/14",
+    "historicalWriters": {
+      "2026-10-30T16:39:27Z": "unresolved",
+      "2026-10-30T16:54:04Z": "unresolved"
+    }
+  },
+  "ready": false,
+  "complete": false,
+  "global_immutability_proven": false,
+  "supported_probe_accounting_complete": false,
+  "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+  "unsupported": [
+    "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+    "Page-mkwrite events are evidence only, never successful content mutations.",
+    "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+    "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+    "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+    "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+    "Bounded path components and snapshot races can make identities incomplete.",
+    "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+    "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+    "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+    "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+    "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+  ],
+  "incomplete_reasons": [
+    "UTC/monotonic calibration drift exceeded 1ms",
+    "before snapshot incomplete",
+    "collector errors",
+    "owned kretprobe missed accounting incomplete",
+    "readiness not reached"
+  ],
+  "incomplete_reason_count": 5,
+  "errors": [
+    "TimeoutError: setup deadline/signal before mandatory probe attachment completed",
+    "kernel accounting: BCC owned return event key unavailable: r_vfs_write"
+  ],
+  "stats": {
+    "events": 0,
+    "successful_mutation_records": 0,
+    "perf_lost": 0,
+    "observed_event_sizes": {}
+  },
+  "kernel_counters": {
+    "submissions": 0,
+    "submission_failures": 0,
+    "context_map_failures": 0,
+    "context_overwrites": 0,
+    "unmatched_returns": 0,
+    "kernel_read_errors": 0,
+    "path_truncations": 0,
+    "deadline_unfinished_pairs": 0,
+    "excluded_entries": 0,
+    "paired_entries": 0,
+    "paired_returns": 0,
+    "identity_errors": 0
+  },
+  "unfinished_pairs": 0,
+  "kretprobe_profile_before_detach": {
+    "complete": false,
+    "errors": [
+      "not attached"
+    ]
+  },
+  "collector_only_cleanup_completed": true,
+  "stop": {
+    "requested": false,
+    "signal": null,
+    "overflow": false
+  },
+  "final_clock_sample": {
+    "monotonic_ns": 227527619632278,
+    "utc_ns": 1793486467961996561,
+    "uncertainty_ns": 751,
+    "utc": "2026-10-31T22:41:07.961996561Z"
+  },
+  "utc_offset_change_ns": -1487184,
+  "event_gate_close": {
+    "earliest_monotonic_ns": 227522126630073,
+    "earliest_boottime_ns": 227522126631777,
+    "completed_monotonic_ns": 227522126741289,
+    "completed_boottime_ns": 227522126742081
+  },
+  "diagnostic_provenance": {
+    "collector_python_source_sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+    "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+    "rendered_bpf_sha256": "0094e40c93d7c1481c868e58dea134ed1793b3c37671015299423561f2a63b9e",
+    "bcc_version": "0.35.0",
+    "bcc_version_observation": "module __version__",
+    "python_version": "3.14.4",
+    "python_executable": "/usr/bin/python3",
+    "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+    "errors": []
+  },
+  "finished_monotonic_ns": 227527619683553,
+  "bytes_before_receipt": 31216286,
+  "snapshot_error_counts": {
+    "before": 0,
+    "after": 0
+  },
+  "snapshot_phases": {
+    "before": {
+      "started": false,
+      "completed": false,
+      "partial": false,
+      "error_count": 0,
+      "errors_sample": []
+    },
+    "after": {
+      "started": true,
+      "completed": true,
+      "partial": false,
+      "error_count": 0,
+      "errors_sample": []
+    }
+  }
+}

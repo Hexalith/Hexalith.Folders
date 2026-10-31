@@ -1,0 +1,53 @@
+{
+  "elapsed_seconds": 11.242485011,
+  "bytes": 268369688,
+  "started": true,
+  "completed": false,
+  "partial": true,
+  "failure": "OutputLimit: total metadata output budget reached",
+  "error_count": 7,
+  "exception": "OutputLimit: total metadata output budget reached",
+  "errors": [
+    {
+      "kind": "snapshot_error",
+      "pid": 2414090,
+      "error": "FileNotFoundError",
+      "detail": "[Errno 2] No such file or directory: '/proc/2414090/stat'"
+    },
+    {
+      "kind": "snapshot_error",
+      "pid": 2451523,
+      "error": "FileNotFoundError",
+      "detail": "[Errno 2] No such file or directory: '/proc/2451523/stat'"
+    },
+    {
+      "kind": "snapshot_error",
+      "pid": 2452888,
+      "error": "FileNotFoundError",
+      "detail": "[Errno 2] No such file or directory: '/proc/2452888/stat'"
+    },
+    {
+      "kind": "snapshot_error",
+      "pid": 2453068,
+      "error": "FileNotFoundError",
+      "detail": "[Errno 2] No such file or directory: '/proc/2453068/stat'"
+    },
+    {
+      "kind": "snapshot_error",
+      "pid": 2453501,
+      "error": "FileNotFoundError",
+      "detail": "[Errno 2] No such file or directory: '/proc/2453501/stat'"
+    },
+    {
+      "kind": "snapshot_error",
+      "pid": 2453809,
+      "error": "FileNotFoundError",
+      "detail": "[Errno 2] No such file or directory: '/proc/2453809/stat'"
+    },
+    {
+      "kind": "snapshot_error",
+      "phase": "before",
+      "detail": "OutputLimit: total metadata output budget reached"
+    }
+  ]
+}

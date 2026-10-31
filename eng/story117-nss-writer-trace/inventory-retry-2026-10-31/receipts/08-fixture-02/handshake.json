@@ -1,0 +1,23 @@
+{
+  "valid": false,
+  "reason": "readiness/ownership/deadline refused",
+  "ready": {
+    "pid": 84369,
+    "start_ticks": 22738766,
+    "caller_shell": {
+      "pid": 84286,
+      "start_ticks": 22738755,
+      "comm": "bash"
+    },
+    "boot_id": "9013c8e5-d08a-4fd8-868d-2b9b0302fa27",
+    "ready_monotonic_ns": 227399514988125,
+    "deadline_monotonic_ns": 227447706096638,
+    "mandatory_hooks_attached": true,
+    "deadline_boottime_ns": 227447706098211,
+    "before_snapshot_complete": false,
+    "qualification": "incomplete",
+    "global_immutability_proven": false
+  },
+  "checked_monotonic_ns": 227399518678494,
+  "workload_executed_at_check": false
+}

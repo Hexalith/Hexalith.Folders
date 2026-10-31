@@ -1,0 +1,16 @@
+{
+  "owned_collector_pid": 2562534,
+  "start_ticks": 20514680,
+  "boot_id": "9013c8e5-d08a-4fd8-868d-2b9b0302fa27",
+  "owner_pid": 2554839,
+  "owner_start_ticks": 20513439,
+  "duration_seconds": 12,
+  "action": "pause",
+  "launched_monotonic_ns": 205146807918088,
+  "workload_executed": false,
+  "trace_start_observed_monotonic_ns": 205151908277857,
+  "paused_monotonic_ns": 205151908287977,
+  "resumed_monotonic_ns": 205159877955584,
+  "collector_exit": 2,
+  "finished_monotonic_ns": 205166171563516
+}

@@ -1,0 +1,9 @@
+{
+  "observed_monotonic_ns": 205772843730615,
+  "remaining_bcc_tracefs_alias_count": 0,
+  "tracefs_mutated": false,
+  "all_session_capture_helpers_finished": true,
+  "synthetic_fixture_exists": false,
+  "header_build_link": "/var/tmp/story117-wsl-headers.pyOhVksU/build",
+  "qualification": "incomplete"
+}

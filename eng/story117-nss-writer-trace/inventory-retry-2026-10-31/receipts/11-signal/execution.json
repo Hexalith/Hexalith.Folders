@@ -1,0 +1,18 @@
+{
+  "collector_pid": 126750,
+  "start_ticks": 22747709,
+  "owner_pid": 126746,
+  "owner_start_ticks": 22747705,
+  "boot_id": "9013c8e5-d08a-4fd8-868d-2b9b0302fa27",
+  "duration_seconds": 25,
+  "action": "signal",
+  "workload_executed": false,
+  "launched_monotonic_ns": 227477100168926,
+  "signal_sent_monotonic_ns": 227481509303810,
+  "signal": 1,
+  "collector_exit": 2,
+  "finished_monotonic_ns": 227490247051998,
+  "case_passed": true,
+  "loss_counters_nonzero": false,
+  "receipt_present": true
+}

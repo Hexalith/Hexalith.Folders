@@ -1,0 +1,17 @@
+{
+  "identity": {
+    "pid": 2368100,
+    "tid": 2368100,
+    "uid": 0,
+    "start_ticks": 20480604,
+    "executable": "/usr/bin/python3.14"
+  },
+  "preexisting_fd": 4,
+  "inode": 7759959,
+  "device": {
+    "major": 8,
+    "minor": 48
+  },
+  "preexisting_writable_shared_mapping": true,
+  "created_before_capture": true
+}

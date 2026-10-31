@@ -1,0 +1,12 @@
+{
+  "executed": false,
+  "operations": [],
+  "collector_exit": -11,
+  "kernel_write_route": "not generated: no fixture-scoped kernel-write trigger",
+  "unsupported": [
+    "already-writable mmap stores",
+    "async/io_uring",
+    "PMU dispatch omissions",
+    "suspend clock enforcement (no VM suspend performed)"
+  ]
+}

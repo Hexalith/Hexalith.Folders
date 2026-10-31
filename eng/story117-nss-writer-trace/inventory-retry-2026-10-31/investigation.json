@@ -1,0 +1,22 @@
+{
+  "failed_snapshot_archive_member": "runtime/snapshot-only/before.jsonl",
+  "rows": {
+    "process": 615,
+    "task": 5360,
+    "descriptor": 25406,
+    "descriptor_table_reference": 4745,
+    "shared_mapping": 748987,
+    "snapshot_error": 6
+  },
+  "bytes": {
+    "descriptor": 13001380,
+    "descriptor_table_reference": 1414412,
+    "shared_mapping": 251410790
+  },
+  "descriptor_payload_bytes": 9111722,
+  "unique_descriptor_payload_bytes": 2413383,
+  "unique_descriptor_payloads": 7245,
+  "kcpm_proof": "installed kernel/kcmp.c and read-only root comparisons support KCMP_FILES=2, KCMP_VM=1",
+  "capture_seconds_used_so_far": 0,
+  "runtime_root": "/var/tmp/story117-nss-retry.ubgn0d7i"
+}

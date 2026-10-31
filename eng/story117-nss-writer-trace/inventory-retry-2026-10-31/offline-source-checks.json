@@ -1,0 +1,44 @@
+[
+  {
+    "path": "eng/story117-nss-writer-trace/collector.py",
+    "sha256": "6422516b0cbfe72a0efeb82e1e894cb833d7fc480281adf9b7567645ffce8688",
+    "lf_only": true,
+    "final_newline": true,
+    "trailing_whitespace_lines": []
+  },
+  {
+    "path": "eng/story117-nss-writer-trace/test_collector.py",
+    "sha256": "5cd1d380100009b8903026eb23fd9b174c349051ac3a841ec246390541f09f2d",
+    "lf_only": true,
+    "final_newline": true,
+    "trailing_whitespace_lines": []
+  },
+  {
+    "path": "eng/story117-nss-writer-trace/trace.bpf.c",
+    "sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+    "lf_only": true,
+    "final_newline": true,
+    "trailing_whitespace_lines": []
+  },
+  {
+    "path": "eng/story117-nss-writer-trace/inventory-retry-2026-10-31/retry_fixture.py",
+    "sha256": "f6feef4bdf8ad5032f55913059c3a7056061865d291ba3c7f30208885f170b9d",
+    "lf_only": true,
+    "final_newline": true,
+    "trailing_whitespace_lines": []
+  },
+  {
+    "path": "eng/story117-nss-writer-trace/inventory-retry-2026-10-31/control_retry.py",
+    "sha256": "43c9eeb6d621ec96fe1d4c2d67c093a051d98178fe064b9ad5bb925727eab203",
+    "lf_only": true,
+    "final_newline": true,
+    "trailing_whitespace_lines": []
+  },
+  {
+    "path": "eng/story117-nss-writer-trace/inventory-retry-2026-10-31/snapshot_probe.py",
+    "sha256": "2d76d72d069220ec07505195e8e82da14366f20eb4740b13d9ace4594d720942",
+    "lf_only": true,
+    "final_newline": true,
+    "trailing_whitespace_lines": []
+  }
+]
