@@ -172,5 +172,147 @@ class ModelReplayTests(unittest.TestCase):
             replay.replay(path)
 
 
+
+class CompletedDiagnosticReplayTests(unittest.TestCase):
+    """A portable valid capsule anchors semantic tampering tests to passing evidence."""
+    def fixture(self, incomplete=False):
+        from model_replay_fixture import CompletedFixture
+        value=CompletedFixture()
+        return value.incomplete() if incomplete else value
+
+    def run_fixture(self, fixture):
+        with tempfile.TemporaryDirectory() as directory:
+            path=fixture.save(directory)
+            with patch.object(subprocess,'Popen',side_effect=AssertionError('no execution')),patch.object(subprocess,'run',side_effect=AssertionError('no execution')):
+                return replay.replay(path)
+
+    def rejects(self, fixture):
+        with self.assertRaises((ValueError,KeyError)):
+            self.run_fixture(fixture)
+
+    def command(self,fixture,label):return next(row for row in fixture.result['commands'] if row['label']==label)
+
+    def replace_json(self,fixture,name,value):return fixture.put(name,value)
+
+    def test_valid_complete_and_incomplete_diagnostics_pass_without_execution(self):
+        for incomplete in (False,True):
+            with self.subTest(incomplete=incomplete):
+                result=self.run_fixture(self.fixture(incomplete))
+                self.assertEqual(result['qualification'],'incomplete' if incomplete else 'passed')
+                self.assertEqual(result['originalAssemblyTests'],11)
+                self.assertEqual(result['commandExecutionCount'],0)
+
+    def test_prior_nss_failure_and_actual_observations_cannot_be_relabelled(self):
+        fixture=self.fixture(True);fixture.result.update(qualification='passed',firstFailure=None)
+        self.rejects(fixture)
+        fixture=self.fixture(True);fixture.result.pop('currentCorrection');fixture.result.pop('priorGlobalStoreObservation');fixture.result.update(qualification='passed',firstFailure=None);fixture.put('certificate-stores-after.json',fixture.documents['certificate-stores-before.json']);self.rejects(fixture)
+        for mutation in ('observations','errors'):
+            fixture=self.fixture()
+            if mutation=='observations':fixture.put('certificate-stores-after.json',[dict(path='/new/NSS',mtimeNs=4)])
+            else:fixture.result['preservation']['errors']=['retained failure']
+            self.rejects(fixture)
+
+    def test_incomplete_credit_requires_every_successful_class_and_discovery_command(self):
+        for label in ('class-CompositionProcessTests','discover-CompositionProcessTests','mcpcli-guards','discover-mcpcli-guards'):
+            for mutation in ('missing','failed','timed-out'):
+                with self.subTest(label=label,mutation=mutation):
+                    fixture=self.fixture(True);row=self.command(fixture,label)
+                    if mutation=='missing':fixture.result['commands'].remove(row)
+                    elif mutation=='failed':row['exitCode']=1
+                    else:row['timedOut']=True
+                    self.rejects(fixture)
+
+    def test_rebound_actual_child_executable_is_refused(self):
+        fixture=self.fixture();fixture.result['modelChild']['executable']='/bin/true'
+        name='processes/production-model.json';observations=json.loads(fixture.documents[name]);observations[1]=copy.deepcopy(fixture.result['modelChild'])
+        self.command(fixture,'production-model')['processes']=fixture.put(name,observations)
+        self.rejects(fixture)
+
+    def test_closed_command_contract_rejects_rebound_executables_projects_filters_and_targets(self):
+        for label,mutation in (
+            ('helper-build',lambda row:row['argv'].append('-t:Publish')),
+            ('original-test-build',lambda row:row['argv'].append('-p:Configuration=Release')),
+            ('cli-build',lambda row:row['argv'].__setitem__(2,'/other/project.csproj')),
+            ('production-model',lambda row:row['argv'].__setitem__(1,'/other/DistributionProbe.dll')),
+            ('prepare-build',lambda row:row['argv'].__setitem__(1,'/other/Hexalith.Builds.Module.Cli.dll')),
+            ('class-CompositionProcessTests',lambda row:row['argv'].__setitem__(3,replay.FULL+'OtherTests')),
+            ('sdk-version',lambda row:row['argv'].__setitem__(0,'/bin/true'))):
+            with self.subTest(label=label):
+                fixture=self.fixture();row=self.command(fixture,label);mutation(row)
+                observations=json.loads(fixture.documents[row['processes']['path']]);observations[0].update(argv=row['argv'],executable=row['argv'][0])
+                row['processes']=fixture.put(row['processes']['path'],observations)
+                self.rejects(fixture)
+
+    def test_all_prevention_and_injection_controls_are_enforced(self):
+        controls=list(model.q.CONTROLS)+['DOTNET_STARTUP_HOOKS','DOTNET_ADDITIONAL_DEPS','DOTNET_MSBUILD_SDK_RESOLVER_CLI_DIR','MSBUILD_EXE_PATH','AlternateCommonProps']
+        for key in controls:
+            with self.subTest(control=key):
+                fixture=self.fixture();fixture.result['modelChild']['environment'][key]='unsafe'
+                name='processes/production-model.json';observations=json.loads(fixture.documents[name]);observations[1]=copy.deepcopy(fixture.result['modelChild'])
+                self.command(fixture,'production-model')['processes']=fixture.put(name,observations)
+                self.rejects(fixture)
+        for key in replay.PRIVATE:
+            fixture=self.fixture();fixture.result['modelChild']['environment'][key]=fixture.workspace+'/../shared'
+            name='processes/production-model.json';observations=json.loads(fixture.documents[name]);observations[1]=copy.deepcopy(fixture.result['modelChild'])
+            self.command(fixture,'production-model')['processes']=fixture.put(name,observations);self.rejects(fixture)
+
+    def test_discovery_and_xml_cannot_shrink_together(self):
+        fixture=self.fixture();full=replay.FULL+'Workspace.PlatformModelCatalogTests';discovery=fixture.result['classDiscoveries'][full];removed=discovery['cases'].pop()
+        row=self.command(fixture,'discover-Workspace.PlatformModelCatalogTests');row['log']=fixture.put(discovery['file']['path'],discovery['cases']);discovery['file']=row['log']
+        report=next(item for item in fixture.result['testClasses'] if item['name']==full)
+        for key in ('total','passed','discovered'):report[key]-=1
+        xml=__import__('xml.etree.ElementTree',fromlist=['ElementTree']);root=xml.fromstring(fixture.documents[report['report']['path']]);assembly=root.find('assembly');collection=assembly.find('collection')
+        for parent in (assembly,collection):parent.set('total',str(report['total']));parent.set('passed',str(report['total']))
+        for test in list(collection):
+            if json.loads('"'+test.get('name')+'"')==removed['DisplayName']:collection.remove(test)
+        report['report']=fixture.put(report['report']['path'],xml.tostring(root));self.rejects(fixture)
+
+    def test_every_xml_counter_is_validated(self):
+        import xml.etree.ElementTree as xml
+        for target in ('assembly','collection'):
+            for counter in ('errors','failed','skipped','not-run'):
+                with self.subTest(target=target,counter=counter):
+                    fixture=self.fixture();report=fixture.result['testClasses'][0];root=xml.fromstring(fixture.documents[report['report']['path']]);node=root.find('assembly');node=node if target=='assembly' else node.find('collection');node.set(counter,'1');report['report']=fixture.put(report['report']['path'],xml.tostring(root));self.rejects(fixture)
+
+    def test_compiler_inventory_arguments_and_response_bytes_are_bound(self):
+        for mutation in ('shrink','arguments','response','output'):
+            with self.subTest(mutation=mutation):
+                fixture=self.fixture();name=fixture.result['modelCompiler']['path'];report=json.loads(fixture.documents[name])
+                if mutation=='shrink':report[0]['inputs'].pop(1)
+                elif mutation=='arguments':report[0]['arguments'].pop()
+                elif mutation=='response':report[0]['process']['responses'][0]['text']+=' changed'
+                else:report[0]['output']='/other/Model.dll'
+                fixture.result['modelCompiler']=fixture.put(name,report);self.rejects(fixture)
+
+    def test_mapping_guard_tokens_in_comments_do_not_supply_executable_guards(self):
+        fixture=self.fixture();name='workspace/source-mapping/SourceMapping.values.targets';fixture.put(name,b'<Project><!-- HexalithVerifySourceMappingSelection HexalithValidateSourceMapping HexalithValidateSourceProjectsBeforeRestore HXW006 --></Project>');self.rejects(fixture)
+        fixture=self.fixture();name='workspace/source-mapping/SourceMapping.targets';fixture.put(name,b'<Project><!-- UsingTask SourceMappingValidationTask SourceMapping.values.targets --></Project>');self.rejects(fixture)
+
+    def test_canonical_output_roles_and_actual_pe_identity_are_required(self):
+        fixture=self.fixture();fixture.result['outputs']['AppHost']=copy.deepcopy(fixture.result['outputs']['CLI']);self.rejects(fixture)
+        fixture=self.fixture();model=fixture.result['outputs']['Model']['path'];metadata=json.loads(fixture.documents['pe-metadata.json']);next(row for row in metadata if row['path']==fixture.workspace+'/'+model)['identity']['name']='Invented';fixture.put('pe-metadata.json',metadata);self.rejects(fixture)
+
+    def test_actual_root_observation_is_required_for_execution_credit(self):
+        fixture=self.fixture();row=self.command(fixture,'class-CompositionProcessTests');row['processes']=fixture.put(row['processes']['path'],[]);self.rejects(fixture)
+
+    def test_intact_failed_popen_is_incomplete_and_uncredited(self):
+        fixture=self.fixture();row=copy.deepcopy(self.command(fixture,'helper-build'));row.update(launched=False,exitCode=None,timedOut=False);row.pop('pid');row['processes']=fixture.put(row['processes']['path'],[])
+        fixture.result['commands']=[row];fixture.result.update(qualification='incomplete',firstFailure=dict(owner='Popen',detail='executable unavailable'));fixture.result.pop('independentDiagnosticGates',None)
+        result=self.run_fixture(fixture);self.assertEqual(result['qualification'],'incomplete');self.assertEqual(result['originalAssemblyTests'],0)
+
+    def test_linked_build_inputs_are_refused_before_file_filtering(self):
+        for dangling in (False,True):
+            with self.subTest(dangling=dangling),tempfile.TemporaryDirectory() as directory:
+                root=Path(directory);target=root/'target.cs'
+                if not dangling:target.write_text('source')
+                (root/'linked.cs').symlink_to(target)
+                with patch.object(model.q,'repositories',return_value=[root]),patch.object(model.q,'git',return_value=b'linked.cs\0'):
+                    with self.assertRaises(model.q.GateFailure):model.source_inputs()
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);target=root/'real';target.mkdir();(target/'Code.cs').write_text('source');(root/'linked-dir').symlink_to(target,target_is_directory=True)
+            with patch.object(model.q,'repositories',return_value=[root]),patch.object(model.q,'git',return_value=b'linked-dir/Code.cs\0'):
+                with self.assertRaises(model.q.GateFailure):model.source_inputs()
+
+
 if __name__ == "__main__":
     unittest.main()

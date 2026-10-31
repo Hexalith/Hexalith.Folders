@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "scope": "Python-only review correction; no SDK/model/graph/application command executed.",
+  "qualification": "incomplete",
+  "receipt": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-production-source-model-2026-10-30-completed.json",
+    "bytes": 618783,
+    "sha256": "0c5fe86560f85f58b7eaa3654f449f585f3004ef9fff007d35f1bc8c091b484b"
+  },
+  "archive": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-production-source-model-2026-10-30-completed.artifacts.tar.gz",
+    "bytes": 172164529,
+    "sha256": "e9ca7a1a4d39854ed65aeb71ff1170497ceee35fa00432b1365a5b5ed2df614a"
+  },
+  "manifest": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-production-source-model-2026-10-30-completed.members.json",
+    "bytes": 382492,
+    "sha256": "123915833ec3fb3ef92ce3dc0f671ea4a9bbef7215def0d904373bcd61a4984f"
+  },
+  "focusedChecks": [
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-source-distribution",
+        "-p",
+        "test_model_preflight.py"
+      ],
+      "exitCode": 0,
+      "tests": 29
+    },
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "-O",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-source-distribution",
+        "-p",
+        "test_model_preflight.py"
+      ],
+      "exitCode": 0,
+      "tests": 29
+    }
+  ],
+  "replay": {
+    "argv": [
+      "python3",
+      "-B",
+      "eng/story117-source-distribution/verify_model.py",
+      "--receipt",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-production-source-model-2026-10-30-completed.json"
+    ],
+    "exitCode": 0,
+    "qualification": "incomplete",
+    "verifiedMembers": 1930,
+    "originalAssemblyTests": 57,
+    "commandExecutionCount": 0
+  },
+  "corrected": [
+    "Retained NSS failure cannot be promoted; actual complete pre/post metadata and empty verified-error lists checked.",
+    "Every credited scope requires closed successful command/filter/project/executable records and matching observed roots.",
+    "Full execution environment policy, private caches and initial linked-source refusal.",
+    "Original facts/theories reconstructed from retained test assembly attributes; every XML counter checked.",
+    "Compiler responses reconstructed and complete source/reference/auxiliary/compiler vectors bound to CodeView/model output.",
+    "Embedded Tooling mapping resources and executable guard structure checked.",
+    "Canonical output roles and actual PE identities, references and MVIDs parsed without loading assemblies.",
+    "Unlaunched Popen failures retained as incomplete uncredited evidence.",
+    "Portable passing native-format fixture and semantic rebound tests independent of ignored archives."
+  ],
+  "files": [
+    {
+      "path": "eng/story117-source-distribution/qualify_model.py",
+      "bytes": 30873,
+      "sha256": "dcbd16aca862595d9406206d2aa97665fffe246b687bee7ec94d4a9653ee72cb"
+    },
+    {
+      "path": "eng/story117-source-distribution/verify_model.py",
+      "bytes": 64387,
+      "sha256": "dd745a2dbff4fe966c8b20000e621c3734d86f2224ad40d23be0d165bb0a2d08"
+    },
+    {
+      "path": "eng/story117-source-distribution/test_model_preflight.py",
+      "bytes": 20502,
+      "sha256": "fe73fe7e426ee7c37d18c5c36182d55c869fa11ebdd6ddd9162542f95f9decb4"
+    },
+    {
+      "path": "eng/story117-source-distribution/model_replay_fixture.py",
+      "bytes": 30519,
+      "sha256": "62c100c0b5617ab88438d0e062886f185bf59311ecf6b89031fe49daf71e0918"
+    }
+  ]
+}

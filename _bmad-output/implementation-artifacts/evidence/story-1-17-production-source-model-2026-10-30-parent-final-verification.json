@@ -1,0 +1,324 @@
+{
+  "compilerInputs": {
+    "count": 484,
+    "mismatches": []
+  },
+  "apiProducerInputs": {
+    "count": 40,
+    "mismatches": []
+  },
+  "runnerCopies": {
+    "count": 1074,
+    "mismatches": []
+  },
+  "repositories": [
+    {
+      "path": ".",
+      "originalRevision": "a5f1cd8bebba3f09d698ea6682b1531179bb3a3b",
+      "currentRevision": "20034c1170c9f044f1f247abba87c0b17f94eebf",
+      "indexUnchanged": false,
+      "currentStageEntriesSha256": "fec25b7040cc194805aab8f8667760f981009ef6ccd45ce8b331c67e325b0a77"
+    },
+    {
+      "path": "references/Hexalith.Tenants",
+      "originalRevision": "0d469d7c8fedc383f6258cbf2798e62cf9847304",
+      "currentRevision": "0d469d7c8fedc383f6258cbf2798e62cf9847304",
+      "indexUnchanged": true,
+      "currentStageEntriesSha256": "bab3d800ae8f6872bb98157460ca94756dba9c13c6f73d9e349af62c242bfec9"
+    },
+    {
+      "path": "references/Hexalith.AI.Tools",
+      "originalRevision": "70dbf73e80787299c832d30d911b16b105ab194d",
+      "currentRevision": "70dbf73e80787299c832d30d911b16b105ab194d",
+      "indexUnchanged": true,
+      "currentStageEntriesSha256": "d17b30d7ed350757dd9e25a055d4a330b81c221abbb9542be52eeebe3b6d0023"
+    },
+    {
+      "path": "references/Hexalith.EventStore",
+      "originalRevision": "7b1df62102efb19da03553a890c62eb5ad6aeafe",
+      "currentRevision": "7b1df62102efb19da03553a890c62eb5ad6aeafe",
+      "indexUnchanged": true,
+      "currentStageEntriesSha256": "f5a072206fe3e0bbb05d8acba650b74630c10e48c55ad913314a7c54bf09aeaf"
+    },
+    {
+      "path": "references/Hexalith.FrontComposer",
+      "originalRevision": "7ce4ec5270a06fe8284e811c22fbf4cb50b17bf6",
+      "currentRevision": "7ce4ec5270a06fe8284e811c22fbf4cb50b17bf6",
+      "indexUnchanged": true,
+      "currentStageEntriesSha256": "fef0b29c2b101271813630e735f97db2ca878604a7f0e169373c6561cef7a234"
+    },
+    {
+      "path": "references/Hexalith.Memories",
+      "originalRevision": "9ea24458f949589bb8e59f9334161009487509d1",
+      "currentRevision": "9ea24458f949589bb8e59f9334161009487509d1",
+      "indexUnchanged": true,
+      "currentStageEntriesSha256": "1fab581f9798a135c4361d4e567f3170942f3b5b59a2ec0c918bd088f2f7bd55"
+    },
+    {
+      "path": "references/Hexalith.Commons",
+      "originalRevision": "3edfbdafc7d4fa915286dce8a37dc4cc7c06085a",
+      "currentRevision": "3edfbdafc7d4fa915286dce8a37dc4cc7c06085a",
+      "indexUnchanged": true,
+      "currentStageEntriesSha256": "909067f8bff4f2cd92d437444db0269de8a9a5c190fd592a6922bec33a6364e2"
+    },
+    {
+      "path": "references/Hexalith.Builds",
+      "originalRevision": "144af4c6ccfacdc4f5eaff5823093e5a403e8c69",
+      "currentRevision": "15d6a10c54660153cf8c05f24db83215824faf8e",
+      "indexUnchanged": false,
+      "currentStageEntriesSha256": "7b4e0fb93f8ba9072a2decc52d20e21e21cb752e2dc9ae3cfcaaf4d529ee5e8c"
+    },
+    {
+      "path": "references/Hexalith.PolymorphicSerializations",
+      "originalRevision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "currentRevision": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "indexUnchanged": true,
+      "currentStageEntriesSha256": "02d4ed751e051abdfcab7d1bf898a1849a30f7522fbf1448099d1d12bc51b470"
+    },
+    {
+      "path": "references/Hexalith.Projects",
+      "originalRevision": "0338d6ebf9f1be1bd38a8745759984d2066da5e7",
+      "currentRevision": "0338d6ebf9f1be1bd38a8745759984d2066da5e7",
+      "indexUnchanged": true,
+      "currentStageEntriesSha256": "365f19c664d27ef8c71f3e37f62c79dddebe43bd136edf14eadd7be3ee484897"
+    },
+    {
+      "path": "references/Hexalith.Platform",
+      "originalRevision": "72904e8ea63b7f6dc8901c09d526479e56fcc841",
+      "currentRevision": "72904e8ea63b7f6dc8901c09d526479e56fcc841",
+      "indexUnchanged": true,
+      "currentStageEntriesSha256": "dacab8624f60583557e18ae56ef6642718ff65d0d3d23a716184297fc548f30e"
+    },
+    {
+      "path": "references/Hexalith.McpCli",
+      "originalRevision": "c99aebe4a93ca611a443c83f031ef1c02bd499b7",
+      "currentRevision": "c99aebe4a93ca611a443c83f031ef1c02bd499b7",
+      "indexUnchanged": true,
+      "currentStageEntriesSha256": "6511bf952e4dbb728f97fef60ee351a888e5b885903ab610d15e37d4edfc5d83"
+    },
+    {
+      "path": "references/Hexalith.Parties",
+      "originalRevision": "784215a8fe91b4d5ae00eb65ab61d3b9507ca0c2",
+      "currentRevision": "784215a8fe91b4d5ae00eb65ab61d3b9507ca0c2",
+      "indexUnchanged": true,
+      "currentStageEntriesSha256": "8e674558adb2f9389d0a1ed75402a6cdfde1a5041ca30b82838b0df01f040c8e"
+    }
+  ],
+  "protectedFiles": [
+    {
+      "path": "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+      "unchanged": true,
+      "sha256": "ca298df3ed27156b7c6d170a47b1042ef8453c1e8e03207930d6bbbcc9ab0423"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/sprint-status.yaml",
+      "unchanged": true,
+      "sha256": "1038c46359140b74234dee2b179d3cda981bb39e35b4c3357ca0d746565d7e40"
+    },
+    {
+      "path": "eng/story117-platform-qualification-current/configuration.proposed.json",
+      "unchanged": true,
+      "sha256": "c0b8697672e7ea27370bbb9b0078c9e922042945467be0e7a7fa7d33c28b8d1c"
+    },
+    {
+      "path": "eng/story117-platform-qualification-current/staging-checks.json",
+      "unchanged": true,
+      "sha256": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51"
+    }
+  ],
+  "executedCSharpSources": [
+    {
+      "path": "eng/story117-source-distribution/Probe.cs",
+      "sha256": "221f5d1369e02a4468f8cfb8d95f924fa19dc225e6b90a4418135449d6a94a40",
+      "unchanged": true
+    },
+    {
+      "path": "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionProcess.cs",
+      "sha256": "68604283bf5726b499ce13b9f17f0ae6a45244f2e0785d3ba5ea8e99ec16fe4d",
+      "unchanged": true
+    },
+    {
+      "path": "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Runtime/PlatformManifestCommand.cs",
+      "sha256": "d2f939ea6c2401551b03ccea3cf71d4b1629edf32611ca15a525e042e1018594",
+      "unchanged": true
+    },
+    {
+      "path": "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/SourceMappingMaterializer.cs",
+      "sha256": "c2eb746e79bf59b7722b8b8b71230b8d7d4720104f7065f71dc2daff131dfa83",
+      "unchanged": true
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/CompositionProcessTests.cs",
+      "sha256": "5740df24bd562f380a4f711a377ccefbdfdebe5c1a060848899b06e1ed74af09",
+      "unchanged": true
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/CompositionSdkProcessTests.cs",
+      "sha256": "ff1b139f046051948961e513a25cc351798ee155793b43645a314776168abc2d",
+      "unchanged": true
+    },
+    {
+      "path": "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/Workspace/PlatformModelCatalogTests.cs",
+      "sha256": "6537c66dcdce27c815239a4a472ae4d54fedbde5eb18f088d81f9ff2d3c48bdd",
+      "unchanged": true
+    }
+  ],
+  "frozenIntentNormalizedSha256": "a82ab9687b4089b82f55ae038e109f306431a5119041bc4f050047d7bdc9712a",
+  "reviewFindingsResolved": [
+    "B01",
+    "B02",
+    "B03",
+    "B04",
+    "B05",
+    "B06",
+    "B07",
+    "B08",
+    "B09",
+    "B10",
+    "B11",
+    "B12",
+    "E01",
+    "E02",
+    "E03",
+    "V01"
+  ],
+  "deferredFindings": [],
+  "qualification": "incomplete",
+  "independentDiagnosticGates": "passed",
+  "pythonTestsPerMode": 82,
+  "originalAssemblyCases": 57,
+  "verifiedMembers": 1930,
+  "verifyChildMutation": "expected regression failure confirmed",
+  "commandExecutionCountDuringReplay": 0,
+  "receipt": {
+    "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-production-source-model-2026-10-30-completed.json",
+    "bytes": 618783,
+    "sha256": "0c5fe86560f85f58b7eaa3654f449f585f3004ef9fff007d35f1bc8c091b484b"
+  },
+  "archive": {
+    "path": "story-1-17-production-source-model-2026-10-30-completed.artifacts.tar.gz",
+    "bytes": 172164529,
+    "sha256": "e9ca7a1a4d39854ed65aeb71ff1170497ceee35fa00432b1365a5b5ed2df614a"
+  },
+  "memberManifest": {
+    "path": "story-1-17-production-source-model-2026-10-30-completed.members.json",
+    "bytes": 382492,
+    "sha256": "123915833ec3fb3ef92ce3dc0f671ea4a9bbef7215def0d904373bcd61a4984f"
+  },
+  "currentPythonBindings": [
+    {
+      "path": "eng/story117-source-distribution/qualify_model.py",
+      "bytes": 30873,
+      "sha256": "dcbd16aca862595d9406206d2aa97665fffe246b687bee7ec94d4a9653ee72cb"
+    },
+    {
+      "path": "eng/story117-source-distribution/verify_model.py",
+      "bytes": 64659,
+      "sha256": "9c56409fadfa3935d5303ff640b522f890bab76b78ec991c2e7b338f0b7d3794"
+    },
+    {
+      "path": "eng/story117-source-distribution/test_model_preflight.py",
+      "bytes": 20810,
+      "sha256": "a4d72a10747c453e980034959b79d49f7c57859f1f93a55537ed09129a692bad"
+    },
+    {
+      "path": "eng/story117-source-distribution/model_replay_fixture.py",
+      "bytes": 30519,
+      "sha256": "62c100c0b5617ab88438d0e062886f185bf59311ecf6b89031fe49daf71e0918"
+    }
+  ],
+  "gitWritesByThisWorkflow": false,
+  "checkpointNote": "Separate actors committed earlier work during review: root a5f1cd8bebba3f09d698ea6682b1531179bb3a3b -> 947716833f5a221c38b222a32252d50548cc2abe -> 20034c1170c9f044f1f247abba87c0b17f94eebf; Builds 144af4c6ccfacdc4f5eaff5823093e5a403e8c69 -> 15d6a10c54660153cf8c05f24db83215824faf8e. This workflow made no Git writes. Preserve all checkpoints and the original execution baseline. Seven executed C# source bindings, 484 compiler inputs, 40 API producer inputs and 1,074 runner-copy bindings match. Four protected authority files match; eleven other repository identities/index entries match. Replays remain evidence of the original captured tuple and do not qualify a new runtime or release tuple.",
+  "recordedAtUtc": "2026-10-30T17:58:13.290011+00:00",
+  "preliminarySnapshotNote": "The first unsealed parent audit preceded the Builds commit; its dynamic changed-file list contained only Probe.cs after that commit landed. This final audit uses all seven explicit executed source paths and a fresh before/after-stable repository snapshot.",
+  "commands": [
+    {
+      "command": "python3 -B -m unittest discover -s eng/story117-source-distribution -p 'test_*.py'",
+      "initial": {
+        "chunk_id": "e2dcab",
+        "wall_time_seconds": 1.001482216,
+        "session_id": 78522,
+        "original_token_count": 4,
+        "output": ".............."
+      },
+      "completion": {
+        "chunk_id": "275311",
+        "wall_time_seconds": 1.3416e-05,
+        "exit_code": 0,
+        "original_token_count": 42,
+        "output": "....................................................................\n----------------------------------------------------------------------\nRan 82 tests in 4.095s\n\nOK\n"
+      }
+    },
+    {
+      "command": "python3 -B -O -m unittest discover -s eng/story117-source-distribution -p 'test_*.py'",
+      "initial": {
+        "chunk_id": "f3c349",
+        "wall_time_seconds": 1.001248896,
+        "session_id": 80241,
+        "original_token_count": 3,
+        "output": ".........."
+      },
+      "completion": {
+        "chunk_id": "98ef5a",
+        "wall_time_seconds": 0.553684421,
+        "exit_code": 0,
+        "original_token_count": 43,
+        "output": "........................................................................\n----------------------------------------------------------------------\nRan 82 tests in 4.537s\n\nOK\n"
+      }
+    },
+    {
+      "command": "python3 -B eng/story117-source-distribution/verify_model.py --receipt _bmad-output/implementation-artifacts/evidence/story-1-17-production-source-model-2026-10-30-completed.json",
+      "initial": {
+        "chunk_id": "377e47",
+        "wall_time_seconds": 1.001773864,
+        "session_id": 30202,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "completion": {
+        "chunk_id": "ea2f91",
+        "wall_time_seconds": 1.34136538,
+        "exit_code": 0,
+        "original_token_count": 63,
+        "output": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 1930, \"originalAssemblyTests\": 57, \"commandExecutionCount\": 0, \"startupCredit\": false, \"runtimeCredit\": false, \"acceptedToolCredit\": false, \"signedReleaseCredit\": false, \"operationalCredit\": false}\n"
+      }
+    },
+    {
+      "command": "python3 -B -O eng/story117-source-distribution/verify_model.py --receipt _bmad-output/implementation-artifacts/evidence/story-1-17-production-source-model-2026-10-30-completed.json",
+      "initial": {
+        "chunk_id": "f7a734",
+        "wall_time_seconds": 1.00059941,
+        "session_id": 3865,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "completion": {
+        "chunk_id": "da8311",
+        "wall_time_seconds": 1.709927639,
+        "exit_code": 0,
+        "original_token_count": 63,
+        "output": "{\"qualification\": \"incomplete\", \"verifiedMembers\": 1930, \"originalAssemblyTests\": 57, \"commandExecutionCount\": 0, \"startupCredit\": false, \"runtimeCredit\": false, \"acceptedToolCredit\": false, \"signedReleaseCredit\": false, \"operationalCredit\": false}\n"
+      }
+    },
+    {
+      "command": "python3 -B - <<'PY'\nimport sys,unittest,io\nfrom pathlib import Path\nsys.path.insert(0,str(Path('eng/story117-source-distribution').resolve()))\nimport verify_model as v\nv.verify_child=lambda *args,**kwargs:None\nsuite=unittest.defaultTestLoader.loadTestsFromName('test_model_preflight.CompletedDiagnosticReplayTests.test_rebound_actual_child_executable_is_refused')\noutput=io.StringIO();r=unittest.TextTestRunner(stream=output).run(suite)\nif len(r.failures)!=1 or r.errors:\n print(output.getvalue());raise SystemExit('Mutation regression did not fail as expected')\nprint('Mutation red confirmed: removing verify_child produces the expected assertion failure.')\nPY",
+      "initial": {
+        "chunk_id": "d4cbfa",
+        "wall_time_seconds": 0.079423425,
+        "exit_code": 0,
+        "original_token_count": 22,
+        "output": "Mutation red confirmed: removing verify_child produces the expected assertion failure.\n"
+      },
+      "completion": {
+        "chunk_id": "d4cbfa",
+        "wall_time_seconds": 0.079423425,
+        "exit_code": 0,
+        "original_token_count": 22,
+        "output": "Mutation red confirmed: removing verify_child produces the expected assertion failure.\n"
+      }
+    }
+  ],
+  "boundedImplementationSpecStatus": "done",
+  "storyStatus": "in-progress",
+  "trackerStatus": "backlog"
+}

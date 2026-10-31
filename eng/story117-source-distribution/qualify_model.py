@@ -47,6 +47,7 @@ def source_inputs():
     """Bind owning build inputs; unrelated planning documents are observed separately."""
     paths = []
     for repository in q.repositories():
+        q.require(not repository.is_symlink(), "Linked build repository refused: " + str(repository))
         names = q.git(repository, "ls-files", "--cached", "--others", "--exclude-standard", "-z").split(b"\0")
         for name in names:
             if not name:
@@ -55,7 +56,8 @@ def source_inputs():
             if relative.parts[0] in {"_bmad-output", "evidence", "docs", ".agents", ".claude", ".github", "archives"}:
                 continue
             path = repository / relative
-            if path.is_file() and not path.is_symlink():
+            q.require(not path.is_symlink() and not any(parent.is_symlink() for parent in path.parents if parent != repository and parent.is_relative_to(repository)), "Linked build input refused: " + str(path))
+            if path.is_file():
                 paths.append(path)
     return sorted(set(paths))
 

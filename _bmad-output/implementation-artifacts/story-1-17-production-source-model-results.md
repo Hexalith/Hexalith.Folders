@@ -1,6 +1,6 @@
 # Story 1.17 production source model results — 2026-10-30
 
-The unwrapped production `BuildModelAsync` compiled the actual Platform model in Debug after the real Parties `prepare-build` command. Independent diagnostics pass **57/57 original cases**, with zero failures, errors, skips or unrun cases. Normal and optimized Python both pass **68 guards**; replay verifies **1930 retained members** and the complete diagnostic claims while executing zero commands.
+The unwrapped production `BuildModelAsync` compiled the actual Platform model in Debug after the real Parties `prepare-build` command. Independent diagnostics pass **57/57 original cases**, with zero failures, errors, skips or unrun cases. The initial qualification verification recorded **68 Python guards** in each mode; replay verifies **1930 retained members** and the complete diagnostic claims while executing zero commands.
 
 The additive receipt deliberately remains **`qualification: incomplete`**. A prior interval observed changed real-HOME NSS database metadata, with an unproven writer. That failed observation is retained unchanged. Owned SDK children had `DOTNET_GENERATE_ASPNET_CERTIFICATE=false` and no owned certificate-management operation was observed. The independent continuation's fresh metadata interval was unchanged. Neither observation establishes global certificate-store immutability or identifies the earlier writer.
 
@@ -46,7 +46,7 @@ Installed SDK `10.0.403` satisfies Builds' unchanged pin and Platform's unchange
 | references/Hexalith.McpCli | `c99aebe4a93ca611a443c83f031ef1c02bd499b7` |
 | references/Hexalith.Parties | `784215a8fe91b4d5ae00eb65ab61d3b9507ca0c2` |
 
-Root HEAD/index gitlinks and all thirteen repository revisions/stage entries remain unchanged. Four protected authority files match the parent baseline: parent in-progress, tracker backlog, V1Only, T0 unset, activation authority null, staging 0/14. The unrelated `epic-4-context.md` user/concurrent change was preserved.
+At the initial verification, root HEAD/index gitlinks and all thirteen repository revisions/stage entries were unchanged; later external checkpoints are recorded below. Four protected authority files match the parent baseline: parent in-progress, tracker backlog, V1Only, T0 unset, activation authority null, staging 0/14. The unrelated `epic-4-context.md` user/concurrent change was preserved.
 
 ## Preserved first outcomes and limits
 
@@ -95,3 +95,19 @@ env \
   HEXALITH_G4_APPHOST=/tmp/story-1-17-production-source-model-2026-10-30-runner-qualified-b_tqyqun/distribution/AppHost/Hexalith.Builds.Module.AppHost.dll \
   /home/administrator/.dotnet/dotnet /tmp/story-1-17-production-source-model-2026-10-30-runner-qualified-b_tqyqun/distribution/CLI/Hexalith.Builds.Module.Cli.dll debug --manifest /home/administrator/projects/hexalith/folders/references/Hexalith.Parties/module/hexalith.module-manifest.v2.json --mode source --output json
 ```
+
+## Python review correction
+
+The review tightened replay to validate actual retained command, source/compiler, executable, environment, mapping-resource, PE and test-selection authority rather than self-reported summaries. A valid portable synthetic native-format capsule exercises the full passing verifier without an SDK or ignored archive. Semantic rebound cases cover substituted executables, publication/override arguments, unsafe controls/caches, missing/failed class and discovery scopes, reduced theory/XML selections, corrupt counters, reduced compiler vectors, commented-out guards, PE aliases and preserved NSS failure. Initially linked build files and linked ancestors now refuse before dependent execution; failed Popen launches remain valid incomplete, uncredited records.
+
+Focused `test_model_preflight.py` verification passed **29/29 normally and 29/29 optimized**. The unchanged completed capsule replay passed with **1,930 members, 57 original cases and zero command execution**, retaining `qualification: incomplete`. Existing C#/SDK/model/graph observations, receipts and archives were not rebuilt or rewritten. The prior global-store failure remains an incomplete consequence. Broader verification belongs to the parent review.
+
+See [additive review verification](evidence/story-1-17-production-source-model-2026-10-30-review-corrections.json) for exact commands, current Python byte bindings and unchanged evidence digests.
+
+## Final parent verification — 2026-10-30
+
+All 16 review findings are corrected, with none deferred. Parent independently passed 82/82 Python tests normally and optimized, both unchanged real-capsule replays over 1,930 members and 57 cases, and a mutation-red check: removing production-child validation now causes its regression test to fail. The earlier 68-guard and focused 29-case observations remain dated evidence.
+
+The [final parent record](evidence/story-1-17-production-source-model-2026-10-30-parent-final-verification.json) binds current Python bytes, seven unchanged executed C# sources, 484 unchanged compiler inputs, 40 unchanged API producer inputs, 1,074 unchanged runner-copy bindings and all four protected authority files. A separate actor committed earlier work during review: root advanced through `947716833f5a221c38b222a32252d50548cc2abe` to `20034c1170c9f044f1f247abba87c0b17f94eebf`; Builds advanced to `15d6a10c54660153cf8c05f24db83215824faf8e`. Those checkpoints are preserved. This workflow made no Git writes. The original executed tuple remains labelled separately; no new current-tuple runtime or release qualification is inferred.
+
+The bounded implementation/review spec is done. Overall qualification remains incomplete due to the preserved unproven NSS metadata writer; parent in-progress, tracker backlog, V1Only, unset T0, null activation authority and staging 0/14 remain unchanged.
