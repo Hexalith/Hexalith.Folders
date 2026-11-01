@@ -2,11 +2,12 @@ using System.Text.Json;
 
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.Contracts.Routing;
 
 namespace Hexalith.Folders.EventStore;
 
 /// <summary>Trusted canonical intent adapter for PrepareWorkspace.</summary>
-internal sealed class PrepareWorkspaceIdempotencyIntentAdapter : IIdempotencyIntentAdapter
+internal sealed class PrepareWorkspaceIdempotencyIntentAdapter : IDeclaredIdempotencyIntentAdapter
 {
     /// <inheritdoc />
     public string CommandType => "Hexalith.Folders.Commands.PrepareWorkspace";
@@ -22,6 +23,9 @@ internal sealed class PrepareWorkspaceIdempotencyIntentAdapter : IIdempotencyInt
 
     /// <inheritdoc />
     public IdempotencyReplayRetentionTier RetentionTier => IdempotencyReplayRetentionTier.Mutation;
+
+    /// <inheritdoc />
+    public CommandIntentDeclaration Declaration => FoldersCommandIntentDeclarations.For(CommandType);
 
     /// <inheritdoc />
     public IdempotencyCanonicalIntent CreateIntent(IdempotencyIntentCommand command)

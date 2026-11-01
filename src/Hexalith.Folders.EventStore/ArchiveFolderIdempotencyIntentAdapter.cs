@@ -2,11 +2,12 @@ using System.Text.Json;
 
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.Contracts.Routing;
 
 namespace Hexalith.Folders.EventStore;
 
 /// <summary>Trusted canonical intent adapter for ArchiveFolder.</summary>
-internal sealed class ArchiveFolderIdempotencyIntentAdapter : IIdempotencyIntentAdapter
+internal sealed class ArchiveFolderIdempotencyIntentAdapter : IDeclaredIdempotencyIntentAdapter
 {
     /// <inheritdoc />
     public string CommandType => "Hexalith.Folders.Commands.ArchiveFolder";
@@ -22,6 +23,9 @@ internal sealed class ArchiveFolderIdempotencyIntentAdapter : IIdempotencyIntent
 
     /// <inheritdoc />
     public IdempotencyReplayRetentionTier RetentionTier => IdempotencyReplayRetentionTier.Mutation;
+
+    /// <inheritdoc />
+    public CommandIntentDeclaration Declaration => FoldersCommandIntentDeclarations.For(CommandType);
 
     /// <inheritdoc />
     public IdempotencyCanonicalIntent CreateIntent(IdempotencyIntentCommand command)

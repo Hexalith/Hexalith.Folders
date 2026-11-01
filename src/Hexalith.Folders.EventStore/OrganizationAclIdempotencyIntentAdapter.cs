@@ -3,13 +3,14 @@ using System.Text.Json.Nodes;
 
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.Contracts.Routing;
 using Hexalith.Folders.Aggregates.Organization;
 
 namespace Hexalith.Folders.EventStore;
 
 /// <summary>Trusted command intent for each organization ACL mutation.</summary>
 internal sealed class OrganizationAclIdempotencyIntentAdapter(string commandType, string operationId)
-    : IIdempotencyIntentAdapter
+    : IDeclaredIdempotencyIntentAdapter
 {
     public string CommandType => commandType;
 
@@ -20,6 +21,9 @@ internal sealed class OrganizationAclIdempotencyIntentAdapter(string commandType
     public int DescriptorVersion => FoldersCanonicalIntentBuilder.DescriptorVersion;
 
     public IdempotencyReplayRetentionTier RetentionTier => IdempotencyReplayRetentionTier.Mutation;
+
+    /// <inheritdoc />
+    public CommandIntentDeclaration Declaration => FoldersCommandIntentDeclarations.For(CommandType);
 
     public IdempotencyCanonicalIntent CreateIntent(IdempotencyIntentCommand command)
     {

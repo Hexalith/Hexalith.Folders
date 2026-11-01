@@ -2,11 +2,12 @@ using System.Text.Json;
 
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.Contracts.Routing;
 
 namespace Hexalith.Folders.EventStore;
 
 /// <summary>Trusted canonical intent adapter for ConfigureBranchRefPolicy.</summary>
-internal sealed class ConfigureBranchRefPolicyIdempotencyIntentAdapter : IIdempotencyIntentAdapter
+internal sealed class ConfigureBranchRefPolicyIdempotencyIntentAdapter : IDeclaredIdempotencyIntentAdapter
 {
     /// <inheritdoc />
     public string CommandType => "Hexalith.Folders.Commands.ConfigureBranchRefPolicy";
@@ -22,6 +23,9 @@ internal sealed class ConfigureBranchRefPolicyIdempotencyIntentAdapter : IIdempo
 
     /// <inheritdoc />
     public IdempotencyReplayRetentionTier RetentionTier => IdempotencyReplayRetentionTier.Mutation;
+
+    /// <inheritdoc />
+    public CommandIntentDeclaration Declaration => FoldersCommandIntentDeclarations.For(CommandType);
 
     /// <inheritdoc />
     public IdempotencyCanonicalIntent CreateIntent(IdempotencyIntentCommand command)

@@ -1,33 +1,18 @@
+using System.Collections.Frozen;
+
+using Hexalith.EventStore.Contracts.Routing;
 using Hexalith.EventStore.DomainService;
 
 using Microsoft.Extensions.Hosting;
 
 namespace Hexalith.Folders.EventStore;
 
-/// <summary>Fails closed at startup when Folders mutation adapters are missing or duplicated.</summary>
+/// <summary>Fails closed at startup when Folders mutation adapters lack the complete owner policy.</summary>
 internal sealed class FoldersIdempotencyIntentAdapterCatalog(IEnumerable<IIdempotencyIntentAdapter> adapters) : IHostedService
 {
-    internal static readonly IReadOnlySet<string> RequiredCommandTypes = new HashSet<string>(StringComparer.Ordinal)
-    {
-        "Hexalith.Folders.Commands.CreateFolder",
-        "Hexalith.Folders.Commands.ArchiveFolder",
-        "Hexalith.Folders.Commands.GrantFolderAccess",
-        "Hexalith.Folders.Commands.RevokeFolderAccess",
-        "Hexalith.Folders.Commands.InitializeOrganizationAclBaseline",
-        "Hexalith.Folders.Commands.GrantOrganizationAclPrincipal",
-        "Hexalith.Folders.Commands.RevokeOrganizationAclPrincipal",
-        "Hexalith.Folders.Commands.ConfigureProviderBinding",
-        "Hexalith.Folders.Commands.CreateRepositoryBackedFolder",
-        "Hexalith.Folders.Commands.BindRepository",
-        "Hexalith.Folders.Commands.ConfigureBranchRefPolicy",
-        "Hexalith.Folders.Commands.PrepareWorkspace",
-        "Hexalith.Folders.Commands.LockWorkspace",
-        "Hexalith.Folders.Commands.ChangeNativeTask",
-        "Hexalith.Folders.Commands.ReleaseWorkspaceLock",
-        "Hexalith.Folders.Commands.MutateFiles",
-        "Hexalith.Folders.Commands.AuthorizeWorkspaceContentErasure",
-        "Hexalith.Folders.Commands.CommitWorkspace",
-    };
+    /// <summary>Gets every existing mutation discriminator from the immutable owner inventory.</summary>
+    internal static readonly IReadOnlySet<string> RequiredCommandTypes =
+        FoldersCommandIntentDeclarations.All.Keys.ToFrozenSet(StringComparer.Ordinal);
 
     /// <inheritdoc />
     public Task StartAsync(CancellationToken cancellationToken)
@@ -47,6 +32,28 @@ internal sealed class FoldersIdempotencyIntentAdapterCatalog(IEnumerable<IIdempo
         {
             throw new InvalidOperationException(
                 "Folders trusted idempotency adapters are missing or unexpected for a mutation command type.");
+        }
+
+        foreach (IIdempotencyIntentAdapter adapter in registered.Values)
+        {
+            CommandIntentDeclaration expected = FoldersCommandIntentDeclarations.For(adapter.CommandType);
+            if (adapter is not IDeclaredIdempotencyIntentAdapter declared
+                || declared.Declaration is not { } actual
+                || adapter.AdapterId != expected.AdapterId
+                || adapter.OperationId != expected.OperationId
+                || adapter.DescriptorVersion != expected.DescriptorSchema.Version
+                || adapter.RetentionTier != expected.RetentionTier
+                || actual.AdapterId != expected.AdapterId
+                || actual.OperationId != expected.OperationId
+                || actual.PolicyVersion != expected.PolicyVersion
+                || actual.RetentionTier != expected.RetentionTier
+                || actual.RequiresAuthenticatedSubject != expected.RequiresAuthenticatedSubject
+                || RouteCatalogCodec.ComputeDeclarationDigest(actual.Route) != RouteCatalogCodec.ComputeDeclarationDigest(expected.Route)
+                || RouteCatalogCodec.ComputeDescriptorDigest(actual.DescriptorSchema) != RouteCatalogCodec.ComputeDescriptorDigest(expected.DescriptorSchema))
+            {
+                throw new InvalidOperationException(
+                    $"A Folders trusted idempotency adapter for '{adapter.CommandType}' lacks a matching complete owner declaration.");
+            }
         }
 
         return Task.CompletedTask;
