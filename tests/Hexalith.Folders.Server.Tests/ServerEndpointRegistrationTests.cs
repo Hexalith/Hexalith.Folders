@@ -8,6 +8,7 @@ using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
+using Hexalith.EventStore.DomainService;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -83,6 +84,24 @@ public sealed class ServerEndpointRegistrationTests
         RouteEndpoint projectRoute = ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints)
             .OfType<RouteEndpoint>().Single(endpoint => endpoint.RoutePattern.RawText == FoldersServerModule.ProjectRoute);
         projectRoute.Metadata.OfType<IAuthorizeData>().Any(authorize => authorize.Policy == projectPolicyName).ShouldBeTrue();
+    }
+
+    /// <summary>Requires the actual host inventory and endpoint-source capture to satisfy both SDK boundaries.</summary>
+    [Fact]
+    public async Task ProductionHostNamesEveryPolicyAndEnrollsTheSdkEndpointSource()
+    {
+        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder();
+        await using WebApplication app = builder.Build();
+        app.UseFoldersServerPipeline();
+        app.Services.GetRequiredService<EventStoreDomainServiceEndpointSource>().Endpoints.ShouldBeSameAs(app);
+        Endpoint[] endpoints = ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints).ToArray();
+        (await EventStoreHttpEndpointInventory.ValidateAsync(endpoints, app.Services).ConfigureAwait(true)).ShouldBeEmpty();
+        EventStoreDomainServiceEndpointInventory.Validate(endpoints,
+            app.Services.GetRequiredService<IOptions<AuthorizationOptions>>().Value.FallbackPolicy).ShouldBeEmpty();
+        endpoints.OfType<RouteEndpoint>().Single(endpoint => endpoint.RoutePattern.RawText == "/alive")
+            .Metadata.GetMetadata<IAllowAnonymous>().ShouldNotBeNull();
+        endpoints.OfType<RouteEndpoint>().Single(endpoint => endpoint.RoutePattern.RawText == "/health/live")
+            .Metadata.GetOrderedMetadata<IAuthorizeData>().ShouldContain(data => data.Policy == EventStoreHttpHostSecurityExtensions.HumanPolicy);
     }
 
     [Fact]

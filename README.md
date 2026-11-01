@@ -4,12 +4,23 @@ Hexalith Folder Management
 
 ## Setup
 
-Restore and build from the repository root:
+For local development with the declared source dependencies available, restore and build Debug from
+this repository root with both source-mode properties applied globally:
 
 ```text
-dotnet restore Hexalith.Folders.slnx
-dotnet build Hexalith.Folders.slnx --no-restore
+dotnet restore Hexalith.Folders.slnx -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false
+dotnet build Hexalith.Folders.slnx -c Debug --no-restore -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false
 ```
+
+The qualified individual Server test-project build uses the same supported inputs:
+
+```text
+dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false
+```
+
+Plain Debug without these global properties can mix source dependencies with sibling package defaults,
+causing CS1704/MSB3243 for Commons.UniqueIds. Do not substitute a no-project-rebuild fallback or a fabricated
+source-mapping marker. CI and Release continue to use their centrally selected package dependencies.
 
 Automatic submodule checkout skips the seven cyclic source roots through their
 `update = none` settings. The four acyclic roots (AI.Tools, Builds, Commons and

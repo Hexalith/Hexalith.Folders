@@ -13,6 +13,8 @@
     <HexalithMemoriesRoot Condition="'$(HexalithMemoriesRoot)' == '' and Exists('$(MSBuildThisFileDirectory)../Hexalith.Memories/src')">$(MSBuildThisFileDirectory)../Hexalith.Memories</HexalithMemoriesRoot>
     <HexalithFrontComposerRoot Condition="'$(HexalithFrontComposerRoot)' == '' and Exists('$(MSBuildThisFileDirectory)../Hexalith.FrontComposer/src')">$(MSBuildThisFileDirectory)../Hexalith.FrontComposer</HexalithFrontComposerRoot>
 
+    <HexalithPlatformRoot Condition="'$(HexalithPlatformRoot)' == '' and Exists('$(MSBuildThisFileDirectory)../Hexalith.Platform/.git')">$(MSBuildThisFileDirectory)../Hexalith.Platform</HexalithPlatformRoot>
+
     <!-- Cross-repo Hexalith platform dependencies: Debug builds use project references to the
          references/ submodule source; Release builds use the centrally pinned NuGet packages in
          Directory.Packages.props. Mirrors the Hexalith.Tenants submodule convention. Force a mode

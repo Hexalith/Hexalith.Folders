@@ -95,13 +95,18 @@ public static partial class FoldersDomainServiceEndpoints
         WorkspaceContentRetentionEndpoints.Map(endpoints);
         WorkspaceNativeEndpoints.Map(endpoints);
 
-        endpoints.MapPost("/query", async (QueryEnvelope query, IServiceProvider services, CancellationToken token) =>
+        RouteHandlerBuilder queryEndpoint = endpoints.MapPost("/query", async (QueryEnvelope query, IServiceProvider services, CancellationToken token) =>
         {
             QueryResult result = await DomainQueryDispatcher.ExecuteAsync(services, query, token).ConfigureAwait(false);
             return result.Success ? Results.Ok(result) : result.ErrorMessage is QueryAdapterFailureReason.InvalidEnvelope or QueryAdapterFailureReason.InvalidCursor or QueryAdapterFailureReason.InvalidPage
                 ? Results.BadRequest(result) : Results.NotFound(QueryResult.Failure("safe-denial"));
         }).RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
             EventStoreWorkloadAuthenticationDefaults.WorkloadScheme, EventStoreWorkloadOperations.DomainServiceQuery));
+
+        if (endpoints.ServiceProvider.GetService<HumanAuthorityReceiptVerifier>() is not null)
+        {
+            queryEndpoint.RequireEventStoreDomainServicePolicy("/query");
+        }
 
         RouteHandlerBuilder processEndpoint = endpoints.MapPost(FoldersServerModule.ProcessRoute, async (
             DomainServiceRequest request,
@@ -112,9 +117,7 @@ public static partial class FoldersDomainServiceEndpoints
         .AddEndpointFilter<FolderAuditEndpointFilter>();
         if (endpoints.ServiceProvider.GetService<HumanAuthorityReceiptVerifier>() is not null)
         {
-            processEndpoint.RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
-                EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
-                EventStoreWorkloadOperations.DomainServiceProcess));
+            processEndpoint.RequireEventStoreDomainServicePolicy(FoldersServerModule.ProcessRoute);
         }
 
         RouteHandlerBuilder projectEndpoint = endpoints.MapPost(FoldersServerModule.ProjectRoute, async (
@@ -181,9 +184,7 @@ public static partial class FoldersDomainServiceEndpoints
         .AddEndpointFilter<FolderAuditEndpointFilter>();
         if (endpoints.ServiceProvider.GetService<HumanAuthorityReceiptVerifier>() is not null)
         {
-            projectEndpoint.RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
-                EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
-                EventStoreWorkloadOperations.DomainServiceProject));
+            projectEndpoint.RequireEventStoreDomainServicePolicy(FoldersServerModule.ProjectRoute);
         }
 
         endpoints.MapGet("/api/v1/folders/{folderId}/effective-permissions", async (

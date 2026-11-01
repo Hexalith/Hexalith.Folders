@@ -1,9 +1,17 @@
 using System.Net;
+using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Hosting;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Logs;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
 using Hexalith.EventStore.Client.Handlers;
 using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
+using Hexalith.EventStore.ServiceDefaults.Routing;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.OperationalStatus;
@@ -111,11 +119,15 @@ public sealed class FoldersServerHostCompositionTests
             Expires = issued.AddMinutes(2),
             Claims = new Dictionary<string, object>
             {
+                [RouteCatalogSurfacePolicy.ClaimType] = "service",
                 [EventStoreWorkloadAuthenticationDefaults.CallerClaimType] = "eventstore",
                 [EventStoreWorkloadAuthenticationDefaults.OperationClaimType] = EventStoreWorkloadOperations.DomainServiceMetadata,
             },
             SigningCredentials = new(signingKey, SecurityAlgorithms.RsaSha256),
         });
+        CommittedRouteCatalogSnapshot catalog = app.Services.GetRequiredService<FoldersCallbackRouteCatalog>().Snapshot;
+        client.DefaultRequestHeaders.Add(RouteCatalogInvocationHandler.RootHeader, catalog.RootDigest);
+        client.DefaultRequestHeaders.Add(RouteCatalogInvocationHandler.EpochHeader, catalog.Epoch.ToString(System.Globalization.CultureInfo.InvariantCulture));
         client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
         client.DefaultRequestHeaders.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, token);
         using HttpResponseMessage response = await client.PostAsJsonAsync("/admin/operational-index-metadata", request, TestContext.Current.CancellationToken);
@@ -136,6 +148,350 @@ public sealed class FoldersServerHostCompositionTests
         unserved.CatalogFingerprint.ShouldBeNull();
         await app.StopAsync(TestContext.Current.CancellationToken);
     }
+
+    /// <summary>Runs shared endpoint security after route selection in every supported API mode.</summary>
+    /// <param name="mode">The existing API routing mode.</param>
+    /// <param name="route">An actual protected route in that mode.</param>
+    [Theory]
+    [InlineData(FoldersApiRoutingMode.V1Only, "/api/v1/folders/folder-0123456789abcdef/acl")]
+    [InlineData(FoldersApiRoutingMode.Coexistence, "/api/v2/folders/folder-0123456789abcdef/acl")]
+    [InlineData(FoldersApiRoutingMode.V2Only, "/api/v2/folders/folder-0123456789abcdef/acl")]
+    public async Task ProductionHostRoutesBeforeSharedSecurityInEveryApiMode(FoldersApiRoutingMode mode, string route)
+    {
+        const string tenant = "tenant-mode";
+        const string principal = "user-mode-0123456789abcdef";
+        const string folder = "folder-0123456789abcdef";
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        using RSA rsa = RSA.Create(2048); RsaSecurityKey key = new(rsa) { KeyId = "mode-caller" };
+        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder();
+        builder.Configuration[FoldersApiRouting.ModeConfigurationKey] = mode.ToString();
+        ConfigureSigning(builder, key, JwtBearerDefaults.AuthenticationScheme);
+        InMemoryFolderTenantAccessProjectionStore tenants = new();
+        await tenants.SaveAsync(new FolderTenantAccessProjection
+        {
+            TenantId = tenant, Enabled = true, Watermark = 1, ProjectionWatermark = "mode:1", LastEventTimestamp = now,
+            Principals = new Dictionary<string, FolderTenantPrincipalEvidence>(StringComparer.Ordinal) { [principal] = new(principal, "Member") },
+        }, TestContext.Current.CancellationToken).ConfigureAwait(true);
+        InMemoryEffectivePermissionsReadModel permissions = new();
+        permissions.Save(new(tenant, tenant, folder, EffectivePermissionsFolderLifecycleState.Active,
+            [new(EffectivePermissionEvidenceSource.OrganizationBaselineGrant, EffectivePermissionPrincipal.User(principal), "read_metadata", 1, now),
+             new(EffectivePermissionEvidenceSource.OrganizationBaselineGrant, EffectivePermissionPrincipal.User(principal), "manage_folder_access", 1, now)],
+            new("read_your_writes", now, "mode:1", false, null), true, null));
+        builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>(); builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(tenants);
+        builder.Services.RemoveAll<IEffectivePermissionsReadModel>(); builder.Services.AddSingleton<IEffectivePermissionsReadModel>(permissions);
+        builder.Services.RemoveAll<IFolderAclReadModel>();
+        builder.Services.AddSingleton<HostModeFolderAclReadModel>(services => new(new(tenant, tenant, folder, 1, true, false, now, [], []),
+            services.GetRequiredService<Microsoft.AspNetCore.Http.IHttpContextAccessor>()));
+        builder.Services.AddSingleton<IFolderAclReadModel>(services => services.GetRequiredService<HostModeFolderAclReadModel>());
+        await using WebApplication app = builder.Build();
+        app.UseFoldersServerPipeline();
+        await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpResponseMessage alive = await client.GetAsync("/alive", TestContext.Current.CancellationToken).ConfigureAwait(true);
+            alive.StatusCode.ShouldBe(HttpStatusCode.OK);
+            using HttpResponseMessage denied = await client.GetAsync(route, TestContext.Current.CancellationToken).ConfigureAwait(true);
+            denied.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+            HostModeFolderAclReadModel observed = app.Services.GetRequiredService<HostModeFolderAclReadModel>();
+            observed.ReadCount.ShouldBe(0);
+            client.DefaultRequestHeaders.Authorization = new("Bearer", new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
+            {
+                Issuer = "https://identity.example.test/realms/folders", Audience = "folders", Expires = DateTime.UtcNow.AddMinutes(2),
+                Claims = new Dictionary<string, object>
+                {
+                    ["sub"] = principal, [TenantContextOptions.EventStoreTenantClaimType] = tenant,
+                    ["eventstore:permission"] = new[] { "read_metadata", "manage_folder_access" },
+                    [RouteCatalogSurfacePolicy.ClaimType] = "ui",
+                },
+                SigningCredentials = new(key, SecurityAlgorithms.RsaSha256),
+            }));
+            using HttpResponseMessage allowed = await client.GetAsync(route, TestContext.Current.CancellationToken).ConfigureAwait(true);
+            allowed.StatusCode.ShouldBe(HttpStatusCode.OK, await allowed.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+            observed.ReadCount.ShouldBe(1);
+            observed.EndpointName.ShouldBe("ListFolderAclEntries");
+            observed.RequestPath.ShouldBe("/api/v1/folders/" + folder + "/acl");
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        }
+    }
+
+    /// <summary>Starts configured SDK-owned OTLP providers and observes module subscriptions independently of OTLP delivery.</summary>
+    [Fact]
+    public async Task ConfiguredOtlpStartsOneProviderPerSignalAndSubscribesFoldersSignals()
+    {
+        WebApplicationBuilder collectorBuilder = WebApplication.CreateSlimBuilder();
+        collectorBuilder.WebHost.UseUrls("http://127.0.0.1:0");
+        await using WebApplication collector = collectorBuilder.Build();
+        collector.MapPost("/{**signal}", () => Microsoft.AspNetCore.Http.Results.Bytes([], "application/x-protobuf"));
+        await collector.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        try
+        {
+            WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder(new Dictionary<string, string?>
+            {
+                ["OTEL_EXPORTER_OTLP_ENDPOINT"] = collector.Urls.Single(),
+                ["OTEL_EXPORTER_OTLP_PROTOCOL"] = "http/protobuf",
+            });
+            builder.Services.ConfigureAll<OpenTelemetry.Exporter.OtlpExporterOptions>(options =>
+            {
+                options.Endpoint = new Uri(collector.Urls.Single());
+                options.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.HttpProtobuf;
+                options.TimeoutMilliseconds = 5000;
+            });
+            HostModuleMetricExporter observedMetrics = new();
+            PeriodicExportingMetricReader moduleReader = new(observedMetrics);
+            builder.Services.AddOpenTelemetry().WithMetrics(metrics => metrics.AddReader(moduleReader));
+            await using (WebApplication app = builder.Build())
+            {
+                app.UseFoldersServerPipeline();
+                await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+                app.Services.GetServices<OpenTelemetry.Trace.TracerProvider>().ShouldHaveSingleItem();
+                app.Services.GetServices<OpenTelemetry.Metrics.MeterProvider>().ShouldHaveSingleItem();
+                app.Services.GetServices<Microsoft.Extensions.Logging.ILoggerProvider>()
+                    .OfType<OpenTelemetry.Logs.OpenTelemetryLoggerProvider>().ShouldHaveSingleItem();
+                using (System.Diagnostics.ActivitySource source = new(Hexalith.Folders.Observability.FolderTelemetryNames.ActivitySourceName))
+                using (System.Diagnostics.Activity? activity = source.StartActivity("folders-source-export"))
+                    activity.ShouldNotBeNull();
+                using System.Diagnostics.Metrics.Meter meter = new(Hexalith.Folders.Observability.FolderTelemetryNames.MeterName);
+                meter.CreateCounter<long>("folders.source.export").Add(1);
+                app.Services.GetRequiredService<Microsoft.Extensions.Logging.ILoggerFactory>()
+                    .CreateLogger("Folders.Source.Export").LogInformation("Source fixture exporter validation.");
+                // This local reader checks subscription only. OTLP delivery has a separate SDK transport limitation.
+                moduleReader.Collect(5000).ShouldBeTrue();
+                observedMetrics.Names.ShouldContain("folders.source.export");
+                await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            }
+
+        }
+        finally
+        {
+            await collector.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        }
+    }
+
+    /// <summary>Uses one actual resilience handler and keeps Dapr targets on independent circuit breakers.</summary>
+    [Fact]
+    public async Task SdkDefaultsInstallOneResilienceHandlerAndPartitionDaprTargets()
+    {
+        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder();
+        var calls = new System.Collections.Concurrent.ConcurrentDictionary<string, int>();
+        builder.Services.AddHttpClient("host-defaults")
+            .ConfigurePrimaryHttpMessageHandler(() => new HostDefaultsInvocationHandler(calls));
+        builder.Services.Configure<RouteCatalogHostOptions>(options =>
+        {
+            options.ControlPlaneAppIds = ["target-a", "target-b"];
+            options.InvocationTransportFactory = _ => new HostDefaultsInvocationHandler(calls);
+        });
+        builder.Services.ConfigureAll<Microsoft.Extensions.Http.Resilience.HttpStandardResilienceOptions>(options =>
+        {
+            options.Retry.MaxRetryAttempts = 1;
+            options.Retry.Delay = TimeSpan.Zero;
+            options.Retry.UseJitter = false;
+            options.CircuitBreaker.MinimumThroughput = 2;
+            options.CircuitBreaker.FailureRatio = 1;
+            options.CircuitBreaker.SamplingDuration = TimeSpan.FromMinutes(1);
+            options.CircuitBreaker.BreakDuration = TimeSpan.FromMinutes(1);
+        });
+        await using WebApplication app = builder.Build();
+        HttpMessageHandler handler = app.Services.GetRequiredService<IHttpMessageHandlerFactory>().CreateHandler("host-defaults");
+        int resilienceHandlers = 0;
+        while (handler is DelegatingHandler delegating)
+        {
+            if (handler is Microsoft.Extensions.Http.Resilience.ResilienceHandler) resilienceHandlers++;
+            handler = delegating.InnerHandler!;
+        }
+        resilienceHandlers.ShouldBe(1);
+        using HttpClient client = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient("host-defaults");
+        const string prefix = "http://127.0.0.1:3500/v1.0/invoke/";
+        string suffix = "/method/" + RouteCatalogEndpointExtensions.ReadbackMethod;
+        using HttpResponseMessage failed = await client.GetAsync(prefix + "target-a" + suffix, TestContext.Current.CancellationToken).ConfigureAwait(true);
+        failed.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+        await Should.ThrowAsync<Polly.CircuitBreaker.BrokenCircuitException>(() =>
+            client.GetAsync(prefix + "target-a" + suffix, TestContext.Current.CancellationToken)).ConfigureAwait(true);
+        using HttpResponseMessage independent = await client.GetAsync(prefix + "target-b" + suffix, TestContext.Current.CancellationToken).ConfigureAwait(true);
+        independent.StatusCode.ShouldBe(HttpStatusCode.OK);
+        calls["target-a"].ShouldBe(2);
+        calls["target-b"].ShouldBe(1);
+    }
+
+    /// <summary>Evaluates monitored dependency states through the actual anonymous readiness route.</summary>
+    /// <param name="daprHealthy">Whether the monitored sidecar is available.</param>
+    /// <param name="tenantsDegraded">Whether the monitored tenant service is degraded.</param>
+    /// <param name="lag">The monitored projection lag.</param>
+    /// <param name="status">The required HTTP status.</param>
+    /// <param name="body">The aggregate readiness classification.</param>
+    [Theory]
+    [InlineData(true, false, 500L, HttpStatusCode.OK, "Healthy")]
+    [InlineData(true, false, 501L, HttpStatusCode.OK, "Degraded")]
+    [InlineData(true, true, 0L, HttpStatusCode.OK, "Degraded")]
+    [InlineData(false, false, 0L, HttpStatusCode.ServiceUnavailable, "Unhealthy")]
+    public async Task ProductionReadinessReportsHealthyDegradedAndUnavailableDapr(bool daprHealthy, bool tenantsDegraded,
+        long lag, HttpStatusCode status, string body)
+    {
+        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder();
+        builder.Services.RemoveAll<Hexalith.Folders.ServiceDefaults.IReadinessSnapshotSource>();
+        builder.Services.AddSingleton<Hexalith.Folders.ServiceDefaults.IReadinessSnapshotSource>(new HostReadinessSnapshotSource(new()
+        {
+            DaprSidecarHealthy = daprHealthy, TenantsAvailabilityDegradedModeActive = tenantsDegraded, ProjectionLagMilliseconds = lag,
+        }));
+        await using WebApplication app = builder.Build();
+        app.UseFoldersServerPipeline();
+        await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        try
+        {
+            using HttpResponseMessage response = await app.GetTestClient().GetAsync("/ready", TestContext.Current.CancellationToken).ConfigureAwait(true);
+            response.StatusCode.ShouldBe(status);
+            (await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldBe(body);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        }
+    }
+
+    /// <summary>Maps declared Server probes to the actual host while retaining separate Worker paths.</summary>
+    [Fact]
+    public async Task DeclaredServerProbesMatchTheActualProductionHost()
+    {
+        DirectoryInfo? root = new(AppContext.BaseDirectory);
+        while (root is not null && !File.Exists(Path.Combine(root.FullName, "Hexalith.Folders.slnx"))) root = root.Parent;
+        using StreamReader reader = File.OpenText(Path.Combine(root!.FullName, "deploy/observability/production/observability.yaml"));
+        YamlDotNet.RepresentationModel.YamlStream yaml = new(); yaml.Load(reader);
+        var document = (YamlDotNet.RepresentationModel.YamlMappingNode)yaml.Documents[0].RootNode;
+        var spec = (YamlDotNet.RepresentationModel.YamlMappingNode)document.Children[new YamlDotNet.RepresentationModel.YamlScalarNode("spec")];
+        var probes = ((YamlDotNet.RepresentationModel.YamlSequenceNode)spec.Children[new YamlDotNet.RepresentationModel.YamlScalarNode("healthProbes")])
+            .Children.Cast<YamlDotNet.RepresentationModel.YamlMappingNode>().ToArray();
+        static string Field(YamlDotNet.RepresentationModel.YamlMappingNode node, string key)
+            => ((YamlDotNet.RepresentationModel.YamlScalarNode)node.Children[new YamlDotNet.RepresentationModel.YamlScalarNode(key)]).Value!;
+        string[] paths = probes.Where(node => Field(node, "owningComponent") == "folders-server").Select(node => Field(node, "path")).ToArray();
+        paths.ShouldBe(["/alive", "/ready"], ignoreOrder: true);
+        probes.Where(node => Field(node, "owningComponent") == "folders-workers").Select(node => Field(node, "path"))
+            .ShouldBe(["/health/live", "/health/ready"], ignoreOrder: true);
+        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder();
+        await using WebApplication app = builder.Build(); app.UseFoldersServerPipeline();
+        await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            foreach (string path in paths)
+            {
+                using HttpResponseMessage response = await client.GetAsync(path, TestContext.Current.CancellationToken).ConfigureAwait(true);
+                response.StatusCode.ShouldBe(HttpStatusCode.OK, path);
+            }
+        }
+        finally { await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true); }
+    }
+
+    /// <summary>Requires canonical named workload policies on every SDK catalog lifecycle endpoint.</summary>
+    /// <param name="route">The canonical control route.</param>
+    /// <param name="readback">Whether the route is readback rather than activation.</param>
+    [Theory]
+    [InlineData("/internal/routing/catalog-generation", true)]
+    [InlineData("/internal/routing/catalog/prepare", false)]
+    [InlineData("/internal/routing/catalog/ready", false)]
+    [InlineData("/internal/routing/catalog/commit", false)]
+    [InlineData("/internal/routing/catalog/rollback", false)]
+    [InlineData("/internal/routing/catalog/reconcile", false)]
+    public async Task CatalogLifecycleEndpointsRetainNamedPoliciesAndRefuseMissingOrWrongAuthority(string route, bool readback)
+    {
+        using RSA rsa = RSA.Create(2048); RsaSecurityKey key = new(rsa) { KeyId = "catalog-management" };
+        WebApplicationBuilder builder = CatalogBuilder(key);
+        await using WebApplication app = builder.Build(); app.UseFoldersServerPipeline();
+        string expectedOperation = readback ? Hexalith.EventStore.Contracts.Authorization.EventStoreOperationIdentifiers.RouteCatalogRead
+            : Hexalith.EventStore.Contracts.Authorization.EventStoreOperationIdentifiers.RouteCatalogActivate;
+        RouteEndpoint endpoint = ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints).OfType<RouteEndpoint>()
+            .Single(item => item.RoutePattern.RawText == route);
+        endpoint.Metadata.GetOrderedMetadata<IAuthorizeData>().ShouldHaveSingleItem().Policy.ShouldBe(
+            EventStoreWorkloadAuthenticationDefaults.OperationPolicy(RouteCatalogEndpointExtensions.WorkloadScheme, expectedOperation));
+        await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            foreach (string fault in new[] { "absent", "wrong-operation", "wrong-caller" })
+            {
+                using HttpRequestMessage request = new(readback ? HttpMethod.Get : HttpMethod.Post, route);
+                if (!readback) request.Content = JsonContent.Create(new { });
+                if (fault != "absent")
+                {
+                    request.Headers.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
+                    request.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, CatalogAssertion(key,
+                        fault == "wrong-operation" ? readback ? "eventstore:route-catalog-activate" : "eventstore:route-catalog-read" : expectedOperation,
+                        fault == "wrong-caller" ? "other-controller" : "catalog-controller"));
+                }
+                using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+                response.StatusCode.ShouldBe(fault == "wrong-operation" ? HttpStatusCode.Forbidden : HttpStatusCode.Unauthorized);
+            }
+            if (readback)
+            {
+                using HttpRequestMessage request = new(HttpMethod.Get, route);
+                request.Headers.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
+                request.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, CatalogAssertion(key, expectedOperation, "catalog-controller"));
+                using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+                response.StatusCode.ShouldBe(HttpStatusCode.OK);
+                (await response.Content.ReadFromJsonAsync<Hexalith.EventStore.Contracts.Routing.RouteCatalogGenerationReadback>(TestContext.Current.CancellationToken).ConfigureAwait(true))!
+                    .Serving.ShouldBeTrue();
+            }
+        }
+        finally { await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true); }
+    }
+
+    /// <summary>Does not turn authenticated catalog activation permission into candidate trust.</summary>
+    [Fact]
+    public async Task CatalogActivationStillRefusesAnUntrustedCandidate()
+    {
+        using RSA rsa = RSA.Create(2048); RsaSecurityKey key = new(rsa) { KeyId = "catalog-activation" };
+        WebApplicationBuilder builder = CatalogBuilder(key);
+        await using WebApplication app = builder.Build(); app.UseFoldersServerPipeline();
+        await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        try
+        {
+            var authority = app.Services.GetRequiredService<FoldersCallbackRouteCatalog>();
+            string root = authority.Snapshot.RootDigest;
+            var candidate = new Hexalith.EventStore.Contracts.Routing.RouteCatalogActivation("untrusted-attempt", authority.Snapshot.GetCanonicalBytes(),
+                root, null, [app.Services.GetRequiredService<IOptions<RouteCatalogHostOptions>>().Value.Identity!], "untrusted", "untrusted");
+            using HttpRequestMessage request = new(HttpMethod.Post, "/internal/routing/catalog/prepare") { Content = JsonContent.Create(candidate) };
+            request.Headers.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
+            request.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, CatalogAssertion(key, "eventstore:route-catalog-activate", "catalog-controller"));
+            using HttpResponseMessage response = await app.GetTestClient().SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+            response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            authority.Snapshot.RootDigest.ShouldBe(root);
+        }
+        finally { await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true); }
+    }
+
+    private static WebApplicationBuilder CatalogBuilder(RsaSecurityKey key)
+    {
+        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder(new Dictionary<string, string?>
+        {
+            ["Authentication:RouteCatalogWorkload:Audience"] = "folders",
+            ["Authentication:RouteCatalogWorkload:AllowedCallers:0"] = "catalog-controller",
+        });
+        ConfigureSigning(builder, key, RouteCatalogEndpointExtensions.WorkloadScheme);
+        return builder;
+    }
+
+    private static void ConfigureSigning(WebApplicationBuilder builder, RsaSecurityKey key, string scheme)
+    {
+        OpenIdConnectConfiguration oidc = new() { Issuer = "https://identity.example.test/realms/folders" };
+        oidc.SigningKeys.Add(new RsaSecurityKey(key.Rsa!.ExportParameters(false)) { KeyId = key.KeyId });
+        builder.Services.PostConfigure<JwtBearerOptions>(scheme,
+            options => options.ConfigurationManager = new StaticConfigurationManager<OpenIdConnectConfiguration>(oidc));
+    }
+
+    private static string CatalogAssertion(RsaSecurityKey key, string operation, string caller)
+        => new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
+        {
+            Issuer = "https://identity.example.test/realms/folders", Audience = "folders", Expires = DateTime.UtcNow.AddMinutes(2),
+            Claims = new Dictionary<string, object>
+            {
+                [EventStoreWorkloadAuthenticationDefaults.CallerClaimType] = caller,
+                [EventStoreWorkloadAuthenticationDefaults.OperationClaimType] = operation,
+                [RouteCatalogSurfacePolicy.ClaimType] = "service",
+            },
+            SigningCredentials = new(key, SecurityAlgorithms.RsaSha256),
+        });
 
     /// <summary>Checks that each actual callback requires its own workload operation.</summary>
     /// <param name="route">The callback route.</param>

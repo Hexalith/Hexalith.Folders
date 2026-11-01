@@ -76,15 +76,17 @@ public sealed partial class ProductionObservabilityConformanceTests
         SequenceText(exporters, "signals").Order(StringComparer.Ordinal)
             .ShouldBe(ExpectedExporterSignals.Order(StringComparer.Ordinal), "All three OpenTelemetry signal families must be exported.");
 
-        string[] probePaths = Sequence(spec, "healthProbes").Children.Cast<YamlMappingNode>()
-            .Select(probe => Scalar(probe, "path")).ToArray();
-        probePaths.ShouldContain("/health/live");
-        probePaths.ShouldContain("/health/ready");
-
-        YamlMappingNode readiness = Sequence(spec, "healthProbes").Children.Cast<YamlMappingNode>()
-            .Single(probe => Scalar(probe, "path") == "/health/ready");
-        SequenceText(readiness, "monitoredSnapshots").Order(StringComparer.Ordinal)
-            .ShouldBe(ExpectedMonitoredSnapshots.Order(StringComparer.Ordinal), "Readiness must aggregate the three I-7 monitored snapshots.");
+        YamlMappingNode[] probes = Sequence(spec, "healthProbes").Children.Cast<YamlMappingNode>().ToArray();
+        probes.Select(probe => (Owner: Scalar(probe, "owningComponent"), Kind: Scalar(probe, "kind"), Path: Scalar(probe, "path")))
+            .ShouldBe([
+                ("folders-server", "liveness", "/alive"), ("folders-server", "readiness", "/ready"),
+                ("folders-workers", "liveness", "/health/live"), ("folders-workers", "readiness", "/health/ready"),
+            ], ignoreOrder: true);
+        foreach (YamlMappingNode readiness in probes.Where(probe => Scalar(probe, "kind") == "readiness"))
+        {
+            SequenceText(readiness, "monitoredSnapshots").Order(StringComparer.Ordinal)
+                .ShouldBe(ExpectedMonitoredSnapshots.Order(StringComparer.Ordinal), "Readiness must aggregate the three I-7 monitored snapshots.");
+        }
 
         SignalIntent[] signals = ParseSignals(spec);
         signals.ShouldBe(ExpectedSignals, ignoreOrder: true);
@@ -222,6 +224,8 @@ public sealed partial class ProductionObservabilityConformanceTests
         }
 
         script.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
+        script.ShouldContain("owning_component = 'folders-server'; liveness = '/alive'; readiness = '/ready'", Case.Sensitive);
+        script.ShouldContain("owning_component = 'folders-workers'; liveness = '/health/live'; readiness = '/health/ready'", Case.Sensitive);
     }
 
     [Fact]

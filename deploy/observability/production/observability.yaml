@@ -31,12 +31,23 @@ spec:
   # I-7: liveness/readiness split on each service. Readiness aggregates the monitored snapshots and
   # reports degraded-but-serving (HTTP 200) when projection lag exceeds the pinned C2 target.
   healthProbes:
+    - path: /alive
+      kind: liveness
+      owningComponent: folders-server
+    - path: /ready
+      kind: readiness
+      owningComponent: folders-server
+      monitoredSnapshots:
+        - dapr_sidecar_health
+        - tenants_availability_degraded_mode
+        - projection_lag
+      degradedButServing: projection lag above C2 reports degraded-but-serving without failing readiness
     - path: /health/live
       kind: liveness
-      owningComponent: service-defaults
+      owningComponent: folders-workers
     - path: /health/ready
       kind: readiness
-      owningComponent: service-defaults
+      owningComponent: folders-workers
       monitoredSnapshots:
         - dapr_sidecar_health
         - tenants_availability_degraded_mode

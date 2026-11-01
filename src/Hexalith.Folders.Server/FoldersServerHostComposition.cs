@@ -7,8 +7,17 @@ using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.EventStore.Client.Registration;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Observability;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Hexalith.EventStore.ServiceDefaults.Routing;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Routing;
+using Dapr;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -29,8 +38,17 @@ public static class FoldersServerHostComposition
         // Validate before any registration so an invalid mode fails host startup.
         FoldersApiRoutingMode mode = FoldersApiRouting.ResolveMode(builder.Configuration);
 
-        builder.AddServiceDefaults();
         builder.Services.AddFoldersServer();
+        builder.AddEventStoreDomainService(typeof(FoldersModule).Assembly);
+        // The SDK owns exporters, HTTP instrumentation and Dapr-partitioned resilience.
+        // Enroll only Folders' module signals and monitored readiness into those defaults.
+        builder.Services.AddOpenTelemetry()
+            .ConfigureResource(resource => resource.AddService(FolderTelemetryNames.ServiceName))
+            .WithMetrics(metrics => metrics.AddMeter(FolderTelemetryNames.MeterName))
+            .WithTracing(tracing => tracing.AddSource(FolderTelemetryNames.ActivitySourceName));
+        builder.Services.TryAddSingleton<IReadinessSnapshotSource, HealthyReadinessSnapshotSource>();
+        builder.Services.AddHealthChecks()
+            .AddCheck<MonitoredSnapshotReadinessCheck>("monitored-snapshots", tags: [Hexalith.Folders.ServiceDefaults.Extensions.ReadinessTag]);
         builder.Services.AddFoldersOperationalStatusPersistence();
         builder.Services.AddOptions<FoldersProviderBindingOptions>().BindConfiguration(FoldersProviderBindingOptions.SectionName);
         builder.Services.AddFoldersDaprProviderCredentialResolution();
@@ -132,9 +150,50 @@ public static class FoldersServerHostComposition
             app.UseHistoricalMutationAuthorization();
         }
 
+        app.UseEventStoreHttpHostSecurity();
         app.UseAuthorization();
-        app.MapSubscribeHandler();
-        app.MapFoldersServerEndpoints();
+        app.MapSubscribeHandler().RequireEventStoreSidecarChannel();
+        RouteGroupBuilder routes = app.MapGroup(string.Empty);
+        ((IEndpointConventionBuilder)routes).Finally(static endpoint =>
+        {
+            string? route = (endpoint as RouteEndpointBuilder)?.RoutePattern.RawText;
+            if (EventStoreHttpEndpointInventory.IsProbe(route))
+            {
+                endpoint.Metadata.Add(new AllowAnonymousAttribute());
+            }
+            else if (endpoint.Metadata.OfType<ITopicMetadata>().Any())
+            {
+                if (!endpoint.Metadata.OfType<IAuthorizeData>().Any(static authorization =>
+                    authorization.Policy == EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy))
+                {
+                    endpoint.Metadata.Add(new AuthorizeAttribute(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy));
+                }
+            }
+            else if (endpoint.Metadata.OfType<IAuthorizeData>().Any())
+            {
+                foreach (IAuthorizeData authorization in endpoint.Metadata.OfType<IAuthorizeData>())
+                {
+                    if (string.IsNullOrWhiteSpace(authorization.Policy))
+                    {
+                        authorization.Policy = EventStoreHttpHostSecurityExtensions.HumanPolicy;
+                    }
+                }
+            }
+            else
+            {
+                endpoint.Metadata.Add(new AuthorizeAttribute(EventStoreHttpHostSecurityExtensions.HumanPolicy));
+            }
+        });
+        routes.MapFoldersServerEndpoints();
+        app.MapHealthChecks("/alive", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+        {
+            Predicate = static registration => registration.Tags.Contains(Hexalith.Folders.ServiceDefaults.Extensions.LivenessTag),
+        }).AllowAnonymous();
+        app.MapHealthChecks("/ready", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+        {
+            Predicate = static registration => registration.Tags.Contains(Hexalith.Folders.ServiceDefaults.Extensions.ReadinessTag),
+        }).AllowAnonymous();
+        app.MapEventStoreRouteCatalog();
         app.MapEventStoreDomainProjectionEndpoints();
         app.MapEventStoreDomainProjectionMetadataEndpoint();
 

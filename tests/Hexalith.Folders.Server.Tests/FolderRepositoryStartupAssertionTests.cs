@@ -31,7 +31,7 @@ public sealed class FolderRepositoryStartupAssertionTests
         try
         {
             using HttpClient client = app.GetTestClient();
-            using HttpResponseMessage response = await client.GetAsync("/health/live", TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using HttpResponseMessage response = await client.GetAsync("/alive", TestContext.Current.CancellationToken).ConfigureAwait(true);
             response.EnsureSuccessStatusCode();
         }
         finally

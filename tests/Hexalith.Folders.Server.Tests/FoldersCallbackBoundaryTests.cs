@@ -6,6 +6,7 @@ using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
+using Hexalith.EventStore.ServiceDefaults.Routing;
 using Hexalith.Folders.Contracts;
 using Hexalith.Folders.Server;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -61,7 +62,7 @@ public sealed class FoldersCallbackBoundaryTests
                 ? operation == EventStoreWorkloadOperations.DomainServiceQuery
                     ? EventStoreWorkloadOperations.DomainServiceProcess : EventStoreWorkloadOperations.DomainServiceQuery
                 : operation;
-            using HttpRequestMessage request = CreateRequest(route, new { }, key, granted);
+            using HttpRequestMessage request = CreateRequest(app, route, new { }, key, granted);
             if (credential is "absent" or "channel-only") request.Headers.Remove(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName);
             if (credential is "absent" or "assertion-only") request.Headers.Remove(DaprAppChannelToken.HeaderName);
             if (credential == "wrong-channel")
@@ -85,7 +86,7 @@ public sealed class FoldersCallbackBoundaryTests
             denied.StatusCode.ShouldBe(credential == "wrong-operation" ? HttpStatusCode.Forbidden : HttpStatusCode.Unauthorized, credential);
             admitted.ShouldBe(0, credential);
         }
-        using HttpRequestMessage accepted = CreateRequest(route, new { }, key, operation);
+        using HttpRequestMessage accepted = CreateRequest(app, route, new { }, key, operation);
         using HttpResponseMessage response = await client.SendAsync(accepted, TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
         admitted.ShouldBe(1);
@@ -105,7 +106,7 @@ public sealed class FoldersCallbackBoundaryTests
     [InlineData(QueryAdapterFailureReason.MissingProjectionState, HttpStatusCode.NotFound)]
     [InlineData("safe-denial", HttpStatusCode.NotFound)]
     [InlineData("internal diagnostic tenant-secret folder-secret", HttpStatusCode.NotFound)]
-    [InlineData("unknown-handler", HttpStatusCode.NotFound)]
+    [InlineData("unknown-handler", HttpStatusCode.ServiceUnavailable)]
     [InlineData("unverified-caller", HttpStatusCode.NotFound)]
     [InlineData("allowed", HttpStatusCode.OK)]
     [InlineData("stale", HttpStatusCode.OK)]
@@ -139,9 +140,17 @@ public sealed class FoldersCallbackBoundaryTests
         QueryEnvelope query = new("tenant-a", "folders", "folder-a", handler.QueryType, "{}"u8.ToArray(), "correlation", "actor");
         if (scenario == "unknown-handler") query = query with { QueryType = "not-registered" };
         if (scenario == "unverified-caller") query = query with { CallerAuthority = new("delegated-owner-query", [], ["read_metadata"]) };
-        using HttpRequestMessage request = CreateRequest("/query", query, key, EventStoreWorkloadOperations.DomainServiceQuery);
+        using HttpRequestMessage request = CreateRequest(app, "/query", query, key, EventStoreWorkloadOperations.DomainServiceQuery);
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(expected);
+        if (scenario == "unknown-handler")
+        {
+            // The SDK now refuses an undeclared query before dispatcher execution. Preserve
+            // the no-handler-effect assertion and require an empty, non-disclosing refusal.
+            handler.Calls.ShouldBe(0);
+            (await response.Content.ReadAsByteArrayAsync(TestContext.Current.CancellationToken)).ShouldBeEmpty();
+            return;
+        }
         QueryResult result = (await response.Content.ReadFromJsonAsync<QueryResult>(TestContext.Current.CancellationToken)).ShouldNotBeNull();
         handler.Calls.ShouldBe(scenario is "unknown-handler" or "unverified-caller" ? 0 : 1);
         if (expected == HttpStatusCode.OK)
@@ -181,7 +190,7 @@ public sealed class FoldersCallbackBoundaryTests
                 ServiceVersion = bound ? "v1" : null,
                 ProjectionSourceGuardVersion = version,
             };
-            using HttpRequestMessage request = CreateRequest("/admin/operational-index-metadata", payload, key,
+            using HttpRequestMessage request = CreateRequest(app, "/admin/operational-index-metadata", payload, key,
                 EventStoreWorkloadOperations.DomainServiceMetadata);
             using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
             response.StatusCode.ShouldBe(version is null or 1 ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
@@ -222,9 +231,12 @@ public sealed class FoldersCallbackBoundaryTests
         return app;
     }
 
-    private static HttpRequestMessage CreateRequest(string route, object payload, RsaSecurityKey key, string operation)
+    private static HttpRequestMessage CreateRequest(WebApplication app, string route, object payload, RsaSecurityKey key, string operation)
     {
         HttpRequestMessage request = new(HttpMethod.Post, route) { Content = JsonContent.Create(payload) };
+        CommittedRouteCatalogSnapshot catalog = app.Services.GetRequiredService<FoldersCallbackRouteCatalog>().Snapshot;
+        request.Headers.Add(RouteCatalogInvocationHandler.RootHeader, catalog.RootDigest);
+        request.Headers.Add(RouteCatalogInvocationHandler.EpochHeader, catalog.Epoch.ToString(System.Globalization.CultureInfo.InvariantCulture));
         request.Headers.Add(DaprAppChannelToken.HeaderName, ChannelToken);
         request.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, CreateAssertion(key, operation));
         return request;
@@ -242,6 +254,7 @@ public sealed class FoldersCallbackBoundaryTests
             Expires = issued.AddMinutes(2),
             Claims = new Dictionary<string, object>
             {
+                [RouteCatalogSurfacePolicy.ClaimType] = "service",
                 [EventStoreWorkloadAuthenticationDefaults.CallerClaimType] = caller,
                 [EventStoreWorkloadAuthenticationDefaults.OperationClaimType] = operation,
             },
