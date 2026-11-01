@@ -16,13 +16,13 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 766e864c8a19738672da5e8c23f311cdca92f3f2eaec108af4f90446831e6f18
-artifact_count: 1477
+candidate_set_sha256: a7da991fca42a6f844545dfed3fb9b9d7587a5c0e2c63eef589316d68fc5b625
+artifact_count: 1479
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
-    bytes: 5584
-    sha256: d1cd65952c42bf4facee6f21b39b0945986f8fad23132cafc24a8659de992853
+    bytes: 5654
+    sha256: 399de08d73c48d374192f8652b5256d44bb99f8416f9954c718a9001ef8e6491
   - path: ".github/workflows/contract-spine.yml"
     kind: file
     bytes: 3103
@@ -113,8 +113,16 @@ artifacts:
     sha256: 11eb7eb921515b4f6fd36f0c873f80e8e26138769c3a0f002d1f111566d75ba5
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 105868
-    sha256: cc5b0c96176be947cb2fcad3d26d5cee87cd7b1565466ebb354271ac704152a8
+    bytes: 105959
+    sha256: aeab56676bedcb07740ae8d492ad878e04f6b0eb21380cc81cbf3bb2edd8b5f9
+  - path: "scripts/prepare-ci-topology-projects.sh"
+    kind: file
+    bytes: 4278
+    sha256: 22647d256989b31273437494d3fe434eaa6d229297dac460dbf788be3f186b15
+  - path: "scripts/tests/test_prepare_ci_topology_projects.py"
+    kind: file
+    bytes: 12571
+    sha256: 124f9f0bd8f55b0b7945db22dcfb4276bc6b28e83baf2abf8ad45fb2d8d68cb1
   - path: "src/Hexalith.Folders.Cli/CliApplication.cs"
     kind: file
     bytes: 3443

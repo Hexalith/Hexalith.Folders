@@ -22,6 +22,8 @@ scripts/generate-pd10-v2-runtime-catalog.py
 scripts/generate-v2-conformance-set.ps1
 scripts/pd10-v2-coverage-roots.txt
 scripts/pd10-v2-story-owned-paths.txt
+scripts/prepare-ci-topology-projects.sh
+scripts/tests/test_prepare_ci_topology_projects.py
 src/Hexalith.Folders.Cli/CliApplication.cs
 src/Hexalith.Folders.Cli/Commands/Audit/AuditCommand.cs
 src/Hexalith.Folders.Cli/Commands/CommandFactory.cs

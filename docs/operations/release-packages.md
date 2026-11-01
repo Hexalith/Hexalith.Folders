@@ -131,9 +131,15 @@ git -c submodule.recurse=false submodule update --init
 The seven cyclic source roots have `update = none`, so implicit updater clones
 and that default command skip them. The four acyclic roots (AI.Tools, Builds,
 Commons and PolymorphicSerializations), including the shared package catalog,
-remain available. Folders CI also prepares the single pinned Memories root through
-the integration test project's CI-only build target: packaged Aspire topology
-registration needs the server project and its real HTTP launch profile on disk.
+remain available. Folders CI uses the reusable workflow's `package-prepare-script`
+input to run `scripts/prepare-ci-topology-projects.sh` before restore. This
+workflow-owned hook prepares only the recorded root Memories gitlink: packaged
+Aspire topology registration needs the server project and its real HTTP launch
+profile on disk. The hook requires a standalone GitHub
+`Hexalith/Hexalith.Folders` checkout at the exact workspace root with an unchanged
+root declaration and a clean selected Memories worktree. It refuses submodule,
+superproject, nested-repository, and mismatched workspace/repository contexts;
+it must not be used to initialize dependencies inside an umbrella checkout.
 Project dependencies still resolve through NuGet, and nested dependencies remain
 uninitialized. Local workflow gates and full source setup explicitly override
 the skip policy while keeping initialization limited to root dependencies:
