@@ -7,6 +7,7 @@ using System.Text.Json;
 using Hexalith.Folders.Server;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.TestHost;
 
 using NSubstitute;
 
@@ -73,7 +74,6 @@ public sealed class FoldersApiRoutingModeTests
         {
             using HttpRequestMessage request = new(HttpMethod.Get, path);
             request.Headers.Add("X-Correlation-Id", RoutingModeTestHost.CorrelationId);
-            request.Headers.TryAddWithoutValidation("Authorization", RoutingModeAuthenticationHandler.SchemeName);
             using HttpResponseMessage response = await host.Client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
         }
 
@@ -167,7 +167,6 @@ public sealed class FoldersApiRoutingModeTests
 
         using HttpRequestMessage request = new(HttpMethod.Get, V2LifecyclePath);
         request.Headers.Add("X-Correlation-Id", RoutingModeTestHost.CorrelationId);
-        request.Headers.TryAddWithoutValidation("Authorization", RoutingModeAuthenticationHandler.SchemeName);
         using HttpResponseMessage v2 = await host.Client
             .SendAsync(request, TestContext.Current.CancellationToken)
             .ConfigureAwait(true);
@@ -175,6 +174,35 @@ public sealed class FoldersApiRoutingModeTests
         v2.StatusCode.ShouldBe(HttpStatusCode.OK, "the seam must see the principal that UseAuthentication established");
         host.AuditSink.Records.Select(static record => (record.Actor, record.Tenant, record.Operation, record.Result))
             .ShouldBe([(RoutingModeTestHost.PrincipalId, RoutingModeTestHost.TenantId, "GetFolderLifecycleStatus", "allow")]);
+    }
+
+    [Fact]
+    public async Task MissingAndInvalidBearerCredentialsDenyBeforeProtectedReads()
+    {
+        RoutingModeTestHost host = await RoutingModeTestHost.StartAsync("Coexistence", claimsIdentity: true).ConfigureAwait(true);
+        await using ConfiguredAsyncDisposable hostScope = host.ConfigureAwait(true);
+        using HttpClient unauthenticated = host.App.GetTestClient();
+
+        foreach (string? token in new string?[] { null, "invalid-token" })
+        {
+            foreach (string path in new[] { V1LifecyclePath, V2LifecyclePath })
+            {
+                using HttpRequestMessage request = new(HttpMethod.Get, path);
+                request.Headers.Add("X-Correlation-Id", RoutingModeTestHost.CorrelationId);
+                if (token is not null)
+                {
+                    request.Headers.Authorization = new("Bearer", token);
+                }
+
+                using HttpResponseMessage response = await unauthenticated
+                    .SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+                response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+                host.TenantStore.Reads.ShouldBe(0);
+                host.Lifecycle.Reads.ShouldBe(0);
+                host.Gateway.ReceivedCalls().ShouldBeEmpty();
+            }
+        }
     }
 
     [Fact]
@@ -220,7 +248,9 @@ public sealed class FoldersApiRoutingModeTests
         host.AuditSink.Records.Select(static record => (record.Operation, record.Result))
             .ShouldBe([("GetFolderLifecycleStatus", "allow")]);
 
-        using HttpResponseMessage liveness = await GetAsync(host, "/alive").ConfigureAwait(true);
+        using HttpClient anonymousClient = host.App.GetTestClient();
+        using HttpResponseMessage liveness = await anonymousClient
+            .GetAsync("/alive", TestContext.Current.CancellationToken).ConfigureAwait(true);
         liveness.StatusCode.ShouldBe(HttpStatusCode.OK, "only the historical API is retired");
     }
 

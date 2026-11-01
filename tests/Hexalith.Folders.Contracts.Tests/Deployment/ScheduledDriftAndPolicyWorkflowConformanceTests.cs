@@ -318,7 +318,7 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
 
         foreach (string jobName in new[]
                  {
-                     PinnedDomainCiWorkflow.Reference,
+                     "Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@1cc94bbb932be0d08a31b4e1393fcfc450a0b1c9",
                      "folders-specialized-gates",
                      "run-baseline-ci-gates.ps1",
                      "run-contract-parity-ci-gates.ps1",

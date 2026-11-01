@@ -1079,9 +1079,9 @@ public sealed class MixedSurfaceHandoffTests
             builder.Services.AddSingleton(timeProvider);
 
             WebApplication app = builder.Build();
+            app.UseAuthentication();
             app.UsePd10V2CandidateCompatibilitySeam();
             app.UseRouting();
-            app.UseAuthentication();
             app.UseAuthorization();
             app.MapFoldersServerEndpoints();
             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);

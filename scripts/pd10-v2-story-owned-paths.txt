@@ -1123,7 +1123,6 @@ tests/Hexalith.Folders.IntegrationTests/Routing/CountingFolderLifecycleStatusRea
 tests/Hexalith.Folders.IntegrationTests/Routing/CountingFolderTenantAccessProjectionStore.cs
 tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs
 tests/Hexalith.Folders.IntegrationTests/Routing/RecordingRoutingAuditSink.cs
-tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeAuthenticationHandler.cs
 tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeFixedTimeProvider.cs
 tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTenantContext.cs
 tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs

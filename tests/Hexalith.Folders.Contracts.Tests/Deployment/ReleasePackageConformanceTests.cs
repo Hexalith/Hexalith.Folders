@@ -35,7 +35,7 @@ public sealed partial class ReleasePackageConformanceTests
         triggers.GetReleaseMapping("pull_request").GetReleaseSequence("branches").Children.Select(static value => value.ToString()).ShouldBe(["main"]);
 
         YamlMappingNode shared = workflow.GetReleaseMapping("jobs").GetReleaseMapping("ci");
-        shared.GetReleaseScalar("uses").ShouldBe(PinnedDomainCiWorkflow.Reference);
+        shared.GetReleaseScalar("uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@1cc94bbb932be0d08a31b4e1393fcfc450a0b1c9");
         YamlMappingNode inputs = shared.GetReleaseMapping("with");
         inputs.GetReleaseScalar("solution").ShouldBe("Hexalith.Folders.CI.slnx");
         inputs.GetReleaseScalar("test-platform").ShouldBe("microsoft-testing-platform");

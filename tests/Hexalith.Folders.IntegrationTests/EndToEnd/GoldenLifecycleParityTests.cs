@@ -3792,6 +3792,7 @@ public sealed class GoldenLifecycleParityTests
                 });
             }
 
+            app.UseAuthentication();
             app.UsePd10V2CandidateCompatibilitySeam();
             app.Use(async (httpContext, next) =>
             {
@@ -3808,7 +3809,6 @@ public sealed class GoldenLifecycleParityTests
             }
 
             app.UseRouting();
-            app.UseAuthentication();
             app.UseAuthorization();
             app.MapFoldersServerEndpoints();
             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -4172,9 +4172,9 @@ public sealed class GoldenLifecycleParityTests
 
                 await next(http).ConfigureAwait(false);
             });
+            app.UseAuthentication();
             app.UsePd10V2CandidateCompatibilitySeam();
             app.UseRouting();
-            app.UseAuthentication();
             app.UseAuthorization();
             app.MapFoldersServerEndpoints();
             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);

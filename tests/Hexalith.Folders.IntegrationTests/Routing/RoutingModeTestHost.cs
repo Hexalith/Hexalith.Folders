@@ -1,4 +1,7 @@
+using System.Security.Cryptography;
+
 using Hexalith.EventStore.Client.Gateway;
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
@@ -8,13 +11,17 @@ using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
 using Hexalith.Folders.Testing;
 
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Protocols;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 
 using NSubstitute;
 
@@ -24,8 +31,8 @@ namespace Hexalith.Folders.IntegrationTests.Routing;
 
 /// <summary>
 /// Boots the real Folders server composition (<see cref="FoldersServerHostComposition"/>, which
-/// <c>Program.cs</c> calls) in Development on a test server. Only the authentication identity, the clock, the
-/// gateway, and the seeded read models are replaced; the routing-mode pipeline is the production one.
+/// <c>Program.cs</c> calls) in Development on a test server. Signed fixture Bearer credentials use an in-memory
+/// issuer key; only domain identity accessors, the clock, the gateway, and seeded read models are replaced.
 /// </summary>
 internal sealed class RoutingModeTestHost : IAsyncDisposable
 {
@@ -42,6 +49,7 @@ internal sealed class RoutingModeTestHost : IAsyncDisposable
     public const string CorrelationId = "correlation_routing_0001";
 
     private static readonly DateTimeOffset Now = new(2026, 5, 28, 12, 0, 0, TimeSpan.Zero);
+    private const string Issuer = "https://identity.example.test/realms/folders";
 
     private RoutingModeTestHost(
         WebApplication app,
@@ -106,14 +114,23 @@ internal sealed class RoutingModeTestHost : IAsyncDisposable
     /// <summary>Composes, seeds, and starts the host.</summary>
     /// <param name="mode">The configured mode value, or <see langword="null"/> to leave the setting absent.</param>
     /// <param name="claimsIdentity">
-    /// <see langword="true"/> keeps the real claims-based tenant and evidence accessors and authenticates through
-    /// <see cref="RoutingModeAuthenticationHandler"/>; <see langword="false"/> substitutes a fixed identity.
+    /// <see langword="true"/> keeps the real claims-based tenant and evidence accessors;
+    /// <see langword="false"/> substitutes a fixed domain identity. Both authenticate signed fixture Bearer credentials.
     /// </param>
     /// <returns>The started host.</returns>
     public static async Task<RoutingModeTestHost> StartAsync(string? mode, bool claimsIdentity = false)
     {
         WebApplicationBuilder builder = CreateBuilder(mode);
+        builder.Configuration["Folders:Authentication:Authority"] = Issuer;
+        builder.Configuration["Folders:Authentication:ValidIssuer"] = Issuer;
+        builder.Configuration["Folders:Authentication:Audience"] = "folders";
         FoldersApiRoutingMode resolved = builder.AddFoldersServerHost();
+        using RSA rsa = RSA.Create(2048);
+        RsaSecurityKey signingKey = new(rsa) { KeyId = "routing-caller" };
+        OpenIdConnectConfiguration oidc = new() { Issuer = Issuer };
+        oidc.SigningKeys.Add(new RsaSecurityKey(rsa.ExportParameters(false)) { KeyId = signingKey.KeyId });
+        builder.Services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
+            options => options.ConfigurationManager = new StaticConfigurationManager<OpenIdConnectConfiguration>(oidc));
 
         FixedUtcClock clock = new(Now);
         InMemoryFolderTenantAccessProjectionStore tenants = new();
@@ -175,22 +192,7 @@ internal sealed class RoutingModeTestHost : IAsyncDisposable
         RecordingRoutingAuditSink auditSink = new();
         IEventStoreGatewayClient gateway = Substitute.For<IEventStoreGatewayClient>();
 
-        if (claimsIdentity)
-        {
-            builder.Services
-                .AddAuthentication()
-                .AddScheme<AuthenticationSchemeOptions, RoutingModeAuthenticationHandler>(
-                    RoutingModeAuthenticationHandler.SchemeName,
-                    configureOptions: null);
-            builder.Services.Configure<AuthenticationOptions>(static options =>
-            {
-                options.DefaultScheme = RoutingModeAuthenticationHandler.SchemeName;
-                options.DefaultAuthenticateScheme = RoutingModeAuthenticationHandler.SchemeName;
-                options.DefaultChallengeScheme = RoutingModeAuthenticationHandler.SchemeName;
-            });
-            builder.Services.AddFoldersServerTestDefaults(RoutingModeAuthenticationHandler.SchemeName);
-        }
-        else
+        if (!claimsIdentity)
         {
             builder.Services.AddFoldersServerTestDefaults();
             builder.Services.RemoveAll<ITenantContextAccessor>();
@@ -221,7 +223,25 @@ internal sealed class RoutingModeTestHost : IAsyncDisposable
         app.UseFoldersServerPipeline();
         await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-        return new RoutingModeTestHost(app, app.GetTestClient(), resolved, tenantStore, lifecycle, auditSink, gateway);
+        HttpClient client = app.GetTestClient();
+        client.DefaultRequestHeaders.Authorization = new(JwtBearerDefaults.AuthenticationScheme,
+            new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
+            {
+                Issuer = Issuer,
+                Audience = "folders",
+                Expires = DateTime.UtcNow.AddMinutes(2),
+                Claims = new Dictionary<string, object>
+                {
+                    ["sub"] = PrincipalId,
+                    [TenantContextOptions.EventStoreTenantClaimType] = TenantId,
+                    ["client_id"] = "Hexalith.Projects",
+                    ["eventstore:permission"] = "read_metadata",
+                    [RouteCatalogSurfacePolicy.ClaimType] = "ui",
+                },
+                SigningCredentials = new(signingKey, SecurityAlgorithms.RsaSha256),
+            }));
+
+        return new RoutingModeTestHost(app, client, resolved, tenantStore, lifecycle, auditSink, gateway);
     }
 
     /// <inheritdoc/>
