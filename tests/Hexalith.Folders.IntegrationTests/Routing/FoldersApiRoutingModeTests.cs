@@ -220,7 +220,7 @@ public sealed class FoldersApiRoutingModeTests
         host.AuditSink.Records.Select(static record => (record.Operation, record.Result))
             .ShouldBe([("GetFolderLifecycleStatus", "allow")]);
 
-        using HttpResponseMessage liveness = await GetAsync(host, "/health/live").ConfigureAwait(true);
+        using HttpResponseMessage liveness = await GetAsync(host, "/alive").ConfigureAwait(true);
         liveness.StatusCode.ShouldBe(HttpStatusCode.OK, "only the historical API is retired");
     }
 

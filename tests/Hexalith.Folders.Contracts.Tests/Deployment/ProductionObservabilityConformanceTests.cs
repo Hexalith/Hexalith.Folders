@@ -78,11 +78,11 @@ public sealed partial class ProductionObservabilityConformanceTests
 
         string[] probePaths = Sequence(spec, "healthProbes").Children.Cast<YamlMappingNode>()
             .Select(probe => Scalar(probe, "path")).ToArray();
-        probePaths.ShouldContain("/health/live");
-        probePaths.ShouldContain("/health/ready");
+        probePaths.ShouldContain("/alive");
+        probePaths.ShouldContain("/ready");
 
         YamlMappingNode readiness = Sequence(spec, "healthProbes").Children.Cast<YamlMappingNode>()
-            .Single(probe => Scalar(probe, "path") == "/health/ready");
+            .Single(probe => Scalar(probe, "path") == "/ready");
         SequenceText(readiness, "monitoredSnapshots").Order(StringComparer.Ordinal)
             .ShouldBe(ExpectedMonitoredSnapshots.Order(StringComparer.Ordinal), "Readiness must aggregate the three I-7 monitored snapshots.");
 
@@ -120,8 +120,8 @@ public sealed partial class ProductionObservabilityConformanceTests
 
         // I-7: liveness/readiness split.
         extensions.ShouldContain("AddHealthChecks", Case.Sensitive);
-        extensions.ShouldContain("\"/health/live\"", Case.Sensitive);
-        extensions.ShouldContain("\"/health/ready\"", Case.Sensitive);
+        extensions.ShouldContain("\"/alive\"", Case.Sensitive);
+        extensions.ShouldContain("\"/ready\"", Case.Sensitive);
         extensions.ShouldContain("MonitoredSnapshotReadinessCheck", Case.Sensitive);
 
         string readiness = ReadText(ReadinessCheckPath);
@@ -426,7 +426,7 @@ public sealed partial class ProductionObservabilityConformanceTests
 
     private static void AssertManifestMetadataOnly(string value)
     {
-        // Health-probe paths like /health/live and repository-relative doc references are legitimate;
+        // Health-probe paths like /alive and repository-relative doc references are legitimate;
         // only secret material, real URLs, and host-absolute paths are forbidden.
         UnsafeManifestPattern().IsMatch(value).ShouldBeFalse($"Observability artifact must stay metadata-only: {Excerpt(value)}");
         HostAbsolutePathPattern().IsMatch(value).ShouldBeFalse($"Observability artifact must not contain a host-absolute path: {Excerpt(value)}");

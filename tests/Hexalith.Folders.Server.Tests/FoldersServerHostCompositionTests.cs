@@ -84,15 +84,21 @@ public sealed class FoldersServerHostCompositionTests
         RsaSecurityKey signingKey = new(rsa) { KeyId = "metadata-test" };
         OpenIdConnectConfiguration oidc = new() { Issuer = issuer };
         oidc.SigningKeys.Add(new RsaSecurityKey(rsa.ExportParameters(false)) { KeyId = signingKey.KeyId });
-        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder();
+        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder(Microsoft.Extensions.Hosting.Environments.Development);
         builder.Configuration[DaprAppChannelToken.ConfigurationKey] = "test-sidecar-token";
         builder.Configuration["Authentication:JwtBearer:AllowedAlgorithms:0"] = SecurityAlgorithms.RsaSha256;
         builder.Services.PostConfigure<JwtBearerOptions>(EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
             options => options.ConfigurationManager = new StaticConfigurationManager<OpenIdConnectConfiguration>(oidc));
         builder.Services.AddSingleton<IAsyncDomainProjectionHandler, OrphanOperationalProjectionHandler>();
+        var catalog = new FoldersProjectionCatalogFixture();
+        catalog.Configure(builder);
         await using WebApplication app = builder.Build();
         app.UseFoldersServerPipeline();
+        await catalog.ActivateAsync(app);
         await app.StartAsync(TestContext.Current.CancellationToken);
+        var endpoints = ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints).ToArray();
+        EventStoreDomainServiceEndpointInventory.Validate(endpoints, app.Services.GetRequiredService<IOptions<AuthorizationOptions>>().Value.FallbackPolicy).ShouldBeEmpty();
+        (await EventStoreHttpEndpointInventory.ValidateAsync(endpoints, app.Services)).ShouldBeEmpty();
         using IServiceScope scope = app.Services.CreateScope();
         scope.ServiceProvider.GetRequiredKeyedService<IDomainProcessor>("folders")
             .ShouldBeSameAs(scope.ServiceProvider.GetServices<IDomainProcessor>().OfType<FolderDomainProcessor>().Single());
@@ -118,7 +124,19 @@ public sealed class FoldersServerHostCompositionTests
         });
         client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
         client.DefaultRequestHeaders.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, token);
-        using HttpResponseMessage response = await client.PostAsJsonAsync("/admin/operational-index-metadata", request, TestContext.Current.CancellationToken);
+        using (HttpResponseMessage unbound = await client.PostAsJsonAsync("/admin/operational-index-metadata", request, TestContext.Current.CancellationToken))
+            unbound.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+        using (var wrongGeneration = new HttpRequestMessage(HttpMethod.Post, "/admin/operational-index-metadata") { Content = JsonContent.Create(request) })
+        {
+            catalog.Bind(wrongGeneration);
+            wrongGeneration.Headers.Remove(Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler.EpochHeader);
+            wrongGeneration.Headers.Add(Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler.EpochHeader, "2");
+            using HttpResponseMessage refused = await client.SendAsync(wrongGeneration, TestContext.Current.CancellationToken);
+            refused.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+        }
+        using var metadataRequest = new HttpRequestMessage(HttpMethod.Post, "/admin/operational-index-metadata") { Content = JsonContent.Create(request) };
+        catalog.Bind(metadataRequest);
+        using HttpResponseMessage response = await client.SendAsync(metadataRequest, TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var metadata = (await response.Content.ReadFromJsonAsync<AdminOperationalIndexMetadata.Response>(TestContext.Current.CancellationToken))!;
         var domain = metadata.Domains.ShouldHaveSingleItem();
@@ -127,10 +145,15 @@ public sealed class FoldersServerHostCompositionTests
         domain.SharedEpochProjectionTypes.ShouldBe([OperationalStatusKeys.ProjectionType]);
         domain.AggregateTypes.ShouldBeEmpty();
         metadata.CatalogFingerprint.ShouldNotBeNullOrWhiteSpace();
-        using HttpResponseMessage orphanResponse = await client.PostAsJsonAsync("/admin/operational-index-metadata",
-            request with { Domains = ["orphan"] }, TestContext.Current.CancellationToken);
-        orphanResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var unserved = (await orphanResponse.Content.ReadFromJsonAsync<AdminOperationalIndexMetadata.Response>(TestContext.Current.CancellationToken))!;
+        using var orphanRequest = new HttpRequestMessage(HttpMethod.Post, "/admin/operational-index-metadata") { Content = JsonContent.Create(request with { Domains = ["orphan"] }) };
+        catalog.Bind(orphanRequest);
+        using HttpResponseMessage orphanResponse = await client.SendAsync(orphanRequest, TestContext.Current.CancellationToken);
+        orphanResponse.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+        var unserved = AdminOperationalIndexMetadata.Create(
+            app.Services.GetRequiredService<Hexalith.EventStore.Client.Discovery.DiscoveryResult>(), ["orphan"],
+            app.Services.GetServices<IDomainQueryHandler>(), app.Services.GetServices<IAsyncDomainProjectionHandler>(),
+            "folders", "v1", app.Services.GetRequiredService<IOptions<Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions>>().Value,
+            ["folders"], app.Services.GetServices<IDomainProjectionHandler>());
         unserved.Domains.ShouldBeEmpty();
         unserved.DispatchCapability.ShouldBeNull();
         unserved.CatalogFingerprint.ShouldBeNull();

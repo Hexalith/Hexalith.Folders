@@ -1,0 +1,97 @@
+{
+  "scriptParses": true,
+  "jsonParses": true,
+  "xmlParses": true,
+  "sourceRuntimeInventories": [
+    {
+      "name": "sources-before.json",
+      "count": 17022,
+      "differences": []
+    },
+    {
+      "name": "binaries-before.json",
+      "count": 406,
+      "differences": []
+    },
+    {
+      "name": "corrected-binaries-before.json",
+      "count": 403,
+      "differences": []
+    }
+  ],
+  "probeRuntime": {
+    "count": 138,
+    "differences": []
+  },
+  "historicalSelectedPacket": {
+    "count": 174,
+    "differences": []
+  },
+  "frozenIntentUnchanged": true,
+  "diffCheck": {
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "output": ""
+  },
+  "previousPacketTrackedDiff": {
+    "argv": [
+      "git",
+      "diff",
+      "--exit-code",
+      "HEAD",
+      "--",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-current-consumer-20261031"
+    ],
+    "exitCode": 0,
+    "output": ""
+  },
+  "rawLogsNotIgnored": [
+    {
+      "argv": [
+        "git",
+        "check-ignore",
+        "_bmad-output/implementation-artifacts/evidence/story-12-2-selective-enrollment-20261101/production-discovery.log"
+      ],
+      "exitCode": 1,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "check-ignore",
+        "_bmad-output/implementation-artifacts/evidence/story-12-2-selective-enrollment-20261101/registration-public-seam.log"
+      ],
+      "exitCode": 1,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "check-ignore",
+        "_bmad-output/implementation-artifacts/evidence/story-12-2-selective-enrollment-20261101/registration-original.log"
+      ],
+      "exitCode": 1,
+      "output": ""
+    }
+  ],
+  "bytePreservationAttributes": {
+    "argv": [
+      "git",
+      "check-attr",
+      "text",
+      "--",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-selective-enrollment-20261101/production-discovery.log",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-selective-enrollment-20261101/summary.json"
+    ],
+    "exitCode": 0,
+    "output": "_bmad-output/implementation-artifacts/evidence/story-12-2-selective-enrollment-20261101/production-discovery.log: text: unset\n_bmad-output/implementation-artifacts/evidence/story-12-2-selective-enrollment-20261101/summary.json: text: unset\n"
+  },
+  "ownedProcessesRemaining": [],
+  "proposalSha256": "989844443b3932ecad68a9b58ae8f08e8fde8d5d4197c1afda89b2f8cf23e084",
+  "specSha256": "52354a1dc9cbb90e945deced0e04f303de87ffddcbd5d27c1726fb881970d2c6",
+  "atUtc": "2026-11-01T00:17:43.220305+00:00"
+}

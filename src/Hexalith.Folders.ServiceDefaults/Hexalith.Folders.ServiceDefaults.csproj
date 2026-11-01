@@ -4,6 +4,8 @@
     <IsAspireSharedProject>true</IsAspireSharedProject>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="$(HexalithEventStoreRoot)/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
+    <PackageReference Include="Hexalith.EventStore.ServiceDefaults" Condition="'$(HexalithEventStoreFromSource)' != 'true'" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
     <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" />

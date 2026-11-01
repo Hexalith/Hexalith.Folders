@@ -9,7 +9,7 @@ Give the on-call operator a single place to interpret the five operational signa
 ## Preconditions
 
 - The acting principal is authorized for the managed tenant before any tenant-scoped signal evidence is read; tenant authority comes from authenticated context, never from a query parameter.
-- An OTLP backend and the `/health/ready` aggregation are reachable; otherwise treat the dashboard as stale and rely on the incident-mode runbook (`./incident-mode.md`).
+- An OTLP backend and the `/ready` aggregation are reachable; otherwise treat the dashboard as stale and rely on the incident-mode runbook (`./incident-mode.md`).
 - No triage step performs cross-tenant search, provider payload inspection, raw file inspection, or credential review.
 
 ## Procedure
@@ -18,7 +18,7 @@ The five operational signals and their first-response triage:
 
 | Signal | Severity | First operator response |
 |---|---|---|
-| `projection_lag` | warning | Confirm `/health/ready` reports `degraded-but-serving`; the system is still serving. Watch for sustained lag past the C2 ceiling. |
+| `projection_lag` | warning | Confirm `/ready` reports `degraded-but-serving`; the system is still serving. Watch for sustained lag past the C2 ceiling. |
 | `dead_letter_depth` | warning | Inspect dead-letter backlog growth; a sustained climb indicates a stuck consumer in `folders-workers`. |
 | `provider_failure` | error | Cross-check the provider-drift runbook (`./provider-drift.md`); distinguish transient failures from drift. |
 | `stale_lock` | warning | Confirm whether an orphaned lock has uncommitted changes; this maps to the reconciliation runbook (`./reconciliation.md`). |

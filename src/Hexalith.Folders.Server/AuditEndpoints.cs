@@ -1,3 +1,4 @@
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -30,8 +31,10 @@ public static partial class AuditEndpoints
     public static IEndpointRouteBuilder MapAuditEndpoints(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
+        RouteGroupBuilder humanEndpoints = endpoints.MapGroup("")
+            .RequireAuthorization(EventStoreHttpHostSecurityExtensions.HumanPolicy);
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/audit-trail", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/audit-trail", async (
             string folderId,
             HttpContext httpContext,
             AuditTrailQueryHandler handler,
@@ -42,7 +45,7 @@ public static partial class AuditEndpoints
         .WithName(AuditTrailQueryHandler.OperationId)
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/audit-trail/{auditRecordId}", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/audit-trail/{auditRecordId}", async (
             string folderId,
             string auditRecordId,
             HttpContext httpContext,
@@ -54,7 +57,7 @@ public static partial class AuditEndpoints
         .WithName(AuditRecordQueryHandler.OperationId)
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/operation-timeline", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/operation-timeline", async (
             string folderId,
             HttpContext httpContext,
             OperationTimelineQueryHandler handler,
@@ -65,7 +68,7 @@ public static partial class AuditEndpoints
         .WithName(OperationTimelineQueryHandler.OperationId)
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}", async (
             string folderId,
             string timelineEntryId,
             HttpContext httpContext,

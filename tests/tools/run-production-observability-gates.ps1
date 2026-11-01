@@ -69,7 +69,7 @@ function Write-ProductionObservabilityReport {
             [ordered]@{ signal = 'cleanup_failure'; severity = 'error'; threshold_source = 'prd-cleanup-observability'; owning_component = 'folders-workers' }
         )
         exporter_signals = @('traces', 'metrics', 'logs')
-        health_probes = @('/health/live', '/health/ready')
+        health_probes = @('/alive', '/ready')
         # Live exporter/alert firing against a real backend lives outside this repo per the ops runbook.
         live_exporter_alert_smoke = [ordered]@{
             status = 'reference_pending_story_7_12'

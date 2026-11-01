@@ -1,3 +1,4 @@
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using System.Net;
 
 using Hexalith.Folders.ServiceDefaults;
@@ -87,13 +88,13 @@ public sealed class ServiceDefaultsHealthEndpointTests
         HttpClient client = app.GetTestClient();
 
         HttpResponseMessage live = await client
-            .GetAsync("/health/live", TestContext.Current.CancellationToken)
+            .GetAsync("/alive", TestContext.Current.CancellationToken)
             .ConfigureAwait(true);
         HttpResponseMessage alias = await client
             .GetAsync("/health", TestContext.Current.CancellationToken)
             .ConfigureAwait(true);
         HttpResponseMessage ready = await client
-            .GetAsync("/health/ready", TestContext.Current.CancellationToken)
+            .GetAsync("/ready", TestContext.Current.CancellationToken)
             .ConfigureAwait(true);
 
         live.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -110,7 +111,7 @@ public sealed class ServiceDefaultsHealthEndpointTests
         })).ConfigureAwait(true);
 
         HttpResponseMessage response = await app.GetTestClient()
-            .GetAsync("/health/ready", TestContext.Current.CancellationToken)
+            .GetAsync("/ready", TestContext.Current.CancellationToken)
             .ConfigureAwait(true);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -125,7 +126,7 @@ public sealed class ServiceDefaultsHealthEndpointTests
         })).ConfigureAwait(true);
 
         HttpResponseMessage response = await app.GetTestClient()
-            .GetAsync("/health/ready", TestContext.Current.CancellationToken)
+            .GetAsync("/ready", TestContext.Current.CancellationToken)
             .ConfigureAwait(true);
 
         response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
@@ -148,8 +149,13 @@ public sealed class ServiceDefaultsHealthEndpointTests
         builder.WebHost.UseTestServer();
         builder.Services.AddSingleton(source);
         builder.AddDefaultHealthChecks();
+        builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+        builder.Services.AddEventStoreHttpHostSecurity();
 
         WebApplication app = builder.Build();
+        app.UseAuthentication();
+        app.UseEventStoreHttpHostSecurity();
+        app.UseAuthorization();
         app.MapDefaultEndpoints();
         await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
         return app;

@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "dotnet",
+    ".artifacts/story-12-2-security-enrollment-20261101/bin/Hexalith.Folders.Server.Tests/debug/Hexalith.Folders.Server.Tests.dll",
+    "-method",
+    "Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProtectedProductionDiscoveryAdvertisesOnlyProcessorBackedNamedAndSharedRoutes",
+    "-xml",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/production-discovery-initial.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T06:49:53.610079+00:00",
+  "finishedAtUtc": "2026-11-01T06:49:56.748294+00:00",
+  "exitCode": 1
+}

@@ -28,8 +28,8 @@ Container-image revert:
 
 Post-rollback health verification:
 
-5. Confirm `/health/live` returns healthy for each service.
-6. Confirm `/health/ready` aggregates Dapr sidecar health, the Tenants degraded-mode flag, and projection lag; a `degraded-but-serving` readiness is acceptable while projections catch up.
+5. Confirm `/alive` returns healthy for each service.
+6. Confirm `/ready` aggregates Dapr sidecar health, the Tenants degraded-mode flag, and projection lag; a `degraded-but-serving` readiness is acceptable while projections catch up.
 7. Confirm the five operational signals (`projection_lag`, `dead_letter_depth`, `provider_failure`, `stale_lock`, `cleanup_failure`) return to baseline; investigate any that do not.
 
 Backup/restore automation and its first drill remain `reference_pending` on `EXT-ES-RECOVERY` plus Story 13.7. Architecture I-11 fixes the regional-loss RPO/RTO, cross-region PITR, recovery-safety export/retention, isolated restore, and drill cadence in `./backup-restore.md`; this rollback runbook does not claim those mechanisms are implemented. A database recovery follows that runbook and is not an image rollback.
@@ -40,7 +40,7 @@ Run the conformance gate `pwsh ./tests/tools/run-adr-runbook-docs-gates.ps1`, wh
 
 ## Escalation and handoff
 
-- If post-rollback `/health/ready` does not recover, escalate to the on-call operator and hand off the correlation ID and UTC window only.
+- If post-rollback `/ready` does not recover, escalate to the on-call operator and hand off the correlation ID and UTC window only.
 - If a rollback appears to require folder-state repair, stop: that is out of scope for rollback and hands off to the reconciliation runbook (`./reconciliation.md`); never repair or retry silently.
 
 ## Story 1.17 route reversal before coexistence

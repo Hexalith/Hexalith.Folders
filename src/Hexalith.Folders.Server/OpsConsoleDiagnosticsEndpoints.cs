@@ -1,3 +1,4 @@
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -35,8 +36,10 @@ public static class OpsConsoleDiagnosticsEndpoints
     public static IEndpointRouteBuilder MapOpsConsoleDiagnosticsEndpoints(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
+        RouteGroupBuilder humanEndpoints = endpoints.MapGroup("")
+            .RequireAuthorization(EventStoreHttpHostSecurityExtensions.HumanPolicy);
 
-        endpoints.MapGet("/api/v1/ops-console/readiness-diagnostics", static (
+        humanEndpoints.MapGet("/api/v1/ops-console/readiness-diagnostics", static (
             HttpContext httpContext,
             TenantScopedDiagnosticsQueryHandler handler,
             ITenantContextAccessor tenantContext,
@@ -46,7 +49,7 @@ public static class OpsConsoleDiagnosticsEndpoints
         .WithName("GetReadinessDiagnostics")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics", static (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics", static (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -58,7 +61,7 @@ public static class OpsConsoleDiagnosticsEndpoints
         .WithName("GetLockDiagnostics")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics", static (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics", static (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -70,7 +73,7 @@ public static class OpsConsoleDiagnosticsEndpoints
         .WithName("GetDirtyStateDiagnostics")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/failed-operation-diagnostics", static (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/failed-operation-diagnostics", static (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -82,7 +85,7 @@ public static class OpsConsoleDiagnosticsEndpoints
         .WithName("GetFailedOperationDiagnostics")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/ops-console/provider-status-diagnostics", static (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/ops-console/provider-status-diagnostics", static (
             string folderId,
             HttpContext httpContext,
             FolderScopedDiagnosticsQueryHandler handler,
@@ -93,7 +96,7 @@ public static class OpsConsoleDiagnosticsEndpoints
         .WithName("GetProviderStatusDiagnostics")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/sync-status-diagnostics", static (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/sync-status-diagnostics", static (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -105,7 +108,7 @@ public static class OpsConsoleDiagnosticsEndpoints
         .WithName("GetSyncStatusDiagnostics")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/ops-console/projection-freshness", static (
+        humanEndpoints.MapGet("/api/v1/ops-console/projection-freshness", static (
             HttpContext httpContext,
             TenantScopedDiagnosticsQueryHandler handler,
             ITenantContextAccessor tenantContext,

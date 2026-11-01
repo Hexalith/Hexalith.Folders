@@ -13,11 +13,11 @@ internal static class FoldersProductionTestHost
 {
     /// <summary>Creates the actual production service graph without an external listener.</summary>
     /// <returns>A builder ready for pipeline composition and startup.</returns>
-    internal static WebApplicationBuilder CreateBuilder()
+    internal static WebApplicationBuilder CreateBuilder(string environmentName = "Production")
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
-            EnvironmentName = Environments.Production,
+            EnvironmentName = environmentName,
         });
         builder.Configuration.Sources.Clear();
         builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>

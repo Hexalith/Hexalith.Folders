@@ -1,3 +1,4 @@
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Routing;
@@ -22,10 +23,10 @@ public static class Extensions
     private const string ActivitySourceName = "Hexalith.Folders.Observability";
     private const string MeterName = "Hexalith.Folders.Observability";
 
-    /// <summary>Health-check tag selecting the liveness probe surfaced at <c>/health/live</c>.</summary>
+    /// <summary>Health-check tag selecting the liveness probe surfaced at <c>/alive</c>.</summary>
     public const string LivenessTag = "live";
 
-    /// <summary>Health-check tag selecting the readiness probe surfaced at <c>/health/ready</c>.</summary>
+    /// <summary>Health-check tag selecting the readiness probe surfaced at <c>/ready</c>.</summary>
     public const string ReadinessTag = "ready";
 
     public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder)
@@ -115,26 +116,34 @@ public static class Extensions
         return builder;
     }
 
-    public static IEndpointRouteBuilder MapDefaultEndpoints(this IEndpointRouteBuilder endpoints)
+    public static IEndpointRouteBuilder MapDefaultEndpoints(this IEndpointRouteBuilder endpoints, string authenticatedPolicy = EventStoreHttpHostSecurityExtensions.HumanPolicy)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
 
         // I-7 liveness/readiness split. Readiness reports HealthStatus.Degraded ("degraded-but-serving",
         // still HTTP 200) when projection lag exceeds the pinned C2 target instead of failing readiness.
+        endpoints.MapHealthChecks("/alive", new HealthCheckOptions
+        {
+            Predicate = static registration => registration.Tags.Contains(LivenessTag),
+        }).AllowAnonymous();
+        endpoints.MapHealthChecks("/ready", new HealthCheckOptions
+        {
+            Predicate = static registration => registration.Tags.Contains(ReadinessTag),
+        }).AllowAnonymous();
         endpoints.MapHealthChecks("/health/live", new HealthCheckOptions
         {
             Predicate = static registration => registration.Tags.Contains(LivenessTag),
-        });
+        }).RequireAuthorization(authenticatedPolicy);
         endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions
         {
             Predicate = static registration => registration.Tags.Contains(ReadinessTag),
-        });
+        }).RequireAuthorization(authenticatedPolicy);
 
         // Compatibility alias for the pre-7.12 flat liveness probe.
         endpoints.MapHealthChecks("/health", new HealthCheckOptions
         {
             Predicate = static registration => registration.Tags.Contains(LivenessTag),
-        });
+        }).AllowAnonymous();
 
         return endpoints;
     }

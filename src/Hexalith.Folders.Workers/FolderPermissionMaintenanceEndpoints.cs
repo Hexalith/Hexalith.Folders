@@ -16,7 +16,7 @@ internal static partial class FolderPermissionMaintenanceEndpoints
     /// <summary>Maps maintenance without adding a Dapr service caller or topic subscription.</summary>
     internal static void MapFolderPermissionMaintenance(this IEndpointRouteBuilder endpoints)
         => endpoints.MapPost("/maintenance/folder-permissions/reset", ResetAsync)
-            .RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy);
+            .RequireEventStoreChannel();
 
     private static async Task<IResult> ResetAsync(FolderPermissionResetRequest request,
         IReadModelConditionalEraser eraser, ILoggerFactory loggerFactory,

@@ -1,3 +1,4 @@
+using Hexalith.EventStore.ServiceDefaults.Routing;
 using Hexalith.EventStore.DomainService;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
@@ -49,26 +50,10 @@ public static class FoldersServerHostComposition
             sp.GetRequiredService<EventStoreFolderEffectivePermissionsReadModel>());
         builder.Services.AddSingleton<IFolderAclReadModel>(static sp =>
             sp.GetRequiredService<EventStoreFolderEffectivePermissionsReadModel>());
-        builder.Services.AddAuthorization();
         builder.Services.AddFoldersProductionAuthentication(builder.Configuration, builder.Environment);
-        // The process and projection callbacks are Dapr service invocations. The
-        // workload scheme proves the EventStore caller independently of the
-        // command-bound human receipt consumed by /process.
-        builder.Services.AddAuthentication().AddEventStoreWorkloadScheme(
-            EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
-            "Authentication:Workload",
-            static (options, _) =>
-            {
-                options.Audience ??= "folders";
-                if (options.AllowedCallers.Count == 0)
-                {
-                    options.AllowedCallers.Add("eventstore");
-                }
-            });
-        builder.Services.AddEventStoreWorkloadPolicies(
-            EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
-            [EventStoreWorkloadOperations.DomainServiceProcess, EventStoreWorkloadOperations.DomainServiceProject,
-                EventStoreWorkloadOperations.DomainServiceQuery, EventStoreWorkloadOperations.DomainServiceMetadata]);
+        builder.Services.AddEventStoreDomainServiceSecurity(builder.Configuration);
+        builder.Services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationMiddlewareResultHandler,
+            FoldersHumanAuthorizationResultHandler>();
         builder.Services.AddSingleton<HumanAuthorityReceiptVerifier>();
         builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
         builder.Services.AddSingleton<IEventStoreAuthorizationValidator, VerifiedReceiptEventStoreAuthorizationValidator>();
@@ -127,16 +112,17 @@ public static class FoldersServerHostComposition
             }
         }
 
+        app.UseEventStoreHttpHostSecurity();
+        app.UseAuthorization();
         if (mode != FoldersApiRoutingMode.V2Only)
         {
             app.UseHistoricalMutationAuthorization();
         }
-
-        app.UseAuthorization();
-        app.MapSubscribeHandler();
+        app.MapSubscribeHandler().RequireEventStoreSidecarChannel();
         app.MapFoldersServerEndpoints();
         app.MapEventStoreDomainProjectionEndpoints();
         app.MapEventStoreDomainProjectionMetadataEndpoint();
+        app.MapEventStoreRouteCatalog();
 
         return app;
     }

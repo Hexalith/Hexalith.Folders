@@ -301,8 +301,8 @@ public sealed partial class OperationsAuditDocsConformanceTests
             "projection-independent authoritative event-stream read",
             "`reference_pending`",
             // Health endpoints + observe-only + external alerting.
-            "/health/live",
-            "/health/ready",
+            "/alive",
+            "/ready",
             "degraded-but-serving",
             "observe-only",
             "OUTSIDE this repository",

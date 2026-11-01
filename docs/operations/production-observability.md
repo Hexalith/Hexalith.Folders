@@ -37,8 +37,8 @@ Do not initialize nested submodules.
 
 ## Health intent
 
-- `/health/live` reports process liveness.
-- `/health/ready` aggregates the I-7 monitored snapshots — Dapr sidecar health, the Tenants-availability
+- `/alive` reports process liveness.
+- `/ready` aggregates the I-7 monitored snapshots — Dapr sidecar health, the Tenants-availability
   degraded-mode active flag, and projection lag versus the pinned C2 target. When projection lag exceeds
   the 500 millisecond C2 ceiling, readiness reports `degraded-but-serving` (HTTP 200) instead of failing.
 - Both the server and the workers host map these endpoints through `MapDefaultEndpoints`.
@@ -85,3 +85,7 @@ Use these rerun rules to decide when to rerun the gate:
   workflows unless a live exporter/alert smoke is explicitly added.
 - CI checkout keeps `submodules: false`; the gate never performs network calls, provider credentials
   resolution, or nested submodule initialization.
+
+## Authenticated health aliases
+
+Only exact `/health`, `/alive` and `/ready` probes allow anonymous access. Server `/health/live` and `/health/ready` aliases and `/` require the named human bearer policy. Workers aliases and `/` require the receiver application-channel token. Probe suffixes and unclassified endpoints stay denied. The readiness check selection and degraded-but-serving behavior are unchanged.

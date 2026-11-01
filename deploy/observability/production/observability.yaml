@@ -31,10 +31,10 @@ spec:
   # I-7: liveness/readiness split on each service. Readiness aggregates the monitored snapshots and
   # reports degraded-but-serving (HTTP 200) when projection lag exceeds the pinned C2 target.
   healthProbes:
-    - path: /health/live
+    - path: /alive
       kind: liveness
       owningComponent: service-defaults
-    - path: /health/ready
+    - path: /ready
       kind: readiness
       owningComponent: service-defaults
       monitoredSnapshots:

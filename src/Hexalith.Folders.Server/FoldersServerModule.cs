@@ -1,3 +1,4 @@
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Contracts;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Projections.TenantAccess;
@@ -119,7 +120,7 @@ public static class FoldersServerModule
         ArgumentNullException.ThrowIfNull(endpoints);
 
         endpoints.MapDefaultEndpoints();
-        endpoints.MapGet("/", () => Description);
+        endpoints.MapGet("/", () => Description).RequireAuthorization(EventStoreHttpHostSecurityExtensions.HumanPolicy);
         endpoints.MapFoldersDomainServiceEndpoints();
         endpoints.MapProviderReadinessEndpoints();
         endpoints.MapOpsConsoleDiagnosticsEndpoints();

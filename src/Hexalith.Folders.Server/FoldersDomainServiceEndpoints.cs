@@ -100,8 +100,7 @@ public static partial class FoldersDomainServiceEndpoints
             QueryResult result = await DomainQueryDispatcher.ExecuteAsync(services, query, token).ConfigureAwait(false);
             return result.Success ? Results.Ok(result) : result.ErrorMessage is QueryAdapterFailureReason.InvalidEnvelope or QueryAdapterFailureReason.InvalidCursor or QueryAdapterFailureReason.InvalidPage
                 ? Results.BadRequest(result) : Results.NotFound(QueryResult.Failure("safe-denial"));
-        }).RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
-            EventStoreWorkloadAuthenticationDefaults.WorkloadScheme, EventStoreWorkloadOperations.DomainServiceQuery));
+        }).RequireEventStoreDomainServicePolicy("/query");
 
         RouteHandlerBuilder processEndpoint = endpoints.MapPost(FoldersServerModule.ProcessRoute, async (
             DomainServiceRequest request,
@@ -112,9 +111,7 @@ public static partial class FoldersDomainServiceEndpoints
         .AddEndpointFilter<FolderAuditEndpointFilter>();
         if (endpoints.ServiceProvider.GetService<HumanAuthorityReceiptVerifier>() is not null)
         {
-            processEndpoint.RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
-                EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
-                EventStoreWorkloadOperations.DomainServiceProcess));
+            processEndpoint.RequireEventStoreDomainServicePolicy(FoldersServerModule.ProcessRoute);
         }
 
         RouteHandlerBuilder projectEndpoint = endpoints.MapPost(FoldersServerModule.ProjectRoute, async (
@@ -181,12 +178,13 @@ public static partial class FoldersDomainServiceEndpoints
         .AddEndpointFilter<FolderAuditEndpointFilter>();
         if (endpoints.ServiceProvider.GetService<HumanAuthorityReceiptVerifier>() is not null)
         {
-            projectEndpoint.RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
-                EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
-                EventStoreWorkloadOperations.DomainServiceProject));
+            projectEndpoint.RequireEventStoreDomainServicePolicy(FoldersServerModule.ProjectRoute);
         }
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/effective-permissions", async (
+        RouteGroupBuilder humanEndpoints = endpoints.MapGroup("")
+            .RequireAuthorization(EventStoreHttpHostSecurityExtensions.HumanPolicy);
+
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/effective-permissions", async (
             string folderId,
             HttpContext httpContext,
             EffectivePermissionsQueryHandler handler,
@@ -211,7 +209,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetEffectivePermissions")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders/{folderId}/archive", async (
+        humanEndpoints.MapPost("/api/v1/folders/{folderId}/archive", async (
             string folderId,
             HttpContext httpContext,
             IEventStoreGatewayClient gateway,
@@ -228,7 +226,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("ArchiveFolder")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders", async (
+        humanEndpoints.MapPost("/api/v1/folders", async (
             HttpContext httpContext,
             IEventStoreGatewayClient gateway,
             ITenantContextAccessor tenantContext,
@@ -243,7 +241,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("CreateFolder")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders/repository-backed", async (
+        humanEndpoints.MapPost("/api/v1/folders/repository-backed", async (
             HttpContext httpContext,
             IEventStoreGatewayClient gateway,
             ITenantContextAccessor tenantContext,
@@ -258,7 +256,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("CreateRepositoryBackedFolder")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders/{folderId}/repository-bindings", async (
+        humanEndpoints.MapPost("/api/v1/folders/{folderId}/repository-bindings", async (
             string folderId,
             HttpContext httpContext,
             IEventStoreGatewayClient gateway,
@@ -275,7 +273,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("BindRepository")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPut("/api/v1/folders/{folderId}/branch-ref-policy", async (
+        humanEndpoints.MapPut("/api/v1/folders/{folderId}/branch-ref-policy", async (
             string folderId,
             HttpContext httpContext,
             IEventStoreGatewayClient gateway,
@@ -292,7 +290,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("ConfigureBranchRefPolicy")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/preparation", async (
+        humanEndpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/preparation", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -311,7 +309,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("PrepareWorkspace")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock", async (
+        humanEndpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -330,7 +328,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("LockWorkspace")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -401,7 +399,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetWorkspaceLock")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -472,7 +470,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetWorkspaceRetryEligibility")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/transition-evidence", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/transition-evidence", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -542,7 +540,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetWorkspaceTransitionEvidence")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/status", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/status", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -613,7 +611,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetWorkspaceStatus")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/tasks/{taskId}/status", async (
+        humanEndpoints.MapGet("/api/v1/tasks/{taskId}/status", async (
             string taskId,
             string? folderId,
             HttpContext httpContext,
@@ -652,7 +650,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetTaskStatus")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence", async (
             string folderId,
             string workspaceId,
             string operationId,
@@ -675,7 +673,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetCommitEvidence")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome", async (
             string folderId,
             string workspaceId,
             string operationId,
@@ -698,7 +696,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetProviderOutcome")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status", async (
             string folderId,
             string workspaceId,
             string reconciliationId,
@@ -721,7 +719,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetReconciliationStatus")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -792,7 +790,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetWorkspaceCleanupStatus")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock/release", async (
+        humanEndpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock/release", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -811,7 +809,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("ReleaseWorkspaceLock")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add", async (
+        humanEndpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -831,7 +829,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("AddWorkspaceFile")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPut("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/change", async (
+        humanEndpoints.MapPut("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/change", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -851,7 +849,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("ChangeWorkspaceFile")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/remove", async (
+        humanEndpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/remove", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -871,7 +869,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("RemoveWorkspaceFile")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits", async (
+        humanEndpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -890,7 +888,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("CommitWorkspace")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -915,7 +913,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("ListFolderFiles")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/metadata", async (
+        humanEndpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/metadata", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -963,7 +961,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetFolderFileMetadata")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/search", async (
+        humanEndpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/search", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -1015,7 +1013,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("SearchFolderFiles")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob", async (
+        humanEndpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -1067,7 +1065,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GlobFolderFiles")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/range-read", async (
+        humanEndpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/range-read", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -1117,7 +1115,7 @@ public static partial class FoldersDomainServiceEndpoints
 
         // Story 10.5: authorized search over the Memories search index (folders-index). Non-mutating,
         // eventually_consistent (the index is async pub/sub-fed), rejects Idempotency-Key, metadata-only result.
-        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/index-search", async (
+        humanEndpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/index-search", async (
             string folderId,
             string workspaceId,
             HttpContext httpContext,
@@ -1177,7 +1175,7 @@ public static partial class FoldersDomainServiceEndpoints
 
         // Story 10.5: read-only, metadata-only indexing-status projection for a folder (console-backing read).
         // Non-mutating, eventually_consistent, rejects Idempotency-Key.
-        endpoints.MapGet("/api/v1/folders/{folderId}/indexing-status", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/indexing-status", async (
             string folderId,
             HttpContext httpContext,
             FolderIndexingStatusQueryHandler handler,
@@ -1216,7 +1214,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetFolderIndexingStatus")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/branch-ref-policy", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/branch-ref-policy", async (
             string folderId,
             HttpContext httpContext,
             BranchRefPolicyQueryHandler handler,
@@ -1271,7 +1269,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetBranchRefPolicy")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/lifecycle-status", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/lifecycle-status", async (
             string folderId,
             HttpContext httpContext,
             FolderLifecycleStatusQueryHandler handler,
@@ -1327,7 +1325,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetFolderLifecycleStatus")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/repository-bindings/{repositoryBindingId}", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/repository-bindings/{repositoryBindingId}", async (
             string folderId,
             string repositoryBindingId,
             HttpContext httpContext,
@@ -1396,7 +1394,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("GetRepositoryBinding")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/folders/{folderId}/acl", async (
+        humanEndpoints.MapGet("/api/v1/folders/{folderId}/acl", async (
             string folderId,
             HttpContext httpContext,
             ListFolderAclEntriesQueryHandler handler,
@@ -1523,7 +1521,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("ListFolderAclEntries")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPut("/api/v1/folders/{folderId}/acl/{aclEntryId}", async (
+        humanEndpoints.MapPut("/api/v1/folders/{folderId}/acl/{aclEntryId}", async (
             string folderId,
             string aclEntryId,
             HttpContext httpContext,
@@ -1542,7 +1540,7 @@ public static partial class FoldersDomainServiceEndpoints
         .WithName("UpdateFolderAclEntry")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPut("/api/v1/provider-bindings/{providerBindingRef}", async (
+        humanEndpoints.MapPut("/api/v1/provider-bindings/{providerBindingRef}", async (
             string providerBindingRef,
             HttpContext httpContext,
             IEventStoreGatewayClient gateway,
