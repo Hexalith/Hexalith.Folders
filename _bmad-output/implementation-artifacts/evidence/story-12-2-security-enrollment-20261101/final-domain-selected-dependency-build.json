@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:Version=3.128.4",
+    "--artifacts-path",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-security-enrollment-20261101",
+    "-p:BuildProjectReferences=false",
+    "-m:1",
+    "-nr:false",
+    "-v:quiet"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T07:05:18.479851+00:00",
+  "finishedAtUtc": "2026-11-01T07:05:24.080291+00:00",
+  "exitCode": 0
+}

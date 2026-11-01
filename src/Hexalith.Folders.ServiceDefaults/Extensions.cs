@@ -116,7 +116,17 @@ public static class Extensions
         return builder;
     }
 
-    public static IEndpointRouteBuilder MapDefaultEndpoints(this IEndpointRouteBuilder endpoints, string authenticatedPolicy = EventStoreHttpHostSecurityExtensions.HumanPolicy)
+    /// <summary>Maps exact anonymous probes and human-authenticated historical aliases.</summary>
+    /// <param name="endpoints">The host routes.</param>
+    /// <returns>The same route builder.</returns>
+    public static IEndpointRouteBuilder MapDefaultEndpoints(this IEndpointRouteBuilder endpoints)
+        => MapDefaultEndpoints(endpoints, EventStoreHttpHostSecurityExtensions.HumanPolicy);
+
+    /// <summary>Maps exact anonymous probes and authenticated historical aliases for the host's credential kind.</summary>
+    /// <param name="endpoints">The host routes.</param>
+    /// <param name="authenticatedPolicy">The explicit policy for historical aliases.</param>
+    /// <returns>The same route builder.</returns>
+    public static IEndpointRouteBuilder MapDefaultEndpoints(this IEndpointRouteBuilder endpoints, string authenticatedPolicy)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
 

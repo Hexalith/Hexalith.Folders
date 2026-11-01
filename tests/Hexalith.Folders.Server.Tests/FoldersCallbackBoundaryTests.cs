@@ -133,14 +133,29 @@ public sealed class FoldersCallbackBoundaryTests
         CallbackQueryResultHandler handler = new(supplied);
         using RSA rsa = RSA.Create(2048);
         RsaSecurityKey key = new(rsa) { KeyId = "callback-boundary" };
-        await using WebApplication app = BuildApp(key, handler);
+        var catalog = new FoldersProjectionCatalogFixture(CallbackQueryResultHandler.CatalogDeclaration);
+        await using WebApplication app = BuildApp(key, handler, catalog);
+        await catalog.ActivateAsync(app);
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = app.GetTestClient();
         QueryEnvelope query = new("tenant-a", "folders", "folder-a", handler.QueryType, "{}"u8.ToArray(), "correlation", "actor");
         if (scenario == "unknown-handler") query = query with { QueryType = "not-registered" };
         if (scenario == "unverified-caller") query = query with { CallerAuthority = new("delegated-owner-query", [], ["read_metadata"]) };
         using HttpRequestMessage request = CreateRequest("/query", query, key, EventStoreWorkloadOperations.DomainServiceQuery);
+        catalog.Bind(request);
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        if (scenario == "unknown-handler")
+        {
+            // The committed catalog refuses an undeclared target before dispatch; the original dispatcher mapping remains safe denial.
+            response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            using IServiceScope scope = app.Services.CreateScope();
+            QueryResult missing = await DomainQueryDispatcher.ExecuteAsync(scope.ServiceProvider, query, TestContext.Current.CancellationToken);
+            IResult mapped = FoldersDomainServiceEndpoints.ToQueryHttpResult(missing);
+            mapped.ShouldBeAssignableTo<IStatusCodeHttpResult>().StatusCode.ShouldBe((int)expected);
+            mapped.ShouldBeAssignableTo<IValueHttpResult>().Value.ShouldBe(QueryResult.Failure("safe-denial"));
+            handler.Calls.ShouldBe(0);
+            return;
+        }
         response.StatusCode.ShouldBe(expected);
         QueryResult result = (await response.Content.ReadFromJsonAsync<QueryResult>(TestContext.Current.CancellationToken)).ShouldNotBeNull();
         handler.Calls.ShouldBe(scenario is "unknown-handler" or "unverified-caller" ? 0 : 1);
@@ -170,7 +185,9 @@ public sealed class FoldersCallbackBoundaryTests
     {
         using RSA rsa = RSA.Create(2048);
         RsaSecurityKey key = new(rsa) { KeyId = "callback-boundary" };
-        await using WebApplication app = BuildApp(key);
+        var catalog = new FoldersProjectionCatalogFixture();
+        await using WebApplication app = BuildApp(key, catalog: catalog);
+        await catalog.ActivateAsync(app);
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = app.GetTestClient();
         foreach (bool bound in new[] { false, true })
@@ -183,6 +200,7 @@ public sealed class FoldersCallbackBoundaryTests
             };
             using HttpRequestMessage request = CreateRequest("/admin/operational-index-metadata", payload, key,
                 EventStoreWorkloadOperations.DomainServiceMetadata);
+            catalog.Bind(request);
             using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
             response.StatusCode.ShouldBe(version is null or 1 ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
             if (version is not null and not 1)
@@ -207,9 +225,10 @@ public sealed class FoldersCallbackBoundaryTests
         }
     }
 
-    private static WebApplication BuildApp(RsaSecurityKey key, IDomainQueryHandler? handler = null)
+    private static WebApplication BuildApp(RsaSecurityKey key, IDomainQueryHandler? handler = null, FoldersProjectionCatalogFixture? catalog = null)
     {
-        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder();
+        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder(catalog is null ? "Production" : "Development");
+        catalog?.Configure(builder);
         OpenIdConnectConfiguration oidc = new() { Issuer = Issuer };
         oidc.SigningKeys.Add(new RsaSecurityKey(key.Rsa.ExportParameters(false)) { KeyId = key.KeyId });
         builder.Configuration[DaprAppChannelToken.ConfigurationKey] = ChannelToken;

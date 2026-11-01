@@ -120,3 +120,8 @@ If the Folders authentication/probe changes are declined, retain the current-sou
 the precise conflict to the EventStore/Folders security owners for an explicitly approved compatibility
 contract. The earlier selected-candidate packet remains historical evidence; selecting old binaries is
 not current-source qualification. No SDK guard weakening or unapproved endpoint exemption is implied.
+
+
+# Implementation disposition — 2026-11-01
+
+The approved source migration is implemented and the proposal remains `approved-in-progress` for qualification. The [enrollment packet](evidence/story-12-2-security-enrollment-20261101/README.md) records the passing selected-dependency security/Worker/history/health controls, the one remaining signed-command positive failure, 11 broad Contracts failures, and failed current integrated-source builds after external dependency changes. Accurate command/admission declarations and the full real-provider lane remain open; no new approval is inferred or required for work already within this approved boundary. The [handoff](evidence/story-12-2-security-enrollment-20261101/command-catalog-handoff.md) separates the incompatible source graph and remaining command-catalog prerequisite from the completed source enrollment. No new live pass, deployment, publication, package/gitlink update, Git mutation, v2 exposure or performance redesign is claimed.

@@ -20,6 +20,7 @@ namespace Hexalith.Folders.Workers.Tests;
 /// <summary>Qualifies the actual Workers HTTP boundary with receiver-token authentication.</summary>
 public sealed class WorkersHostSecurityEnrollmentTests
 {
+    /// <summary>Qualifies both inventories, exact probes and a persisted tenant event using actual receiver-channel authentication.</summary>
     [Fact]
     public async Task ProductionPipelineHasEmptyInventoriesExactProbesAndAuthenticatedChannelCallbacks()
     {
@@ -52,7 +53,7 @@ public sealed class WorkersHostSecurityEnrollmentTests
             admitted.StatusCode.ShouldBe(HttpStatusCode.OK, route);
         }
         var created = new TenantCreated("enrollment-tenant", "Enrollment", null, DateTimeOffset.UtcNow);
-        var envelope = new EventStoreDomainEventEnvelope("enrollment-message", "enrollment-tenant", "system",
+        var envelope = new EventStoreDomainEventEnvelope("01J00000000000000000000001", "enrollment-tenant", "system",
             typeof(TenantCreated).FullName!, 1, DateTimeOffset.UtcNow, "enrollment-correlation", "json", JsonSerializer.SerializeToUtf8Bytes(created));
         foreach (string kind in new[] { "absent", "wrong", "mixed", "valid" })
         {

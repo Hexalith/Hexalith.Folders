@@ -1,0 +1,15 @@
+{
+  "environmentPins": {
+    "TMPDIR": "/dev/shm/folders-12-2-test-tmp"
+  },
+  "argv": [
+    "dotnet",
+    ".artifacts/story-12-2-security-enrollment-20261101/bin/Hexalith.Folders.Workers.Tests/debug/Hexalith.Folders.Workers.Tests.dll",
+    "-xml",
+    "/dev/shm/folders-12-2-final-evidence-20261101/workers-broad-selected-corrected.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T07:11:11.468730+00:00",
+  "finishedAtUtc": "2026-11-01T07:11:16.431944+00:00",
+  "exitCode": 0
+}

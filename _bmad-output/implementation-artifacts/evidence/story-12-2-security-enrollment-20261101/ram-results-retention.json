@@ -1,0 +1,138 @@
+{
+  "/dev/shm/folders-12-2-final-evidence-20261101/testing-selected-rebuild.json": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-testing-selected-rebuild.json",
+    "sha256": "6054515161898c815b86b468f1329e7c4777e481a6f2c282e6d1b2a5df3448d6"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/testing-selected-rebuild.log": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-testing-selected-rebuild.log",
+    "sha256": "979090d1afb8af794977ceae5b64b3660c2694cbe7c0766aebeb619aa962fbea"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/operational-domain-selected.json": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-operational-domain-selected.json",
+    "sha256": "0cf5787c84f00a65efb6811561e054c613b46339ea0370f4497de0321869c7fe"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/operational-domain-selected.xml": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-operational-domain-selected.xml",
+    "sha256": "362895f5b4f71ad8033877822d3d29e7216eeb8f877cce96b9687f53cde80793"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/server-product-selected-rebuild.json": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-server-product-selected-rebuild.json",
+    "sha256": "55c893b71e4a38fdcccbeadee1cbde77f4301d98b8fc8451588613494b6019e6"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/server-product-selected-rebuild.log": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-server-product-selected-rebuild.log",
+    "sha256": "eadc237f2118cbd9c70ea712b762df9ca84b8657145398c10abe107f3bd7a316"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/operational-domain-selected.log": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-operational-domain-selected.log",
+    "sha256": "48efaf879e1cff701e521ca719357694f05d0580736fd18eee205ddadd9c3bf9"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/domain-selected-dependency-build.json": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-domain-selected-dependency-build.json",
+    "sha256": "b9f58f1ce7e469c13697d94a215548af5aecb48c75db1fd69e6df607903ef7e5"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/sdk-security-focused-final.json": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-sdk-security-focused-final.json",
+    "sha256": "7c71ca79eaa140c6f513a7b52fedc80ac419c330e0eb58917cdcc9b51bb46202"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/sdk-security-focused-final.xml": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-sdk-security-focused-final.xml",
+    "sha256": "f4dc0da79fa17f25e16ae111dd4ea491aa49923622aa5483d42c870d44ba6a75"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/domain-selected-dependency-build.log": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-domain-selected-dependency-build.log",
+    "sha256": "7908e8dc2fa54d041607b18109cbe48868f608593bf9e14b37ca699b30fa59eb"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/apphost-build-current.json": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-apphost-build-current.json",
+    "sha256": "b5204cd39ae75fe49e3659efe10980e3eb0ea4cf1c4eb89ea195ce52df1a25e4"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/sdk-security-focused-final.log": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-sdk-security-focused-final.log",
+    "sha256": "83facea657021cf39e01435f39016752f56105f015a41d2d971cac0117d082b7"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/workers-regressions-final.json": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-workers-regressions-final.json",
+    "sha256": "c89b294f0c400f656abfd78bb0a29c454832d04452ed49db3eae35e4b986c635"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/workers-regressions-final.xml": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-workers-regressions-final.xml",
+    "sha256": "31ec39bdec2056cbc8fc7e59cdb5bca9867768dfa1589b226be75889edd61d30"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/server-enrollment-final.json": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-server-enrollment-final.json",
+    "sha256": "0a7f4b5cfc9bdae70d1fd0e6fca5e2b65044953d775c0395067dd8027d9d4685"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/server-enrollment-final.xml": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-server-enrollment-final.xml",
+    "sha256": "d5dee63837e8a4e33157616e7d74a458ee94fb42982b466deab2b65230f7f26c"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/apphost-build-current.log": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-apphost-build-current.log",
+    "sha256": "3aace5dd75f549965b4a7004a26d2fa70f9f4f7f22ff75bd34012e31fd01d91b"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/workers-regressions-final.log": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-workers-regressions-final.log",
+    "sha256": "8a35f90c6756ec96411de194265035610685540b8950d77beb03173f3b4a31ee"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/contracts-observability-corrected.json": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-contracts-observability-corrected.json",
+    "sha256": "36442869f81546fbd625a04e8ceef5cef3497cc42b4449146a338af0266d3def"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/contracts-observability-corrected.xml": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-contracts-observability-corrected.xml",
+    "sha256": "91c902bc4ebd2a4c6d11ddff93e750c2be4043c708877225cc79584a71aa446d"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/contracts-observability-corrected.log": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-contracts-observability-corrected.log",
+    "sha256": "ea73b4636778b10eccb36cf197742a29621a15810ec331f8453c430c1fcc3792"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/integration-build.json": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-integration-build.json",
+    "sha256": "c8c21f31a47feb0c81bed9bd062e497777df5a23fe4d1de04ac0cca5465bdd57"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/integration-build.log": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-integration-build.log",
+    "sha256": "66ff740a7644e1470ded730503d9b604abd4ba9668a2a9b34dcd680c548abfa3"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/contracts-observability-final.json": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-contracts-observability-final.json",
+    "sha256": "7528647e42699cd03e32e677a674e8641f1f9a836efdbe2a12cba4b38569545e"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/contracts-observability-final.xml": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-contracts-observability-final.xml",
+    "sha256": "2a0039a5d5bd0f95932606a20c25b81b0eb85b3fb7dbcb4a2757ecbae63625e4"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/contracts-observability-final.log": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-contracts-observability-final.log",
+    "sha256": "d3c00e84eb280ef991c3a0496a8bbe5d99235b1378c43c39096c70d9bed328b5"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/sdk-composition-final.json": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-sdk-composition-final.json",
+    "sha256": "4c9ee99683ab92741c855ecc9eb2cc20c9eb3c45049081624d610860ad46405a"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/sdk-composition-final.xml": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-sdk-composition-final.xml",
+    "sha256": "448e772792a7e54e8a19c844dae59a65515a9ac9c1c40192b780baffbb241487"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/sdk-composition-final.log": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-sdk-composition-final.log",
+    "sha256": "fff7d0404c76b5170259b1055a1a14701346342fab3bf912c9742ca162996cd7"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/workers-enrollment-final.json": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-workers-enrollment-final.json",
+    "sha256": "d0f8d983fd9fc9f6146d042e5f1059086a171cb871de483604c1adcb6083997b"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/workers-enrollment-final.xml": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-workers-enrollment-final.xml",
+    "sha256": "7906d98c7d5a0a3d75eb0baa53a91b2a5e176ef9ad8c087c0e68cc4974aa5164"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/workers-enrollment-final.log": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-workers-enrollment-final.log",
+    "sha256": "da1931fc360074d1f434261a2a97a9449504a0fa5e99aa9f69622cf5f5817169"
+  },
+  "/dev/shm/folders-12-2-final-evidence-20261101/server-enrollment-final.log": {
+    "retained": "_bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/ram-server-enrollment-final.log",
+    "sha256": "24ff43972c9935fe99cbdd7258b591eecd27775dba0df5f83ce6e68a92eab9ad"
+  }
+}

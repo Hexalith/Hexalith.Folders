@@ -1,0 +1,24 @@
+{
+  "environmentPins": {
+    "TMPDIR": "/dev/shm/folders-12-2-test-tmp"
+  },
+  "argv": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:Version=3.128.4",
+    "--artifacts-path",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-security-enrollment-20261101",
+    "-m:1",
+    "-nr:false",
+    "-v:quiet"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T07:12:23.999200+00:00",
+  "finishedAtUtc": "2026-11-01T07:12:26.568148+00:00",
+  "exitCode": 0
+}

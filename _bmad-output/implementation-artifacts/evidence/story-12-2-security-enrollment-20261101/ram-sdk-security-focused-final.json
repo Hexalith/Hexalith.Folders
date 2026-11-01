@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "dotnet",
+    ".artifacts/story-12-2-security-enrollment-20261101/bin/Hexalith.EventStore.DomainService.Tests/debug/Hexalith.EventStore.DomainService.Tests.dll",
+    "-method",
+    "Hexalith.EventStore.DomainService.Tests.DomainServiceTrustBoundaryTests.InvalidCredential_IsDeniedBeforeDomainWork",
+    "-method",
+    "Hexalith.EventStore.DomainService.Tests.DomainServiceTrustBoundaryTests.LateCanonicalReplacementWithoutCatalogGuardIsDeniedBeforeHandler",
+    "-method",
+    "Hexalith.EventStore.DomainService.Tests.DomainServiceTrustBoundaryTests.ExplicitPublicEndpoint_FailsClosedAtStartup",
+    "-xml",
+    "/dev/shm/folders-12-2-final-evidence-20261101/sdk-security-focused-final.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "startedAtUtc": "2026-11-01T07:05:10.658683+00:00",
+  "finishedAtUtc": "2026-11-01T07:05:19.283415+00:00",
+  "exitCode": 0
+}

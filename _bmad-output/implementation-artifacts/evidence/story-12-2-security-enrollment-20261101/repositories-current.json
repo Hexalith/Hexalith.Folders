@@ -1,0 +1,54 @@
+{
+  "/home/administrator/projects/hexalith/folders": {
+    "head": "95528d734df9c9fbc60de594430490da0d494d36",
+    "status": " M references/Hexalith.Builds\n M references/Hexalith.EventStore\n M tests/Hexalith.Folders.Workers.Tests/WorkersHostSecurityEnrollmentTests.cs\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/contracts-build.json\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/sdk-artifact-relocation.json\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/sdk-security-tests.json\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/sdk-security-tests.xml\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/server-selected-dependency-build.json\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/workers-selected-dependency-build.json\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/workers-tests-final.json\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-security-enrollment-20261101/workers-tests-final.xml\n"
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants": {
+    "head": "9ed8737dedfbba660b9935b09696a74685201634",
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.AI.Tools": {
+    "head": "9b78aa008cfc62cd88ad0ea4b39b1f07311956ce",
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore": {
+    "head": "87d9d26ef3da72c40a300c4c5dacabff2cdcaf03",
+    "status": "?? .artifacts/\n"
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer": {
+    "head": "589d63aa1a91c9c602f4caa15deef48bcf035b0c",
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories": {
+    "head": "e0f3408fee7100c02d8fbc752e74483ad2f71b5f",
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons": {
+    "head": "0825abc8ed9338e5579ce5d995bd221dbaae9a1c",
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds": {
+    "head": "15d6a10c54660153cf8c05f24db83215824faf8e",
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations": {
+    "head": "92ede24cc11129379efe52cfe7fd2c820c567f7f",
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects": {
+    "head": "353cfd33e54270a1acb028c1c66ecb7cd548f3e7",
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform": {
+    "head": "75fd4c064054d176d1bb81eabf88ae630ae37c3e",
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli": {
+    "head": "8d74baacbe0713950cf11e1fe348d77e98563f56",
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties": {
+    "head": "a3666267868da046db164bba2668efc1325d42d5",
+    "status": ""
+  }
+}

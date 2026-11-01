@@ -1,0 +1,310 @@
+[
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: null)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.OK\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: 1)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.OK\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: 0)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.BadRequest\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: -1)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.BadRequest\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: 2)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.BadRequest\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: 2147483647)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.BadRequest\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"invalid-envelope\\\", expected: BadRequest)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.BadRequest\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"invalid-cursor\\\", expected: BadRequest)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.BadRequest\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"invalid-page\\\", expected: BadRequest)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.BadRequest\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"actor-exception\\\", expected: NotFound)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.NotFound\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"actor-not-found-infrastructure\\\", expected: NotFound)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.NotFound\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"serialization-failure\\\", expected: NotFound)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.NotFound\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"missing-payload\\\", expected: NotFound)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.NotFound\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"Forbidden\\\", expected: NotFound)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.NotFound\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"No projection state available for this aggregate\\\", expected: NotFound)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.NotFound\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"safe-denial\\\", expected: NotFound)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.NotFound\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"internal diagnostic tenant-secret folder-secret\\\", expected: NotFound)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.NotFound\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"unknown-handler\\\", expected: NotFound)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.NotFound\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"unverified-caller\\\", expected: NotFound)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.NotFound\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"allowed\\\", expected: OK)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.OK\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"stale\\\", expected: OK)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.OK\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"unavailable\\\", expected: OK)",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.OK\n    but was\nHttpStatusCode.ServiceUnavailable"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.RecordedNativeExpiryAllowsOnlyExactCleanCleanupOrConfirmedCompletion(publish: False)",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.RecordedNativeExpiryAllowsOnlyExactCleanCleanupOrConfirmedCompletion(publish: True)",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.DirectSealCannotUseReadAuthorityOrForeignTaskOrFutureFence(completion: False, denial: \\\"read-only\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.DirectSealCannotUseReadAuthorityOrForeignTaskOrFutureFence(completion: True, denial: \\\"read-only\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.DirectSealCannotUseReadAuthorityOrForeignTaskOrFutureFence(completion: False, denial: \\\"task\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.DirectSealCannotUseReadAuthorityOrForeignTaskOrFutureFence(completion: True, denial: \\\"task\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.DirectSealCannotUseReadAuthorityOrForeignTaskOrFutureFence(completion: False, denial: \\\"future-fence\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.DirectSealCannotUseReadAuthorityOrForeignTaskOrFutureFence(completion: True, denial: \\\"future-fence\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.QueuedRenewCannotBeAcknowledgedFromThePriorLease",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.ForeignTenantSelectorsDenyBeforeEvidenceLeaseOrUpload(operation: \\\"operation-evidence\\\")",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.NotFound\n    but was\nHttpStatusCode.InternalServerError"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.ForeignTenantSelectorsDenyBeforeEvidenceLeaseOrUpload(operation: \\\"task-lease\\\")",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.NotFound\n    but was\nHttpStatusCode.InternalServerError"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.ForeignTenantSelectorsDenyBeforeEvidenceLeaseOrUpload(operation: \\\"files/add\\\")",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.NotFound\n    but was\nHttpStatusCode.InternalServerError"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.NativeAddRejectsStreamedOrOversizeBeforeBodyPersistence(streamed: False)",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.NativeAddRejectsStreamedOrOversizeBeforeBodyPersistence(streamed: True)",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.MissingAcceptedLookupDoesNotRequireALeaseOrProveAbsence",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.MalformedNativeInputIsBoundedValidationAfterAuthorization(operation: \\\"operation-evidence\\\", body: \\\"{}\\\")",
+    "message": "Shouldly.ShouldAssertException : (int)response.StatusCode\n    should be in range\n{ from = 400, to = 499 }\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.MalformedNativeInputIsBoundedValidationAfterAuthorization(operation: \\\"operation-evidence\\\", body: \\\"\\\")",
+    "message": "Shouldly.ShouldAssertException : (int)response.StatusCode\n    should be in range\n{ from = 400, to = 499 }\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.MalformedNativeInputIsBoundedValidationAfterAuthorization(operation: \\\"operation-evidence\\\", body: \\\"null\\\")",
+    "message": "Shouldly.ShouldAssertException : (int)response.StatusCode\n    should be in range\n{ from = 400, to = 499 }\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.MalformedNativeInputIsBoundedValidationAfterAuthorization(operation: \\\"operation-evidence\\\", body: \\\"{\\\\\\\"operationId\\\\\\\":null}\\\")",
+    "message": "Shouldly.ShouldAssertException : (int)response.StatusCode\n    should be in range\n{ from = 400, to = 499 }\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.MalformedNativeInputIsBoundedValidationAfterAuthorization(operation: \\\"operation-evidence\\\", body: \\\"{\\\\\\\"pathMetadata\\\\\\\":{\\\\\\\"normalizedPath\\\\\\\":null}}\\\")",
+    "message": "Shouldly.ShouldAssertException : (int)response.StatusCode\n    should be in range\n{ from = 400, to = 499 }\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.MalformedNativeInputIsBoundedValidationAfterAuthorization(operation: \\\"task-lease\\\", body: \\\"{}\\\")",
+    "message": "Shouldly.ShouldAssertException : (int)response.StatusCode\n    should be in range\n{ from = 400, to = 499 }\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.MalformedNativeInputIsBoundedValidationAfterAuthorization(operation: \\\"task-lease\\\", body: \\\"\\\")",
+    "message": "Shouldly.ShouldAssertException : (int)response.StatusCode\n    should be in range\n{ from = 400, to = 499 }\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.MalformedNativeInputIsBoundedValidationAfterAuthorization(operation: \\\"task-lease\\\", body: \\\"null\\\")",
+    "message": "Shouldly.ShouldAssertException : (int)response.StatusCode\n    should be in range\n{ from = 400, to = 499 }\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.MalformedNativeInputIsBoundedValidationAfterAuthorization(operation: \\\"task-lease\\\", body: \\\"{\\\\\\\"operation\\\\\\\":\\\\\\\"renew\\\\\\\",\\\\\\\"requestedLeaseSeconds\\\\\\\":300}\\\")",
+    "message": "Shouldly.ShouldAssertException : (int)response.StatusCode\n    should be in range\n{ from = 400, to = 499 }\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.NewlyPolledAcquireRejectsReleaseDuringFinalAuthorization",
+    "message": "Shouldly.ShouldAssertException : (await Should.ThrowAsync<HexalithFoldersNativeApiException>(AcquireAsync(client)).ConfigureAwait(true)).StatusCode\n    should be\n409\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.AbsenceRequiresTheTasksLiveOwnerIssuedFence",
+    "message": "System.InvalidOperationException : HTTP Response: \n\nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects/hexalith/folders/tests/shared/NativeContent/NativeContentFixture.cs:line 81\n--- End of stack trace from previous location ---\n   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)\n   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)\n\nHEADERS\n=======\nContent-Type: application/json\nContent-Length: 64\nX-Correlation-Id: correlation-a\nX-Hexalith-Task-Id: task-a\nAccept: application/json\nHost: localhost\nAuthorization: Bearer native-test-human\n\n\nHexalith.Folders.Client.Native.HexalithFoldersNativeApiException: The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects\n   at Hexalith.Folders.Client.Native.NativeClient.ChangeNativeTaskLeaseAsync(String folderId, String workspaceId, String x_Correlation_Id, String x_Hexalith_Task_Id, NativeLeaseRequest body, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/Generated/HexalithFoldersNativeClient.g.cs:line 280\n   at Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.AbsenceRequiresTheTasksLiveOwnerIssuedFence() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/WorkspaceOperationEvidenceTests.cs:line 17"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.StaleUploadAndFingerprintConflictPreserveOnePublicationAndANewerHolder",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.ExpiredAcquireRecoveryCannotClearStagedWorkOrTakeAnotherTask(recordExpiry: False)",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.ExpiredAcquireRecoveryCannotClearStagedWorkOrTakeAnotherTask(recordExpiry: True)",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.NativeAcquireRenewAndReleaseReachTheSupportedLockHttpResponseAndGeneratedDecoder",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.LeaseCannotBypassEitherCurrentOwnerPermission(deniedAction: \\\"lock_workspace\\\", operation: \\\"acquire\\\")",
+    "message": "Shouldly.ShouldAssertException : (await Should.ThrowAsync<HexalithFoldersNativeApiException>(client.ChangeNativeTaskLeaseAsync(\\\"folder-a\\\", \\\"workspace-a\\\", \\\"correlation-a\\\", \\\"task-a\\\",\n            new() { Operation = operation, RequestedLeaseSeconds = 300, LockId = lease.LockId, OwnershipProof = lease.OwnershipProof, LockFence = lease.LockFence },\n            TestContext.Current.CancellationToken)).ConfigureAwait(true)).StatusCode\n    should be\n404\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.LeaseCannotBypassEitherCurrentOwnerPermission(deniedAction: \\\"mutate_files\\\", operation: \\\"acquire\\\")",
+    "message": "Shouldly.ShouldAssertException : (await Should.ThrowAsync<HexalithFoldersNativeApiException>(client.ChangeNativeTaskLeaseAsync(\\\"folder-a\\\", \\\"workspace-a\\\", \\\"correlation-a\\\", \\\"task-a\\\",\n            new() { Operation = operation, RequestedLeaseSeconds = 300, LockId = lease.LockId, OwnershipProof = lease.OwnershipProof, LockFence = lease.LockFence },\n            TestContext.Current.CancellationToken)).ConfigureAwait(true)).StatusCode\n    should be\n404\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.LeaseCannotBypassEitherCurrentOwnerPermission(deniedAction: \\\"lock_workspace\\\", operation: \\\"renew\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.LeaseCannotBypassEitherCurrentOwnerPermission(deniedAction: \\\"mutate_files\\\", operation: \\\"renew\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.LeaseCannotBypassEitherCurrentOwnerPermission(deniedAction: \\\"lock_workspace\\\", operation: \\\"release\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.LeaseCannotBypassEitherCurrentOwnerPermission(deniedAction: \\\"mutate_files\\\", operation: \\\"release\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.LeaseCannotBypassEitherCurrentOwnerPermission(deniedAction: \\\"lock_workspace\\\", operation: \\\"validate\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.LeaseCannotBypassEitherCurrentOwnerPermission(deniedAction: \\\"mutate_files\\\", operation: \\\"validate\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.LeaseCannotBypassEitherCurrentOwnerPermission(deniedAction: \\\"lock_workspace\\\", operation: \\\"complete\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.LeaseCannotBypassEitherCurrentOwnerPermission(deniedAction: \\\"mutate_files\\\", operation: \\\"complete\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.InvalidC7CeilingsCannotIssueALease(setting: \\\"RenewalIntervalSeconds\\\", value: 0)",
+    "message": "Shouldly.ShouldAssertException : (await Should.ThrowAsync<HexalithFoldersNativeApiException>(client.ChangeNativeTaskLeaseAsync(\\\"folder-a\\\", \\\"workspace-a\\\", \\\"correlation-a\\\", \\\"task-a\\\",\n            new() { Operation = \\\"acquire\\\", RequestedLeaseSeconds = 300 }, TestContext.Current.CancellationToken)).ConfigureAwait(true)).StatusCode\n    should be\n503\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.InvalidC7CeilingsCannotIssueALease(setting: \\\"AuthorizationIntervalSeconds\\\", value: 16)",
+    "message": "Shouldly.ShouldAssertException : (await Should.ThrowAsync<HexalithFoldersNativeApiException>(client.ChangeNativeTaskLeaseAsync(\\\"folder-a\\\", \\\"workspace-a\\\", \\\"correlation-a\\\", \\\"task-a\\\",\n            new() { Operation = \\\"acquire\\\", RequestedLeaseSeconds = 300 }, TestContext.Current.CancellationToken)).ConfigureAwait(true)).StatusCode\n    should be\n503\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.InvalidC7CeilingsCannotIssueALease(setting: \\\"RevocationEffectSeconds\\\", value: 5)",
+    "message": "Shouldly.ShouldAssertException : (await Should.ThrowAsync<HexalithFoldersNativeApiException>(client.ChangeNativeTaskLeaseAsync(\\\"folder-a\\\", \\\"workspace-a\\\", \\\"correlation-a\\\", \\\"task-a\\\",\n            new() { Operation = \\\"acquire\\\", RequestedLeaseSeconds = 300 }, TestContext.Current.CancellationToken)).ConfigureAwait(true)).StatusCode\n    should be\n503\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.InvalidC7CeilingsCannotIssueALease(setting: \\\"ExpiredToStaleSeconds\\\", value: -1)",
+    "message": "Shouldly.ShouldAssertException : (await Should.ThrowAsync<HexalithFoldersNativeApiException>(client.ChangeNativeTaskLeaseAsync(\\\"folder-a\\\", \\\"workspace-a\\\", \\\"correlation-a\\\", \\\"task-a\\\",\n            new() { Operation = \\\"acquire\\\", RequestedLeaseSeconds = 300 }, TestContext.Current.CancellationToken)).ConfigureAwait(true)).StatusCode\n    should be\n503\n    but was\n500"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.DirectSdkUploadCannotAssertAStaleOrFutureOwnerFence(assertedFence: 0)",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.DirectSdkUploadCannotAssertAStaleOrFutureOwnerFence(assertedFence: 2)",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.LeaseObservationRejectsAHeadChangeDuringFinalAuthorization(operation: \\\"validate\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.WorkspaceOperationEvidenceTests.LeaseObservationRejectsAHeadChangeDuringFinalAuthorization(operation: \\\"acquire\\\")",
+    "message": "Hexalith.Folders.Client.Native.HexalithFoldersNativeApiException : The HTTP status code of the response was not expected (500).\n\nStatus: 500\nResponse: \nSystem.InvalidOperationException: The AuthorizationPolicy named: 'EventStoreHuman' was not found.\n   at Microsoft.AspNetCore.Authorization.AuthorizationPolicy.CombineAsync(IAuthorizationPolicyProvider policyProvider, IEnumerable`1 authorizeData, IEnumerable`1 policies)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Hexalith.Folders.NativeContent.Tests.NativeContentFixture.<>c__DisplayClass18_0.<<CreateAsync>b__1>d.MoveNext() in /home/administrator/projects"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.ProductionProcessWireEventTests.SignedWorkloadAndHumanReceiptAreAcceptedByProductionProcessRegistration",
+    "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.OK\n    but was\nHttpStatusCode.InternalServerError\n\nAdditional Info:\n    System.InvalidOperationException: Unable to resolve service for type 'Hexalith.EventStore.DomainService.IDomainRouteCatalogGuard' while attempting to activate 'Hexalith.EventStore.DomainService.DomainRouteCatalogFilter'.\n   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)\n   at lambda_method106374(Closure, IServiceProvider, Object[])\n   at Microsoft.AspNetCore.Http.EndpointFilterExtensions.<>c__DisplayClass1_1`2.<AddEndpointFilter>b__1(EndpointFilterInvocationContext context)\n   at Hexalith.Folders.Server.FolderAuditEndpointFilter.InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next) in /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/FolderAuditEndpointFilter.cs:line 44\n   at Hexalith.Folders.Server.FolderAuditEndpointFilter.InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next) in /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/FolderAuditEndpointFilter.cs:line 57\n   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<ExecuteValueTaskOfObject>g__ExecuteAwaited|130_0(ValueTask`1 valueTask, HttpContext httpContext, JsonTypeInfo`1 jsonTypeInfo)\n   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()\n--- End of stack trace from previous location ---\n   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)\n   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)\n\nHEADERS\n=======\nHost: 127.0.0.1:45251\nContent-Type: application/json; charset=utf-8\ntraceparent: 00-19eca79ce99f6ec07e947f8404d31f31-d4faba3a8a10664c-01\nTransfer-Encoding: chunked\ndapr-api-token: test-sidecar-token\nX-Hexalith-Workload-Assertion: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJmb2xkZXJzIiwiaXNzIjoiaGV4YWxpdGgtZGV2IiwiZXhwIjoxNzkzNTE3MTcxLCJpYXQiOjE3OTM1MTcwNTEsIm5iZiI6MTc5MzUxNzA1MSwiYXpwIjoiZXZlbnRzdG9yZSIsImV2ZW50c3RvcmU6b3BlcmF0aW9uIjoiZG9tYWluLXNlcnZpY2U6cHJvY2VzcyJ9.XS1aBhoxXfSbsYCY7ea-5RuIFI6W63kgGYx-BpZcjUA\ndapr-caller-app-id: eventstore\n"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostStartsWithActorFoldedRepositories",
+    "message": "System.InvalidOperationException : Domain-service internal credentials are not configured: APP_API_TOKEN must be configured. Authentication:JwtBearer:AllowedAlgorithms must contain at least one non-blank supported asymmetric algorithm and must not contain symmetric or unknown algorithms."
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: \\\"folder\\\", memoryFallback: False, message: \\\"actor-folded folder repository\\\")",
+    "message": "Shouldly.ShouldAssertException : failure.Message\n    should contain (case insensitive comparison)\n\\\"actor-folded folder repository\\\"\n    but was actually\n\\\"Domain-service internal credentials are not configured: APP_API_TOKEN must be configured. Authentica...\\\""
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: \\\"folder\\\", memoryFallback: True, message: \\\"actor-folded folder repository\\\")",
+    "message": "Shouldly.ShouldAssertException : failure.Message\n    should contain (case insensitive comparison)\n\\\"actor-folded folder repository\\\"\n    but was actually\n\\\"Domain-service internal credentials are not configured: APP_API_TOKEN must be configured. Authentica...\\\""
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: \\\"binding\\\", memoryFallback: False, message: \\\"actor-folded organization repository\\\")",
+    "message": "Shouldly.ShouldAssertException : failure.Message\n    should contain (case insensitive comparison)\n\\\"actor-folded organization repository\\\"\n    but was actually\n\\\"Domain-service internal credentials are not configured: APP_API_TOKEN must be configured. Authentica...\\\""
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: \\\"binding\\\", memoryFallback: True, message: \\\"actor-folded organization repository\\\")",
+    "message": "Shouldly.ShouldAssertException : failure.Message\n    should contain (case insensitive comparison)\n\\\"actor-folded organization repository\\\"\n    but was actually\n\\\"Domain-service internal credentials are not configured: APP_API_TOKEN must be configured. Authentica...\\\""
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: \\\"acl\\\", memoryFallback: False, message: \\\"actor-folded organization ACL repository\\\")",
+    "message": "Shouldly.ShouldAssertException : failure.Message\n    should contain (case insensitive comparison)\n\\\"actor-folded organization ACL repository\\\"\n    but was actually\n\\\"Domain-service internal credentials are not configured: APP_API_TOKEN must be configured. Authentica...\\\""
+  }
+]

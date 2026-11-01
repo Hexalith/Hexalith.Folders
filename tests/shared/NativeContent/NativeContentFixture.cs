@@ -9,6 +9,8 @@ using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
 #endif
 
+using Hexalith.EventStore.ServiceDefaults.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.Text.Json;
 using Dapr.Client;
@@ -40,11 +42,15 @@ internal sealed class NativeContentFixture : IAsyncDisposable
     internal string? ContentFailure { get; set; }
     internal ClaimsPrincipal Principal { get; } = new(new ClaimsIdentity([new Claim("sub", "user-a"), new Claim("eventstore:tenant", "tenant-a"), new Claim("eventstore:permission", "mutate_files"),
         new Claim("eventstore:permission", "lock_workspace"), new Claim("eventstore:permission", "read_metadata"), new Claim("eventstore:permission", "read_workspace_lock")], "native-test"));
+    /// <summary>Creates an isolated native handler fixture with an explicitly supplied human principal.</summary>
+    /// <param name="folder">The fixture folder.</param>
+    /// <param name="workspace">The fixture workspace.</param>
     internal static async Task<NativeContentFixture> CreateAsync(string folder = "folder-a", string workspace = "workspace-a")
     {
         var fixture = new NativeContentFixture { Folder = folder.Replace(':', '_'), Workspace = workspace.Replace(':', '_') };
         var builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions { EnvironmentName = Environments.Development });
-        builder.WebHost.UseTestServer(); builder.Services.AddAuthentication(); builder.Services.AddAuthorization(); builder.Services.AddHealthChecks();
+        builder.WebHost.UseTestServer(); builder.Services.AddAuthentication(); builder.Services.AddAuthorization(options => options.AddPolicy(EventStoreHttpHostSecurityExtensions.HumanPolicy,
+            new AuthorizationPolicy(EventStoreHttpHostSecurityExtensions.CreateHumanPolicy().Requirements, []))); builder.Services.AddHealthChecks();
         builder.Configuration["Folders:WorkspaceFilePolicy:Version"] = "1.1.0";
         builder.Configuration["Folders:WorkspaceFilePolicy:ProtectionMode"] = "non_confidential";
         builder.Configuration["Folders:WorkspaceFilePolicy:Includes:0"] = "**";

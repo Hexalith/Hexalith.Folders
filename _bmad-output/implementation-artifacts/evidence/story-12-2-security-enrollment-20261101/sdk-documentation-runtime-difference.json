@@ -1,0 +1,12 @@
+[
+  {
+    "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.artifacts/story-12-2-security-enrollment-20261101/bin/Hexalith.EventStore.DomainService.Tests/debug/Hexalith.EventStore.DomainService.Tests.dll",
+    "before": "e05f35aa753c5fdf4cc71d495dab0ec274f1ce50b8a75465bfdafd8b82d8feb2",
+    "after": "64a7223b7a4fc78d7964ec40f79146e4bbc9501cccd4c7736d50f44b0dcceb40"
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.artifacts/story-12-2-security-enrollment-20261101/bin/Hexalith.EventStore.DomainService.Tests/debug/Hexalith.EventStore.DomainService.Tests.pdb",
+    "before": "caf5cab5d7de12aacdcbfad43976ddd0c5978ed7957ecea7b1d054149a3af984",
+    "after": "edcfafb4b72e5f10cff872e5215ef34141d0ccfbdf599d88a149e11f4784c0bb"
+  }
+]

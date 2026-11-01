@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "dotnet",
+    ".artifacts/story-12-2-security-enrollment-20261101/bin/Hexalith.Folders.Server.Tests/debug/Hexalith.Folders.Server.Tests.dll",
+    "-class",
+    "Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests",
+    "-class",
+    "Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests",
+    "-class",
+    "Hexalith.Folders.Server.Tests.ServiceDefaultsHealthEndpointTests",
+    "-xml",
+    "/dev/shm/folders-12-2-final-evidence-20261101/server-enrollment-final.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T07:04:08.640567+00:00",
+  "finishedAtUtc": "2026-11-01T07:04:57.042418+00:00",
+  "exitCode": 0
+}

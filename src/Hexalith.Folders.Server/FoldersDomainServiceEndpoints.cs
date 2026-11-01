@@ -89,6 +89,13 @@ public static partial class FoldersDomainServiceEndpoints
     private static readonly System.Text.RegularExpressions.Regex MetadataFilterRegex =
         new("\\A[a-z][A-Za-z0-9_=.,*\\- ]{0,255}\\z", System.Text.RegularExpressions.RegexOptions.Compiled);
 
+    /// <summary>Maps dispatcher results to the unchanged safe callback response.</summary>
+    /// <param name="result">The dispatcher result.</param>
+    /// <returns>The callback status and scrubbed response body.</returns>
+    internal static IResult ToQueryHttpResult(QueryResult result)
+        => result.Success ? Results.Ok(result) : result.ErrorMessage is QueryAdapterFailureReason.InvalidEnvelope or QueryAdapterFailureReason.InvalidCursor or QueryAdapterFailureReason.InvalidPage
+            ? Results.BadRequest(result) : Results.NotFound(QueryResult.Failure("safe-denial"));
+
     public static IEndpointRouteBuilder MapFoldersDomainServiceEndpoints(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
@@ -98,8 +105,7 @@ public static partial class FoldersDomainServiceEndpoints
         endpoints.MapPost("/query", async (QueryEnvelope query, IServiceProvider services, CancellationToken token) =>
         {
             QueryResult result = await DomainQueryDispatcher.ExecuteAsync(services, query, token).ConfigureAwait(false);
-            return result.Success ? Results.Ok(result) : result.ErrorMessage is QueryAdapterFailureReason.InvalidEnvelope or QueryAdapterFailureReason.InvalidCursor or QueryAdapterFailureReason.InvalidPage
-                ? Results.BadRequest(result) : Results.NotFound(QueryResult.Failure("safe-denial"));
+            return ToQueryHttpResult(result);
         }).RequireEventStoreDomainServicePolicy("/query");
 
         RouteHandlerBuilder processEndpoint = endpoints.MapPost(FoldersServerModule.ProcessRoute, async (
@@ -130,10 +136,9 @@ public static partial class FoldersDomainServiceEndpoints
                     services, request, cancellationToken);
                 if (projection?.ProjectionType == "organization-provider-binding"
                     && ProviderBindingActorId.IsReserved(request.AggregateId) && request.Events.Length > 0
-                    && services.GetService<HumanAuthorityReceiptVerifier>() is not null)
+                    && services.GetService<Hexalith.Folders.Queries.ProviderReadiness.EventStoreProviderReadinessBindingReadModel>() is { } providerReadModel)
                 {
-                    await services.GetRequiredService<Hexalith.Folders.Queries.ProviderReadiness.EventStoreProviderReadinessBindingReadModel>()
-                        .RebuildAsync(request.TenantId, request.AggregateId, FolderEventReplay.FoldOrganization(request),
+                    await providerReadModel.RebuildAsync(request.TenantId, request.AggregateId, FolderEventReplay.FoldOrganization(request),
                             request.Events.Select(item => new FolderProjectionMessage(item.SequenceNumber, item.MessageId ?? throw new InvalidOperationException("Provider source message identity is missing."),
                                 Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
                                     [.. System.Text.Encoding.UTF8.GetBytes(item.EventTypeName + ":" + (item.StoredPayloadVersion ?? 1) + ":"), .. item.Payload])))).ToArray(),

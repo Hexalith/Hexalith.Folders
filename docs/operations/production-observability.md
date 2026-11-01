@@ -88,4 +88,6 @@ Use these rerun rules to decide when to rerun the gate:
 
 ## Authenticated health aliases
 
-Only exact `/health`, `/alive` and `/ready` probes allow anonymous access. Server `/health/live` and `/health/ready` aliases and `/` require the named human bearer policy. Workers aliases and `/` require the receiver application-channel token. Probe suffixes and unclassified endpoints stay denied. The readiness check selection and degraded-but-serving behavior are unchanged.
+Only exact `/health`, `/alive` and `/ready` probes allow anonymous access. Server `/health/live` and `/health/ready` aliases and `/` require the named human policy. Workers aliases and `/` require the authenticated receiver channel. Probe suffixes and unclassified endpoints stay denied. The readiness check selection and degraded-but-serving behavior are unchanged.
+
+Canonical callbacks also require an activated SDK route catalog and generation binding; host registration alone leaves them unavailable. Operational projection declarations describe the named operational view. Command admission enrollment requires its owning declarations. Configuration alone never establishes readiness.

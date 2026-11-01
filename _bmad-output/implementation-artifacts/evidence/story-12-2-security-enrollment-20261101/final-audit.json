@@ -1,0 +1,24 @@
+{
+  "sealedAtUtc": "2026-11-01T07:33:12.177469+00:00",
+  "sourceInputs": 17890,
+  "sourceDifferencesSinceFinalCapture": [],
+  "runtimeDifferencesSinceFinalCapture": {
+    "consumer": [],
+    "sdk": []
+  },
+  "headDifferencesSinceFinalCapture": [],
+  "frozenIntentMatchesCurrentExternalHead": true,
+  "frozenIntentSha256": "594ee179697159c0d4bb561258de1ced5942925ba755a96856d2d07f0f5ad61c",
+  "originalStoryBaseline": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "enrollmentBaseline": "91c0b89801a114962433f6dc6efd54d308d9a548",
+  "rootGitmodulesSha256": "c9daa495deb0a5903771cbbfeef10f6d376a3e521c8f6ad7447aae689c5bcf37",
+  "incompleteRetainedAttempts": [
+    "sdk-security-tests.xml",
+    "contracts-tests.json",
+    "workers-tests-final.json",
+    "workers-tests-final.xml",
+    "sdk-security-tests.json",
+    "contracts-build.json",
+    "sdk-composition-final.json"
+  ]
+}

@@ -1,0 +1,334 @@
+{
+  "parent-sdk-composition.xml": {
+    "path": "final-parent-sdk-composition.xml",
+    "sha256": "779210c0f90de3ee3844028d9259aaefa1c8e6a5b8435cb07f4568842c71558b"
+  },
+  "operational-histories-final.json": {
+    "path": "final-operational-histories-final.json",
+    "sha256": "ce051d5825b655bdff44d110acfa72344d71d03988e580163193fb127a77738f"
+  },
+  "operational-histories-final.xml": {
+    "path": "final-operational-histories-final.xml",
+    "sha256": "25e19e2282d1ff9b7db1ec8dd2e0cb9d17174d572d7231fa31b1bad95b8a9acd"
+  },
+  "sdk-test-documentation-build.json": {
+    "path": "final-sdk-test-documentation-build.json",
+    "sha256": "4308e95bf0873fec4ac1561b34126fcbe5838706b6ea021773082662ba346c43"
+  },
+  "sdk-test-documentation-build.log": {
+    "path": "final-sdk-test-documentation-build.log",
+    "sha256": "0d7da2f0fe01f85443e860670d27130839903ff1f4c9d2931825c2ce17f383fa"
+  },
+  "service-defaults-documentation-build.json": {
+    "path": "final-service-defaults-documentation-build.json",
+    "sha256": "25ae006b498ca852960034cf83eb2026c19f63ae1f791ad9d111acc107a53153"
+  },
+  "service-defaults-documentation-build.log": {
+    "path": "final-service-defaults-documentation-build.log",
+    "sha256": "0a4674df941a2aaeb424702a301acca3c3646796e69c58f583c0fab982c13fb0"
+  },
+  "server-broad-final.json": {
+    "path": "final-server-broad-final.json",
+    "sha256": "189bb7e42230216456bb4ca605e5e63858391cc97098cafff614e838affc7eb7"
+  },
+  "server-broad-final.xml": {
+    "path": "final-server-broad-final.xml",
+    "sha256": "936c4504b1960fb5f32f7982626e085ccfce08d9ee1071093ff02669266cd5c9"
+  },
+  "operational-histories-final.log": {
+    "path": "final-operational-histories-final.log",
+    "sha256": "20afd53d433407c9b473394be178c82ee106a83f1d7adc98758fa44ab1f750dd"
+  },
+  "domain-final-selection-build.json": {
+    "path": "final-domain-final-selection-build.json",
+    "sha256": "9ff6cea3ab74a147ab33202104488f0a011e377c86bc166a4088ae51f33174bc"
+  },
+  "domain-final-selection-build.log": {
+    "path": "final-domain-final-selection-build.log",
+    "sha256": "917f3a80c953c5c721ed2898aa05f3a26ca05a9e156f3e5b732c35d10be08e2b"
+  },
+  "server-broad-final.log": {
+    "path": "final-server-broad-final.log",
+    "sha256": "62a1200685d044c8e2ecef0c055d98627f31abd8b9876f9d9f44503cec9694a1"
+  },
+  "server-final-selected-build.json": {
+    "path": "final-server-final-selected-build.json",
+    "sha256": "4783783c7bf4d36e6c059e9b90166d31d1044191f7146560c0f9283e92718f4f"
+  },
+  "server-final-selected-build.log": {
+    "path": "final-server-final-selected-build.log",
+    "sha256": "b206e9bed3cef8f99ec49d505daaf9aa9d184f4537b9eb85a6be8131675502d6"
+  },
+  "server-product-selected-final.json": {
+    "path": "final-server-product-selected-final.json",
+    "sha256": "1c41dde3630e1e94a39960d152ff2b2f43db724503f9721dd6f285f7465b5258"
+  },
+  "server-product-selected-final.log": {
+    "path": "final-server-product-selected-final.log",
+    "sha256": "79dd8615e68097047680d0497eb6d373a029f6c687211357139cdc9074f0f461"
+  },
+  "server-fixtures-focused.json": {
+    "path": "final-server-fixtures-focused.json",
+    "sha256": "fb0349c18f952ec2c475e8c5e0c6e0d0adf2590333e6200a82a7b9730c65935b"
+  },
+  "server-fixtures-focused.xml": {
+    "path": "final-server-fixtures-focused.xml",
+    "sha256": "59144b6b7f996917142eb021617672d7dc40d265b7f308894061ee25ba07e039"
+  },
+  "server-fixtures-focused.log": {
+    "path": "final-server-fixtures-focused.log",
+    "sha256": "805dca913968a657d4e8c26c49bebee958d57549f9d9f9f06af57cbc4c8154c6"
+  },
+  "server-tests-catalog-fixtures-build.json": {
+    "path": "final-server-tests-catalog-fixtures-build.json",
+    "sha256": "80a32f4961849be15718b66a043eca6826660f5875138a0743decd40d353631d"
+  },
+  "server-tests-catalog-fixtures-build.log": {
+    "path": "final-server-tests-catalog-fixtures-build.log",
+    "sha256": "1891963f77b1945240b0ed39f1c6e553c9400067a840503404f37bc6dcbb6e13"
+  },
+  "server-remaining-failures.json": {
+    "path": "final-server-remaining-failures.json",
+    "sha256": "67825336afe0c87abf81e7ed16c1ada2db4045760d5792844c3c1dc8397cd661"
+  },
+  "testing-fixture-defaults-final.json": {
+    "path": "final-testing-fixture-defaults-final.json",
+    "sha256": "b57a360eba5b1b26e73b19ea2febb16c878c2568ccd980857124f31589c2258d"
+  },
+  "testing-fixture-defaults-final.xml": {
+    "path": "final-testing-fixture-defaults-final.xml",
+    "sha256": "87bb499671fec79f2257ddd3d3f784024dedd7f0f1739fbc573c7e9bfafd2f6a"
+  },
+  "testing-fixture-defaults-final.log": {
+    "path": "final-testing-fixture-defaults-final.log",
+    "sha256": "5bbcd90eff685679775ba99f1e55287e4ba1884edcde97a61bf992fc03de6ba0"
+  },
+  "server-broad-selected-corrected.json": {
+    "path": "final-server-broad-selected-corrected.json",
+    "sha256": "60b437886cb22f5b33c57cd1d5cccb6e08a9e4fbac3514b33ea33f4c1d37bfc3"
+  },
+  "server-broad-selected-corrected.xml": {
+    "path": "final-server-broad-selected-corrected.xml",
+    "sha256": "fe53e225e87f3cdcc50f82148741bea1b24fc87e5f62fd0cf7113275ea86a745"
+  },
+  "operational-domain-final.json": {
+    "path": "final-operational-domain-final.json",
+    "sha256": "c613c6df9db95d96fbd2a004872a18695ba7c0b9f994bd24611752589a2259f8"
+  },
+  "operational-domain-final.xml": {
+    "path": "final-operational-domain-final.xml",
+    "sha256": "1f7bf28a1c236ceb0ae24dd01913e1563628231b2a843b6860218900870593f1"
+  },
+  "testing-current-build.json": {
+    "path": "final-testing-current-build.json",
+    "sha256": "2a055b02340008840c80efd94d884a15a0ec241cf225718fcc4a18aa06d9217a"
+  },
+  "testing-current-build.log": {
+    "path": "final-testing-current-build.log",
+    "sha256": "730c4e79fc4256b6b2b1d7b8b3df81570a9f9e124c38176371d2ac5d85c27a88"
+  },
+  "contracts-broad-final.json": {
+    "path": "final-contracts-broad-final.json",
+    "sha256": "cb64ad271434cdbe0569925840bfcf80b9d6af809dc27a9be951fbc34c790c25"
+  },
+  "contracts-broad-final.xml": {
+    "path": "final-contracts-broad-final.xml",
+    "sha256": "d6f1cfd973d7f141300cb2ee246b30a76e6c1e58ea07ed1a43935900b673b019"
+  },
+  "operational-domain-final.log": {
+    "path": "final-operational-domain-final.log",
+    "sha256": "2536db3c07d8f3d6f6af01827c3fb59b2b513b8d76012e5fe838a1d0736aab1b"
+  },
+  "workers-broad-selected-corrected.json": {
+    "path": "final-workers-broad-selected-corrected.json",
+    "sha256": "77ba13a59c2f8e343430c3517795a4822a0ebf51304897d5c60b479db353c01f"
+  },
+  "workers-broad-selected-corrected.xml": {
+    "path": "final-workers-broad-selected-corrected.xml",
+    "sha256": "9794139a1f437a2677c2bb0fb4d650567779aaa0bc34c005d257d272d86cb4f6"
+  },
+  "workers-broad-selected-corrected.log": {
+    "path": "final-workers-broad-selected-corrected.log",
+    "sha256": "23732f990d4fa74770524915f5f31548b74e07a650efe981aa6abff44bb495e4"
+  },
+  "domain-tests-selected-build-final.json": {
+    "path": "final-domain-tests-selected-build-final.json",
+    "sha256": "7faa58b8ad2d733c543a073b7c8c6b11acb76a568e715d29bc011003dc479d65"
+  },
+  "domain-tests-selected-build-final.log": {
+    "path": "final-domain-tests-selected-build-final.log",
+    "sha256": "f37840f16347e322e0f8051577a978261241a7d4eff4cf4ee4c3de350d820b9c"
+  },
+  "contracts-broad-final.log": {
+    "path": "final-contracts-broad-final.log",
+    "sha256": "96f7c880b26c35e70770d6e74639cd36cb33c102f92825e3396a2266c80c45f0"
+  },
+  "workers-tests-selected-build-final.json": {
+    "path": "final-workers-tests-selected-build-final.json",
+    "sha256": "4e2ce1ebb19fe5ab89ec9bd5f623f9aea47f8ee65ede5f778a80617c467c0fd3"
+  },
+  "server-broad-selected-corrected.log": {
+    "path": "final-server-broad-selected-corrected.log",
+    "sha256": "b701ce73417f0af5de86f9c644a992d8bad572647eda782d7be2f765494de5fa"
+  },
+  "workers-tests-selected-build-final.log": {
+    "path": "final-workers-tests-selected-build-final.log",
+    "sha256": "084f855b1ea33849af712b062954db298ca9a80e894bc9daf00489e2d9421453"
+  },
+  "server-tests-selected-build-final.json": {
+    "path": "final-server-tests-selected-build-final.json",
+    "sha256": "c9b84e8fd71829eabdc7d75d0253728383bc569c8659b3af753dada5d8ad11e0"
+  },
+  "server-tests-selected-build-final.log": {
+    "path": "final-server-tests-selected-build-final.log",
+    "sha256": "73a90a0792a33a09eacfb56fb66f4cc1432006cf32ae47864a0d51ebe04cfb43"
+  },
+  "service-defaults-selected-rebuild.json": {
+    "path": "final-service-defaults-selected-rebuild.json",
+    "sha256": "67be8674374a7c26e031736d350172b05fb33dc738484b958a633d6dab4537ff"
+  },
+  "service-defaults-selected-rebuild.log": {
+    "path": "final-service-defaults-selected-rebuild.log",
+    "sha256": "a967c427c26353abc1234fbc5fb8542bcaafb540eebe8ebae41e9964b1ed4007"
+  },
+  "testing-selected-rebuild.json": {
+    "path": "final-testing-selected-rebuild.json",
+    "sha256": "6054515161898c815b86b468f1329e7c4777e481a6f2c282e6d1b2a5df3448d6"
+  },
+  "testing-selected-rebuild.log": {
+    "path": "final-testing-selected-rebuild.log",
+    "sha256": "979090d1afb8af794977ceae5b64b3660c2694cbe7c0766aebeb619aa962fbea"
+  },
+  "operational-domain-selected.json": {
+    "path": "final-operational-domain-selected.json",
+    "sha256": "0cf5787c84f00a65efb6811561e054c613b46339ea0370f4497de0321869c7fe"
+  },
+  "operational-domain-selected.xml": {
+    "path": "final-operational-domain-selected.xml",
+    "sha256": "362895f5b4f71ad8033877822d3d29e7216eeb8f877cce96b9687f53cde80793"
+  },
+  "server-product-selected-rebuild.json": {
+    "path": "final-server-product-selected-rebuild.json",
+    "sha256": "55c893b71e4a38fdcccbeadee1cbde77f4301d98b8fc8451588613494b6019e6"
+  },
+  "server-product-selected-rebuild.log": {
+    "path": "final-server-product-selected-rebuild.log",
+    "sha256": "eadc237f2118cbd9c70ea712b762df9ca84b8657145398c10abe107f3bd7a316"
+  },
+  "operational-domain-selected.log": {
+    "path": "final-operational-domain-selected.log",
+    "sha256": "48efaf879e1cff701e521ca719357694f05d0580736fd18eee205ddadd9c3bf9"
+  },
+  "domain-selected-dependency-build.json": {
+    "path": "final-domain-selected-dependency-build.json",
+    "sha256": "b9f58f1ce7e469c13697d94a215548af5aecb48c75db1fd69e6df607903ef7e5"
+  },
+  "sdk-security-focused-final.json": {
+    "path": "final-sdk-security-focused-final.json",
+    "sha256": "7c71ca79eaa140c6f513a7b52fedc80ac419c330e0eb58917cdcc9b51bb46202"
+  },
+  "sdk-security-focused-final.xml": {
+    "path": "final-sdk-security-focused-final.xml",
+    "sha256": "f4dc0da79fa17f25e16ae111dd4ea491aa49923622aa5483d42c870d44ba6a75"
+  },
+  "domain-selected-dependency-build.log": {
+    "path": "final-domain-selected-dependency-build.log",
+    "sha256": "7908e8dc2fa54d041607b18109cbe48868f608593bf9e14b37ca699b30fa59eb"
+  },
+  "apphost-build-current.json": {
+    "path": "final-apphost-build-current.json",
+    "sha256": "b5204cd39ae75fe49e3659efe10980e3eb0ea4cf1c4eb89ea195ce52df1a25e4"
+  },
+  "sdk-security-focused-final.log": {
+    "path": "final-sdk-security-focused-final.log",
+    "sha256": "83facea657021cf39e01435f39016752f56105f015a41d2d971cac0117d082b7"
+  },
+  "workers-regressions-final.json": {
+    "path": "final-workers-regressions-final.json",
+    "sha256": "c89b294f0c400f656abfd78bb0a29c454832d04452ed49db3eae35e4b986c635"
+  },
+  "workers-regressions-final.xml": {
+    "path": "final-workers-regressions-final.xml",
+    "sha256": "31ec39bdec2056cbc8fc7e59cdb5bca9867768dfa1589b226be75889edd61d30"
+  },
+  "server-enrollment-final.json": {
+    "path": "final-server-enrollment-final.json",
+    "sha256": "0a7f4b5cfc9bdae70d1fd0e6fca5e2b65044953d775c0395067dd8027d9d4685"
+  },
+  "server-enrollment-final.xml": {
+    "path": "final-server-enrollment-final.xml",
+    "sha256": "d5dee63837e8a4e33157616e7d74a458ee94fb42982b466deab2b65230f7f26c"
+  },
+  "apphost-build-current.log": {
+    "path": "final-apphost-build-current.log",
+    "sha256": "3aace5dd75f549965b4a7004a26d2fa70f9f4f7f22ff75bd34012e31fd01d91b"
+  },
+  "workers-regressions-final.log": {
+    "path": "final-workers-regressions-final.log",
+    "sha256": "8a35f90c6756ec96411de194265035610685540b8950d77beb03173f3b4a31ee"
+  },
+  "contracts-observability-corrected.json": {
+    "path": "final-contracts-observability-corrected.json",
+    "sha256": "36442869f81546fbd625a04e8ceef5cef3497cc42b4449146a338af0266d3def"
+  },
+  "contracts-observability-corrected.xml": {
+    "path": "final-contracts-observability-corrected.xml",
+    "sha256": "91c902bc4ebd2a4c6d11ddff93e750c2be4043c708877225cc79584a71aa446d"
+  },
+  "contracts-observability-corrected.log": {
+    "path": "final-contracts-observability-corrected.log",
+    "sha256": "ea73b4636778b10eccb36cf197742a29621a15810ec331f8453c430c1fcc3792"
+  },
+  "integration-build.json": {
+    "path": "final-integration-build.json",
+    "sha256": "c8c21f31a47feb0c81bed9bd062e497777df5a23fe4d1de04ac0cca5465bdd57"
+  },
+  "integration-build.log": {
+    "path": "final-integration-build.log",
+    "sha256": "66ff740a7644e1470ded730503d9b604abd4ba9668a2a9b34dcd680c548abfa3"
+  },
+  "contracts-observability-final.json": {
+    "path": "final-contracts-observability-final.json",
+    "sha256": "7528647e42699cd03e32e677a674e8641f1f9a836efdbe2a12cba4b38569545e"
+  },
+  "contracts-observability-final.xml": {
+    "path": "final-contracts-observability-final.xml",
+    "sha256": "2a0039a5d5bd0f95932606a20c25b81b0eb85b3fb7dbcb4a2757ecbae63625e4"
+  },
+  "contracts-observability-final.log": {
+    "path": "final-contracts-observability-final.log",
+    "sha256": "d3c00e84eb280ef991c3a0496a8bbe5d99235b1378c43c39096c70d9bed328b5"
+  },
+  "sdk-composition-final.json": {
+    "path": "final-sdk-composition-final.json",
+    "sha256": "4c9ee99683ab92741c855ecc9eb2cc20c9eb3c45049081624d610860ad46405a"
+  },
+  "sdk-composition-final.xml": {
+    "path": "final-sdk-composition-final.xml",
+    "sha256": "448e772792a7e54e8a19c844dae59a65515a9ac9c1c40192b780baffbb241487"
+  },
+  "sdk-composition-final.log": {
+    "path": "final-sdk-composition-final.log",
+    "sha256": "fff7d0404c76b5170259b1055a1a14701346342fab3bf912c9742ca162996cd7"
+  },
+  "workers-enrollment-final.json": {
+    "path": "final-workers-enrollment-final.json",
+    "sha256": "d0f8d983fd9fc9f6146d042e5f1059086a171cb871de483604c1adcb6083997b"
+  },
+  "workers-enrollment-final.xml": {
+    "path": "final-workers-enrollment-final.xml",
+    "sha256": "7906d98c7d5a0a3d75eb0baa53a91b2a5e176ef9ad8c087c0e68cc4974aa5164"
+  },
+  "workers-enrollment-final.log": {
+    "path": "final-workers-enrollment-final.log",
+    "sha256": "da1931fc360074d1f434261a2a97a9449504a0fa5e99aa9f69622cf5f5817169"
+  },
+  "server-enrollment-final.log": {
+    "path": "final-server-enrollment-final.log",
+    "sha256": "24ff43972c9935fe99cbdd7258b591eecd27775dba0df5f83ce6e68a92eab9ad"
+  },
+  "run.py": {
+    "path": "final-run.py",
+    "sha256": "43b0e85ecb21d5e3d284ffd52e009154ca081f606f25421d63028858c32e7d04"
+  }
+}

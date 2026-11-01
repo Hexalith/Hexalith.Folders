@@ -43,17 +43,13 @@ public sealed class ProviderBindingDeliveryRepairTests
         builder.Services.AddSingleton<IReadModelStore>(store);
         builder.Services.RemoveAll<IOrganizationStreamSequenceReader>();
         builder.Services.AddSingleton<IOrganizationStreamSequenceReader>(new OperationalStatusSequenceReader { Head = 1 });
-        builder.Services.AddSingleton<HumanAuthorityReceiptVerifier>();
-        // Production workload assertions are exercised by Server tests; this in-process composition
-        // uses the same authenticated sidecar caller for both routes and never publishes externally.
-        builder.Services.AddAuthorization(options => options.AddPolicy(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
-            EventStoreWorkloadAuthenticationDefaults.WorkloadScheme, EventStoreWorkloadOperations.DomainServiceProject),
-            policy => policy.AddAuthenticationSchemes(EventStoreWorkloadAuthenticationDefaults.SidecarChannelScheme).RequireAuthenticatedUser()));
+        // This component host qualifies domain projection parity using the actual channel scheme.
+        // Production workload/catalog admission is qualified separately through the real host pipeline.
         await using WebApplication app = builder.Build();
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapFoldersTenantEventWorkerEndpoints();
-        app.MapFoldersDomainServiceEndpoints();
+        app.MapGroup("").RequireEventStoreChannel().MapFoldersDomainServiceEndpoints();
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
         client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
@@ -76,6 +72,7 @@ public sealed class ProviderBindingDeliveryRepairTests
             delivered.StatusCode.ShouldBe(HttpStatusCode.OK);
         string key = EventStoreProviderReadinessBindingReadModel.Key("tenant-a", actor);
         string live = JsonSerializer.Serialize((await store.GetAsync<ProviderBindingProjection>("statestore", key, TestContext.Current.CancellationToken)).Value);
+        store.Remove(key); // Rebuild must recreate the derived row; a skipped branch cannot pass parity.
         ProjectionRequest history = new("tenant-a", "folders", actor,
             [new(typeof(ProviderBindingConfigured).FullName!, payload, "json", 1, configured.OccurredAt, "corr", "source-1")
             { MetadataVersion = 1, GlobalPosition = 1 }]);

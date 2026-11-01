@@ -11,8 +11,10 @@ internal sealed class FoldersCatalogStateStore : IRouteCatalogStateStore
     private byte[] _state = JsonSerializer.SerializeToUtf8Bytes(RouteCatalogActivationState.Empty);
     private long _version;
 
+    /// <inheritdoc/>
     public RouteCatalogStateCoordinates Coordinates { get; } = new("route-catalog", "folders-isolated-catalog", "http://127.0.0.1:3500/");
 
+    /// <inheritdoc/>
     public Task<(RouteCatalogActivationState State, string ETag)> ReadAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -20,6 +22,7 @@ internal sealed class FoldersCatalogStateStore : IRouteCatalogStateStore
             return Task.FromResult((JsonSerializer.Deserialize<RouteCatalogActivationState>(_state)!, _version.ToString(CultureInfo.InvariantCulture)));
     }
 
+    /// <inheritdoc/>
     public Task<bool> CompareExchangeAsync(RouteCatalogActivationState state, string etag, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

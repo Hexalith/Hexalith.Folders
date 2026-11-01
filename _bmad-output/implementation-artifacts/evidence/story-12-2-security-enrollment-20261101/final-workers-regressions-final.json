@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "dotnet",
+    ".artifacts/story-12-2-security-enrollment-20261101/bin/Hexalith.Folders.Workers.Tests/debug/Hexalith.Folders.Workers.Tests.dll",
+    "-xml",
+    "/dev/shm/folders-12-2-final-evidence-20261101/workers-regressions-final.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T07:04:54.078379+00:00",
+  "finishedAtUtc": "2026-11-01T07:04:59.068676+00:00",
+  "exitCode": 1
+}

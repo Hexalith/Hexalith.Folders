@@ -12,6 +12,7 @@ namespace Hexalith.Folders.Server.Tests;
 internal static class FoldersProductionTestHost
 {
     /// <summary>Creates the actual production service graph without an external listener.</summary>
+    /// <param name="environmentName">The explicit test environment, Production unless the supported catalog fixture is requested.</param>
     /// <returns>A builder ready for pipeline composition and startup.</returns>
     internal static WebApplicationBuilder CreateBuilder(string environmentName = "Production")
     {
@@ -25,6 +26,8 @@ internal static class FoldersProductionTestHost
             ["Authentication:JwtBearer:Authority"] = "https://identity.example.test/realms/folders",
             ["Authentication:JwtBearer:Issuer"] = "https://identity.example.test/realms/folders",
             ["Authentication:JwtBearer:Audience"] = "folders",
+            ["Authentication:JwtBearer:AllowedAlgorithms:0"] = "RS256",
+            ["APP_API_TOKEN"] = "production-fixture-channel",
         });
         builder.WebHost.UseTestServer();
         builder.AddFoldersServerHost();

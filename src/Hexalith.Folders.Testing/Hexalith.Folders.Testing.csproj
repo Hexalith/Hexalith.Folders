@@ -18,6 +18,8 @@
          The release-package gate no longer needs the pin: tests/tools/run-release-package-gates.ps1
          already passes -m:1 to restore, build, and pack (lines 317, 318, 338), so there is no
          parallel framework negotiation left for it to guard against. -->
+    <ProjectReference Include="$(HexalithEventStoreRoot)/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
+    <PackageReference Include="Hexalith.EventStore.ServiceDefaults" Condition="'$(HexalithEventStoreFromSource)' != 'true'" />
     <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" />
     <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
   </ItemGroup>

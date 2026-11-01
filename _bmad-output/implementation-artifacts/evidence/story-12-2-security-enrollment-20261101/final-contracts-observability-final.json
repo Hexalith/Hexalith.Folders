@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "dotnet",
+    ".artifacts/story-12-2-security-enrollment-20261101/bin/Hexalith.Folders.Contracts.Tests/debug/Hexalith.Folders.Contracts.Tests.dll",
+    "-class",
+    "Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests",
+    "-class",
+    "Hexalith.Folders.Contracts.Tests.Deployment.OperationsAuditDocsConformanceTests",
+    "-xml",
+    "/dev/shm/folders-12-2-final-evidence-20261101/contracts-observability-final.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T07:04:19.086845+00:00",
+  "finishedAtUtc": "2026-11-01T07:04:20.025145+00:00",
+  "exitCode": 1
+}

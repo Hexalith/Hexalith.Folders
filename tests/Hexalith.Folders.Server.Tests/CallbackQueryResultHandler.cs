@@ -1,3 +1,5 @@
+using Hexalith.EventStore.Contracts.Authorization;
+using Hexalith.EventStore.Contracts.Routing;
 using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.DomainService;
 
@@ -12,6 +14,11 @@ internal sealed class CallbackQueryResultHandler(QueryResult result) : IDomainQu
 
     /// <inheritdoc/>
     public string QueryType => "callback-boundary-test";
+
+    /// <summary>Gets the isolated handler's exact owner declaration, without any command admission policy.</summary>
+    internal static RouteContractDeclaration CatalogDeclaration { get; } = new("folders-callback-fixture", "query", "folders", "callback-boundary-test", null,
+        "v1", null, "workload", EventStoreOperationIdentifiers.DomainServiceQuery, null, [],
+        new(typeof(CallbackQueryResultHandler).FullName!, "exact", ["callback-boundary-test"], "domain-service", "computed", []));
 
     /// <summary>Gets the number of dispatched queries.</summary>
     internal int Calls { get; private set; }

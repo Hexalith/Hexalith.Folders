@@ -30,6 +30,9 @@ public sealed class FoldersHostSecurityEnrollmentTests
     private const string Issuer = "https://identity.example.test/realms/folders";
     private const string Channel = "enrollment-receiver-channel";
 
+    /// <summary>Preserves safe v1 denials and prevents protected observation for each credential kind and route group.</summary>
+    /// <param name="method">The v1 HTTP method.</param>
+    /// <param name="route">The protected route group representative.</param>
     [Theory]
     [InlineData("GET", "/api/v1/folders/folder/lifecycle-status")]
     [InlineData("GET", "/api/v1/tasks/task/status?folderId=folder")]
@@ -85,6 +88,7 @@ public sealed class FoldersHostSecurityEnrollmentTests
         await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
+    /// <summary>Exercises exact probes, authenticated descriptions and aliases, and actual receiver-channel discovery.</summary>
     [Fact]
     public async Task ExactProbesAreAnonymousRootAndAliasesRequireHumanAndDiscoveryRequiresActualChannel()
     {
@@ -139,6 +143,7 @@ public sealed class FoldersHostSecurityEnrollmentTests
         await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
+    /// <summary>Rejects an unclassified endpoint during production startup.</summary>
     [Fact]
     public async Task UnclassifiedEndpointFailsStartupEvenWithAnAuthenticatedFallback()
     {
@@ -151,6 +156,7 @@ public sealed class FoldersHostSecurityEnrollmentTests
         failure.Message.ShouldContain("must name a policy");
     }
 
+    /// <summary>Rejects a canonical override that lacks the actual receiver catalog convention.</summary>
     [Fact]
     public async Task WeakCanonicalOverrideFailsStartupWithoutCatalogConvention()
     {
@@ -164,6 +170,7 @@ public sealed class FoldersHostSecurityEnrollmentTests
         failure.Message.ShouldContain("catalog guard");
     }
 
+    /// <summary>Denies every credential after a late endpoint loses classification, before handler work.</summary>
     [Fact]
     public async Task LateUnclassifiedReplacementDeniesEveryCredentialBeforeHandlerWork()
     {
@@ -195,6 +202,7 @@ public sealed class FoldersHostSecurityEnrollmentTests
         await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
+    /// <summary>Refuses a proposed catalog target that disagrees with the actual mapped receiver.</summary>
     [Fact]
     public async Task CatalogCandidateCannotReplaceIndependentlyObservedExecutableTarget()
     {
