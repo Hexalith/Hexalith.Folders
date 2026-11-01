@@ -1,0 +1,1641 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Folders.Server.Tests
+  Discovered:  Hexalith.Folders.Server.Tests
+  Starting:    Hexalith.Folders.Server.Tests
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetAuditRecord - - -
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/lifecycle-status - 400 - application/problem+json 59.7109ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/acl - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/acl - 400 - application/problem+json 0.7179ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/effective-permissions - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/effective-permissions - 400 - application/problem+json 0.1484ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/provider-bindings/scope_0000000001 - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/provider-bindings/scope_0000000001 - 400 - application/problem+json 0.1095ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/provider-readiness/validations - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/provider-readiness/validations - 400 - application/problem+json 0.1040ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/provider-readiness/support-evidence - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/provider-readiness/support-evidence - 400 - application/problem+json 0.1154ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/repository-bindings/scope_0000000001 - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/repository-bindings/scope_0000000001 - 400 - application/problem+json 0.0540ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/branch-ref-policy - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/branch-ref-policy - 400 - application/problem+json 0.0193ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/lock - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/lock - 400 - application/problem+json 0.0111ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/retry-eligibility - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/retry-eligibility - 400 - application/problem+json 0.0160ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/transition-evidence - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/transition-evidence - 400 - application/problem+json 0.0111ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/context/tree - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/context/tree - 400 - application/problem+json 0.0101ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/context/metadata - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/context/metadata - 400 - application/problem+json 0.0140ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/context/search - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/context/search - 400 - application/problem+json 0.0168ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/context/index-search - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/context/index-search - 400 - application/problem+json 0.0675ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/indexing-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/indexing-status - 400 - application/problem+json 1.0720ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/context/glob - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/context/glob - 400 - application/problem+json 0.0599ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/context/range-read - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/context/range-read - 400 - application/problem+json 0.0885ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/status - 400 - application/problem+json 0.0294ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/cleanup/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/cleanup/status - 400 - application/problem+json 0.0151ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/tasks/scope_0000000001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/tasks/scope_0000000001/status - 400 - application/problem+json 0.0224ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/commits/scope_0000000001/evidence - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/commits/scope_0000000001/evidence - 400 - application/problem+json 0.0141ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/commits/scope_0000000001/provider-outcome - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/commits/scope_0000000001/provider-outcome - 400 - application/problem+json 0.0132ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/reconciliation/scope_0000000001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/reconciliation/scope_0000000001/status - 400 - application/problem+json 0.0157ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/audit-trail - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/audit-trail - 400 - application/problem+json 0.0144ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/audit-trail/scope_0000000001 - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/audit-trail/scope_0000000001 - 400 - application/problem+json 0.0135ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/operation-timeline - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/operation-timeline - 400 - application/problem+json 0.0503ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/operation-timeline/scope_0000000001 - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/operation-timeline/scope_0000000001 - 400 - application/problem+json 0.0193ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/ops-console/readiness-diagnostics - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/ops-console/readiness-diagnostics - 400 - application/problem+json 0.0149ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/ops-console/lock-diagnostics - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/ops-console/lock-diagnostics - 400 - application/problem+json 0.0145ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/ops-console/dirty-state-diagnostics - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/ops-console/dirty-state-diagnostics - 400 - application/problem+json 0.0151ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/ops-console/failed-operation-diagnostics - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/ops-console/failed-operation-diagnostics - 400 - application/problem+json 0.0174ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/ops-console/provider-status-diagnostics - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/ops-console/provider-status-diagnostics - 400 - application/problem+json 0.0160ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/ops-console/sync-status-diagnostics - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/workspaces/scope_0000000001/ops-console/sync-status-diagnostics - 400 - application/problem+json 0.0174ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/ops-console/projection-freshness - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/scope_0000000001/ops-console/projection-freshness - 400 - application/problem+json 0.0154ms
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(route: "/process", operation: "domain-service:process") [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetAuditRecord'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/cleanup/status - - -
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(152,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(String route, String operation)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/status - - -
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "invalid-envelope", expected: BadRequest) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: "folder", memoryFallback: False, message: "actor-folded folder repository") [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FolderRepositoryStartupAssertionTests.cs(85,0): at Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(String repository, Boolean memoryFallback, String message)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/context/metadata - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+    Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: "folder", memoryFallback: True, message: "actor-folded folder repository") [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FolderRepositoryStartupAssertionTests.cs(85,0): at Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(String repository, Boolean memoryFallback, String message)
+        --- End of stack trace from previous location ---
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:36661
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:37781
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(route: "/project", operation: "domain-service:project") [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(152,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(String route, String operation)
+           at InvokeStub_FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+    Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: "binding", memoryFallback: False, message: "actor-folded organization repository") [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FolderRepositoryStartupAssertionTests.cs(85,0): at Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(String repository, Boolean memoryFallback, String message)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetAuditRecord'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetBranchRefPolicy - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetAuditRecord - 400 - application/problem+json 195.6925ms
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(route: "/query", operation: "domain-service:query") [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(152,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(String route, String operation)
+           at InvokeStub_FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "invalid-cursor", expected: BadRequest) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetBranchRefPolicy'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetBranchRefPolicy'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetBranchRefPolicy - 400 - application/problem+json 50.5988ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetCommitEvidence - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetCommitEvidence'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetCommitEvidence'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetCommitEvidence - 400 - application/problem+json 0.4611ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetDirtyStateDiagnostics - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetDirtyStateDiagnostics'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetDirtyStateDiagnostics'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetDirtyStateDiagnostics - 400 - application/problem+json 5.0736ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetEffectivePermissions - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetEffectivePermissions'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetEffectivePermissions'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetEffectivePermissions - 400 - application/problem+json 0.2143ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetFailedOperationDiagnostics - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetFailedOperationDiagnostics'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetFailedOperationDiagnostics'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetFailedOperationDiagnostics - 400 - application/problem+json 0.1757ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetFolderFileMetadata - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetFolderFileMetadata'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetFolderFileMetadata'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetFolderFileMetadata - 400 - application/problem+json 0.2109ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetFolderIndexingStatus - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetFolderIndexingStatus'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetFolderIndexingStatus'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetFolderIndexingStatus - 400 - application/problem+json 0.0413ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetFolderLifecycleStatus - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetFolderLifecycleStatus'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetFolderLifecycleStatus'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetFolderLifecycleStatus - 400 - application/problem+json 0.0244ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetLockDiagnostics - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetLockDiagnostics'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetLockDiagnostics'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetLockDiagnostics - 400 - application/problem+json 0.0265ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetOperationTimelineEntry - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetOperationTimelineEntry'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetOperationTimelineEntry'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetOperationTimelineEntry - 400 - application/problem+json 0.0191ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetProjectionFreshness - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetProjectionFreshness'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetProjectionFreshness'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetProjectionFreshness - 400 - application/problem+json 0.0192ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetProviderBinding - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetProviderBinding'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetProviderBinding'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetProviderBinding - 400 - application/problem+json 0.3780ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetProviderOutcome - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetProviderOutcome'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetProviderOutcome'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetProviderOutcome - 400 - application/problem+json 0.0392ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetProviderStatusDiagnostics - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetProviderStatusDiagnostics'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetProviderStatusDiagnostics'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetProviderStatusDiagnostics - 400 - application/problem+json 0.0712ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetProviderSupportEvidence - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetProviderSupportEvidence'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetProviderSupportEvidence'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetProviderSupportEvidence - 400 - application/problem+json 0.0259ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetReadinessDiagnostics - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetReadinessDiagnostics'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetReadinessDiagnostics'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetReadinessDiagnostics - 400 - application/problem+json 0.0217ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetReconciliationStatus - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetReconciliationStatus'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetReconciliationStatus'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetReconciliationStatus - 400 - application/problem+json 0.0181ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetRepositoryBinding - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetRepositoryBinding'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetRepositoryBinding'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetRepositoryBinding - 400 - application/problem+json 0.0205ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetSyncStatusDiagnostics - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetSyncStatusDiagnostics'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetSyncStatusDiagnostics'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetSyncStatusDiagnostics - 400 - application/problem+json 0.0226ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetTaskStatus - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetTaskStatus'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetTaskStatus'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetTaskStatus - 400 - application/problem+json 0.0269ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetWorkspaceCleanupStatus - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetWorkspaceCleanupStatus'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetWorkspaceCleanupStatus'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetWorkspaceCleanupStatus - 400 - application/problem+json 0.0173ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetWorkspaceLock - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetWorkspaceLock'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetWorkspaceLock'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetWorkspaceLock - 400 - application/problem+json 0.0173ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetWorkspaceRetryEligibility - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetWorkspaceRetryEligibility'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetWorkspaceRetryEligibility'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetWorkspaceRetryEligibility - 400 - application/problem+json 0.0187ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetWorkspaceStatus - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetWorkspaceStatus'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetWorkspaceStatus'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetWorkspaceStatus - 400 - application/problem+json 0.0182ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GetWorkspaceTransitionEvidence - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GetWorkspaceTransitionEvidence'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GetWorkspaceTransitionEvidence'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GetWorkspaceTransitionEvidence - 400 - application/problem+json 0.1219ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/GlobFolderFiles - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/GlobFolderFiles'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/GlobFolderFiles'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/GlobFolderFiles - 400 - application/problem+json 0.1687ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/ListAuditTrail - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/ListAuditTrail'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/ListAuditTrail'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/ListAuditTrail - 400 - application/problem+json 0.2349ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/ListFolderAclEntries - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/ListFolderAclEntries'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/ListFolderAclEntries'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/ListFolderAclEntries - 400 - application/problem+json 0.1772ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/ListFolderFiles - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/ListFolderFiles'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/ListFolderFiles'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/ListFolderFiles - 400 - application/problem+json 0.4309ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/ListOperationTimeline - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/ListOperationTimeline'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/ListOperationTimeline'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/ListOperationTimeline - 400 - application/problem+json 0.0920ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/ReadFileRange - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/ReadFileRange'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/ReadFileRange'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/ReadFileRange - 400 - application/problem+json 0.0326ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/SearchFolderFiles - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/SearchFolderFiles'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/SearchFolderFiles'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/SearchFolderFiles - 400 - application/problem+json 0.0220ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/SearchFolderIndexedFiles - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/SearchFolderIndexedFiles'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/SearchFolderIndexedFiles'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/SearchFolderIndexedFiles - 400 - application/problem+json 0.0199ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/read/ValidateProviderReadiness - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /read/ValidateProviderReadiness'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /read/ValidateProviderReadiness'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/read/ValidateProviderReadiness - 400 - application/problem+json 0.0221ms
+    Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: "binding", memoryFallback: True, message: "actor-folded organization repository") [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FolderRepositoryStartupAssertionTests.cs(85,0): at Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(String repository, Boolean memoryFallback, String message)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "invalid-page", expected: BadRequest) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(route: "/admin/operational-index-metadata", operation: "domain-service:metadata") [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(152,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(String route, String operation)
+           at InvokeStub_FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:36661/api/v1/folders/folder-a/audit-trail - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:37781/api/v1/folders/folder-a/audit-trail - - -
+    Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: "acl", memoryFallback: False, message: "actor-folded organization ACL repository") [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FolderRepositoryStartupAssertionTests.cs(85,0): at Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(String repository, Boolean memoryFallback, String message)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.ServerEndpointRegistrationTests.HostShouldRegisterSdkSidecarChannelPolicyForDomainCallbacks [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs(74,0): at Hexalith.Folders.Server.Tests.ServerEndpointRegistrationTests.HostShouldRegisterSdkSidecarChannelPolicyForDomainCallbacks()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProtectedProductionDiscoveryAdvertisesOnlyProcessorBackedNamedAndSharedRoutes [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(94,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProtectedProductionDiscoveryAdvertisesOnlyProcessorBackedNamedAndSharedRoutes()
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(137,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProtectedProductionDiscoveryAdvertisesOnlyProcessorBackedNamedAndSharedRoutes()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "actor-exception", expected: NotFound) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostStartsWithActorFoldedRepositories [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FolderRepositoryStartupAssertionTests.cs(26,0): at Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostStartsWithActorFoldedRepositories()
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/status'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/metadata'
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "actor-not-found-infrastructure", expected: NotFound) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:45281
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ContextQuery Denied authentication_failure correlation-a task-a MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 401.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/metadata'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/context/metadata - 401 - application/problem+json 234.5990ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:45281/api/v1/folders/folder-a/archive - application/json;+charset=utf-8 -
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed CleanupStatus Success operation_completed correlation-a task-a MetadataOnly
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed correlation-a task-a MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'WorkspaceStatusResponse' as Json.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'WorkspaceCleanupStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/status'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/cleanup/status - 200 - application/json;+charset=utf-8 260.1695ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/status - 200 - application/json;+charset=utf-8 259.4571ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/cleanup/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/status - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/status'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/status - 400 - application/problem+json 3.1153ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/cleanup/status - 400 - application/problem+json 3.1263ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed opaque_correlation_sweep_001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AuditTrailPage' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed correlation_absent task_absent MetadataOnly
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "serialization-failure", expected: NotFound) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AuditTrailPage' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:36661/api/v1/folders/folder-a/audit-trail - 200 - application/json;+charset=utf-8 152.7538ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:37781/api/v1/folders/folder-a/audit-trail - 200 - application/json;+charset=utf-8 152.7432ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:36661/api/v1/folders/folder-a/audit-trail/opaque_audit_record_synthetic_001 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail/{auditRecordId}'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed correlation_absent task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AuditRecord' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail/{auditRecordId}'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:36661/api/v1/folders/folder-a/audit-trail/opaque_audit_record_synthetic_001 - 200 - application/json;+charset=utf-8 50.3255ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:36661/api/v1/folders/folder-a/operation-timeline - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed correlation_absent task_absent MetadataOnly
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "missing-payload", expected: NotFound) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'OperationTimelinePage' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:36661/api/v1/folders/folder-a/operation-timeline - 200 - application/json;+charset=utf-8 14.3368ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:36661/api/v1/folders/folder-a/operation-timeline/opaque_timeline_entry_synthetic_001 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed correlation_absent task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'OperationTimelineEntry' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:36661/api/v1/folders/folder-a/operation-timeline/opaque_timeline_entry_synthetic_001 - 200 - application/json;+charset=utf-8 3.4302ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:36661/api/v1/folders/folder-a/audit-trail?cursor=tampered - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Rejected validation_error correlation_absent task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:36661/api/v1/folders/folder-a/audit-trail?cursor=tampered - 400 - application/problem+json 2.2240ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:36661/api/v1/folders/folder-a/audit-trail?filter=anything - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Rejected validation_error correlation_absent task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:36661/api/v1/folders/folder-a/audit-trail?filter=anything - 400 - application/problem+json 1.2389ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:35221
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:35221/api/v1/folders/folder-a/audit-trail/opaque_audit_record_synthetic_001 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Denied authentication_failure correlation-a task-archive-a MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 401.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:45281/api/v1/folders/folder-a/archive - 401 - application/problem+json 162.5920ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "Forbidden", expected: NotFound) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:46531
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:46531/api/v1/folders/folder-a/workspaces/workspace-a/context/tree - - -
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "No projection state available for this aggregate", expected: NotFound) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail/{auditRecordId}'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed opaque_correlation_sweep_001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AuditRecord' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail/{auditRecordId}'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:35221/api/v1/folders/folder-a/audit-trail/opaque_audit_record_synthetic_001 - 200 - application/json;+charset=utf-8 114.7287ms
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "safe-denial", expected: NotFound) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:35741
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:35741/api/v1/folders/folder-a/operation-timeline - - -
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "internal diagnostic tenant-secret folder-secret", expected: NotFound) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:46531/api/v1/folders/folder-a/workspaces/workspace-a/context/tree - 400 - application/problem+json 113.6760ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:37347
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:37347/api/v1/folders/folder-a/archive - application/json;+charset=utf-8 -
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "unknown-handler", expected: NotFound) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed opaque_correlation_sweep_001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'OperationTimelinePage' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:35741/api/v1/folders/folder-a/operation-timeline - 200 - application/json;+charset=utf-8 105.1020ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:39923
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:39923/api/v1/folders/folder-a/operation-timeline/opaque_timeline_entry_synthetic_001 - - -
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "unverified-caller", expected: NotFound) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Denied authorization_denied correlation-a task-archive-a MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 403.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:37347/api/v1/folders/folder-a/archive - 403 - application/problem+json 112.8508ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "allowed", expected: OK) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:35749
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35749/api/v1/folders/folder-a/archive - application/json;+charset=utf-8 -
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "stale", expected: OK) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed opaque_correlation_sweep_001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'OperationTimelineEntry' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:39923/api/v1/folders/folder-a/operation-timeline/opaque_timeline_entry_synthetic_001 - 200 - application/json;+charset=utf-8 146.5792ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:37725
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:37725/api/v1/folders/folder-a/audit-trail?cursor=tampered - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: "unavailable", expected: OK) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(136,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(String scenario, HttpStatusCode expected)
+        --- End of stack trace from previous location ---
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed correlation-a task-archive-a MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35749/api/v1/folders/folder-a/archive - 202 - application/json;+charset=utf-8 125.5535ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:33659
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:33659/api/v1/folders/folder-a/archive - application/json;+charset=utf-8 -
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: null) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(173,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(Nullable`1 version)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Rejected validation_error opaque_correlation_sweep_001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:37725/api/v1/folders/folder-a/audit-trail?cursor=tampered - 400 - application/problem+json 156.5895ms
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: 1) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(173,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(Nullable`1 version)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:39193
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:39193/api/v1/folders/folder-a/audit-trail?filter=anything - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed correlation-fixed-0123456789abcdef task-archive-a MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:33659/api/v1/folders/folder-a/archive - 202 - application/json;+charset=utf-8 109.8776ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:41207
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:41207/api/v1/folders/folder-a/workspaces/workspace-a/context/tree?limit=10 - - -
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: 0) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(173,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(Nullable`1 version)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: -1) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(173,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(Nullable`1 version)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Rejected validation_error opaque_correlation_sweep_001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:39193/api/v1/folders/folder-a/audit-trail?filter=anything - 400 - application/problem+json 155.9590ms
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: 2) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(173,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(Nullable`1 version)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:36603
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:36603/api/v1/folders/folder-a/audit-trail?limit=0 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ContextQuery Success operation_completed correlation-context task-context MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FileTreeResultResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:41207/api/v1/folders/folder-a/workspaces/workspace-a/context/tree?limit=10 - 200 - application/json;+charset=utf-8 162.4434ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: 2147483647) [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(173,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(Nullable`1 version)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:43157
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:43157/api/v1/folders/folder-a/archive - application/json;+charset=utf-8 -
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionCallbacksRejectMissingInvalidAndWrongOperationCredentials(route: "/process", operation: "domain-service:process") [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(42,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionCallbacksRejectMissingInvalidAndWrongOperationCredentials(String route, String operation)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionCallbacksRejectMissingInvalidAndWrongOperationCredentials(route: "/project", operation: "domain-service:project") [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(42,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionCallbacksRejectMissingInvalidAndWrongOperationCredentials(String route, String operation)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Rejected validation_error opaque_correlation_sweep_001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:36603/api/v1/folders/folder-a/audit-trail?limit=0 - 400 - application/problem+json 102.7581ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:34051
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:34051/api/v1/folders/folder-a/operation-timeline?cursor=tampered - - -
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionCallbacksRejectMissingInvalidAndWrongOperationCredentials(route: "/query", operation: "domain-service:query") [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(42,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionCallbacksRejectMissingInvalidAndWrongOperationCredentials(String route, String operation)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed correlation-a task-archive-a MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:43157/api/v1/folders/folder-a/archive - 202 - application/json;+charset=utf-8 107.9184ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:43157/api/v1/folders/folder-a/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:43157/api/v1/folders/folder-a/archive - 202 - application/json;+charset=utf-8 2.5319ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+    Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionCallbacksRejectMissingInvalidAndWrongOperationCredentials(route: "/admin/operational-index-metadata", operation: "domain-service:metadata") [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(221,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.BuildApp(RsaSecurityKey key, IDomainQueryHandler handler)
+        tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs(42,0): at Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionCallbacksRejectMissingInvalidAndWrongOperationCredentials(String route, String operation)
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Rejected validation_error opaque_correlation_sweep_001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:34051/api/v1/folders/folder-a/operation-timeline?cursor=tampered - 400 - application/problem+json 106.5905ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:37333
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:37333/api/v1/folders/folder-a/operation-timeline?filter=anything - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Rejected validation_error opaque_correlation_sweep_001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:37333/api/v1/folders/folder-a/operation-timeline?filter=anything - 400 - application/problem+json 127.3797ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:42491
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:42491/api/v1/folders/folder-a/operation-timeline?limit=0 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Rejected validation_error opaque_correlation_sweep_001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:42491/api/v1/folders/folder-a/operation-timeline?limit=0 - 400 - application/problem+json 153.7454ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:45461
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:45461/api/v1/folders/folder-a/audit-trail/opaque_unknown_record_001 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail/{auditRecordId}'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Denied authorization_denied opaque_correlation_sweep_001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 404.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/audit-trail/{auditRecordId}'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:45461/api/v1/folders/folder-a/audit-trail/opaque_unknown_record_001 - 404 - application/problem+json 106.9809ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:40585
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:40585/api/v1/folders/folder-a/operation-timeline/opaque_unknown_entry_001 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Denied authorization_denied opaque_correlation_sweep_001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 404.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:40585/api/v1/folders/folder-a/operation-timeline/opaque_unknown_entry_001 - 404 - application/problem+json 107.7319ms
+  Finished:    Hexalith.Folders.Server.Tests (ID = 'd42a2068e5570c6bca3908a547c9b183946d27a4e13f3044be233a97bbac133d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Server.Tests  Total: 154, Errors: 0, Failed: 38, Skipped: 0, Not Run: 0, Time: 2.495s

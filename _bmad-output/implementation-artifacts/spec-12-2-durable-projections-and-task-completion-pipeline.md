@@ -764,3 +764,28 @@ is 258.854 ms and status p95 is 79.891 ms. SM4 acknowledgement, Release/package/
 owned SDK broad-regression/current-external-source dispositions and independent whole-story review
 remain open. No SDK source, dependency pin, Git index, release, retained event, content cleanup or
 public v2 change is included.
+
+## Current consumer verification — 2026-11-01
+
+The [current consumer packet](evidence/story-12-2-current-consumer-20261031/README.md) records
+zero-warning/error isolated Debug/source builds and 87 passing operational regressions, including
+both required 10,001/32,769-position histories. Initial broad Server/Workers failures are retained.
+Repo-local artifacts resolve fixture-path discovery; matching the local assembly Version to the
+existing SDK catalog resolves the demonstrated Commons identity collision, with all four affected
+Workers cases then passing. Every selected Hexalith dependency remains a project reference.
+
+Current production discovery still fails before host startup: the SDK selective mapper now enters
+the generic HTTP security boundary, whose endpoint source is unregistered in the bespoke Folders
+host. A public-registration control removes that exception but the SDK inventory rejects 58 existing
+endpoint classifications. The exact one-case reproduction, public seam probe, loaded assembly
+identities and source/runtime hashes are retained. No compatible one-line consumer correction was
+established; qualifying a selective SDK enrollment contract or a scoped whole-host security migration
+remains an owning integration decision. No SDK workaround, internal registration or policy bypass
+was applied, and no new full live qualification is claimed.
+
+All 17,022 captured source/config inputs, 406 original and 403 corrected runtime/config artifacts
+and the 174-file prior selected-candidate packet seal remain unchanged. Task runner/probe processes
+exited; no live topology was started. The historical checked Task 36 result stays bound to its
+selected candidate. Story 12.2 remains in-progress for current-source integration, SDK broad
+regressions, Release/package/PD10, SM4 acknowledgement and independent review. Product/SDK source,
+frozen intent, existing evidence, dependency pins, sprint status, public v2 and the Git index are preserved.

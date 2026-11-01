@@ -1,0 +1,378 @@
+{
+  "/tmp/story-12-2-consumer-20261031-artifacts": {
+    "Hexalith.Folders.Server.Tests": {
+      "Hexalith.Commons.UniqueIds/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj"
+      },
+      "Hexalith.EventStore.Client/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj"
+      },
+      "Hexalith.EventStore.Contracts/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj"
+      },
+      "Hexalith.EventStore.DomainService/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj"
+      },
+      "Hexalith.EventStore.Server/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj"
+      },
+      "Hexalith.EventStore.ServiceDefaults/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj"
+      },
+      "Hexalith.EventStore.Testing/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj"
+      },
+      "Hexalith.Folders/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders/Hexalith.Folders.csproj"
+      },
+      "Hexalith.Folders.Client/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj"
+      },
+      "Hexalith.Folders.Contracts/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj"
+      },
+      "Hexalith.Folders.Server/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj"
+      },
+      "Hexalith.Folders.ServiceDefaults/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj"
+      },
+      "Hexalith.Folders.Testing/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj"
+      },
+      "Hexalith.McpCli.Abstractions/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/Hexalith.McpCli.Abstractions.csproj"
+      },
+      "Hexalith.Memories.Client.Rest/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Memories/src/Hexalith.Memories.Client.Rest/Hexalith.Memories.Client.Rest.csproj"
+      },
+      "Hexalith.Memories.Contracts/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Memories/src/Hexalith.Memories.Contracts/Hexalith.Memories.Contracts.csproj"
+      },
+      "Hexalith.Tenants.Client/5.11.1": {
+        "type": "project",
+        "path": "../../references/Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj"
+      },
+      "Hexalith.Tenants.Contracts/5.11.1": {
+        "type": "project",
+        "path": "../../references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj"
+      }
+    },
+    "Hexalith.Folders.Workers.Tests": {
+      "Hexalith.Commons.UniqueIds/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj"
+      },
+      "Hexalith.EventStore.Client/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj"
+      },
+      "Hexalith.EventStore.Contracts/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj"
+      },
+      "Hexalith.EventStore.DomainService/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj"
+      },
+      "Hexalith.EventStore.Server/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj"
+      },
+      "Hexalith.EventStore.ServiceDefaults/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj"
+      },
+      "Hexalith.EventStore.Testing/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj"
+      },
+      "Hexalith.Folders/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders/Hexalith.Folders.csproj"
+      },
+      "Hexalith.Folders.Contracts/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj"
+      },
+      "Hexalith.Folders.Server/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj"
+      },
+      "Hexalith.Folders.ServiceDefaults/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj"
+      },
+      "Hexalith.Folders.Testing/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj"
+      },
+      "Hexalith.Folders.Workers/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj"
+      },
+      "Hexalith.McpCli.Abstractions/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/Hexalith.McpCli.Abstractions.csproj"
+      },
+      "Hexalith.Memories.Client.Rest/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Memories/src/Hexalith.Memories.Client.Rest/Hexalith.Memories.Client.Rest.csproj"
+      },
+      "Hexalith.Memories.Contracts/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Memories/src/Hexalith.Memories.Contracts/Hexalith.Memories.Contracts.csproj"
+      },
+      "Hexalith.Tenants.Client/5.11.1": {
+        "type": "project",
+        "path": "../../references/Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj"
+      },
+      "Hexalith.Tenants.Contracts/5.11.1": {
+        "type": "project",
+        "path": "../../references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj"
+      }
+    }
+  },
+  "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031": {
+    "Hexalith.Folders.Server.Tests": {
+      "Hexalith.Commons.UniqueIds/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj"
+      },
+      "Hexalith.EventStore.Client/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj"
+      },
+      "Hexalith.EventStore.Contracts/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj"
+      },
+      "Hexalith.EventStore.DomainService/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj"
+      },
+      "Hexalith.EventStore.Server/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj"
+      },
+      "Hexalith.EventStore.ServiceDefaults/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj"
+      },
+      "Hexalith.EventStore.Testing/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj"
+      },
+      "Hexalith.Folders/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders/Hexalith.Folders.csproj"
+      },
+      "Hexalith.Folders.Client/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj"
+      },
+      "Hexalith.Folders.Contracts/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj"
+      },
+      "Hexalith.Folders.Server/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj"
+      },
+      "Hexalith.Folders.ServiceDefaults/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj"
+      },
+      "Hexalith.Folders.Testing/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj"
+      },
+      "Hexalith.McpCli.Abstractions/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/Hexalith.McpCli.Abstractions.csproj"
+      },
+      "Hexalith.Memories.Client.Rest/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Memories/src/Hexalith.Memories.Client.Rest/Hexalith.Memories.Client.Rest.csproj"
+      },
+      "Hexalith.Memories.Contracts/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Memories/src/Hexalith.Memories.Contracts/Hexalith.Memories.Contracts.csproj"
+      },
+      "Hexalith.Tenants.Client/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj"
+      },
+      "Hexalith.Tenants.Contracts/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj"
+      }
+    },
+    "Hexalith.Folders.Workers.Tests": {
+      "Hexalith.Commons.UniqueIds/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj"
+      },
+      "Hexalith.EventStore.Client/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj"
+      },
+      "Hexalith.EventStore.Contracts/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj"
+      },
+      "Hexalith.EventStore.DomainService/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj"
+      },
+      "Hexalith.EventStore.Server/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj"
+      },
+      "Hexalith.EventStore.ServiceDefaults/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj"
+      },
+      "Hexalith.EventStore.Testing/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj"
+      },
+      "Hexalith.Folders/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders/Hexalith.Folders.csproj"
+      },
+      "Hexalith.Folders.Contracts/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj"
+      },
+      "Hexalith.Folders.Server/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj"
+      },
+      "Hexalith.Folders.ServiceDefaults/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj"
+      },
+      "Hexalith.Folders.Testing/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj"
+      },
+      "Hexalith.Folders.Workers/1.0.0": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj"
+      },
+      "Hexalith.McpCli.Abstractions/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/Hexalith.McpCli.Abstractions.csproj"
+      },
+      "Hexalith.Memories.Client.Rest/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Memories/src/Hexalith.Memories.Client.Rest/Hexalith.Memories.Client.Rest.csproj"
+      },
+      "Hexalith.Memories.Contracts/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Memories/src/Hexalith.Memories.Contracts/Hexalith.Memories.Contracts.csproj"
+      },
+      "Hexalith.Tenants.Client/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj"
+      },
+      "Hexalith.Tenants.Contracts/1.0.0": {
+        "type": "project",
+        "path": "../../references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj"
+      }
+    }
+  },
+  "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031-version3": {
+    "Hexalith.Folders.Workers.Tests": {
+      "Hexalith.Commons.UniqueIds/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj"
+      },
+      "Hexalith.EventStore.Client/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj"
+      },
+      "Hexalith.EventStore.Contracts/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj"
+      },
+      "Hexalith.EventStore.DomainService/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj"
+      },
+      "Hexalith.EventStore.Server/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj"
+      },
+      "Hexalith.EventStore.ServiceDefaults/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj"
+      },
+      "Hexalith.EventStore.Testing/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.EventStore/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj"
+      },
+      "Hexalith.Folders/3.128.4": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders/Hexalith.Folders.csproj"
+      },
+      "Hexalith.Folders.Contracts/3.128.4": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj"
+      },
+      "Hexalith.Folders.Server/3.128.4": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj"
+      },
+      "Hexalith.Folders.ServiceDefaults/3.128.4": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj"
+      },
+      "Hexalith.Folders.Testing/3.128.4": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj"
+      },
+      "Hexalith.Folders.Workers/3.128.4": {
+        "type": "project",
+        "path": "../../src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj"
+      },
+      "Hexalith.McpCli.Abstractions/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/Hexalith.McpCli.Abstractions.csproj"
+      },
+      "Hexalith.Memories.Client.Rest/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.Memories/src/Hexalith.Memories.Client.Rest/Hexalith.Memories.Client.Rest.csproj"
+      },
+      "Hexalith.Memories.Contracts/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.Memories/src/Hexalith.Memories.Contracts/Hexalith.Memories.Contracts.csproj"
+      },
+      "Hexalith.Tenants.Client/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj"
+      },
+      "Hexalith.Tenants.Contracts/3.128.4": {
+        "type": "project",
+        "path": "../../references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj"
+      }
+    }
+  }
+}

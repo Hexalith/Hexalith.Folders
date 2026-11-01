@@ -1,0 +1,40 @@
+# Hexalith.Commons.UniqueIds.dll
+
+## Library Info
+
+| Field | Value |
+| ----- | ----- |
+| Architecture | AnyCPU |
+| Assembly Version | 3.128.4.0 |
+| Async Methods | 0 |
+| Company | Hexalith |
+| Compilation | CoreCLR |
+| Custom Attributes | 1 |
+| Deterministic | No |
+| Ecosystem Dependencies | .NET Runtime |
+| Extension Methods | 0 |
+| File Size | 9.5 KB |
+| Informational Version | 3.128.4+3edfbdafc7d4fa915286dce8a37dc4cc7c06085a |
+| Integrations | 0 |
+| Methods | 17 |
+| Modified | 2026-10-31 |
+| Name | Hexalith.Commons.UniqueIds |
+| Product | Hexalith.Commons |
+| Reproducible | Yes |
+| Resources | 0 |
+| Source | File |
+| Switches | 0 |
+| Target Framework | .NETCoreApp,Version=v10.0 |
+| Type Forwarders | 0 |
+| Types | 6 |
+| Union Types | 0 |
+| Version | 3.128.4 |
+
+## References
+
+| Name | Version | Public Key Token |
+| ---- | ------- | ---------------- |
+| ByteAether.Ulid | 1.0.0.0 | - |
+| System.Memory | 10.0.0.0 | cc7b13ffcd2ddd51 |
+| System.Runtime | 10.0.0.0 | b03f5f7f11d50a3a |
+| System.Text.RegularExpressions | 10.0.0.0 | b03f5f7f11d50a3a |

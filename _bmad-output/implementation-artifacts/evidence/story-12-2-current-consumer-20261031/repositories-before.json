@@ -1,0 +1,83 @@
+{
+  "at": "2026-10-31T23:00:07.716935+00:00",
+  "repositories": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders",
+      "head": "02bd98cf29e6a3b787d8c6ae747f5e0d71762a72",
+      "branch": "main",
+      "status": " M _bmad-output/implementation-artifacts/spec-4-18-eventstore-backed-workspace-transition-evidence-projection.md\n"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "head": "0d469d7c8fedc383f6258cbf2798e62cf9847304",
+      "branch": "main",
+      "status": ""
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.AI.Tools",
+      "head": "70dbf73e80787299c832d30d911b16b105ab194d",
+      "branch": "main",
+      "status": ""
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "head": "7b1df62102efb19da03553a890c62eb5ad6aeafe",
+      "branch": "main",
+      "status": ""
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "head": "7ce4ec5270a06fe8284e811c22fbf4cb50b17bf6",
+      "branch": "main",
+      "status": ""
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+      "head": "9ea24458f949589bb8e59f9334161009487509d1",
+      "branch": "main",
+      "status": ""
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons",
+      "head": "3edfbdafc7d4fa915286dce8a37dc4cc7c06085a",
+      "branch": "main",
+      "status": ""
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "head": "15d6a10c54660153cf8c05f24db83215824faf8e",
+      "branch": "main",
+      "status": ""
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations",
+      "head": "221ac4592ba908ae7661ba1fa9e2d1fcc23baee0",
+      "branch": "main",
+      "status": ""
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "head": "0338d6ebf9f1be1bd38a8745759984d2066da5e7",
+      "branch": "main",
+      "status": ""
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "head": "72904e8ea63b7f6dc8901c09d526479e56fcc841",
+      "branch": "main",
+      "status": ""
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "head": "c99aebe4a93ca611a443c83f031ef1c02bd499b7",
+      "branch": "main",
+      "status": ""
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties",
+      "head": "784215a8fe91b4d5ae00eb65ab61d3b9507ca0c2",
+      "branch": "main",
+      "status": ""
+    }
+  ]
+}

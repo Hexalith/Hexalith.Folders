@@ -1,0 +1,48 @@
+# Hexalith.EventStore.Contracts.dll
+
+## Library Info
+
+| Field | Value |
+| ----- | ----- |
+| Architecture | AnyCPU |
+| Assembly Version | 3.128.4.0 |
+| Async Methods | 11 |
+| Company | Hexalith |
+| Compilation | CoreCLR |
+| Custom Attributes | 6 |
+| Deterministic | No |
+| Ecosystem Dependencies | .NET Runtime |
+| Extension Methods | 2 |
+| File Size | 867.5 KB |
+| Informational Version | 3.128.4+7b1df62102efb19da03553a890c62eb5ad6aeafe |
+| Integrations | 0 |
+| Methods | 6,476 |
+| Modified | 2026-10-31 |
+| Name | Hexalith.EventStore.Contracts |
+| Product | Hexalith.EventStore.Contracts |
+| Reproducible | Yes |
+| Resources | 0 |
+| Source | File |
+| Switches | 0 |
+| Target Framework | .NETCoreApp,Version=v10.0 |
+| Type Forwarders | 0 |
+| Types | 443 |
+| Union Types | 0 |
+| Version | 3.128.4 |
+
+## References
+
+| Name | Version | Public Key Token |
+| ---- | ------- | ---------------- |
+| ByteAether.Ulid | 1.0.0.0 | - |
+| Hexalith.Commons.UniqueIds | 3.128.4.0 | - |
+| System.Collections | 10.0.0.0 | b03f5f7f11d50a3a |
+| System.Linq | 10.0.0.0 | b03f5f7f11d50a3a |
+| System.Memory | 10.0.0.0 | cc7b13ffcd2ddd51 |
+| System.Runtime | 10.0.0.0 | b03f5f7f11d50a3a |
+| System.Runtime.Serialization.Primitives | 10.0.0.0 | b03f5f7f11d50a3a |
+| System.Security.Cryptography | 10.0.0.0 | b03f5f7f11d50a3a |
+| System.Text.Encoding.Extensions | 10.0.0.0 | b03f5f7f11d50a3a |
+| System.Text.Json | 10.0.0.0 | cc7b13ffcd2ddd51 |
+| System.Text.RegularExpressions | 10.0.0.0 | b03f5f7f11d50a3a |
+| System.Threading | 10.0.0.0 | b03f5f7f11d50a3a |
