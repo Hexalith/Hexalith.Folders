@@ -1,0 +1,34 @@
+{
+  "Hexalith.EventStore.Contracts": {
+    "argv": [
+      "dnx",
+      "dotnet-inspect",
+      "-y",
+      "--",
+      "library",
+      "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031-version3/bin/Hexalith.Folders.Workers.Tests/debug/Hexalith.EventStore.Contracts.dll",
+      "-S",
+      "Library Info,References",
+      "-n",
+      "60"
+    ],
+    "exitCode": 0,
+    "sha256": "7ac84202bf6cc7c053112f0a95d92c6d974485f6f256137aa1b1aa3cca39ef78"
+  },
+  "Hexalith.Commons.UniqueIds": {
+    "argv": [
+      "dnx",
+      "dotnet-inspect",
+      "-y",
+      "--",
+      "library",
+      "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031-version3/bin/Hexalith.Folders.Workers.Tests/debug/Hexalith.Commons.UniqueIds.dll",
+      "-S",
+      "Library Info,References",
+      "-n",
+      "60"
+    ],
+    "exitCode": 0,
+    "sha256": "efc8b96063bdbf6a19684b20ac0ae951b383ab7f26e09b20309ed795f0c2ab8a"
+  }
+}

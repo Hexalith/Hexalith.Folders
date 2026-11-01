@@ -1,3 +1,4 @@
+using Hexalith.EventStore.ServiceDefaults.Routing;
 using Hexalith.EventStore.DomainService;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
@@ -12,12 +13,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Hexalith.EventStore.ServiceDefaults.Routing;
-
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Routing;
-using Dapr;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -67,31 +63,12 @@ public static class FoldersServerHostComposition
             sp.GetRequiredService<EventStoreFolderEffectivePermissionsReadModel>());
         builder.Services.AddSingleton<IFolderAclReadModel>(static sp =>
             sp.GetRequiredService<EventStoreFolderEffectivePermissionsReadModel>());
-        builder.Services.AddAuthorization();
         builder.Services.AddFoldersProductionAuthentication(builder.Configuration, builder.Environment);
-        // The process and projection callbacks are Dapr service invocations. The
-        // workload scheme proves the EventStore caller independently of the
-        // command-bound human receipt consumed by /process.
-        builder.Services.AddAuthentication().AddEventStoreWorkloadScheme(
-            EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
-            "Authentication:Workload",
-            static (options, _) =>
-            {
-                options.Audience ??= "folders";
-                if (options.AllowedCallers.Count == 0)
-                {
-                    options.AllowedCallers.Add("eventstore");
-                }
-            });
-        builder.Services.AddEventStoreWorkloadPolicies(
-            EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
-            [EventStoreWorkloadOperations.DomainServiceProcess, EventStoreWorkloadOperations.DomainServiceProject,
-                EventStoreWorkloadOperations.DomainServiceQuery, EventStoreWorkloadOperations.DomainServiceMetadata]);
+        builder.Services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationMiddlewareResultHandler,
+            FoldersHumanAuthorizationResultHandler>();
         builder.Services.AddSingleton<HumanAuthorityReceiptVerifier>();
         builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
         builder.Services.AddSingleton<IEventStoreAuthorizationValidator, VerifiedReceiptEventStoreAuthorizationValidator>();
-        // EventStore marks its Dapr subscription callback with this policy.
-        builder.Services.AddAuthentication().AddEventStoreSidecarChannelScheme();
 
         // This host is the EventStore domain-service target in every environment. It must
         // fold actor-supplied state and return events; an in-memory writer would acknowledge
@@ -145,57 +122,17 @@ public static class FoldersServerHostComposition
             }
         }
 
+        app.UseEventStoreHttpHostSecurity();
+        app.UseAuthorization();
         if (mode != FoldersApiRoutingMode.V2Only)
         {
             app.UseHistoricalMutationAuthorization();
         }
-
-        app.UseEventStoreHttpHostSecurity();
-        app.UseAuthorization();
         app.MapSubscribeHandler().RequireEventStoreSidecarChannel();
-        RouteGroupBuilder routes = app.MapGroup(string.Empty);
-        ((IEndpointConventionBuilder)routes).Finally(static endpoint =>
-        {
-            string? route = (endpoint as RouteEndpointBuilder)?.RoutePattern.RawText;
-            if (EventStoreHttpEndpointInventory.IsProbe(route))
-            {
-                endpoint.Metadata.Add(new AllowAnonymousAttribute());
-            }
-            else if (endpoint.Metadata.OfType<ITopicMetadata>().Any())
-            {
-                if (!endpoint.Metadata.OfType<IAuthorizeData>().Any(static authorization =>
-                    authorization.Policy == EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy))
-                {
-                    endpoint.Metadata.Add(new AuthorizeAttribute(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy));
-                }
-            }
-            else if (endpoint.Metadata.OfType<IAuthorizeData>().Any())
-            {
-                foreach (IAuthorizeData authorization in endpoint.Metadata.OfType<IAuthorizeData>())
-                {
-                    if (string.IsNullOrWhiteSpace(authorization.Policy))
-                    {
-                        authorization.Policy = EventStoreHttpHostSecurityExtensions.HumanPolicy;
-                    }
-                }
-            }
-            else
-            {
-                endpoint.Metadata.Add(new AuthorizeAttribute(EventStoreHttpHostSecurityExtensions.HumanPolicy));
-            }
-        });
-        routes.MapFoldersServerEndpoints();
-        app.MapHealthChecks("/alive", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
-        {
-            Predicate = static registration => registration.Tags.Contains(Hexalith.Folders.ServiceDefaults.Extensions.LivenessTag),
-        }).AllowAnonymous();
-        app.MapHealthChecks("/ready", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
-        {
-            Predicate = static registration => registration.Tags.Contains(Hexalith.Folders.ServiceDefaults.Extensions.ReadinessTag),
-        }).AllowAnonymous();
-        app.MapEventStoreRouteCatalog();
+        app.MapFoldersServerEndpoints();
         app.MapEventStoreDomainProjectionEndpoints();
         app.MapEventStoreDomainProjectionMetadataEndpoint();
+        app.MapEventStoreRouteCatalog();
 
         return app;
     }

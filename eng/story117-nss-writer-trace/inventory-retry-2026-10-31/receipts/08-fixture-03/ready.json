@@ -1,0 +1,17 @@
+{
+  "pid": 94430,
+  "start_ticks": 22740855,
+  "caller_shell": {
+    "pid": 84286,
+    "start_ticks": 22738755,
+    "comm": "bash"
+  },
+  "boot_id": "9013c8e5-d08a-4fd8-868d-2b9b0302fa27",
+  "ready_monotonic_ns": 227420933717710,
+  "deadline_monotonic_ns": 227468594212232,
+  "mandatory_hooks_attached": true,
+  "deadline_boottime_ns": 227468594214016,
+  "before_snapshot_complete": false,
+  "qualification": "incomplete",
+  "global_immutability_proven": false
+}

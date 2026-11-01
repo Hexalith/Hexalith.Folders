@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "dotnet",
+    "build",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-current-consumer-20261031/registration-seam-probe.csproj",
+    "-p:ImportDirectoryBuildProps=false",
+    "-p:ImportDirectoryBuildTargets=false",
+    "-p:ConsumerRuntime=/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug",
+    "--artifacts-path",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-registration-probe-20261031",
+    "-v:quiet"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-10-31T23:07:03.618527+00:00",
+  "finishedAtUtc": "2026-10-31T23:07:05.041608+00:00",
+  "exitCode": 0
+}

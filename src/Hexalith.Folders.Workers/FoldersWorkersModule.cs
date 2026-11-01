@@ -46,12 +46,7 @@ public static partial class FoldersWorkersModule
 
         services.AddDaprClient();
         services.AddAuthentication().AddEventStoreSidecarChannelScheme();
-        services.AddAuthorization(options => options.AddPolicy(
-            EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy,
-            policy => policy
-                .AddAuthenticationSchemes(EventStoreWorkloadAuthenticationDefaults.SidecarChannelScheme)
-                .RequireAuthenticatedUser()
-                .RequireClaim(EventStoreWorkloadAuthenticationDefaults.ChannelClaimType)));
+        services.AddEventStoreWorkloadPolicies(EventStoreWorkloadAuthenticationDefaults.WorkloadScheme, []);
         services.AddFoldersSemanticIndexingWorkers();
 
         // AddFoldersTenantAccess already binds and validate-on-start's FoldersTenantEventOptions; do not rebind here.
@@ -131,7 +126,7 @@ public static partial class FoldersWorkersModule
     {
         ArgumentNullException.ThrowIfNull(endpoints);
 
-        endpoints.MapGet("/", () => Description);
+        endpoints.MapGet("/", () => Description).RequireEventStoreChannel();
         endpoints.MapFoldersTenantEvents();
         endpoints.MapFoldersSemanticIndexingEvents();
         endpoints.MapFolderPermissionMaintenance();
@@ -172,7 +167,7 @@ public static partial class FoldersWorkersModule
             Name = options.TopicName,
             DeadLetterTopic = "deadletter.tenants.events",
         })
-            .RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy);
+            .RequireEventStoreChannel();
 
         return endpoints;
     }
@@ -263,7 +258,7 @@ public static partial class FoldersWorkersModule
             Name = FoldersSemanticIndexingDefaults.DomainEventsTopicName,
             DeadLetterTopic = "deadletter.folders.events",
         })
-            .RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy);
+            .RequireEventStoreChannel();
 
         return endpoints;
     }

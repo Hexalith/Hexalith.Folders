@@ -1,0 +1,18 @@
+{
+  "baseline_tracked_file_count": 12367,
+  "changed_tracked_files": [
+    "eng/story117-nss-writer-trace/collector.py",
+    "eng/story117-nss-writer-trace/test_collector.py",
+    "eng/story117-nss-writer-trace/trace.bpf.c"
+  ],
+  "missing_tracked_files": [],
+  "unexpected_changed_tracked_files": [],
+  "unchanged_tracked_file_count": 12364,
+  "head_unchanged": true,
+  "head": "765544efc5c8aa395895f3a3d5911d4364658639",
+  "index_unchanged": true,
+  "original_diagnostic_documents_unchanged": true,
+  "historical_receipts_and_authority_unchanged": true,
+  "git_state_writes_performed": false,
+  "frozen_states": "qualification incomplete; parent in-progress; tracker backlog; V1Only; T0 unset; activation authority null; staging 0/14; both historical timestamps unresolved"
+}

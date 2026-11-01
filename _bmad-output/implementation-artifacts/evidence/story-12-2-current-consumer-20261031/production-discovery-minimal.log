@@ -1,0 +1,19 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Folders.Server.Tests
+  Discovered:  Hexalith.Folders.Server.Tests
+  Starting:    Hexalith.Folders.Server.Tests
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProtectedProductionDiscoveryAdvertisesOnlyProcessorBackedNamedAndSharedRoutes [FAIL]
+      System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered.
+      Stack Trace:
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+           at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs(75,0): at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityExtensions.UseEventStoreHttpHostSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs(102,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceSecurityExtensions.UseEventStoreDomainServiceEndpointSecurity(WebApplication app)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs(361,0): at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.MapEventStoreDomainProjectionEndpoints(WebApplication app)
+        src/Hexalith.Folders.Server/FoldersServerHostComposition.cs(138,0): at Hexalith.Folders.Server.FoldersServerHostComposition.UseFoldersServerPipeline(WebApplication app)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(94,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProtectedProductionDiscoveryAdvertisesOnlyProcessorBackedNamedAndSharedRoutes()
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(137,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProtectedProductionDiscoveryAdvertisesOnlyProcessorBackedNamedAndSharedRoutes()
+        --- End of stack trace from previous location ---
+  Finished:    Hexalith.Folders.Server.Tests (ID = 'd42a2068e5570c6bca3908a547c9b183946d27a4e13f3044be233a97bbac133d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Server.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 0.419s

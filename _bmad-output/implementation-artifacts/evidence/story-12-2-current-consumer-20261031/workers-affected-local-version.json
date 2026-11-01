@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "dotnet",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Workers.Tests/debug/Hexalith.Folders.Workers.Tests.dll",
+    "-method",
+    "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.WorkerLocalMemoriesRoutingDefaultsShouldMatchAspireConstants",
+    "-method",
+    "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantCallbackRequiresConfiguredSidecarTokenBeforeProjectionWrites",
+    "-method",
+    "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantEventProcessorShouldSkipUnsupportedEventTypeWithoutMutatingProjection",
+    "-method",
+    "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShouldAcknowledgeUnknownEventTypesWithoutMutatingProjection",
+    "-method",
+    "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShouldProcessKnownEventsEndToEnd",
+    "-result-xml",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-current-consumer-20261031/workers-affected-local-version.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-10-31T23:06:04.128632+00:00",
+  "finishedAtUtc": "2026-10-31T23:06:04.904068+00:00",
+  "exitCode": 1
+}

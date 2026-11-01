@@ -1,0 +1,11 @@
+{
+  "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs": "c085ae16fe4d566b46278885c51746462e2578470899f9010188f8080c4d4352",
+  "references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs": "60b05b1c9e717e5f1fea9e5a08bc44efc6b6230f718f109337ce86800cfff55c",
+  "references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceSecurityExtensions.cs": "987d218b1e15e2cefaa63863f5ccf243078771d9cda1e904f9609fbd2991f19a",
+  "references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceEndpointInventory.cs": "b7a844de79f1ce119b6d041772c325deaa0e46e0557776317aba400c67da2596",
+  "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityExtensions.cs": "181884eb1ba5a3094f29e9ac663c70401e6e0d07c3cf1e26224049e44f2511ac",
+  "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpEndpointInventory.cs": "53f69df88b3b8eca3813d51727b610c619b8efbe9efea1499d5c4557e8c74074",
+  "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/spec-5-14-authenticated-fallback-and-dapr-framework-route-protection.md": "16bcb600318e09f12ee9da0d23d35c8f3426481905f808f92ce44cb9f0d033c8",
+  "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/spec-5-5-internal-and-domain-service-trust-boundary.md": "cb1eff04d5b65e32c19817bf19dd49eb615dcbc1d1aefd84d4ca35ce5cbc352a",
+  "_bmad-output/implementation-artifacts/proposal-12-2-acceptance-prerequisites.md": "29426d91e34509ba1b9f4029671cff85161b34c072f3ce66c1a58cd2208d563e"
+}

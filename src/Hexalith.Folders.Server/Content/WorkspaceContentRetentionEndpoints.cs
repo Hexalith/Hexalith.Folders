@@ -1,3 +1,4 @@
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.EventStore.DomainService.Content;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -60,6 +61,6 @@ internal static class WorkspaceContentRetentionEndpoints
                 catch (UnauthorizedAccessException) { return FoldersDomainServiceEndpoints.ContentProblem("resource_unavailable", correlation, task); }
                 catch (ContentConflictException) { return FoldersDomainServiceEndpoints.ContentProblem("concurrency_conflict", correlation, task); }
                 catch (Exception) { return FoldersDomainServiceEndpoints.ContentProblem("file_policy_unavailable", correlation, task); }
-            }).RequireAuthorization();
+            }).RequireAuthorization(EventStoreHttpHostSecurityExtensions.HumanPolicy);
     }
 }

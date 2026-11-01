@@ -1,3 +1,4 @@
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Hexalith.EventStore.Client.Gateway;
@@ -30,10 +31,10 @@ internal static partial class WorkspaceNativeEndpoints
     internal static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost(Route + "operation-evidence", (string folderId, string workspaceId, HttpContext context, CancellationToken token)
-            => ExecuteAsync(folderId, workspaceId, context, false, token)).RequireAuthorization();
+            => ExecuteAsync(folderId, workspaceId, context, false, token)).RequireAuthorization(EventStoreHttpHostSecurityExtensions.HumanPolicy);
         endpoints.MapPost(Route + "task-lease", (string folderId, string workspaceId, HttpContext context, CancellationToken token)
-            => ExecuteAsync(folderId, workspaceId, context, true, token)).RequireAuthorization();
-        endpoints.MapPost(Route + "files/add", FoldersDomainServiceEndpoints.NativeAddFileAsync).RequireAuthorization();
+            => ExecuteAsync(folderId, workspaceId, context, true, token)).RequireAuthorization(EventStoreHttpHostSecurityExtensions.HumanPolicy);
+        endpoints.MapPost(Route + "files/add", FoldersDomainServiceEndpoints.NativeAddFileAsync).RequireAuthorization(EventStoreHttpHostSecurityExtensions.HumanPolicy);
     }
     private static async Task<IResult> ExecuteAsync(string folderId, string workspaceId, HttpContext http, bool lease, CancellationToken token)
     {

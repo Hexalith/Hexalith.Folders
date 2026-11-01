@@ -373,6 +373,25 @@ class EventTests(unittest.TestCase):
 
 
 class SnapshotTests(Fixture):
+    def identical_descriptor_payloads(self, proc):
+        first, second = (proc / "42/task" / str(tid) for tid in (42, 43))
+        (second / "fd/9").unlink()
+        (second / "fd/9").symlink_to(self.root / "target-a")
+        (second / "fdinfo/9").write_text((first / "fdinfo/3").read_text())
+
+    def test_kcmp_vm_and_files_use_distinct_resources_and_unknown_falls_back(self):
+        libc = mock.Mock()
+        with mock.patch.object(c.platform, "machine", return_value="x86_64"), mock.patch.object(c.ctypes, "CDLL", return_value=libc):
+            for result, expected in ((0, True), (1, False), (-1, None)):
+                libc.syscall.return_value = result
+                self.assertIs(c.shared_memory_map(42, 43), expected)
+                self.assertEqual([arg.value for arg in libc.syscall.call_args.args], [312, 42, 43, 1, 0, 0])
+                self.assertIs(c.shared_descriptor_table(42, 43), expected)
+                self.assertEqual([arg.value for arg in libc.syscall.call_args.args], [312, 42, 43, 2, 0, 0])
+        with mock.patch.object(c.platform, "machine", return_value="aarch64"), mock.patch.object(c.ctypes, "CDLL") as load:
+            self.assertIsNone(c.shared_memory_map(42, 43))
+            load.assert_not_called()
+
     def test_actual_self_snapshot_keeps_its_enumeration_fd_alive(self):
         rows = []
         fd = os.open(c.HERE, os.O_RDONLY | os.O_DIRECTORY)
@@ -414,6 +433,271 @@ class SnapshotTests(Fixture):
         self.assertTrue(any(row.get("fd") == 3 and row.get("tid") == 42 for row in errors))
         self.assertTrue(any(row["kind"] == "descriptor" and row["tid"] == 43 for row in rows))
         self.assertEqual(sum(row["kind"] == "shared_mapping" for row in rows), 2)
+
+    def test_confirmed_shared_table_references_inventory_and_keeps_task_maps(self):
+        proc, rows = self.synthetic_proc(), []
+        with mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "shared_descriptor_table", return_value=True):
+            errors = c.snapshot_process(42, rows.append)
+        self.assertEqual(errors, [])
+        descriptors = [row for row in rows if row["kind"] == "descriptor"]
+        self.assertEqual([(row["tid"], row["fd"]) for row in descriptors], [(42, 3)])
+        references = [row for row in rows if row["kind"] == "descriptor_table_reference"]
+        self.assertEqual([(row["tid"], row["reference_tid"], row["proof"]) for row in references], [(43, 42, "KCMP_FILES")])
+        self.assertEqual(sum(row["kind"] == "shared_mapping" for row in rows), 2)
+
+    def test_unknown_table_sharing_enumerates_thread_private_descriptors(self):
+        proc, rows = self.synthetic_proc(), []
+        with mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "shared_descriptor_table", return_value=None):
+            errors = c.snapshot_process(42, rows.append)
+        self.assertEqual(errors, [])
+        self.assertEqual({row["tid"] for row in rows if row["kind"] == "descriptor"}, {42, 43})
+        self.assertFalse(any(row["kind"] == "descriptor_table_reference" for row in rows))
+
+    def test_table_unsharing_during_observation_is_incomplete(self):
+        proc, rows = self.synthetic_proc(), []
+        with mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "shared_descriptor_table", side_effect=[True, False]):
+            errors = c.snapshot_process(42, rows.append)
+        self.assertTrue(any(row.get("observation") == "descriptor-table" and 'changed' in row['detail'] for row in errors))
+        self.assertEqual(sum(row["kind"] == "shared_mapping" for row in rows), 2)
+
+    def test_shared_vm_references_original_inventory_with_identities_timing_and_end_proof(self):
+        proc, rows = self.synthetic_proc(), []
+        with mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "shared_memory_map", return_value=True) as sharing:
+            errors = c.snapshot_process(42, rows.append)
+        self.assertEqual(errors, [])
+        self.assertEqual(sharing.call_args_list, [mock.call(42, 43), mock.call(42, 43)])
+        self.assertEqual([row["tid"] for row in rows if row["kind"] == "shared_mapping"], [42])
+        source = next(row for row in rows if row["kind"] == "shared_mapping_inventory")
+        reference = next(row for row in rows if row["kind"] == "shared_mapping_reference")
+        self.assertTrue(source["complete"])
+        self.assertEqual((reference["pid"], reference["tid"], reference["group_leader_start_ticks"], reference["task_start_ticks"]), (42, 43, 100, 200))
+        self.assertEqual(reference["reference"], {name: source[name] for name in (
+            "pid", "tid", "group_leader_start_ticks", "task_start_ticks", "started_monotonic_ns", "completed_monotonic_ns")})
+        self.assertEqual(reference["proof"], "KCMP_VM")
+        self.assertTrue(reference["reference_identity_rechecked"] and reference["task_identity_rechecked"])
+        self.assertLessEqual(source["started_monotonic_ns"], source["completed_monotonic_ns"])
+        self.assertLessEqual(source["completed_monotonic_ns"], reference["proof_before_monotonic_ns"])
+        self.assertLessEqual(reference["proof_before_monotonic_ns"], reference["proof_after_monotonic_ns"])
+        self.assertIn("original source observation interval", reference["scope_note"])
+        # The source and target retain independent descriptor inventories.
+        self.assertEqual([row["tid"] for row in rows if row["kind"] == "descriptor"], [42, 43])
+
+    def test_unknown_and_private_vm_enumerate_every_task_even_with_identical_maps(self):
+        proc = self.synthetic_proc()
+        (proc / "42/task/43/maps").write_text((proc / "42/task/42/maps").read_text())
+        for sharing in (None, False):
+            rows = []
+            with self.subTest(sharing=sharing), mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "shared_memory_map", return_value=sharing):
+                errors = c.snapshot_process(42, rows.append)
+            self.assertEqual(errors, [])
+            self.assertEqual({row["tid"] for row in rows if row["kind"] == "shared_mapping"}, {42, 43})
+            self.assertFalse(any(row["kind"] == "shared_mapping_reference" for row in rows))
+
+    def test_confirmed_empty_mapping_inventory_can_be_referenced(self):
+        proc, rows = self.synthetic_proc(), []
+        (proc / "42/task/42/maps").write_text("")
+        with mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "shared_memory_map", return_value=True):
+            errors = c.snapshot_process(42, rows.append)
+        self.assertEqual(errors, [])
+        self.assertFalse(any(row["kind"] == "shared_mapping" for row in rows))
+        self.assertTrue(any(row["kind"] == "shared_mapping_inventory" and row["complete"] for row in rows))
+        self.assertTrue(any(row["kind"] == "shared_mapping_reference" for row in rows))
+
+    def test_vm_unsharing_or_unknown_end_proof_retains_failure(self):
+        proc = self.synthetic_proc()
+        for end_proof in (False, None):
+            rows = []
+            with self.subTest(end_proof=end_proof), mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "shared_memory_map", side_effect=[True, end_proof]):
+                errors = c.snapshot_process(42, rows.append)
+            self.assertTrue(any(row.get("observation") == "shared-mappings" and "changed" in row["detail"] for row in errors))
+            self.assertFalse(any(row["kind"] == "shared_mapping_reference" for row in rows))
+            self.assertEqual([row["tid"] for row in rows if row["kind"] == "task"], [42, 43])
+
+    def test_shared_vm_reference_exit_or_reuse_before_or_during_task_is_retained(self):
+        proc = self.synthetic_proc()
+        reference_stat = proc / "42/task/42/stat"
+        original = reference_stat.read_text()
+        for when in ("before", "during"):
+            for change in ("exit", "reuse"):
+                rows = []
+                reference_stat.write_text(original)
+                def emit(row):
+                    rows.append(row)
+                    trigger = (row["kind"] == "shared_mapping_inventory" and row["tid"] == 42 if when == "before"
+                               else row["kind"] == "task" and row["tid"] == 43)
+                    if trigger:
+                        if change == "exit":
+                            reference_stat.unlink()
+                        else:
+                            reference_stat.write_text(original.replace("100", "999"))
+                with self.subTest(when=when, change=change), mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "shared_memory_map", return_value=True):
+                    errors = c.snapshot_process(42, emit)
+                self.assertTrue(any(row.get("observation", "").startswith("shared-mappings") and
+                                    (row.get("error") == "FileNotFoundError" or "reused" in row["detail"]) for row in errors), errors)
+                self.assertFalse(any(row["kind"] == "shared_mapping_reference" for row in rows))
+                if when == "before":
+                    self.assertEqual({row["tid"] for row in rows if row["kind"] == "shared_mapping"}, {42, 43})
+
+    def test_reuse_inside_final_kcmp_is_caught_after_its_success(self):
+        proc, rows = self.synthetic_proc(), []
+        reference_stat = proc / "42/task/42/stat"
+        calls = 0
+        def sharing(first, second):
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                reference_stat.write_text(reference_stat.read_text().replace("100", "999"))
+            return True
+        with mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "shared_memory_map", side_effect=sharing):
+            errors = c.snapshot_process(42, rows.append)
+        self.assertEqual(calls, 2)
+        self.assertTrue(any(row.get("observation") == "shared-mappings" and "reused" in row["detail"] for row in errors))
+        self.assertFalse(any(row["kind"] == "shared_mapping_reference" for row in rows))
+
+    def test_reused_target_never_gets_a_confirmed_mapping_reference(self):
+        proc, rows = self.synthetic_proc(), []
+        def emit(row):
+            rows.append(row)
+            if row["kind"] == "task" and row["tid"] == 43:
+                path = proc / "42/task/43/stat"
+                path.write_text(path.read_text().replace("200", "999"))
+        with mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "shared_memory_map", return_value=True):
+            errors = c.snapshot_process(42, emit)
+        self.assertTrue(any(row.get("observation") == "task-final-identity" and "reused" in row["detail"] for row in errors))
+        self.assertFalse(any(row["kind"] == "shared_mapping_reference" for row in rows))
+
+    def test_shared_vm_reference_that_becomes_a_zombie_retains_exit_error(self):
+        proc, rows = self.synthetic_proc(), []
+        def emit(row):
+            rows.append(row)
+            if row["kind"] == "task" and row["tid"] == 43:
+                path = proc / "42/task/42/stat"
+                path.write_text(path.read_text().replace(") S ", ") Z "))
+        with mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "shared_memory_map", return_value=True):
+            errors = c.snapshot_process(42, emit)
+        self.assertTrue(any(row.get("observation") == "shared-mappings" and "exited" in row["detail"] for row in errors))
+        self.assertFalse(any(row["kind"] == "shared_mapping_reference" for row in rows))
+
+    def test_mapping_read_errors_prevent_a_reference_and_keep_other_tasks(self):
+        proc, rows = self.synthetic_proc(), []
+        (proc / "42/task/42/maps").write_text("malformed\n1000-2000 rw-s 0 08:11 1 /valid\n")
+        with mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "shared_memory_map", return_value=True):
+            errors = c.snapshot_process(42, rows.append)
+        self.assertTrue(any(row.get("observation") == "shared-mapping" for row in errors))
+        self.assertEqual({row["tid"] for row in rows if row["kind"] == "shared_mapping"}, {42, 43})
+        self.assertFalse(any(row["kind"] == "shared_mapping_reference" for row in rows))
+        self.assertTrue(any(row["kind"] == "shared_mapping_inventory" and row["tid"] == 42 and not row["complete"] for row in rows))
+
+    def test_exact_descriptor_references_round_trip_payload_and_preserve_both_identities(self):
+        proc, rows = self.synthetic_proc(), []
+        self.identical_descriptor_payloads(proc)
+        with mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "fdinfo", wraps=c.fdinfo) as info:
+            errors = c.snapshot_process(42, rows.append)
+        self.assertEqual(errors, [])
+        rows = json.loads(json.dumps(rows))
+        source = next(row for row in rows if row["kind"] == "descriptor")
+        reference = next(row for row in rows if row["kind"] == "descriptor_reference")
+        self.assertEqual(reference["reference"], {name: source[name] for name in (
+            "pid", "tid", "group_leader_start_ticks", "task_start_ticks", "fd", "observation_id", "observed_monotonic_ns")})
+        self.assertEqual((reference["tid"], reference["task_start_ticks"], reference["fd"]), (43, 200, 9))
+        self.assertNotEqual(reference["observation_id"], source["observation_id"])
+        self.assertGreaterEqual(reference["observed_monotonic_ns"], source["observed_monotonic_ns"])
+        self.assertEqual(sum(call.args[0] == proc / "42/task/43/fdinfo/9" for call in info.call_args_list), 2)
+        emitted = {}
+        reconstructed = []
+        for row in rows:
+            if row["kind"] == "descriptor":
+                emitted[row["observation_id"]] = {name: row[name] for name in ("path", "metadata", "fd_metadata")}
+                reconstructed.append({**row})
+            elif row["kind"] == "descriptor_reference":
+                reconstructed.append({**row, **emitted[row["reference"]["observation_id"]]})
+        self.assertEqual(len(reconstructed), 2)
+        self.assertEqual(reconstructed[0]["metadata"], reconstructed[1]["metadata"])
+        self.assertEqual(reconstructed[0]["path"], reconstructed[1]["path"])
+        self.assertEqual(reconstructed[0]["fd_metadata"], reconstructed[1]["fd_metadata"])
+
+    def test_changed_descriptor_payload_or_inode_keeps_full_observation(self):
+        proc = self.synthetic_proc()
+        for change in ("fdinfo", "metadata", "identity"):
+            rows = []
+            self.identical_descriptor_payloads(proc)
+            def emit(row):
+                rows.append(row)
+                if row["kind"] == "descriptor" and row["tid"] == 42:
+                    if change == "fdinfo":
+                        path = proc / "42/task/43/fdinfo/9"
+                        path.write_text(path.read_text().replace("pos:\t0", "pos:\t99"))
+                    elif change == "metadata":
+                        (self.root / "target-a").write_text("synthetic metadata race fixture")
+                    else:
+                        path = proc / "42/task/43/fd/9"
+                        path.unlink()
+                        path.symlink_to(self.root / "target-b")
+                        info = proc / "42/task/43/fdinfo/9"
+                        info.write_text(info.read_text().replace(str((self.root / "target-a").stat().st_ino), str((self.root / "target-b").stat().st_ino)))
+            with self.subTest(change=change), mock.patch.object(c, "PROC_ROOT", proc):
+                errors = c.snapshot_process(42, emit)
+            self.assertEqual(errors, [])
+            self.assertEqual(sum(row["kind"] == "descriptor" for row in rows), 2)
+            self.assertFalse(any(row["kind"] == "descriptor_reference" for row in rows))
+
+    def test_duplicate_descriptor_still_runs_fresh_race_checks(self):
+        proc, rows = self.synthetic_proc(), []
+        self.identical_descriptor_payloads(proc)
+        original = c.fdinfo
+        calls = 0
+        def changing(path):
+            nonlocal calls
+            details = original(path)
+            if path == proc / "42/task/43/fdinfo/9":
+                calls += 1
+                if calls == 2:
+                    details["pos"] = "99"
+            return details
+        with mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, "fdinfo", side_effect=changing):
+            errors = c.snapshot_process(42, rows.append)
+        self.assertEqual(calls, 2)
+        self.assertTrue(any(row.get("tid") == 43 and row.get("fd") == 9 for row in errors))
+        self.assertFalse(any(row["kind"] == "descriptor_reference" for row in rows))
+
+    def test_descriptor_cache_limits_fall_back_to_full_payloads(self):
+        proc = self.synthetic_proc()
+        first = proc / "42/task/42"
+        (first / "fd/4").symlink_to(self.root / "target-b")
+        (first / "fdinfo/4").write_text((proc / "42/task/43/fdinfo/9").read_text())
+        second = proc / "42/task/43"
+        (second / "fd/10").symlink_to(self.root / "target-a")
+        (second / "fdinfo/10").write_text((first / "fdinfo/3").read_text())
+        for limit, value, full_count in (("DESCRIPTOR_CACHE_ENTRIES", 1, 3), ("DESCRIPTOR_CACHE_BYTES", 1, 4)):
+            rows = []
+            with self.subTest(limit=limit), mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c, limit, value):
+                errors = c.snapshot_process(42, rows.append)
+            self.assertEqual(errors, [])
+            self.assertEqual(sum(row["kind"] == "descriptor" for row in rows), full_count)
+            self.assertEqual(sum(row["kind"] == "descriptor_reference" for row in rows), 4 - full_count)
+
+    def test_process_inventory_streams_and_retains_disappearing_entries(self):
+        proc, rows, state = self.synthetic_proc(), [], {}
+        original = c.os.scandir
+        def live_processes():
+            yield types.SimpleNamespace(name="888")  # Observed, then gone before stat.
+            self.assertTrue(any(row.get("pid") == 888 and row["kind"] == "snapshot_error" for row in rows))
+            yield types.SimpleNamespace(name="42")
+        class LiveEntries:
+            def __enter__(self):
+                return live_processes()
+            def __exit__(self, *args):
+                return False
+        def scandir(path):
+            return LiveEntries() if not isinstance(path, int) and Path(path) == proc else original(path)
+        class Sink:
+            def write(self, name, row):
+                rows.append(row)
+        with mock.patch.object(c, "PROC_ROOT", proc), mock.patch.object(c.os, "scandir", side_effect=scandir):
+            errors = c.snapshot_all(Sink(), "before", self.nss, state=state)
+        self.assertTrue(any(row.get("pid") == 888 and row["error"] == "FileNotFoundError" for row in errors))
+        self.assertTrue(any(row["kind"] == "process" and row["pid"] == 42 for row in rows))
+        self.assertGreater(state["error_count"], 0)
 
     def test_fdinfo_race_is_flagged(self):
         proc, rows = self.synthetic_proc(), []
@@ -534,7 +818,11 @@ class FakeBCC:
             def __setitem__(self, key, value):
                 mapping[key.value] = value
             def items(self):
+                if name == "pairs":
+                    raise RuntimeError("BCC multidimensional leaf reflection is unsafe; count keys only")
                 return mapping.items()
+            def keys(self):
+                return mapping.keys()
         return Access()
 
     def open_perf_buffer(self, callback, **kwargs):
@@ -568,7 +856,7 @@ class FakeBCC:
             return
         if self.scenario == "lost":
             self.maps["counters"][0].value += 3
-            self.lost_callback(0, 3)
+            self.lost_callback(3)
             return
         event = EventTests().event()
         event.entry_ns = event.return_ns = time.monotonic_ns()
@@ -576,7 +864,12 @@ class FakeBCC:
         if self.scenario == "uncertain":
             event.source.flags = c.PATH_TRUNCATED
         self.maps["counters"][0].value += 1
-        self.callback(0, ctypes.byref(event), ctypes.sizeof(event) - (1 if self.scenario == "bad-abi" else 0))
+        if self.scenario == "padded-abi":
+            size = ((ctypes.sizeof(event) + 4 + 7) & ~7) - 4
+            data = ctypes.create_string_buffer(bytes(event), size)
+            self.callback(0, data, size)
+        else:
+            self.callback(0, ctypes.byref(event), ctypes.sizeof(event) - (1 if self.scenario == "bad-abi" else 0))
 
     def cleanup(self):
         self.log.append("collector-cleanup")
@@ -662,6 +955,15 @@ class SimulatedCaptureTests(Fixture):
         self.assertFalse(receipt["ready"])
         self.assertIn("event ABI size mismatch", receipt["incomplete_reasons"])
         self.assertTrue(receipt["collector_only_cleanup_completed"])
+
+    def test_simulated_linux_raw_padding_preserves_event_and_accounting(self):
+        result, receipt, bpf = self.run_simulated(scenario="padded-abi")
+        self.assertEqual(result, 0)
+        self.assertTrue(receipt["supported_probe_accounting_complete"])
+        self.assertEqual(receipt["stats"]["events"], 1)
+        self.assertEqual(receipt["stats"]["observed_event_sizes"], {"3308": 1})
+        event = json.loads((self.output / "events.jsonl").read_text())
+        self.assertEqual(event["operation"], "vfs_write")
 
     def test_simulated_callback_decode_error_is_retained(self):
         with mock.patch.object(c, "decode_event", side_effect=ValueError("simulated decoding failure")):

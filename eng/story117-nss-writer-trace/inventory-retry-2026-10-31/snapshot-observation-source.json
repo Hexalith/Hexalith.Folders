@@ -1,0 +1,7 @@
+{
+  "collector_sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+  "bcc_imported": false,
+  "capture_seconds": 0,
+  "snapshot_result_path": "/var/tmp/story117-nss-retry.ubgn0d7i/snapshot-only-result.json",
+  "note": "Completed traversal with five retained errors. No valid readiness claim."
+}

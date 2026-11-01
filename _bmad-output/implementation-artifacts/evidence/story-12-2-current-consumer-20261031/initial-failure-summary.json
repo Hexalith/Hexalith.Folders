@@ -1,0 +1,416 @@
+{
+  "server-tests": [
+    {
+      "name": "Hexalith.Folders.Server.Tests.TransportParityConformanceTests.ReservedSystemTenantRequestSurfacesCanonicalTenantAccessDeniedWithinTheOracleErrorCodeSet",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory)."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.TransportParityConformanceTests.OracleCarriesTheExpectedDistinctRows",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory)."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.TransportParityConformanceTests.MutatingFamilyEndpointReturnsAcceptedTransportTerminalClass",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory)."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.TransportParityConformanceTests.MutatingEndpointAcceptsIdempotencyKeyAndReplayReturnsAcceptedTransportTerminal",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory)."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.TransportParityConformanceTests.UnauthenticatedRequestSurfacesCanonicalAuthenticationFailureWithinTheOracleErrorCodeSet",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory)."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.TransportParityConformanceTests.QueryEndpointRejectsIdempotencyKeyWithCanonicalSafeProblem",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory)."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.TransportParityConformanceTests.ContextQueryFamilyEndpointReturnsContextReturnedTransportTerminalClass",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory)."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.TransportParityConformanceTests.ExplicitCorrelationIdIsEchoedUnchangedOnResponseHeader",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory)."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.TransportParityConformanceTests.KnownRestSurfaceGapAccountsForEveryRestExpectedRowWithoutAnEndpoint",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory)."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.WorkspaceStatusEndpointTests.GetWorkspaceStatusProblemDetailsAndSuccessShouldNotEmitLeakageCorpusValues",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Repository root not found."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsTests.SentinelCorpusValuesMustNeverAppearInAnyAuditEndpointResponse",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionCallbacksRejectMissingInvalidAndWrongOperationCredentials(route: \\\"/process\\\", operation: \\\"domain-service:process\\\")",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionCallbacksRejectMissingInvalidAndWrongOperationCredentials(route: \\\"/project\\\", operation: \\\"domain-service:project\\\")",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionCallbacksRejectMissingInvalidAndWrongOperationCredentials(route: \\\"/query\\\", operation: \\\"domain-service:query\\\")",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionCallbacksRejectMissingInvalidAndWrongOperationCredentials(route: \\\"/admin/operational-index-metadata\\\", operation: \\\"domain-service:metadata\\\")",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"invalid-envelope\\\", expected: BadRequest)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"invalid-cursor\\\", expected: BadRequest)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"invalid-page\\\", expected: BadRequest)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"actor-exception\\\", expected: NotFound)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"actor-not-found-infrastructure\\\", expected: NotFound)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"serialization-failure\\\", expected: NotFound)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"missing-payload\\\", expected: NotFound)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"Forbidden\\\", expected: NotFound)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"No projection state available for this aggregate\\\", expected: NotFound)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"safe-denial\\\", expected: NotFound)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"internal diagnostic tenant-secret folder-secret\\\", expected: NotFound)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"unknown-handler\\\", expected: NotFound)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"unverified-caller\\\", expected: NotFound)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"allowed\\\", expected: OK)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"stale\\\", expected: OK)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.QueryCallbackMapsInputErrorsAndSanitizesOtherFailures(scenario: \\\"unavailable\\\", expected: OK)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: null)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: 1)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: 0)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: -1)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: 2)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersCallbackBoundaryTests.ProductionMetadataRejectsUnsupportedSourceGuardVersions(version: 2147483647)",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.Authentication.FoldersProductionAuthenticationTests.ProgramShouldUseAuthenticationBeforeAuthorizationAndEndpointMapping",
+      "type": "System.IO.DirectoryNotFoundException",
+      "message": "System.IO.DirectoryNotFoundException : Could not find a part of the path '/tmp/story-12-2-consumer-20261031-artifacts/bin/Hexalith.Folders.Server.Tests/debug/src/Hexalith.Folders.Server/Program.cs'."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.MemoriesFolderSearchSourceTests.ShouldDropEveryLeakageCorpusSnippetFromResults",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.Pd10V2ReadKeyPrecedenceTests.EveryGeneratedReadRejectsAKeyBeforeAuthorizationOrSourceAccess",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory)."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: \\\"folder\\\", memoryFallback: False, message: \\\"actor-folded folder repository\\\")",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: \\\"folder\\\", memoryFallback: True, message: \\\"actor-folded folder repository\\\")",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: \\\"binding\\\", memoryFallback: False, message: \\\"actor-folded organization repository\\\")",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: \\\"binding\\\", memoryFallback: True, message: \\\"actor-folded organization repository\\\")",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostRefusesMissingOrMemoryRepository(repository: \\\"acl\\\", memoryFallback: False, message: \\\"actor-folded organization ACL repository\\\")",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests.ProductionHostStartsWithActorFoldedRepositories",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FileContextEndpointTests.SafeDenialProblemDetailsShouldNotEchoLeakageCorpusSentinels",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Repository root not found."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.WorkspaceCleanupStatusEndpointTests.GetWorkspaceCleanupStatusProblemDetailsAndSuccessShouldNotEmitLeakageCorpusValues",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Repository root not found."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FolderAuditEndpointFilterTests.EveryGeneratedReadShouldRejectAKeyBeforeItsHandlerOrAuditRuns",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory)."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.MutationEnvelopeEndpointMatrixTests.MutationFixturesShouldCoverTheGeneratedMutationInventory",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory)."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FolderCommandRejectedLeakageTests.RawSentinelIsDroppedFromEveryRejectionIdentifier",
+      "type": "System.TypeInitializationException",
+      "message": "System.TypeInitializationException : The type initializer for 'Hexalith.Folders.Server.Tests.FolderCommandRejectedLeakageTests' threw an exception.\n---- System.InvalidOperationException : Could not locate repository root."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FolderCommandRejectedLeakageTests.LeakageDetectorScansNonJsonPayloadsAsRawText",
+      "type": "System.TypeInitializationException",
+      "message": "System.TypeInitializationException : The type initializer for 'Hexalith.Folders.Server.Tests.FolderCommandRejectedLeakageTests' threw an exception.\n---- System.InvalidOperationException : Could not locate repository root."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FolderCommandRejectedLeakageTests.CanonicalShapedCorpusSentinelIsPreservedAndSolelyExcluded",
+      "type": "System.TypeInitializationException",
+      "message": "System.TypeInitializationException : The type initializer for 'Hexalith.Folders.Server.Tests.FolderCommandRejectedLeakageTests' threw an exception.\n---- System.InvalidOperationException : Could not locate repository root."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FolderCommandRejectedLeakageTests.RawSentinelCommandTypeFollowsDocumentedNormalizationPolicy",
+      "type": "System.TypeInitializationException",
+      "message": "System.TypeInitializationException : The type initializer for 'Hexalith.Folders.Server.Tests.FolderCommandRejectedLeakageTests' threw an exception.\n---- System.InvalidOperationException : Could not locate repository root."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FolderCommandRejectedLeakageTests.NoncanonicalWrappedSentinelIsDroppedFromEveryRejectionIdentifier",
+      "type": "System.TypeInitializationException",
+      "message": "System.TypeInitializationException : The type initializer for 'Hexalith.Folders.Server.Tests.FolderCommandRejectedLeakageTests' threw an exception.\n---- System.InvalidOperationException : Could not locate repository root."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FolderCommandRejectedLeakageTests.LeakageDetectorMustReportQuarantinedNegativeControls",
+      "type": "System.TypeInitializationException",
+      "message": "System.TypeInitializationException : The type initializer for 'Hexalith.Folders.Server.Tests.FolderCommandRejectedLeakageTests' threw an exception.\n---- System.InvalidOperationException : Could not locate repository root."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsSentinelTests.SafetyChannelInventoryEnrollsEveryAuditFamilyOperation",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : safety-channel-inventory.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsSentinelTests.EveryAuditEndpointResponseChannelMustBeSentinelClean(path: \\\"/api/v1/folders/folder-a/audit-trail\\\")",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsSentinelTests.EveryAuditEndpointResponseChannelMustBeSentinelClean(path: \\\"/api/v1/folders/folder-a/audit-trail/opaque_audit_\\\"\u00b7\u00b7\u00b7)",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsSentinelTests.EveryAuditEndpointResponseChannelMustBeSentinelClean(path: \\\"/api/v1/folders/folder-a/operation-timeline\\\")",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsSentinelTests.EveryAuditEndpointResponseChannelMustBeSentinelClean(path: \\\"/api/v1/folders/folder-a/operation-timeline/opaque\\\"\u00b7\u00b7\u00b7)",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsSentinelTests.EveryAuditEndpointResponseChannelMustBeSentinelClean(path: \\\"/api/v1/folders/folder-a/audit-trail?cursor=tamper\\\"\u00b7\u00b7\u00b7)",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsSentinelTests.EveryAuditEndpointResponseChannelMustBeSentinelClean(path: \\\"/api/v1/folders/folder-a/audit-trail?filter=anythi\\\"\u00b7\u00b7\u00b7)",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsSentinelTests.EveryAuditEndpointResponseChannelMustBeSentinelClean(path: \\\"/api/v1/folders/folder-a/audit-trail?limit=0\\\")",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsSentinelTests.EveryAuditEndpointResponseChannelMustBeSentinelClean(path: \\\"/api/v1/folders/folder-a/operation-timeline?cursor\\\"\u00b7\u00b7\u00b7)",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsSentinelTests.EveryAuditEndpointResponseChannelMustBeSentinelClean(path: \\\"/api/v1/folders/folder-a/operation-timeline?filter\\\"\u00b7\u00b7\u00b7)",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsSentinelTests.EveryAuditEndpointResponseChannelMustBeSentinelClean(path: \\\"/api/v1/folders/folder-a/operation-timeline?limit=\\\"\u00b7\u00b7\u00b7)",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsSentinelTests.EveryAuditEndpointResponseChannelMustBeSentinelClean(path: \\\"/api/v1/folders/folder-a/audit-trail/opaque_unknow\\\"\u00b7\u00b7\u00b7)",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.AuditEndpointsSentinelTests.EveryAuditEndpointResponseChannelMustBeSentinelClean(path: \\\"/api/v1/folders/folder-a/operation-timeline/opaque\\\"\u00b7\u00b7\u00b7)",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : audit-leakage-corpus.json not found relative to test base directory."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(route: \\\"/process\\\", operation: \\\"domain-service:process\\\")",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(route: \\\"/project\\\", operation: \\\"domain-service:project\\\")",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(route: \\\"/query\\\", operation: \\\"domain-service:query\\\")",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(route: \\\"/admin/operational-index-metadata\\\", operation: \\\"domain-service:metadata\\\")",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProtectedProductionDiscoveryAdvertisesOnlyProcessorBackedNamedAndSharedRoutes",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.ServerEndpointRegistrationTests.HostShouldRegisterSdkSidecarChannelPolicyForDomainCallbacks",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : No service for type 'Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpEndpointSource' has been registered."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.Pd10ProtectedOperationCatalogTests.EveryCatalogIdentityMatchesTheCanonicalAuthorizationMatrix",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root."
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.Pd10ProtectedOperationCatalogTests.EveryCatalogHistoricalTargetMatchesTheV1Spine",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Could not locate repository root."
+    }
+  ],
+  "workers-tests": [
+    {
+      "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.WorkerLocalMemoriesRoutingDefaultsShouldMatchAspireConstants",
+      "type": "System.InvalidOperationException",
+      "message": "System.InvalidOperationException : Repository root was not found."
+    },
+    {
+      "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantEventProcessorShouldSkipUnsupportedEventTypeWithoutMutatingProjection",
+      "type": "System.IO.FileNotFoundException",
+      "message": "System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.Commons.UniqueIds, Version=3.128.4.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.\n"
+    },
+    {
+      "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShouldProcessKnownEventsEndToEnd",
+      "type": "Shouldly.ShouldAssertException",
+      "message": "Shouldly.ShouldAssertException : created.StatusCode\n    should be\nHttpStatusCode.OK\n    but was\nHttpStatusCode.InternalServerError"
+    },
+    {
+      "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShouldAcknowledgeUnknownEventTypesWithoutMutatingProjection",
+      "type": "Shouldly.ShouldAssertException",
+      "message": "Shouldly.ShouldAssertException : response.StatusCode\n    should be\nHttpStatusCode.OK\n    but was\nHttpStatusCode.InternalServerError"
+    },
+    {
+      "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantCallbackRequiresConfiguredSidecarTokenBeforeProjectionWrites",
+      "type": "Shouldly.ShouldAssertException",
+      "message": "Shouldly.ShouldAssertException : (await host.Client.PostAsJsonAsync(FoldersWorkersModule.TenantEventsRoute, envelope,\n            TestContext.Current.CancellationToken)).StatusCode\n    should be\nHttpStatusCode.OK\n    but was\nHttpStatusCode.InternalServerError"
+    }
+  ]
+}

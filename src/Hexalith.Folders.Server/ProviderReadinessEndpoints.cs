@@ -1,3 +1,4 @@
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -34,8 +35,10 @@ public static partial class ProviderReadinessEndpoints
     public static IEndpointRouteBuilder MapProviderReadinessEndpoints(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
+        RouteGroupBuilder humanEndpoints = endpoints.MapGroup("")
+            .RequireAuthorization(EventStoreHttpHostSecurityExtensions.HumanPolicy);
 
-        endpoints.MapPost("/api/v1/provider-readiness/validations", async (
+        humanEndpoints.MapPost("/api/v1/provider-readiness/validations", async (
             HttpContext httpContext,
             ProviderReadinessValidationService service,
             ITenantContextAccessor tenantContext,
@@ -50,7 +53,7 @@ public static partial class ProviderReadinessEndpoints
         .WithName("ValidateProviderReadiness")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/provider-readiness/support-evidence", async (
+        humanEndpoints.MapGet("/api/v1/provider-readiness/support-evidence", async (
             HttpContext httpContext,
             ProviderSupportEvidenceQueryHandler handler,
             ITenantContextAccessor tenantContext,
@@ -65,7 +68,7 @@ public static partial class ProviderReadinessEndpoints
         .WithName("GetProviderSupportEvidence")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapGet("/api/v1/provider-bindings/{providerBindingRef}", async (
+        humanEndpoints.MapGet("/api/v1/provider-bindings/{providerBindingRef}", async (
             string providerBindingRef,
             HttpContext httpContext,
             GetProviderBindingQueryHandler handler,

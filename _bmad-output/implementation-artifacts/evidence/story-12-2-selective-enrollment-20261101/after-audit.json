@@ -1,0 +1,23 @@
+{
+  "atUtc": "2026-11-01T00:14:27.178188+00:00",
+  "inventories": [
+    {
+      "inventory": "_bmad-output/implementation-artifacts/evidence/story-12-2-current-consumer-20261031/sources-before.json",
+      "sha256": "b68427d70ff00cc08378339a29a5e8624116315dff690b6790fed480f9872550",
+      "count": 17022,
+      "differences": []
+    },
+    {
+      "inventory": "_bmad-output/implementation-artifacts/evidence/story-12-2-current-consumer-20261031/binaries-before.json",
+      "sha256": "e31351b8938450dd943d7d4586545bef15288059ddd8036642ac5ff6b9670791",
+      "count": 406,
+      "differences": []
+    },
+    {
+      "inventory": "_bmad-output/implementation-artifacts/evidence/story-12-2-current-consumer-20261031/corrected-binaries-before.json",
+      "sha256": "b1204aefc13d6bb96057a0b4405e717e3bfc7b6b8dad8f2ee2f0d61ad3104bc0",
+      "count": 403,
+      "differences": []
+    }
+  ]
+}

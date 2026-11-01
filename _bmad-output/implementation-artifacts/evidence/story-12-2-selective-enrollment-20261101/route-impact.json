@@ -1,0 +1,482 @@
+{
+  "endpointFindings": 58,
+  "distinctPaths": 55,
+  "groups": {
+    "FoldersServerHostComposition.cs (Dapr subscribe)": 1,
+    "src/Hexalith.Folders.ServiceDefaults/Extensions.cs": 3,
+    "src/Hexalith.Folders.Server/FoldersServerModule.cs": 1,
+    "src/Hexalith.Folders.Server/Content/WorkspaceContentRetentionEndpoints.cs": 1,
+    "src/Hexalith.Folders.Server/Content/WorkspaceNativeEndpoints.cs": 3,
+    "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs": 34,
+    "Provider binding GET/PUT (ProviderReadinessEndpoints.cs and FoldersDomainServiceEndpoints.cs)": 2,
+    "src/Hexalith.Folders.Server/ProviderReadinessEndpoints.cs": 2,
+    "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs": 7,
+    "src/Hexalith.Folders.Server/AuditEndpoints.cs": 4
+  },
+  "rows": [
+    {
+      "route": "/dapr/subscribe",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [],
+      "expectedGroup": "FoldersServerHostComposition.cs (Dapr subscribe)"
+    },
+    {
+      "route": "/health/live",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.ServiceDefaults/Extensions.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.ServiceDefaults/Extensions.cs"
+    },
+    {
+      "route": "/health/ready",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.ServiceDefaults/Extensions.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.ServiceDefaults/Extensions.cs"
+    },
+    {
+      "route": "/health",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.ServiceDefaults/Extensions.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.ServiceDefaults/Extensions.cs"
+    },
+    {
+      "route": "/",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersServerModule.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersServerModule.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/content/disposition",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/Content/WorkspaceContentRetentionEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/Content/WorkspaceContentRetentionEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/native/operation-evidence",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/Content/WorkspaceNativeEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/Content/WorkspaceNativeEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/native/task-lease",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/Content/WorkspaceNativeEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/Content/WorkspaceNativeEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/native/files/add",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/Content/WorkspaceNativeEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/Content/WorkspaceNativeEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/effective-permissions",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/archive",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/repository-backed",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/repository-bindings",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/branch-ref-policy",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/preparation",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/transition-evidence",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/status",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/tasks/{taskId}/status",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock/release",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/change",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/remove",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/metadata",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/search",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/range-read",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/index-search",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/indexing-status",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/branch-ref-policy",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/lifecycle-status",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/repository-bindings/{repositoryBindingId}",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/acl",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/acl/{aclEntryId}",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/provider-bindings/{providerBindingRef}",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/ProviderReadinessEndpoints.cs",
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "Provider binding GET/PUT (ProviderReadinessEndpoints.cs and FoldersDomainServiceEndpoints.cs)"
+    },
+    {
+      "route": "/api/v1/provider-readiness/validations",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/ProviderReadinessEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/ProviderReadinessEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/provider-readiness/support-evidence",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/ProviderReadinessEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/ProviderReadinessEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/provider-bindings/{providerBindingRef}",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/ProviderReadinessEndpoints.cs",
+        "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
+      ],
+      "expectedGroup": "Provider binding GET/PUT (ProviderReadinessEndpoints.cs and FoldersDomainServiceEndpoints.cs)"
+    },
+    {
+      "route": "/api/v1/ops-console/readiness-diagnostics",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/failed-operation-diagnostics",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/ops-console/provider-status-diagnostics",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/sync-status-diagnostics",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/ops-console/projection-freshness",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/audit-trail",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/AuditEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/AuditEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/audit-trail/{auditRecordId}",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/AuditEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/AuditEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/operation-timeline",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/AuditEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/AuditEndpoints.cs"
+    },
+    {
+      "route": "/api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}",
+      "failure": "every protected endpoint must name a policy.",
+      "owningFiles": [
+        "src/Hexalith.Folders.Server/AuditEndpoints.cs"
+      ],
+      "expectedGroup": "src/Hexalith.Folders.Server/AuditEndpoints.cs"
+    }
+  ]
+}

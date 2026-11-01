@@ -1,0 +1,8 @@
+{
+  "removed_synthetic_entries": [
+    "key4.db",
+    "pkcs11.txt",
+    "cert9.db"
+  ],
+  "synthetic_root_absent": true
+}

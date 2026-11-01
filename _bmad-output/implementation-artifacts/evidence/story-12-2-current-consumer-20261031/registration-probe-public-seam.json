@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "dotnet",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-registration-probe-20261031/bin/registration-seam-probe/debug/registration-seam-probe.dll",
+    "register-http"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-10-31T23:07:12.379796+00:00",
+  "finishedAtUtc": "2026-10-31T23:07:15.759941+00:00",
+  "exitCode": 2
+}

@@ -1,0 +1,53 @@
+{
+  "identity": {
+    "pid": 84316,
+    "tid": 84316,
+    "uid": 0,
+    "task_start_ticks": 22738759,
+    "start_ticks": 22738759,
+    "executable": "/usr/bin/python3.14",
+    "executable_device": [
+      8,
+      48
+    ],
+    "executable_inode": 12409
+  },
+  "preexisting_fd": 4,
+  "file": {
+    "path": "/var/tmp/story117-nss-retry.ubgn0d7i/synthetic-08-fixture-02/nssdb/cert9.db",
+    "device": [
+      8,
+      48
+    ],
+    "inode": 9433298
+  },
+  "mapping_preexisting": true,
+  "mapping_stores_before_handshake": 0,
+  "thread_private": {
+    "identity": {
+      "pid": 84316,
+      "tid": 84368,
+      "uid": 0,
+      "task_start_ticks": 22738765,
+      "start_ticks": 22738759,
+      "executable": "/usr/bin/python3.14",
+      "executable_device": [
+        8,
+        48
+      ],
+      "executable_inode": 12409
+    },
+    "fd": 6,
+    "file": {
+      "path": "/var/tmp/story117-nss-retry.ubgn0d7i/synthetic-08-fixture-02/nssdb/key4.db",
+      "device": [
+        8,
+        48
+      ],
+      "inode": 9480211
+    },
+    "unshared": true
+  },
+  "owner_pid": 84286,
+  "owner_start_ticks": 22738755
+}

@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "dotnet",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug/Hexalith.Folders.Server.Tests.dll",
+    "-method",
+    "Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProtectedProductionDiscoveryAdvertisesOnlyProcessorBackedNamedAndSharedRoutes",
+    "-result-xml",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-current-consumer-20261031/production-discovery-minimal.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-10-31T23:09:24.189436+00:00",
+  "finishedAtUtc": "2026-10-31T23:09:25.003631+00:00",
+  "exitCode": 1
+}

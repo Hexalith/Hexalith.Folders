@@ -9,11 +9,6 @@ builder.AddFoldersWorkersHost();
 
 WebApplication app = builder.Build();
 
-app.UseCloudEvents();
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapSubscribeHandler();
-app.MapFoldersTenantEventWorkerEndpoints();
-app.MapDefaultEndpoints();
+app.UseFoldersWorkersPipeline();
 
 await app.RunAsync().ConfigureAwait(false);

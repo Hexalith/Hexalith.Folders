@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.EventStore.DomainService.Tests/Hexalith.EventStore.DomainService.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:Version=3.128.4",
+    "--artifacts-path",
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.artifacts/story-12-2-security-enrollment-20261101",
+    "-m:1",
+    "-nr:false",
+    "-v:quiet"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "startedAtUtc": "2026-11-01T06:58:33.019661+00:00",
+  "finishedAtUtc": "2026-11-01T06:58:46.666993+00:00",
+  "exitCode": 0
+}

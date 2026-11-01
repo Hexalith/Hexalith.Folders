@@ -1,0 +1,3177 @@
+{
+  "schema": "story117-nss-inventory-retry-v1",
+  "frozen": {
+    "qualification": "incomplete",
+    "parent": "in-progress",
+    "tracker": "backlog",
+    "productionControl": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "staging": "0/14",
+    "historicalWriters": {
+      "2026-10-30T16:39:27Z": "unresolved",
+      "2026-10-30T16:54:04Z": "unresolved"
+    }
+  },
+  "qualification": "incomplete",
+  "complete": false,
+  "global_immutability_proven": false,
+  "previous_capture_seconds": 553,
+  "additional_allocated_capture_seconds": 346,
+  "aggregate_allocated_capture_seconds": 899,
+  "aggregate_limit_seconds": 900,
+  "valid_readiness_handshakes": 0,
+  "executed_fixture_mutation_routes": 0,
+  "new_total_events": 182557,
+  "new_operation_counts": {
+    "vfs_write": 114281,
+    "sched_process_fork": 26692,
+    "sched_process_exit": 26703,
+    "notify_change": 1245,
+    "sched_process_exec": 4607,
+    "vfs_mkdir": 337,
+    "vfs_unlink": 5912,
+    "vfs_mknod": 508,
+    "vfs_rename": 425,
+    "vfs_fallocate": 56,
+    "vfs_rmdir": 553,
+    "ext4_page_mkwrite": 491,
+    "do_iter_write": 327,
+    "vfs_iter_write": 184,
+    "iter_file_splice_write": 140,
+    "do_splice_direct": 10,
+    "vfs_copy_file_range": 11,
+    "vfs_link": 20,
+    "vfs_tmpfile": 11,
+    "vfs_create": 44
+  },
+  "new_uid_counts": {
+    "1000": 153657,
+    "0": 24470,
+    "999": 4151,
+    "100": 76,
+    "65532": 183,
+    "1654": 20
+  },
+  "new_nonleader_thread_records": 148252,
+  "new_raw_fork_records_with_creator_identity": 26692,
+  "ambient_parent_identity_joins": 152907,
+  "deadline_violations": 0,
+  "unsupported": [
+    "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+    "Page-mkwrite events are evidence only, never successful content mutations.",
+    "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+    "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+    "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+    "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+    "Bounded path components and snapshot races can make identities incomplete.",
+    "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+    "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+    "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+    "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+    "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+  ],
+  "readiness_blocker": "Host process/descriptor churn remains: each full fixture before snapshot retains 3..7 errors. Substantial ambient submission/delivery losses also prevent complete accounting.",
+  "fixture_scope": "Existing main/private thread descriptors and mapping prepared outside real NSS; no post-handshake mutation suite executed.",
+  "attempts": [
+    {
+      "name": "08-fixture-01",
+      "allocated_seconds": 60,
+      "valid_handshake": false,
+      "workload_executed": false,
+      "executed_mutation_routes": 0,
+      "collector_exit": 2,
+      "control_case_passed": null,
+      "events": 61963,
+      "operation_counts": {
+        "vfs_write": 39636,
+        "sched_process_fork": 8025,
+        "sched_process_exit": 8011,
+        "notify_change": 464,
+        "sched_process_exec": 1649,
+        "vfs_mkdir": 119,
+        "vfs_unlink": 2882,
+        "vfs_mknod": 157,
+        "vfs_rename": 94,
+        "vfs_fallocate": 4,
+        "vfs_rmdir": 268,
+        "ext4_page_mkwrite": 129,
+        "do_iter_write": 220,
+        "vfs_iter_write": 137,
+        "iter_file_splice_write": 133,
+        "do_splice_direct": 8,
+        "vfs_copy_file_range": 9,
+        "vfs_link": 18
+      },
+      "uid_counts": {
+        "1000": 56052,
+        "0": 5705,
+        "999": 184,
+        "100": 22
+      },
+      "deadline_violations": 0,
+      "synthetic_target_event_candidates": 0,
+      "before": {
+        "present": true,
+        "bytes": 34706159,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 675,
+          "task": 5939,
+          "descriptor": 17450,
+          "descriptor_reference": 12345,
+          "shared_mapping_inventory": 676,
+          "descriptor_table_reference": 5262,
+          "shared_mapping_reference": 5263,
+          "shared_mapping": 27977,
+          "snapshot_error": 7,
+          "nss_metadata": 5,
+          "snapshot_end": 1
+        },
+        "errors": [
+          {
+            "observed_monotonic_ns": 227319076034735,
+            "kind": "snapshot_error",
+            "pid": 48333,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/48333/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227319076563718,
+            "kind": "snapshot_error",
+            "pid": 48365,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/48365/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227320521536585,
+            "kind": "snapshot_error",
+            "pid": 452407,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/452407/task/452407/fd/13'",
+            "tid": 452407,
+            "fd": 13,
+            "observation": "descriptor"
+          },
+          {
+            "observed_monotonic_ns": 227326438874422,
+            "kind": "snapshot_error",
+            "pid": 4024879,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/4024879/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227326438905622,
+            "kind": "snapshot_error",
+            "pid": 4025102,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/4025102/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227326438931392,
+            "kind": "snapshot_error",
+            "pid": 4025136,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/4025136/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227326900172324,
+            "kind": "snapshot_error",
+            "pid": 4091481,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/4091481/task/50200/stat'",
+            "tid": 50200,
+            "observation": "task-identity"
+          }
+        ],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {
+          "preexisting_descriptor": true,
+          "private_thread_descriptor": true
+        }
+      },
+      "after": {
+        "present": true,
+        "bytes": 34314638,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 677,
+          "task": 5906,
+          "descriptor": 17673,
+          "descriptor_reference": 11342,
+          "shared_mapping_inventory": 678,
+          "descriptor_table_reference": 5227,
+          "shared_mapping_reference": 5228,
+          "shared_mapping": 28075,
+          "snapshot_error": 15,
+          "nss_metadata": 5,
+          "snapshot_end": 1
+        },
+        "errors": [
+          {
+            "observed_monotonic_ns": 227333519218750,
+            "kind": "snapshot_error",
+            "pid": 56019,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/56019/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227333560391927,
+            "kind": "snapshot_error",
+            "pid": 56415,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/56415/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227333560410463,
+            "kind": "snapshot_error",
+            "pid": 56457,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/56457/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227333560425662,
+            "kind": "snapshot_error",
+            "pid": 56871,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/56871/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227333560437315,
+            "kind": "snapshot_error",
+            "pid": 56874,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/56874/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227333560447475,
+            "kind": "snapshot_error",
+            "pid": 56875,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/56875/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227333573177270,
+            "kind": "snapshot_error",
+            "pid": 57384,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/57384/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227333573195695,
+            "kind": "snapshot_error",
+            "pid": 57441,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/57441/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227333573208741,
+            "kind": "snapshot_error",
+            "pid": 57472,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/57472/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227333573219822,
+            "kind": "snapshot_error",
+            "pid": 57498,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/57498/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227333573230232,
+            "kind": "snapshot_error",
+            "pid": 57705,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/57705/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227333573241234,
+            "kind": "snapshot_error",
+            "pid": 57736,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/57736/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227339116865253,
+            "kind": "snapshot_error",
+            "pid": 4170205,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/4170205/task/4170205/fd/139'",
+            "tid": 4170205,
+            "fd": 139,
+            "observation": "descriptor"
+          },
+          {
+            "observed_monotonic_ns": 227339117057404,
+            "kind": "snapshot_error",
+            "pid": 4170205,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/4170205/task/4170205/fd/145'",
+            "tid": 4170205,
+            "fd": 145,
+            "observation": "descriptor"
+          },
+          {
+            "observed_monotonic_ns": 227339117273172,
+            "kind": "snapshot_error",
+            "pid": 4170205,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/4170205/task/4170205/fd/151'",
+            "tid": 4170205,
+            "fd": 151,
+            "observation": "descriptor"
+          }
+        ],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {
+          "preexisting_descriptor": true,
+          "private_thread_descriptor": true
+        }
+      },
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": true,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "UTC/monotonic calibration drift exceeded 1ms",
+          "UTC/monotonic clock step or drift exceeded 1ms",
+          "after snapshot incomplete",
+          "before snapshot incomplete",
+          "capture stopped by signal",
+          "destination_before metadata/path incomplete",
+          "destination_before unsupported filesystem",
+          "event-time executable path incomplete",
+          "event-time process identity incomplete",
+          "fork creator identity incomplete",
+          "identity_errors: 66068",
+          "path_truncations: 93651",
+          "perf lost events: 132707",
+          "source_before metadata/path incomplete",
+          "source_before unsupported filesystem",
+          "submission/delivery/loss counts do not reconcile",
+          "submission_failures: 132707",
+          "target_after metadata/path incomplete",
+          "target_after unsupported filesystem",
+          "unfinished entry/return pairs: 1"
+        ],
+        "incomplete_reason_count": 20,
+        "errors": [],
+        "stats": {
+          "events": 61963,
+          "successful_mutation_records": 44103,
+          "perf_lost": 132707,
+          "observed_event_sizes": {
+            "3308": 61963
+          }
+        },
+        "kernel_counters": {
+          "submissions": 194670,
+          "submission_failures": 132707,
+          "context_map_failures": 0,
+          "context_overwrites": 0,
+          "unmatched_returns": 0,
+          "kernel_read_errors": 0,
+          "path_truncations": 93651,
+          "deadline_unfinished_pairs": 0,
+          "excluded_entries": 247939,
+          "paired_entries": 424422,
+          "paired_returns": 424421,
+          "identity_errors": 66068
+        },
+        "unfinished_pairs": 1,
+        "kretprobe_profile_before_detach": {
+          "path": "/sys/kernel/tracing/kprobe_profile",
+          "owned_rows": {
+            "r_vfs_write_bcc_44724": {
+              "hits": 418329,
+              "missed": 0
+            },
+            "r___kernel_write_bcc_44724": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_iter_write_bcc_44724": {
+              "hits": 649,
+              "missed": 0
+            },
+            "r_vfs_iter_write_bcc_44724": {
+              "hits": 478,
+              "missed": 0
+            },
+            "r_notify_change_bcc_44724": {
+              "hits": 671,
+              "missed": 0
+            },
+            "r_vfs_rename_bcc_44724": {
+              "hits": 98,
+              "missed": 0
+            },
+            "r_vfs_link_bcc_44724": {
+              "hits": 18,
+              "missed": 0
+            },
+            "r_vfs_unlink_bcc_44724": {
+              "hits": 4831,
+              "missed": 0
+            },
+            "r_vfs_create_bcc_44724": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mkdir_bcc_44724": {
+              "hits": 134,
+              "missed": 0
+            },
+            "r_vfs_rmdir_bcc_44724": {
+              "hits": 390,
+              "missed": 0
+            },
+            "r_vfs_fallocate_bcc_44724": {
+              "hits": 4,
+              "missed": 0
+            },
+            "r_vfs_copy_file_range_bcc_44724": {
+              "hits": 14,
+              "missed": 0
+            },
+            "r_do_splice_direct_bcc_44724": {
+              "hits": 12,
+              "missed": 0
+            },
+            "r_iter_file_splice_write_bcc_44724": {
+              "hits": 478,
+              "missed": 0
+            },
+            "r_vfs_mknod_bcc_44724": {
+              "hits": 159,
+              "missed": 0
+            },
+            "r_vfs_tmpfile_bcc_44724": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_filemap_page_mkwrite_bcc_44724": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_ext4_page_mkwrite_bcc_44724": {
+              "hits": 137,
+              "missed": 0
+            }
+          },
+          "errors": [],
+          "complete": true
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": true,
+          "signal": 2,
+          "overflow": false
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 227339787468872,
+          "utc_ns": 1793486280140105292,
+          "uncertainty_ns": 591,
+          "utc": "2026-10-31T22:38:00.140105292Z"
+        },
+        "utc_offset_change_ns": -1139680,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 227328630641661,
+          "earliest_boottime_ns": 227328630642413,
+          "completed_monotonic_ns": 227328630673433,
+          "completed_boottime_ns": 227328630673914
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+          "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+          "rendered_bpf_sha256": "a5982b7c1b4e25cb1a480685f8162a4c5c2323231c777b4c4a7c59b4a4b37791",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 227339787513434,
+        "bytes_before_receipt": 216971964,
+        "snapshot_error_counts": {
+          "before": 7,
+          "after": 15
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": true,
+            "completed": true,
+            "partial": false,
+            "error_count": 7,
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "48333",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/48333/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "48365",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/48365/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "452407",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/452407/task/452407/fd/13'",
+                "tid": "452407",
+                "fd": "13",
+                "observation": "descriptor"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "4024879",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/4024879/stat'"
+              }
+            ]
+          },
+          "after": {
+            "started": true,
+            "completed": true,
+            "partial": false,
+            "error_count": 15,
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "56019",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/56019/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "56415",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/56415/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "56457",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/56457/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "56871",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/56871/stat'"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "08-fixture-02",
+      "allocated_seconds": 60,
+      "valid_handshake": false,
+      "workload_executed": false,
+      "executed_mutation_routes": 0,
+      "collector_exit": 2,
+      "control_case_passed": null,
+      "events": 24326,
+      "operation_counts": {
+        "sched_process_fork": 3226,
+        "sched_process_exec": 428,
+        "sched_process_exit": 3238,
+        "vfs_write": 15726,
+        "notify_change": 160,
+        "vfs_rename": 59,
+        "vfs_unlink": 1112,
+        "vfs_mkdir": 55,
+        "vfs_tmpfile": 3,
+        "vfs_create": 16,
+        "vfs_rmdir": 128,
+        "ext4_page_mkwrite": 98,
+        "vfs_mknod": 27,
+        "do_iter_write": 19,
+        "vfs_iter_write": 19,
+        "vfs_fallocate": 12
+      },
+      "uid_counts": {
+        "0": 2948,
+        "1000": 21221,
+        "65532": 87,
+        "100": 20,
+        "999": 40,
+        "1654": 10
+      },
+      "deadline_violations": 0,
+      "synthetic_target_event_candidates": 0,
+      "before": {
+        "present": true,
+        "bytes": 28304129,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 627,
+          "task": 5111,
+          "descriptor": 15951,
+          "descriptor_reference": 8651,
+          "shared_mapping_inventory": 627,
+          "descriptor_table_reference": 4483,
+          "shared_mapping_reference": 4484,
+          "shared_mapping": 21228,
+          "snapshot_error": 3,
+          "nss_metadata": 5,
+          "snapshot_end": 1
+        },
+        "errors": [
+          {
+            "observed_monotonic_ns": 227393618322784,
+            "kind": "snapshot_error",
+            "pid": 87332,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/87332/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227399513932138,
+            "kind": "snapshot_error",
+            "pid": 4173603,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/4173603/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227399513964591,
+            "kind": "snapshot_error",
+            "pid": 4173618,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/4173618/stat'"
+          }
+        ],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {
+          "preexisting_descriptor": true,
+          "private_thread_descriptor": true
+        }
+      },
+      "after": {
+        "present": true,
+        "bytes": 28468476,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 629,
+          "task": 5177,
+          "descriptor": 16100,
+          "descriptor_reference": 8378,
+          "shared_mapping_inventory": 629,
+          "descriptor_table_reference": 4547,
+          "shared_mapping_reference": 4548,
+          "shared_mapping": 21507,
+          "nss_metadata": 5,
+          "snapshot_end": 1
+        },
+        "errors": [],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {
+          "preexisting_descriptor": true,
+          "private_thread_descriptor": true
+        }
+      },
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": true,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "UTC/monotonic calibration drift exceeded 1ms",
+          "before snapshot incomplete",
+          "capture stopped by signal",
+          "context_overwrites: 21",
+          "destination_before metadata/path incomplete",
+          "destination_before unsupported filesystem",
+          "entry/return/context counts do not reconcile",
+          "event-time executable inode missing",
+          "event-time executable path incomplete",
+          "event-time process identity incomplete",
+          "fork creator identity incomplete",
+          "identity_errors: 38392",
+          "path_truncations: 42186",
+          "perf lost events: 27078",
+          "source_before metadata/path incomplete",
+          "source_before unsupported filesystem",
+          "submission/delivery/loss counts do not reconcile",
+          "submission_failures: 27078",
+          "successful mutation target inode missing",
+          "target_after metadata/path incomplete",
+          "target_after unsupported filesystem",
+          "unmatched_returns: 21"
+        ],
+        "incomplete_reason_count": 22,
+        "errors": [],
+        "stats": {
+          "events": 24326,
+          "successful_mutation_records": 17174,
+          "perf_lost": 27078,
+          "observed_event_sizes": {
+            "3308": 24326
+          }
+        },
+        "kernel_counters": {
+          "submissions": 51404,
+          "submission_failures": 27078,
+          "context_map_failures": 0,
+          "context_overwrites": 21,
+          "unmatched_returns": 21,
+          "kernel_read_errors": 0,
+          "path_truncations": 42186,
+          "deadline_unfinished_pairs": 0,
+          "excluded_entries": 118289,
+          "paired_entries": 162413,
+          "paired_returns": 162392,
+          "identity_errors": 38392
+        },
+        "unfinished_pairs": 0,
+        "kretprobe_profile_before_detach": {
+          "path": "/sys/kernel/tracing/kprobe_profile",
+          "owned_rows": {
+            "r_vfs_write_bcc_84369": {
+              "hits": 160673,
+              "missed": 0
+            },
+            "r___kernel_write_bcc_84369": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_iter_write_bcc_84369": {
+              "hits": 41,
+              "missed": 0
+            },
+            "r_vfs_iter_write_bcc_84369": {
+              "hits": 19,
+              "missed": 0
+            },
+            "r_notify_change_bcc_84369": {
+              "hits": 199,
+              "missed": 0
+            },
+            "r_vfs_rename_bcc_84369": {
+              "hits": 67,
+              "missed": 0
+            },
+            "r_vfs_link_bcc_84369": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_unlink_bcc_84369": {
+              "hits": 1616,
+              "missed": 0
+            },
+            "r_vfs_create_bcc_84369": {
+              "hits": 16,
+              "missed": 0
+            },
+            "r_vfs_mkdir_bcc_84369": {
+              "hits": 66,
+              "missed": 0
+            },
+            "r_vfs_rmdir_bcc_84369": {
+              "hits": 142,
+              "missed": 0
+            },
+            "r_vfs_fallocate_bcc_84369": {
+              "hits": 14,
+              "missed": 0
+            },
+            "r_vfs_copy_file_range_bcc_84369": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_splice_direct_bcc_84369": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_iter_file_splice_write_bcc_84369": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mknod_bcc_84369": {
+              "hits": 27,
+              "missed": 0
+            },
+            "r_vfs_tmpfile_bcc_84369": {
+              "hits": 3,
+              "missed": 0
+            },
+            "r_filemap_page_mkwrite_bcc_84369": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_ext4_page_mkwrite_bcc_84369": {
+              "hits": 112,
+              "missed": 0
+            }
+          },
+          "errors": [],
+          "complete": true
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": true,
+          "signal": 2,
+          "overflow": false
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 227408438410391,
+          "utc_ns": 1793486348786366377,
+          "uncertainty_ns": 581,
+          "utc": "2026-10-31T22:39:08.786366377Z"
+        },
+        "utc_offset_change_ns": -1371371,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 227399519059405,
+          "earliest_boottime_ns": 227399519060437,
+          "completed_monotonic_ns": 227399519086938,
+          "completed_boottime_ns": 227399519087279
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+          "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+          "rendered_bpf_sha256": "c6af22d9d1ef6e4f405d6efe89534addc45b94869957547a1dc8f29f0affdec5",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 227408438457754,
+        "bytes_before_receipt": 113610651,
+        "snapshot_error_counts": {
+          "before": 3,
+          "after": 0
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": true,
+            "completed": true,
+            "partial": false,
+            "error_count": 3,
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "87332",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/87332/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "4173603",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/4173603/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "4173618",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/4173618/stat'"
+              }
+            ]
+          },
+          "after": {
+            "started": true,
+            "completed": true,
+            "partial": false,
+            "error_count": 0,
+            "errors_sample": []
+          }
+        }
+      }
+    },
+    {
+      "name": "08-fixture-03",
+      "allocated_seconds": 60,
+      "valid_handshake": false,
+      "workload_executed": false,
+      "executed_mutation_routes": 0,
+      "collector_exit": 2,
+      "control_case_passed": null,
+      "events": 30065,
+      "operation_counts": {
+        "sched_process_exit": 5268,
+        "sched_process_fork": 5243,
+        "vfs_write": 17958,
+        "vfs_rename": 76,
+        "sched_process_exec": 818,
+        "vfs_unlink": 333,
+        "vfs_mknod": 134,
+        "notify_change": 168,
+        "do_iter_write": 4,
+        "vfs_iter_write": 4,
+        "iter_file_splice_write": 4,
+        "do_splice_direct": 1,
+        "vfs_copy_file_range": 1,
+        "vfs_mkdir": 4,
+        "vfs_rmdir": 4,
+        "ext4_page_mkwrite": 45
+      },
+      "uid_counts": {
+        "1000": 24366,
+        "0": 5555,
+        "999": 142,
+        "1654": 1,
+        "65532": 1
+      },
+      "deadline_violations": 0,
+      "synthetic_target_event_candidates": 0,
+      "before": {
+        "present": true,
+        "bytes": 29115825,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 637,
+          "task": 5219,
+          "descriptor": 16573,
+          "descriptor_reference": 8775,
+          "shared_mapping_inventory": 637,
+          "descriptor_table_reference": 4581,
+          "shared_mapping_reference": 4582,
+          "shared_mapping": 21968,
+          "snapshot_error": 3,
+          "nss_metadata": 5,
+          "snapshot_end": 1
+        },
+        "errors": [
+          {
+            "observed_monotonic_ns": 227414325376441,
+            "kind": "snapshot_error",
+            "pid": 96583,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/96583/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227414325448371,
+            "kind": "snapshot_error",
+            "pid": 96706,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/96706/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227414325486806,
+            "kind": "snapshot_error",
+            "pid": 96757,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/96757/stat'"
+          }
+        ],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {
+          "preexisting_descriptor": true,
+          "private_thread_descriptor": true
+        }
+      },
+      "after": {
+        "present": true,
+        "bytes": 28981850,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 628,
+          "task": 5177,
+          "descriptor": 16537,
+          "descriptor_reference": 8721,
+          "shared_mapping_inventory": 630,
+          "descriptor_table_reference": 4546,
+          "shared_mapping_reference": 4547,
+          "shared_mapping": 21898,
+          "snapshot_error": 7,
+          "nss_metadata": 5,
+          "snapshot_end": 1
+        },
+        "errors": [
+          {
+            "observed_monotonic_ns": 227425227114056,
+            "kind": "snapshot_error",
+            "pid": 1076,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/1076/task/1076/fd/12'",
+            "tid": 1076,
+            "fd": 12,
+            "observation": "descriptor"
+          },
+          {
+            "observed_monotonic_ns": 227425228550158,
+            "kind": "snapshot_error",
+            "pid": 1076,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/1076/task/1077/fd/12'",
+            "tid": 1077,
+            "fd": 12,
+            "observation": "descriptor"
+          },
+          {
+            "observed_monotonic_ns": 227425805931592,
+            "kind": "snapshot_error",
+            "pid": 102259,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/102259/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227425805948385,
+            "kind": "snapshot_error",
+            "pid": 102322,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/102322/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227425805960869,
+            "kind": "snapshot_error",
+            "pid": 102610,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/102610/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227425805971840,
+            "kind": "snapshot_error",
+            "pid": 102667,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/102667/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227425805981860,
+            "kind": "snapshot_error",
+            "pid": 102733,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/102733/stat'"
+          }
+        ],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {
+          "preexisting_descriptor": true,
+          "private_thread_descriptor": true
+        }
+      },
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": true,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "after snapshot incomplete",
+          "before snapshot incomplete",
+          "capture stopped by signal",
+          "destination_before metadata/path incomplete",
+          "destination_before unsupported filesystem",
+          "event-time executable inode missing",
+          "event-time executable path incomplete",
+          "event-time process identity incomplete",
+          "fork creator identity incomplete",
+          "identity_errors: 42182",
+          "path_truncations: 43563",
+          "perf lost events: 29237",
+          "source_before metadata/path incomplete",
+          "source_before unsupported filesystem",
+          "submission/delivery/loss counts do not reconcile",
+          "submission_failures: 29237",
+          "target_after metadata/path incomplete",
+          "target_after unsupported filesystem",
+          "unfinished entry/return pairs: 1"
+        ],
+        "incomplete_reason_count": 19,
+        "errors": [],
+        "stats": {
+          "events": 30065,
+          "successful_mutation_records": 18685,
+          "perf_lost": 29237,
+          "observed_event_sizes": {
+            "3308": 30065
+          }
+        },
+        "kernel_counters": {
+          "submissions": 59302,
+          "submission_failures": 29237,
+          "context_map_failures": 0,
+          "context_overwrites": 0,
+          "unmatched_returns": 0,
+          "kernel_read_errors": 0,
+          "path_truncations": 43563,
+          "deadline_unfinished_pairs": 0,
+          "excluded_entries": 162153,
+          "paired_entries": 209353,
+          "paired_returns": 209352,
+          "identity_errors": 42182
+        },
+        "unfinished_pairs": 1,
+        "kretprobe_profile_before_detach": {
+          "path": "/sys/kernel/tracing/kprobe_profile",
+          "owned_rows": {
+            "r_vfs_write_bcc_94430": {
+              "hits": 210755,
+              "missed": 0
+            },
+            "r___kernel_write_bcc_94430": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_iter_write_bcc_94430": {
+              "hits": 36,
+              "missed": 0
+            },
+            "r_vfs_iter_write_bcc_94430": {
+              "hits": 4,
+              "missed": 0
+            },
+            "r_notify_change_bcc_94430": {
+              "hits": 184,
+              "missed": 0
+            },
+            "r_vfs_rename_bcc_94430": {
+              "hits": 78,
+              "missed": 0
+            },
+            "r_vfs_link_bcc_94430": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_unlink_bcc_94430": {
+              "hits": 339,
+              "missed": 0
+            },
+            "r_vfs_create_bcc_94430": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mkdir_bcc_94430": {
+              "hits": 5,
+              "missed": 0
+            },
+            "r_vfs_rmdir_bcc_94430": {
+              "hits": 4,
+              "missed": 0
+            },
+            "r_vfs_fallocate_bcc_94430": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_copy_file_range_bcc_94430": {
+              "hits": 1,
+              "missed": 0
+            },
+            "r_do_splice_direct_bcc_94430": {
+              "hits": 1,
+              "missed": 0
+            },
+            "r_iter_file_splice_write_bcc_94430": {
+              "hits": 4,
+              "missed": 0
+            },
+            "r_vfs_mknod_bcc_94430": {
+              "hits": 136,
+              "missed": 0
+            },
+            "r_vfs_tmpfile_bcc_94430": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_filemap_page_mkwrite_bcc_94430": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_ext4_page_mkwrite_bcc_94430": {
+              "hits": 51,
+              "missed": 0
+            }
+          },
+          "errors": [],
+          "complete": true
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": true,
+          "signal": 2,
+          "overflow": false
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 227429986503437,
+          "utc_ns": 1793486370334459778,
+          "uncertainty_ns": 1633,
+          "utc": "2026-10-31T22:39:30.334459778Z"
+        },
+        "utc_offset_change_ns": 431,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 227420942965752,
+          "earliest_boottime_ns": 227420942966363,
+          "completed_monotonic_ns": 227420942991613,
+          "completed_boottime_ns": 227420942992064
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+          "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+          "rendered_bpf_sha256": "7316328be9ab4a9fb2fa2dde60429cc1872b4283fe3bdc0a0b5a4e06b032024d",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 227429986558750,
+        "bytes_before_receipt": 127765156,
+        "snapshot_error_counts": {
+          "before": 3,
+          "after": 7
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": true,
+            "completed": true,
+            "partial": false,
+            "error_count": 3,
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "96583",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/96583/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "96706",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/96706/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "96757",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/96757/stat'"
+              }
+            ]
+          },
+          "after": {
+            "started": true,
+            "completed": true,
+            "partial": false,
+            "error_count": 7,
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "1076",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/1076/task/1076/fd/12'",
+                "tid": "1076",
+                "fd": "12",
+                "observation": "descriptor"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "1076",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/1076/task/1077/fd/12'",
+                "tid": "1077",
+                "fd": "12",
+                "observation": "descriptor"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "102259",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/102259/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "102322",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/102322/stat'"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "08-fixture-04",
+      "allocated_seconds": 60,
+      "valid_handshake": false,
+      "workload_executed": false,
+      "executed_mutation_routes": 0,
+      "collector_exit": 2,
+      "control_case_passed": null,
+      "events": 31640,
+      "operation_counts": {
+        "sched_process_fork": 5161,
+        "vfs_write": 19639,
+        "vfs_rename": 69,
+        "sched_process_exit": 5182,
+        "sched_process_exec": 870,
+        "vfs_unlink": 334,
+        "vfs_mknod": 128,
+        "notify_change": 164,
+        "ext4_page_mkwrite": 39,
+        "vfs_rmdir": 12,
+        "do_iter_write": 2,
+        "vfs_iter_write": 2,
+        "iter_file_splice_write": 3,
+        "do_splice_direct": 1,
+        "vfs_copy_file_range": 1,
+        "vfs_mkdir": 33
+      },
+      "uid_counts": {
+        "1000": 26125,
+        "0": 5342,
+        "999": 173
+      },
+      "deadline_violations": 0,
+      "synthetic_target_event_candidates": 0,
+      "before": {
+        "present": true,
+        "bytes": 29244081,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 631,
+          "task": 5192,
+          "descriptor": 16694,
+          "descriptor_reference": 9063,
+          "shared_mapping_inventory": 633,
+          "descriptor_table_reference": 4558,
+          "shared_mapping_reference": 4559,
+          "shared_mapping": 21893,
+          "snapshot_error": 3,
+          "nss_metadata": 5,
+          "snapshot_end": 1
+        },
+        "errors": [
+          {
+            "observed_monotonic_ns": 227435704220286,
+            "kind": "snapshot_error",
+            "pid": 106525,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/106525/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227436975780700,
+            "kind": "snapshot_error",
+            "pid": 452481,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/452481/task/452481/fd/7'",
+            "tid": 452481,
+            "fd": 7,
+            "observation": "descriptor"
+          },
+          {
+            "observed_monotonic_ns": 227439664312331,
+            "kind": "snapshot_error",
+            "pid": 1690422,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/1690422/task/1690422/fdinfo/19'",
+            "tid": 1690422,
+            "fd": 19,
+            "observation": "descriptor"
+          }
+        ],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {
+          "preexisting_descriptor": true,
+          "private_thread_descriptor": true
+        }
+      },
+      "after": {
+        "present": true,
+        "bytes": 28696458,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 625,
+          "task": 5110,
+          "descriptor": 16552,
+          "descriptor_reference": 8889,
+          "shared_mapping_inventory": 625,
+          "descriptor_table_reference": 4484,
+          "shared_mapping_reference": 4485,
+          "shared_mapping": 21203,
+          "snapshot_error": 2,
+          "nss_metadata": 5,
+          "snapshot_end": 1
+        },
+        "errors": [
+          {
+            "observed_monotonic_ns": 227447320151863,
+            "kind": "snapshot_error",
+            "pid": 112289,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/112289/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227447320171711,
+            "kind": "snapshot_error",
+            "pid": 112302,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/112302/stat'"
+          }
+        ],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {
+          "preexisting_descriptor": true,
+          "private_thread_descriptor": true
+        }
+      },
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": true,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "UTC/monotonic calibration drift exceeded 1ms",
+          "UTC/monotonic clock step or drift exceeded 1ms",
+          "after snapshot incomplete",
+          "before snapshot incomplete",
+          "capture stopped by signal",
+          "destination_before metadata/path incomplete",
+          "destination_before unsupported filesystem",
+          "event-time executable inode missing",
+          "event-time executable path incomplete",
+          "event-time process identity incomplete",
+          "fork creator identity incomplete",
+          "identity_errors: 44628",
+          "path_truncations: 46013",
+          "perf lost events: 29670",
+          "source_before metadata/path incomplete",
+          "source_before unsupported filesystem",
+          "submission/delivery/loss counts do not reconcile",
+          "submission_failures: 29670",
+          "target_after metadata/path incomplete",
+          "target_after unsupported filesystem",
+          "unfinished entry/return pairs: 1"
+        ],
+        "incomplete_reason_count": 21,
+        "errors": [],
+        "stats": {
+          "events": 31640,
+          "successful_mutation_records": 20383,
+          "perf_lost": 29670,
+          "observed_event_sizes": {
+            "3308": 31640
+          }
+        },
+        "kernel_counters": {
+          "submissions": 61310,
+          "submission_failures": 29670,
+          "context_map_failures": 0,
+          "context_overwrites": 0,
+          "unmatched_returns": 0,
+          "kernel_read_errors": 0,
+          "path_truncations": 46013,
+          "deadline_unfinished_pairs": 0,
+          "excluded_entries": 162969,
+          "paired_entries": 212927,
+          "paired_returns": 212926,
+          "identity_errors": 44628
+        },
+        "unfinished_pairs": 1,
+        "kretprobe_profile_before_detach": {
+          "path": "/sys/kernel/tracing/kprobe_profile",
+          "owned_rows": {
+            "r_vfs_write_bcc_105199": {
+              "hits": 213803,
+              "missed": 0
+            },
+            "r___kernel_write_bcc_105199": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_iter_write_bcc_105199": {
+              "hits": 36,
+              "missed": 0
+            },
+            "r_vfs_iter_write_bcc_105199": {
+              "hits": 2,
+              "missed": 0
+            },
+            "r_notify_change_bcc_105199": {
+              "hits": 172,
+              "missed": 0
+            },
+            "r_vfs_rename_bcc_105199": {
+              "hits": 70,
+              "missed": 0
+            },
+            "r_vfs_link_bcc_105199": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_unlink_bcc_105199": {
+              "hits": 341,
+              "missed": 0
+            },
+            "r_vfs_create_bcc_105199": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mkdir_bcc_105199": {
+              "hits": 33,
+              "missed": 0
+            },
+            "r_vfs_rmdir_bcc_105199": {
+              "hits": 12,
+              "missed": 0
+            },
+            "r_vfs_fallocate_bcc_105199": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_copy_file_range_bcc_105199": {
+              "hits": 1,
+              "missed": 0
+            },
+            "r_do_splice_direct_bcc_105199": {
+              "hits": 1,
+              "missed": 0
+            },
+            "r_iter_file_splice_write_bcc_105199": {
+              "hits": 3,
+              "missed": 0
+            },
+            "r_vfs_mknod_bcc_105199": {
+              "hits": 132,
+              "missed": 0
+            },
+            "r_vfs_tmpfile_bcc_105199": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_filemap_page_mkwrite_bcc_105199": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_ext4_page_mkwrite_bcc_105199": {
+              "hits": 41,
+              "missed": 0
+            }
+          },
+          "errors": [],
+          "complete": true
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": true,
+          "signal": 2,
+          "overflow": false
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 227451789496693,
+          "utc_ns": 1793486392136127880,
+          "uncertainty_ns": 842,
+          "utc": "2026-10-31T22:39:52.136127880Z"
+        },
+        "utc_offset_change_ns": -1325054,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 227442531437665,
+          "earliest_boottime_ns": 227442531439288,
+          "completed_monotonic_ns": 227442531471240,
+          "completed_boottime_ns": 227442531471721
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+          "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+          "rendered_bpf_sha256": "f1ee39331fe8567c551b69153e3b4a77a91de707cb09330dcd081a3f5b035cda",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 227451789540037,
+        "bytes_before_receipt": 131412330,
+        "snapshot_error_counts": {
+          "before": 3,
+          "after": 2
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": true,
+            "completed": true,
+            "partial": false,
+            "error_count": 3,
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "106525",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/106525/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "452481",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/452481/task/452481/fd/7'",
+                "tid": "452481",
+                "fd": "7",
+                "observation": "descriptor"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "1690422",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/1690422/task/1690422/fdinfo/19'",
+                "tid": "1690422",
+                "fd": "19",
+                "observation": "descriptor"
+              }
+            ]
+          },
+          "after": {
+            "started": true,
+            "completed": true,
+            "partial": false,
+            "error_count": 2,
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "112289",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/112289/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "112302",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/112302/stat'"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "08-fixture-05",
+      "allocated_seconds": 60,
+      "valid_handshake": false,
+      "workload_executed": false,
+      "executed_mutation_routes": 0,
+      "collector_exit": 2,
+      "control_case_passed": null,
+      "events": 33441,
+      "operation_counts": {
+        "sched_process_fork": 4665,
+        "sched_process_exec": 794,
+        "vfs_unlink": 1247,
+        "sched_process_exit": 4645,
+        "vfs_write": 20985,
+        "vfs_rename": 127,
+        "ext4_page_mkwrite": 180,
+        "notify_change": 287,
+        "vfs_rmdir": 141,
+        "vfs_fallocate": 40,
+        "vfs_mkdir": 126,
+        "vfs_mknod": 62,
+        "vfs_tmpfile": 8,
+        "vfs_create": 28,
+        "vfs_link": 2,
+        "do_iter_write": 82,
+        "vfs_iter_write": 22
+      },
+      "uid_counts": {
+        "1000": 24785,
+        "0": 4906,
+        "100": 34,
+        "1654": 9,
+        "999": 3612,
+        "65532": 95
+      },
+      "deadline_violations": 0,
+      "synthetic_target_event_candidates": 0,
+      "before": {
+        "present": true,
+        "bytes": 28918847,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 624,
+          "task": 5078,
+          "descriptor": 16797,
+          "descriptor_reference": 9192,
+          "shared_mapping_inventory": 624,
+          "descriptor_table_reference": 4453,
+          "shared_mapping_reference": 4454,
+          "shared_mapping": 21234,
+          "snapshot_error": 3,
+          "nss_metadata": 5,
+          "snapshot_end": 1
+        },
+        "errors": [
+          {
+            "observed_monotonic_ns": 227457383226907,
+            "kind": "snapshot_error",
+            "pid": 117183,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/117183/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227457383302985,
+            "kind": "snapshot_error",
+            "pid": 117837,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/117837/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227457383343173,
+            "kind": "snapshot_error",
+            "pid": 117910,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/117910/stat'"
+          }
+        ],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {
+          "preexisting_descriptor": true,
+          "private_thread_descriptor": true
+        }
+      },
+      "after": {
+        "present": true,
+        "bytes": 27556588,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 628,
+          "task": 5097,
+          "descriptor": 14276,
+          "descriptor_reference": 9137,
+          "shared_mapping_inventory": 628,
+          "descriptor_table_reference": 4468,
+          "shared_mapping_reference": 4469,
+          "shared_mapping": 20844,
+          "snapshot_error": 10,
+          "nss_metadata": 5,
+          "snapshot_end": 1
+        },
+        "errors": [
+          {
+            "observed_monotonic_ns": 227468754972115,
+            "kind": "snapshot_error",
+            "pid": 123390,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/123390/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227468754988386,
+            "kind": "snapshot_error",
+            "pid": 123395,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/123395/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227468755000439,
+            "kind": "snapshot_error",
+            "pid": 123396,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/123396/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227468755010808,
+            "kind": "snapshot_error",
+            "pid": 123425,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/123425/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227468755021539,
+            "kind": "snapshot_error",
+            "pid": 123426,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/123426/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227468755033702,
+            "kind": "snapshot_error",
+            "pid": 123427,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/123427/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227468755043200,
+            "kind": "snapshot_error",
+            "pid": 123508,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/123508/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227468755052287,
+            "kind": "snapshot_error",
+            "pid": 123759,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/123759/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227468755061605,
+            "kind": "snapshot_error",
+            "pid": 123781,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/123781/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227468755070943,
+            "kind": "snapshot_error",
+            "pid": 123782,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/123782/stat'"
+          }
+        ],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {
+          "preexisting_descriptor": true,
+          "private_thread_descriptor": true
+        }
+      },
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": true,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "UTC/monotonic calibration drift exceeded 1ms",
+          "UTC/monotonic clock step or drift exceeded 1ms",
+          "after snapshot incomplete",
+          "before snapshot incomplete",
+          "capture stopped by signal",
+          "context_overwrites: 43",
+          "destination_before metadata/path incomplete",
+          "destination_before unsupported filesystem",
+          "entry/return/context counts do not reconcile",
+          "event-time executable inode missing",
+          "event-time executable path incomplete",
+          "event-time process identity incomplete",
+          "fork creator identity incomplete",
+          "identity_errors: 42602",
+          "path_truncations: 56770",
+          "perf lost events: 30597",
+          "source_before metadata/path incomplete",
+          "source_before unsupported filesystem",
+          "submission/delivery/loss counts do not reconcile",
+          "submission_failures: 30597",
+          "successful mutation target inode missing",
+          "target_after metadata/path incomplete",
+          "target_after unsupported filesystem",
+          "unmatched_returns: 43"
+        ],
+        "incomplete_reason_count": 24,
+        "errors": [],
+        "stats": {
+          "events": 33441,
+          "successful_mutation_records": 22979,
+          "perf_lost": 30597,
+          "observed_event_sizes": {
+            "3308": 33441
+          }
+        },
+        "kernel_counters": {
+          "submissions": 64038,
+          "submission_failures": 30597,
+          "context_map_failures": 0,
+          "context_overwrites": 43,
+          "unmatched_returns": 43,
+          "kernel_read_errors": 0,
+          "path_truncations": 56770,
+          "deadline_unfinished_pairs": 0,
+          "excluded_entries": 164912,
+          "paired_entries": 218691,
+          "paired_returns": 218648,
+          "identity_errors": 42602
+        },
+        "unfinished_pairs": 0,
+        "kretprobe_profile_before_detach": {
+          "path": "/sys/kernel/tracing/kprobe_profile",
+          "owned_rows": {
+            "r_vfs_write_bcc_115714": {
+              "hits": 217279,
+              "missed": 0
+            },
+            "r___kernel_write_bcc_115714": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_iter_write_bcc_115714": {
+              "hits": 119,
+              "missed": 0
+            },
+            "r_vfs_iter_write_bcc_115714": {
+              "hits": 22,
+              "missed": 0
+            },
+            "r_notify_change_bcc_115714": {
+              "hits": 328,
+              "missed": 0
+            },
+            "r_vfs_rename_bcc_115714": {
+              "hits": 134,
+              "missed": 0
+            },
+            "r_vfs_link_bcc_115714": {
+              "hits": 2,
+              "missed": 0
+            },
+            "r_vfs_unlink_bcc_115714": {
+              "hits": 1702,
+              "missed": 0
+            },
+            "r_vfs_create_bcc_115714": {
+              "hits": 34,
+              "missed": 0
+            },
+            "r_vfs_mkdir_bcc_115714": {
+              "hits": 147,
+              "missed": 0
+            },
+            "r_vfs_rmdir_bcc_115714": {
+              "hits": 143,
+              "missed": 0
+            },
+            "r_vfs_fallocate_bcc_115714": {
+              "hits": 42,
+              "missed": 0
+            },
+            "r_vfs_copy_file_range_bcc_115714": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_splice_direct_bcc_115714": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_iter_file_splice_write_bcc_115714": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mknod_bcc_115714": {
+              "hits": 64,
+              "missed": 0
+            },
+            "r_vfs_tmpfile_bcc_115714": {
+              "hits": 9,
+              "missed": 0
+            },
+            "r_filemap_page_mkwrite_bcc_115714": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_ext4_page_mkwrite_bcc_115714": {
+              "hits": 181,
+              "missed": 0
+            }
+          },
+          "errors": [],
+          "complete": true
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": true,
+          "signal": 2,
+          "overflow": false
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 227472818585901,
+          "utc_ns": 1793486413163544887,
+          "uncertainty_ns": 982,
+          "utc": "2026-10-31T22:40:13.163544887Z"
+        },
+        "utc_offset_change_ns": -1672161,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 227464248076798,
+          "earliest_boottime_ns": 227464248077760,
+          "completed_monotonic_ns": 227464248108879,
+          "completed_boottime_ns": 227464248109390
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+          "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+          "rendered_bpf_sha256": "f1b4c1d7914313e81264205b3481c9739baa09e7f6736ae4d97ee33ded8e9bc1",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 227472818630629,
+        "bytes_before_receipt": 134576396,
+        "snapshot_error_counts": {
+          "before": 3,
+          "after": 10
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": true,
+            "completed": true,
+            "partial": false,
+            "error_count": 3,
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "117183",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/117183/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "117837",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/117837/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "117910",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/117910/stat'"
+              }
+            ]
+          },
+          "after": {
+            "started": true,
+            "completed": true,
+            "partial": false,
+            "error_count": 10,
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "123390",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/123390/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "123395",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/123395/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "123396",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/123396/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "123425",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/123425/stat'"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "11-signal",
+      "allocated_seconds": 25,
+      "valid_handshake": false,
+      "workload_executed": false,
+      "executed_mutation_routes": 0,
+      "collector_exit": 2,
+      "control_case_passed": true,
+      "events": 2,
+      "operation_counts": {
+        "vfs_write": 2
+      },
+      "uid_counts": {
+        "1000": 2
+      },
+      "deadline_violations": 0,
+      "synthetic_target_event_candidates": 0,
+      "before": {
+        "present": true,
+        "bytes": 57858,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 2,
+          "task": 2,
+          "descriptor": 73,
+          "descriptor_reference": 58,
+          "shared_mapping_inventory": 2
+        },
+        "errors": [],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {}
+      },
+      "after": {
+        "present": true,
+        "bytes": 27370500,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 621,
+          "task": 5052,
+          "descriptor": 14162,
+          "descriptor_reference": 9032,
+          "shared_mapping_inventory": 621,
+          "descriptor_table_reference": 4431,
+          "shared_mapping_reference": 4431,
+          "shared_mapping": 20830,
+          "nss_metadata": 2,
+          "snapshot_end": 1
+        },
+        "errors": [],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {}
+      },
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": false,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "before snapshot incomplete",
+          "capture stopped by signal",
+          "collector errors",
+          "event-time executable path incomplete",
+          "event-time process identity incomplete",
+          "identity_errors: 2",
+          "path_truncations: 2",
+          "readiness not reached"
+        ],
+        "incomplete_reason_count": 8,
+        "errors": [
+          "InterruptedError: stop requested during setup snapshot"
+        ],
+        "stats": {
+          "events": 2,
+          "successful_mutation_records": 2,
+          "perf_lost": 0,
+          "observed_event_sizes": {
+            "3308": 2
+          }
+        },
+        "kernel_counters": {
+          "submissions": 2,
+          "submission_failures": 0,
+          "context_map_failures": 0,
+          "context_overwrites": 0,
+          "unmatched_returns": 0,
+          "kernel_read_errors": 0,
+          "path_truncations": 2,
+          "deadline_unfinished_pairs": 0,
+          "excluded_entries": 155,
+          "paired_entries": 157,
+          "paired_returns": 157,
+          "identity_errors": 2
+        },
+        "unfinished_pairs": 0,
+        "kretprobe_profile_before_detach": {
+          "path": "/sys/kernel/tracing/kprobe_profile",
+          "owned_rows": {
+            "r_vfs_write_bcc_126750": {
+              "hits": 1814,
+              "missed": 0
+            },
+            "r___kernel_write_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_iter_write_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_iter_write_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_notify_change_bcc_126750": {
+              "hits": 5,
+              "missed": 0
+            },
+            "r_vfs_rename_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_link_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_unlink_bcc_126750": {
+              "hits": 2,
+              "missed": 0
+            },
+            "r_vfs_create_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mkdir_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_rmdir_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_fallocate_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_copy_file_range_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_splice_direct_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_iter_file_splice_write_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mknod_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_tmpfile_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_filemap_page_mkwrite_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_ext4_page_mkwrite_bcc_126750": {
+              "hits": 0,
+              "missed": 0
+            }
+          },
+          "errors": [],
+          "complete": true
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": true,
+          "signal": 1,
+          "overflow": false
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 227490211712358,
+          "utc_ns": 1793486430556671155,
+          "uncertainty_ns": 601,
+          "utc": "2026-10-31T22:40:30.556671155Z"
+        },
+        "utc_offset_change_ns": -265,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 227481509467044,
+          "earliest_boottime_ns": 227481509467315,
+          "completed_monotonic_ns": 227481509482785,
+          "completed_boottime_ns": 227481509483045
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+          "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+          "rendered_bpf_sha256": "e1493a6b5207299b45bf53ae62652158b5bcfe3e1fe914b6fed768ef7cdde11e",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 227490211753408,
+        "bytes_before_receipt": 27437854,
+        "snapshot_error_counts": {
+          "before": 3,
+          "after": 0
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": true,
+            "completed": false,
+            "partial": true,
+            "error_count": 3,
+            "failure": "InterruptedError: stop requested during setup snapshot",
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "2",
+                "error": "InterruptedError",
+                "detail": "stop requested during setup snapshot",
+                "observation": "process-final-identity"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "2",
+                "error": "InterruptedError",
+                "detail": "stop requested during setup snapshot"
+              },
+              {
+                "kind": "snapshot_error",
+                "phase": "before",
+                "detail": "InterruptedError: stop requested during setup snapshot"
+              }
+            ]
+          },
+          "after": {
+            "started": true,
+            "completed": true,
+            "partial": false,
+            "error_count": 0,
+            "errors_sample": []
+          }
+        }
+      }
+    },
+    {
+      "name": "12-paused-deadline-loss",
+      "allocated_seconds": 15,
+      "valid_handshake": false,
+      "workload_executed": false,
+      "executed_mutation_routes": 0,
+      "collector_exit": 2,
+      "control_case_passed": true,
+      "events": 1120,
+      "operation_counts": {
+        "sched_process_fork": 372,
+        "sched_process_exec": 48,
+        "sched_process_exit": 359,
+        "vfs_write": 335,
+        "vfs_unlink": 4,
+        "notify_change": 2
+      },
+      "uid_counts": {
+        "1000": 1106,
+        "0": 14
+      },
+      "deadline_violations": 0,
+      "synthetic_target_event_candidates": 0,
+      "before": {
+        "present": true,
+        "bytes": 83335,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 3,
+          "task": 4,
+          "descriptor": 94,
+          "descriptor_reference": 89,
+          "shared_mapping_inventory": 2,
+          "descriptor_table_reference": 1,
+          "shared_mapping_reference": 1
+        },
+        "errors": [],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {}
+      },
+      "after": {
+        "present": true,
+        "bytes": 30109764,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 639,
+          "task": 5390,
+          "descriptor": 15278,
+          "descriptor_reference": 9424,
+          "shared_mapping_inventory": 639,
+          "descriptor_table_reference": 4751,
+          "shared_mapping_reference": 4751,
+          "shared_mapping": 24945,
+          "snapshot_error": 4,
+          "nss_metadata": 2,
+          "snapshot_end": 1
+        },
+        "errors": [
+          {
+            "observed_monotonic_ns": 227512005246150,
+            "kind": "snapshot_error",
+            "pid": 140529,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/140529/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227512005265438,
+            "kind": "snapshot_error",
+            "pid": 140943,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/140943/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227512005278634,
+            "kind": "snapshot_error",
+            "pid": 140944,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/140944/stat'"
+          },
+          {
+            "observed_monotonic_ns": 227512005289785,
+            "kind": "snapshot_error",
+            "pid": 140996,
+            "error": "FileNotFoundError",
+            "detail": "[Errno 2] No such file or directory: '/proc/140996/stat'"
+          }
+        ],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {}
+      },
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": false,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "UTC/monotonic calibration drift exceeded 1ms",
+          "UTC/monotonic clock step or drift exceeded 1ms",
+          "after snapshot incomplete",
+          "before snapshot incomplete",
+          "collector errors",
+          "event-time executable path incomplete",
+          "event-time process identity incomplete",
+          "fork creator identity incomplete",
+          "identity_errors: 59426",
+          "path_truncations: 60351",
+          "readiness not reached",
+          "source_before metadata/path incomplete",
+          "source_before unsupported filesystem",
+          "submission_failures: 72402",
+          "target_after metadata/path incomplete",
+          "target_after unsupported filesystem"
+        ],
+        "incomplete_reason_count": 16,
+        "errors": [
+          "TimeoutError: capture deadline elapsed during setup snapshot"
+        ],
+        "stats": {
+          "events": 1120,
+          "successful_mutation_records": 341,
+          "perf_lost": 0,
+          "observed_event_sizes": {
+            "3308": 1120
+          }
+        },
+        "kernel_counters": {
+          "submissions": 73522,
+          "submission_failures": 72402,
+          "context_map_failures": 0,
+          "context_overwrites": 0,
+          "unmatched_returns": 0,
+          "kernel_read_errors": 0,
+          "path_truncations": 60351,
+          "deadline_unfinished_pairs": 0,
+          "excluded_entries": 30133,
+          "paired_entries": 93346,
+          "paired_returns": 93346,
+          "identity_errors": 59426
+        },
+        "unfinished_pairs": 0,
+        "kretprobe_profile_before_detach": {
+          "path": "/sys/kernel/tracing/kprobe_profile",
+          "owned_rows": {
+            "r_vfs_write_bcc_132181": {
+              "hits": 111681,
+              "missed": 0
+            },
+            "r___kernel_write_bcc_132181": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_iter_write_bcc_132181": {
+              "hits": 49,
+              "missed": 0
+            },
+            "r_vfs_iter_write_bcc_132181": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_notify_change_bcc_132181": {
+              "hits": 153,
+              "missed": 0
+            },
+            "r_vfs_rename_bcc_132181": {
+              "hits": 44,
+              "missed": 0
+            },
+            "r_vfs_link_bcc_132181": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_unlink_bcc_132181": {
+              "hits": 657,
+              "missed": 0
+            },
+            "r_vfs_create_bcc_132181": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mkdir_bcc_132181": {
+              "hits": 228,
+              "missed": 0
+            },
+            "r_vfs_rmdir_bcc_132181": {
+              "hits": 197,
+              "missed": 0
+            },
+            "r_vfs_fallocate_bcc_132181": {
+              "hits": 2,
+              "missed": 0
+            },
+            "r_vfs_copy_file_range_bcc_132181": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_splice_direct_bcc_132181": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_iter_file_splice_write_bcc_132181": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mknod_bcc_132181": {
+              "hits": 31,
+              "missed": 0
+            },
+            "r_vfs_tmpfile_bcc_132181": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_filemap_page_mkwrite_bcc_132181": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_ext4_page_mkwrite_bcc_132181": {
+              "hits": 51,
+              "missed": 0
+            }
+          },
+          "errors": [],
+          "complete": true
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": false,
+          "signal": null,
+          "overflow": false
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 227516974071712,
+          "utc_ns": 1793486457317923130,
+          "uncertainty_ns": 751,
+          "utc": "2026-10-31T22:40:57.317923130Z"
+        },
+        "utc_offset_change_ns": -1107444,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 227506310968693,
+          "earliest_boottime_ns": 227506310970136,
+          "completed_monotonic_ns": 227506311015985,
+          "completed_boottime_ns": 227506311016566
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+          "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+          "rendered_bpf_sha256": "1edeb2079f314568f31cabe74d88ed4d49ec16e36b6c01d990297f4f50201641",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 227516974117466,
+        "bytes_before_receipt": 32722927,
+        "snapshot_error_counts": {
+          "before": 4,
+          "after": 4
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": true,
+            "completed": false,
+            "partial": true,
+            "error_count": 4,
+            "failure": "TimeoutError: capture deadline elapsed during setup snapshot",
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "7",
+                "error": "TimeoutError",
+                "detail": "capture deadline elapsed during setup snapshot",
+                "tid": "7",
+                "observation": "descriptor-table"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "7",
+                "error": "TimeoutError",
+                "detail": "capture deadline elapsed during setup snapshot",
+                "observation": "process-final-identity"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "7",
+                "error": "TimeoutError",
+                "detail": "capture deadline elapsed during setup snapshot"
+              },
+              {
+                "kind": "snapshot_error",
+                "phase": "before",
+                "detail": "TimeoutError: capture deadline elapsed during setup snapshot"
+              }
+            ]
+          },
+          "after": {
+            "started": true,
+            "completed": true,
+            "partial": false,
+            "error_count": 4,
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "140529",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/140529/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "140943",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/140943/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "140944",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/140944/stat'"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "140996",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/140996/stat'"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "13-setup-deadline",
+      "allocated_seconds": 1,
+      "valid_handshake": false,
+      "workload_executed": false,
+      "executed_mutation_routes": 0,
+      "collector_exit": 2,
+      "control_case_passed": true,
+      "events": 0,
+      "operation_counts": {},
+      "uid_counts": {},
+      "deadline_violations": 0,
+      "synthetic_target_event_candidates": 0,
+      "before": {
+        "present": false
+      },
+      "after": {
+        "present": true,
+        "bytes": 31211802,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 645,
+          "task": 5604,
+          "descriptor": 15773,
+          "descriptor_reference": 9386,
+          "shared_mapping_inventory": 645,
+          "descriptor_table_reference": 4959,
+          "shared_mapping_reference": 4959,
+          "shared_mapping": 26332,
+          "nss_metadata": 2,
+          "snapshot_end": 1
+        },
+        "errors": [],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {}
+      },
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": false,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "UTC/monotonic calibration drift exceeded 1ms",
+          "before snapshot incomplete",
+          "collector errors",
+          "owned kretprobe missed accounting incomplete",
+          "readiness not reached"
+        ],
+        "incomplete_reason_count": 5,
+        "errors": [
+          "TimeoutError: setup deadline/signal before mandatory probe attachment completed",
+          "kernel accounting: BCC owned return event key unavailable: r_vfs_write"
+        ],
+        "stats": {
+          "events": 0,
+          "successful_mutation_records": 0,
+          "perf_lost": 0,
+          "observed_event_sizes": {}
+        },
+        "kernel_counters": {
+          "submissions": 0,
+          "submission_failures": 0,
+          "context_map_failures": 0,
+          "context_overwrites": 0,
+          "unmatched_returns": 0,
+          "kernel_read_errors": 0,
+          "path_truncations": 0,
+          "deadline_unfinished_pairs": 0,
+          "excluded_entries": 0,
+          "paired_entries": 0,
+          "paired_returns": 0,
+          "identity_errors": 0
+        },
+        "unfinished_pairs": 0,
+        "kretprobe_profile_before_detach": {
+          "complete": false,
+          "errors": [
+            "not attached"
+          ]
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": false,
+          "signal": null,
+          "overflow": false
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 227527619632278,
+          "utc_ns": 1793486467961996561,
+          "uncertainty_ns": 751,
+          "utc": "2026-10-31T22:41:07.961996561Z"
+        },
+        "utc_offset_change_ns": -1487184,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 227522126630073,
+          "earliest_boottime_ns": 227522126631777,
+          "completed_monotonic_ns": 227522126741289,
+          "completed_boottime_ns": 227522126742081
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+          "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+          "rendered_bpf_sha256": "0094e40c93d7c1481c868e58dea134ed1793b3c37671015299423561f2a63b9e",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 227527619683553,
+        "bytes_before_receipt": 31216286,
+        "snapshot_error_counts": {
+          "before": 0,
+          "after": 0
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": false,
+            "completed": false,
+            "partial": false,
+            "error_count": 0,
+            "errors_sample": []
+          },
+          "after": {
+            "started": true,
+            "completed": true,
+            "partial": false,
+            "error_count": 0,
+            "errors_sample": []
+          }
+        }
+      }
+    },
+    {
+      "name": "14-overflow",
+      "allocated_seconds": 5,
+      "valid_handshake": false,
+      "workload_executed": false,
+      "executed_mutation_routes": 0,
+      "collector_exit": 2,
+      "control_case_passed": true,
+      "events": 0,
+      "operation_counts": {},
+      "uid_counts": {},
+      "deadline_violations": 0,
+      "synthetic_target_event_candidates": 0,
+      "before": {
+        "present": false
+      },
+      "after": {
+        "present": true,
+        "bytes": 61046,
+        "record_counts": {
+          "snapshot_start": 1,
+          "process": 3,
+          "task": 4,
+          "descriptor": 74,
+          "descriptor_reference": 59,
+          "shared_mapping_inventory": 2,
+          "descriptor_table_reference": 1,
+          "shared_mapping_reference": 1
+        },
+        "errors": [],
+        "reference_validation_errors": [],
+        "fixture_inventory_observations": {}
+      },
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": false,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "after snapshot incomplete",
+          "before snapshot incomplete",
+          "collector errors",
+          "output overflow; collection stopped",
+          "owned kretprobe missed accounting incomplete",
+          "readiness not reached"
+        ],
+        "incomplete_reason_count": 6,
+        "errors": [
+          "TimeoutError: setup deadline/signal before mandatory probe attachment completed",
+          "kernel accounting: BCC owned return event key unavailable: r_vfs_write",
+          "after snapshot: total metadata output budget reached"
+        ],
+        "stats": {
+          "events": 0,
+          "successful_mutation_records": 0,
+          "perf_lost": 0,
+          "observed_event_sizes": {}
+        },
+        "kernel_counters": {
+          "submissions": 0,
+          "submission_failures": 0,
+          "context_map_failures": 0,
+          "context_overwrites": 0,
+          "unmatched_returns": 0,
+          "kernel_read_errors": 0,
+          "path_truncations": 0,
+          "deadline_unfinished_pairs": 0,
+          "excluded_entries": 0,
+          "paired_entries": 0,
+          "paired_returns": 0,
+          "identity_errors": 0
+        },
+        "unfinished_pairs": 0,
+        "kretprobe_profile_before_detach": {
+          "complete": false,
+          "errors": [
+            "not attached"
+          ]
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": false,
+          "signal": null,
+          "overflow": true
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 227532904315777,
+          "utc_ns": 1793486473246680120,
+          "uncertainty_ns": 751,
+          "utc": "2026-10-31T22:41:13.246680120Z"
+        },
+        "utc_offset_change_ns": -69,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 227532836504004,
+          "earliest_boottime_ns": 227532836507050,
+          "completed_monotonic_ns": 227532836774170,
+          "completed_boottime_ns": 227532836775592
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+          "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+          "rendered_bpf_sha256": "4d49fdb5b6c98c4fb6c797fec5e16af8da8d6b6873a1ccc31ebd9570bd972cfd",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 227532904379096,
+        "bytes_before_receipt": 65515,
+        "snapshot_error_counts": {
+          "before": 0,
+          "after": 1
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": false,
+            "completed": false,
+            "partial": false,
+            "error_count": 0,
+            "errors_sample": []
+          },
+          "after": {
+            "started": true,
+            "completed": false,
+            "partial": true,
+            "error_count": 1,
+            "failure": "OutputLimit: total metadata output budget reached",
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "phase": "after",
+                "detail": "OutputLimit: total metadata output budget reached"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "runtime_root": "/var/tmp/story117-nss-retry.ubgn0d7i"
+}

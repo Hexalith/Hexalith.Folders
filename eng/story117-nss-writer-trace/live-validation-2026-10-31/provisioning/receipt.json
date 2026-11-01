@@ -1,0 +1,17 @@
+{
+  "archive_source": "https://github.com/microsoft/WSL2-Linux-Kernel/archive/refs/tags/linux-msft-wsl-6.6.87.2.tar.gz",
+  "archive_sha256": "a74e856bf47f13f5e0da7df4887c14770bce2b42b489cd1a97f31a46cf660b75",
+  "source_root": "/var/tmp/story117-wsl-headers.pyOhVksU/source",
+  "build_root": "/var/tmp/story117-wsl-headers.pyOhVksU/build",
+  "running_release": "6.6.87.2-microsoft-standard-WSL2",
+  "prepared_release": "#define UTS_RELEASE \"6.6.87.2-microsoft-standard-WSL2\"",
+  "running_config_sha256": "bf98e8db30bd02405822e0b45e91266747c6fb30875c27fa98006b2ba3f85e59",
+  "prepared_config_sha256": "8f265d3e773aef77f5b13dde98a8a4a4eb24a0d9105004aaec53da95247bab2f",
+  "config_byte_identical": false,
+  "config_note": "Documented olddefconfig recalculated compiler/tool capability symbols. No manual kernel source/config/version edits; full derived diff retained. Release equality does not alone establish every kernel ABI offset.",
+  "host_compatibility": "Host compiler uses gnu11 and bundled libbpf uses pre-C23 string interfaces. No warning suppression. Failed preparation attempts retained.",
+  "module_links": {
+    "source": "/var/tmp/story117-wsl-headers.pyOhVksU/source",
+    "build": "/var/tmp/story117-wsl-headers.pyOhVksU/build"
+  }
+}

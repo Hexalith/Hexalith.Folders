@@ -1,0 +1,1 @@
+{"complete": false, "output": "/var/tmp/story117-nss-live.dDxfX6SS/captures/07-setup-deadline", "qualification": "incomplete", "ready": false, "supported_probe_accounting_complete": false}

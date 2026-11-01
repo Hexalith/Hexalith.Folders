@@ -1,0 +1,1390 @@
+{
+  "schema": "story117-nss-live-validation-v1",
+  "qualification": "incomplete",
+  "fixture_mutation_suite_executed": false,
+  "ready_reached": false,
+  "complete": false,
+  "global_immutability_proven": false,
+  "frozen": {
+    "qualification": "incomplete",
+    "parent": "in-progress",
+    "tracker": "backlog",
+    "productionControl": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "staging": "0/14",
+    "historicalWriters": {
+      "2026-10-30T16:39:27Z": "unresolved",
+      "2026-10-30T16:54:04Z": "unresolved"
+    }
+  },
+  "capture_count": 7,
+  "conservative_total_allocated_capture_seconds": 553,
+  "maximum_authorized_total_seconds": 900,
+  "total_persisted_events": 78172,
+  "operation_counts": {
+    "vfs_write": 57252,
+    "vfs_unlink": 620,
+    "sched_process_fork": 8539,
+    "sched_process_exit": 8506,
+    "sched_process_exec": 1202,
+    "vfs_mkdir": 290,
+    "vfs_link": 120,
+    "vfs_rename": 103,
+    "notify_change": 577,
+    "do_iter_write": 195,
+    "vfs_iter_write": 182,
+    "iter_file_splice_write": 182,
+    "do_splice_direct": 159,
+    "ext4_page_mkwrite": 104,
+    "vfs_mknod": 44,
+    "vfs_rmdir": 75,
+    "vfs_copy_file_range": 22
+  },
+  "uid_counts": {
+    "1000": 77521,
+    "0": 630,
+    "1654": 12,
+    "100": 9
+  },
+  "nonleader_thread_records": 71589,
+  "successful_ambient_records_without_metadata_uncertainty": 11840,
+  "ambient_parent_identity_joins": 72481,
+  "ambient_parent_identity_join_candidates": 78172,
+  "raw_fork_records_with_creator_identity": 8539,
+  "synthetic_target_events": 0,
+  "attribution_note": "All live operations are ambient observations. No synthetic route/owned SDK attribution is credited. No earlier writer is resolved.",
+  "readiness_blocker": "Even a standalone snapshot exceeds the 256MiB maximum and observes process churn; mandatory complete-before-snapshot handshake remains unsatisfied.",
+  "attempts": [
+    {
+      "attempt": "01-attachment",
+      "allocated_duration_seconds": 120,
+      "metadata_sha256": "f38c74df4fd6ae73e6abe0867b04ac2413bcf1e98086d7ea9cab6f37775e2e41",
+      "ready": false,
+      "receipt_present": false,
+      "receipt": null,
+      "events": 0,
+      "operation_counts": {},
+      "successful_operation_counts": {},
+      "uid_counts": {},
+      "nonleader_thread_records": 0,
+      "deadline_violations": 0,
+      "successful_records_without_metadata_uncertainty": 0,
+      "synthetic_target_events": 0
+    },
+    {
+      "attempt": "02-compile-fix",
+      "allocated_duration_seconds": 120,
+      "metadata_sha256": "6777e2d38fc77de08868b7236d4dc4ac35ed1f01b954250c275dac897ea9b619",
+      "ready": false,
+      "receipt_present": true,
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": false,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "UTC/monotonic calibration drift exceeded 1ms",
+          "after snapshot incomplete",
+          "before snapshot incomplete",
+          "collector errors",
+          "event ABI size mismatch",
+          "identity_errors: 311",
+          "path_truncations: 311",
+          "readiness not reached",
+          "submission/delivery/loss counts do not reconcile",
+          "submission_failures: 139",
+          "unfinished entry/return pairs: 1",
+          "unmatched_returns: 1"
+        ],
+        "incomplete_reason_count": 12,
+        "errors": [
+          "InterruptedError: stop requested during setup snapshot",
+          "after snapshot: total metadata output budget reached"
+        ],
+        "stats": {
+          "events": 0,
+          "successful_mutation_records": 0,
+          "perf_lost": 0
+        },
+        "kernel_counters": {
+          "submissions": 329,
+          "submission_failures": 139,
+          "context_map_failures": 0,
+          "context_overwrites": 0,
+          "unmatched_returns": 1,
+          "kernel_read_errors": 0,
+          "path_truncations": 311,
+          "deadline_unfinished_pairs": 0,
+          "excluded_entries": 29,
+          "paired_entries": 340,
+          "paired_returns": 339,
+          "identity_errors": 311
+        },
+        "unfinished_pairs": 1,
+        "kretprobe_profile_before_detach": {
+          "path": "/sys/kernel/tracing/kprobe_profile",
+          "owned_rows": {
+            "r_vfs_write_bcc_2185787": {
+              "hits": 4046,
+              "missed": 0
+            },
+            "r___kernel_write_bcc_2185787": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_iter_write_bcc_2185787": {
+              "hits": 1,
+              "missed": 0
+            },
+            "r_vfs_iter_write_bcc_2185787": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_notify_change_bcc_2185787": {
+              "hits": 30,
+              "missed": 0
+            },
+            "r_vfs_rename_bcc_2185787": {
+              "hits": 4,
+              "missed": 0
+            },
+            "r_vfs_link_bcc_2185787": {
+              "hits": 27,
+              "missed": 0
+            },
+            "r_vfs_unlink_bcc_2185787": {
+              "hits": 31,
+              "missed": 0
+            },
+            "r_vfs_create_bcc_2185787": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mkdir_bcc_2185787": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_rmdir_bcc_2185787": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_fallocate_bcc_2185787": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_copy_file_range_bcc_2185787": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_splice_direct_bcc_2185787": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_iter_file_splice_write_bcc_2185787": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mknod_bcc_2185787": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_tmpfile_bcc_2185787": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_filemap_page_mkwrite_bcc_2185787": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_ext4_page_mkwrite_bcc_2185787": {
+              "hits": 0,
+              "missed": 0
+            }
+          },
+          "errors": [],
+          "complete": true
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": true,
+          "signal": null,
+          "overflow": false
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 204481749817348,
+          "utc_ns": 1793463423073974960,
+          "uncertainty_ns": 1163,
+          "utc": "2026-10-31T16:17:03.073974960Z"
+        },
+        "utc_offset_change_ns": -1281804,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 204468188668651,
+          "earliest_boottime_ns": 204468188669062,
+          "completed_monotonic_ns": 204468188693800,
+          "completed_boottime_ns": 204468188694491
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "4587ae4d695326587ad0e559389fd43a0ced5bf407178b2ecb10c6474298ae37",
+          "bpf_template_sha256": "7e0fc71b8a1117e37a2a5740cce144c04988dd1b4e0d04a4463599488b48e2da",
+          "rendered_bpf_sha256": "e50b2be7d13d44b59bf80a8b8ffae1b101925bb53b9dd8db454a645c5455a2fe",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 204481749877936,
+        "bytes_before_receipt": 67043176,
+        "snapshot_error_counts": {
+          "before": 2,
+          "after": 12
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": true,
+            "completed": false,
+            "partial": true,
+            "error_count": 2,
+            "failure": "InterruptedError: stop requested during setup snapshot",
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "1",
+                "error": "InterruptedError",
+                "detail": "stop requested during setup snapshot"
+              },
+              {
+                "kind": "snapshot_error",
+                "phase": "before",
+                "detail": "InterruptedError: stop requested during setup snapshot"
+              }
+            ]
+          },
+          "after": {
+            "started": true,
+            "completed": false,
+            "partial": true,
+            "error_count": 12,
+            "failure": "OutputLimit: total metadata output budget reached",
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "431768",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/431768/task/436951/fd/83'",
+                "tid": "436951",
+                "fd": "83",
+                "observation": "descriptor"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "431768",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/431768/task/436951/fd/89'",
+                "tid": "436951",
+                "fd": "89",
+                "observation": "descriptor"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "431768",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/431768/task/436951/fd/91'",
+                "tid": "436951",
+                "fd": "91",
+                "observation": "descriptor"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "431768",
+                "error": "FileNotFoundError",
+                "detail": "[Errno 2] No such file or directory: '/proc/431768/task/436951/fd/92'",
+                "tid": "436951",
+                "fd": "92",
+                "observation": "descriptor"
+              }
+            ]
+          }
+        }
+      },
+      "events": 0,
+      "operation_counts": {},
+      "successful_operation_counts": {},
+      "uid_counts": {},
+      "nonleader_thread_records": 0,
+      "deadline_violations": 0,
+      "successful_records_without_metadata_uncertainty": 0,
+      "synthetic_target_events": 0
+    },
+    {
+      "attempt": "03-fixture",
+      "allocated_duration_seconds": 180,
+      "metadata_sha256": "df55f4dacb81ffcac06e934c04bdb9af14003e78455a99ab6cf7470b2fae1011",
+      "ready": false,
+      "receipt_present": false,
+      "receipt": null,
+      "events": 76722,
+      "operation_counts": {
+        "vfs_write": 56423,
+        "vfs_unlink": 605,
+        "sched_process_fork": 8311,
+        "sched_process_exit": 8325,
+        "sched_process_exec": 1055,
+        "vfs_mkdir": 287,
+        "vfs_link": 120,
+        "vfs_rename": 100,
+        "notify_change": 545,
+        "do_iter_write": 195,
+        "vfs_iter_write": 182,
+        "iter_file_splice_write": 182,
+        "do_splice_direct": 159,
+        "ext4_page_mkwrite": 102,
+        "vfs_mknod": 38,
+        "vfs_rmdir": 71,
+        "vfs_copy_file_range": 22
+      },
+      "successful_operation_counts": {
+        "vfs_write": 56416,
+        "vfs_unlink": 605,
+        "vfs_mkdir": 287,
+        "vfs_link": 120,
+        "vfs_rename": 100,
+        "notify_change": 545,
+        "do_iter_write": 195,
+        "vfs_iter_write": 182,
+        "iter_file_splice_write": 182,
+        "do_splice_direct": 91,
+        "vfs_mknod": 38,
+        "vfs_copy_file_range": 22,
+        "vfs_rmdir": 61
+      },
+      "uid_counts": {
+        "1000": 76121,
+        "0": 580,
+        "1654": 12,
+        "100": 9
+      },
+      "nonleader_thread_records": 70700,
+      "deadline_violations": 0,
+      "successful_records_without_metadata_uncertainty": 11627,
+      "synthetic_target_events": 0
+    },
+    {
+      "attempt": "04-overflow",
+      "allocated_duration_seconds": 60,
+      "metadata_sha256": "cac623ae8c05d350eb21dbea6170056a92f5860d961a3c9b4dfa46be2d68ad49",
+      "ready": false,
+      "receipt_present": true,
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": false,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "after snapshot incomplete",
+          "before snapshot incomplete",
+          "collector errors",
+          "output overflow; collection stopped",
+          "readiness not reached",
+          "source_before unsupported filesystem",
+          "submission/delivery/loss counts do not reconcile",
+          "target_after unsupported filesystem"
+        ],
+        "incomplete_reason_count": 8,
+        "errors": [
+          "event stream reached output budget during snapshot",
+          "after snapshot not completed because output budget was reached"
+        ],
+        "stats": {
+          "events": 7,
+          "successful_mutation_records": 5,
+          "perf_lost": 0,
+          "observed_event_sizes": {
+            "3308": 8
+          }
+        },
+        "kernel_counters": {
+          "submissions": 82,
+          "submission_failures": 0,
+          "context_map_failures": 0,
+          "context_overwrites": 0,
+          "unmatched_returns": 0,
+          "kernel_read_errors": 0,
+          "path_truncations": 0,
+          "deadline_unfinished_pairs": 0,
+          "excluded_entries": 173,
+          "paired_entries": 253,
+          "paired_returns": 253,
+          "identity_errors": 0
+        },
+        "unfinished_pairs": 0,
+        "kretprobe_profile_before_detach": {
+          "path": "/sys/kernel/tracing/kprobe_profile",
+          "owned_rows": {
+            "r_vfs_write_bcc_2527180": {
+              "hits": 6090,
+              "missed": 0
+            },
+            "r___kernel_write_bcc_2527180": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_iter_write_bcc_2527180": {
+              "hits": 152,
+              "missed": 0
+            },
+            "r_vfs_iter_write_bcc_2527180": {
+              "hits": 152,
+              "missed": 0
+            },
+            "r_notify_change_bcc_2527180": {
+              "hits": 35,
+              "missed": 0
+            },
+            "r_vfs_rename_bcc_2527180": {
+              "hits": 4,
+              "missed": 0
+            },
+            "r_vfs_link_bcc_2527180": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_unlink_bcc_2527180": {
+              "hits": 18,
+              "missed": 0
+            },
+            "r_vfs_create_bcc_2527180": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mkdir_bcc_2527180": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_rmdir_bcc_2527180": {
+              "hits": 2,
+              "missed": 0
+            },
+            "r_vfs_fallocate_bcc_2527180": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_copy_file_range_bcc_2527180": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_splice_direct_bcc_2527180": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_iter_file_splice_write_bcc_2527180": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mknod_bcc_2527180": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_tmpfile_bcc_2527180": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_filemap_page_mkwrite_bcc_2527180": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_ext4_page_mkwrite_bcc_2527180": {
+              "hits": 0,
+              "missed": 0
+            }
+          },
+          "errors": [],
+          "complete": true
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": true,
+          "signal": null,
+          "overflow": true
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 205097796972556,
+          "utc_ns": 1793464039093670175,
+          "uncertainty_ns": 1353,
+          "utc": "2026-10-31T16:27:19.093670175Z"
+        },
+        "utc_offset_change_ns": 200,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 205092557959455,
+          "earliest_boottime_ns": 205092557960157,
+          "completed_monotonic_ns": 205092557982229,
+          "completed_boottime_ns": 205092557982931
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "0a7e09af500a730f92bfe472de45aaddcff28068ef60187c149018124e3ed1f0",
+          "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+          "rendered_bpf_sha256": "e4ec9f2e8b63e9287f4c0a8386a58c670c0669207241288313550615f255a66f",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 205097797087625,
+        "bytes_before_receipt": 65031,
+        "snapshot_error_counts": {
+          "before": 1,
+          "after": 0
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": true,
+            "completed": false,
+            "partial": true,
+            "error_count": 1,
+            "failure": "OutputLimit: event stream reached output budget during snapshot",
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "phase": "before",
+                "detail": "OutputLimit: event stream reached output budget during snapshot"
+              }
+            ]
+          },
+          "after": {
+            "started": false,
+            "completed": false,
+            "partial": false,
+            "error_count": 0,
+            "failure": "skipped because output budget was reached",
+            "errors_sample": []
+          }
+        }
+      },
+      "events": 7,
+      "operation_counts": {
+        "sched_process_fork": 1,
+        "vfs_write": 4,
+        "sched_process_exit": 1,
+        "notify_change": 1
+      },
+      "successful_operation_counts": {
+        "vfs_write": 4,
+        "notify_change": 1
+      },
+      "uid_counts": {
+        "1000": 7
+      },
+      "nonleader_thread_records": 3,
+      "deadline_violations": 0,
+      "successful_records_without_metadata_uncertainty": 4,
+      "synthetic_target_events": 0
+    },
+    {
+      "attempt": "05-signal",
+      "allocated_duration_seconds": 60,
+      "metadata_sha256": "fa56d0d8f1325d395c8c21fe44de30e6e9a0cc0aa43e141c866aaddd052268d5",
+      "ready": false,
+      "receipt_present": true,
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": false,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "UTC/monotonic calibration drift exceeded 1ms",
+          "after snapshot incomplete",
+          "before snapshot incomplete",
+          "capture stopped by signal",
+          "collector errors",
+          "event-time executable path incomplete",
+          "event-time process identity incomplete",
+          "identity_errors: 747",
+          "output overflow; collection stopped",
+          "path_truncations: 747",
+          "perf lost events: 509",
+          "readiness not reached",
+          "submission/delivery/loss counts do not reconcile",
+          "submission_failures: 511",
+          "unfinished entry/return pairs: 1"
+        ],
+        "incomplete_reason_count": 15,
+        "errors": [
+          "InterruptedError: stop requested during setup snapshot",
+          "after snapshot: total metadata output budget reached"
+        ],
+        "stats": {
+          "events": 210,
+          "successful_mutation_records": 196,
+          "perf_lost": 509,
+          "observed_event_sizes": {
+            "3308": 210
+          }
+        },
+        "kernel_counters": {
+          "submissions": 721,
+          "submission_failures": 511,
+          "context_map_failures": 0,
+          "context_overwrites": 0,
+          "unmatched_returns": 0,
+          "kernel_read_errors": 0,
+          "path_truncations": 747,
+          "deadline_unfinished_pairs": 0,
+          "excluded_entries": 452,
+          "paired_entries": 1160,
+          "paired_returns": 1159,
+          "identity_errors": 747
+        },
+        "unfinished_pairs": 1,
+        "kretprobe_profile_before_detach": {
+          "path": "/sys/kernel/tracing/kprobe_profile",
+          "owned_rows": {
+            "r_vfs_write_bcc_2554855": {
+              "hits": 4142,
+              "missed": 0
+            },
+            "r___kernel_write_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_iter_write_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_iter_write_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_notify_change_bcc_2554855": {
+              "hits": 7,
+              "missed": 0
+            },
+            "r_vfs_rename_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_link_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_unlink_bcc_2554855": {
+              "hits": 6,
+              "missed": 0
+            },
+            "r_vfs_create_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mkdir_bcc_2554855": {
+              "hits": 2,
+              "missed": 0
+            },
+            "r_vfs_rmdir_bcc_2554855": {
+              "hits": 2,
+              "missed": 0
+            },
+            "r_vfs_fallocate_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_copy_file_range_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_splice_direct_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_iter_file_splice_write_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mknod_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_tmpfile_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_filemap_page_mkwrite_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_ext4_page_mkwrite_bcc_2554855": {
+              "hits": 0,
+              "missed": 0
+            }
+          },
+          "errors": [],
+          "complete": true
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": true,
+          "signal": 15,
+          "overflow": true
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 205146764503119,
+          "utc_ns": 1793464088057293758,
+          "uncertainty_ns": 631,
+          "utc": "2026-10-31T16:28:08.057293758Z"
+        },
+        "utc_offset_change_ns": -2541021,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 205140240476547,
+          "earliest_boottime_ns": 205140240477368,
+          "completed_monotonic_ns": 205140240501545,
+          "completed_boottime_ns": 205140240501776
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "0a7e09af500a730f92bfe472de45aaddcff28068ef60187c149018124e3ed1f0",
+          "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+          "rendered_bpf_sha256": "637821597651315221203e51cbc90ac4d2e34ba91ce67825e909bf75a2a17206",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 205146764565365,
+        "bytes_before_receipt": 33488829,
+        "snapshot_error_counts": {
+          "before": 4,
+          "after": 1
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": true,
+            "completed": false,
+            "partial": true,
+            "error_count": 4,
+            "failure": "InterruptedError: stop requested during setup snapshot",
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "1",
+                "error": "InterruptedError",
+                "detail": "stop requested during setup snapshot",
+                "tid": "1",
+                "observation": "descriptor-table"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "1",
+                "error": "InterruptedError",
+                "detail": "stop requested during setup snapshot",
+                "observation": "process-final-identity"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "1",
+                "error": "InterruptedError",
+                "detail": "stop requested during setup snapshot"
+              },
+              {
+                "kind": "snapshot_error",
+                "phase": "before",
+                "detail": "InterruptedError: stop requested during setup snapshot"
+              }
+            ]
+          },
+          "after": {
+            "started": true,
+            "completed": false,
+            "partial": true,
+            "error_count": 1,
+            "failure": "OutputLimit: total metadata output budget reached",
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "phase": "after",
+                "detail": "OutputLimit: total metadata output budget reached"
+              }
+            ]
+          }
+        }
+      },
+      "events": 210,
+      "operation_counts": {
+        "sched_process_exit": 6,
+        "sched_process_fork": 5,
+        "vfs_write": 196,
+        "sched_process_exec": 3
+      },
+      "successful_operation_counts": {
+        "vfs_write": 196
+      },
+      "uid_counts": {
+        "1000": 210
+      },
+      "nonleader_thread_records": 196,
+      "deadline_violations": 0,
+      "successful_records_without_metadata_uncertainty": 0,
+      "synthetic_target_events": 0
+    },
+    {
+      "attempt": "06-paused-deadline-loss",
+      "allocated_duration_seconds": 12,
+      "metadata_sha256": "3f4ebbcb6ca72710e59169d57391d681be1915928aa06c3257636daed0706a4c",
+      "ready": false,
+      "receipt_present": true,
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": false,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "after snapshot incomplete",
+          "before snapshot incomplete",
+          "collector errors",
+          "deadline_unfinished_pairs: 1",
+          "destination_before metadata/path incomplete",
+          "event-time executable path incomplete",
+          "event-time process identity incomplete",
+          "identity_errors: 41420",
+          "output overflow; collection stopped",
+          "path_truncations: 56605",
+          "readiness not reached",
+          "source_before metadata/path incomplete",
+          "source_before unsupported filesystem",
+          "submission_failures: 77505",
+          "target_after metadata/path incomplete",
+          "target_after unsupported filesystem"
+        ],
+        "incomplete_reason_count": 16,
+        "errors": [
+          "TimeoutError: capture deadline elapsed during setup snapshot",
+          "after snapshot: total metadata output budget reached"
+        ],
+        "stats": {
+          "events": 1233,
+          "successful_mutation_records": 688,
+          "perf_lost": 0,
+          "observed_event_sizes": {
+            "3308": 1233
+          }
+        },
+        "kernel_counters": {
+          "submissions": 78738,
+          "submission_failures": 77505,
+          "context_map_failures": 0,
+          "context_overwrites": 0,
+          "unmatched_returns": 0,
+          "kernel_read_errors": 0,
+          "path_truncations": 56605,
+          "deadline_unfinished_pairs": 1,
+          "excluded_entries": 466764,
+          "paired_entries": 535185,
+          "paired_returns": 535185,
+          "identity_errors": 41420
+        },
+        "unfinished_pairs": 0,
+        "kretprobe_profile_before_detach": {
+          "path": "/sys/kernel/tracing/kprobe_profile",
+          "owned_rows": {
+            "r_vfs_write_bcc_2562534": {
+              "hits": 564496,
+              "missed": 0
+            },
+            "r___kernel_write_bcc_2562534": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_do_iter_write_bcc_2562534": {
+              "hits": 83,
+              "missed": 0
+            },
+            "r_vfs_iter_write_bcc_2562534": {
+              "hits": 50,
+              "missed": 0
+            },
+            "r_notify_change_bcc_2562534": {
+              "hits": 19768,
+              "missed": 0
+            },
+            "r_vfs_rename_bcc_2562534": {
+              "hits": 44,
+              "missed": 0
+            },
+            "r_vfs_link_bcc_2562534": {
+              "hits": 3,
+              "missed": 0
+            },
+            "r_vfs_unlink_bcc_2562534": {
+              "hits": 344,
+              "missed": 0
+            },
+            "r_vfs_create_bcc_2562534": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_mkdir_bcc_2562534": {
+              "hits": 854,
+              "missed": 0
+            },
+            "r_vfs_rmdir_bcc_2562534": {
+              "hits": 50,
+              "missed": 0
+            },
+            "r_vfs_fallocate_bcc_2562534": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_vfs_copy_file_range_bcc_2562534": {
+              "hits": 8,
+              "missed": 0
+            },
+            "r_do_splice_direct_bcc_2562534": {
+              "hits": 8,
+              "missed": 0
+            },
+            "r_iter_file_splice_write_bcc_2562534": {
+              "hits": 50,
+              "missed": 0
+            },
+            "r_vfs_mknod_bcc_2562534": {
+              "hits": 94,
+              "missed": 0
+            },
+            "r_vfs_tmpfile_bcc_2562534": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_filemap_page_mkwrite_bcc_2562534": {
+              "hits": 0,
+              "missed": 0
+            },
+            "r_ext4_page_mkwrite_bcc_2562534": {
+              "hits": 40,
+              "missed": 0
+            }
+          },
+          "errors": [],
+          "complete": true
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": false,
+          "signal": null,
+          "overflow": true
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 205166101930316,
+          "utc_ns": 1793464107394721000,
+          "uncertainty_ns": 781,
+          "utc": "2026-10-31T16:28:27.394721000Z"
+        },
+        "utc_offset_change_ns": -105,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 205159892931584,
+          "earliest_boottime_ns": 205159892932997,
+          "completed_monotonic_ns": 205159892967784,
+          "completed_boottime_ns": 205159892968165
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "0a7e09af500a730f92bfe472de45aaddcff28068ef60187c149018124e3ed1f0",
+          "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+          "rendered_bpf_sha256": "369c2fbebb3712356247ec28f91cd64bd1e2ed44228e83860eaaf764c2a9a951",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 205166101982167,
+        "bytes_before_receipt": 33488724,
+        "snapshot_error_counts": {
+          "before": 4,
+          "after": 1
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": true,
+            "completed": false,
+            "partial": true,
+            "error_count": 4,
+            "failure": "TimeoutError: capture deadline elapsed during setup snapshot",
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "pid": "1",
+                "error": "TimeoutError",
+                "detail": "capture deadline elapsed during setup snapshot",
+                "tid": "1",
+                "observation": "descriptor-table"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "1",
+                "error": "TimeoutError",
+                "detail": "capture deadline elapsed during setup snapshot",
+                "observation": "process-final-identity"
+              },
+              {
+                "kind": "snapshot_error",
+                "pid": "1",
+                "error": "TimeoutError",
+                "detail": "capture deadline elapsed during setup snapshot"
+              },
+              {
+                "kind": "snapshot_error",
+                "phase": "before",
+                "detail": "TimeoutError: capture deadline elapsed during setup snapshot"
+              }
+            ]
+          },
+          "after": {
+            "started": true,
+            "completed": false,
+            "partial": true,
+            "error_count": 1,
+            "failure": "OutputLimit: total metadata output budget reached",
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "phase": "after",
+                "detail": "OutputLimit: total metadata output budget reached"
+              }
+            ]
+          }
+        }
+      },
+      "events": 1233,
+      "operation_counts": {
+        "vfs_rmdir": 4,
+        "vfs_write": 629,
+        "sched_process_exit": 174,
+        "vfs_unlink": 15,
+        "sched_process_fork": 222,
+        "sched_process_exec": 144,
+        "notify_change": 31,
+        "vfs_rename": 3,
+        "vfs_mknod": 6,
+        "vfs_mkdir": 3,
+        "ext4_page_mkwrite": 2
+      },
+      "successful_operation_counts": {
+        "vfs_rmdir": 3,
+        "vfs_write": 629,
+        "vfs_unlink": 13,
+        "notify_change": 31,
+        "vfs_rename": 3,
+        "vfs_mknod": 6,
+        "vfs_mkdir": 3
+      },
+      "uid_counts": {
+        "1000": 1183,
+        "0": 50
+      },
+      "nonleader_thread_records": 690,
+      "deadline_violations": 0,
+      "successful_records_without_metadata_uncertainty": 209,
+      "synthetic_target_events": 0
+    },
+    {
+      "attempt": "07-setup-deadline",
+      "allocated_duration_seconds": 1,
+      "metadata_sha256": "3ebabb4df56b87ea0d70a67d05876c3502d3564e97a5a549f0eeb68170b432a3",
+      "ready": false,
+      "receipt_present": true,
+      "receipt": {
+        "schema": "story117-nss-writer-receipt-v1",
+        "frozen": {
+          "qualification": "incomplete",
+          "parent": "in-progress",
+          "tracker": "backlog",
+          "productionControl": "V1Only",
+          "T0": null,
+          "activationAuthority": null,
+          "staging": "0/14",
+          "historicalWriters": {
+            "2026-10-30T16:39:27Z": "unresolved",
+            "2026-10-30T16:54:04Z": "unresolved"
+          }
+        },
+        "ready": false,
+        "complete": false,
+        "global_immutability_proven": false,
+        "supported_probe_accounting_complete": false,
+        "attribution_requires": "Successful target mutation + device/inode/path + event-time executable/start identity + fork/exec correlation + loss accounting + before/after metadata; manual evidence assessment required.",
+        "unsupported": [
+          "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+          "Page-mkwrite events are evidence only, never successful content mutations.",
+          "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+          "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+          "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+          "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+          "Bounded path components and snapshot races can make identities incomplete.",
+          "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+          "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+          "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+          "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+          "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+        ],
+        "incomplete_reasons": [
+          "after snapshot incomplete",
+          "before snapshot incomplete",
+          "collector errors",
+          "output overflow; collection stopped",
+          "owned kretprobe missed accounting incomplete",
+          "readiness not reached"
+        ],
+        "incomplete_reason_count": 6,
+        "errors": [
+          "TimeoutError: setup deadline/signal before mandatory probe attachment completed",
+          "kernel accounting: BCC owned return event key unavailable: r_vfs_write",
+          "after snapshot: total metadata output budget reached"
+        ],
+        "stats": {
+          "events": 0,
+          "successful_mutation_records": 0,
+          "perf_lost": 0,
+          "observed_event_sizes": {}
+        },
+        "kernel_counters": {
+          "submissions": 0,
+          "submission_failures": 0,
+          "context_map_failures": 0,
+          "context_overwrites": 0,
+          "unmatched_returns": 0,
+          "kernel_read_errors": 0,
+          "path_truncations": 0,
+          "deadline_unfinished_pairs": 0,
+          "excluded_entries": 0,
+          "paired_entries": 0,
+          "paired_returns": 0,
+          "identity_errors": 0
+        },
+        "unfinished_pairs": 0,
+        "kretprobe_profile_before_detach": {
+          "complete": false,
+          "errors": [
+            "not attached"
+          ]
+        },
+        "collector_only_cleanup_completed": true,
+        "stop": {
+          "requested": false,
+          "signal": null,
+          "overflow": true
+        },
+        "final_clock_sample": {
+          "monotonic_ns": 205175881002713,
+          "utc_ns": 1793464117173756067,
+          "uncertainty_ns": 872,
+          "utc": "2026-10-31T16:28:37.173756067Z"
+        },
+        "utc_offset_change_ns": -37385,
+        "event_gate_close": {
+          "earliest_monotonic_ns": 205172468651973,
+          "earliest_boottime_ns": 205172468654929,
+          "completed_monotonic_ns": 205172468864162,
+          "completed_boottime_ns": 205172468864883
+        },
+        "diagnostic_provenance": {
+          "collector_python_source_sha256": "0a7e09af500a730f92bfe472de45aaddcff28068ef60187c149018124e3ed1f0",
+          "bpf_template_sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+          "rendered_bpf_sha256": "f11223effde7e5a67cf5a25e3b2ef94d996ecc800a76da856a5546a26c790b5b",
+          "bcc_version": "0.35.0",
+          "bcc_version_observation": "module __version__",
+          "python_version": "3.14.4",
+          "python_executable": "/usr/bin/python3",
+          "source_observation": "current on-disk diagnostic sources at capture setup; Python may have loaded earlier",
+          "errors": []
+        },
+        "finished_monotonic_ns": 205175882131530,
+        "bytes_before_receipt": 33488741,
+        "snapshot_error_counts": {
+          "before": 0,
+          "after": 1
+        },
+        "snapshot_phases": {
+          "before": {
+            "started": false,
+            "completed": false,
+            "partial": false,
+            "error_count": 0,
+            "errors_sample": []
+          },
+          "after": {
+            "started": true,
+            "completed": false,
+            "partial": true,
+            "error_count": 1,
+            "failure": "OutputLimit: total metadata output budget reached",
+            "errors_sample": [
+              {
+                "kind": "snapshot_error",
+                "phase": "after",
+                "detail": "OutputLimit: total metadata output budget reached"
+              }
+            ]
+          }
+        }
+      },
+      "events": 0,
+      "operation_counts": {},
+      "successful_operation_counts": {},
+      "uid_counts": {},
+      "nonleader_thread_records": 0,
+      "deadline_violations": 0,
+      "successful_records_without_metadata_uncertainty": 0,
+      "synthetic_target_events": 0
+    }
+  ],
+  "unsupported": [
+    "Already-writable MAP_SHARED stores can mutate bytes without another page-mkwrite event.",
+    "Page-mkwrite events are evidence only, never successful content mutations.",
+    "Asynchronous completion, io_uring and direct filesystem routes can bypass these VFS probes.",
+    "DAX, non-ext4 filesystem semantics and filesystem/kernel-specific bypasses are unsupported.",
+    "External VM, hypervisor or host writers are outside this Linux kernel observation.",
+    "Dentry paths are mount-relative; mount aliases, namespace aliases and disconnected dentries remain uncertain.",
+    "Bounded path components and snapshot races can make identities incomplete.",
+    "Nested VFS hooks can report the same mutation more than once; records are not independent write counts.",
+    "All-process snapshots are racy observations, not atomic process/file/mapping inventories.",
+    "Metadata timestamps, open descriptors and prevention settings alone provide no writer proof.",
+    "UTC calibration samples cannot rule out clock steps that occur and reverse between samples.",
+    "PMU entry dispatch/recursion misses are not directly profiled; unmatched returns detect some, but paired omissions cannot be ruled out by counters."
+  ],
+  "unexecuted_fixture_checks": [
+    "supported mutation route matrix",
+    "mutation via preexisting descriptor",
+    "thread-private descriptor mutation",
+    "owned fork/exec UID child attribution",
+    "rename replacement/exchange identity assertions",
+    "tmpfile/fallocate and shared mmap route fixtures"
+  ],
+  "untested_limits": [
+    "__kernel_write trigger in synthetic fixture",
+    "filemap_page_mkwrite generic route",
+    "SIGINT/SIGHUP/SIGQUIT individually (SIGTERM tested)",
+    "actual suspend/boottime advancement",
+    "zero PMU dispatch loss and paired omissions",
+    "complete before/after host inventories"
+  ],
+  "runtime_root": "/var/tmp/story117-nss-live.dDxfX6SS",
+  "archive_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-nss-live-validation-2026-10-31.artifacts.tar.gz"
+}

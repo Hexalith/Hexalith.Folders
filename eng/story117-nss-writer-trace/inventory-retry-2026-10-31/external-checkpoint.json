@@ -1,0 +1,11 @@
+{
+  "initial_head": "765544efc5c8aa395895f3a3d5911d4364658639",
+  "observed_head": "89c610e7791455a71740cd0ee394a263adc9ec5f",
+  "merge_commit": "commit 89c610e7791455a71740cd0ee394a263adc9ec5f\nMerge: 765544ef 35b1228a\nAuthor:     J\u00e9r\u00f4me Piquot <jpiquot@itaneo.com>\nAuthorDate: Sat Oct 31 23:37:19 2026 +0100\nCommit:     J\u00e9r\u00f4me Piquot <jpiquot@itaneo.com>\nCommitDate: Sat Oct 31 23:37:19 2026 +0100\n\n    build: merge refs/heads/fix/story-2-8-legacy-ci into main via /pushall\n",
+  "changed_committed_paths": "M\t.github/workflows/ci.yml\n",
+  "ci_before_sha256": "ab5942869b3b6670d289e4c111ebca319bd6beb769eb60565151ab065ab1185f",
+  "ci_after_sha256": "d1cd65952c42bf4facee6f21b39b0945986f8fad23132cafc24a8659de992853",
+  "initial_index_sha256": "e52782248e6167e8804acb72ae40c0afc3288a406ebed90f9fe346d37cf7d1a3",
+  "observed_index_sha256": "d1f9c60f3f154a20effcb4af665f2a3ed2f3e3699ddfb7f4e595241c9f4c512c",
+  "attribution": "Concurrent repository checkpoint outside this collector work; no Git mutation command issued by this work."
+}

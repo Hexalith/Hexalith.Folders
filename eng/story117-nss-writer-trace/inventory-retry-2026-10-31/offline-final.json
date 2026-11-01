@@ -1,0 +1,163 @@
+{
+  "tests": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-nss-writer-trace",
+        "-p",
+        "test_collector.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ".........................................................................\n----------------------------------------------------------------------\nRan 73 tests in 0.208s\n\nOK\n"
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-nss-writer-trace",
+        "-p",
+        "test_collector.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ".........................................................................\n----------------------------------------------------------------------\nRan 73 tests in 0.184s\n\nOK\n"
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-nss-writer-trace/inventory-retry-2026-10-31",
+        "-p",
+        "test_retry_fixture.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.229s\n\nOK\n"
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-O",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng/story117-nss-writer-trace/inventory-retry-2026-10-31",
+        "-p",
+        "test_retry_fixture.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.237s\n\nOK\n"
+    }
+  ],
+  "sources": [
+    {
+      "path": "eng/story117-nss-writer-trace/collector.py",
+      "sha256": "15cdfaf54d1c61d2c516eba40fb98cb9fa1d068d6545e4fbd38232dcf3600140",
+      "lf_only": true,
+      "final_newline": true,
+      "trailing_whitespace_lines": []
+    },
+    {
+      "path": "eng/story117-nss-writer-trace/test_collector.py",
+      "sha256": "9bec1f502bf1fac82ff8905305d960499dbf2fde4c75fbc75b3aa26402ecb1ed",
+      "lf_only": true,
+      "final_newline": true,
+      "trailing_whitespace_lines": []
+    },
+    {
+      "path": "eng/story117-nss-writer-trace/trace.bpf.c",
+      "sha256": "e9025a16046a1de2bb549069565652592d7b2dd0476a990b52da5260b0569bce",
+      "lf_only": true,
+      "final_newline": true,
+      "trailing_whitespace_lines": []
+    },
+    {
+      "path": "eng/story117-nss-writer-trace/inventory-retry-2026-10-31/before-collector.py",
+      "sha256": "0a7e09af500a730f92bfe472de45aaddcff28068ef60187c149018124e3ed1f0",
+      "lf_only": true,
+      "final_newline": true,
+      "trailing_whitespace_lines": []
+    },
+    {
+      "path": "eng/story117-nss-writer-trace/inventory-retry-2026-10-31/retry_support.py",
+      "sha256": "30603d90e04bb40b8761d050d158eb6a8bf6fd8b2e5c06db92a16eed790c39de",
+      "lf_only": true,
+      "final_newline": true,
+      "trailing_whitespace_lines": []
+    },
+    {
+      "path": "eng/story117-nss-writer-trace/inventory-retry-2026-10-31/review-before-snapshot_probe.py",
+      "sha256": "2d76d72d069220ec07505195e8e82da14366f20eb4740b13d9ace4594d720942",
+      "lf_only": true,
+      "final_newline": true,
+      "trailing_whitespace_lines": []
+    },
+    {
+      "path": "eng/story117-nss-writer-trace/inventory-retry-2026-10-31/review-before-control_retry.py",
+      "sha256": "43c9eeb6d621ec96fe1d4c2d67c093a051d98178fe064b9ad5bb925727eab203",
+      "lf_only": true,
+      "final_newline": true,
+      "trailing_whitespace_lines": []
+    },
+    {
+      "path": "eng/story117-nss-writer-trace/inventory-retry-2026-10-31/snapshot_probe.py",
+      "sha256": "526ea738353b5ee08f9e579daa3ed5f094a867278f2484705baeedc065ac4dc9",
+      "lf_only": true,
+      "final_newline": true,
+      "trailing_whitespace_lines": []
+    },
+    {
+      "path": "eng/story117-nss-writer-trace/inventory-retry-2026-10-31/review-before-retry_fixture.py",
+      "sha256": "f6feef4bdf8ad5032f55913059c3a7056061865d291ba3c7f30208885f170b9d",
+      "lf_only": true,
+      "final_newline": true,
+      "trailing_whitespace_lines": []
+    },
+    {
+      "path": "eng/story117-nss-writer-trace/inventory-retry-2026-10-31/before-test_collector.py",
+      "sha256": "c0c0be483098f47f25b7de7e6ff99973a64cef119bd2faeef0a5caa1585bfe62",
+      "lf_only": true,
+      "final_newline": true,
+      "trailing_whitespace_lines": []
+    },
+    {
+      "path": "eng/story117-nss-writer-trace/inventory-retry-2026-10-31/retry_fixture.py",
+      "sha256": "992d069a1d607f9ecf456fd14c5f86b99f2f670ca037983e4c774cbb71132c94",
+      "lf_only": true,
+      "final_newline": true,
+      "trailing_whitespace_lines": []
+    },
+    {
+      "path": "eng/story117-nss-writer-trace/inventory-retry-2026-10-31/test_retry_fixture.py",
+      "sha256": "9dc2176b19cef3c3a33ee8c3f35e7e6da077f84d042d4023b7eeec50506ea592",
+      "lf_only": true,
+      "final_newline": true,
+      "trailing_whitespace_lines": []
+    },
+    {
+      "path": "eng/story117-nss-writer-trace/inventory-retry-2026-10-31/control_retry.py",
+      "sha256": "1ef66cabdc0854e48d0478ac47a9a1526ea386624ea5ec542ea453ebbd13109f",
+      "lf_only": true,
+      "final_newline": true,
+      "trailing_whitespace_lines": []
+    }
+  ]
+}

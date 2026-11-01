@@ -1,0 +1,272 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Folders.Workers.Tests
+  Discovered:  Hexalith.Folders.Workers.Tests
+  Starting:    Hexalith.Folders.Workers.Tests
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:39467
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:39467/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+fail: Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not load file or assembly 'Hexalith.Commons.UniqueIds, Version=3.128.4.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      File name: 'Hexalith.Commons.UniqueIds, Version=3.128.4.0, Culture=neutral, PublicKeyToken=null'
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.IsUlid(String value) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 93
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.Validate(String tenantId, String domain, String aggregateId, String aggregateType, String eventTypeName, String messageId, String correlationId, String causationId, Int64 sequenceNumber, Boolean allowLegacyGuid, Boolean optionalDomain, Boolean optionalAggregateType, Boolean optionalCausation) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 61
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.ValidateSubscription(String tenantId, String domain, String aggregateId, String aggregateType, String eventTypeName, String messageId, String correlationId, String causationId, Int64 sequenceNumber) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 38
+         at Hexalith.EventStore.Client.Subscriptions.EventStoreDomainEventProcessor.ProcessAsync(EventStoreDomainEventEnvelope envelope, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Subscriptions/EventStoreDomainEventProcessor.cs:line 124
+         at Hexalith.Folders.Workers.FoldersWorkersModule.<>c.<<MapFoldersTenantEvents>b__12_0>d.MoveNext() in /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/FoldersWorkersModule.cs:line 152
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+         at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+         at Dapr.CloudEventsMiddleware.InvokeAsync(HttpContext httpContext)
+         at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:39467/tenants/events - 500 - text/plain;+charset=utf-8 57.1009ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:39467/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+fail: Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not load file or assembly 'Hexalith.Commons.UniqueIds, Version=3.128.4.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      File name: 'Hexalith.Commons.UniqueIds, Version=3.128.4.0, Culture=neutral, PublicKeyToken=null'
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.IsUlid(String value) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 93
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.Validate(String tenantId, String domain, String aggregateId, String aggregateType, String eventTypeName, String messageId, String correlationId, String causationId, Int64 sequenceNumber, Boolean allowLegacyGuid, Boolean optionalDomain, Boolean optionalAggregateType, Boolean optionalCausation) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 61
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.ValidateSubscription(String tenantId, String domain, String aggregateId, String aggregateType, String eventTypeName, String messageId, String correlationId, String causationId, Int64 sequenceNumber) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 38
+         at Hexalith.EventStore.Client.Subscriptions.EventStoreDomainEventProcessor.ProcessAsync(EventStoreDomainEventEnvelope envelope, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Subscriptions/EventStoreDomainEventProcessor.cs:line 124
+         at Hexalith.Folders.Workers.FoldersWorkersModule.<>c.<<MapFoldersTenantEvents>b__12_0>d.MoveNext() in /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/FoldersWorkersModule.cs:line 152
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+         at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+         at Dapr.CloudEventsMiddleware.InvokeAsync(HttpContext httpContext)
+         at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:39467/tenants/events - 500 - text/plain;+charset=utf-8 4.8907ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:39467/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+fail: Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not load file or assembly 'Hexalith.Commons.UniqueIds, Version=3.128.4.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      File name: 'Hexalith.Commons.UniqueIds, Version=3.128.4.0, Culture=neutral, PublicKeyToken=null'
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.IsUlid(String value) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 93
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.Validate(String tenantId, String domain, String aggregateId, String aggregateType, String eventTypeName, String messageId, String correlationId, String causationId, Int64 sequenceNumber, Boolean allowLegacyGuid, Boolean optionalDomain, Boolean optionalAggregateType, Boolean optionalCausation) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 61
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.ValidateSubscription(String tenantId, String domain, String aggregateId, String aggregateType, String eventTypeName, String messageId, String correlationId, String causationId, Int64 sequenceNumber) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 38
+         at Hexalith.EventStore.Client.Subscriptions.EventStoreDomainEventProcessor.ProcessAsync(EventStoreDomainEventEnvelope envelope, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Subscriptions/EventStoreDomainEventProcessor.cs:line 124
+         at Hexalith.Folders.Workers.FoldersWorkersModule.<>c.<<MapFoldersTenantEvents>b__12_0>d.MoveNext() in /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/FoldersWorkersModule.cs:line 152
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+         at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+         at Dapr.CloudEventsMiddleware.InvokeAsync(HttpContext httpContext)
+         at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:39467/tenants/events - 500 - text/plain;+charset=utf-8 2.2193ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+    Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShouldProcessKnownEventsEndToEnd [FAIL]
+      Shouldly.ShouldAssertException : created.StatusCode
+          should be
+      HttpStatusCode.OK
+          but was
+      HttpStatusCode.InternalServerError
+      Stack Trace:
+        tests/Hexalith.Folders.Workers.Tests/WorkersTenantEventTests.cs(290,0): at Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShouldProcessKnownEventsEndToEnd()
+           at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+        tests/Hexalith.Folders.Workers.Tests/WorkersTenantEventTests.cs(307,0): at Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShouldProcessKnownEventsEndToEnd()
+           at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+           at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+           at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+        --- End of stack trace from previous location ---
+           at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+           at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+           at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:44007
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44007/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+fail: Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not load file or assembly 'Hexalith.Commons.UniqueIds, Version=3.128.4.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      File name: 'Hexalith.Commons.UniqueIds, Version=3.128.4.0, Culture=neutral, PublicKeyToken=null'
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.IsUlid(String value) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 93
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.Validate(String tenantId, String domain, String aggregateId, String aggregateType, String eventTypeName, String messageId, String correlationId, String causationId, Int64 sequenceNumber, Boolean allowLegacyGuid, Boolean optionalDomain, Boolean optionalAggregateType, Boolean optionalCausation) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 61
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.ValidateSubscription(String tenantId, String domain, String aggregateId, String aggregateType, String eventTypeName, String messageId, String correlationId, String causationId, Int64 sequenceNumber) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 38
+         at Hexalith.EventStore.Client.Subscriptions.EventStoreDomainEventProcessor.ProcessAsync(EventStoreDomainEventEnvelope envelope, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Subscriptions/EventStoreDomainEventProcessor.cs:line 124
+         at Hexalith.Folders.Workers.FoldersWorkersModule.<>c.<<MapFoldersTenantEvents>b__12_0>d.MoveNext() in /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/FoldersWorkersModule.cs:line 152
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+         at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+         at Dapr.CloudEventsMiddleware.InvokeAsync(HttpContext httpContext)
+         at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44007/tenants/events - 500 - text/plain;+charset=utf-8 7.6718ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+    Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShouldAcknowledgeUnknownEventTypesWithoutMutatingProjection [FAIL]
+      Shouldly.ShouldAssertException : response.StatusCode
+          should be
+      HttpStatusCode.OK
+          but was
+      HttpStatusCode.InternalServerError
+      Stack Trace:
+        tests/Hexalith.Folders.Workers.Tests/WorkersTenantEventTests.cs(364,0): at Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShouldAcknowledgeUnknownEventTypesWithoutMutatingProjection()
+           at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+        tests/Hexalith.Folders.Workers.Tests/WorkersTenantEventTests.cs(370,0): at Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShouldAcknowledgeUnknownEventTypesWithoutMutatingProjection()
+           at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+           at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+           at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+        --- End of stack trace from previous location ---
+           at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+           at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+           at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+    Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantEventProcessorShouldSkipUnsupportedEventTypeWithoutMutatingProjection [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.Commons.UniqueIds, Version=3.128.4.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs(93,0): at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.IsUlid(String value)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs(61,0): at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.Validate(String tenantId, String domain, String aggregateId, String aggregateType, String eventTypeName, String messageId, String correlationId, String causationId, Int64 sequenceNumber, Boolean allowLegacyGuid, Boolean optionalDomain, Boolean optionalAggregateType, Boolean optionalCausation)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs(38,0): at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.ValidateSubscription(String tenantId, String domain, String aggregateId, String aggregateType, String eventTypeName, String messageId, String correlationId, String causationId, Int64 sequenceNumber)
+        references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Subscriptions/EventStoreDomainEventProcessor.cs(124,0): at Hexalith.EventStore.Client.Subscriptions.EventStoreDomainEventProcessor.ProcessAsync(EventStoreDomainEventEnvelope envelope, CancellationToken cancellationToken)
+        tests/Hexalith.Folders.Workers.Tests/WorkersTenantEventTests.cs(207,0): at Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantEventProcessorShouldSkipUnsupportedEventTypeWithoutMutatingProjection()
+        --- End of stack trace from previous location ---
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:34339
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:34339/tenants/events - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-missing, StatusCode=401, Path=/tenants/events, CorrelationId=9d4d56251b089b1f836b4e89ae390759
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:34339/tenants/events - 401 0 - 9.7644ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:34339/tenants/events - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-invalid, StatusCode=401, Path=/tenants/events, CorrelationId=4f1b014bffb0c3b28588a06bd6b195a1
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:34339/tenants/events - 401 0 - 1.4588ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:34339/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+fail: Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not load file or assembly 'Hexalith.Commons.UniqueIds, Version=3.128.4.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      File name: 'Hexalith.Commons.UniqueIds, Version=3.128.4.0, Culture=neutral, PublicKeyToken=null'
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.IsUlid(String value) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 93
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.Validate(String tenantId, String domain, String aggregateId, String aggregateType, String eventTypeName, String messageId, String correlationId, String causationId, Int64 sequenceNumber, Boolean allowLegacyGuid, Boolean optionalDomain, Boolean optionalAggregateType, Boolean optionalCausation) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 61
+         at Hexalith.EventStore.Contracts.Events.EventIdentityValidator.ValidateSubscription(String tenantId, String domain, String aggregateId, String aggregateType, String eventTypeName, String messageId, String correlationId, String causationId, Int64 sequenceNumber) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Events/EventIdentityValidator.cs:line 38
+         at Hexalith.EventStore.Client.Subscriptions.EventStoreDomainEventProcessor.ProcessAsync(EventStoreDomainEventEnvelope envelope, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Subscriptions/EventStoreDomainEventProcessor.cs:line 124
+         at Hexalith.Folders.Workers.FoldersWorkersModule.<>c.<<MapFoldersTenantEvents>b__12_0>d.MoveNext() in /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/FoldersWorkersModule.cs:line 152
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+         at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+         at Dapr.CloudEventsMiddleware.InvokeAsync(HttpContext httpContext)
+         at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:34339/tenants/events - 500 - text/plain;+charset=utf-8 1.9506ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+    Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantCallbackRequiresConfiguredSidecarTokenBeforeProjectionWrites [FAIL]
+      Shouldly.ShouldAssertException : (await host.Client.PostAsJsonAsync(FoldersWorkersModule.TenantEventsRoute, envelope,
+                  TestContext.Current.CancellationToken)).StatusCode
+          should be
+      HttpStatusCode.OK
+          but was
+      HttpStatusCode.InternalServerError
+      Stack Trace:
+        tests/Hexalith.Folders.Workers.Tests/WorkersTenantEventTests.cs(258,0): at Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantCallbackRequiresConfiguredSidecarTokenBeforeProjectionWrites()
+           at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+        tests/Hexalith.Folders.Workers.Tests/WorkersTenantEventTests.cs(260,0): at Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantCallbackRequiresConfiguredSidecarTokenBeforeProjectionWrites()
+           at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+           at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+           at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+        --- End of stack trace from previous location ---
+           at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+           at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+           at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+  Finished:    Hexalith.Folders.Workers.Tests (ID = '37be7fccab5ce19e189a08fc4f1c0be98abcc1dc50b5fde6b59c30df00127e15')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Workers.Tests  Total: 5, Errors: 0, Failed: 4, Skipped: 0, Not Run: 0, Time: 0.579s

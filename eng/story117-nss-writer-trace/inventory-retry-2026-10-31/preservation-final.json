@@ -1,0 +1,47 @@
+{
+  "baseline_tracked_file_count": 12367,
+  "changed_from_original_tracked_files": [
+    ".github/workflows/ci.yml",
+    "eng/story117-nss-writer-trace/collector.py",
+    "eng/story117-nss-writer-trace/test_collector.py",
+    "eng/story117-nss-writer-trace/trace.bpf.c"
+  ],
+  "missing_tracked_files": [],
+  "unexpected_tracked_changes": [
+    ".github/workflows/ci.yml"
+  ],
+  "changes_from_turn_baseline": [
+    "eng/story117-nss-writer-trace/collector.py",
+    "eng/story117-nss-writer-trace/test_collector.py"
+  ],
+  "previous_live_evidence_unchanged": true,
+  "original_live_archive_unchanged": true,
+  "bpf_source_unchanged_this_turn": true,
+  "original_diagnostic_documents_unchanged": true,
+  "head": "89c610e7791455a71740cd0ee394a263adc9ec5f",
+  "head_unchanged": false,
+  "index_sha256": "d1f9c60f3f154a20effcb4af665f2a3ed2f3e3699ddfb7f4e595241c9f4c512c",
+  "index_unchanged": false,
+  "historical_receipts_and_authority_unchanged": true,
+  "git_state_writes_performed": false,
+  "external_committed_change_paths": [
+    ".github/workflows/ci.yml"
+  ],
+  "unexpected_changes_after_external_checkpoint_classification": [],
+  "all_other_original_tracked_files_unchanged": true,
+  "head_and_index_unchanged_claimed": false,
+  "audit_note": "The preliminary preservation-after.json retains the original unexpected-drift observation. The sole additional tracked change is the concurrent committed CI pin; all other original non-collector tracked files match their baseline hashes.",
+  "frozen": {
+    "qualification": "incomplete",
+    "parent": "in-progress",
+    "tracker": "backlog",
+    "productionControl": "V1Only",
+    "T0": null,
+    "activationAuthority": null,
+    "staging": "0/14",
+    "historicalWriters": {
+      "2026-10-30T16:39:27Z": "unresolved",
+      "2026-10-30T16:54:04Z": "unresolved"
+    }
+  }
+}

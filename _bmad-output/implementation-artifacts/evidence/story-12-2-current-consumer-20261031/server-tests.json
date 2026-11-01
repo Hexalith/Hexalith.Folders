@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "dotnet",
+    "/tmp/story-12-2-consumer-20261031-artifacts/bin/Hexalith.Folders.Server.Tests/debug/Hexalith.Folders.Server.Tests.dll",
+    "-result-xml",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-current-consumer-20261031/server-tests.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-10-31T23:02:45.316473+00:00",
+  "finishedAtUtc": "2026-10-31T23:03:54.201769+00:00",
+  "exitCode": 1
+}

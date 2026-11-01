@@ -1,0 +1,127 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Folders.Workers.Tests
+  Discovered:  Hexalith.Folders.Workers.Tests
+  Starting:    Hexalith.Folders.Workers.Tests
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:36355
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031-version3/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:36355/tenants/events - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-missing, StatusCode=401, Path=/tenants/events, CorrelationId=1d4151ece625cc8638a8bb86bfe3b72c
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:36355/tenants/events - 401 0 - 39.6260ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:36355/tenants/events - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-invalid, StatusCode=401, Path=/tenants/events, CorrelationId=db51a64d2ce75a650aa7f0bbc5b823cc
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:36355/tenants/events - 401 0 - 11.9394ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:36355/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:36355/tenants/events - 200 0 - 58.6757ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:34917
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031-version3/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:34917/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+warn: Hexalith.EventStore.Client.Subscriptions.EventStoreDomainEventProcessor[0]
+      Unknown event type 'Hexalith.Tenants.Contracts.Events.UnrelatedEvent' — skipping
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:34917/tenants/events - 200 0 - 12.0530ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:36759
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031-version3/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:36759/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:36759/tenants/events - 200 0 - 12.7995ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:36759/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:36759/tenants/events - 200 0 - 9.2576ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:36759/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:36759/tenants/events - 200 0 - 3.0356ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Finished:    Hexalith.Folders.Workers.Tests (ID = '3ceb39a2458048f22c5836bca3093207e7d8b699d0c03139ec5d444390842df2')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Workers.Tests  Total: 4, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.808s

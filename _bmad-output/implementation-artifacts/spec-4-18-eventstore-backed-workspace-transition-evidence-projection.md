@@ -78,14 +78,15 @@ Keep domain evidence apart from reader authority, and widen timestamp, string, a
 
 ## Verification
 
-**Readiness recheck (2026-10-30):** Folders `20034c1170c9f044f1f247abba87c0b17f94eebf`; EventStore `7b1df62102efb19da03553a890c62eb5ad6aeafe`.
+**Readiness recheck (2026-10-31):** Folders `02bd98cf29e6a3b787d8c6ae747f5e0d71762a72`; EventStore `7b1df62102efb19da03553a890c62eb5ad6aeafe`.
 
 - 12.1 `done`; retain `evidence/story-12-1-durability-2026-10-18-complete.json`.
 - 12.2 `in-progress`, review loop 4; `evidence/story-12-2-durability.json` `full_acceptance: false`; `evidence/story-12-2-v2-source-requalification-pending.yaml` `story_closure_claimed: false`.
-- 4.22 `backlog`, no spec. 11.15 `backlog` is on the manifest edge and outside the frozen resume list.
+- Latest 12.2 receipt, `evidence/story-12-2-sidecar-startup-20261022T105749Z/qualification.json`: `task36_selected_candidate_consumer_qualified: true`, `whole_story_complete: false`. Focused Task 36 qualification does not close whole-story acceptance.
+- 4.22 `backlog`, no spec; guarded C6 implementation and `LockLeaseBecameStale` remain absent. 11.15 `backlog` is on the manifest edge and outside the frozen resume list.
 - `EXT-ES-EVENT-EVOLUTION` accepted only at `ead4949d30b37d3a976f5c9197789a91701f1a72` in `story-12-1-eventstore-6-6-acceptance-2026-10-11.yaml` for 12.1 source/SDK compatibility.
 
-12.2 is open and 4.22 has not started, so this spec stays draft. No implementation or build ran.
+12.2 is open and 4.22 has not started, so this spec stays draft under the existing defer decision. The transition-evidence reader remains in-memory and the durable projector is absent. Only readiness evidence was refreshed; no implementation or build ran.
 
 **Commands:**
 - `dotnet build Hexalith.Folders.slnx -c Debug` after prerequisite acceptance.

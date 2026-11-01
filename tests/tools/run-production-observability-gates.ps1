@@ -71,7 +71,7 @@ function Write-ProductionObservabilityReport {
         exporter_signals = @('traces', 'metrics', 'logs')
         health_probes = @(
             [ordered]@{ owning_component = 'folders-server'; liveness = '/alive'; readiness = '/ready' },
-            [ordered]@{ owning_component = 'folders-workers'; liveness = '/health/live'; readiness = '/health/ready' }
+            [ordered]@{ owning_component = 'folders-workers'; liveness = '/alive'; readiness = '/ready' }
         )
         # Live exporter/alert firing against a real backend lives outside this repo per the ops runbook.
         live_exporter_alert_smoke = [ordered]@{

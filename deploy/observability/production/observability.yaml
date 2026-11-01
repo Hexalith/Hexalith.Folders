@@ -42,10 +42,10 @@ spec:
         - tenants_availability_degraded_mode
         - projection_lag
       degradedButServing: projection lag above C2 reports degraded-but-serving without failing readiness
-    - path: /health/live
+    - path: /alive
       kind: liveness
       owningComponent: folders-workers
-    - path: /health/ready
+    - path: /ready
       kind: readiness
       owningComponent: folders-workers
       monitoredSnapshots:

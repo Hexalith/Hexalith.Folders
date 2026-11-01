@@ -6,11 +6,13 @@ status: 'in-progress'
 baseline_commit: 'c22b13137202f7bf8c60b80c095a69748435bd6e'
 route: 'dispatch'
 review_loop_iteration: 4
+enrollment_baseline_commit: '91c0b89801a114962433f6dc6efd54d308d9a548'
 context:
   - '_bmad-output/implementation-artifacts/epic-12-context.md'
   - 'docs/exit-criteria/c3-retention.md'
   - '_bmad-output/implementation-artifacts/proposal-12-2-acceptance-prerequisites.md'
   - 'docs/contract/authorization-matrix.md'
+  - '_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-security-enrollment.md'
 ---
 
 <frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
@@ -28,6 +30,8 @@ context:
 **Approved prerequisite exceptions (2026-10-18):** The owner authorized the bounded provider binding/readiness, additive v1 task folder hint, and minimal SDK projection-mapping qualification/consumption described in [the prerequisite proposal](proposal-12-2-acceptance-prerequisites.md). These exceptions permit the required minimal SDK dependency scope; public v2 remains disabled.
 
 **Approved SDK recovery prerequisites (2026-10-20):** The user approved [source-deadline expiry and pending scratch-fence recovery](proposal-12-2-sdk-expiry-and-scratch-recovery.md) for separate EventStore-owned implementation, qualification, and local source consumption here. These two capabilities extend the minimal SDK exception only as described in that proposal. No package or submodule pin update, publication, deployment, commit, push or public v2 exposure is authorized. The separate bounded owner-identity prerequisite retains its existing disposition.
+
+**Approved current SDK enrollment (2026-11-01):** The user approved [the bounded Folders host-security migration](proposal-12-2-current-sdk-security-enrollment.md). Explicit human/channel/canonical endpoint classification, supported SDK security/catalog registration, authenticated root and historical health aliases, anonymous exact `/health`, `/alive`, `/ready` probes, and corresponding monitoring/runbook/test changes are authorized exceptions to preserving prior route authentication/probe behavior. Preserve domain handlers, layered authorization, canonical v1 outcomes, workload/channel/catalog/replay guards and disabled public v2. The prior minimal SDK capability authorization permits any necessary bounded public-composition repair in its owning repository; it does not permit bypassing the newer SDK boundary. No deployment, publication, package/gitlink update, commit, push or performance redesign is authorized.
 
 **Never:** Write Dapr/domain storage directly, invent provider/cleanup success, or replace retained event bytes. Exclude bodies and credentials. Keep transition evidence, diagnostics and search projections with Epics 4/6/10; content, provider commit execution, idempotency admission, confidentiality and destructive cleanup remain with 12.3–12.7/4.22. No deployment or public v2 exposure. Dependency changes are limited to the approved minimal SDK capability.
 
@@ -143,6 +147,14 @@ context:
   - Restore the anchors dropped from `epic-12-context.md` (409/exit 77/`concurrency_conflict`, 24-hour/seven-year replay retention, 422 `confidential_operation_not_durable`, readiness dependency health, Story 4.23 dependency) from `prd.md`, `epics.md` and `architecture.md`.
   - Correct the stale prose in `proposal-12-2-acceptance-prerequisites.md:49-51` and `tests/Hexalith.Folders.AppHost.Tests/README.md:248-249`: stage five, 3,908 cases, and the local unpushed SDK commit `d4d05f871991ec2af305267f59dcefeae3f127ed` on gitlink `84bb115a0ced2497ca4315644a677b273cb44edf`.
   - Align the sprint-status line-3 comment date with `last_updated`.
+
+**Approved enrollment continuation:**
+- [ ] Approved current SDK enrollment: `FoldersServerHostComposition.cs`, `FoldersServerServiceCollectionExtensions.cs` and the owning EventStore public composition seams: adopt supported security/catalog registration while retaining the bespoke keyed processor and process/query/legacy projection handlers. Apply the public canonical-route convention to custom callbacks; never register internal SDK types, forge guard metadata or bypass catalog checks. If a bounded public SDK registration repair is necessary, implement/verify it in the root-declared EventStore repository under the existing approved minimal capability scope, without nested submodule or pin changes.
+- [ ] Approved current SDK enrollment: explicitly classify all observed human v1/content/provider/console/audit endpoints and `/` with the SDK named bearer-only human policy, Dapr discovery/subscriptions with the actual-token channel policy, and canonical callbacks with their catalog policies. Preserve layered domain authorization, safe v1 errors and zero protected observation/effects on denial; mixed and wrong-kind credentials fail closed.
+- [ ] Approved current SDK enrollment: `src/Hexalith.Folders.ServiceDefaults/Extensions.cs`, tracked health-path consumers, `deploy/observability/production/observability.yaml` and affected runbooks/tests: expose exact anonymous `/health`, `/alive`, `/ready`; preserve existing health aliases as authenticated endpoints and existing readiness checks. Update monitored paths and verify both Server and Workers. No deployment.
+- [ ] Approved current SDK enrollment: production Server/Workers security tests and existing callback/routing suites: require both SDK inventories to be empty; exercise actual catalog guards, positive flows, every route group, exact probes, aliases/root, actual sidecar tokens, mixed/wrong-kind credentials, weak canonical overrides and late unclassified endpoints through production pipelines. Preserve strict source/task/replay assertions.
+- [ ] Approved current SDK enrollment: build isolated Debug/all-project-reference runtime with consistent assembly identities; execute affected Server, Workers, Integration, Contracts, health/observability and operational histories individually. Requalify affected 10,001/32,769 production-handler histories when source/runtime changes prevent exact reuse. If SDK public registration changes, run affected owner registration/security regressions. Record broad failures separately rather than weakening assertions or substituting test-only production bypasses.
+- [ ] Approved current SDK enrollment: run the unchanged strict authenticated real-provider durability acceptance on final audited runtime; retain commands/results, source/runtime identities, failed attempts, SM4 measurements and exact owned-resource cleanup in a new evidence packet. Preserve all prior packets and distinguish this migration's completion from whole-story SDK broad-regression, Release/package/PD10, SM4 and independent-review gates.
 
 **Acceptance Criteria:**
 - Given authorized source events, when delivery, duplicates, restart and empty-checkpoint rebuild run, then all six status concerns converge with truthful freshness and unchanged retained hashes.
@@ -764,3 +776,52 @@ is 258.854 ms and status p95 is 79.891 ms. SM4 acknowledgement, Release/package/
 owned SDK broad-regression/current-external-source dispositions and independent whole-story review
 remain open. No SDK source, dependency pin, Git index, release, retained event, content cleanup or
 public v2 change is included.
+
+## Current consumer verification — 2026-11-01
+
+The [current consumer packet](evidence/story-12-2-current-consumer-20261031/README.md) records
+zero-warning/error isolated Debug/source builds and 87 passing operational regressions, including
+both required 10,001/32,769-position histories. Initial broad Server/Workers failures are retained.
+Repo-local artifacts resolve fixture-path discovery; matching the local assembly Version to the
+existing SDK catalog resolves the demonstrated Commons identity collision, with all four affected
+Workers cases then passing. Every selected Hexalith dependency remains a project reference.
+
+Current production discovery still fails before host startup: the SDK selective mapper now enters
+the generic HTTP security boundary, whose endpoint source is unregistered in the bespoke Folders
+host. A public-registration control removes that exception but the SDK inventory rejects 58 existing
+endpoint classifications. The exact one-case reproduction, public seam probe, loaded assembly
+identities and source/runtime hashes are retained. No compatible one-line consumer correction was
+established; qualifying a selective SDK enrollment contract or a scoped whole-host security migration
+remains an owning integration decision. No SDK workaround, internal registration or policy bypass
+was applied, and no new full live qualification is claimed.
+
+All 17,022 captured source/config inputs, 406 original and 403 corrected runtime/config artifacts
+and the 174-file prior selected-candidate packet seal remain unchanged. Task runner/probe processes
+exited; no live topology was started. The historical checked Task 36 result stays bound to its
+selected candidate. Story 12.2 remains in-progress for current-source integration, SDK broad
+regressions, Release/package/PD10, SM4 acknowledgement and independent review. Product/SDK source,
+frozen intent, existing evidence, dependency pins, sprint status, public v2 and the Git index are preserved.
+
+## Current selective enrollment boundary — 2026-11-01
+
+The [fresh reproduction](evidence/story-12-2-selective-enrollment-20261101/README.md) confirms the
+same startup blocker on unchanged source/runtime: production discovery has 0 passes, 1 failure,
+0 skips in 0.334 xUnit seconds; public HTTP registration removes the missing-service exception but
+reports 58 endpoint-classification findings across 55 paths. Audits retain zero drift across the
+17,022 source/config inputs, 406 original and 403 corrected runtime/config artifacts, and 138 actual
+probe output files. No new passing consumer or live qualification is claimed.
+
+The owning SDK's approved 2026-10-29 Story 5.14 frozen boundary explicitly denies unclassified
+endpoints even for valid credentials and forbids silent classification. Story 5.5 additionally retains
+exact anonymous probes and the effective canonical callback policies. The earlier selective SDK
+prerequisite approval still permits compatible capability repair; it does not authorize removing those
+newer security guards. Satisfying them changes existing Folders root, probe, framework and implicit
+human-endpoint behavior, beyond a missing-service registration correction.
+
+The [bounded enrollment proposal](proposal-12-2-current-sdk-security-enrollment.md) recommends adopting
+the existing SDK boundary through explicit Folders classification, with the exact route groups,
+authentication/probe changes, owning files and qualification gates recorded for the owner decision.
+Product/SDK source and frozen intent remain unchanged pending that decision. All diagnostic child
+processes exited; no live topology started. Historical Task 36 remains bound to its selected candidate;
+current-source integration, SDK broad regressions, Release/package/PD10, SM4 acknowledgement and
+independent whole-story review retain their separate open dispositions.

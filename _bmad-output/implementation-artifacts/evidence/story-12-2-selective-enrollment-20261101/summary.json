@@ -1,0 +1,31 @@
+{
+  "qualified": false,
+  "newPassingConsumerCases": 0,
+  "discoveryExitCode": 1,
+  "discovery": {
+    "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+    "id": "9fd224dd-471f-4778-8ced-369dab67b5fc",
+    "name": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-consumer-20261031/bin/Hexalith.Folders.Server.Tests/debug/Hexalith.Folders.Server.Tests.dll",
+    "run-date": "2026-11-01",
+    "run-time": "00:14:22",
+    "start-rtf": "2026-11-01T00:14:22.5443799+00:00",
+    "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+    "target-framework": ".NETCoreApp,Version=v10.0",
+    "errors": "0",
+    "failed": "1",
+    "finish-rtf": "2026-11-01T00:14:22.8773809+00:00",
+    "not-run": "0",
+    "passed": "0",
+    "skipped": "0",
+    "time": "0.334",
+    "time-rtf": "00:00:00.3340000",
+    "total": "1"
+  },
+  "originalProbeExitCode": 1,
+  "publicRegistrationProbeExitCode": 2,
+  "publicRegistrationInventoryFindings": 58,
+  "sourceOrRuntimeDrift": false,
+  "probeRuntimeDrift": [],
+  "topologyStarted": false,
+  "processCleanup": "All three synchronous child commands exited."
+}

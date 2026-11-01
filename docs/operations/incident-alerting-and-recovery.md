@@ -45,7 +45,7 @@ signal fires**, naming concrete read-only next-step surfaces within 7.14 scope.
 
 | Signal | Severity | Owner | Operator action (read-only next step) |
 |---|---|---|---|
-| `projection_lag` | warning | folders-server | Check `/health/ready` and open `/_admin/incident-stream?folder={folderId}` for the degraded read. |
+| `projection_lag` | warning | folders-server | Check `/ready` and open `/_admin/incident-stream?folder={folderId}` for the degraded read. |
 | `dead_letter_depth` | warning | folders-workers | Inspect the operation-timeline read for stalled operations; escalate per the 7.17 runbook. |
 | `provider_failure` | error | folders-workers | Open the Provider page read and the `GetWorkspaceCleanupStatus` read for affected workspaces. |
 | `stale_lock` | warning | folders-server | Inspect the lock-status read for the workspace; there is no console unlock action. |
@@ -56,8 +56,8 @@ The threshold source for `projection_lag` is `docs/exit-criteria/c2-freshness.md
 
 ### Health endpoints
 
-- **`/health/live`** reports process liveness.
-- **`/health/ready`** aggregates the Dapr sidecar health, the Tenants degraded-mode flag, and projection lag
+- **`/alive`** reports process liveness.
+- **`/ready`** aggregates the Dapr sidecar health, the Tenants degraded-mode flag, and projection lag
   versus the C2 ceiling. When lag exceeds **500 ms** it reports **`degraded-but-serving` (HTTP 200)** rather
   than failing readiness.
 

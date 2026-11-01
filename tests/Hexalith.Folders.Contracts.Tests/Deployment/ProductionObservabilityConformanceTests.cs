@@ -80,7 +80,7 @@ public sealed partial class ProductionObservabilityConformanceTests
         probes.Select(probe => (Owner: Scalar(probe, "owningComponent"), Kind: Scalar(probe, "kind"), Path: Scalar(probe, "path")))
             .ShouldBe([
                 ("folders-server", "liveness", "/alive"), ("folders-server", "readiness", "/ready"),
-                ("folders-workers", "liveness", "/health/live"), ("folders-workers", "readiness", "/health/ready"),
+                ("folders-workers", "liveness", "/alive"), ("folders-workers", "readiness", "/ready"),
             ], ignoreOrder: true);
         foreach (YamlMappingNode readiness in probes.Where(probe => Scalar(probe, "kind") == "readiness"))
         {
@@ -122,8 +122,8 @@ public sealed partial class ProductionObservabilityConformanceTests
 
         // I-7: liveness/readiness split.
         extensions.ShouldContain("AddHealthChecks", Case.Sensitive);
-        extensions.ShouldContain("\"/health/live\"", Case.Sensitive);
-        extensions.ShouldContain("\"/health/ready\"", Case.Sensitive);
+        extensions.ShouldContain("\"/alive\"", Case.Sensitive);
+        extensions.ShouldContain("\"/ready\"", Case.Sensitive);
         extensions.ShouldContain("MonitoredSnapshotReadinessCheck", Case.Sensitive);
 
         string readiness = ReadText(ReadinessCheckPath);
@@ -225,7 +225,7 @@ public sealed partial class ProductionObservabilityConformanceTests
 
         script.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
         script.ShouldContain("owning_component = 'folders-server'; liveness = '/alive'; readiness = '/ready'", Case.Sensitive);
-        script.ShouldContain("owning_component = 'folders-workers'; liveness = '/health/live'; readiness = '/health/ready'", Case.Sensitive);
+        script.ShouldContain("owning_component = 'folders-workers'; liveness = '/alive'; readiness = '/ready'", Case.Sensitive);
     }
 
     [Fact]
@@ -430,7 +430,7 @@ public sealed partial class ProductionObservabilityConformanceTests
 
     private static void AssertManifestMetadataOnly(string value)
     {
-        // Health-probe paths like /health/live and repository-relative doc references are legitimate;
+        // Health-probe paths like /alive and repository-relative doc references are legitimate;
         // only secret material, real URLs, and host-absolute paths are forbidden.
         UnsafeManifestPattern().IsMatch(value).ShouldBeFalse($"Observability artifact must stay metadata-only: {Excerpt(value)}");
         HostAbsolutePathPattern().IsMatch(value).ShouldBeFalse($"Observability artifact must not contain a host-absolute path: {Excerpt(value)}");

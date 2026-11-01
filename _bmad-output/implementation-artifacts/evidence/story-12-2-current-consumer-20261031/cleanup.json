@@ -1,0 +1,5 @@
+{
+  "at": "2026-10-31T23:10:23.873576+00:00",
+  "runnerProcessesRemaining": [],
+  "note": "The earlier broad ps substring probe included its own Bash command. This executable-aware follow-up is authoritative. No Aspire/Dapr/container topology was started by this continuation."
+}

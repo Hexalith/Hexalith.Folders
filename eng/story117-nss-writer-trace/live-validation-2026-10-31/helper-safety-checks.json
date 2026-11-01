@@ -1,0 +1,21 @@
+[
+  {
+    "check": "control_checks.py refuses reuse",
+    "exit": 1,
+    "stderr": "Refusing to reuse an attempt or overwrite evidence",
+    "existing_evidence_unchanged": true
+  },
+  {
+    "check": "fixture.py refuses reuse",
+    "exit": 1,
+    "stderr": "Refusing to reuse the fixture run or overwrite its evidence",
+    "existing_evidence_unchanged": true
+  },
+  {
+    "check": "fixture refuses descendant symlink before mutation",
+    "exit": 1,
+    "stderr": "Fixture descendants must be root-owned single-link regular files",
+    "synthetic_sentinel_metadata_unchanged": true,
+    "collector_output_created": false
+  }
+]

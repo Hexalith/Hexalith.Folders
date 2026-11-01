@@ -1,0 +1,87 @@
+{
+  "recordedAtUtc": "2026-10-31T23:11:28.714180+00:00",
+  "qualified": false,
+  "storyStatus": "in-progress",
+  "productSourceChanges": false,
+  "sourceGraphMode": "Debug/project-references",
+  "selectedHistoricalTask36Result": "preserved; not reclassified by this continuation",
+  "tests": {
+    "operational-domain": {
+      "total": "87",
+      "passed": "87",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "94.616"
+    },
+    "production-discovery-minimal": {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "skipped": "0",
+      "errors": "0",
+      "time": "0.419"
+    },
+    "server-affected-local-version": {
+      "total": "154",
+      "passed": "116",
+      "failed": "38",
+      "skipped": "0",
+      "errors": "0",
+      "time": "2.495"
+    },
+    "server-tests": {
+      "total": "1206",
+      "passed": "1129",
+      "failed": "77",
+      "skipped": "0",
+      "errors": "0",
+      "time": "68.324"
+    },
+    "workers-affected-local-version": {
+      "total": "5",
+      "passed": "1",
+      "failed": "4",
+      "skipped": "0",
+      "errors": "0",
+      "time": "0.579"
+    },
+    "workers-affected-matched-version": {
+      "total": "4",
+      "passed": "4",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "0.808"
+    },
+    "workers-tests": {
+      "total": "161",
+      "passed": "156",
+      "failed": "5",
+      "skipped": "0",
+      "errors": "0",
+      "time": "8.122"
+    }
+  },
+  "currentSourceBlocker": {
+    "type": "selective-projection-mapper/http-host-security-enrollment",
+    "minimalReceipt": "production-discovery-minimal.json",
+    "publicRegistrationReceipt": "registration-probe-final-public-seam.json",
+    "publicRegistrationInventoryFindings": 58,
+    "nextOwnerDecision": "compatible SDK selective enrollment or a scoped consumer migration of the complete HTTP endpoint security inventory",
+    "noBypassApplied": true
+  },
+  "remainingSeparateGates": [
+    "current-source integrated host enrollment and live qualification",
+    "SDK broad-regression disposition",
+    "Release/package and PD10",
+    "SM4 command acknowledgement",
+    "independent whole-story review"
+  ],
+  "audits": [
+    "final-audit.json",
+    "cleanup.json",
+    "source-graphs.json",
+    "metadata-commands.json"
+  ]
+}
