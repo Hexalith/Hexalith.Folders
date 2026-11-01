@@ -102,11 +102,16 @@ public static partial class FoldersDomainServiceEndpoints
         WorkspaceContentRetentionEndpoints.Map(endpoints);
         WorkspaceNativeEndpoints.Map(endpoints);
 
-        endpoints.MapPost("/query", async (QueryEnvelope query, IServiceProvider services, CancellationToken token) =>
+        RouteHandlerBuilder queryEndpoint = endpoints.MapPost("/query", async (QueryEnvelope query, IServiceProvider services, CancellationToken token) =>
         {
             QueryResult result = await DomainQueryDispatcher.ExecuteAsync(services, query, token).ConfigureAwait(false);
             return ToQueryHttpResult(result);
         }).RequireEventStoreDomainServicePolicy("/query");
+
+        if (endpoints.ServiceProvider.GetService<HumanAuthorityReceiptVerifier>() is not null)
+        {
+            queryEndpoint.RequireEventStoreDomainServicePolicy("/query");
+        }
 
         RouteHandlerBuilder processEndpoint = endpoints.MapPost(FoldersServerModule.ProcessRoute, async (
             DomainServiceRequest request,

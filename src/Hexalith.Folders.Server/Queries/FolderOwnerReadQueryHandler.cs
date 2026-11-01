@@ -46,7 +46,7 @@ public sealed class FolderOwnerReadQueryHandler(LayeredFolderAuthorizationServic
             ? Evidence(final.AllowedContext, (accessor.HttpContext?.RequestServices.GetService(typeof(TimeProvider)) as TimeProvider ?? TimeProvider.System).GetUtcNow())
             : null;
         return QueryResult.FromPayload(JsonSerializer.SerializeToElement(new FolderOwnerReadResult(FolderOwnerReadOutcome.Allowed)
-        { Evidence = evidence }, JsonSerializerOptions.Web), FolderOwnerReadQuery.QueryType);
+        { Evidence = evidence }, JsonSerializerOptions.Web));
     }
 
     /// <summary>Compares exact native revision observations, including a revoke/regrant that ends Allowed.</summary>
@@ -64,5 +64,5 @@ public sealed class FolderOwnerReadQueryHandler(LayeredFolderAuthorizationServic
             : null;
 
     private static QueryResult Success(FolderOwnerReadOutcome outcome)
-        => QueryResult.FromPayload(JsonSerializer.SerializeToElement(new FolderOwnerReadResult(outcome), JsonSerializerOptions.Web), FolderOwnerReadQuery.QueryType);
+        => QueryResult.FromPayload(JsonSerializer.SerializeToElement(new FolderOwnerReadResult(outcome), JsonSerializerOptions.Web));
 }

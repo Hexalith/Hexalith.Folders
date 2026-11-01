@@ -31,13 +31,13 @@
          MemoriesClient.SearchAsync, mirroring Hexalith.Tenants.UI. This is the ONLY Folders project besides
          Workers that references Memories; the read path NEVER touches the [Experimental] RAG IngestAsync APIs. -->
     <ProjectReference Include="$(HexalithMemoriesRoot)\src\Hexalith.Memories.Contracts\Hexalith.Memories.Contracts.csproj" Condition="'$(HexalithMemoriesFromSource)' == 'true'">
-      <!-- A verified workspace mapping owns the complete dependency mode. Preserve the standalone fallback only outside it. -->
-      <AdditionalProperties Condition="'$(HexalithSourceMappingHash)' == ''">UseHexalithProjectReferences=false;UseNuGetDeps=true</AdditionalProperties>
+      <!-- Keep standalone Debug dependencies in the owner-selected source mode; verified mappings remain authoritative. -->
+      <AdditionalProperties Condition="'$(HexalithSourceMappingHash)' == ''">UseHexalithProjectReferences=$(UseHexalithProjectReferences);UseNuGetDeps=$(UseNuGetDeps);HexalithPlatformRoot=$(HexalithPlatformRoot)</AdditionalProperties>
       <GlobalPropertiesToRemove Condition="'$(HexalithSourceMappingHash)' == ''">UseHexalithProjectReferences;UseNuGetDeps</GlobalPropertiesToRemove>
     </ProjectReference>
     <ProjectReference Include="$(HexalithMemoriesRoot)\src\Hexalith.Memories.Client.Rest\Hexalith.Memories.Client.Rest.csproj" Condition="'$(HexalithMemoriesFromSource)' == 'true'">
-      <!-- A verified workspace mapping owns the complete dependency mode. Preserve the standalone fallback only outside it. -->
-      <AdditionalProperties Condition="'$(HexalithSourceMappingHash)' == ''">UseHexalithProjectReferences=false;UseNuGetDeps=true</AdditionalProperties>
+      <!-- Keep standalone Debug dependencies in the owner-selected source mode; verified mappings remain authoritative. -->
+      <AdditionalProperties Condition="'$(HexalithSourceMappingHash)' == ''">UseHexalithProjectReferences=$(UseHexalithProjectReferences);UseNuGetDeps=$(UseNuGetDeps);HexalithPlatformRoot=$(HexalithPlatformRoot)</AdditionalProperties>
       <GlobalPropertiesToRemove Condition="'$(HexalithSourceMappingHash)' == ''">UseHexalithProjectReferences;UseNuGetDeps</GlobalPropertiesToRemove>
     </ProjectReference>
     <PackageReference Include="Hexalith.Memories.Contracts" Condition="'$(HexalithMemoriesFromSource)' != 'true'" />

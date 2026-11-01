@@ -9,6 +9,8 @@ using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.EventStore.Contracts.Serialization;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
+using Hexalith.EventStore.ServiceDefaults.Routing;
+using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.Testing.Fakes;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
@@ -77,7 +79,7 @@ public sealed class ProductionProcessWireEventTests
         builder.Services.AddSingleton<IReadModelStore>(operationalStore);
         builder.Services.AddSingleton<IReadModelBatchStore>(operationalStore);
         builder.Services.AddSingleton<IReadModelPendingBatchRecoveryStore>(operationalStore);
-        builder.Services.AddFoldersServer();
+        builder.AddFoldersServerHost();
         builder.Services.AddFoldersProviderBindingPersistence();
         OperationalStatusSequenceReader sourceHead = new();
         builder.Services.RemoveAll<IOrganizationStreamSequenceReader>();
@@ -102,10 +104,16 @@ public sealed class ProductionProcessWireEventTests
         builder.Services.RemoveAll<IFolderRepository>();
         builder.Services.AddScoped<IFolderRepository, ActorFoldedFolderRepository>();
 
+        builder.Services.AddSingleton<FoldersCallbackRouteCatalog>(services => new(services,
+            () => services.GetRequiredService<EventStoreDomainServiceEndpointSource>().Endpoints!.DataSources
+                .SelectMany(source => source.Endpoints), includeCreateFolder: true));
+        builder.Services.AddSingleton<IRouteCatalogAuthority>(services => services.GetRequiredService<FoldersCallbackRouteCatalog>());
+        builder.Services.Configure<RouteCatalogHostOptions>(options => options.Identity = new("folders", "folders",
+            Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData("signed-process-source-fixture"u8)),
+            Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData("isolated-loopback"u8)),
+            Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData("workload-and-human-receipt"u8))));
         await using WebApplication app = builder.Build();
-        app.UseAuthentication();
-        app.UseAuthorization();
-        app.MapFoldersServerEndpoints();
+        app.UseFoldersServerPipeline();
         await app.StartAsync(TestContext.Current.CancellationToken);
         try
         {
@@ -121,12 +129,16 @@ public sealed class ProductionProcessWireEventTests
                     Expires = issued.AddMinutes(2),
                     Claims = new Dictionary<string, object>
                     {
+                        [RouteCatalogSurfacePolicy.ClaimType] = "service",
                         [EventStoreWorkloadAuthenticationDefaults.CallerClaimType] = "eventstore",
                         [EventStoreWorkloadAuthenticationDefaults.OperationClaimType] = EventStoreWorkloadOperations.DomainServiceProcess,
                     },
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(workloadKey)), SecurityAlgorithms.HmacSha256),
                 });
+            CommittedRouteCatalogSnapshot catalog = app.Services.GetRequiredService<FoldersCallbackRouteCatalog>().Snapshot;
+            client.DefaultRequestHeaders.Add(RouteCatalogInvocationHandler.RootHeader, catalog.RootDigest);
+            client.DefaultRequestHeaders.Add(RouteCatalogInvocationHandler.EpochHeader, catalog.Epoch.ToString(System.Globalization.CultureInfo.InvariantCulture));
             client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
             client.DefaultRequestHeaders.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, assertion);
             client.DefaultRequestHeaders.Add(EventStoreWorkloadAuthenticationDefaults.DaprCallerHeaderName, "eventstore");
@@ -163,6 +175,7 @@ public sealed class ProductionProcessWireEventTests
                     Expires = issued.AddMinutes(2),
                     Claims = new Dictionary<string, object>
                     {
+                        [RouteCatalogSurfacePolicy.ClaimType] = "service",
                         [EventStoreWorkloadAuthenticationDefaults.CallerClaimType] = "eventstore",
                         [EventStoreWorkloadAuthenticationDefaults.OperationClaimType] = EventStoreWorkloadOperations.DomainServiceProject,
                     },

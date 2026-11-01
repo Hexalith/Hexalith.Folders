@@ -37,11 +37,15 @@ Do not initialize nested submodules.
 
 ## Health intent
 
-- `/alive` reports process liveness.
-- `/ready` aggregates the I-7 monitored snapshots — Dapr sidecar health, the Tenants-availability
-  degraded-mode active flag, and projection lag versus the pinned C2 target. When projection lag exceeds
-  the 500 millisecond C2 ceiling, readiness reports `degraded-but-serving` (HTTP 200) instead of failing.
-- Both the server and the workers host map these endpoints through `MapDefaultEndpoints`.
+- Server probes use `/alive` for process liveness and `/ready` for readiness through the actual server
+  pipeline. Server `/health/live` and `/health/ready` are protected compatibility routes and must not be
+  configured as anonymous infrastructure probes.
+- Workers also expose `/alive` and `/ready` through `MapDefaultEndpoints`; their compatibility routes
+  require the sidecar channel policy.
+- Both readiness paths aggregate the I-7 monitored snapshots — Dapr sidecar health, the Tenants-availability
+  degraded-mode active flag, and projection lag versus the pinned C2 target. Projection lag above the
+  500 millisecond C2 ceiling reports `degraded-but-serving` (HTTP 200); unavailable Dapr reports HTTP 503.
+  Server readiness also requires the SDK's current committed route-catalog authority.
 
 ## Alert intent
 
@@ -88,6 +92,4 @@ Use these rerun rules to decide when to rerun the gate:
 
 ## Authenticated health aliases
 
-Only exact `/health`, `/alive` and `/ready` probes allow anonymous access. Server `/health/live` and `/health/ready` aliases and `/` require the named human policy. Workers aliases and `/` require the authenticated receiver channel. Probe suffixes and unclassified endpoints stay denied. The readiness check selection and degraded-but-serving behavior are unchanged.
-
-Canonical callbacks also require an activated SDK route catalog and generation binding; host registration alone leaves them unavailable. Operational projection declarations describe the named operational view. Command admission enrollment requires its owning declarations. Configuration alone never establishes readiness.
+Only exact `/health`, `/alive` and `/ready` probes allow anonymous access. Server `/health/live` and `/health/ready` aliases and `/` require the named human authentication policy. Workers aliases and `/` require validation by the receiver application channel. Probe suffixes and unclassified endpoints stay denied. The readiness check selection and degraded-but-serving behavior are unchanged.

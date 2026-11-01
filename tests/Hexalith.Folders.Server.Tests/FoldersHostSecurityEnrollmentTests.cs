@@ -219,7 +219,7 @@ public sealed class FoldersHostSecurityEnrollmentTests
 
     private static WebApplicationBuilder CreateBuilder(RSA rsa, bool development = false)
     {
-        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder(development ? Microsoft.Extensions.Hosting.Environments.Development : Microsoft.Extensions.Hosting.Environments.Production);
+        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder(environmentName: development ? Microsoft.Extensions.Hosting.Environments.Development : Microsoft.Extensions.Hosting.Environments.Production, useCallbackCatalog: false);
         builder.Configuration[DaprAppChannelToken.ConfigurationKey] = Channel;
         builder.Configuration["Authentication:JwtBearer:AllowedAlgorithms:0"] = SecurityAlgorithms.RsaSha256;
         var oidc = new OpenIdConnectConfiguration { Issuer = Issuer };

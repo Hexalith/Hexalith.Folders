@@ -110,7 +110,7 @@ public static class Extensions
         builder.Services.TryAddSingleton<IReadinessSnapshotSource, HealthyReadinessSnapshotSource>();
         builder.Services
             .AddHealthChecks()
-            .AddCheck("self", static () => HealthCheckResult.Healthy("alive"), tags: [LivenessTag])
+            .AddCheck("folders-self", static () => HealthCheckResult.Healthy("alive"), tags: [LivenessTag])
             .AddCheck<MonitoredSnapshotReadinessCheck>("monitored-snapshots", tags: [ReadinessTag]);
 
         return builder;

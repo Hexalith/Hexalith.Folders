@@ -8,7 +8,11 @@ using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.EventStore.Client.Registration;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
-
+using Hexalith.Folders.Observability;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,8 +34,17 @@ public static class FoldersServerHostComposition
         // Validate before any registration so an invalid mode fails host startup.
         FoldersApiRoutingMode mode = FoldersApiRouting.ResolveMode(builder.Configuration);
 
-        builder.AddServiceDefaults();
         builder.Services.AddFoldersServer();
+        builder.AddEventStoreDomainService(typeof(FoldersModule).Assembly);
+        // The SDK owns exporters, HTTP instrumentation and Dapr-partitioned resilience.
+        // Enroll only Folders' module signals and monitored readiness into those defaults.
+        builder.Services.AddOpenTelemetry()
+            .ConfigureResource(resource => resource.AddService(FolderTelemetryNames.ServiceName))
+            .WithMetrics(metrics => metrics.AddMeter(FolderTelemetryNames.MeterName))
+            .WithTracing(tracing => tracing.AddSource(FolderTelemetryNames.ActivitySourceName));
+        builder.Services.TryAddSingleton<IReadinessSnapshotSource, HealthyReadinessSnapshotSource>();
+        builder.Services.AddHealthChecks()
+            .AddCheck<MonitoredSnapshotReadinessCheck>("monitored-snapshots", tags: [Hexalith.Folders.ServiceDefaults.Extensions.ReadinessTag]);
         builder.Services.AddFoldersOperationalStatusPersistence();
         builder.Services.AddOptions<FoldersProviderBindingOptions>().BindConfiguration(FoldersProviderBindingOptions.SectionName);
         builder.Services.AddFoldersDaprProviderCredentialResolution();
@@ -51,14 +64,11 @@ public static class FoldersServerHostComposition
         builder.Services.AddSingleton<IFolderAclReadModel>(static sp =>
             sp.GetRequiredService<EventStoreFolderEffectivePermissionsReadModel>());
         builder.Services.AddFoldersProductionAuthentication(builder.Configuration, builder.Environment);
-        builder.Services.AddEventStoreDomainServiceSecurity(builder.Configuration);
         builder.Services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationMiddlewareResultHandler,
             FoldersHumanAuthorizationResultHandler>();
         builder.Services.AddSingleton<HumanAuthorityReceiptVerifier>();
         builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
         builder.Services.AddSingleton<IEventStoreAuthorizationValidator, VerifiedReceiptEventStoreAuthorizationValidator>();
-        // EventStore marks its Dapr subscription callback with this policy.
-        builder.Services.AddAuthentication().AddEventStoreSidecarChannelScheme();
 
         // This host is the EventStore domain-service target in every environment. It must
         // fold actor-supplied state and return events; an in-memory writer would acknowledge

@@ -151,7 +151,7 @@ public sealed class FolderOwnerReadQueryHandlerTests
             QueryWithShape("valid"), evidenceStatus, verified: true);
 
         result.Success.ShouldBeTrue();
-        result.ProjectionType.ShouldBe(FolderOwnerReadQuery.QueryType);
+        result.ProjectionType.ShouldBeNull();
         var payload = JsonSerializer.Deserialize<FolderOwnerReadResult>(result.PayloadBytes!, JsonSerializerOptions.Web)!;
         payload.Outcome.ShouldBe(expectedOutcome);
         payload.Evidence.ShouldBeNull();

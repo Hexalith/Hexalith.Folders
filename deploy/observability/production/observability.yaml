@@ -33,10 +33,21 @@ spec:
   healthProbes:
     - path: /alive
       kind: liveness
-      owningComponent: service-defaults
+      owningComponent: folders-server
     - path: /ready
       kind: readiness
-      owningComponent: service-defaults
+      owningComponent: folders-server
+      monitoredSnapshots:
+        - dapr_sidecar_health
+        - tenants_availability_degraded_mode
+        - projection_lag
+      degradedButServing: projection lag above C2 reports degraded-but-serving without failing readiness
+    - path: /alive
+      kind: liveness
+      owningComponent: folders-workers
+    - path: /ready
+      kind: readiness
+      owningComponent: folders-workers
       monitoredSnapshots:
         - dapr_sidecar_health
         - tenants_availability_degraded_mode
