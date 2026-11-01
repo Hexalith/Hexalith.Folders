@@ -132,7 +132,7 @@ public sealed class FoldersProductionAuthenticationTests
         string program = File.ReadAllText(RepositoryPath("src/Hexalith.Folders.Server/FoldersServerHostComposition.cs"));
         int authentication = program.IndexOf("app.UseAuthentication();", StringComparison.Ordinal);
         int authorization = program.IndexOf("app.UseAuthorization();", StringComparison.Ordinal);
-        int endpoints = program.IndexOf("routes.MapFoldersServerEndpoints();", StringComparison.Ordinal);
+        int endpoints = program.IndexOf("app.MapFoldersServerEndpoints();", StringComparison.Ordinal);
 
         authentication.ShouldBeGreaterThanOrEqualTo(0);
         authorization.ShouldBeGreaterThan(authentication);

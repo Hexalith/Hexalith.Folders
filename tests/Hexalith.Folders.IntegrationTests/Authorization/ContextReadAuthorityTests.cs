@@ -490,6 +490,8 @@ public sealed class ContextReadAuthorityTests
         });
         app.UsePd10V2CandidateCompatibilitySeam();
         app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.MapFoldersServerEndpoints();
         return app;
     }

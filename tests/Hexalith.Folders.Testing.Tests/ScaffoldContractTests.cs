@@ -186,8 +186,8 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Workers", ["Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Memories.Contracts", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.AppHost", ["Hexalith.EventStore.Aspire", "Hexalith.Folders.Aspire", "Hexalith.Folders.EventStore", "Hexalith.Folders.Server", "Hexalith.Folders.UI", "Hexalith.Folders.Workers", "Hexalith.Memories.Aspire", "Hexalith.Tenants.Aspire"]);
         AssertReferences(references, "Hexalith.Folders.Aspire", []);
-        AssertReferences(references, "Hexalith.Folders.ServiceDefaults", []);
-        AssertReferences(references, "Hexalith.Folders.Testing", ["Hexalith.Folders", "Hexalith.Folders.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.ServiceDefaults", ["Hexalith.EventStore.ServiceDefaults"]);
+        AssertReferences(references, "Hexalith.Folders.Testing", ["Hexalith.EventStore.ServiceDefaults", "Hexalith.Folders", "Hexalith.Folders.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Sample", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.Sample.Tests", ["Hexalith.Folders.Sample"]);
         AssertReferences(references, "Hexalith.Folders.Contracts.Tests", ["Hexalith.Folders.Aspire", "Hexalith.Folders.Contracts"]);
@@ -304,10 +304,11 @@ public sealed class ScaffoldContractTests
         using JsonDocument globalJson = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "global.json")));
         XDocument buildProps = XDocument.Load(Path.Combine(root, "Directory.Build.props"));
         XDocument packagesProps = XDocument.Load(Path.Combine(root, "Directory.Packages.props"));
-        XDocument catalogProps = XDocument.Load(Path.Combine(root, "references", "Hexalith.Builds", "Props", "Directory.Packages.props"));
+        string buildsRoot = BuildsRepositoryRoot(root);
+        XDocument catalogProps = XDocument.Load(Path.Combine(buildsRoot, "Props", "Directory.Packages.props"));
         XDocument appHostProject = XDocument.Load(Path.Combine(root, "src", "Hexalith.Folders.AppHost", "Hexalith.Folders.AppHost.csproj"));
         using JsonDocument exceptionInventory = JsonDocument.Parse(File.ReadAllText(
-            Path.Combine(root, "references", "Hexalith.Builds", "Tools", "package-version-exceptions.json")));
+            Path.Combine(buildsRoot, "Tools", "package-version-exceptions.json")));
         string[] projectsWithInlineVersions = ExpectedRootPolicyProjects
             .Select(project => Path.Combine(root, project.Replace('/', Path.DirectorySeparatorChar)))
             .Where(ProjectHasPackageReferenceVersion)
@@ -315,7 +316,7 @@ public sealed class ScaffoldContractTests
             .ToArray();
 
         JsonElement sdk = globalJson.RootElement.GetProperty("sdk");
-        sdk.GetProperty("version").GetString().ShouldBe("10.0.402");
+        sdk.GetProperty("version").GetString().ShouldBe("10.0.403");
         sdk.GetProperty("rollForward").GetString().ShouldBe("latestPatch");
         sdk.GetProperty("allowPrerelease").GetBoolean().ShouldBeFalse();
 
@@ -751,6 +752,13 @@ public sealed class ScaffoldContractTests
             throw new ShouldAssertException($"Project '{project}' is missing from the expected scaffold project list; update ExpectedRootPolicyProjects.");
         }
         return refs;
+    }
+
+    private static string BuildsRepositoryRoot(string root)
+    {
+        string[] candidates = [Path.Combine(root, "references", "Hexalith.Builds"), Path.Combine(root, "..", "Hexalith.Builds")];
+        return candidates.FirstOrDefault(candidate => File.Exists(Path.Combine(candidate, "Props", "Directory.Packages.props")))
+            ?? throw new InvalidOperationException("The Builds package catalog was not found in the direct submodule or sibling root repository.");
     }
 
     private static string RepositoryRoot()

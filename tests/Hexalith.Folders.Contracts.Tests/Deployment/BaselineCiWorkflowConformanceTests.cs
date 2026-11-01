@@ -88,7 +88,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
 
         YamlMappingNode jobs = GetMapping(workflow, "jobs");
         YamlMappingNode sharedJob = GetMapping(jobs, "ci");
-        GetScalar(sharedJob, "uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@main");
+        GetScalar(sharedJob, "uses").ShouldBe(PinnedDomainCiWorkflow.Reference);
         YamlMappingNode sharedInputs = GetMapping(sharedJob, "with");
         GetScalar(sharedInputs, "solution").ShouldBe("Hexalith.Folders.CI.slnx");
         GetScalar(sharedInputs, "test-platform").ShouldBe("microsoft-testing-platform");
@@ -129,7 +129,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
     {
         string workflow = ReadText(WorkflowPath);
 
-        workflow.ShouldContain("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@main", Case.Sensitive);
+        workflow.ShouldContain(PinnedDomainCiWorkflow.Reference, Case.Sensitive);
         workflow.ShouldContain("test-platform: microsoft-testing-platform", Case.Sensitive);
         workflow.ShouldContain("./tests/tools/run-baseline-ci-gates.ps1");
         workflow.ShouldNotContain("secrets.", Case.Insensitive);

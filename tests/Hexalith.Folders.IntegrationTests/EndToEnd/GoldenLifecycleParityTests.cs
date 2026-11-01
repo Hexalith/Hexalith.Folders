@@ -3808,6 +3808,8 @@ public sealed class GoldenLifecycleParityTests
             }
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.MapFoldersServerEndpoints();
             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
             eventStoreClientFactory = app.GetTestClient;
@@ -4172,6 +4174,8 @@ public sealed class GoldenLifecycleParityTests
             });
             app.UsePd10V2CandidateCompatibilitySeam();
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.MapFoldersServerEndpoints();
             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
             eventStoreClientFactory = app.GetTestClient;

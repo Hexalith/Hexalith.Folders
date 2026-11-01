@@ -253,6 +253,8 @@ src/Hexalith.Folders.ServiceDefaults/IReadinessSnapshotSource.cs
 src/Hexalith.Folders.ServiceDefaults/MonitoredSnapshotReadinessCheck.cs
 src/Hexalith.Folders.ServiceDefaults/ReadinessSnapshotState.cs
 src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj
+src/Hexalith.Folders.Testing/Hosting/FoldersIsolatedHumanAuthenticationHandler.cs
+src/Hexalith.Folders.Testing/Hosting/FoldersServerTestHostServiceCollectionExtensions.cs
 src/Hexalith.Folders.Testing/Polling/Eventually.cs
 src/Hexalith.Folders.UI/Components/ConsoleErrorPanel.razor
 src/Hexalith.Folders.UI/Components/ConsoleErrorPanel.razor.cs
@@ -1065,6 +1067,7 @@ tests/Hexalith.Folders.Contracts.Tests/Deployment/E2eCiWorkflowConformanceTests.
 tests/Hexalith.Folders.Contracts.Tests/Deployment/HonestGreenGateBaselineConformanceTests.cs
 tests/Hexalith.Folders.Contracts.Tests/Deployment/NfrTraceabilityConformanceTests.cs
 tests/Hexalith.Folders.Contracts.Tests/Deployment/OperationsAuditDocsConformanceTests.cs
+tests/Hexalith.Folders.Contracts.Tests/Deployment/PinnedDomainCiWorkflow.cs
 tests/Hexalith.Folders.Contracts.Tests/Deployment/ProductionObservabilityConformanceTests.cs
 tests/Hexalith.Folders.Contracts.Tests/Deployment/ProviderErrorDocsConformanceTests.cs
 tests/Hexalith.Folders.Contracts.Tests/Deployment/ReleasePackageConformanceTests.cs

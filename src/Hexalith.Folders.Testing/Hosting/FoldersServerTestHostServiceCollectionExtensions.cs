@@ -14,8 +14,21 @@ public static class FoldersServerTestHostServiceCollectionExtensions
     /// <returns>The service collection.</returns>
     /// <remarks>Production hosts must use their production security composition; this helper does not validate credentials.</remarks>
     public static IServiceCollection AddFoldersServerTestDefaults(this IServiceCollection services)
+        => services.AddFoldersServerTestDefaults(null);
+
+    /// <summary>Registers isolated transport defaults with the selected synthetic human authentication scheme.</summary>
+    /// <param name="services">The isolated fixture services.</param>
+    /// <param name="humanAuthenticationScheme">An existing synthetic human scheme, or <see langword="null"/> to use the isolated handler.</param>
+    /// <returns>The service collection.</returns>
+    /// <exception cref="ArgumentException">The supplied scheme name is empty or whitespace.</exception>
+    /// <remarks>Call after SDK host registration. This helper does not validate production credentials.</remarks>
+    public static IServiceCollection AddFoldersServerTestDefaults(this IServiceCollection services, string? humanAuthenticationScheme)
     {
         ArgumentNullException.ThrowIfNull(services);
+        if (humanAuthenticationScheme is not null)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(humanAuthenticationScheme);
+        }
 
         // Slim test hosts do not call AddServiceDefaults, but AddFoldersServer registers
         // FoldersAuthSchemeValidator and MapFoldersServerEndpoints maps health endpoints.
@@ -31,8 +44,11 @@ public static class FoldersServerTestHostServiceCollectionExtensions
         });
         // This helper isolates domain handlers from transport validation. Production hosts do not call it.
         // Keep the SDK human credential-kind requirements; only the explicitly fake fixture scheme differs.
-        services.AddAuthorization(options => options.AddPolicy(EventStoreHttpHostSecurityExtensions.HumanPolicy,
-            new AuthorizationPolicy(EventStoreHttpHostSecurityExtensions.CreateHumanPolicy().Requirements, [fixtureScheme])));
+        services.AddAuthorization();
+        // Register after the SDK host services when composing a routing fixture so its
+        // post-configuration cannot replace the synthetic scheme with Bearer.
+        services.PostConfigure<AuthorizationOptions>(options => options.AddPolicy(EventStoreHttpHostSecurityExtensions.HumanPolicy,
+            new AuthorizationPolicy(EventStoreHttpHostSecurityExtensions.CreateHumanPolicy().Requirements, [humanAuthenticationScheme ?? fixtureScheme])));
         services.AddHealthChecks();
 
         return services;

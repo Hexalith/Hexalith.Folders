@@ -6,6 +6,7 @@ using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
+using Hexalith.Folders.Testing;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
@@ -187,9 +188,11 @@ internal sealed class RoutingModeTestHost : IAsyncDisposable
                 options.DefaultAuthenticateScheme = RoutingModeAuthenticationHandler.SchemeName;
                 options.DefaultChallengeScheme = RoutingModeAuthenticationHandler.SchemeName;
             });
+            builder.Services.AddFoldersServerTestDefaults(RoutingModeAuthenticationHandler.SchemeName);
         }
         else
         {
+            builder.Services.AddFoldersServerTestDefaults();
             builder.Services.RemoveAll<ITenantContextAccessor>();
             builder.Services.AddSingleton<ITenantContextAccessor>(identity);
             builder.Services.RemoveAll<IEventStoreClaimTransformEvidenceAccessor>();

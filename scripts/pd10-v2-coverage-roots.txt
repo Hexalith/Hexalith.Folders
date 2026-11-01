@@ -3,6 +3,7 @@ src/Hexalith.Folders.Cli
 src/Hexalith.Folders.Client
 src/Hexalith.Folders.Mcp
 src/Hexalith.Folders.Server
+src/Hexalith.Folders.Testing/Hosting
 src/shared
 tests/Hexalith.Folders.Contracts.Tests
 tests/Hexalith.Folders.IntegrationTests

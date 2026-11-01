@@ -35,7 +35,7 @@ public sealed partial class ReleasePackageConformanceTests
         triggers.GetReleaseMapping("pull_request").GetReleaseSequence("branches").Children.Select(static value => value.ToString()).ShouldBe(["main"]);
 
         YamlMappingNode shared = workflow.GetReleaseMapping("jobs").GetReleaseMapping("ci");
-        shared.GetReleaseScalar("uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@main");
+        shared.GetReleaseScalar("uses").ShouldBe(PinnedDomainCiWorkflow.Reference);
         YamlMappingNode inputs = shared.GetReleaseMapping("with");
         inputs.GetReleaseScalar("solution").ShouldBe("Hexalith.Folders.CI.slnx");
         inputs.GetReleaseScalar("test-platform").ShouldBe("microsoft-testing-platform");
@@ -226,7 +226,12 @@ public sealed partial class ReleasePackageConformanceTests
     [Fact]
     public void StableReleaseShouldUseStableDaprIntegration()
     {
-        XDocument packages = XDocument.Load(RepositoryPath("references/Hexalith.Builds/Props/Directory.Packages.props"));
+        string packagesPath = RepositoryPath("references/Hexalith.Builds/Props/Directory.Packages.props");
+        if (!File.Exists(packagesPath))
+        {
+            packagesPath = RepositoryPath("../Hexalith.Builds/Props/Directory.Packages.props");
+        }
+        XDocument packages = XDocument.Load(packagesPath);
         XElement stableVersion = packages.Descendants("HexalithAspireHostingDaprVersion")
             .Single(element => (string?)element.Attribute("Condition") ==
                 "'$(MSBuildProjectName)' == 'Hexalith.Folders.Aspire'");

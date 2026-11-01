@@ -79,7 +79,7 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
         YamlMappingNode baselineJob = GetMapping(jobs, "ci");
         YamlMappingNode contractJob = GetMapping(jobs, "folders-specialized-gates");
 
-        GetScalar(baselineJob, "uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@main");
+        GetScalar(baselineJob, "uses").ShouldBe(PinnedDomainCiWorkflow.Reference);
         GetScalar(contractJob, "name").ShouldBe("folders-specialized-gates");
         GetScalar(contractJob, "runs-on").ShouldBe("ubuntu-latest");
 
