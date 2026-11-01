@@ -1,0 +1,266 @@
+{
+  "commands": [
+    {
+      "receipt": "contracts-full.json",
+      "jsonPath": "",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/contracts-full.xml"
+      ],
+      "exitCode": 1
+    },
+    {
+      "receipt": "generated-metadata-first-attempt.json",
+      "jsonPath": "",
+      "argv": [
+        "python3",
+        ".artifacts/story-12-2-bound-bootstrap-20261101T164412Z/generated_metadata_audit.py",
+        "pdb-mtls-preflight.raw.log"
+      ],
+      "exitCode": 1
+    },
+    {
+      "receipt": "implementation-framing-command-receipts.json",
+      "jsonPath": "/commands/2",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+        "-class",
+        "*Bootstrap*",
+        "-class",
+        "*TenantOwnerSourceTargetTests",
+        "-class",
+        "*TenantsGlobalAdministratorAuthorityTests",
+        "-class",
+        "*TenantsGlobalAdministratorVerifierTests",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-focused.xml"
+      ],
+      "exitCode": 1
+    },
+    {
+      "receipt": "implementation-polling-command-receipts.json",
+      "jsonPath": "/commands/2",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "*FolderDurabilityBootstrap*Tests",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused.xml"
+      ],
+      "exitCode": 3
+    },
+    {
+      "receipt": "implementation-polling-compatibility-receipt.json",
+      "jsonPath": "/commands/2",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "*FolderDurabilityBootstrap*Tests",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused.xml"
+      ],
+      "exitCode": 3
+    },
+    {
+      "receipt": "implementation-proof-framing-command-receipts.json",
+      "jsonPath": "/commands/1",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "exitCode": 1
+    },
+    {
+      "receipt": "implementation-proof-framing-compatibility-receipt.json",
+      "jsonPath": "/commands/1",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "exitCode": 1
+    },
+    {
+      "receipt": "strict-real-provider-bound-bootstrap.json",
+      "jsonPath": "",
+      "argv": [
+        "env",
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true",
+        "FOLDERS_TASK36_FOLD_LOG=/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-bootstrap-fold-callbacks.jsonl",
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "-showLiveOutput",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-bootstrap.xml"
+      ],
+      "exitCode": 1
+    },
+    {
+      "receipt": "strict-real-provider-bound-buffered.json",
+      "jsonPath": "",
+      "argv": [
+        "env",
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true",
+        "FOLDERS_TASK36_FOLD_LOG=/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-buffered-fold-callbacks.jsonl",
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "-showLiveOutput",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-buffered.xml"
+      ],
+      "exitCode": 1
+    },
+    {
+      "receipt": "strict-real-provider-bound-import.json",
+      "jsonPath": "",
+      "argv": [
+        "env",
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true",
+        "FOLDERS_TASK36_FOLD_LOG=/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-import-fold-callbacks.jsonl",
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "-showLiveOutput",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-import.xml"
+      ],
+      "exitCode": 1
+    },
+    {
+      "receipt": "strict-real-provider-bound-mtls.json",
+      "jsonPath": "",
+      "argv": [
+        "env",
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true",
+        "FOLDERS_TASK36_FOLD_LOG=/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-mtls-fold-callbacks.jsonl",
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "-showLiveOutput",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-mtls.xml"
+      ],
+      "exitCode": 1
+    },
+    {
+      "receipt": "strict-real-provider-bound-timeout.json",
+      "jsonPath": "",
+      "argv": [
+        "env",
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true",
+        "FOLDERS_TASK36_FOLD_LOG=/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-timeout-fold-callbacks.jsonl",
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "-showLiveOutput",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-timeout.xml"
+      ],
+      "exitCode": 1
+    },
+    {
+      "receipt": "strict-real-provider-durable-bootstrap.json",
+      "jsonPath": "",
+      "argv": [
+        "env",
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true",
+        "FOLDERS_TASK36_FOLD_LOG=/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-durable-bootstrap-fold-callbacks.jsonl",
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "-showLiveOutput",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-durable-bootstrap.xml"
+      ],
+      "exitCode": 1
+    },
+    {
+      "receipt": "strict-real-provider-owner-runtime.json",
+      "jsonPath": "",
+      "argv": [
+        "env",
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true",
+        "FOLDERS_TASK36_FOLD_LOG=/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-owner-runtime-fold-callbacks.jsonl",
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "-showLiveOutput",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-owner-runtime.xml"
+      ],
+      "exitCode": 1
+    },
+    {
+      "receipt": "strict-real-provider-proof-framing.json",
+      "jsonPath": "",
+      "argv": [
+        "env",
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true",
+        "FOLDERS_TASK36_FOLD_LOG=/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-proof-framing-fold-callbacks.jsonl",
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "-showLiveOutput",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-proof-framing.xml"
+      ],
+      "exitCode": 1
+    },
+    {
+      "receipt": "strict-real-provider-response-diagnostics.json",
+      "jsonPath": "",
+      "argv": [
+        "env",
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true",
+        "FOLDERS_TASK36_FOLD_LOG=/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-response-diagnostics-fold-callbacks.jsonl",
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "-showLiveOutput",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-response-diagnostics.xml"
+      ],
+      "exitCode": 1
+    }
+  ],
+  "additionalFailureEvidence": [
+    "strict-attempt-failures.json",
+    "owner-runtime-preflight-disposition.json",
+    "final-auditor-profile-disposition.json",
+    "generated-metadata-first-attempt.json"
+  ],
+  "scope": "Exact existing command receipts; missing outer-wrapper times are not reconstructed."
+}

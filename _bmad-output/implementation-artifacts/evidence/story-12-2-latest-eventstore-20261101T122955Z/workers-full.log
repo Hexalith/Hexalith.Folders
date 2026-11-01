@@ -1,0 +1,2395 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Folders.Workers.Tests
+  Discovered:  Hexalith.Folders.Workers.Tests
+  Starting:    Hexalith.Folders.Workers.Tests
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+fail: Microsoft.Extensions.Hosting.Internal.Host[11]
+      Hosting failed to start
+      Microsoft.Extensions.Options.OptionsValidationException: Folders:Workers:PubSubName must name an isolated inbound subscription component outside Development.
+         at Microsoft.Extensions.Options.OptionsFactory`1.Create(String name)
+         at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+         at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)
+         at System.Lazy`1.CreateValue()
+         at Microsoft.Extensions.Options.OptionsCache`1.GetOrAdd[TArg](String name, Func`3 createOptions, TArg factoryArgument)
+         at Microsoft.Extensions.DependencyInjection.OptionsBuilderExtensions.<>c__DisplayClass0_1`1.<ValidateOnStart>b__1()
+         at Microsoft.Extensions.Options.StartupValidator.Validate()
+      --- End of stack trace from previous location ---
+         at Microsoft.Extensions.Options.StartupValidator.Validate()
+         at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+fail: Microsoft.Extensions.Hosting.Internal.Host[11]
+      Hosting failed to start
+      Microsoft.Extensions.Options.OptionsValidationException: Folders:Workers:PubSubName must name an isolated inbound subscription component outside Development.
+         at Microsoft.Extensions.Options.OptionsFactory`1.Create(String name)
+         at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+         at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)
+         at System.Lazy`1.CreateValue()
+         at Microsoft.Extensions.Options.OptionsCache`1.GetOrAdd[TArg](String name, Func`3 createOptions, TArg factoryArgument)
+         at Microsoft.Extensions.DependencyInjection.OptionsBuilderExtensions.<>c__DisplayClass0_1`1.<ValidateOnStart>b__1()
+         at Microsoft.Extensions.Options.StartupValidator.Validate()
+      --- End of stack trace from previous location ---
+         at Microsoft.Extensions.Options.StartupValidator.Validate()
+         at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+fail: Microsoft.Extensions.Hosting.Internal.Host[11]
+      Hosting failed to start
+      Microsoft.Extensions.Options.OptionsValidationException: Folders:Workers:PubSubName must name an isolated inbound subscription component outside Development.
+         at Microsoft.Extensions.Options.OptionsFactory`1.Create(String name)
+         at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+         at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)
+         at System.Lazy`1.CreateValue()
+         at Microsoft.Extensions.Options.OptionsCache`1.GetOrAdd[TArg](String name, Func`3 createOptions, TArg factoryArgument)
+         at Microsoft.Extensions.DependencyInjection.OptionsBuilderExtensions.<>c__DisplayClass0_1`1.<ValidateOnStart>b__1()
+         at Microsoft.Extensions.Options.StartupValidator.Validate()
+      --- End of stack trace from previous location ---
+         at Microsoft.Extensions.Options.StartupValidator.Validate()
+         at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+fail: Microsoft.Extensions.Hosting.Internal.Host[11]
+      Hosting failed to start
+      Microsoft.Extensions.Options.OptionsValidationException: Folders:Workers:PubSubName must name an isolated inbound subscription component outside Development.
+         at Microsoft.Extensions.Options.OptionsFactory`1.Create(String name)
+         at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+         at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)
+         at System.Lazy`1.CreateValue()
+         at Microsoft.Extensions.Options.OptionsCache`1.GetOrAdd[TArg](String name, Func`3 createOptions, TArg factoryArgument)
+         at Microsoft.Extensions.DependencyInjection.OptionsBuilderExtensions.<>c__DisplayClass0_1`1.<ValidateOnStart>b__1()
+         at Microsoft.Extensions.Options.StartupValidator.Validate()
+      --- End of stack trace from previous location ---
+         at Microsoft.Extensions.Options.StartupValidator.Validate()
+         at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+fail: Microsoft.Extensions.Hosting.Internal.Host[11]
+      Hosting failed to start
+      Microsoft.Extensions.Options.OptionsValidationException: Folders:Workers:PubSubName must name an isolated inbound subscription component outside Development.
+         at Microsoft.Extensions.Options.OptionsFactory`1.Create(String name)
+         at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+         at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)
+         at System.Lazy`1.CreateValue()
+         at Microsoft.Extensions.Options.OptionsCache`1.GetOrAdd[TArg](String name, Func`3 createOptions, TArg factoryArgument)
+         at Microsoft.Extensions.DependencyInjection.OptionsBuilderExtensions.<>c__DisplayClass0_1`1.<ValidateOnStart>b__1()
+         at Microsoft.Extensions.Options.StartupValidator.Validate()
+      --- End of stack trace from previous location ---
+         at Microsoft.Extensions.Options.StartupValidator.Validate()
+         at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+fail: Microsoft.Extensions.Hosting.Internal.Host[11]
+      Hosting failed to start
+      Microsoft.Extensions.Options.OptionsValidationException: Folders:Workers:PubSubName must name an isolated inbound subscription component outside Development.
+         at Microsoft.Extensions.Options.OptionsFactory`1.Create(String name)
+         at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+         at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)
+         at System.Lazy`1.CreateValue()
+         at Microsoft.Extensions.Options.OptionsCache`1.GetOrAdd[TArg](String name, Func`3 createOptions, TArg factoryArgument)
+         at Microsoft.Extensions.DependencyInjection.OptionsBuilderExtensions.<>c__DisplayClass0_1`1.<ValidateOnStart>b__1()
+         at Microsoft.Extensions.Options.StartupValidator.Validate()
+      --- End of stack trace from previous location ---
+         at Microsoft.Extensions.Options.StartupValidator.Validate()
+         at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:33103
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:42707
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:34097
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:34117
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:40357
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:35963
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:42197
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:41321
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:38131
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Staging
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:42707/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:34117/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:35963/health - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:33103/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:35037
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'Health checks'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-missing, StatusCode=401, Path=/tenants/events, CorrelationId=8822a54be063d0ff81f30071c57f919e
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35037/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:42707/tenants/events - 401 0 - 50.9845ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'Health checks'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:35963/health - 200 - text/plain 52.7716ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:42707/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:35963/alive - - -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-invalid, StatusCode=401, Path=/tenants/events, CorrelationId=fbf173541f34967cb5e78e3a46f6aeeb
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:42707/tenants/events - 401 0 - 1.6643ms
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:42707/tenants/events - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'Health checks'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'Health checks'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:35963/alive - 200 - text/plain 3.2749ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:35963/ready - - -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=System.InvalidOperationException
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'Health checks'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'Health checks'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:35963/ready - 200 - text/plain 2.3200ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:35963/ - - -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-missing, StatusCode=401, Path=/, CorrelationId=f7d8e2a449bda002ca5f764383c3f598
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:35963/ - 401 0 - 0.4635ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:35963/ - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:35963/ - 200 - text/plain;+charset=utf-8 0.8410ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:35963/health/live - - -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-missing, StatusCode=401, Path=/health/live, CorrelationId=a7baed2bb1f434c88bd7151fe553da68
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:35963/health/live - 401 0 - 0.5635ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:35963/health/live - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'Health checks'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'Health checks'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:35963/health/live - 200 - text/plain 0.7287ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:35963/health/ready - - -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-missing, StatusCode=401, Path=/health/ready, CorrelationId=3c2582baa285748b2be55d00dbcf00b3
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:35963/health/ready - 401 0 - 0.2507ms
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:35963/health/ready - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'Health checks'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'Health checks'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:35963/health/ready - 200 - text/plain 0.7793ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:35963/dapr/subscribe - - -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-missing, StatusCode=401, Path=/dapr/subscribe, CorrelationId=f3b2ffb382aae1b0ce4c39bb9de2659d
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:35963/dapr/subscribe - 401 0 - 0.2697ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:35963/dapr/subscribe - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET dapr/subscribe'
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:34117/folders/events - 500 - application/problem+json 74.2321ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:42707/tenants/events - 200 0 - 23.6004ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET dapr/subscribe'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:35963/dapr/subscribe - 200 - - 25.8944ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35963/tenants/events - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:43583
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-missing, StatusCode=401, Path=/tenants/events, CorrelationId=1ee2da4fffc0b2f6f2b4ebcb9b356390
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35963/tenants/events - 401 0 - 0.4458ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35963/tenants/events - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:43583/folders/events - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-invalid, StatusCode=401, Path=/tenants/events, CorrelationId=d1327596b0705513e14da15fbeb2dea4
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35963/tenants/events - 401 0 - 0.3414ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35963/tenants/events - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: credential-conflict
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: credential-conflict
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=credential-conflict, StatusCode=401, Path=/tenants/events, CorrelationId=d1fc33c299b8d7ed8cb01a0d2c7e1339
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35963/tenants/events - 401 0 - 0.2713ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35963/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35963/tenants/events - 200 0 - 3.2218ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:43583/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:43583/folders/events - 200 0 - 2.2436ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:45495
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:45495/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+warn: Hexalith.EventStore.Client.Subscriptions.EventStoreDomainEventProcessor[0]
+      Cannot read known event Hexalith.Tenants.Contracts.Events.TenantConfigurationSet version 1 at sequence 1; Reason=current payload cannot deserialize; UpcasterType=(null); InnerExceptionType=JsonReaderException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:45495/tenants/events - 500 - application/problem+json 6.7413ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:43583/folders/events - 200 0 - 31.8635ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:33103/folders/events - 200 0 - 137.4128ms
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:40637
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:33103/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:40637/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:34347
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:34347/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+warn: Hexalith.EventStore.Client.Subscriptions.EventStoreDomainEventProcessor[0]
+      Unknown event type 'Hexalith.Tenants.Contracts.Events.UnrelatedEvent' — skipping
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:40637/tenants/events - 200 0 - 3.9972ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:34347/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35037/folders/events - 200 0 - 101.4583ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:33103/folders/events - 200 0 - 16.3798ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35037/project - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:33103/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /project'
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:38907
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:38907/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:33103/folders/events - 200 0 - 7.8546ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:38907/tenants/events - 200 0 - 5.2333ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:33103/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:38907/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:33103/folders/events - 200 0 - 6.5290ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:33103/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:38907/tenants/events - 200 0 - 5.0327ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:38907/tenants/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:34347/folders/events - 200 0 - 30.5852ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /tenants/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:38907/tenants/events - 200 0 - 2.3756ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed correlation_absent task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'ProjectionResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /project'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35037/project - 200 - application/json;+charset=utf-8 27.8216ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35037/project - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /project'
+warn: Hexalith.Folders.Server.Project[0]
+      Folders projection unreadable: InvalidOperationException.
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Rejected domain_rejection correlation_absent task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 422.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /project'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35037/project - 422 - application/problem+json 5.1905ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35037/project - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /project'
+warn: Hexalith.Folders.Server.Project[0]
+      Folders projection unreadable: InvalidOperationException.
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Rejected domain_rejection correlation_absent task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 422.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /project'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35037/project - 422 - application/problem+json 0.5921ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:34347/folders/events - 200 0 - 94.7951ms
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:33103/folders/events - 200 0 - 62.0239ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:33103/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:38383
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:33103/folders/events - 200 0 - 6.1284ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:38383/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:33103/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:38383/folders/events - 200 0 - 5.1422ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:38383/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:38383/folders/events - 200 0 - 1.7764ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:38383/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=Hexalith.EventStore.Client.Events.EventPayloadEvolutionException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:38383/folders/events - 500 - application/problem+json 1.9524ms
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:33103/folders/events - 200 0 - 6.6434ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:38383/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:33103/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:38383/folders/events - 200 0 - 0.5006ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=folder_permission_failed stage=folder_permission failure_type=Hexalith.EventStore.Client.Events.EventPayloadEvolutionException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:33103/folders/events - 500 - application/problem+json 0.7584ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:44803
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:34331
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44803/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:34331/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:34331/folders/events - 200 0 - 4.9412ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:34331/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44803/folders/events - 200 0 - 6.8651ms
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:34331/folders/events - 200 0 - 1.7389ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44803/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:34331/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=Hexalith.EventStore.Client.Events.EventPayloadEvolutionException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:34331/folders/events - 500 - application/problem+json 1.4717ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:34331/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:34331/folders/events - 200 0 - 0.3765ms
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44803/folders/events - 200 0 - 4.7951ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44803/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44803/folders/events - 200 0 - 4.5588ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44803/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:39219
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:39219/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44803/folders/events - 200 0 - 3.8927ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44803/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:39219/folders/events - 200 0 - 5.7686ms
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44803/folders/events - 200 0 - 5.1193ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:39219/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44803/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:39219/folders/events - 200 0 - 1.9779ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:39219/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:39219/folders/events - 500 - application/problem+json 1.5325ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:39219/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44803/folders/events - 200 0 - 4.6889ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:39219/folders/events - 200 0 - 0.3486ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44803/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44803/folders/events - 200 0 - 5.5391ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44803/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:35789
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35789/folders/events - application/json;+charset=utf-8 -
+warn: Hexalith.Folders.Workers.FoldersOperationalStatusEventProcessor[1202]
+      Operational batch incomplete status=Indeterminate conflict_kind=None recovery_reason=operational_store_unavailable
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=operational_status_failed stage=operational_status failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35789/folders/events - 200 0 - 25.4210ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35789/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35789/folders/events - 200 0 - 2.0826ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35789/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35789/folders/events - 500 - application/problem+json 2.0243ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44803/folders/events - 500 - application/problem+json 36.4916ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35789/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44803/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35789/folders/events - 200 0 - 0.3794ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+warn: Hexalith.Folders.Workers.SemanticIndexing.FoldersSemanticIndexingEventProcessor[0]
+      Dropping unprocessable folders semantic-indexing event (metadata-only): MessageId=operational-failure, TenantId=tenant-a, EventType=Hexalith.Folders.Aggregates.Folder.WorkspaceFileMutationAccepted, Sequence=8.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44803/folders/events - 200 0 - 7.9722ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:35853
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35853/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35853/folders/events - 200 0 - 5.4230ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35853/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:40541
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35853/folders/events - 200 0 - 1.9146ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35853/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:40541/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35853/folders/events - 500 - application/problem+json 1.5934ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:35853/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:35853/folders/events - 200 0 - 0.3750ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:40541/folders/events - 200 0 - 7.3135ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:40541/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:37549
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:37549/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:40541/folders/events - 200 0 - 5.4779ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:40541/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:37549/folders/events - 200 0 - 4.5779ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:37549/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:40541/folders/events - 200 0 - 4.7906ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:40541/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:37549/folders/events - 200 0 - 1.6878ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:37549/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:37549/folders/events - 500 - application/problem+json 1.3554ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:37549/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:37549/folders/events - 200 0 - 0.3188ms
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:40541/folders/events - 200 0 - 3.7348ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:40541/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:40541/folders/events - 200 0 - 4.8370ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:40541/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:40541/folders/events - 200 0 - 4.7984ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:40541/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:43189
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:43189/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:40541/folders/events - 200 0 - 4.8585ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:40541/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:40541/folders/events - 200 0 - 5.1296ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:45859
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:45859/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:45859/folders/events - 200 0 - 8.8824ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:45859/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:43189/folders/events - 200 0 - 33.4944ms
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:45859/folders/events - 200 0 - 5.7574ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:45859/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:45859/folders/events - 200 0 - 4.9057ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:45859/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:36381
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:45859/folders/events - 200 0 - 3.7601ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:45859/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:36381/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:45859/folders/events - 200 0 - 4.5191ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:45859/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:45859/folders/events - 200 0 - 4.8181ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:45859/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:45859/folders/events - 200 0 - 4.6843ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:45859/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=folder_permission_failed stage=folder_permission failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:45859/folders/events - 500 - application/problem+json 0.5760ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:37585
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:37585/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersOperationalStatusEventProcessor[1202]
+      Operational batch incomplete status=Indeterminate conflict_kind=None recovery_reason=operational_store_unavailable
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=operational_status_failed stage=operational_status failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:36381/folders/events - 500 - application/problem+json 34.7612ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:36381/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:37585/folders/events - 200 0 - 35.6037ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:37585/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:37585/folders/events - 200 0 - 5.3765ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:37585/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:36381/folders/events - 200 0 - 12.5926ms
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:37585/folders/events - 200 0 - 6.5922ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:37585/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:37585/folders/events - 200 0 - 4.5281ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:37585/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:37585/folders/events - 200 0 - 4.9933ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:37585/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:42685
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:42685/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:37585/folders/events - 200 0 - 5.0325ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:37585/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:42685/folders/events - 500 - application/problem+json 5.7699ms
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:37585/folders/events - 200 0 - 5.0464ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:37585/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:37585/folders/events - 200 0 - 5.0513ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:45375
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:45375/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:45375/folders/events - 500 - application/problem+json 5.3788ms
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:44139
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44139/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44139/folders/events - 200 0 - 8.0572ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44139/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:38417
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:38417/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44139/folders/events - 200 0 - 5.0659ms
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:38417/folders/events - 200 0 - 4.6858ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44139/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:38417/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:38417/folders/events - 200 0 - 1.6657ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:38417/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:38417/folders/events - 500 - application/problem+json 1.4307ms
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44139/folders/events - 200 0 - 4.3941ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44139/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44139/folders/events - 200 0 - 3.5122ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44139/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44139/folders/events - 200 0 - 4.7977ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44139/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:41685
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44139/folders/events - 200 0 - 4.8920ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44139/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:41685/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44139/folders/events - 200 0 - 4.7744ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44139/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=folder_permission_failed stage=folder_permission failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44139/folders/events - 500 - application/problem+json 0.5372ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Hexalith.Folders.Workers.FolderPermissionMaintenanceEndpoints[1202]
+      Permission projection reset tenant=tenant-a aggregate=folder-a outcome=row_remaining
+info: Microsoft.AspNetCore.Http.Result.ConflictObjectResult[1]
+      Setting HTTP status code 409.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:41685/maintenance/folder-permissions/reset - 409 0 - 6.2609ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:46575
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:46575/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Hexalith.Folders.Workers.FolderPermissionMaintenanceEndpoints[1202]
+      Permission projection reset tenant=tenant-a aggregate=folder-a outcome=etag_conflict
+info: Microsoft.AspNetCore.Http.Result.ConflictObjectResult[1]
+      Setting HTTP status code 409.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:46575/maintenance/folder-permissions/reset - 409 0 - 4.5042ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:34137
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:34137/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+warn: Hexalith.Folders.Workers.FolderPermissionMaintenanceEndpoints[1203]
+      Permission projection reset tenant=tenant-a aggregate=folder-a outcome=unavailable
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 503.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:34137/maintenance/folder-permissions/reset - 503 - application/problem+json 5.3529ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:32853
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:32853/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+warn: Hexalith.Folders.Workers.FolderPermissionMaintenanceEndpoints[1203]
+      Permission projection reset tenant=tenant-a aggregate=folder-a outcome=unavailable
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 503.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:32853/maintenance/folder-permissions/reset - 503 - application/problem+json 4.8653ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:41397
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:41397/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+warn: Hexalith.Folders.Workers.FolderPermissionMaintenanceEndpoints[1203]
+      Permission projection reset tenant=tenant-a aggregate=folder-a outcome=unavailable
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 503.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:41397/maintenance/folder-permissions/reset - 503 - application/problem+json 4.7973ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:43771
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:43771/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:43771/folders/events - 200 0 - 5.9040ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:43771/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Hexalith.Folders.Workers.FolderPermissionMaintenanceEndpoints[1202]
+      Permission projection reset tenant=tenant-a aggregate=tenant-a outcome=erased
+info: Microsoft.AspNetCore.Http.Result.NoContentResult[1]
+      Setting HTTP status code 204.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:43771/maintenance/folder-permissions/reset - 204 - - 2.1253ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:44537
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-missing, StatusCode=401, Path=/folders/events, CorrelationId=42cffaf558681e8d4086250028da00f8
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 401 0 - 5.9427ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-invalid, StatusCode=401, Path=/folders/events, CorrelationId=594951d081d9f5776e9034f5e094d498
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 401 0 - 1.3496ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 200 0 - 2.8462ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 200 0 - 0.6415ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 200 0 - 5.0115ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-missing, StatusCode=401, Path=/folders/events, CorrelationId=1da07e4cbefcb45e3819240fbd45db01
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 401 0 - 0.3032ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 200 0 - 1.4367ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=folder_permission_failed stage=folder_permission failure_type=Hexalith.Folders.Authorization.PermissionProjectionConcurrencyException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 500 - application/problem+json 1001.1614ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Hexalith.Folders.Workers.FolderPermissionMaintenanceEndpoints[1202]
+      Permission projection reset tenant=tenant-a aggregate=folder-a outcome=etag_conflict
+info: Microsoft.AspNetCore.Http.Result.ConflictObjectResult[1]
+      Setting HTTP status code 409.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - 409 0 - 0.8695ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-missing, StatusCode=401, Path=/maintenance/folder-permissions/reset, CorrelationId=e77288fae44d7adf6c40eb356ecadb5b
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - 401 0 - 0.3993ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-invalid, StatusCode=401, Path=/maintenance/folder-permissions/reset, CorrelationId=45b2a09cacb538f97c7c6a332f314b05
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - 401 0 - 0.3355ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type '<>f__AnonymousType0`2' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - 200 - application/json;+charset=utf-8 3.9714ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Hexalith.Folders.Workers.FolderPermissionMaintenanceEndpoints[1202]
+      Permission projection reset tenant=tenant-a aggregate=folder-a outcome=erased
+info: Microsoft.AspNetCore.Http.Result.NoContentResult[1]
+      Setting HTTP status code 204.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - 204 - - 0.5862ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - 400 0 - 0.3896ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/maintenance/folder-permissions/reset - 400 0 - 0.3093ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[7]
+      EventStoreSidecarChannel was not authenticated. Failure message: channel-token-invalid
+info: Microsoft.AspNetCore.Authorization.DefaultAuthorizationService[2]
+      Authorization failed. These requirements were not met:
+      DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+      ClaimsAuthorizationRequirement:Claim.Type=eventstore:channel
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[5501]
+      Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-token-invalid, StatusCode=401, Path=/folders/events, CorrelationId=0fc2cc0283cf5365fdc089b10ef3f316
+info: Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler[12]
+      AuthenticationScheme: EventStoreSidecarChannel was challenged.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 401 0 - 0.2520ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 200 0 - 1.8158ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 200 0 - 0.6657ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 200 0 - 0.4804ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=provider_binding_failed stage=provider_binding failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 500 - application/problem+json 0.5466ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=provider_binding_failed stage=provider_binding failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 500 - application/problem+json 0.5281ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=provider_binding_failed stage=provider_binding failure_type=Hexalith.EventStore.Client.Events.EventPayloadEvolutionException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 500 - application/problem+json 0.6732ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=provider_binding_failed stage=provider_binding failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 500 - application/problem+json 0.4965ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 500 - application/problem+json 0.3880ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=provider_binding_failed stage=provider_binding failure_type=System.InvalidOperationException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 500 - application/problem+json 0.4712ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=Hexalith.EventStore.Client.Events.EventPayloadEvolutionException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 500 - application/problem+json 0.4577ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 200 0 - 0.4478ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 200 0 - 5.4590ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 200 0 - 3.5527ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 200 0 - 3.1501ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 200 0 - 2.8326ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:44537/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:44537/folders/events - 200 0 - 2.4675ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:38513
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:38513/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=Hexalith.Folders.Authorization.PermissionProjectionConcurrencyException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:38513/folders/events - 500 - application/problem+json 1004.8907ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:43129
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:43129/folders/events - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /folders/events'
+warn: Hexalith.Folders.Workers.FoldersWorkersModule[1201]
+      Folder event delivery failed category=organization_acl_failed stage=organization_acl failure_type=Hexalith.Folders.Authorization.PermissionProjectionConcurrencyException
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 500.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /folders/events'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:43129/folders/events - 500 - application/problem+json 1004.9565ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:45911
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:45911/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:45911/maintenance/folder-permissions/reset - 400 0 - 4.6734ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:42747
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:42747/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:42747/maintenance/folder-permissions/reset - 400 0 - 4.6180ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:46749
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:46749/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:46749/maintenance/folder-permissions/reset - 400 0 - 4.0404ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:45763
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Workers.Tests/debug
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:45763/maintenance/folder-permissions/reset - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /maintenance/folder-permissions/reset => ResetAsync'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:45763/maintenance/folder-permissions/reset - 400 0 - 4.1700ms
+  Finished:    Hexalith.Folders.Workers.Tests (ID = '1723ab80e5609fab496606da5ef422ea57715bda385937c735b7ef83f6ad28d9')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Workers.Tests  Total: 162, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 4.476s

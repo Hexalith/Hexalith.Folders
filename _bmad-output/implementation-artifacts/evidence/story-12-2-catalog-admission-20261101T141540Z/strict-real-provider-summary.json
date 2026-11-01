@@ -1,0 +1,176 @@
+{
+  "result": [
+    {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "249.412"
+    }
+  ],
+  "sourceAudit": {
+    "count": 27409,
+    "drift": [],
+    "headDrift": {}
+  },
+  "runtimeGroups": {
+    "folders": {
+      "count": 84,
+      "drift": []
+    },
+    "workers": {
+      "count": 82,
+      "drift": []
+    },
+    "gateway": {
+      "count": 95,
+      "drift": []
+    },
+    "tenants": {
+      "count": 92,
+      "drift": []
+    },
+    "memories": {
+      "count": 96,
+      "drift": []
+    },
+    "apphost": {
+      "count": 156,
+      "drift": []
+    },
+    "tests": {
+      "count": 401,
+      "drift": []
+    },
+    "observer": {
+      "count": 16,
+      "drift": []
+    },
+    "gateway-full": {
+      "count": 173,
+      "drift": []
+    },
+    "server-full": {
+      "count": 142,
+      "drift": []
+    },
+    "workers-full": {
+      "count": 144,
+      "drift": []
+    },
+    "integration-full": {
+      "count": 180,
+      "drift": []
+    },
+    "apphost-helpers": {
+      "count": 172,
+      "drift": []
+    },
+    "contracts-full": {
+      "count": 86,
+      "drift": []
+    },
+    "operational-histories": {
+      "count": 171,
+      "drift": []
+    },
+    "gateway-full-final": {
+      "count": 173,
+      "drift": []
+    },
+    "sdk-contracts-tests": {
+      "count": 112,
+      "drift": []
+    },
+    "sdk-server-tests": {
+      "count": 177,
+      "drift": []
+    }
+  },
+  "uniqueRuntimePaths": 2207,
+  "observedMappedRecords": 101,
+  "mappedMismatches": [],
+  "observationsOutsidePreRunInventory": [
+    {
+      "processId": 1133467,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.Client.dll",
+      "sha256": "592b96612bd8c8d3714b801edc934a012cbe3472d31ab652ca77447a72c84a0c",
+      "pdbSha256": "9f2ccdd4454afeb653ec1018c9e60717fd6999b98370ce81fdb4f048d378c211"
+    },
+    {
+      "processId": 1133467,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.UI.dll",
+      "sha256": "5efa6fadf7456da0ff761d0d4ac36f0c2d6c9f9e1e71e99167547f4dad414328",
+      "pdbSha256": "5fe18d33ee6eed8c34d2ba68db496485ea36f3b653dc4512a7d0efdc305150b5"
+    },
+    {
+      "processId": 1133467,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.dll",
+      "sha256": "50293a3508d307d5ff85ea16fa9f5d26927645c42e55bf2ce50bbf9f9617b25b",
+      "pdbSha256": "ca516697c51ba1bc331a01dc85ae566060440db2d14d225f284dcf577a61df2d"
+    },
+    {
+      "processId": 1133467,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.dll",
+      "sha256": "71bcc18b59201391fb770808ff753410317fa601ee1dfda7433322b00e0d305a",
+      "pdbSha256": "d5928e7e14b2d8e41db131625de8f921f021f240a9925f1419c1223cb57124f0"
+    },
+    {
+      "processId": 1133467,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.dll",
+      "sha256": "d502915f4a560f4278155d43daa385a90b49e2462234722a517556c3f7cd3147",
+      "pdbSha256": "778b034d7aaf5932e2860f36e14e9bb51710e28dc0f6a438465594785d061d3d"
+    }
+  ],
+  "processCleanup": {
+    "1120097": false,
+    "1123158": false,
+    "1123175": false,
+    "1123205": false,
+    "1124535": false,
+    "1133311": false,
+    "1133339": false,
+    "1133386": false,
+    "1133420": false,
+    "1133467": false
+  },
+  "directoryCleanup": {
+    "/tmp/hexalith-route-catalog-os1E7u": false,
+    "/tmp/folders-durability-ozmeywhl.f1y": false
+  },
+  "newContainersObserved": [
+    "219c3924927fb0a359522d24d74fc8042e1ff8ef276e0429a98288ded1762bcb folders-provider-6f7ea6f2d4bb0ca8",
+    "d41aab54211f3a597dcc108fb80e963c88d2a97ea414eaed7c3121c725214367 folders-durability-6f7ea6f2d4bb0ca8",
+    "f575b1f2acba68d0b98f17f479b790736bb6d678382e06e1acbdefd66f2ac7c9 memories-vectors-jkhknthc",
+    "f782978e91f82a9f5d04230257acb3ebb5217be21905252df903ed05c59d4fe9 security-wvubrsct",
+    "2d0ea4290d933882643c2bd651850d26b77133ee79be3513a0af4982ab414f5c memories-graphs-yudpermn"
+  ],
+  "newContainersRemaining": [],
+  "aspireAfter": {
+    "argv": [
+      "aspire",
+      "ps",
+      "--format",
+      "json"
+    ],
+    "exitCode": 0,
+    "stdout": "[]\n",
+    "stderr": ""
+  },
+  "catalogReadbacks": {
+    "/tmp/hexalith-route-catalog-os1E7u": {}
+  },
+  "safeAcceptanceMilestones": [],
+  "strictTestSourceSha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90"
+}

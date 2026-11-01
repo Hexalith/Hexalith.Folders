@@ -1,0 +1,602 @@
+{
+  "schemaVersion": 1,
+  "producer": "/root/bootstrap_impl",
+  "scope": "Exact implementation-agent build/test/format shell statements recovered from its tool history, with results cross-checked read-only against retained logs/XML. No product/spec change, build or test execution was made while creating this receipt.",
+  "recordOrder": "Grouped by category; array order does not assert exact wall-clock start/finish ordering.",
+  "limits": [
+    "Exact wall-clock start and completion timestamps were not recorded for these commands. Build elapsed values and test runner times are tool-reported durations, not reconstructed wall-clock timestamps.",
+    "Commands include the exact build/test/format statement and redirections passed to the shell. Earlier product-edit heredocs in the same tool cell are outside this command-receipt scope.",
+    "Where the implementation tool history yielded a running PTY and no final completion message, the exit code remains null even when the retained log reports success or failure.",
+    "Early and final test executions overlap in coverage; their pass counts must not be added as unique cases.",
+    "The initial broad owner whitespace diagnostic is retained as a failed diagnostic, not silently replaced by later formatting."
+  ],
+  "observedScheduling": [
+    {
+      "commands": [
+        "implementation-apphost-build-final-secret-parameters",
+        "implementation-apphost-new-format"
+      ],
+      "observation": "The formatter was launched after a poll of the outstanding build still returned session_id 25344. Both later returned exit code 0. This earlier build is not the final formatted-source qualification; a subsequent build (implementation-apphost-build-final-formatted) completed before its focused test command was launched."
+    },
+    {
+      "commands": [
+        "implementation-tenants-format",
+        "implementation-gateway-build"
+      ],
+      "observation": "The read-only --verify-no-changes whitespace workspace command had returned a running PTY when the gateway build was launched. No completed whitespace exit code was observed."
+    },
+    {
+      "commands": [
+        "implementation-gateway-build",
+        "implementation-tenants-new-format"
+      ],
+      "observation": "The owner-only new-file formatter was started while the gateway build PTY had not yet been collected as complete. The gateway build later returned exit code 0. The later full owner build/test records qualify the formatted owner source."
+    }
+  ],
+  "finalEvidenceSelection": {
+    "appHostBuild": "implementation-apphost-build-final-formatted",
+    "appHostFocusedTests": "implementation-bootstrap-focused-formatted",
+    "ownerBuild": "implementation-tenants-build-final",
+    "ownerFullTests": "implementation-tenants-full",
+    "gatewayBuild": "implementation-gateway-build",
+    "gatewayFullTests": "implementation-gateway-full",
+    "liveAcceptance": "Not executed by the implementation delegate; parent owns audited live execution."
+  },
+  "commands": [
+    {
+      "id": "implementation-apphost-build",
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build.log 2>&1",
+      "result": {
+        "outcome": "failed",
+        "exitCodeObservedInToolHistory": null,
+        "exitCodeLimit": "The completed process exit code was not returned in the tool messages observed by the implementation agent; outcome is read from the retained log.",
+        "reportedBuildElapsed": "00:00:07.85",
+        "warnings": 0,
+        "errors": 1,
+        "failure": "CS0452 at FolderDurabilityAcceptanceFixture.cs(1181,49): JsonElement cannot satisfy IReadModelStore.GetAsync<TValue> reference-type constraint."
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build.log",
+          "exists": true,
+          "bytes": 986,
+          "sha256": "82fd2710fb12889222112d813c00b9cceb85c8371a93e4aa8fd346b7f4d3d031"
+        }
+      ]
+    },
+    {
+      "id": "implementation-apphost-build-2",
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-2.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": null,
+        "exitCodeLimit": "The completed process exit code was not returned in the tool messages observed by the implementation agent; outcome is read from the retained log.",
+        "reportedBuildElapsed": "00:00:07.86",
+        "warnings": 0,
+        "errors": 0
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-2.log",
+          "exists": true,
+          "bytes": 76,
+          "sha256": "918152f9568521adfe3cfa64336bd1c1002bc3a229a096d439b00645a0b7bcc8"
+        }
+      ]
+    },
+    {
+      "id": "implementation-tenants-build",
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "command": "dotnet build tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-build.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": 0,
+        "exitCodeLimit": null,
+        "reportedBuildElapsed": "00:00:12.24",
+        "warnings": 0,
+        "errors": 0
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-build.log",
+          "exists": true,
+          "bytes": 76,
+          "sha256": "e7ded67c6f66622f80c7038bd5b35e8a838094bba4eb229a94a341acfe598ad5"
+        }
+      ]
+    },
+    {
+      "id": "implementation-apphost-build-final",
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-final.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": null,
+        "exitCodeLimit": "The completed process exit code was not returned in the tool messages observed by the implementation agent; outcome is read from the retained log.",
+        "reportedBuildElapsed": "00:00:16.23",
+        "warnings": 0,
+        "errors": 0
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-final.log",
+          "exists": true,
+          "bytes": 76,
+          "sha256": "eb1dc1960577e45bbe590087efaa56c31affa4193da021ba988a4f5a0b37fd68"
+        }
+      ]
+    },
+    {
+      "id": "implementation-apphost-build-verified",
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-verified.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": null,
+        "exitCodeLimit": "The completed process exit code was not returned in the tool messages observed by the implementation agent; outcome is read from the retained log.",
+        "reportedBuildElapsed": "00:00:06.03",
+        "warnings": 0,
+        "errors": 0
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-verified.log",
+          "exists": true,
+          "bytes": 76,
+          "sha256": "de9edd2d038b9279a270b7611fd11b1c7391751da8e77c7e45761bc5d77d6beb"
+        }
+      ]
+    },
+    {
+      "id": "implementation-apphost-build-correct-scopes",
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-correct-scopes.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": 0,
+        "exitCodeLimit": null,
+        "reportedBuildElapsed": "00:00:06.02",
+        "warnings": 0,
+        "errors": 0
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-correct-scopes.log",
+          "exists": true,
+          "bytes": 76,
+          "sha256": "5a6b1233e915d73bf70787cee5c9fc7192da2b5d87a276b9c135de100cbaedb2"
+        }
+      ]
+    },
+    {
+      "id": "implementation-gateway-build",
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-gateway-build.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": 0,
+        "exitCodeLimit": null,
+        "reportedBuildElapsed": "00:00:05.84",
+        "warnings": 0,
+        "errors": 0
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-gateway-build.log",
+          "exists": true,
+          "bytes": 76,
+          "sha256": "e733971ad14d16aae591ebc6b2e253f63b406240a95fc6f42ee3e9784a6d2582"
+        }
+      ]
+    },
+    {
+      "id": "implementation-tenants-build-final",
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "command": "dotnet build tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-build-final.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": null,
+        "exitCodeLimit": "The completed process exit code was not returned in the tool messages observed by the implementation agent; outcome is read from the retained log.",
+        "reportedBuildElapsed": "00:00:09.92",
+        "warnings": 0,
+        "errors": 0
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-build-final.log",
+          "exists": true,
+          "bytes": 76,
+          "sha256": "30a0e28a4859f76b8fba43bb51348d6caf3885270e518efa595579a52f5a7725"
+        }
+      ]
+    },
+    {
+      "id": "implementation-apphost-build-final-secret-parameters",
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-final-secret-parameters.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": 0,
+        "exitCodeLimit": null,
+        "reportedBuildElapsed": "00:00:19.84",
+        "warnings": 0,
+        "errors": 0
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-final-secret-parameters.log",
+          "exists": true,
+          "bytes": 76,
+          "sha256": "87ec4c557a3e1d7a883a5f86bd5ab1370219e97eecc4a17d37581b836496a2fc"
+        }
+      ]
+    },
+    {
+      "id": "implementation-apphost-build-final-formatted",
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-final-formatted.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": 0,
+        "exitCodeLimit": null,
+        "reportedBuildElapsed": "00:00:07.67",
+        "warnings": 0,
+        "errors": 0
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-final-formatted.log",
+          "exists": true,
+          "bytes": 76,
+          "sha256": "412a35f5ad52bf042d412cf2fb9143f3afcc17f211d193877084292ad42a99b8"
+        }
+      ]
+    },
+    {
+      "id": "implementation-bootstrap-evidence",
+      "kind": "test",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class '*FolderDurabilityBootstrapEvidenceTests' -xml .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-evidence.xml > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-evidence.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": 0,
+        "exitCodeLimit": null,
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "fbff2501-0d49-4e5f-8d17-027c34bd9248",
+            "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-11-01",
+            "run-time": "16:51:51",
+            "start-rtf": "2026-11-01T16:51:51.6011900+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "0",
+            "finish-rtf": "2026-11-01T16:51:51.7345389+00:00",
+            "not-run": "0",
+            "passed": "20",
+            "skipped": "0",
+            "time": "0.134",
+            "time-rtf": "00:00:00.1340000",
+            "total": "20"
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-evidence.log",
+          "exists": true,
+          "bytes": 576,
+          "sha256": "8ee11a0281315dd11a3770036afc3a7d8bafd05e06e62ff120627da374697548"
+        },
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-evidence.xml",
+          "exists": true,
+          "bytes": 14679,
+          "sha256": "529522de3224c36cb41f0f7c2171cbd2257cc0fb1ec67fe7f879f918a5f7036d"
+        }
+      ]
+    },
+    {
+      "id": "implementation-tenants-focused",
+      "kind": "test",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "command": "dotnet tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll -class '*Bootstrap*' -class '*TenantOwnerSourceTargetTests' -class '*TenantsGlobalAdministratorAuthorityTests' -class '*TenantsGlobalAdministratorVerifierTests' -xml /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-focused.xml > /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-focused.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": null,
+        "exitCodeLimit": "The completed process exit code was not returned in the tool messages observed by the implementation agent; outcome is read from the retained XML/log.",
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "47d68eca-d14c-4ab8-84b0-17c6e38113a5",
+            "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+            "run-date": "2026-11-01",
+            "run-time": "16:52:33",
+            "start-rtf": "2026-11-01T16:52:33.9455404+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "0",
+            "finish-rtf": "2026-11-01T16:52:37.6582631+00:00",
+            "not-run": "0",
+            "passed": "201",
+            "skipped": "0",
+            "time": "3.715",
+            "time-rtf": "00:00:03.7150000",
+            "total": "201"
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-focused.log",
+          "exists": true,
+          "bytes": 572,
+          "sha256": "476dbbf4f6250fdf6178142c5a3d239413410d2f1f0996d2375a4b61300d5546"
+        },
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-focused.xml",
+          "exists": true,
+          "bytes": 151051,
+          "sha256": "e9bee12b11cdd1802a015214a8e3488829c469d610a441a56ba6ac72cb101356"
+        }
+      ]
+    },
+    {
+      "id": "implementation-bootstrap-focused-final",
+      "kind": "test",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class '*FolderDurabilityBootstrapEvidenceTests' -class '*FolderDurabilityCatalogBindingTests' -class '*FoldersDevelopmentCatalogCompositionTests' -class '*FoldersAppChannelCompositionTests' -class '*FolderDurabilityHttpTests' -xml .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-focused-final.xml > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-focused-final.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": null,
+        "exitCodeLimit": "The completed process exit code was not returned in the tool messages observed by the implementation agent; outcome is read from the retained XML/log.",
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "7c09c7f4-2351-4e43-bf40-646b5b24e04c",
+            "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-11-01",
+            "run-time": "16:55:06",
+            "start-rtf": "2026-11-01T16:55:06.1723232+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "0",
+            "finish-rtf": "2026-11-01T16:55:07.2551842+00:00",
+            "not-run": "0",
+            "passed": "42",
+            "skipped": "0",
+            "time": "1.084",
+            "time-rtf": "00:00:01.0840000",
+            "total": "42"
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-focused-final.log",
+          "exists": true,
+          "bytes": 1159,
+          "sha256": "bc35a6a9d686aa60f25f1806594be7ab331b948ddd2347c4adc3b7f36802f414"
+        },
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-focused-final.xml",
+          "exists": true,
+          "bytes": 30518,
+          "sha256": "3acd071a182d60f4b8a8b0dc7a9636056cfdff8f893e1105d9be6e57737ea70e"
+        }
+      ]
+    },
+    {
+      "id": "implementation-gateway-full",
+      "kind": "test",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll -xml .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-gateway-full.xml > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-gateway-full.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": null,
+        "exitCodeLimit": "The completed process exit code was not returned in the tool messages observed by the implementation agent; outcome is read from the retained XML/log.",
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "1b175a51-91a4-4867-a7f5-45f5e8937dcd",
+            "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+            "run-date": "2026-11-01",
+            "run-time": "16:56:06",
+            "start-rtf": "2026-11-01T16:56:06.9769363+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "0",
+            "finish-rtf": "2026-11-01T16:56:10.1007139+00:00",
+            "not-run": "0",
+            "passed": "73",
+            "skipped": "0",
+            "time": "3.124",
+            "time-rtf": "00:00:03.1240000",
+            "total": "73"
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-gateway-full.log",
+          "exists": true,
+          "bytes": 14978,
+          "sha256": "a00171ffe97cd9c380ac86b88e3218274cb9c9c58f9dd3bcb4aca4b8dcc06df8"
+        },
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-gateway-full.xml",
+          "exists": true,
+          "bytes": 55416,
+          "sha256": "535b8053cb377e7f8659ef26707c50a9ae6aac8a2c7a8d6b19056ab023ea0025"
+        }
+      ]
+    },
+    {
+      "id": "implementation-tenants-full",
+      "kind": "test",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "command": "dotnet tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll -xml /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-full.xml > /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-full.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": null,
+        "exitCodeLimit": "The completed process exit code was not returned in the tool messages observed by the implementation agent; outcome is read from the retained XML/log.",
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "1464868f-e64f-4603-8b6f-60b6a3e3d090",
+            "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+            "run-date": "2026-11-01",
+            "run-time": "16:57:12",
+            "start-rtf": "2026-11-01T16:57:12.4395874+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "0",
+            "finish-rtf": "2026-11-01T16:57:16.4273842+00:00",
+            "not-run": "0",
+            "passed": "1648",
+            "skipped": "0",
+            "time": "3.988",
+            "time-rtf": "00:00:03.9880000",
+            "total": "1648"
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-full.log",
+          "exists": true,
+          "bytes": 573,
+          "sha256": "4033ba0af8181098914904bbd0f2fa1641f6a8d06764f283b5b877205370b6c7"
+        },
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-full.xml",
+          "exists": true,
+          "bytes": 1206946,
+          "sha256": "ee7645916aad00e025cb7282f3185179513bf1e6ccc2f79d91e1c9925609fd09"
+        }
+      ]
+    },
+    {
+      "id": "implementation-bootstrap-focused-formatted",
+      "kind": "test",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class '*FolderDurabilityBootstrapEvidenceTests' -class '*FolderDurabilityCatalogBindingTests' -class '*FoldersDevelopmentCatalogCompositionTests' -class '*FoldersAppChannelCompositionTests' -class '*FolderDurabilityHttpTests' -xml .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-focused-formatted.xml > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-focused-formatted.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": 0,
+        "exitCodeLimit": null,
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "4a86583c-e5a7-4cfd-a2db-97668de260da",
+            "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-11-01",
+            "run-time": "16:58:50",
+            "start-rtf": "2026-11-01T16:58:50.9059671+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "0",
+            "finish-rtf": "2026-11-01T16:58:51.9813985+00:00",
+            "not-run": "0",
+            "passed": "42",
+            "skipped": "0",
+            "time": "1.076",
+            "time-rtf": "00:00:01.0760000",
+            "total": "42"
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-focused-formatted.log",
+          "exists": true,
+          "bytes": 1159,
+          "sha256": "0167c953ea82050281cbab33065ea7328e7fb0a9a268327efefaecb63c4e8183"
+        },
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-focused-formatted.xml",
+          "exists": true,
+          "bytes": 30520,
+          "sha256": "040f4c53a373a96b4cccd924a510f0dd4ed16f9a1e46fa477b8a83fb47d5c81c"
+        }
+      ]
+    },
+    {
+      "id": "implementation-tenants-format",
+      "kind": "format-verification",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "command": "cat .gitattributes && git diff --check && dotnet format whitespace tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj --no-restore --verify-no-changes --include src/Hexalith.Tenants/Bootstrap/TenantBootstrapBoundCommand.cs src/Hexalith.Tenants/Bootstrap/TenantBootstrapHostedService.cs src/Hexalith.Tenants/Program.cs src/Hexalith.Tenants/Authorization/TenantOwnerSourceGatewayRegistration.cs src/Hexalith.Tenants/Configuration/TenantEventStoreTarget.cs tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapBoundCommandTests.cs tests/Hexalith.Tenants.Server.Tests/Authorization/OwnerSourceTargetHttpHandler.cs tests/Hexalith.Tenants.Server.Tests/Authorization/TenantOwnerSourceTargetTests.cs -v quiet > /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-format.log 2>&1",
+      "result": {
+        "outcome": "failed-diagnostic",
+        "exitCodeObservedInToolHistory": null,
+        "exitCodeLimit": "The invocation returned PTY session 19813 while running; no completed exit code was observed. The retained log explicitly reports WHITESPACE and ENDOFLINE errors.",
+        "diagnostic": "The broad include set reported compact statement formatting and LF/CRLF differences, including the newly created owner files. Subsequent formatting was deliberately limited to the four new owner files; this diagnostic is not a passing broad whitespace gate."
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-format.log",
+          "exists": true,
+          "bytes": 72312,
+          "sha256": "eb963de585ee582b10c1f160b8c8f9eec990975a02f12e15a0a2d67d514291b0"
+        }
+      ]
+    },
+    {
+      "id": "implementation-tenants-new-format",
+      "kind": "format-apply",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "command": "dotnet format whitespace tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj --no-restore --include src/Hexalith.Tenants/Authorization/TenantOwnerSourceGatewayRegistration.cs src/Hexalith.Tenants/Configuration/TenantEventStoreTarget.cs tests/Hexalith.Tenants.Server.Tests/Authorization/OwnerSourceTargetHttpHandler.cs tests/Hexalith.Tenants.Server.Tests/Authorization/TenantOwnerSourceTargetTests.cs -v quiet > /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-new-format.log 2>&1",
+      "result": {
+        "outcome": "completed-with-empty-log-new-files-formatted",
+        "exitCodeObservedInToolHistory": null,
+        "exitCodeLimit": "The invocation returned PTY session 7351 while running; no completed exit code was observed. Its retained log is empty; the subsequent owner build and complete suite passed."
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-new-format.log",
+          "exists": true,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "implementation-apphost-new-format",
+      "kind": "format-apply",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet format whitespace tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj --no-restore --include tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidence.cs tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs -v quiet > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-new-format.log 2>&1",
+      "result": {
+        "outcome": "passed",
+        "exitCodeObservedInToolHistory": 0,
+        "logBytes": 0
+      },
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-new-format.log",
+          "exists": true,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ]
+}

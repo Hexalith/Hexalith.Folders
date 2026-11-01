@@ -1,0 +1,7 @@
+{
+  "observedAttempt": "strict-real-provider-bound-timeout",
+  "actualOwnerResponse": {"Phase":"response-received","HttpStatus":403},
+  "testFailure": "FileNotFoundException for independently published eventstore.committed.json masked the actual unsuccessful response.",
+  "correction": "Reject actual nonaccepted delivery first; an accepted delivery still requires both actual committed readbacks and their exact attempt/generation/epoch binding. Wait only for an observed missing peer readback within the same existing 90-second deadline. No command is retried or fabricated.",
+  "strictBodyChanged": false
+}

@@ -2,13 +2,18 @@ using System.Text.Json;
 
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.Contracts.Routing;
+using Hexalith.Folders.Routing;
 
 namespace Hexalith.Folders.EventStore;
 
 /// <summary>Trusted canonical intent adapter for CreateFolder.</summary>
-internal sealed class CreateFolderIdempotencyIntentAdapter : IIdempotencyIntentAdapter
+internal sealed class CreateFolderIdempotencyIntentAdapter : IDeclaredIdempotencyIntentAdapter
 {
-    /// <inheritdoc />
+    /// <inheritdoc/>
+    public CommandIntentDeclaration Declaration => FoldersCommandCatalog.Commands.Single(declaration => declaration.Route.MessageType == CommandType);
+
+    /// <inheritdoc/>
     public string CommandType => "Hexalith.Folders.Commands.CreateFolder";
 
     /// <inheritdoc />

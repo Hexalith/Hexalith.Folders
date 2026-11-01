@@ -1,0 +1,22 @@
+{
+  "changed_files": [
+    "src/Hexalith.Folders.Server/FoldersRuntimeCatalogDeclarations.cs",
+    "tests/Hexalith.Folders.AppHost.Tests/FoldersDevelopmentCatalogCompositionTests.cs",
+    "tests/Hexalith.Folders.Server.Tests/FoldersHumanCommandCatalogTests.cs"
+  ],
+  "built_or_executed": false,
+  "classification": "Existing Folders command ingress public/agent-eligible; computed owner queries and both projection protocols internal.",
+  "planned_checks": [
+    "two human surfaces across all eighteen independently inventoried commands and internal-operation refusal",
+    "four actual production forwarder cases: create, commit, independently marked native command, authorized content retention command",
+    "actual V1Only host endpoint inventory stability and HTTP404 for v2",
+    "corrected composed-model public-command/internal-owner counts and v1 versions"
+  ],
+  "protected_current_sha256": {
+    "references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Routing/TenantCatalogDeclarations.cs": "a0c20d20f1c255a48ef44a3f82b056c685f3959b23e28d1bcaf50ae713d5602b",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "8e18d41d07d6e9780925fa31cdb1a511205ecdb14686690254093d63f106dbf6",
+    "src/Hexalith.Folders.EventStore/FoldersCanonicalIntentBuilder.cs": "5b1ff1a5451623d270c285352966dd36fe643fae2888904aef182c479c4e4bd9"
+  }
+}

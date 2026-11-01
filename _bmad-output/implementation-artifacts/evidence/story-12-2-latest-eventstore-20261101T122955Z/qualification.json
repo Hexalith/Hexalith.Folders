@@ -1,0 +1,167 @@
+{
+  "capturedAtUtc": "2026-11-01T13:17:20.005524+00:00",
+  "heads": {
+    "folders": "4de8e5d0e4ad16f33e7eae31f7323fe5bbf326b7",
+    "eventstore": "f704401ff9033919b1e9925564d814d7410bfe3d"
+  },
+  "pullCommand": [
+    "git",
+    "-c",
+    "submodule.recurse=false",
+    "pull",
+    "--ff-only",
+    "--no-recurse-submodules"
+  ],
+  "pullResult": "Already up to date.",
+  "sdkCatalogVersion": "3.130.2",
+  "nestedTenantsSourcePresent": false,
+  "siblingTenantsSourcePresent": true,
+  "sourceBuildsUseProjectReferences": true,
+  "buildProjectReferencesDisabled": false,
+  "liveAcceptanceRun": false,
+  "sourceInputCount": 19,
+  "runtimeCounts": {
+    "consumer": 2357,
+    "sdk": 346,
+    "integration": 639,
+    "contracts": 296
+  },
+  "testRuns": {
+    "apphost-helpers": {
+      "total": "22",
+      "passed": "22",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.051"
+    },
+    "contracts-current-full": {
+      "total": "634",
+      "passed": "623",
+      "failed": "11",
+      "errors": "0",
+      "skipped": "0",
+      "time": "46.834"
+    },
+    "integration-fixture-authentication": {
+      "total": "170",
+      "passed": "170",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "30.718"
+    },
+    "integration-full-corrected": {
+      "total": "853",
+      "passed": "853",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "34.145"
+    },
+    "integration-full": {
+      "total": "853",
+      "passed": "781",
+      "failed": "72",
+      "errors": "0",
+      "skipped": "0",
+      "time": "32.055"
+    },
+    "integration-topology-standard-layout": {
+      "total": "14",
+      "passed": "14",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.287"
+    },
+    "operational-histories": {
+      "total": "87",
+      "passed": "87",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "54.682"
+    },
+    "sdk-http-security": {
+      "total": "6",
+      "passed": "6",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "2.843"
+    },
+    "sdk-sibling-guardrails-corrected": {
+      "total": "38",
+      "passed": "38",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.630"
+    },
+    "sdk-sibling-guardrails": {
+      "total": "38",
+      "passed": "27",
+      "failed": "11",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.496"
+    },
+    "server-enrollment-coherent": {
+      "total": "38",
+      "passed": "38",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "62.008"
+    },
+    "server-enrollment": {
+      "total": "38",
+      "passed": "0",
+      "failed": "38",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.534"
+    },
+    "server-full-corrected": {
+      "total": "1315",
+      "passed": "1315",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "200.446"
+    },
+    "server-full": {
+      "total": "1315",
+      "passed": "1314",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "192.058"
+    },
+    "signed-command-positive-coherent": {
+      "total": "1",
+      "passed": "1",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "3.040"
+    },
+    "signed-command-positive": {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.166"
+    },
+    "workers-full": {
+      "total": "162",
+      "passed": "162",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "4.476"
+    }
+  }
+}

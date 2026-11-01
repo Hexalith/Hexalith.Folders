@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "capturedAtUtc": "2026-11-01T19:38:41.632017+00:00",
+  "producer": "/root/bootstrap_impl",
+  "attempt": "strict-real-provider-proof-framing",
+  "rawLog": {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-proof-framing.raw.log",
+    "bytes": 2089808,
+    "sha256": "971405d6a88b99114a41c4652617df0f9afa61a2b39257ee009651d9500019bb"
+  },
+  "observations": [
+    {
+      "physicalLine": 10884,
+      "resourceLogPrefix": "436: 2026-11-01T19:29:40.9710000Z",
+      "category": "Polly",
+      "level": "Information",
+      "safeFields": {},
+      "exceptionType": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogUnavailableException",
+      "message": "The v2 invocation uses a different Dapr runtime endpoint.",
+      "sourceFrame": "RouteCatalogInvocationHandler.SendAsync:159",
+      "exactMessagePresent": true
+    },
+    {
+      "physicalLine": 10886,
+      "resourceLogPrefix": "437: 2026-11-01T19:29:40.9730000Z",
+      "category": "Hexalith.EventStore.DomainService.DomainServiceAdministratorAssertions",
+      "level": "Warning",
+      "safeFields": {
+        "StatusCode": 503,
+        "Reason": "administrator-verifier-unavailable"
+      }
+    },
+    {
+      "physicalLine": 10940,
+      "resourceLogPrefix": "1804: 2026-11-01T19:29:41.0690000Z",
+      "category": "Hexalith.EventStore.Server.DomainServices.DaprDomainServiceInvoker",
+      "level": "Error",
+      "safeFields": {}
+    },
+    {
+      "physicalLine": 10964,
+      "resourceLogPrefix": "1813: 2026-11-01T19:29:41.0820000Z",
+      "category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+      "level": "Error",
+      "safeFields": {
+        "ExceptionType": "DomainServiceException",
+        "CommandType": "CreateTenant"
+      }
+    },
+    {
+      "physicalLine": 11020,
+      "resourceLogPrefix": "1841: 2026-11-01T19:29:41.1420000Z",
+      "category": "Hexalith.EventStore.Pipeline.LoggingBehavior",
+      "level": "Error",
+      "safeFields": {
+        "SafeDiagnostic": "Protected data diagnostic details were redacted. ReasonCode=protected-data-diagnostic-redacted; Stage=pipeline.",
+        "ExceptionType": "InvalidOperationException",
+        "CommandType": "CreateTenant"
+      }
+    },
+    {
+      "physicalLine": 11048,
+      "resourceLogPrefix": "1855: 2026-11-01T19:29:41.1760000Z",
+      "category": "Hexalith.EventStore.ErrorHandling.GlobalExceptionHandler",
+      "level": "Error",
+      "safeFields": {
+        "ExceptionType": "InvalidOperationException",
+        "SafeDiagnostic": "Protected data diagnostic details were redacted. ReasonCode=protected-data-diagnostic-redacted; Stage=pipeline."
+      }
+    }
+  ],
+  "conclusion": "The owner source reader rewrote localhost to127.0.0.1. The real SDK endpoint fence rejected that different host before remote source invocation. The domain administrator verifier failed closed503, and the gateway reported infrastructure failure500 for CreateTenant. This is the logged exception path, not an intent adapter registry failure.",
+  "preRepairRegistration": {
+    "sha256": "2a0171a13ab0caef3bedabe8aaa6a1b8371d230fea5673036b13afaf845887e5",
+    "observedExpression": "new Uri(endpoint.Replace(\"localhost\", \"127.0.0.1\", StringComparison.OrdinalIgnoreCase))"
+  },
+  "sourceEvidence": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs",
+      "bytes": 23022,
+      "sha256": "59ddbb18e2d8810c5f5e9cd5e786096039b66fe2c737e7f659f5afa0f55fd81b",
+      "physicalLines": {
+        "from": 153,
+        "through": 172
+      },
+      "supports": "Exact endpoint refusal occurs before invocation transport."
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs",
+      "bytes": 23022,
+      "sha256": "59ddbb18e2d8810c5f5e9cd5e786096039b66fe2c737e7f659f5afa0f55fd81b",
+      "physicalLines": {
+        "from": 212,
+        "through": 220
+      },
+      "supports": "OwnedEndpoint requires exact configured scheme/IdnHost/port; no alias equivalence."
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogStateCoordinates.cs",
+      "bytes": 1603,
+      "sha256": "313e65722b501ba78fa780e85f18f2d36f33d9eb4f9b1513e5e9a5949830403f",
+      "physicalLines": {
+        "from": 12,
+        "through": 25
+      },
+      "supports": "Public Capture reads IConfiguration endpoint/port, preserves canonical127.0.0.1:3500 fallback and validates coordinates."
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/DomainServiceAdministratorAssertions.cs",
+      "bytes": 7389,
+      "sha256": "0eea6eaf44d8bef9ee887f0d8f237da994d110fb8c7c8d1674bc83d5192a9459",
+      "physicalLines": {
+        "from": 118,
+        "through": 154
+      },
+      "supports": "Verifier exceptions become unavailable; authenticated process refuses503."
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/DomainServices/DaprDomainServiceInvoker.cs",
+      "bytes": 27822,
+      "sha256": "0daa79cf4f2a29f4fc61e7e013b5f54be1a504a533ab3684467d737c261640b3",
+      "physicalLines": {
+        "from": 188,
+        "through": 265
+      },
+      "supports": "Non-success process response is rejected and mapped to DomainServiceException."
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/Routing/TenantIntentAdapters.cs",
+      "bytes": 2487,
+      "sha256": "144f0ec0b48161edda522d8ea3877ff7d2d59faf33713ac42074f877179753f6",
+      "physicalLines": {
+        "from": 7,
+        "through": 32
+      },
+      "supports": "Current owner adapters are already declared and source-attributed; no adapter migration is required for this failure."
+    }
+  ],
+  "publicDaprApiInspection": {
+    "package": "Dapr.Common",
+    "installedVersion": "1.19.0",
+    "signature": "public static string DaprDefaults.GetDefaultHttpEndpoint(IConfiguration? configuration = null)",
+    "primarySourceUrl": "https://raw.githubusercontent.com/dapr/dotnet-sdk/v1.19.0/src/Dapr.Common/DaprDefaults.cs",
+    "sourceSha256": "3fa47463e929f1d883d6fe23addb46f7a85839dab872ee4c1d5a76841c409005",
+    "physicalLineRanges": [
+      [
+        58,
+        58
+      ],
+      [
+        106,
+        115
+      ],
+      [
+        137,
+        173
+      ]
+    ],
+    "decision": "Not selected as replacement: its unconfigured default hostname islocalhost, while the installed catalog coordinate default is127.0.0.1. Production repair uses public SDK RouteCatalogStateCoordinates.Capture and actualDIoptions directly."
+  },
+  "limits": [
+    "No protected response body, assertion, token, key, principal or raw request body is retained in this diagnosis.",
+    "The fixture unavailable label alone does not identify the cause; exception and domain verifier telemetry above do.",
+    "Read-only API/source inspection calls before the dedicated runner do not have recovered wall-clock timing; they are not reconstructed as executed command receipts."
+  ]
+}

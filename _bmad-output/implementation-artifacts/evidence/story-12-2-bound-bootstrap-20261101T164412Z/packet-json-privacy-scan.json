@@ -1,0 +1,5 @@
+{
+  "filesChecked": 308,
+  "findings": [],
+  "policy": "Raw runtime logs/XML, original realm/receipts and canonical fixture payloads are private; safe metadata/hashes only are exported."
+}

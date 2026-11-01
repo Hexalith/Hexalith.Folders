@@ -1,0 +1,12 @@
+{
+  "strict-real-provider.raw.log": {
+    "path": ".artifacts/story-12-2-latest-eventstore-live-20261101T132347Z/strict-real-provider.raw.log",
+    "sha256": "863904ce80902444caa694dc698495a49523fb4b8d8afd8062a63bc8b60f8a13",
+    "retainedLocallyOnly": true
+  },
+  "strict-real-provider.xml": {
+    "path": ".artifacts/story-12-2-latest-eventstore-live-20261101T132347Z/strict-real-provider.xml",
+    "sha256": "f39e9b6d4d4f3b0228ce443c951c8f467eb31f9e3f27648ff02ecf3a99e2238e",
+    "retainedLocallyOnly": true
+  }
+}

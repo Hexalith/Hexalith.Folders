@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "aspire",
+    "ps",
+    "--format",
+    "json"
+  ],
+  "exitCode": 0,
+  "stdout": "[]\n",
+  "stderr": ""
+}

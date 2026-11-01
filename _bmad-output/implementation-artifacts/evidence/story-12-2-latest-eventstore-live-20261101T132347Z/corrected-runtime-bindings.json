@@ -1,0 +1,352 @@
+[
+  {
+    "resource": "folders",
+    "launcherProcessId": 3544853,
+    "processId": 3545305,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "sha256": "0D6561ABE2AC422700E60DE44AAE86B40FCE81E8DE8CEA05F9F98390D33388DA",
+    "mvid": "568b2992-ddb2-492b-bc91-d26dda833135",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "pdbSha256": "FBBD81623EBD8B80D739FFA63144146FFEF75A0FFD0371246725BC184C476E9F"
+  },
+  {
+    "resource": "folders",
+    "launcherProcessId": 3544853,
+    "processId": 3545305,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "sha256": "7AD28A413515796008A4C691EFBC225497EB165DF481B1A06718DF7B7D4AD866",
+    "mvid": "d8cf11e5-f959-444c-8078-35351275d524",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "pdbSha256": "EF742FC78BB915A9AC4A5B48CD3868E972DA93E4D4F931B07D2DC9DC12F8192A"
+  },
+  {
+    "resource": "folders",
+    "launcherProcessId": 3544853,
+    "processId": 3545305,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "sha256": "E7BDA3ABC78D7B77F0117EDC4A03F888A36BEBE71E19A4DBC880752F1850EABA",
+    "mvid": "4216f164-e1bf-480d-8281-55087ef641d8",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "pdbSha256": "F3914E13E46C1674A47562C1DB9F170A3CE728188AC21BB35396EA35DA4DC1C4"
+  },
+  {
+    "resource": "folders",
+    "launcherProcessId": 3544853,
+    "processId": 3545305,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "sha256": "E34E2D0A2E541124DC35F55006175E99AA89ACDE542D0127F1972134B1928949",
+    "mvid": "df70abe7-dbf7-41ef-9d52-7a0492d6a14f",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "pdbSha256": "3B75AA3E6E2D9D5A694746E03417D7C5AA08B252D22BB764E6D7613EF0747045"
+  },
+  {
+    "resource": "folders",
+    "launcherProcessId": 3544853,
+    "processId": 3545305,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+    "sha256": "433905F050BD540E82EE0CE198C2E56E99EA9325839B9CF3B397E23E7E5E8C8C",
+    "mvid": "2b02a6ab-9ba1-4f77-9fc9-7a49bd51216e",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+    "pdbSha256": "58D9256A092648416B2A074699AD8C95DB44D6F40D260EB98AA177C72013415C"
+  },
+  {
+    "resource": "folders",
+    "launcherProcessId": 3544853,
+    "processId": 3545305,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+    "sha256": "9DDEEC139EB3EC8711A0269999DDEC963C643428BC5F177FB95BE04C1DB14086",
+    "mvid": "7fa53dde-cd7c-474a-a89d-05055a099fbb",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+    "pdbSha256": "9815D0FB773F348EBE00E07C04163370AD178DB458E4A7D337AEC1F911BDB738"
+  },
+  {
+    "resource": "folders",
+    "launcherProcessId": 3544853,
+    "processId": 3545305,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "sha256": "C2BB3C617CD5371B08C6D7A1C9222E66374E3A7D536287BDB824A6E1A68F59C2",
+    "mvid": "f6fda5dd-2d01-412c-bdef-328e13c33e02",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.pdb",
+    "pdbSha256": "EC388CEAC2BAC797D8A8DE5FF94E71536E4483F53CD0FADEBA2F2CFC9BC74FBF"
+  },
+  {
+    "resource": "folders",
+    "launcherProcessId": 3544853,
+    "processId": 3545305,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll",
+    "sha256": "9C36AA59349B5A749FDFF732A581DB924E8D2F324DF658883E244D778C5135EF",
+    "mvid": "07f151e0-c55e-4427-952a-964b6baca845",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb",
+    "pdbSha256": "DE8EFFD4EA62F854E0B346B0D39555484465FA166D0E6C6D0AD25F248D4DEB04"
+  },
+  {
+    "resource": "folders",
+    "launcherProcessId": 3544853,
+    "processId": 3545305,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+    "sha256": "5A7592CC39B22B3F683AA539FFB1D493BE08A76A517D26F695A331C91D421044",
+    "mvid": "ab317c57-d6bc-499f-a2bc-9b40308aef15",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+    "pdbSha256": "3B635317ED00394FAA9E899D473BA4B99E0A35D651E5DCAA9B794B20769DC3BF"
+  },
+  {
+    "resource": "folders",
+    "launcherProcessId": 3544853,
+    "processId": 3545305,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+    "sha256": "0E57E5796E3DD2716C219F189C7912156B489235381592E151858C2FAF0095B3",
+    "mvid": "a5648245-fd24-40b5-8b69-55c00a68641d",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+    "pdbSha256": "70830FCF47CD25DA26674989F676580E5D7C9810264014B72296A3F1E96F56C3"
+  },
+  {
+    "resource": "folders-workers",
+    "launcherProcessId": 3544847,
+    "processId": 3545239,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "sha256": "0D6561ABE2AC422700E60DE44AAE86B40FCE81E8DE8CEA05F9F98390D33388DA",
+    "mvid": "568b2992-ddb2-492b-bc91-d26dda833135",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "pdbSha256": "FBBD81623EBD8B80D739FFA63144146FFEF75A0FFD0371246725BC184C476E9F"
+  },
+  {
+    "resource": "folders-workers",
+    "launcherProcessId": 3544847,
+    "processId": 3545239,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "sha256": "7AD28A413515796008A4C691EFBC225497EB165DF481B1A06718DF7B7D4AD866",
+    "mvid": "d8cf11e5-f959-444c-8078-35351275d524",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "pdbSha256": "EF742FC78BB915A9AC4A5B48CD3868E972DA93E4D4F931B07D2DC9DC12F8192A"
+  },
+  {
+    "resource": "folders-workers",
+    "launcherProcessId": 3544847,
+    "processId": 3545239,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "sha256": "E34E2D0A2E541124DC35F55006175E99AA89ACDE542D0127F1972134B1928949",
+    "mvid": "df70abe7-dbf7-41ef-9d52-7a0492d6a14f",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "pdbSha256": "3B75AA3E6E2D9D5A694746E03417D7C5AA08B252D22BB764E6D7613EF0747045"
+  },
+  {
+    "resource": "folders-workers",
+    "launcherProcessId": 3544847,
+    "processId": 3545239,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+    "sha256": "9DDEEC139EB3EC8711A0269999DDEC963C643428BC5F177FB95BE04C1DB14086",
+    "mvid": "7fa53dde-cd7c-474a-a89d-05055a099fbb",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+    "pdbSha256": "9815D0FB773F348EBE00E07C04163370AD178DB458E4A7D337AEC1F911BDB738"
+  },
+  {
+    "resource": "folders-workers",
+    "launcherProcessId": 3544847,
+    "processId": 3545239,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+    "sha256": "CDEE3AA918AD8017886118F7D383BA1495CA32504C09CB3BB3FA5FF3A8480970",
+    "mvid": "fd590b7f-3ccc-4b87-af97-a43982c0330f",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.pdb",
+    "pdbSha256": "5DCC6A3FE6BC04FF3828951B0A8CDD9628714360040A72DB0C1FA15043472720"
+  },
+  {
+    "resource": "folders-workers",
+    "launcherProcessId": 3544847,
+    "processId": 3545239,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "sha256": "C2BB3C617CD5371B08C6D7A1C9222E66374E3A7D536287BDB824A6E1A68F59C2",
+    "mvid": "f6fda5dd-2d01-412c-bdef-328e13c33e02",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.pdb",
+    "pdbSha256": "EC388CEAC2BAC797D8A8DE5FF94E71536E4483F53CD0FADEBA2F2CFC9BC74FBF"
+  },
+  {
+    "resource": "folders-workers",
+    "launcherProcessId": 3544847,
+    "processId": 3545239,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+    "sha256": "5A7592CC39B22B3F683AA539FFB1D493BE08A76A517D26F695A331C91D421044",
+    "mvid": "ab317c57-d6bc-499f-a2bc-9b40308aef15",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+    "pdbSha256": "3B635317ED00394FAA9E899D473BA4B99E0A35D651E5DCAA9B794B20769DC3BF"
+  },
+  {
+    "resource": "folders-workers",
+    "launcherProcessId": 3544847,
+    "processId": 3545239,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+    "sha256": "0E57E5796E3DD2716C219F189C7912156B489235381592E151858C2FAF0095B3",
+    "mvid": "a5648245-fd24-40b5-8b69-55c00a68641d",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+    "pdbSha256": "70830FCF47CD25DA26674989F676580E5D7C9810264014B72296A3F1E96F56C3"
+  },
+  {
+    "resource": "folders-workers-replica",
+    "launcherProcessId": 3537928,
+    "processId": 3538721,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "sha256": "0D6561ABE2AC422700E60DE44AAE86B40FCE81E8DE8CEA05F9F98390D33388DA",
+    "mvid": "568b2992-ddb2-492b-bc91-d26dda833135",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "pdbSha256": "FBBD81623EBD8B80D739FFA63144146FFEF75A0FFD0371246725BC184C476E9F"
+  },
+  {
+    "resource": "folders-workers-replica",
+    "launcherProcessId": 3537928,
+    "processId": 3538721,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "sha256": "7AD28A413515796008A4C691EFBC225497EB165DF481B1A06718DF7B7D4AD866",
+    "mvid": "d8cf11e5-f959-444c-8078-35351275d524",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "pdbSha256": "EF742FC78BB915A9AC4A5B48CD3868E972DA93E4D4F931B07D2DC9DC12F8192A"
+  },
+  {
+    "resource": "folders-workers-replica",
+    "launcherProcessId": 3537928,
+    "processId": 3538721,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "sha256": "E34E2D0A2E541124DC35F55006175E99AA89ACDE542D0127F1972134B1928949",
+    "mvid": "df70abe7-dbf7-41ef-9d52-7a0492d6a14f",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "pdbSha256": "3B75AA3E6E2D9D5A694746E03417D7C5AA08B252D22BB764E6D7613EF0747045"
+  },
+  {
+    "resource": "folders-workers-replica",
+    "launcherProcessId": 3537928,
+    "processId": 3538721,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+    "sha256": "9DDEEC139EB3EC8711A0269999DDEC963C643428BC5F177FB95BE04C1DB14086",
+    "mvid": "7fa53dde-cd7c-474a-a89d-05055a099fbb",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+    "pdbSha256": "9815D0FB773F348EBE00E07C04163370AD178DB458E4A7D337AEC1F911BDB738"
+  },
+  {
+    "resource": "folders-workers-replica",
+    "launcherProcessId": 3537928,
+    "processId": 3538721,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+    "sha256": "CDEE3AA918AD8017886118F7D383BA1495CA32504C09CB3BB3FA5FF3A8480970",
+    "mvid": "fd590b7f-3ccc-4b87-af97-a43982c0330f",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.pdb",
+    "pdbSha256": "5DCC6A3FE6BC04FF3828951B0A8CDD9628714360040A72DB0C1FA15043472720"
+  },
+  {
+    "resource": "folders-workers-replica",
+    "launcherProcessId": 3537928,
+    "processId": 3538721,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "sha256": "C2BB3C617CD5371B08C6D7A1C9222E66374E3A7D536287BDB824A6E1A68F59C2",
+    "mvid": "f6fda5dd-2d01-412c-bdef-328e13c33e02",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.pdb",
+    "pdbSha256": "EC388CEAC2BAC797D8A8DE5FF94E71536E4483F53CD0FADEBA2F2CFC9BC74FBF"
+  },
+  {
+    "resource": "folders-workers-replica",
+    "launcherProcessId": 3537928,
+    "processId": 3538721,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+    "sha256": "5A7592CC39B22B3F683AA539FFB1D493BE08A76A517D26F695A331C91D421044",
+    "mvid": "ab317c57-d6bc-499f-a2bc-9b40308aef15",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+    "pdbSha256": "3B635317ED00394FAA9E899D473BA4B99E0A35D651E5DCAA9B794B20769DC3BF"
+  },
+  {
+    "resource": "folders-workers-replica",
+    "launcherProcessId": 3537928,
+    "processId": 3538721,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+    "sha256": "0E57E5796E3DD2716C219F189C7912156B489235381592E151858C2FAF0095B3",
+    "mvid": "a5648245-fd24-40b5-8b69-55c00a68641d",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+    "pdbSha256": "70830FCF47CD25DA26674989F676580E5D7C9810264014B72296A3F1E96F56C3"
+  },
+  {
+    "resource": "eventstore",
+    "launcherProcessId": 3544760,
+    "processId": 3545268,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "sha256": "9F5A741C3E07C70B5AF6230C41948AFAC9807819701B74F89F743F3DC17D00D2",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "pdbSha256": "3BAB42FC35D9F9BD937182F0FE8DBAB6B16274E8E4B37C5D7A6024492DDADC95"
+  },
+  {
+    "resource": "eventstore",
+    "launcherProcessId": 3544760,
+    "processId": 3545268,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+    "sha256": "AB12F9C78670F91EF79BEECBEC7A009B16FC090BA4D8A50FE869A12C622FB4D2",
+    "mvid": "cc5a56c0-89d2-4e6a-b4d1-55caaa75f3c2",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.pdb",
+    "pdbSha256": "BDF682B9B9841AEB74B738797400BC4BA5D5F58A4E5812E2B49ABECDAC77A452"
+  },
+  {
+    "resource": "eventstore",
+    "launcherProcessId": 3544760,
+    "processId": 3545268,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "sha256": "0D6561ABE2AC422700E60DE44AAE86B40FCE81E8DE8CEA05F9F98390D33388DA",
+    "mvid": "568b2992-ddb2-492b-bc91-d26dda833135",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "pdbSha256": "FBBD81623EBD8B80D739FFA63144146FFEF75A0FFD0371246725BC184C476E9F"
+  },
+  {
+    "resource": "eventstore",
+    "launcherProcessId": 3544760,
+    "processId": 3545268,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "sha256": "7AD28A413515796008A4C691EFBC225497EB165DF481B1A06718DF7B7D4AD866",
+    "mvid": "d8cf11e5-f959-444c-8078-35351275d524",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "pdbSha256": "EF742FC78BB915A9AC4A5B48CD3868E972DA93E4D4F931B07D2DC9DC12F8192A"
+  },
+  {
+    "resource": "eventstore",
+    "launcherProcessId": 3544760,
+    "processId": 3545268,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "sha256": "E7BDA3ABC78D7B77F0117EDC4A03F888A36BEBE71E19A4DBC880752F1850EABA",
+    "mvid": "4216f164-e1bf-480d-8281-55087ef641d8",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "pdbSha256": "F3914E13E46C1674A47562C1DB9F170A3CE728188AC21BB35396EA35DA4DC1C4"
+  },
+  {
+    "resource": "eventstore",
+    "launcherProcessId": 3544760,
+    "processId": 3545268,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+    "sha256": "DB916810124D485B04A2D66ADB4B6F60961435956A52C141675C43A99FBEF25F",
+    "mvid": "89161092-2491-4a11-9569-98a7044b7c8c",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb",
+    "pdbSha256": "A362480645B4B628854041574447CF79EABE2C84DBCC2F39F132D6C49E0C2D25"
+  },
+  {
+    "resource": "eventstore",
+    "launcherProcessId": 3544760,
+    "processId": 3545268,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+    "sha256": "EFADFBBA3DD67E4E3BAAB8C5DF4C576A324854591BE7B2D8AAB27C12DA3DCA3B",
+    "mvid": "7cfd8c1a-e976-44e3-9fc9-77e9a709c67b",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+    "pdbSha256": "4847B88FD844E472B6D3D5888EF9177B627C9D087ABBBEAABA28968C44CD7CBD"
+  },
+  {
+    "resource": "eventstore",
+    "launcherProcessId": 3544760,
+    "processId": 3545268,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "sha256": "E34E2D0A2E541124DC35F55006175E99AA89ACDE542D0127F1972134B1928949",
+    "mvid": "df70abe7-dbf7-41ef-9d52-7a0492d6a14f",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "pdbSha256": "3B75AA3E6E2D9D5A694746E03417D7C5AA08B252D22BB764E6D7613EF0747045"
+  },
+  {
+    "resource": "eventstore",
+    "launcherProcessId": 3544760,
+    "processId": 3545268,
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll",
+    "sha256": "56B9D53F27C7534D98B5BA71CA1A41E8DD183CE829974A40324006A54234D45E",
+    "mvid": "d7b75b4e-aea5-455e-8a6e-952ebf5da588",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.pdb",
+    "pdbSha256": "7AF67DC3437B2C2AA1B61B80AE326518C34AF1F6692A6DC5ECB34A19C26AA513"
+  }
+]

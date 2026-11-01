@@ -89,6 +89,7 @@ IResourceBuilder<ProjectResource> tenants = builder.AddHexalithTenantsServer(
     eventStoreResources,
     accessControlConfigPath,
     FoldersAspireModule.TenantsAppId);
+_ = tenants.WithGeneratedEventStoreAppChannelToken();
 
 IResourceBuilder<ProjectResource> folders = builder.AddProject<Projects.Hexalith_Folders_Server>(FoldersAspireModule.FoldersAppId);
 _ = folders.WithEnvironment("Authentication__HumanAuthorityReceipt__SigningKey", humanReceiptSigningKey);
@@ -128,6 +129,13 @@ HexalithMemoriesSearchIndexServerResources memories = builder.AddHexalithMemorie
     memoriesSecretStore,
     memoriesLlmConfigPath,
     serverName: FoldersAspireModule.MemoriesAppId);
+
+// The independently observed catalog requires every participating receiver to select its actual
+// Dapr configuration. Memories retains its existing application middleware and pub/sub contracts.
+IDaprSidecarResource memoriesSidecar = memories.Server.Resource.Annotations.OfType<DaprSidecarAnnotation>().Single().Sidecar;
+DaprSidecarOptionsAnnotation memoriesOptions = memoriesSidecar.Annotations.OfType<DaprSidecarOptionsAnnotation>().Single();
+memoriesSidecar.Annotations.Remove(memoriesOptions);
+memoriesSidecar.Annotations.Add(new DaprSidecarOptionsAnnotation(memoriesOptions.Options with { Config = accessControlConfigPath }));
 
 // Story 9.3: route the Folders producer's CloudEvents (source "hexalith-folders", emitted by the Epic 10
 // worker) into the curated folders-index partition, auto-provisioning that index tenant at startup so it is
@@ -172,7 +180,19 @@ if (security is not null)
         .WithEnvironment("Folders__Authentication__RequireHttpsMetadata", security.RequireHttpsMetadata ? "true" : "false");
 }
 
-builder.Build().Run();
+// A retained local backend requires its owner's private custody profile. A disposable acceptance
+// runner composes after selecting its isolated backend and final AppIds instead.
+DevelopmentRouteCatalogComposition? catalog = null;
+if (builder.Configuration["Folders:DevelopmentCatalog:CustodyDirectory"] is { Length: > 0 } custody)
+{
+    string retainedDigestKey = await idempotencyDigestKey.Resource.GetValueAsync(default).ConfigureAwait(false)
+        ?? throw new InvalidOperationException("The retained local admission digest key is unavailable.");
+    catalog = Hexalith.Folders.AppHost.FoldersDevelopmentCatalog.Compose(builder,
+        new(custody, "folders-routing-authority", "folders-routing-authority-v1", "local1",
+            new Dictionary<string, string> { ["local1"] = retainedDigestKey }, "local1"), stateStoreComponentPath);
+}
+try { builder.Build().Run(); }
+finally { if (catalog is not null) await catalog.DisposeAsync().ConfigureAwait(false); }
 
 static string ResolveDaprConfigPath(string appHostDirectory, string fileName)
 {

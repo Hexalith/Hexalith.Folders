@@ -1,0 +1,130 @@
+{
+  "result": [
+    {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "7.567"
+    }
+  ],
+  "sourceAudit": {
+    "count": 27421,
+    "drift": [],
+    "headDrift": {}
+  },
+  "runtimeGroups": {
+    "folders": {
+      "count": 84,
+      "drift": []
+    },
+    "workers": {
+      "count": 82,
+      "drift": []
+    },
+    "gateway": {
+      "count": 95,
+      "drift": []
+    },
+    "tenants": {
+      "count": 92,
+      "drift": []
+    },
+    "memories": {
+      "count": 96,
+      "drift": []
+    },
+    "apphost": {
+      "count": 156,
+      "drift": []
+    },
+    "tests": {
+      "count": 401,
+      "drift": []
+    },
+    "observer": {
+      "count": 16,
+      "drift": []
+    },
+    "gateway-full": {
+      "count": 173,
+      "drift": []
+    },
+    "server-full": {
+      "count": 144,
+      "drift": []
+    },
+    "workers-full": {
+      "count": 144,
+      "drift": []
+    },
+    "integration-full": {
+      "count": 180,
+      "drift": []
+    },
+    "apphost-helpers-qualified": {
+      "count": 172,
+      "drift": []
+    },
+    "contracts-full": {
+      "count": 86,
+      "drift": []
+    },
+    "operational-histories": {
+      "count": 171,
+      "drift": []
+    },
+    "tenants-full-qualified": {
+      "count": 150,
+      "drift": []
+    },
+    "sdk-descriptors": {
+      "count": 112,
+      "drift": []
+    },
+    "sdk-registry": {
+      "count": 177,
+      "drift": []
+    },
+    "ui": {
+      "count": 44,
+      "drift": []
+    }
+  },
+  "uniqueRuntimePaths": 2403,
+  "observedMappedRecords": 8,
+  "mappedMismatches": [],
+  "observationsOutsidePreRunInventory": [],
+  "processCleanup": {
+    "193444": false
+  },
+  "directoryCleanup": {
+    "/tmp/folders-durability-5kgz5rw0.wfr": false
+  },
+  "nativeProcesses": [],
+  "containerImageIds": {
+    "054cab9cfd121ee99e779a4f013dfc0aacd82fe81ddecfef475672a04a26b9ef folders-provider-ada38e8f940e8896": "sha256:7c4e1db440be7b2ca685b49d0d7864cdd78e92431f531bf7893659def8200fc5",
+    "acacfb858d242d7487988bc9742565a6bda035be9ed4acf1fd24dbdcdb00412c folders-durability-ada38e8f940e8896": "sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541"
+  },
+  "bootstrapReceipts": {},
+  "newContainersObserved": [
+    "054cab9cfd121ee99e779a4f013dfc0aacd82fe81ddecfef475672a04a26b9ef folders-provider-ada38e8f940e8896",
+    "acacfb858d242d7487988bc9742565a6bda035be9ed4acf1fd24dbdcdb00412c folders-durability-ada38e8f940e8896"
+  ],
+  "newContainersRemaining": [],
+  "aspireAfter": {
+    "argv": [
+      "aspire",
+      "ps",
+      "--format",
+      "json"
+    ],
+    "exitCode": 0,
+    "stdout": "[]\n",
+    "stderr": ""
+  },
+  "catalogReadbacks": {},
+  "safeAcceptanceMilestones": [],
+  "strictTestSourceSha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90"
+}

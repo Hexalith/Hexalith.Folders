@@ -1,0 +1,722 @@
+[
+  {
+    "CommandType": "Hexalith.Folders.Commands.ArchiveFolder",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "archive-folder",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhcmNoaXZlX3JlYXNvbl9jb2RlIjoicmVxdWVzdGVkIiwiZm9sZGVyX2lkIjoiZm9sZGVyLWEiLCJyZXF1ZXN0X3NjaGVtYV92ZXJzaW9uIjoidjEifQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAOYXJjaGl2ZS1mb2xkZXIEAAAABAAAAAEFAAAABAAAAAEGAAAAGXRlbmFudC1hL2ZvbGRlcnMvZm9sZGVyLWEHAAAAWHsiYXJjaGl2ZV9yZWFzb25fY29kZSI6InJlcXVlc3RlZCIsImZvbGRlcl9pZCI6ImZvbGRlci1hIiwicmVxdWVzdF9zY2hlbWFfdmVyc2lvbiI6InYxIn0IAAAAYwAAAAEAAAAXc2VtYW50aWNfcGF5bG9hZF9zaGEyNTYAAABAMzg2Mzk0MmJjYWQ3NTJhZGZlOTU3MDRiYjRjN2YzZjRiNjJhYjVhYmE4Y2JlYjNiZDdiN2Q0ODc3YWE2M2FjOAkAAAAZZm9sZGVycy1jb250cmFjdC1zcGluZS12MgoAAAAACwAAAAA=",
+    "sha256": "b9c70edc9f28c61d93e965fb1f1bf66c12837f7a5d90272cb03edee8bfae1fce"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.ArchiveFolder",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "archive-folder",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhcmNoaXZlX3JlYXNvbl9jb2RlIjoicmVxdWVzdGVkIiwiZm9sZGVyX2lkIjoiZm9sZGVyLWEiLCJyZXF1ZXN0X3NjaGVtYV92ZXJzaW9uIjpudWxsfQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAOYXJjaGl2ZS1mb2xkZXIEAAAABAAAAAEFAAAABAAAAAEGAAAAGXRlbmFudC1hL2ZvbGRlcnMvZm9sZGVyLWEHAAAAWHsiYXJjaGl2ZV9yZWFzb25fY29kZSI6InJlcXVlc3RlZCIsImZvbGRlcl9pZCI6ImZvbGRlci1hIiwicmVxdWVzdF9zY2hlbWFfdmVyc2lvbiI6bnVsbH0IAAAAYwAAAAEAAAAXc2VtYW50aWNfcGF5bG9hZF9zaGEyNTYAAABAOThkYTFjZjZkYmQ1ZGQ3OTkxNWIyMTUzNWIwOWQ4Y2RkMGU5YjJhYzQ0ZTkyODZjYzIxMjViOTlkZTQxM2Y5ZAkAAAAZZm9sZGVycy1jb250cmFjdC1zcGluZS12MgoAAAAACwAAAAA=",
+    "sha256": "df6ee5df1c1fde89b1f322d724c3c9683c51b3eec33d69de7a45a4e6d947ea10"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.AuthorizeWorkspaceContentErasure",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "authorize-content-erasure",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhc3NpZ25lZF90YXNrX2lkIjoidGFzay1hIiwiZXhwZWN0ZWRfZ2VuZXJhdGlvbiI6IjQyIiwicmVjZWlwdF9pZCI6InJlY2VpcHQtYSIsIndvcmtzcGFjZV9pZCI6IndvcmtzcGFjZS1hIn0=",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAZYXV0aG9yaXplLWNvbnRlbnQtZXJhc3VyZQQAAAAEAAAAAQUAAAAEAAAAAQYAAAAZdGVuYW50LWEvZm9sZGVycy9mb2xkZXItYQcAAABueyJhc3NpZ25lZF90YXNrX2lkIjoidGFzay1hIiwiZXhwZWN0ZWRfZ2VuZXJhdGlvbiI6IjQyIiwicmVjZWlwdF9pZCI6InJlY2VpcHQtYSIsIndvcmtzcGFjZV9pZCI6IndvcmtzcGFjZS1hIn0IAAAAYwAAAAEAAAAXc2VtYW50aWNfcGF5bG9hZF9zaGEyNTYAAABAMzg2Mzk0MmJjYWQ3NTJhZGZlOTU3MDRiYjRjN2YzZjRiNjJhYjVhYmE4Y2JlYjNiZDdiN2Q0ODc3YWE2M2FjOAkAAAAZZm9sZGVycy1jb250cmFjdC1zcGluZS12MgoAAAAACwAAAAA=",
+    "sha256": "6cf006f74b52f2c318ba7669540cf73e9a661adb3e2c692ce94107bb9bd3f5f3"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.AuthorizeWorkspaceContentErasure",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "authorize-content-erasure",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhc3NpZ25lZF90YXNrX2lkIjpudWxsLCJleHBlY3RlZF9nZW5lcmF0aW9uIjoiNDIiLCJyZWNlaXB0X2lkIjoicmVjZWlwdC1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEifQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAZYXV0aG9yaXplLWNvbnRlbnQtZXJhc3VyZQQAAAAEAAAAAQUAAAAEAAAAAQYAAAAZdGVuYW50LWEvZm9sZGVycy9mb2xkZXItYQcAAABqeyJhc3NpZ25lZF90YXNrX2lkIjpudWxsLCJleHBlY3RlZF9nZW5lcmF0aW9uIjoiNDIiLCJyZWNlaXB0X2lkIjoicmVjZWlwdC1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEifQgAAABjAAAAAQAAABdzZW1hbnRpY19wYXlsb2FkX3NoYTI1NgAAAEA5OGRhMWNmNmRiZDVkZDc5OTE1YjIxNTM1YjA5ZDhjZGQwZTliMmFjNDRlOTI4NmNjMjEyNWI5OWRlNDEzZjlkCQAAABlmb2xkZXJzLWNvbnRyYWN0LXNwaW5lLXYyCgAAAAALAAAAAA==",
+    "sha256": "76fc5780fdecaaf1d75a45f899a64dee82772be824c8408bb579cd816a373ca5"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.BindRepository",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "bind-repository",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJicmFuY2hfcmVmX3BvbGljeS5wb2xpY3lfcmVmIjoicG9saWN5LWEiLCJleHRlcm5hbF9yZXBvc2l0b3J5X3JlZiI6InJlbW90ZS1hIiwiZm9sZGVyX2lkIjoiZm9sZGVyLWEiLCJwcm92aWRlcl9iaW5kaW5nX3JlZiI6ImJpbmRpbmctYSJ9",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": "provider_binding",
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAPYmluZC1yZXBvc2l0b3J5BAAAAAQAAAABBQAAAAQAAAABBgAAABl0ZW5hbnQtYS9mb2xkZXJzL2ZvbGRlci1hBwAAAIp7ImJyYW5jaF9yZWZfcG9saWN5LnBvbGljeV9yZWYiOiJwb2xpY3ktYSIsImV4dGVybmFsX3JlcG9zaXRvcnlfcmVmIjoicmVtb3RlLWEiLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsInByb3ZpZGVyX2JpbmRpbmdfcmVmIjoiYmluZGluZy1hIn0IAAAAYwAAAAEAAAAXc2VtYW50aWNfcGF5bG9hZF9zaGEyNTYAAABAMzg2Mzk0MmJjYWQ3NTJhZGZlOTU3MDRiYjRjN2YzZjRiNjJhYjVhYmE4Y2JlYjNiZDdiN2Q0ODc3YWE2M2FjOAkAAAAZZm9sZGVycy1jb250cmFjdC1zcGluZS12MgoAAAAACwAAABBwcm92aWRlcl9iaW5kaW5n",
+    "sha256": "d728f4b90eaa3ca70c015901cde92f5493901072f88a5bd562cee907f3de8399"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.BindRepository",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "bind-repository",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJicmFuY2hfcmVmX3BvbGljeS5wb2xpY3lfcmVmIjoicG9saWN5LWEiLCJleHRlcm5hbF9yZXBvc2l0b3J5X3JlZiI6InJlbW90ZS1hIiwiZm9sZGVyX2lkIjoiZm9sZGVyLWEiLCJwcm92aWRlcl9iaW5kaW5nX3JlZiI6ImJpbmRpbmctYSJ9",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": "provider_binding",
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAPYmluZC1yZXBvc2l0b3J5BAAAAAQAAAABBQAAAAQAAAABBgAAABl0ZW5hbnQtYS9mb2xkZXJzL2ZvbGRlci1hBwAAAIp7ImJyYW5jaF9yZWZfcG9saWN5LnBvbGljeV9yZWYiOiJwb2xpY3ktYSIsImV4dGVybmFsX3JlcG9zaXRvcnlfcmVmIjoicmVtb3RlLWEiLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsInByb3ZpZGVyX2JpbmRpbmdfcmVmIjoiYmluZGluZy1hIn0IAAAAYwAAAAEAAAAXc2VtYW50aWNfcGF5bG9hZF9zaGEyNTYAAABAOThkYTFjZjZkYmQ1ZGQ3OTkxNWIyMTUzNWIwOWQ4Y2RkMGU5YjJhYzQ0ZTkyODZjYzIxMjViOTlkZTQxM2Y5ZAkAAAAZZm9sZGVycy1jb250cmFjdC1zcGluZS12MgoAAAAACwAAABBwcm92aWRlcl9iaW5kaW5n",
+    "sha256": "758e16296bb5deed37754448513684b7d87d970a2f993374447d0e4a26f7bf70"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.ChangeNativeTask",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "change-native-task",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJleHBlY3RlZF9oZWFkIjoiNDIiLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsIm5hdGl2ZV9yZXF1ZXN0Ijoie1x1MDAyMmxvY2tGZW5jZVx1MDAyMjoxLFx1MDAyMmxvY2tJZFx1MDAyMjpcdTAwMjJsb2NrLWFcdTAwMjIsXHUwMDIyb3BlcmF0aW9uXHUwMDIyOlx1MDAyMmFjcXVpcmVcdTAwMjIsXHUwMDIyb3duZXJzaGlwUHJvb2ZcdTAwMjI6XHUwMDIycHJvb2YtYVx1MDAyMixcdTAwMjJyZXF1ZXN0ZWRMZWFzZVNlY29uZHNcdTAwMjI6MzAwfSIsInRhc2tfaWQiOiJ0YXNrLWEiLCJ3b3Jrc3BhY2VfaWQiOiJ3b3Jrc3BhY2UtYSJ9",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": "task-a",
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAASY2hhbmdlLW5hdGl2ZS10YXNrBAAAAAQAAAABBQAAAAQAAAABBgAAABl0ZW5hbnQtYS9mb2xkZXJzL2ZvbGRlci1hBwAAAS97ImV4cGVjdGVkX2hlYWQiOiI0MiIsImZvbGRlcl9pZCI6ImZvbGRlci1hIiwibmF0aXZlX3JlcXVlc3QiOiJ7XHUwMDIybG9ja0ZlbmNlXHUwMDIyOjEsXHUwMDIybG9ja0lkXHUwMDIyOlx1MDAyMmxvY2stYVx1MDAyMixcdTAwMjJvcGVyYXRpb25cdTAwMjI6XHUwMDIyYWNxdWlyZVx1MDAyMixcdTAwMjJvd25lcnNoaXBQcm9vZlx1MDAyMjpcdTAwMjJwcm9vZi1hXHUwMDIyLFx1MDAyMnJlcXVlc3RlZExlYXNlU2Vjb25kc1x1MDAyMjozMDB9IiwidGFza19pZCI6InRhc2stYSIsIndvcmtzcGFjZV9pZCI6IndvcmtzcGFjZS1hIn0IAAAAYwAAAAEAAAAXc2VtYW50aWNfcGF5bG9hZF9zaGEyNTYAAABAMzg2Mzk0MmJjYWQ3NTJhZGZlOTU3MDRiYjRjN2YzZjRiNjJhYjVhYmE4Y2JlYjNiZDdiN2Q0ODc3YWE2M2FjOAkAAAAZZm9sZGVycy1jb250cmFjdC1zcGluZS12MgoAAAAGdGFzay1hCwAAAAA=",
+    "sha256": "a0eaae7e4360db6bb3a2776249ff915d3e47a16c8f8a27d56268e6e358326c8e"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.ChangeNativeTask",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "change-native-task",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJleHBlY3RlZF9oZWFkIjoiNDIiLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsIm5hdGl2ZV9yZXF1ZXN0Ijoie1x1MDAyMmxvY2tGZW5jZVx1MDAyMjoxLFx1MDAyMmxvY2tJZFx1MDAyMjpcdTAwMjJsb2NrLWFcdTAwMjIsXHUwMDIyb3BlcmF0aW9uXHUwMDIyOlx1MDAyMmFjcXVpcmVcdTAwMjIsXHUwMDIyb3duZXJzaGlwUHJvb2ZcdTAwMjI6XHUwMDIycHJvb2YtYVx1MDAyMixcdTAwMjJyZXF1ZXN0ZWRMZWFzZVNlY29uZHNcdTAwMjI6MzAwfSIsInRhc2tfaWQiOiJ0YXNrLWEiLCJ3b3Jrc3BhY2VfaWQiOiJ3b3Jrc3BhY2UtYSJ9",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": "task-a",
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAASY2hhbmdlLW5hdGl2ZS10YXNrBAAAAAQAAAABBQAAAAQAAAABBgAAABl0ZW5hbnQtYS9mb2xkZXJzL2ZvbGRlci1hBwAAAS97ImV4cGVjdGVkX2hlYWQiOiI0MiIsImZvbGRlcl9pZCI6ImZvbGRlci1hIiwibmF0aXZlX3JlcXVlc3QiOiJ7XHUwMDIybG9ja0ZlbmNlXHUwMDIyOjEsXHUwMDIybG9ja0lkXHUwMDIyOlx1MDAyMmxvY2stYVx1MDAyMixcdTAwMjJvcGVyYXRpb25cdTAwMjI6XHUwMDIyYWNxdWlyZVx1MDAyMixcdTAwMjJvd25lcnNoaXBQcm9vZlx1MDAyMjpcdTAwMjJwcm9vZi1hXHUwMDIyLFx1MDAyMnJlcXVlc3RlZExlYXNlU2Vjb25kc1x1MDAyMjozMDB9IiwidGFza19pZCI6InRhc2stYSIsIndvcmtzcGFjZV9pZCI6IndvcmtzcGFjZS1hIn0IAAAAYwAAAAEAAAAXc2VtYW50aWNfcGF5bG9hZF9zaGEyNTYAAABAOThkYTFjZjZkYmQ1ZGQ3OTkxNWIyMTUzNWIwOWQ4Y2RkMGU5YjJhYzQ0ZTkyODZjYzIxMjViOTlkZTQxM2Y5ZAkAAAAZZm9sZGVycy1jb250cmFjdC1zcGluZS12MgoAAAAGdGFzay1hCwAAAAA=",
+    "sha256": "04ff75ca1aa5bc17c157b15ef8a3963603dec764079475bea32b879a15c8f28f"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.CommitWorkspace",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "commit-workspace",
+    "DescriptorVersion": 1,
+    "retentionTier": "Commit",
+    "semanticPayload": "eyJhdXRob3JfbWV0YWRhdGFfcmVmZXJlbmNlIjoiYXV0aG9yLWEiLCJicmFuY2hfcmVmX3RhcmdldCI6Im1haW4iLCJjaGFuZ2VkX3BhdGhfbWV0YWRhdGFfZGlnZXN0IjoiZGlnZXN0LWEiLCJjb21taXRfbWVzc2FnZV9jbGFzc2lmaWNhdGlvbiI6Im1ldGFkYXRhIiwib3BlcmF0aW9uX2lkIjoib3BlcmF0aW9uLWEiLCJ0YXNrX2lkIjoidGFzay1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEifQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": "task-a",
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAQY29tbWl0LXdvcmtzcGFjZQQAAAAEAAAAAQUAAAAEAAAAAgYAAAAZdGVuYW50LWEvZm9sZGVycy9mb2xkZXItYQcAAADleyJhdXRob3JfbWV0YWRhdGFfcmVmZXJlbmNlIjoiYXV0aG9yLWEiLCJicmFuY2hfcmVmX3RhcmdldCI6Im1haW4iLCJjaGFuZ2VkX3BhdGhfbWV0YWRhdGFfZGlnZXN0IjoiZGlnZXN0LWEiLCJjb21taXRfbWVzc2FnZV9jbGFzc2lmaWNhdGlvbiI6Im1ldGFkYXRhIiwib3BlcmF0aW9uX2lkIjoib3BlcmF0aW9uLWEiLCJ0YXNrX2lkIjoidGFzay1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEifQgAAABjAAAAAQAAABdzZW1hbnRpY19wYXlsb2FkX3NoYTI1NgAAAEAzODYzOTQyYmNhZDc1MmFkZmU5NTcwNGJiNGM3ZjNmNGI2MmFiNWFiYThjYmViM2JkN2I3ZDQ4NzdhYTYzYWM4CQAAABlmb2xkZXJzLWNvbnRyYWN0LXNwaW5lLXYyCgAAAAZ0YXNrLWELAAAAAA==",
+    "sha256": "d182489a3f60da1bbd7d7ae5fbf0448ca256f50b565c81cda55aebd05df2da30"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.CommitWorkspace",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "commit-workspace",
+    "DescriptorVersion": 1,
+    "retentionTier": "Commit",
+    "semanticPayload": "eyJhdXRob3JfbWV0YWRhdGFfcmVmZXJlbmNlIjoiYXV0aG9yLWEiLCJicmFuY2hfcmVmX3RhcmdldCI6Im1haW4iLCJjaGFuZ2VkX3BhdGhfbWV0YWRhdGFfZGlnZXN0IjoiZGlnZXN0LWEiLCJjb21taXRfbWVzc2FnZV9jbGFzc2lmaWNhdGlvbiI6Im1ldGFkYXRhIiwib3BlcmF0aW9uX2lkIjoib3BlcmF0aW9uLWEiLCJ0YXNrX2lkIjoidGFzay1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEifQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": "task-a",
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAQY29tbWl0LXdvcmtzcGFjZQQAAAAEAAAAAQUAAAAEAAAAAgYAAAAZdGVuYW50LWEvZm9sZGVycy9mb2xkZXItYQcAAADleyJhdXRob3JfbWV0YWRhdGFfcmVmZXJlbmNlIjoiYXV0aG9yLWEiLCJicmFuY2hfcmVmX3RhcmdldCI6Im1haW4iLCJjaGFuZ2VkX3BhdGhfbWV0YWRhdGFfZGlnZXN0IjoiZGlnZXN0LWEiLCJjb21taXRfbWVzc2FnZV9jbGFzc2lmaWNhdGlvbiI6Im1ldGFkYXRhIiwib3BlcmF0aW9uX2lkIjoib3BlcmF0aW9uLWEiLCJ0YXNrX2lkIjoidGFzay1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEifQgAAABjAAAAAQAAABdzZW1hbnRpY19wYXlsb2FkX3NoYTI1NgAAAEA5OGRhMWNmNmRiZDVkZDc5OTE1YjIxNTM1YjA5ZDhjZGQwZTliMmFjNDRlOTI4NmNjMjEyNWI5OWRlNDEzZjlkCQAAABlmb2xkZXJzLWNvbnRyYWN0LXNwaW5lLXYyCgAAAAZ0YXNrLWELAAAAAA==",
+    "sha256": "51dbb92b035c3a4b3aaa38d34fe17e4ee3d79013f8ec9c8bdae817814a66de54"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.ConfigureBranchRefPolicy",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "configure-branch-ref-policy",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJicmFuY2hfcmVmX3BvbGljeS5hbGxvd2VkX3JlZl9wYXR0ZXJucyI6IltcdTAwMjJyZWZzL2hlYWRzL2FcdTAwMjIsXHUwMDIycmVmcy9oZWFkcy9iXHUwMDIyXSIsImJyYW5jaF9yZWZfcG9saWN5LmRlZmF1bHRfcmVmIjoibWFpbiIsImJyYW5jaF9yZWZfcG9saWN5LnBvbGljeV9yZWYiOiJwb2xpY3ktYSIsImJyYW5jaF9yZWZfcG9saWN5LnByb3RlY3RlZF9yZWZfcGF0dGVybnMiOiJbXHUwMDIybWFpblx1MDAyMl0iLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsInJlcG9zaXRvcnlfYmluZGluZ19pZCI6InJlcG9zaXRvcnktYSJ9",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAbY29uZmlndXJlLWJyYW5jaC1yZWYtcG9saWN5BAAAAAQAAAABBQAAAAQAAAABBgAAABl0ZW5hbnQtYS9mb2xkZXJzL2ZvbGRlci1hBwAAAS97ImJyYW5jaF9yZWZfcG9saWN5LmFsbG93ZWRfcmVmX3BhdHRlcm5zIjoiW1x1MDAyMnJlZnMvaGVhZHMvYVx1MDAyMixcdTAwMjJyZWZzL2hlYWRzL2JcdTAwMjJdIiwiYnJhbmNoX3JlZl9wb2xpY3kuZGVmYXVsdF9yZWYiOiJtYWluIiwiYnJhbmNoX3JlZl9wb2xpY3kucG9saWN5X3JlZiI6InBvbGljeS1hIiwiYnJhbmNoX3JlZl9wb2xpY3kucHJvdGVjdGVkX3JlZl9wYXR0ZXJucyI6IltcdTAwMjJtYWluXHUwMDIyXSIsImZvbGRlcl9pZCI6ImZvbGRlci1hIiwicmVwb3NpdG9yeV9iaW5kaW5nX2lkIjoicmVwb3NpdG9yeS1hIn0IAAAAYwAAAAEAAAAXc2VtYW50aWNfcGF5bG9hZF9zaGEyNTYAAABAMzg2Mzk0MmJjYWQ3NTJhZGZlOTU3MDRiYjRjN2YzZjRiNjJhYjVhYmE4Y2JlYjNiZDdiN2Q0ODc3YWE2M2FjOAkAAAAZZm9sZGVycy1jb250cmFjdC1zcGluZS12MgoAAAAACwAAAAA=",
+    "sha256": "b213139c3c9950fc2ef359fed43ee5dabd2e2aea9feaf346c8cb2ed83dc2a238"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.ConfigureBranchRefPolicy",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "configure-branch-ref-policy",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJicmFuY2hfcmVmX3BvbGljeS5hbGxvd2VkX3JlZl9wYXR0ZXJucyI6IltcdTAwMjJyZWZzL2hlYWRzL2FcdTAwMjIsXHUwMDIycmVmcy9oZWFkcy9iXHUwMDIyXSIsImJyYW5jaF9yZWZfcG9saWN5LmRlZmF1bHRfcmVmIjpudWxsLCJicmFuY2hfcmVmX3BvbGljeS5wb2xpY3lfcmVmIjoicG9saWN5LWEiLCJicmFuY2hfcmVmX3BvbGljeS5wcm90ZWN0ZWRfcmVmX3BhdHRlcm5zIjoiW1x1MDAyMm1haW5cdTAwMjJdIiwiZm9sZGVyX2lkIjoiZm9sZGVyLWEiLCJyZXBvc2l0b3J5X2JpbmRpbmdfaWQiOiJyZXBvc2l0b3J5LWEifQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAbY29uZmlndXJlLWJyYW5jaC1yZWYtcG9saWN5BAAAAAQAAAABBQAAAAQAAAABBgAAABl0ZW5hbnQtYS9mb2xkZXJzL2ZvbGRlci1hBwAAAS17ImJyYW5jaF9yZWZfcG9saWN5LmFsbG93ZWRfcmVmX3BhdHRlcm5zIjoiW1x1MDAyMnJlZnMvaGVhZHMvYVx1MDAyMixcdTAwMjJyZWZzL2hlYWRzL2JcdTAwMjJdIiwiYnJhbmNoX3JlZl9wb2xpY3kuZGVmYXVsdF9yZWYiOm51bGwsImJyYW5jaF9yZWZfcG9saWN5LnBvbGljeV9yZWYiOiJwb2xpY3ktYSIsImJyYW5jaF9yZWZfcG9saWN5LnByb3RlY3RlZF9yZWZfcGF0dGVybnMiOiJbXHUwMDIybWFpblx1MDAyMl0iLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsInJlcG9zaXRvcnlfYmluZGluZ19pZCI6InJlcG9zaXRvcnktYSJ9CAAAAGMAAAABAAAAF3NlbWFudGljX3BheWxvYWRfc2hhMjU2AAAAQDk4ZGExY2Y2ZGJkNWRkNzk5MTViMjE1MzViMDlkOGNkZDBlOWIyYWM0NGU5Mjg2Y2MyMTI1Yjk5ZGU0MTNmOWQJAAAAGWZvbGRlcnMtY29udHJhY3Qtc3BpbmUtdjIKAAAAAAsAAAAA",
+    "sha256": "d35d99f6c836c602dc0fb653f18c218d9d5c3e2c5119a7023ce45e08480b3ac6"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.ConfigureProviderBinding",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "configure-provider-binding",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJjYXBhYmlsaXR5X3Byb2ZpbGVfcmVmIjoicHJvZmlsZS1hIiwibm9uX3NlY3JldF9jcmVkZW50aWFsX3JlZmVyZW5jZSI6ImNyZWRlbnRpYWwtcmVmZXJlbmNlIiwicHJvdmlkZXJfYmluZGluZ19yZWYiOiJiaW5kaW5nLWEiLCJwcm92aWRlcl9mYW1pbHlfcmVmIjoiZm9yZ2VqbyJ9",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAaY29uZmlndXJlLXByb3ZpZGVyLWJpbmRpbmcEAAAABAAAAAEFAAAABAAAAAEGAAAAGXRlbmFudC1hL2ZvbGRlcnMvZm9sZGVyLWEHAAAAonsiY2FwYWJpbGl0eV9wcm9maWxlX3JlZiI6InByb2ZpbGUtYSIsIm5vbl9zZWNyZXRfY3JlZGVudGlhbF9yZWZlcmVuY2UiOiJjcmVkZW50aWFsLXJlZmVyZW5jZSIsInByb3ZpZGVyX2JpbmRpbmdfcmVmIjoiYmluZGluZy1hIiwicHJvdmlkZXJfZmFtaWx5X3JlZiI6ImZvcmdlam8ifQgAAABjAAAAAQAAABdzZW1hbnRpY19wYXlsb2FkX3NoYTI1NgAAAEAzODYzOTQyYmNhZDc1MmFkZmU5NTcwNGJiNGM3ZjNmNGI2MmFiNWFiYThjYmViM2JkN2I3ZDQ4NzdhYTYzYWM4CQAAABlmb2xkZXJzLWNvbnRyYWN0LXNwaW5lLXYyCgAAAAALAAAAAA==",
+    "sha256": "bad91d7fffc037ed680b029384456e6f9d97954a3eeac575ce66344b875d1c4f"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.ConfigureProviderBinding",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "configure-provider-binding",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJjYXBhYmlsaXR5X3Byb2ZpbGVfcmVmIjpudWxsLCJub25fc2VjcmV0X2NyZWRlbnRpYWxfcmVmZXJlbmNlIjoiY3JlZGVudGlhbC1yZWZlcmVuY2UiLCJwcm92aWRlcl9iaW5kaW5nX3JlZiI6ImJpbmRpbmctYSIsInByb3ZpZGVyX2ZhbWlseV9yZWYiOiJmb3JnZWpvIn0=",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAaY29uZmlndXJlLXByb3ZpZGVyLWJpbmRpbmcEAAAABAAAAAEFAAAABAAAAAEGAAAAGXRlbmFudC1hL2ZvbGRlcnMvZm9sZGVyLWEHAAAAm3siY2FwYWJpbGl0eV9wcm9maWxlX3JlZiI6bnVsbCwibm9uX3NlY3JldF9jcmVkZW50aWFsX3JlZmVyZW5jZSI6ImNyZWRlbnRpYWwtcmVmZXJlbmNlIiwicHJvdmlkZXJfYmluZGluZ19yZWYiOiJiaW5kaW5nLWEiLCJwcm92aWRlcl9mYW1pbHlfcmVmIjoiZm9yZ2VqbyJ9CAAAAGMAAAABAAAAF3NlbWFudGljX3BheWxvYWRfc2hhMjU2AAAAQDk4ZGExY2Y2ZGJkNWRkNzk5MTViMjE1MzViMDlkOGNkZDBlOWIyYWM0NGU5Mjg2Y2MyMTI1Yjk5ZGU0MTNmOWQJAAAAGWZvbGRlcnMtY29udHJhY3Qtc3BpbmUtdjIKAAAAAAsAAAAA",
+    "sha256": "5eaafa5ccd9355ff169a5535082c0e8d507399fb09c8a9dd648135947c55a23c"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.CreateFolder",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "create-folder",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJmb2xkZXJfbWV0YWRhdGEuZGlzcGxheV9uYW1lIjoiRm9sZGVyIEEiLCJwYXJlbnRfZm9sZGVyX2lkIjoicGFyZW50LWEiLCJyZXF1ZXN0X3NjaGVtYV92ZXJzaW9uIjoidjEifQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAANY3JlYXRlLWZvbGRlcgQAAAAEAAAAAQUAAAAEAAAAAQYAAAAZdGVuYW50LWEvZm9sZGVycy9mb2xkZXItYQcAAABneyJmb2xkZXJfbWV0YWRhdGEuZGlzcGxheV9uYW1lIjoiRm9sZGVyIEEiLCJwYXJlbnRfZm9sZGVyX2lkIjoicGFyZW50LWEiLCJyZXF1ZXN0X3NjaGVtYV92ZXJzaW9uIjoidjEifQgAAABjAAAAAQAAABdzZW1hbnRpY19wYXlsb2FkX3NoYTI1NgAAAEAzODYzOTQyYmNhZDc1MmFkZmU5NTcwNGJiNGM3ZjNmNGI2MmFiNWFiYThjYmViM2JkN2I3ZDQ4NzdhYTYzYWM4CQAAABlmb2xkZXJzLWNvbnRyYWN0LXNwaW5lLXYyCgAAAAALAAAAAA==",
+    "sha256": "3abc67bc404c635c1fa6b05e76ed676ca607b1c0c2e754aee38d44653ef636f7"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.CreateFolder",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "create-folder",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJmb2xkZXJfbWV0YWRhdGEuZGlzcGxheV9uYW1lIjpudWxsLCJwYXJlbnRfZm9sZGVyX2lkIjpudWxsLCJyZXF1ZXN0X3NjaGVtYV92ZXJzaW9uIjpudWxsfQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAANY3JlYXRlLWZvbGRlcgQAAAAEAAAAAQUAAAAEAAAAAQYAAAAZdGVuYW50LWEvZm9sZGVycy9mb2xkZXItYQcAAABbeyJmb2xkZXJfbWV0YWRhdGEuZGlzcGxheV9uYW1lIjpudWxsLCJwYXJlbnRfZm9sZGVyX2lkIjpudWxsLCJyZXF1ZXN0X3NjaGVtYV92ZXJzaW9uIjpudWxsfQgAAABjAAAAAQAAABdzZW1hbnRpY19wYXlsb2FkX3NoYTI1NgAAAEA5OGRhMWNmNmRiZDVkZDc5OTE1YjIxNTM1YjA5ZDhjZGQwZTliMmFjNDRlOTI4NmNjMjEyNWI5OWRlNDEzZjlkCQAAABlmb2xkZXJzLWNvbnRyYWN0LXNwaW5lLXYyCgAAAAALAAAAAA==",
+    "sha256": "a4360b3e10bef2ff2c1c9446ffcd77abdd43d628d82ded337d20117817d81920"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.CreateRepositoryBackedFolder",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "create-repository-backed-folder",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJicmFuY2hfcmVmX3BvbGljeS5wb2xpY3lfcmVmIjoicG9saWN5LWEiLCJicmFuY2hfcmVmX3BvbGljeS5yZXBvc2l0b3J5X2JpbmRpbmdfaWQiOiJyZXBvc2l0b3J5LWEiLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsImZvbGRlcl9tZXRhZGF0YS5kaXNwbGF5X25hbWUiOiJGb2xkZXIgQSIsInByb3ZpZGVyX2JpbmRpbmdfcmVmIjoiYmluZGluZy1hIiwicmVwb3NpdG9yeV9wcm9maWxlX3JlZiI6InJlcG9zaXRvcnktcHJvZmlsZSJ9",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": "provider_binding",
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAfY3JlYXRlLXJlcG9zaXRvcnktYmFja2VkLWZvbGRlcgQAAAAEAAAAAQUAAAAEAAAAAQYAAAAZdGVuYW50LWEvZm9sZGVycy9mb2xkZXItYQcAAAD2eyJicmFuY2hfcmVmX3BvbGljeS5wb2xpY3lfcmVmIjoicG9saWN5LWEiLCJicmFuY2hfcmVmX3BvbGljeS5yZXBvc2l0b3J5X2JpbmRpbmdfaWQiOiJyZXBvc2l0b3J5LWEiLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsImZvbGRlcl9tZXRhZGF0YS5kaXNwbGF5X25hbWUiOiJGb2xkZXIgQSIsInByb3ZpZGVyX2JpbmRpbmdfcmVmIjoiYmluZGluZy1hIiwicmVwb3NpdG9yeV9wcm9maWxlX3JlZiI6InJlcG9zaXRvcnktcHJvZmlsZSJ9CAAAAGMAAAABAAAAF3NlbWFudGljX3BheWxvYWRfc2hhMjU2AAAAQDM4NjM5NDJiY2FkNzUyYWRmZTk1NzA0YmI0YzdmM2Y0YjYyYWI1YWJhOGNiZWIzYmQ3YjdkNDg3N2FhNjNhYzgJAAAAGWZvbGRlcnMtY29udHJhY3Qtc3BpbmUtdjIKAAAAAAsAAAAQcHJvdmlkZXJfYmluZGluZw==",
+    "sha256": "6083279410d128ab70d7e2a7ace6d282c2331c387194ac35e6d2f996a4626e70"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.CreateRepositoryBackedFolder",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "create-repository-backed-folder",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJicmFuY2hfcmVmX3BvbGljeS5wb2xpY3lfcmVmIjoicG9saWN5LWEiLCJicmFuY2hfcmVmX3BvbGljeS5yZXBvc2l0b3J5X2JpbmRpbmdfaWQiOiJyZXBvc2l0b3J5LWEiLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsImZvbGRlcl9tZXRhZGF0YS5kaXNwbGF5X25hbWUiOm51bGwsInByb3ZpZGVyX2JpbmRpbmdfcmVmIjoiYmluZGluZy1hIiwicmVwb3NpdG9yeV9wcm9maWxlX3JlZiI6InJlcG9zaXRvcnktcHJvZmlsZSJ9",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": "provider_binding",
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAfY3JlYXRlLXJlcG9zaXRvcnktYmFja2VkLWZvbGRlcgQAAAAEAAAAAQUAAAAEAAAAAQYAAAAZdGVuYW50LWEvZm9sZGVycy9mb2xkZXItYQcAAADweyJicmFuY2hfcmVmX3BvbGljeS5wb2xpY3lfcmVmIjoicG9saWN5LWEiLCJicmFuY2hfcmVmX3BvbGljeS5yZXBvc2l0b3J5X2JpbmRpbmdfaWQiOiJyZXBvc2l0b3J5LWEiLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsImZvbGRlcl9tZXRhZGF0YS5kaXNwbGF5X25hbWUiOm51bGwsInByb3ZpZGVyX2JpbmRpbmdfcmVmIjoiYmluZGluZy1hIiwicmVwb3NpdG9yeV9wcm9maWxlX3JlZiI6InJlcG9zaXRvcnktcHJvZmlsZSJ9CAAAAGMAAAABAAAAF3NlbWFudGljX3BheWxvYWRfc2hhMjU2AAAAQDk4ZGExY2Y2ZGJkNWRkNzk5MTViMjE1MzViMDlkOGNkZDBlOWIyYWM0NGU5Mjg2Y2MyMTI1Yjk5ZGU0MTNmOWQJAAAAGWZvbGRlcnMtY29udHJhY3Qtc3BpbmUtdjIKAAAAAAsAAAAQcHJvdmlkZXJfYmluZGluZw==",
+    "sha256": "38b6b19ebfddb0cdf81529c29f91ef9ac522f5a079a23f7eb00307cf0a0c9f1f"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.GrantFolderAccess",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "grant-folder-access",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhY2xfZW50cnlfaWQiOiJVc2VyfHVzZXItYXxyZWFkX21ldGFkYXRhIiwiZWZmZWN0IjoiZ3JhbnQiLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsInBlcm1pc3Npb25fbGV2ZWwiOiJyZWFkX21ldGFkYXRhIiwic3ViamVjdF9yZWYiOiJVc2VyOnVzZXItYSJ9",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAATZ3JhbnQtZm9sZGVyLWFjY2VzcwQAAAAEAAAAAQUAAAAEAAAAAQYAAAAZdGVuYW50LWEvZm9sZGVycy9mb2xkZXItYQcAAACTeyJhY2xfZW50cnlfaWQiOiJVc2VyfHVzZXItYXxyZWFkX21ldGFkYXRhIiwiZWZmZWN0IjoiZ3JhbnQiLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsInBlcm1pc3Npb25fbGV2ZWwiOiJyZWFkX21ldGFkYXRhIiwic3ViamVjdF9yZWYiOiJVc2VyOnVzZXItYSJ9CAAAAGMAAAABAAAAF3NlbWFudGljX3BheWxvYWRfc2hhMjU2AAAAQDM4NjM5NDJiY2FkNzUyYWRmZTk1NzA0YmI0YzdmM2Y0YjYyYWI1YWJhOGNiZWIzYmQ3YjdkNDg3N2FhNjNhYzgJAAAAGWZvbGRlcnMtY29udHJhY3Qtc3BpbmUtdjIKAAAAAAsAAAAA",
+    "sha256": "ab1d7eb194ee8e0a296c627c05015069fbb21229ad22cc151f4532e60e431fbf"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.GrantFolderAccess",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "grant-folder-access",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhY2xfZW50cnlfaWQiOiJVc2VyfHVzZXItYXxyZWFkX21ldGFkYXRhIiwiZWZmZWN0IjoiZ3JhbnQiLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsInBlcm1pc3Npb25fbGV2ZWwiOiJyZWFkX21ldGFkYXRhIiwic3ViamVjdF9yZWYiOiJVc2VyOnVzZXItYSJ9",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAATZ3JhbnQtZm9sZGVyLWFjY2VzcwQAAAAEAAAAAQUAAAAEAAAAAQYAAAAZdGVuYW50LWEvZm9sZGVycy9mb2xkZXItYQcAAACTeyJhY2xfZW50cnlfaWQiOiJVc2VyfHVzZXItYXxyZWFkX21ldGFkYXRhIiwiZWZmZWN0IjoiZ3JhbnQiLCJmb2xkZXJfaWQiOiJmb2xkZXItYSIsInBlcm1pc3Npb25fbGV2ZWwiOiJyZWFkX21ldGFkYXRhIiwic3ViamVjdF9yZWYiOiJVc2VyOnVzZXItYSJ9CAAAAGMAAAABAAAAF3NlbWFudGljX3BheWxvYWRfc2hhMjU2AAAAQDk4ZGExY2Y2ZGJkNWRkNzk5MTViMjE1MzViMDlkOGNkZDBlOWIyYWM0NGU5Mjg2Y2MyMTI1Yjk5ZGU0MTNmOWQJAAAAGWZvbGRlcnMtY29udHJhY3Qtc3BpbmUtdjIKAAAAAAsAAAAA",
+    "sha256": "3f1076b8af9851ec154befb294b22c9afdd38c20d7585fc943b0aff25a7afef7"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.LockWorkspace",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "lock-workspace",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJmb2xkZXJfaWQiOiJmb2xkZXItYSIsImxvY2tfaW50ZW50IjoiZWRpdCIsInJlcXVlc3RlZF9sZWFzZV9zZWNvbmRzIjoiMzAwIiwidGFza19pZCI6InRhc2stYSIsIndvcmtzcGFjZV9pZCI6IndvcmtzcGFjZS1hIn0=",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": "task-a",
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAObG9jay13b3Jrc3BhY2UEAAAABAAAAAEFAAAABAAAAAEGAAAAGXRlbmFudC1hL2ZvbGRlcnMvZm9sZGVyLWEHAAAAfXsiZm9sZGVyX2lkIjoiZm9sZGVyLWEiLCJsb2NrX2ludGVudCI6ImVkaXQiLCJyZXF1ZXN0ZWRfbGVhc2Vfc2Vjb25kcyI6IjMwMCIsInRhc2tfaWQiOiJ0YXNrLWEiLCJ3b3Jrc3BhY2VfaWQiOiJ3b3Jrc3BhY2UtYSJ9CAAAAGMAAAABAAAAF3NlbWFudGljX3BheWxvYWRfc2hhMjU2AAAAQDM4NjM5NDJiY2FkNzUyYWRmZTk1NzA0YmI0YzdmM2Y0YjYyYWI1YWJhOGNiZWIzYmQ3YjdkNDg3N2FhNjNhYzgJAAAAGWZvbGRlcnMtY29udHJhY3Qtc3BpbmUtdjIKAAAABnRhc2stYQsAAAAA",
+    "sha256": "c67df320c45e93118a31a412fe04a72c75ccec9c467b49543877e2b913ff6efc"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.LockWorkspace",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "lock-workspace",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJmb2xkZXJfaWQiOiJmb2xkZXItYSIsImxvY2tfaW50ZW50IjoiZWRpdCIsInJlcXVlc3RlZF9sZWFzZV9zZWNvbmRzIjoiMzAwIiwidGFza19pZCI6InRhc2stYSIsIndvcmtzcGFjZV9pZCI6IndvcmtzcGFjZS1hIn0=",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": "task-a",
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAObG9jay13b3Jrc3BhY2UEAAAABAAAAAEFAAAABAAAAAEGAAAAGXRlbmFudC1hL2ZvbGRlcnMvZm9sZGVyLWEHAAAAfXsiZm9sZGVyX2lkIjoiZm9sZGVyLWEiLCJsb2NrX2ludGVudCI6ImVkaXQiLCJyZXF1ZXN0ZWRfbGVhc2Vfc2Vjb25kcyI6IjMwMCIsInRhc2tfaWQiOiJ0YXNrLWEiLCJ3b3Jrc3BhY2VfaWQiOiJ3b3Jrc3BhY2UtYSJ9CAAAAGMAAAABAAAAF3NlbWFudGljX3BheWxvYWRfc2hhMjU2AAAAQDk4ZGExY2Y2ZGJkNWRkNzk5MTViMjE1MzViMDlkOGNkZDBlOWIyYWM0NGU5Mjg2Y2MyMTI1Yjk5ZGU0MTNmOWQJAAAAGWZvbGRlcnMtY29udHJhY3Qtc3BpbmUtdjIKAAAABnRhc2stYQsAAAAA",
+    "sha256": "d6648ed78c45e847b5bff899fae20eec696a3b94097a66437a2432313f91c440"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.MutateFiles",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "mutate-files",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJjb250ZW50X2hhc2hfcmVmZXJlbmNlIjoiaGFzaC1hIiwiZmlsZV9vcGVyYXRpb25fa2luZCI6ImFkZCIsIm9wZXJhdGlvbl9pZCI6Im9wZXJhdGlvbi1hIiwicGF0aF9tZXRhZGF0YSI6IntcdTAwMjJkaXNwbGF5TmFtZVx1MDAyMjpcdTAwMjJBXHUwMDIyLFx1MDAyMm5vcm1hbGl6ZWRQYXRoXHUwMDIyOlx1MDAyMmEudHh0XHUwMDIyLFx1MDAyMnBhdGhQb2xpY3lDbGFzc1x1MDAyMjpcdTAwMjJub3JtYWxcdTAwMjIsXHUwMDIydW5pY29kZU5vcm1hbGl6YXRpb25cdTAwMjI6XHUwMDIyTkZDXHUwMDIyfSIsInBhdGhfcG9saWN5X2NsYXNzIjoibm9ybWFsIiwidGFza19pZCI6InRhc2stYSIsIndvcmtzcGFjZV9pZCI6IndvcmtzcGFjZS1hIn0=",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": "task-a",
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAMbXV0YXRlLWZpbGVzBAAAAAQAAAABBQAAAAQAAAABBgAAABl0ZW5hbnQtYS9mb2xkZXJzL2ZvbGRlci1hBwAAAXB7ImNvbnRlbnRfaGFzaF9yZWZlcmVuY2UiOiJoYXNoLWEiLCJmaWxlX29wZXJhdGlvbl9raW5kIjoiYWRkIiwib3BlcmF0aW9uX2lkIjoib3BlcmF0aW9uLWEiLCJwYXRoX21ldGFkYXRhIjoie1x1MDAyMmRpc3BsYXlOYW1lXHUwMDIyOlx1MDAyMkFcdTAwMjIsXHUwMDIybm9ybWFsaXplZFBhdGhcdTAwMjI6XHUwMDIyYS50eHRcdTAwMjIsXHUwMDIycGF0aFBvbGljeUNsYXNzXHUwMDIyOlx1MDAyMm5vcm1hbFx1MDAyMixcdTAwMjJ1bmljb2RlTm9ybWFsaXphdGlvblx1MDAyMjpcdTAwMjJORkNcdTAwMjJ9IiwicGF0aF9wb2xpY3lfY2xhc3MiOiJub3JtYWwiLCJ0YXNrX2lkIjoidGFzay1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEifQgAAABjAAAAAQAAABdzZW1hbnRpY19wYXlsb2FkX3NoYTI1NgAAAEAzODYzOTQyYmNhZDc1MmFkZmU5NTcwNGJiNGM3ZjNmNGI2MmFiNWFiYThjYmViM2JkN2I3ZDQ4NzdhYTYzYWM4CQAAABlmb2xkZXJzLWNvbnRyYWN0LXNwaW5lLXYyCgAAAAZ0YXNrLWELAAAAAA==",
+    "sha256": "850317b99554585164fee260ed983b2797f6e2d2a1a1e4958959af86ab98d982"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.MutateFiles",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "mutate-files",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJjb250ZW50X2hhc2hfcmVmZXJlbmNlIjpudWxsLCJmaWxlX29wZXJhdGlvbl9raW5kIjoiYWRkIiwib3BlcmF0aW9uX2lkIjoib3BlcmF0aW9uLWEiLCJwYXRoX21ldGFkYXRhIjoie1x1MDAyMmRpc3BsYXlOYW1lXHUwMDIyOlx1MDAyMkFcdTAwMjIsXHUwMDIybm9ybWFsaXplZFBhdGhcdTAwMjI6XHUwMDIyYS50eHRcdTAwMjIsXHUwMDIycGF0aFBvbGljeUNsYXNzXHUwMDIyOlx1MDAyMm5vcm1hbFx1MDAyMixcdTAwMjJ1bmljb2RlTm9ybWFsaXphdGlvblx1MDAyMjpcdTAwMjJORkNcdTAwMjJ9IiwicGF0aF9wb2xpY3lfY2xhc3MiOiJub3JtYWwiLCJ0YXNrX2lkIjoidGFzay1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEifQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": "task-a",
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAMbXV0YXRlLWZpbGVzBAAAAAQAAAABBQAAAAQAAAABBgAAABl0ZW5hbnQtYS9mb2xkZXJzL2ZvbGRlci1hBwAAAWx7ImNvbnRlbnRfaGFzaF9yZWZlcmVuY2UiOm51bGwsImZpbGVfb3BlcmF0aW9uX2tpbmQiOiJhZGQiLCJvcGVyYXRpb25faWQiOiJvcGVyYXRpb24tYSIsInBhdGhfbWV0YWRhdGEiOiJ7XHUwMDIyZGlzcGxheU5hbWVcdTAwMjI6XHUwMDIyQVx1MDAyMixcdTAwMjJub3JtYWxpemVkUGF0aFx1MDAyMjpcdTAwMjJhLnR4dFx1MDAyMixcdTAwMjJwYXRoUG9saWN5Q2xhc3NcdTAwMjI6XHUwMDIybm9ybWFsXHUwMDIyLFx1MDAyMnVuaWNvZGVOb3JtYWxpemF0aW9uXHUwMDIyOlx1MDAyMk5GQ1x1MDAyMn0iLCJwYXRoX3BvbGljeV9jbGFzcyI6Im5vcm1hbCIsInRhc2tfaWQiOiJ0YXNrLWEiLCJ3b3Jrc3BhY2VfaWQiOiJ3b3Jrc3BhY2UtYSJ9CAAAAGMAAAABAAAAF3NlbWFudGljX3BheWxvYWRfc2hhMjU2AAAAQDk4ZGExY2Y2ZGJkNWRkNzk5MTViMjE1MzViMDlkOGNkZDBlOWIyYWM0NGU5Mjg2Y2MyMTI1Yjk5ZGU0MTNmOWQJAAAAGWZvbGRlcnMtY29udHJhY3Qtc3BpbmUtdjIKAAAABnRhc2stYQsAAAAA",
+    "sha256": "7a13b9dc540f01e6e9a1ea578a5b8f86ffdb88bc9d7d8654d3ea70b30f8352db"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.InitializeOrganizationAclBaseline",
+    "AggregateId": "tenant-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}]}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "initialize-organization-acl-baseline",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhY2xfZW50cmllcyI6Ilt7XHUwMDIyYWN0aW9uXHUwMDIyOlx1MDAyMnJlYWRfbWV0YWRhdGFcdTAwMjIsXHUwMDIycHJpbmNpcGFsSWRcdTAwMjI6XHUwMDIydXNlci1hXHUwMDIyLFx1MDAyMnByaW5jaXBhbEtpbmRcdTAwMjI6XHUwMDIyVXNlclx1MDAyMn1dIiwiZWZmZWN0IjoiaW5pdGlhbGl6ZS1vcmdhbml6YXRpb24tYWNsLWJhc2VsaW5lIiwib3JnYW5pemF0aW9uX2lkIjoidGVuYW50LWEiLCJyZXF1ZXN0X3NjaGVtYV92ZXJzaW9uIjoidjEifQ==",
+    "CanonicalTarget": "tenant-a/folders/tenant-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "8fe34fd467665a3d190fbcef296087a4e7c0d2ab6fad7f15174ce703bda6bb39"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAkaW5pdGlhbGl6ZS1vcmdhbml6YXRpb24tYWNsLWJhc2VsaW5lBAAAAAQAAAABBQAAAAQAAAABBgAAABl0ZW5hbnQtYS9mb2xkZXJzL3RlbmFudC1hBwAAAQN7ImFjbF9lbnRyaWVzIjoiW3tcdTAwMjJhY3Rpb25cdTAwMjI6XHUwMDIycmVhZF9tZXRhZGF0YVx1MDAyMixcdTAwMjJwcmluY2lwYWxJZFx1MDAyMjpcdTAwMjJ1c2VyLWFcdTAwMjIsXHUwMDIycHJpbmNpcGFsS2luZFx1MDAyMjpcdTAwMjJVc2VyXHUwMDIyfV0iLCJlZmZlY3QiOiJpbml0aWFsaXplLW9yZ2FuaXphdGlvbi1hY2wtYmFzZWxpbmUiLCJvcmdhbml6YXRpb25faWQiOiJ0ZW5hbnQtYSIsInJlcXVlc3Rfc2NoZW1hX3ZlcnNpb24iOiJ2MSJ9CAAAAGMAAAABAAAAF3NlbWFudGljX3BheWxvYWRfc2hhMjU2AAAAQDhmZTM0ZmQ0Njc2NjVhM2QxOTBmYmNlZjI5NjA4N2E0ZTdjMGQyYWI2ZmFkN2YxNTE3NGNlNzAzYmRhNmJiMzkJAAAAGWZvbGRlcnMtY29udHJhY3Qtc3BpbmUtdjIKAAAAAAsAAAAA",
+    "sha256": "a0dd1e992e46eb7f2461152402c07812207eb1cfa89eac674d6cc70d0dfcfd45"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.InitializeOrganizationAclBaseline",
+    "AggregateId": "tenant-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}]}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "initialize-organization-acl-baseline",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhY2xfZW50cmllcyI6Ilt7XHUwMDIyYWN0aW9uXHUwMDIyOlx1MDAyMnJlYWRfbWV0YWRhdGFcdTAwMjIsXHUwMDIycHJpbmNpcGFsSWRcdTAwMjI6XHUwMDIydXNlci1hXHUwMDIyLFx1MDAyMnByaW5jaXBhbEtpbmRcdTAwMjI6XHUwMDIyVXNlclx1MDAyMn1dIiwiZWZmZWN0IjoiaW5pdGlhbGl6ZS1vcmdhbml6YXRpb24tYWNsLWJhc2VsaW5lIiwib3JnYW5pemF0aW9uX2lkIjoidGVuYW50LWEiLCJyZXF1ZXN0X3NjaGVtYV92ZXJzaW9uIjpudWxsfQ==",
+    "CanonicalTarget": "tenant-a/folders/tenant-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "0862df843164be86dcf286689c13719c290c0be016063ddb1ebe06e73fa516d4"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAkaW5pdGlhbGl6ZS1vcmdhbml6YXRpb24tYWNsLWJhc2VsaW5lBAAAAAQAAAABBQAAAAQAAAABBgAAABl0ZW5hbnQtYS9mb2xkZXJzL3RlbmFudC1hBwAAAQN7ImFjbF9lbnRyaWVzIjoiW3tcdTAwMjJhY3Rpb25cdTAwMjI6XHUwMDIycmVhZF9tZXRhZGF0YVx1MDAyMixcdTAwMjJwcmluY2lwYWxJZFx1MDAyMjpcdTAwMjJ1c2VyLWFcdTAwMjIsXHUwMDIycHJpbmNpcGFsS2luZFx1MDAyMjpcdTAwMjJVc2VyXHUwMDIyfV0iLCJlZmZlY3QiOiJpbml0aWFsaXplLW9yZ2FuaXphdGlvbi1hY2wtYmFzZWxpbmUiLCJvcmdhbml6YXRpb25faWQiOiJ0ZW5hbnQtYSIsInJlcXVlc3Rfc2NoZW1hX3ZlcnNpb24iOm51bGx9CAAAAGMAAAABAAAAF3NlbWFudGljX3BheWxvYWRfc2hhMjU2AAAAQDA4NjJkZjg0MzE2NGJlODZkY2YyODY2ODljMTM3MTljMjkwYzBiZTAxNjA2M2RkYjFlYmUwNmU3M2ZhNTE2ZDQJAAAAGWZvbGRlcnMtY29udHJhY3Qtc3BpbmUtdjIKAAAAAAsAAAAA",
+    "sha256": "3bd98e78559c5742242abd245bef75123e7dac3309b3a835ca8c7cc53a54e0ce"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.GrantOrganizationAclPrincipal",
+    "AggregateId": "tenant-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}]}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "grant-organization-acl-principal",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhY2xfZW50cmllcyI6Ilt7XHUwMDIyYWN0aW9uXHUwMDIyOlx1MDAyMnJlYWRfbWV0YWRhdGFcdTAwMjIsXHUwMDIycHJpbmNpcGFsSWRcdTAwMjI6XHUwMDIydXNlci1hXHUwMDIyLFx1MDAyMnByaW5jaXBhbEtpbmRcdTAwMjI6XHUwMDIyVXNlclx1MDAyMn1dIiwiZWZmZWN0IjoiZ3JhbnQtb3JnYW5pemF0aW9uLWFjbC1wcmluY2lwYWwiLCJvcmdhbml6YXRpb25faWQiOiJ0ZW5hbnQtYSIsInJlcXVlc3Rfc2NoZW1hX3ZlcnNpb24iOiJ2MSJ9",
+    "CanonicalTarget": "tenant-a/folders/tenant-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "8fe34fd467665a3d190fbcef296087a4e7c0d2ab6fad7f15174ce703bda6bb39"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAgZ3JhbnQtb3JnYW5pemF0aW9uLWFjbC1wcmluY2lwYWwEAAAABAAAAAEFAAAABAAAAAEGAAAAGXRlbmFudC1hL2ZvbGRlcnMvdGVuYW50LWEHAAAA/3siYWNsX2VudHJpZXMiOiJbe1x1MDAyMmFjdGlvblx1MDAyMjpcdTAwMjJyZWFkX21ldGFkYXRhXHUwMDIyLFx1MDAyMnByaW5jaXBhbElkXHUwMDIyOlx1MDAyMnVzZXItYVx1MDAyMixcdTAwMjJwcmluY2lwYWxLaW5kXHUwMDIyOlx1MDAyMlVzZXJcdTAwMjJ9XSIsImVmZmVjdCI6ImdyYW50LW9yZ2FuaXphdGlvbi1hY2wtcHJpbmNpcGFsIiwib3JnYW5pemF0aW9uX2lkIjoidGVuYW50LWEiLCJyZXF1ZXN0X3NjaGVtYV92ZXJzaW9uIjoidjEifQgAAABjAAAAAQAAABdzZW1hbnRpY19wYXlsb2FkX3NoYTI1NgAAAEA4ZmUzNGZkNDY3NjY1YTNkMTkwZmJjZWYyOTYwODdhNGU3YzBkMmFiNmZhZDdmMTUxNzRjZTcwM2JkYTZiYjM5CQAAABlmb2xkZXJzLWNvbnRyYWN0LXNwaW5lLXYyCgAAAAALAAAAAA==",
+    "sha256": "0144750f9d9483272e3999a2eb93322e00aed59a3195024e14e81c752328d598"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.GrantOrganizationAclPrincipal",
+    "AggregateId": "tenant-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}]}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "grant-organization-acl-principal",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhY2xfZW50cmllcyI6Ilt7XHUwMDIyYWN0aW9uXHUwMDIyOlx1MDAyMnJlYWRfbWV0YWRhdGFcdTAwMjIsXHUwMDIycHJpbmNpcGFsSWRcdTAwMjI6XHUwMDIydXNlci1hXHUwMDIyLFx1MDAyMnByaW5jaXBhbEtpbmRcdTAwMjI6XHUwMDIyVXNlclx1MDAyMn1dIiwiZWZmZWN0IjoiZ3JhbnQtb3JnYW5pemF0aW9uLWFjbC1wcmluY2lwYWwiLCJvcmdhbml6YXRpb25faWQiOiJ0ZW5hbnQtYSIsInJlcXVlc3Rfc2NoZW1hX3ZlcnNpb24iOm51bGx9",
+    "CanonicalTarget": "tenant-a/folders/tenant-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "0862df843164be86dcf286689c13719c290c0be016063ddb1ebe06e73fa516d4"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAgZ3JhbnQtb3JnYW5pemF0aW9uLWFjbC1wcmluY2lwYWwEAAAABAAAAAEFAAAABAAAAAEGAAAAGXRlbmFudC1hL2ZvbGRlcnMvdGVuYW50LWEHAAAA/3siYWNsX2VudHJpZXMiOiJbe1x1MDAyMmFjdGlvblx1MDAyMjpcdTAwMjJyZWFkX21ldGFkYXRhXHUwMDIyLFx1MDAyMnByaW5jaXBhbElkXHUwMDIyOlx1MDAyMnVzZXItYVx1MDAyMixcdTAwMjJwcmluY2lwYWxLaW5kXHUwMDIyOlx1MDAyMlVzZXJcdTAwMjJ9XSIsImVmZmVjdCI6ImdyYW50LW9yZ2FuaXphdGlvbi1hY2wtcHJpbmNpcGFsIiwib3JnYW5pemF0aW9uX2lkIjoidGVuYW50LWEiLCJyZXF1ZXN0X3NjaGVtYV92ZXJzaW9uIjpudWxsfQgAAABjAAAAAQAAABdzZW1hbnRpY19wYXlsb2FkX3NoYTI1NgAAAEAwODYyZGY4NDMxNjRiZTg2ZGNmMjg2Njg5YzEzNzE5YzI5MGMwYmUwMTYwNjNkZGIxZWJlMDZlNzNmYTUxNmQ0CQAAABlmb2xkZXJzLWNvbnRyYWN0LXNwaW5lLXYyCgAAAAALAAAAAA==",
+    "sha256": "5ede505582195fb7caaf96c84e72a9b1abcd378fb7b507f855b679a136a4ddda"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.RevokeOrganizationAclPrincipal",
+    "AggregateId": "tenant-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}]}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "revoke-organization-acl-principal",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhY2xfZW50cmllcyI6Ilt7XHUwMDIyYWN0aW9uXHUwMDIyOlx1MDAyMnJlYWRfbWV0YWRhdGFcdTAwMjIsXHUwMDIycHJpbmNpcGFsSWRcdTAwMjI6XHUwMDIydXNlci1hXHUwMDIyLFx1MDAyMnByaW5jaXBhbEtpbmRcdTAwMjI6XHUwMDIyVXNlclx1MDAyMn1dIiwiZWZmZWN0IjoicmV2b2tlLW9yZ2FuaXphdGlvbi1hY2wtcHJpbmNpcGFsIiwib3JnYW5pemF0aW9uX2lkIjoidGVuYW50LWEiLCJyZXF1ZXN0X3NjaGVtYV92ZXJzaW9uIjoidjEifQ==",
+    "CanonicalTarget": "tenant-a/folders/tenant-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "8fe34fd467665a3d190fbcef296087a4e7c0d2ab6fad7f15174ce703bda6bb39"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAhcmV2b2tlLW9yZ2FuaXphdGlvbi1hY2wtcHJpbmNpcGFsBAAAAAQAAAABBQAAAAQAAAABBgAAABl0ZW5hbnQtYS9mb2xkZXJzL3RlbmFudC1hBwAAAQB7ImFjbF9lbnRyaWVzIjoiW3tcdTAwMjJhY3Rpb25cdTAwMjI6XHUwMDIycmVhZF9tZXRhZGF0YVx1MDAyMixcdTAwMjJwcmluY2lwYWxJZFx1MDAyMjpcdTAwMjJ1c2VyLWFcdTAwMjIsXHUwMDIycHJpbmNpcGFsS2luZFx1MDAyMjpcdTAwMjJVc2VyXHUwMDIyfV0iLCJlZmZlY3QiOiJyZXZva2Utb3JnYW5pemF0aW9uLWFjbC1wcmluY2lwYWwiLCJvcmdhbml6YXRpb25faWQiOiJ0ZW5hbnQtYSIsInJlcXVlc3Rfc2NoZW1hX3ZlcnNpb24iOiJ2MSJ9CAAAAGMAAAABAAAAF3NlbWFudGljX3BheWxvYWRfc2hhMjU2AAAAQDhmZTM0ZmQ0Njc2NjVhM2QxOTBmYmNlZjI5NjA4N2E0ZTdjMGQyYWI2ZmFkN2YxNTE3NGNlNzAzYmRhNmJiMzkJAAAAGWZvbGRlcnMtY29udHJhY3Qtc3BpbmUtdjIKAAAAAAsAAAAA",
+    "sha256": "447944bb8d7efefcf747aeb49a40fd881e4628fd09d6d67908f60c882d9b1292"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.RevokeOrganizationAclPrincipal",
+    "AggregateId": "tenant-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}]}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "revoke-organization-acl-principal",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhY2xfZW50cmllcyI6Ilt7XHUwMDIyYWN0aW9uXHUwMDIyOlx1MDAyMnJlYWRfbWV0YWRhdGFcdTAwMjIsXHUwMDIycHJpbmNpcGFsSWRcdTAwMjI6XHUwMDIydXNlci1hXHUwMDIyLFx1MDAyMnByaW5jaXBhbEtpbmRcdTAwMjI6XHUwMDIyVXNlclx1MDAyMn1dIiwiZWZmZWN0IjoicmV2b2tlLW9yZ2FuaXphdGlvbi1hY2wtcHJpbmNpcGFsIiwib3JnYW5pemF0aW9uX2lkIjoidGVuYW50LWEiLCJyZXF1ZXN0X3NjaGVtYV92ZXJzaW9uIjpudWxsfQ==",
+    "CanonicalTarget": "tenant-a/folders/tenant-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "0862df843164be86dcf286689c13719c290c0be016063ddb1ebe06e73fa516d4"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAhcmV2b2tlLW9yZ2FuaXphdGlvbi1hY2wtcHJpbmNpcGFsBAAAAAQAAAABBQAAAAQAAAABBgAAABl0ZW5hbnQtYS9mb2xkZXJzL3RlbmFudC1hBwAAAQB7ImFjbF9lbnRyaWVzIjoiW3tcdTAwMjJhY3Rpb25cdTAwMjI6XHUwMDIycmVhZF9tZXRhZGF0YVx1MDAyMixcdTAwMjJwcmluY2lwYWxJZFx1MDAyMjpcdTAwMjJ1c2VyLWFcdTAwMjIsXHUwMDIycHJpbmNpcGFsS2luZFx1MDAyMjpcdTAwMjJVc2VyXHUwMDIyfV0iLCJlZmZlY3QiOiJyZXZva2Utb3JnYW5pemF0aW9uLWFjbC1wcmluY2lwYWwiLCJvcmdhbml6YXRpb25faWQiOiJ0ZW5hbnQtYSIsInJlcXVlc3Rfc2NoZW1hX3ZlcnNpb24iOm51bGx9CAAAAGMAAAABAAAAF3NlbWFudGljX3BheWxvYWRfc2hhMjU2AAAAQDA4NjJkZjg0MzE2NGJlODZkY2YyODY2ODljMTM3MTljMjkwYzBiZTAxNjA2M2RkYjFlYmUwNmU3M2ZhNTE2ZDQJAAAAGWZvbGRlcnMtY29udHJhY3Qtc3BpbmUtdjIKAAAAAAsAAAAA",
+    "sha256": "ac695cc35b9feda6efefaa8506af574e69b81fe3a1d732589b3ea85d83f9c3b2"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.PrepareWorkspace",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "prepare-workspace",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJicmFuY2hfcmVmX3BvbGljeV9yZWYiOiJicmFuY2gtcG9saWN5IiwiZm9sZGVyX2lkIjoiZm9sZGVyLWEiLCJyZXBvc2l0b3J5X2JpbmRpbmdfaWQiOiJyZXBvc2l0b3J5LWEiLCJ0YXNrX2lkIjoidGFzay1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEiLCJ3b3Jrc3BhY2VfcG9saWN5X3JlZiI6IndvcmtzcGFjZS1wb2xpY3kifQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": "task-a",
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAARcHJlcGFyZS13b3Jrc3BhY2UEAAAABAAAAAEFAAAABAAAAAEGAAAAGXRlbmFudC1hL2ZvbGRlcnMvZm9sZGVyLWEHAAAAwXsiYnJhbmNoX3JlZl9wb2xpY3lfcmVmIjoiYnJhbmNoLXBvbGljeSIsImZvbGRlcl9pZCI6ImZvbGRlci1hIiwicmVwb3NpdG9yeV9iaW5kaW5nX2lkIjoicmVwb3NpdG9yeS1hIiwidGFza19pZCI6InRhc2stYSIsIndvcmtzcGFjZV9pZCI6IndvcmtzcGFjZS1hIiwid29ya3NwYWNlX3BvbGljeV9yZWYiOiJ3b3Jrc3BhY2UtcG9saWN5In0IAAAAYwAAAAEAAAAXc2VtYW50aWNfcGF5bG9hZF9zaGEyNTYAAABAMzg2Mzk0MmJjYWQ3NTJhZGZlOTU3MDRiYjRjN2YzZjRiNjJhYjVhYmE4Y2JlYjNiZDdiN2Q0ODc3YWE2M2FjOAkAAAAZZm9sZGVycy1jb250cmFjdC1zcGluZS12MgoAAAAGdGFzay1hCwAAAAA=",
+    "sha256": "5a2bb9c97a84eec171371ae1a3d6b58ca2dddc24ee6225b2a60f36307117aa06"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.PrepareWorkspace",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "prepare-workspace",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJicmFuY2hfcmVmX3BvbGljeV9yZWYiOiJicmFuY2gtcG9saWN5IiwiZm9sZGVyX2lkIjoiZm9sZGVyLWEiLCJyZXBvc2l0b3J5X2JpbmRpbmdfaWQiOiJyZXBvc2l0b3J5LWEiLCJ0YXNrX2lkIjoidGFzay1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEiLCJ3b3Jrc3BhY2VfcG9saWN5X3JlZiI6IndvcmtzcGFjZS1wb2xpY3kifQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": "task-a",
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAARcHJlcGFyZS13b3Jrc3BhY2UEAAAABAAAAAEFAAAABAAAAAEGAAAAGXRlbmFudC1hL2ZvbGRlcnMvZm9sZGVyLWEHAAAAwXsiYnJhbmNoX3JlZl9wb2xpY3lfcmVmIjoiYnJhbmNoLXBvbGljeSIsImZvbGRlcl9pZCI6ImZvbGRlci1hIiwicmVwb3NpdG9yeV9iaW5kaW5nX2lkIjoicmVwb3NpdG9yeS1hIiwidGFza19pZCI6InRhc2stYSIsIndvcmtzcGFjZV9pZCI6IndvcmtzcGFjZS1hIiwid29ya3NwYWNlX3BvbGljeV9yZWYiOiJ3b3Jrc3BhY2UtcG9saWN5In0IAAAAYwAAAAEAAAAXc2VtYW50aWNfcGF5bG9hZF9zaGEyNTYAAABAOThkYTFjZjZkYmQ1ZGQ3OTkxNWIyMTUzNWIwOWQ4Y2RkMGU5YjJhYzQ0ZTkyODZjYzIxMjViOTlkZTQxM2Y5ZAkAAAAZZm9sZGVycy1jb250cmFjdC1zcGluZS12MgoAAAAGdGFzay1hCwAAAAA=",
+    "sha256": "d8ca218d42bba32138d7657a6b845fc2eeb18a3af510d6f48d20d40f554ab691"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.ReleaseWorkspaceLock",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "release-workspace-lock",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJmb2xkZXJfaWQiOiJmb2xkZXItYSIsImxvY2tfaWQiOiJsb2NrLWEiLCJsb2NrX293bmVyc2hpcF9wcm9vZiI6InByb29mLWEiLCJ0YXNrX2lkIjoidGFzay1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEifQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": "task-a",
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAWcmVsZWFzZS13b3Jrc3BhY2UtbG9jawQAAAAEAAAAAQUAAAAEAAAAAQYAAAAZdGVuYW50LWEvZm9sZGVycy9mb2xkZXItYQcAAAB8eyJmb2xkZXJfaWQiOiJmb2xkZXItYSIsImxvY2tfaWQiOiJsb2NrLWEiLCJsb2NrX293bmVyc2hpcF9wcm9vZiI6InByb29mLWEiLCJ0YXNrX2lkIjoidGFzay1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEifQgAAABjAAAAAQAAABdzZW1hbnRpY19wYXlsb2FkX3NoYTI1NgAAAEAzODYzOTQyYmNhZDc1MmFkZmU5NTcwNGJiNGM3ZjNmNGI2MmFiNWFiYThjYmViM2JkN2I3ZDQ4NzdhYTYzYWM4CQAAABlmb2xkZXJzLWNvbnRyYWN0LXNwaW5lLXYyCgAAAAZ0YXNrLWELAAAAAA==",
+    "sha256": "baed3ee9fffcb215c2b92a52c78e502b7932abedb5a66fa66a77dcbf8bec079e"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.ReleaseWorkspaceLock",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "release-workspace-lock",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJmb2xkZXJfaWQiOiJmb2xkZXItYSIsImxvY2tfaWQiOiJsb2NrLWEiLCJsb2NrX293bmVyc2hpcF9wcm9vZiI6InByb29mLWEiLCJ0YXNrX2lkIjoidGFzay1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEifQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": "task-a",
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAWcmVsZWFzZS13b3Jrc3BhY2UtbG9jawQAAAAEAAAAAQUAAAAEAAAAAQYAAAAZdGVuYW50LWEvZm9sZGVycy9mb2xkZXItYQcAAAB8eyJmb2xkZXJfaWQiOiJmb2xkZXItYSIsImxvY2tfaWQiOiJsb2NrLWEiLCJsb2NrX293bmVyc2hpcF9wcm9vZiI6InByb29mLWEiLCJ0YXNrX2lkIjoidGFzay1hIiwid29ya3NwYWNlX2lkIjoid29ya3NwYWNlLWEifQgAAABjAAAAAQAAABdzZW1hbnRpY19wYXlsb2FkX3NoYTI1NgAAAEA5OGRhMWNmNmRiZDVkZDc5OTE1YjIxNTM1YjA5ZDhjZGQwZTliMmFjNDRlOTI4NmNjMjEyNWI5OWRlNDEzZjlkCQAAABlmb2xkZXJzLWNvbnRyYWN0LXNwaW5lLXYyCgAAAAZ0YXNrLWELAAAAAA==",
+    "sha256": "78b1c17b4596ad563723364b762488436eb0d8fe988e19f55d4c6362cf7afbc6"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.RevokeFolderAccess",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:\u0022parent-a\u0022,\u0022folderMetadata\u0022:{\u0022displayName\u0022:\u0022Folder A\u0022,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:\u0022profile-a\u0022,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:\u0022main\u0022,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:\u0022hash-a\u0022,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:\u0022task-a\u0022,\u0022expectedGeneration\u0022:42}",
+    "nulls": false,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "revoke-folder-access",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhY2xfZW50cnlfaWQiOiJVc2VyfHVzZXItYXxyZWFkX21ldGFkYXRhIiwiZWZmZWN0IjoicmV2b2tlIiwiZm9sZGVyX2lkIjoiZm9sZGVyLWEiLCJwZXJtaXNzaW9uX2xldmVsIjoicmVhZF9tZXRhZGF0YSIsInN1YmplY3RfcmVmIjoiVXNlcjp1c2VyLWEifQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "3863942bcad752adfe95704bb4c7f3f4b62ab5aba8cbeb3bd7b7d4877aa63ac8"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAUcmV2b2tlLWZvbGRlci1hY2Nlc3MEAAAABAAAAAEFAAAABAAAAAEGAAAAGXRlbmFudC1hL2ZvbGRlcnMvZm9sZGVyLWEHAAAAlHsiYWNsX2VudHJ5X2lkIjoiVXNlcnx1c2VyLWF8cmVhZF9tZXRhZGF0YSIsImVmZmVjdCI6InJldm9rZSIsImZvbGRlcl9pZCI6ImZvbGRlci1hIiwicGVybWlzc2lvbl9sZXZlbCI6InJlYWRfbWV0YWRhdGEiLCJzdWJqZWN0X3JlZiI6IlVzZXI6dXNlci1hIn0IAAAAYwAAAAEAAAAXc2VtYW50aWNfcGF5bG9hZF9zaGEyNTYAAABAMzg2Mzk0MmJjYWQ3NTJhZGZlOTU3MDRiYjRjN2YzZjRiNjJhYjVhYmE4Y2JlYjNiZDdiN2Q0ODc3YWE2M2FjOAkAAAAZZm9sZGVycy1jb250cmFjdC1zcGluZS12MgoAAAAACwAAAAA=",
+    "sha256": "f0b5c34e23a3db23e7ffeb27dceaed22f9b69bafac708bfc38c4bce8a3bc34a4"
+  },
+  {
+    "CommandType": "Hexalith.Folders.Commands.RevokeFolderAccess",
+    "AggregateId": "folder-a",
+    "payload": "{\u0022requestSchemaVersion\u0022:null,\u0022folderId\u0022:\u0022folder-a\u0022,\u0022parentFolderId\u0022:null,\u0022folderMetadata\u0022:{\u0022displayName\u0022:null,\u0022metadataClass\u0022:\u0022internal\u0022},\u0022operations\u0022:[{\u0022principalKind\u0022:\u0022User\u0022,\u0022principalId\u0022:\u0022user-a\u0022,\u0022action\u0022:\u0022read_metadata\u0022}],\u0022archiveReasonCode\u0022:\u0022requested\u0022,\u0022workspaceId\u0022:\u0022workspace-a\u0022,\u0022taskId\u0022:\u0022task-a\u0022,\u0022expectedHead\u0022:42,\u0022request\u0022:{\u0022operation\u0022:\u0022acquire\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022ownershipProof\u0022:\u0022proof-a\u0022,\u0022lockFence\u0022:1},\u0022providerBindingRef\u0022:\u0022binding-a\u0022,\u0022providerFamilyRef\u0022:\u0022forgejo\u0022,\u0022capabilityProfileRef\u0022:null,\u0022nonSecretCredentialReference\u0022:\u0022credential-reference\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022repositoryProfileRef\u0022:\u0022repository-profile\u0022,\u0022externalRepositoryRef\u0022:\u0022remote-a\u0022,\u0022branchRefPolicy\u0022:{\u0022requestSchemaVersion\u0022:\u0022v1\u0022,\u0022repositoryBindingId\u0022:\u0022repository-a\u0022,\u0022policyRef\u0022:\u0022policy-a\u0022,\u0022defaultRef\u0022:null,\u0022allowedRefPatterns\u0022:[\u0022refs/heads/b\u0022,\u0022refs/heads/a\u0022],\u0022protectedRefPatterns\u0022:[\u0022main\u0022]},\u0022branchRefPolicyRef\u0022:\u0022branch-policy\u0022,\u0022workspacePolicyRef\u0022:\u0022workspace-policy\u0022,\u0022lockIntent\u0022:\u0022edit\u0022,\u0022requestedLeaseSeconds\u0022:300,\u0022lockId\u0022:\u0022lock-a\u0022,\u0022lockOwnershipProof\u0022:\u0022proof-a\u0022,\u0022releaseReasonCode\u0022:\u0022caller_completed\u0022,\u0022operationId\u0022:\u0022operation-a\u0022,\u0022fileOperationKind\u0022:\u0022add\u0022,\u0022pathMetadata\u0022:{\u0022normalizedPath\u0022:\u0022a.txt\u0022,\u0022displayName\u0022:\u0022A\u0022,\u0022pathPolicyClass\u0022:\u0022normal\u0022,\u0022unicodeNormalization\u0022:\u0022NFC\u0022},\u0022contentHashReference\u0022:null,\u0022byteLength\u0022:7,\u0022branchRefTarget\u0022:\u0022main\u0022,\u0022changedPathMetadataDigest\u0022:\u0022digest-a\u0022,\u0022authorMetadataReference\u0022:\u0022author-a\u0022,\u0022commitMessageClassification\u0022:\u0022metadata\u0022,\u0022auditMetadataKeys\u0022:[\u0022key-b\u0022,\u0022key-a\u0022],\u0022receiptId\u0022:\u0022receipt-a\u0022,\u0022assignedTaskId\u0022:null,\u0022expectedGeneration\u0022:42}",
+    "nulls": true,
+    "AdapterId": "hexalith-folders",
+    "OperationId": "revoke-folder-access",
+    "DescriptorVersion": 1,
+    "retentionTier": "Mutation",
+    "semanticPayload": "eyJhY2xfZW50cnlfaWQiOiJVc2VyfHVzZXItYXxyZWFkX21ldGFkYXRhIiwiZWZmZWN0IjoicmV2b2tlIiwiZm9sZGVyX2lkIjoiZm9sZGVyLWEiLCJwZXJtaXNzaW9uX2xldmVsIjoicmVhZF9tZXRhZGF0YSIsInN1YmplY3RfcmVmIjoiVXNlcjp1c2VyLWEifQ==",
+    "CanonicalTarget": "tenant-a/folders/folder-a",
+    "PolicyVersion": "folders-contract-spine-v2",
+    "SemanticOptions": {
+      "semantic_payload_sha256": "98da1cf6dbd5dd79915b21535b09d8cdd0e9b2ac44e9286cc2125b99de413f9d"
+    },
+    "DelegatedTaskScope": null,
+    "CredentialScope": null,
+    "canonical": "AQAAACloZXhhbGl0aC1ldmVudHN0b3JlLWlkZW1wb3RlbmN5LWludGVudC12MQIAAAAQaGV4YWxpdGgtZm9sZGVycwMAAAAUcmV2b2tlLWZvbGRlci1hY2Nlc3MEAAAABAAAAAEFAAAABAAAAAEGAAAAGXRlbmFudC1hL2ZvbGRlcnMvZm9sZGVyLWEHAAAAlHsiYWNsX2VudHJ5X2lkIjoiVXNlcnx1c2VyLWF8cmVhZF9tZXRhZGF0YSIsImVmZmVjdCI6InJldm9rZSIsImZvbGRlcl9pZCI6ImZvbGRlci1hIiwicGVybWlzc2lvbl9sZXZlbCI6InJlYWRfbWV0YWRhdGEiLCJzdWJqZWN0X3JlZiI6IlVzZXI6dXNlci1hIn0IAAAAYwAAAAEAAAAXc2VtYW50aWNfcGF5bG9hZF9zaGEyNTYAAABAOThkYTFjZjZkYmQ1ZGQ3OTkxNWIyMTUzNWIwOWQ4Y2RkMGU5YjJhYzQ0ZTkyODZjYzIxMjViOTlkZTQxM2Y5ZAkAAAAZZm9sZGVycy1jb250cmFjdC1zcGluZS12MgoAAAAACwAAAAA=",
+    "sha256": "fbe04f6446741338e7ef5d8e98fbfec69a51283d363fe4a1bac2ee5c742b766d"
+  }
+]

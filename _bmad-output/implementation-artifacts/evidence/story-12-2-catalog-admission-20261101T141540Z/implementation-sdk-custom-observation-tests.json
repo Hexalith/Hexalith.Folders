@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "dotnet",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+    "-parallel",
+    "none",
+    "-class",
+    "*DevelopmentDomainRouteCatalogTests",
+    "-class",
+    "*DeclaredIdempotencyRegistryTests",
+    "-xml",
+    ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-custom-observation-tests.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T14:39:27.616319+00:00",
+  "finishedAtUtc": "2026-11-01T14:39:27.866988+00:00",
+  "seconds": 0.2506659810314886,
+  "exitCode": 1
+}

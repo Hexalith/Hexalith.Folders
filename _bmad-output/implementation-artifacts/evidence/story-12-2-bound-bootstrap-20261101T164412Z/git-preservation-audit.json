@@ -1,0 +1,80 @@
+{
+  ".": {
+    "head": "4de8e5d0e4ad16f33e7eae31f7323fe5bbf326b7",
+    "headMatchesInitial": true,
+    "branch": "main",
+    "stagedPaths": []
+  },
+  "references/Hexalith.Tenants": {
+    "head": "9ed8737dedfbba660b9935b09696a74685201634",
+    "headMatchesInitial": true,
+    "branch": "main",
+    "stagedPaths": []
+  },
+  "references/Hexalith.AI.Tools": {
+    "head": "9b78aa008cfc62cd88ad0ea4b39b1f07311956ce",
+    "headMatchesInitial": true,
+    "branch": "main",
+    "stagedPaths": []
+  },
+  "references/Hexalith.EventStore": {
+    "head": "f704401ff9033919b1e9925564d814d7410bfe3d",
+    "headMatchesInitial": true,
+    "branch": "main",
+    "stagedPaths": []
+  },
+  "references/Hexalith.FrontComposer": {
+    "head": "589d63aa1a91c9c602f4caa15deef48bcf035b0c",
+    "headMatchesInitial": true,
+    "branch": "main",
+    "stagedPaths": []
+  },
+  "references/Hexalith.Memories": {
+    "head": "e0f3408fee7100c02d8fbc752e74483ad2f71b5f",
+    "headMatchesInitial": true,
+    "branch": "main",
+    "stagedPaths": []
+  },
+  "references/Hexalith.Commons": {
+    "head": "0825abc8ed9338e5579ce5d995bd221dbaae9a1c",
+    "headMatchesInitial": true,
+    "branch": "main",
+    "stagedPaths": []
+  },
+  "references/Hexalith.Builds": {
+    "head": "e9b74ab24914b7768a1dde7e3861349f577ca011",
+    "headMatchesInitial": true,
+    "branch": "main",
+    "stagedPaths": []
+  },
+  "references/Hexalith.PolymorphicSerializations": {
+    "head": "92ede24cc11129379efe52cfe7fd2c820c567f7f",
+    "headMatchesInitial": true,
+    "branch": "main",
+    "stagedPaths": []
+  },
+  "references/Hexalith.Projects": {
+    "head": "353cfd33e54270a1acb028c1c66ecb7cd548f3e7",
+    "headMatchesInitial": true,
+    "branch": "main",
+    "stagedPaths": []
+  },
+  "references/Hexalith.Platform": {
+    "head": "75fd4c064054d176d1bb81eabf88ae630ae37c3e",
+    "headMatchesInitial": true,
+    "branch": "main",
+    "stagedPaths": []
+  },
+  "references/Hexalith.McpCli": {
+    "head": "8d74baacbe0713950cf11e1fe348d77e98563f56",
+    "headMatchesInitial": true,
+    "branch": "main",
+    "stagedPaths": []
+  },
+  "references/Hexalith.Parties": {
+    "head": "a3666267868da046db164bba2668efc1325d42d5",
+    "headMatchesInitial": true,
+    "branch": "main",
+    "stagedPaths": []
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "adapterFiles": [
+    {
+      "path": "src/Hexalith.Folders.EventStore/ArchiveFolderIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/AuthorizeContentErasureIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/BindRepositoryIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/ChangeNativeTaskIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/CommitWorkspaceIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/ConfigureBranchRefPolicyIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/ConfigureProviderBindingIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/CreateFolderIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/CreateRepositoryBackedFolderIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/GrantFolderAccessIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/LockWorkspaceIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/MutateFilesIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/OrganizationAclIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/PrepareWorkspaceIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/ReleaseWorkspaceLockIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/RevokeFolderAccessIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    }
+  ],
+  "canonicalBuilderUnchanged": true,
+  "strictAcceptanceSourceUnchanged": true,
+  "nativeAssertionsPreserved": true,
+  "capacityAcceptanceSourceUnchanged": true,
+  "frozenSpecBlockUnchanged": true,
+  "baselineCommit": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "stagedDiff": [],
+  "canonicalEncoderUnchanged": true,
+  "pins": {
+    ".gitmodules": true,
+    "Directory.Packages.props": true,
+    "global.json": true,
+    "references/Hexalith.Tenants/.gitmodules": true,
+    "references/Hexalith.Tenants/Directory.Packages.props": true,
+    "references/Hexalith.Tenants/global.json": true,
+    "references/Hexalith.EventStore/.gitmodules": true,
+    "references/Hexalith.EventStore/Directory.Packages.props": true,
+    "references/Hexalith.EventStore/global.json": true,
+    "references/Hexalith.FrontComposer/.gitmodules": true,
+    "references/Hexalith.FrontComposer/Directory.Packages.props": true,
+    "references/Hexalith.FrontComposer/global.json": true,
+    "references/Hexalith.Memories/.gitmodules": true,
+    "references/Hexalith.Memories/Directory.Packages.props": true,
+    "references/Hexalith.Memories/global.json": true,
+    "references/Hexalith.Memories/tests/Directory.Packages.props": true,
+    "references/Hexalith.Commons/.gitmodules": true,
+    "references/Hexalith.Commons/Directory.Packages.props": true,
+    "references/Hexalith.Commons/global.json": true,
+    "references/Hexalith.Builds/.gitmodules": true,
+    "references/Hexalith.Builds/Directory.Packages.props": true,
+    "references/Hexalith.Builds/Props/Directory.Packages.props": true,
+    "references/Hexalith.Builds/global.json": true,
+    "references/Hexalith.Builds/test/fixtures/module/executable/P0Fixture.NativeTests.VsTest/global.json": true,
+    "references/Hexalith.PolymorphicSerializations/.gitmodules": true,
+    "references/Hexalith.PolymorphicSerializations/Directory.Packages.props": true,
+    "references/Hexalith.PolymorphicSerializations/global.json": true,
+    "references/Hexalith.Projects/.gitmodules": true,
+    "references/Hexalith.Projects/Directory.Packages.props": true,
+    "references/Hexalith.Projects/global.json": true,
+    "references/Hexalith.Platform/.gitmodules": true,
+    "references/Hexalith.Platform/Directory.Packages.props": true,
+    "references/Hexalith.Platform/global.json": true,
+    "references/Hexalith.Platform/infrastructure/Directory.Packages.props": true,
+    "references/Hexalith.Platform/src/Hexalith.Platform.TenantRegistry.Host/Directory.Packages.props": true,
+    "references/Hexalith.McpCli/.gitmodules": true,
+    "references/Hexalith.McpCli/Directory.Packages.props": true,
+    "references/Hexalith.McpCli/global.json": true,
+    "references/Hexalith.McpCli/tests/Hexalith.McpCli.ConformanceHost/Directory.Packages.props": true,
+    "references/Hexalith.Parties/.gitmodules": true,
+    "references/Hexalith.Parties/Directory.Packages.props": true,
+    "references/Hexalith.Parties/global.json": true
+  }
+}

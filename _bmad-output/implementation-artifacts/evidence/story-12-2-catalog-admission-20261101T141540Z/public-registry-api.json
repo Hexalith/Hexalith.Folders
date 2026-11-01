@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "dnx",
+    "dotnet-inspect",
+    "-y",
+    "--",
+    "member",
+    "IdempotencyIntentAdapterRegistry",
+    "--library",
+    "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+    "--ctor",
+    "-n",
+    "20"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T14:17:51.213472+00:00",
+  "finishedAtUtc": "2026-11-01T14:17:52.233505+00:00",
+  "seconds": 1.0200305639882572,
+  "exitCode": 0
+}

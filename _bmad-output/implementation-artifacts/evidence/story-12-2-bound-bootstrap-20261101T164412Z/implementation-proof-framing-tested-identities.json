@@ -1,0 +1,46 @@
+{
+  "capturedAtUtc": "2026-11-01T19:28:15.618144+00:00",
+  "timing": "After passing focused18/18 checks and before selected-output handoff; no builds/tests concurrent.",
+  "identities": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "bytes": 680448,
+      "sha256": "fa2e02f7fa5cbc77c25b2b86ad9e8b5116274135e6b847521bf991231928d6b0"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.pdb",
+      "bytes": 138172,
+      "sha256": "0d8a721be03973d14eedaa8c624432f254c9f23282f754f425d87817adacdb2a"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.deps.json",
+      "bytes": 127949,
+      "sha256": "89f9abade63b1cf7f625c8cd6bec5731a60f5c6fe1606ab63ef10ee54707a53f"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.runtimeconfig.json",
+      "bytes": 416,
+      "sha256": "4761a312947a31a30aec259d9ee6f10407d89806d812cd102f3b3aec250dc8b4"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttp.cs",
+      "bytes": 6968,
+      "sha256": "83c62a47662ce31cb3544e0a09acf42b841a72c03a82036c17808c4dfac46b22"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "bytes": 98517,
+      "sha256": "533ca410f74af89ef955e78a8a7d1cb78ff6ca73c7e6cc6fc1898164d6784127"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttpTests.cs",
+      "bytes": 10709,
+      "sha256": "6aaa33e7bbfc7915d7501349c7ed037f0e0978f21048c71cb0d3a9b7ffdf5371"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/DurabilityLoopbackHttpServer.cs",
+      "bytes": 5026,
+      "sha256": "c0ca93173d6230d9a2cc7e5a39863039fdf92d65f74463d435715411e3c3ff3e"
+    }
+  ]
+}

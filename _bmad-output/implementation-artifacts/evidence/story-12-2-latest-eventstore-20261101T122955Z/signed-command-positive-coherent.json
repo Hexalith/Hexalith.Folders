@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "dotnet",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Server.Tests/debug/Hexalith.Folders.Server.Tests.dll",
+    "-method",
+    "Hexalith.Folders.Server.Tests.ProductionProcessWireEventTests.SignedWorkloadAndHumanReceiptAreAcceptedByProductionProcessRegistration",
+    "-result-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/verification/signed-command-positive-coherent.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T12:38:55.824546+00:00",
+  "finishedAtUtc": "2026-11-01T12:38:59.099490+00:00",
+  "exitCode": 0,
+  "summary": {
+    "total": "1",
+    "passed": "1",
+    "failed": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "3.040"
+  }
+}

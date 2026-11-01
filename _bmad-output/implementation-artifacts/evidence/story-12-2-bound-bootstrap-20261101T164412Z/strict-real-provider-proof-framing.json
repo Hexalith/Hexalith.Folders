@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "env",
+    "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true",
+    "FOLDERS_TASK36_FOLD_LOG=/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-proof-framing-fold-callbacks.jsonl",
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+    "-showLiveOutput",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-proof-framing.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T19:28:49.159258+00:00",
+  "finishedAtUtc": "2026-11-01T19:29:49.513598+00:00",
+  "seconds": 60.356371095986106,
+  "exitCode": 1
+}

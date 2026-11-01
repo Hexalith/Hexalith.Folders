@@ -1,0 +1,34 @@
+import json,hashlib,subprocess,collections,re,sys,xml.etree.ElementTree as E
+from pathlib import Path
+p=Path(__file__).parent;root=Path('/home/administrator/projects/hexalith/folders');name=sys.argv[1]
+def write(n,d): (p/n).write_text(json.dumps(d,indent=2)+'\n')
+def sha(file):return hashlib.sha256(Path(file).read_bytes()).hexdigest()
+raw=json.loads((p/'pdb-sealed-selection-inspection.raw.log').read_text());docs=raw['documents'];summary={'assemblies':len(raw['assemblies']),'documentRecords':len(docs),'ordinaryDocumentRecords':sum('/obj/' not in r['path'] for r in docs),'ordinaryMismatches':[r for r in docs if '/obj/' not in r['path'] and r['matches'] is not True],'allPresentMismatches':[r for r in docs if r['matches'] is False],'generatedMissing':sum(not r['present'] and '/obj/' in r['path'] for r in docs),'sdkVersions':sorted({a['version'] for a in raw['assemblies'] if Path(a['dll']).name.startswith('Hexalith.EventStore.') and not a['dll'].endswith('Tests.dll')})};write('sealed-selection-pdb-summary.json',summary);write('sealed-selection-assembly-identities.json',raw['assemblies'])
+bydll={a['dll']:a for a in raw['assemblies']};obs=json.loads((p/(name+'-observations.json')).read_text());bindings=[dict(row,mvid=bydll.get(row['path'],{}).get('mvid'),assemblyVersion=bydll.get(row['path'],{}).get('version')) for row in obs['mappedModules']];write('sealed-selection-mapped-identities.json',bindings)
+rt=json.loads((p/(name+'-runtime-before.json')).read_text());byname=collections.defaultdict(lambda:collections.defaultdict(list))
+for group,items in rt.items():
+ for file,digest in items.items():
+  f=Path(file)
+  if f.name.startswith('Hexalith.EventStore.') and f.suffix in {'.dll','.pdb'} and not f.stem.endswith('.Tests'):byname[f.name][digest].append({'group':group,'path':file})
+coherence={'runtimeGroupRecords':sum(map(len,rt.values())),'uniqueRuntimePaths':len({file for v in rt.values() for file in v}),'sdkArtifactNames':len(byname),'mismatches':{key:dict(value) for key,value in byname.items() if len(value)>1}}
+coherence['liveAndFoldersSdkMismatches']={key:{digest:records for digest,records in value.items() if any(row['group'] not in {'tenants-full-qualified','tenants-apphost-defaults','platform-owner-output'} for row in records)} for key,value in coherence['mismatches'].items()}
+coherence['liveAndFoldersSdkMismatches']={key:value for key,value in coherence['liveAndFoldersSdkMismatches'].items() if len(value)>1}
+coherence['ownerRegressionProfileDisposition']='Explicitly retained current-source project-build variants in the separately verified owner regression/library outputs; every version and ordinary PDB source checksum is verified. Actual live/Folders SDK copies must be byte-identical. No DLL copying, graph bypass or binary-only fallback.'
+write('sealed-selection-sdk-coherence.json',coherence)
+initial=json.loads((p/'initial-state.json').read_text());before=json.loads((p/'initial-source-before.json').read_text());spec=(root/'_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md').read_text();block=spec.split('<frozen-after-approval',1)[1].split('</frozen-after-approval>',1)[0];asserts=lambda text:[re.sub(r'\s+',' ',line.strip()) for line in text.splitlines() if '.Should' in line];adapter=[]
+for file in sorted((root/'src/Hexalith.Folders.EventStore').glob('*IdempotencyIntentAdapter.cs')):
+ rel=str(file.relative_to(root));old=subprocess.check_output(['git','show','HEAD:'+rel],cwd=root,text=True);new=file.read_text();token='public IdempotencyCanonicalIntent CreateIntent'
+ if token in old:adapter.append({'path':rel,'intentMethodAndHelpersUnchanged':old[old.index(token):]==new[new.index(token):],'originalMethodSha256':hashlib.sha256(old[old.index(token):].encode()).hexdigest()})
+preservation={'adapterFiles':adapter,'canonicalBuilderUnchanged':sha(root/'src/Hexalith.Folders.EventStore/FoldersCanonicalIntentBuilder.cs')==initial['productSha256']['src/Hexalith.Folders.EventStore/FoldersCanonicalIntentBuilder.cs'],'canonicalEncoderUnchanged':sha(root/'references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Commands/CanonicalIdempotencyIntentEncoder.cs')==before['sha256']['references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Commands/CanonicalIdempotencyIntentEncoder.cs'],'strictAcceptanceSourceUnchanged':(root/'tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs').read_bytes()==(p/'strict-acceptance-before.cs').read_bytes(),'capacityAcceptanceSourceUnchanged':sha(root/'tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs')==initial['productSha256']['tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs'],'nativeAssertionsPreserved':sha(root/'tests/Hexalith.Folders.EventStore.Tests/NativeTaskAdmissionTests.cs')==initial['productSha256']['tests/Hexalith.Folders.EventStore.Tests/NativeTaskAdmissionTests.cs'],'frozenSpecBlockUnchanged':hashlib.sha256(block.encode()).hexdigest()==initial['frozenBlockSha256'],'baselineCommit':'c22b13137202f7bf8c60b80c095a69748435bd6e','pins':{key:sha(root/key)==before['sha256'][key] for key in before['sha256'] if Path(key).name in {'Directory.Packages.props','global.json','.gitmodules'}},'stagedDiff':subprocess.check_output(['git','diff','--cached','--name-only'],cwd=root,text=True).splitlines()};write('sealed-selection-preservation.json',preservation)
+latest=json.loads((p/(name+'-summary.json')).read_text())
+metadata=json.loads((p/'generated-metadata-profiles-final.json').read_text());verified={(row['pdb'],row['sourcePath'],row['expectedPdbSha256']) for row in metadata['rows'] if row['matchesExpected']}
+assert not summary['ordinaryMismatches']
+assert all((row['pdb'],row['path'],row['expected']) in verified for row in summary['allPresentMismatches'])
+assert summary['sdkVersions']==['3.130.2.0'] and not coherence['liveAndFoldersSdkMismatches']
+assert all(b['mvid'] for b in bindings) and not latest['mappedMismatches'] and not latest['observationsOutsidePreRunInventory']
+assert not any(latest['processCleanup'].values()) and not any(latest['directoryCleanup'].values()) and not latest['newContainersRemaining']
+assert not latest['sourceAudit']['drift'] and not latest['sourceAudit']['headDrift']
+assert all(not v['drift'] for v in latest['runtimeGroups'].values())
+assert all(preservation[k] for k in ['canonicalBuilderUnchanged','canonicalEncoderUnchanged','strictAcceptanceSourceUnchanged','capacityAcceptanceSourceUnchanged','nativeAssertionsPreserved','frozenSpecBlockUnchanged'])
+assert all(v['intentMethodAndHelpersUnchanged'] for v in adapter) and all(preservation['pins'].values()) and not preservation['stagedDiff']
+print('final audit passed',len(bindings),'actual mapped identities;',coherence['uniqueRuntimePaths'],'unique runtime files;',summary['ordinaryDocumentRecords'],'ordinary PDB records')

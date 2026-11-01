@@ -1,0 +1,186 @@
+[
+  {
+    "attempt": "strict-real-provider-bound-bootstrap",
+    "result": {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "7.567"
+    },
+    "exceptionType": "Xunit.Sdk.TestPipelineException",
+    "safeFailure": "Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync\n---- System.InvalidOperationException : Sequence contains no matching element",
+    "stackTrace": "\n----- Inner Stack Trace -----\n   at System.Linq.ThrowHelper.ThrowNoMatchException()\n   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source, Func`2 predicate)\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.StartAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 773\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 129\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 135",
+    "summary": "strict-real-provider-bound-bootstrap-summary.json"
+  },
+  {
+    "attempt": "strict-real-provider-bound-import",
+    "result": {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "132.562"
+    },
+    "exceptionType": "Xunit.Sdk.TestPipelineException",
+    "safeFailure": "Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync\n---- System.Threading.Tasks.TaskCanceledException : A task was canceled.",
+    "stackTrace": "\n----- Inner Stack Trace -----\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.ObserveOwnerBootstrapAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1147\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.BootstrapAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1107\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 130\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 135",
+    "summary": "strict-real-provider-bound-import-summary.json"
+  },
+  {
+    "attempt": "strict-real-provider-bound-timeout",
+    "result": {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "53.296"
+    },
+    "exceptionType": "Xunit.Sdk.TestPipelineException",
+    "safeFailure": "Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync\n---- System.IO.FileNotFoundException : Could not find file '/tmp/hexalith-route-catalog-32DKQ2/eventstore.committed.json'.",
+    "stackTrace": "\n----- Inner Stack Trace -----\n   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)\n   at System.IO.File.ReadAllBytesAsync(String path, CancellationToken cancellationToken)\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.ObserveOwnerBootstrapAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1140\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.BootstrapAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1107\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 130\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 135",
+    "actualOwnerDelivery": {
+      "phase": "response-received",
+      "httpStatus": 403
+    },
+    "summary": "strict-real-provider-bound-timeout-summary.json"
+  },
+  {
+    "attempt": "strict-real-provider-bound-mtls",
+    "result": {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "151.844"
+    },
+    "exceptionType": "Xunit.Sdk.TestPipelineException",
+    "safeFailure": "Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync\n---- System.InvalidOperationException : docker exceeded the acceptance infrastructure timeout.",
+    "stackTrace": "\n----- Inner Stack Trace -----\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityProcess.RunAsync(String executable, String[] arguments) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityProcess.cs:line 34\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.DisposeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 720\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.DisposeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 764\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 135",
+    "actualOwnerDelivery": {
+      "phase": "response-received",
+      "httpStatus": 400
+    },
+    "observedExecution": "Owner/process200 with1event; actorEventsStored/EventsPublished/Completed; project200. These logs are not substitute HTTP acceptance or a passed retained-source assertion.",
+    "framingDiagnosis": "Source-backed inference; unknown-lengthJsonContent treatedasstreaming, endpoint retryobserved after5sattempttimeout, final400withoutsecondpipelineentry; rejectionbody notretained.",
+    "cleanup": "Existing Docker infrastructure timeout masked initial receipt failure; final audit found no observed resourcesremaining. No timeout extended.",
+    "selection": "Intermediate dueMemoriesSDKprofile variance, directly refreshed afterward; no builds duringtheattempt.",
+    "summary": "strict-real-provider-bound-mtls-summary.json"
+  },
+  {
+    "attempt": "strict-real-provider-bound-buffered",
+    "result": {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "132.450"
+    },
+    "exceptionType": "Xunit.Sdk.TestPipelineException",
+    "safeFailure": "Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync\n---- System.Threading.Tasks.TaskCanceledException : A task was canceled.",
+    "stackTrace": "\n----- Inner Stack Trace -----\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.ObserveOwnerBootstrapAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1182\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.BootstrapAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1134\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 131\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 136",
+    "actualOwnerDelivery": {
+      "phase": "attempted",
+      "httpStatus": null,
+      "ownerExceptionType": "TimeoutRejectedException"
+    },
+    "observedExecution": "First domain success1event and actor Completed;4same-message/correlation duplicate actor invocations returned cached result. No accepted HTTPreceipt or passed retained-source/projection assertion; no strictbody execution.",
+    "summary": "strict-real-provider-bound-buffered-summary.json"
+  },
+  {
+    "attempt": "strict-real-provider-response-diagnostics",
+    "result": {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "133.055"
+    },
+    "exceptionType": "Xunit.Sdk.TestPipelineException",
+    "safeFailure": "Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync\n---- System.Threading.Tasks.TaskCanceledException : A task was canceled.",
+    "stackTrace": "\n----- Inner Stack Trace -----\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.ObserveOwnerBootstrapAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1187\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.BootstrapAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1139\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 131\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 136",
+    "actualOwnerDelivery": {
+      "phase": "attempted",
+      "httpStatus": null,
+      "ownerExceptionType": "TimeoutRejectedException"
+    },
+    "observedExecution": "Sameactor message cachedreplay; compatible legacy projection promotion reached state write/ETag/SignalR but mediator had no normal exit/acceptedresult beforerequestcancellation. Strictbody notentered.",
+    "diagnostics": "response-diagnostics-safe-stages.json",
+    "summary": "strict-real-provider-response-diagnostics-summary.json"
+  },
+  {
+    "attempt": "strict-real-provider-durable-bootstrap",
+    "result": {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "68.321"
+    },
+    "exceptionType": "Xunit.Sdk.TestPipelineException",
+    "safeFailure": "Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync\n---- System.InvalidOperationException : Actual owner bootstrap wrong-proof refusal: expected 403, observed 500; code=unavailable.",
+    "stackTrace": "\n----- Inner Stack Trace -----\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.RequireStatusAsync(HttpResponseMessage response, HttpStatusCode expected, String operation) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 635\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.ObserveOwnerBootstrapAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1257\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.BootstrapAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1140\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 131\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 136",
+    "actualOwnerDelivery": {
+      "phase": "response-received",
+      "httpStatus": 202,
+      "terminalStatus": "Completed"
+    },
+    "observedExecution": "Real accepted delivery and terminal status; wrong-proof refusal expected403 observed500 after repeated gateway Forbid results and sidecar circuit opening. Original retained-source/projection assertions and strict body were not reached.",
+    "summary": "strict-real-provider-durable-bootstrap-summary.json"
+  },
+  {
+    "attempt": "strict-real-provider-proof-framing",
+    "result": {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "60.163"
+    },
+    "exceptionType": "Xunit.Sdk.TestPipelineException",
+    "safeFailure": "Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync\n---- System.InvalidOperationException : Authenticated CreateTenant: expected 202, observed 500; code=unavailable.",
+    "stackTrace": "\n----- Inner Stack Trace -----\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.RequireStatusAsync(HttpResponseMessage response, HttpStatusCode expected, String operation) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 635\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.SubmitAsync(String tenant, String domain, String aggregate, String command, Object payload, String token) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1384\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.BootstrapAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1141\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 131\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 136",
+    "actualOwnerDelivery": {
+      "phase": "accepted",
+      "httpStatus": 202,
+      "terminalStatus": "Completed",
+      "originalRetainedHumanAttributedSourceCount": 1,
+      "allCredentialProofRefusalsPassed": true,
+      "persistedAdministratorAuthorityVerified": true
+    },
+    "diagnosis": "TenantOwnerSourceGateway legacy localhost-to-IPv4 rewrite differs from actual catalog-bound Dapr HTTP endpoint; SDK guard refuses native source read, administrator verifier returns503, CreateTenant pipeline returns500.",
+    "summary": "strict-real-provider-proof-framing-summary.json"
+  },
+  {
+    "attempt": "strict-real-provider-owner-runtime",
+    "result": {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "66.912"
+    },
+    "exceptionType": "Xunit.Sdk.TestPipelineException",
+    "safeFailure": "Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync\n---- System.InvalidOperationException : Authenticated CreateTenant: expected 202, observed 500; code=unavailable.",
+    "stackTrace": "\n----- Inner Stack Trace -----\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.RequireStatusAsync(HttpResponseMessage response, HttpStatusCode expected, String operation) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 635\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.SubmitAsync(String tenant, String domain, String aggregate, String command, Object payload, String token) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1384\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.BootstrapAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1141\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 131\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 136",
+    "actualOwnerDelivery": {
+      "phase": "accepted",
+      "httpStatus": 202,
+      "terminalStatus": "Completed",
+      "originalRetainedHumanAttributedSourceCount": 1,
+      "allCredentialProofRefusalsPassed": true,
+      "persistedAdministratorAuthorityVerified": true
+    },
+    "observedExecution": "Exact runtime endpoint guard passes; first native source read200 in2516.8947ms; second starts but configured5s domain-service invocation expires. CreateTenant500; strictbody notentered.",
+    "summary": "strict-real-provider-owner-runtime-summary.json"
+  }
+]

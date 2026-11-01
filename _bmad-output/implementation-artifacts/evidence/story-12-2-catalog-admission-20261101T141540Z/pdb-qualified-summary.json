@@ -1,0 +1,49 @@
+{
+  "assemblies": 234,
+  "documentRecords": 40119,
+  "ordinaryDocumentRecords": 36451,
+  "ordinaryMismatches": [
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/FoldersRuntimeCatalogDeclarations.cs",
+      "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+      "expected": "e98c3b8473fb2a2e9ad8e387a3b52600faf8acb19e886a10151ae82a886fb4b0",
+      "actual": "e8d211c6223d1b52fb93958f96aa08cccdefadebfbe93b21050629f34205802b",
+      "present": true,
+      "matches": false
+    },
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+      "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+      "expected": "55872a5e04072f36c8047aee8c97247c55521ddcc1edb8ed985be079a89105d3",
+      "actual": "23ac2606f674753045b558bb28069c1c6bb27b4d12d5f57b1e51eba3581746f6",
+      "present": true,
+      "matches": false
+    }
+  ],
+  "allPresentMismatches": [
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/FoldersRuntimeCatalogDeclarations.cs",
+      "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+      "expected": "e98c3b8473fb2a2e9ad8e387a3b52600faf8acb19e886a10151ae82a886fb4b0",
+      "actual": "e8d211c6223d1b52fb93958f96aa08cccdefadebfbe93b21050629f34205802b",
+      "present": true,
+      "matches": false
+    },
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+      "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+      "expected": "55872a5e04072f36c8047aee8c97247c55521ddcc1edb8ed985be079a89105d3",
+      "actual": "23ac2606f674753045b558bb28069c1c6bb27b4d12d5f57b1e51eba3581746f6",
+      "present": true,
+      "matches": false
+    }
+  ],
+  "generatedMissing": 2915,
+  "sdkVersions": [
+    "3.130.2.0"
+  ]
+}

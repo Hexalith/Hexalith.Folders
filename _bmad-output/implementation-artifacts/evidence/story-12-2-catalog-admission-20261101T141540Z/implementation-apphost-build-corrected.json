@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false",
+    "-v:quiet"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T14:34:38.372663+00:00",
+  "finishedAtUtc": "2026-11-01T14:34:45.932086+00:00",
+  "seconds": 7.559417793003377,
+  "exitCode": 0
+}

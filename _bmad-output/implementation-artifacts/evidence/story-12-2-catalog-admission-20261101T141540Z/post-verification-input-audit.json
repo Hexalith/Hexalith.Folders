@@ -1,0 +1,8 @@
+{
+  "executionSourceInputs": 27414,
+  "postExecutionChanges": [
+    "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md"
+  ],
+  "authorizedDocumentationOnly": true,
+  "productionAndTestSourceDrift": []
+}

@@ -1,4 +1,5 @@
 using Hexalith.EventStore.Client.Gateway;
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
@@ -8,6 +9,7 @@ using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
@@ -174,21 +176,24 @@ internal sealed class RoutingModeTestHost : IAsyncDisposable
         RecordingRoutingAuditSink auditSink = new();
         IEventStoreGatewayClient gateway = Substitute.For<IEventStoreGatewayClient>();
 
-        if (claimsIdentity)
+        builder.Services
+            .AddAuthentication()
+            .AddScheme<AuthenticationSchemeOptions, RoutingModeAuthenticationHandler>(
+                RoutingModeAuthenticationHandler.SchemeName,
+                configureOptions: null);
+        builder.Services.Configure<AuthenticationOptions>(static options =>
         {
-            builder.Services
-                .AddAuthentication()
-                .AddScheme<AuthenticationSchemeOptions, RoutingModeAuthenticationHandler>(
-                    RoutingModeAuthenticationHandler.SchemeName,
-                    configureOptions: null);
-            builder.Services.Configure<AuthenticationOptions>(static options =>
-            {
-                options.DefaultScheme = RoutingModeAuthenticationHandler.SchemeName;
-                options.DefaultAuthenticateScheme = RoutingModeAuthenticationHandler.SchemeName;
-                options.DefaultChallengeScheme = RoutingModeAuthenticationHandler.SchemeName;
-            });
-        }
-        else
+            options.DefaultScheme = RoutingModeAuthenticationHandler.SchemeName;
+            options.DefaultAuthenticateScheme = RoutingModeAuthenticationHandler.SchemeName;
+            options.DefaultChallengeScheme = RoutingModeAuthenticationHandler.SchemeName;
+        });
+        // Keep the SDK credential-kind requirement while binding this isolated routing fixture
+        // to its explicit test scheme after the production policy registration.
+        builder.Services.PostConfigure<AuthorizationOptions>(static options =>
+            options.AddPolicy(EventStoreHttpHostSecurityExtensions.HumanPolicy,
+                new AuthorizationPolicy(EventStoreHttpHostSecurityExtensions.CreateHumanPolicy().Requirements,
+                    [RoutingModeAuthenticationHandler.SchemeName])));
+        if (!claimsIdentity)
         {
             builder.Services.RemoveAll<ITenantContextAccessor>();
             builder.Services.AddSingleton<ITenantContextAccessor>(identity);
@@ -218,7 +223,13 @@ internal sealed class RoutingModeTestHost : IAsyncDisposable
         app.UseFoldersServerPipeline();
         await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-        return new RoutingModeTestHost(app, app.GetTestClient(), resolved, tenantStore, lifecycle, auditSink, gateway);
+        HttpClient client = app.GetTestClient();
+        if (!claimsIdentity)
+        {
+            client.DefaultRequestHeaders.Authorization = new(RoutingModeAuthenticationHandler.SchemeName);
+        }
+
+        return new RoutingModeTestHost(app, client, resolved, tenantStore, lifecycle, auditSink, gateway);
     }
 
     /// <inheritdoc/>

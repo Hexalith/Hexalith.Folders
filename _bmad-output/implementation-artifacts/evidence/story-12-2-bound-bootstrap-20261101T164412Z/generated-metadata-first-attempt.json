@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "python3",
+    ".artifacts/story-12-2-bound-bootstrap-20261101T164412Z/generated_metadata_audit.py",
+    "pdb-mtls-preflight.raw.log"
+  ],
+  "exitCode": 1,
+  "result": "3/6 exact reconstructed checksums; unstructured byte-pattern scan included the one-byte SerString length as a leading ASCII zero for Commons. Corrected tool validates the actual serialized attribute prolog/length/terminator. Product assemblies and sources were not changed.",
+  "retainedTool": "generated_metadata_audit_first.py",
+  "retainedResult": "generated-metadata-profiles.json"
+}

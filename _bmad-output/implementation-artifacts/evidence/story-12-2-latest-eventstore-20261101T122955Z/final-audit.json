@@ -1,0 +1,52 @@
+{
+  "capturedAtUtc": "2026-11-01T13:22:48.183859+00:00",
+  "selectedSourceInputs": {
+    "count": 19,
+    "drift": []
+  },
+  "runtimeGroups": {
+    "consumer": {
+      "count": 2357,
+      "drift": []
+    },
+    "sdk": {
+      "count": 346,
+      "drift": []
+    },
+    "integration": {
+      "count": 639,
+      "drift": []
+    },
+    "contracts": {
+      "count": 296,
+      "drift": []
+    }
+  },
+  "historicalPackets": {
+    "story-12-2-current-consumer-20261031": {
+      "count": 64,
+      "drift": []
+    },
+    "story-12-2-selective-enrollment-20261101": {
+      "count": 20,
+      "drift": []
+    },
+    "story-12-2-security-enrollment-20261101": {
+      "count": 199,
+      "drift": []
+    }
+  },
+  "frozenIntentMatchesHead": true,
+  "heads": {
+    "folders": "4de8e5d0e4ad16f33e7eae31f7323fe5bbf326b7",
+    "eventstore": "f704401ff9033919b1e9925564d814d7410bfe3d"
+  },
+  "headsMatchQualification": true,
+  "gitDiffCheck": {
+    "exitCode": 0,
+    "output": ""
+  },
+  "eventstoreWorkingTree": "",
+  "liveAcceptanceRun": false,
+  "scope": "Final selected-input/runtime fingerprint comparison and historical packet byte seals. No pre-run whole-source immutability claim."
+}

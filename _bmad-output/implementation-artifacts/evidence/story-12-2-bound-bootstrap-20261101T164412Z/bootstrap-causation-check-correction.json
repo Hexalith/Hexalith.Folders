@@ -1,0 +1,10 @@
+{
+  "reason": "Source tracing found the new fixture helper compared CausationId to CorrelationId. SDK SubmitCommandExtensions.ToCommandEnvelope sets CausationId to command.MessageId; EventPersister preserves it.",
+  "sources": [
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Commands/SubmitCommandExtensions.cs",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Events/EventPersister.cs"
+  ],
+  "correction": "Pass actual receipt MessageId and CorrelationId independently; require exact event CausationId and CorrelationId; retain human actor/payload/source/projection checks; add negative control where causation is substituted with correlation.",
+  "strictTestBodyChanged": false,
+  "validation": "apphost-build and apphost-helpers-qualified after correction"
+}

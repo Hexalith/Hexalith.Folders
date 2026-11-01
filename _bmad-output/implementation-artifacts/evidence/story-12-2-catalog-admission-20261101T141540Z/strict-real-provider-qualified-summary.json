@@ -1,0 +1,253 @@
+{
+  "result": [
+    {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "36.009"
+    }
+  ],
+  "sourceAudit": {
+    "count": 27414,
+    "drift": [],
+    "headDrift": {}
+  },
+  "runtimeGroups": {
+    "folders": {
+      "count": 84,
+      "drift": []
+    },
+    "workers": {
+      "count": 82,
+      "drift": []
+    },
+    "gateway": {
+      "count": 95,
+      "drift": []
+    },
+    "tenants": {
+      "count": 92,
+      "drift": []
+    },
+    "memories": {
+      "count": 96,
+      "drift": []
+    },
+    "apphost": {
+      "count": 156,
+      "drift": []
+    },
+    "tests": {
+      "count": 401,
+      "drift": []
+    },
+    "observer": {
+      "count": 16,
+      "drift": []
+    },
+    "gateway-full": {
+      "count": 173,
+      "drift": []
+    },
+    "server-full": {
+      "count": 144,
+      "drift": []
+    },
+    "workers-full": {
+      "count": 144,
+      "drift": []
+    },
+    "integration-full": {
+      "count": 180,
+      "drift": []
+    },
+    "apphost-helpers": {
+      "count": 172,
+      "drift": []
+    },
+    "contracts-full": {
+      "count": 86,
+      "drift": []
+    },
+    "operational-histories": {
+      "count": 171,
+      "drift": []
+    },
+    "gateway-full-final": {
+      "count": 173,
+      "drift": []
+    },
+    "gateway-full-observer": {
+      "count": 173,
+      "drift": []
+    },
+    "server-full-observer": {
+      "count": 144,
+      "drift": []
+    },
+    "integration-full-observer": {
+      "count": 180,
+      "drift": []
+    },
+    "operational-histories-observer": {
+      "count": 171,
+      "drift": []
+    },
+    "apphost-helpers-observer": {
+      "count": 172,
+      "drift": []
+    },
+    "gateway-full-human": {
+      "count": 173,
+      "drift": []
+    },
+    "server-full-human": {
+      "count": 144,
+      "drift": []
+    },
+    "integration-full-human": {
+      "count": 180,
+      "drift": []
+    },
+    "operational-histories-human": {
+      "count": 171,
+      "drift": []
+    },
+    "apphost-helpers-human": {
+      "count": 172,
+      "drift": []
+    },
+    "human-metadata-focused": {
+      "count": 144,
+      "drift": []
+    },
+    "workers-full-qualified": {
+      "count": 144,
+      "drift": []
+    },
+    "sdk-contracts-tests": {
+      "count": 112,
+      "drift": []
+    },
+    "sdk-server-tests": {
+      "count": 177,
+      "drift": []
+    },
+    "ui": {
+      "count": 44,
+      "drift": []
+    }
+  },
+  "uniqueRuntimePaths": 2253,
+  "observedMappedRecords": 106,
+  "mappedMismatches": [],
+  "observationsOutsidePreRunInventory": [],
+  "processCleanup": {
+    "2502496": false,
+    "2504490": false,
+    "2504528": false,
+    "2504531": false,
+    "2506241": false,
+    "2511708": false,
+    "2511956": false,
+    "2511976": false,
+    "2512001": false,
+    "2512035": false,
+    "2512065": false
+  },
+  "directoryCleanup": {
+    "/tmp/hexalith-route-catalog-756Ppr": false,
+    "/tmp/folders-durability-xzv2h5m4.rf0": false
+  },
+  "newContainersObserved": [
+    "1d74fdf2462f52526b6ea1c065ec2701bf0b22aaa7fd90359835b667985c3f40 folders-provider-45d37d987f0e2f14",
+    "0cafcea4fde2b4c5804657f157b48d6bfbe0e0c50ad99e84941378d1466cafc5 folders-durability-45d37d987f0e2f14",
+    "ebe01889646642854a389764597a61507f8ac0e26c4391ec33cac031d62f60f6 security-shsrmqpp",
+    "b8ebd7e9f79ec7bed4530ec79783dc4017de764ae85dde73ad2d02973d821cab memories-vectors-wahvetrq",
+    "f9f7afa92d530b90b5dcba6a15e6b343c604eae48f9eb5bf04ed791f29fab739 memories-graphs-wsvevnrd"
+  ],
+  "newContainersRemaining": [],
+  "aspireAfter": {
+    "argv": [
+      "aspire",
+      "ps",
+      "--format",
+      "json"
+    ],
+    "exitCode": 0,
+    "stdout": "[]\n",
+    "stderr": ""
+  },
+  "catalogReadbacks": {
+    "/tmp/hexalith-route-catalog-756Ppr": {
+      "tenants.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "68f4b4367df178af48907141cc5c0730d3deaafb0b66114d95053cbe055cfd0a",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "68cf7a55d50a890bcab3100be0c5a890a79066b76413742bc0138a9207224314"
+      },
+      "folders-workers-proof-b.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "68f4b4367df178af48907141cc5c0730d3deaafb0b66114d95053cbe055cfd0a",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "68cf7a55d50a890bcab3100be0c5a890a79066b76413742bc0138a9207224314"
+      },
+      "folders-workers-replica.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "68f4b4367df178af48907141cc5c0730d3deaafb0b66114d95053cbe055cfd0a",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "68cf7a55d50a890bcab3100be0c5a890a79066b76413742bc0138a9207224314"
+      },
+      "folders.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "68f4b4367df178af48907141cc5c0730d3deaafb0b66114d95053cbe055cfd0a",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "68cf7a55d50a890bcab3100be0c5a890a79066b76413742bc0138a9207224314"
+      },
+      "folders-workers.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "68f4b4367df178af48907141cc5c0730d3deaafb0b66114d95053cbe055cfd0a",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "68cf7a55d50a890bcab3100be0c5a890a79066b76413742bc0138a9207224314"
+      },
+      "memories.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "68f4b4367df178af48907141cc5c0730d3deaafb0b66114d95053cbe055cfd0a",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "68cf7a55d50a890bcab3100be0c5a890a79066b76413742bc0138a9207224314"
+      },
+      "eventstore.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "68f4b4367df178af48907141cc5c0730d3deaafb0b66114d95053cbe055cfd0a",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "68cf7a55d50a890bcab3100be0c5a890a79066b76413742bc0138a9207224314"
+      },
+      "folders-workers-proof-a.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "68f4b4367df178af48907141cc5c0730d3deaafb0b66114d95053cbe055cfd0a",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "68cf7a55d50a890bcab3100be0c5a890a79066b76413742bc0138a9207224314"
+      }
+    }
+  },
+  "safeAcceptanceMilestones": [],
+  "strictTestSourceSha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90"
+}

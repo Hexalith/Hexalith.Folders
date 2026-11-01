@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "dotnet",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.EventStore.DomainService.Tests/debug/Hexalith.EventStore.DomainService.Tests.dll",
+    "-class",
+    "Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests",
+    "-class",
+    "Hexalith.EventStore.DomainService.Tests.CustomDomainSecurityCompositionTests",
+    "-result-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/verification/sdk-sibling-guardrails.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "startedAtUtc": "2026-11-01T12:33:36.157657+00:00",
+  "finishedAtUtc": "2026-11-01T12:33:37.095467+00:00",
+  "exitCode": 1,
+  "summary": {
+    "total": "38",
+    "passed": "27",
+    "failed": "11",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.496"
+  }
+}

@@ -1,0 +1,146 @@
+diff --git a/tests/Hexalith.Folders.IntegrationTests/Authorization/ContextReadAuthorityTests.cs b/tests/Hexalith.Folders.IntegrationTests/Authorization/ContextReadAuthorityTests.cs
+index b3fa1f35..4003297c 100644
+--- a/tests/Hexalith.Folders.IntegrationTests/Authorization/ContextReadAuthorityTests.cs
++++ b/tests/Hexalith.Folders.IntegrationTests/Authorization/ContextReadAuthorityTests.cs
+@@ -488,8 +488,10 @@ public sealed class ContextReadAuthorityTests
+             http.User = new ClaimsPrincipal(new ClaimsIdentity(claims, "context-test"));
+             await next(http).ConfigureAwait(true);
+         });
++        app.UseAuthentication();
+         app.UsePd10V2CandidateCompatibilitySeam();
+         app.UseRouting();
++        app.UseAuthorization();
+         app.MapFoldersServerEndpoints();
+         return app;
+     }
+diff --git a/tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs b/tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs
+index 4eea17b4..6f8dea74 100644
+--- a/tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs
++++ b/tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs
+@@ -3792,6 +3792,7 @@ public sealed class GoldenLifecycleParityTests
+                 });
+             }
+ 
++            app.UseAuthentication();
+             app.UsePd10V2CandidateCompatibilitySeam();
+             app.Use(async (httpContext, next) =>
+             {
+@@ -3808,6 +3809,7 @@ public sealed class GoldenLifecycleParityTests
+             }
+ 
+             app.UseRouting();
++            app.UseAuthorization();
+             app.MapFoldersServerEndpoints();
+             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+             eventStoreClientFactory = app.GetTestClient;
+@@ -4170,8 +4172,10 @@ public sealed class GoldenLifecycleParityTests
+ 
+                 await next(http).ConfigureAwait(false);
+             });
++            app.UseAuthentication();
+             app.UsePd10V2CandidateCompatibilitySeam();
+             app.UseRouting();
++            app.UseAuthorization();
+             app.MapFoldersServerEndpoints();
+             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+             eventStoreClientFactory = app.GetTestClient;
+diff --git a/tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs b/tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs
+index edab00bb..b089b2ec 100644
+--- a/tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs
++++ b/tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs
+@@ -1079,8 +1079,10 @@ public sealed class MixedSurfaceHandoffTests
+             builder.Services.AddSingleton(timeProvider);
+ 
+             WebApplication app = builder.Build();
++            app.UseAuthentication();
+             app.UsePd10V2CandidateCompatibilitySeam();
+             app.UseRouting();
++            app.UseAuthorization();
+             app.MapFoldersServerEndpoints();
+             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+             eventStoreClientFactory = app.GetTestClient;
+diff --git a/tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs b/tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs
+index 56b78a33..6d364e28 100644
+--- a/tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs
++++ b/tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs
+@@ -1,4 +1,5 @@
+ using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.ServiceDefaults.Authentication;
+ using Hexalith.Folders.Aggregates.Folder;
+ using Hexalith.Folders.Authorization;
+ using Hexalith.Folders.Projections.TenantAccess;
+@@ -8,6 +9,7 @@ using Hexalith.Folders.Server.Authentication;
+ using Hexalith.Folders.Server.Authorization;
+ 
+ using Microsoft.AspNetCore.Authentication;
++using Microsoft.AspNetCore.Authorization;
+ using Microsoft.AspNetCore.Builder;
+ using Microsoft.AspNetCore.TestHost;
+ using Microsoft.Extensions.Configuration;
+@@ -174,21 +176,24 @@ internal sealed class RoutingModeTestHost : IAsyncDisposable
+         RecordingRoutingAuditSink auditSink = new();
+         IEventStoreGatewayClient gateway = Substitute.For<IEventStoreGatewayClient>();
+ 
+-        if (claimsIdentity)
++        builder.Services
++            .AddAuthentication()
++            .AddScheme<AuthenticationSchemeOptions, RoutingModeAuthenticationHandler>(
++                RoutingModeAuthenticationHandler.SchemeName,
++                configureOptions: null);
++        builder.Services.Configure<AuthenticationOptions>(static options =>
+         {
+-            builder.Services
+-                .AddAuthentication()
+-                .AddScheme<AuthenticationSchemeOptions, RoutingModeAuthenticationHandler>(
+-                    RoutingModeAuthenticationHandler.SchemeName,
+-                    configureOptions: null);
+-            builder.Services.Configure<AuthenticationOptions>(static options =>
+-            {
+-                options.DefaultScheme = RoutingModeAuthenticationHandler.SchemeName;
+-                options.DefaultAuthenticateScheme = RoutingModeAuthenticationHandler.SchemeName;
+-                options.DefaultChallengeScheme = RoutingModeAuthenticationHandler.SchemeName;
+-            });
+-        }
+-        else
++            options.DefaultScheme = RoutingModeAuthenticationHandler.SchemeName;
++            options.DefaultAuthenticateScheme = RoutingModeAuthenticationHandler.SchemeName;
++            options.DefaultChallengeScheme = RoutingModeAuthenticationHandler.SchemeName;
++        });
++        // Keep the SDK credential-kind requirement while binding this isolated routing fixture
++        // to its explicit test scheme after the production policy registration.
++        builder.Services.PostConfigure<AuthorizationOptions>(static options =>
++            options.AddPolicy(EventStoreHttpHostSecurityExtensions.HumanPolicy,
++                new AuthorizationPolicy(EventStoreHttpHostSecurityExtensions.CreateHumanPolicy().Requirements,
++                    [RoutingModeAuthenticationHandler.SchemeName])));
++        if (!claimsIdentity)
+         {
+             builder.Services.RemoveAll<ITenantContextAccessor>();
+             builder.Services.AddSingleton<ITenantContextAccessor>(identity);
+@@ -218,7 +223,13 @@ internal sealed class RoutingModeTestHost : IAsyncDisposable
+         app.UseFoldersServerPipeline();
+         await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+ 
+-        return new RoutingModeTestHost(app, app.GetTestClient(), resolved, tenantStore, lifecycle, auditSink, gateway);
++        HttpClient client = app.GetTestClient();
++        if (!claimsIdentity)
++        {
++            client.DefaultRequestHeaders.Authorization = new(RoutingModeAuthenticationHandler.SchemeName);
++        }
++
++        return new RoutingModeTestHost(app, client, resolved, tenantStore, lifecycle, auditSink, gateway);
+     }
+ 
+     /// <inheritdoc/>
+diff --git a/tests/Hexalith.Folders.Server.Tests/Authentication/FoldersProductionAuthenticationTests.cs b/tests/Hexalith.Folders.Server.Tests/Authentication/FoldersProductionAuthenticationTests.cs
+index cf8a5791..e346ed8e 100644
+--- a/tests/Hexalith.Folders.Server.Tests/Authentication/FoldersProductionAuthenticationTests.cs
++++ b/tests/Hexalith.Folders.Server.Tests/Authentication/FoldersProductionAuthenticationTests.cs
+@@ -132,7 +132,7 @@ public sealed class FoldersProductionAuthenticationTests
+         string program = File.ReadAllText(RepositoryPath("src/Hexalith.Folders.Server/FoldersServerHostComposition.cs"));
+         int authentication = program.IndexOf("app.UseAuthentication();", StringComparison.Ordinal);
+         int authorization = program.IndexOf("app.UseAuthorization();", StringComparison.Ordinal);
+-        int endpoints = program.IndexOf("routes.MapFoldersServerEndpoints();", StringComparison.Ordinal);
++        int endpoints = program.IndexOf("app.MapFoldersServerEndpoints();", StringComparison.Ordinal);
+ 
+         authentication.ShouldBeGreaterThanOrEqualTo(0);
+         authorization.ShouldBeGreaterThan(authentication);

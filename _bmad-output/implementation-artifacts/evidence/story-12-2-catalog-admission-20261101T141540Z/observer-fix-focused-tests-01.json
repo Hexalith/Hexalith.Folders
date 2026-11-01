@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+    "-parallel",
+    "none",
+    "-class",
+    "*Task36FoldDiagnosticObserverTests",
+    "-class",
+    "*OperationalStatusProjectionHandlerTests",
+    "-xml",
+    ".artifacts/story-12-2-catalog-admission-20261101T141540Z/observer-fix-focused-tests-01.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T15:13:31.335198+00:00",
+  "finishedAtUtc": "2026-11-01T15:13:34.452987+00:00",
+  "seconds": 3.1177819599979557,
+  "exitCode": 0
+}

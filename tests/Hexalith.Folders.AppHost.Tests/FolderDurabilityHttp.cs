@@ -38,11 +38,13 @@ internal static class FolderDurabilityHttp
 
     internal static async Task<HttpResponseMessage> SendAsync(HttpClient client, HttpRequestMessage original,
         bool retryUnavailableRead, CancellationToken cancellationToken,
-        Func<HttpResponseMessage, CancellationToken, Task<bool>>? retryOutcomeAsync = null, TimeSpan? retryBudget = null)
+        Func<HttpResponseMessage, CancellationToken, Task<bool>>? retryOutcomeAsync = null, TimeSpan? retryBudget = null,
+        Func<HttpContent>? contentFactory = null)
     {
         using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         deadline.CancelAfter(retryBudget ?? TimeSpan.FromSeconds(75));
-        byte[]? body = original.Content is null ? null : await original.Content.ReadAsByteArrayAsync(deadline.Token).ConfigureAwait(false);
+        byte[]? body = contentFactory is not null || original.Content is null
+            ? null : await original.Content.ReadAsByteArrayAsync(deadline.Token).ConfigureAwait(false);
         int retries = 0;
         while (true)
         {
@@ -50,7 +52,20 @@ internal static class FolderDurabilityHttp
             { Version = original.Version, VersionPolicy = original.VersionPolicy };
             foreach (var header in original.Headers)
                 request.Headers.TryAddWithoutValidation(header.Key, header.Value);
-            if (body is not null)
+            if (contentFactory is not null)
+            {
+                request.Content = contentFactory();
+                // Preserve content metadata, leaving framing to the fresh content rather than
+                // carrying a buffered Content-Length into the natural streaming request.
+                if (original.Content is not null)
+                    foreach (var header in original.Content.Headers)
+                        if (!string.Equals(header.Key, "Content-Length", StringComparison.OrdinalIgnoreCase))
+                        {
+                            request.Content.Headers.Remove(header.Key);
+                            request.Content.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                        }
+            }
+            else if (body is not null)
             {
                 request.Content = new ByteArrayContent(body);
                 foreach (var header in original.Content!.Headers)

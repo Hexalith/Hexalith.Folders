@@ -1,0 +1,17 @@
+{
+  "attempt": "strict-real-provider-bound-mtls",
+  "qualification": "intermediate, not final byte-unified live selection",
+  "reason": "Tenants.AppHost test graph rebuilt Memories with its alternate current-source SDK compile profile; actual host needed a later standalone Debug/project-reference refresh. Earlier shell preflight failed but the next newline command started the live run. No source changes or builds occurred during that live run.",
+  "correction": "Retain the attempt and its exact identities; directly rebuild Memories after all test-AppHost builds; require byte-unified actual live SDK copies in a separate successful preflight before the final live command.",
+  "currentLiveContractsHashesAfterDirectMemoriesBuild": {
+    "folders": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+    "workers": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+    "gateway": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+    "tenants": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+    "memories": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+    "apphost": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+    "tests": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+    "observer": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5"
+  },
+  "allCurrentContractsHashesEqual": true
+}

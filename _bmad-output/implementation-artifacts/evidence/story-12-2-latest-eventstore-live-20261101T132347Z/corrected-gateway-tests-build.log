@@ -1,0 +1,33 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj (in 214 ms).
+  19 of 20 projects are up-to-date for restore.
+  Hexalith.Folders.Contracts -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll
+  Hexalith.Commons.UniqueIds -> /home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll
+  Hexalith.EventStore.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll
+  Hexalith.EventStore.Client -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/bin/Debug/net10.0/Hexalith.EventStore.Client.dll
+  Hexalith.Folders -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.Folders.dll
+  Hexalith.EventStore.Admin.Abstractions -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll
+  Hexalith.EventStore.ServiceDefaults -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll
+  Hexalith.EventStore.DomainService -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll
+  Hexalith.EventStore.Server -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/bin/Debug/net10.0/Hexalith.EventStore.Server.dll
+  Hexalith.EventStore.Gateway -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Gateway/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll
+  Hexalith.Folders.EventStore -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll
+  Hexalith.Folders.ServiceDefaults -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.ServiceDefaults/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll
+  Hexalith.McpCli.Analyzers -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Analyzers/bin/Debug/netstandard2.0/Hexalith.McpCli.Analyzers.dll
+  Hexalith.McpCli.Abstractions -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll
+  Hexalith.Tenants.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll
+  Hexalith.Tenants.Client -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Client/bin/Debug/net10.0/Hexalith.Tenants.Client.dll
+  Hexalith.Memories.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Contracts/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll
+  Hexalith.Memories.Client.Rest -> /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Client.Rest/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll
+  Hexalith.Folders.Server -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll
+  Hexalith.Memories.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Contracts/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll
+  Hexalith.Memories.Client.Rest -> /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Client.Rest/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll
+/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/NativeTaskAdmissionTests.cs(49,28): error CS7036: There is no argument given that corresponds to the required parameter 'encoder' of 'IdempotencyIntentAdapterRegistry.IdempotencyIntentAdapterRegistry(IRouteCatalogAuthority, IEnumerable<IIdempotencyIntentAdapter>, CanonicalIdempotencyIntentEncoder)' [/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj]
+
+Build FAILED.
+
+/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/NativeTaskAdmissionTests.cs(49,28): error CS7036: There is no argument given that corresponds to the required parameter 'encoder' of 'IdempotencyIntentAdapterRegistry.IdempotencyIntentAdapterRegistry(IRouteCatalogAuthority, IEnumerable<IIdempotencyIntentAdapter>, CanonicalIdempotencyIntentEncoder)' [/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj]
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:05.23

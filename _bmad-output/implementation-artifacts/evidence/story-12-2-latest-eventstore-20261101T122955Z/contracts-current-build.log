@@ -1,0 +1,13 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj (in 60 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj (in 192 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj (in 192 ms).
+  Hexalith.Folders.Aspire -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-contracts/bin/Hexalith.Folders.Aspire/debug/Hexalith.Folders.Aspire.dll
+  Hexalith.Folders.Contracts -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-contracts/bin/Hexalith.Folders.Contracts/debug/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders.Contracts.Tests -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-contracts/bin/Hexalith.Folders.Contracts.Tests/debug/Hexalith.Folders.Contracts.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.15

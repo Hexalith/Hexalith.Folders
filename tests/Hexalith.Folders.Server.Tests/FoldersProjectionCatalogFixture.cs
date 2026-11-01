@@ -80,7 +80,10 @@ internal sealed class FoldersProjectionCatalogFixture
         var identity = scope.ServiceProvider.GetRequiredService<IOptions<DomainProjectionIdentityOptions>>().Value;
         var handler = scope.ServiceProvider.GetServices<IAsyncDomainProjectionHandler>()
             .Single(item => item.Domain == "folders" && item.ProjectionType == OperationalStatusKeys.ProjectionType);
-        var declarations = CompiledRouteCatalogDeclarations.Read([handler.GetType().Assembly]);
+        // This isolated component catalog serves the actual named projection only. Full runtime
+        // command/query/legacy ownership is qualified by the separate complete-cohort composition.
+        var declarations = CompiledRouteCatalogDeclarations.Read([handler.GetType().Assembly])
+            .Where(item => item.Kind == "projection" && item.Execution!.HandlerType == handler.GetType().FullName).ToArray();
         var declaration = declarations.Single(item => item.Execution!.HandlerType == handler.GetType().FullName);
         var endpoint = ((IEndpointRouteBuilder)_app).DataSources.SelectMany(source => source.Endpoints).OfType<RouteEndpoint>()
             .Single(item => item.RoutePattern.RawText == "/project/v2");

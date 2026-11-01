@@ -1,0 +1,19 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Folders.AppHost.Tests
+  Discovered:  Hexalith.Folders.AppHost.Tests
+  Starting:    Hexalith.Folders.AppHost.Tests
+Readiness workspace lock: source=9; acl=8; operational=8; stale=True.
+SDK shared Accumulate unresolved: Retryable/projection_partial_retry; resuming the same action.
+Readiness workspace lock: source=9; acl=8; operational=8; stale=False.
+SDK shared Accumulate unresolved: Retryable/projection_partial_retry; resuming the same action.
+Readiness workspace lock: source=9; acl=9; operational=8; stale=False.
+SDK shared Accumulate unresolved: Retryable/projection_partial_retry; resuming the same action.
+Readiness workspace lock: source=9; acl=9; operational=9; stale=False.
+SDK shared Accumulate unresolved: Indeterminate/projection_handler_failure; resuming the same action.
+SDK shared Accumulate unresolved: Retryable/projection_partial_retry; resuming the same action.
+SDK shared Accumulate unresolved: Indeterminate/projection_handler_failure; resuming the same action.
+SDK shared Accumulate unresolved: Indeterminate/projection_handler_failure; resuming the same action.
+SDK shared Accumulate unresolved: Indeterminate/projection_handler_failure; resuming the same action.
+  Finished:    Hexalith.Folders.AppHost.Tests (ID = '5dd8938a1a52b8aaca78f6781cb034abc7d3eef420f013602bd289bef61d36a9')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.AppHost.Tests  Total: 22, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 1.051s

@@ -7,6 +7,9 @@
     <ProjectReference Include="..\..\src\Hexalith.Folders.Server\Hexalith.Folders.Server.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Fixtures/legacy-canonical-intents.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />

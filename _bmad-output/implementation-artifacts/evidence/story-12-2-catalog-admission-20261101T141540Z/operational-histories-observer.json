@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+    "-class",
+    "*OperationalStatus*",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/operational-histories-observer.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T15:21:57.250752+00:00",
+  "finishedAtUtc": "2026-11-01T15:22:50.656803+00:00",
+  "seconds": 53.4083088900079,
+  "exitCode": 0
+}

@@ -1,0 +1,34 @@
+{
+  "argv": [
+    "dotnet",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/bin/Hexalith.Folders.IntegrationTests/debug/Hexalith.Folders.IntegrationTests.dll",
+    "-class",
+    "Hexalith.Folders.IntegrationTests.AspireTopologyTests",
+    "-result-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/verification/integration-topology-standard-layout.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "artifactsPath": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration",
+  "startedAtUtc": "2026-11-01T13:06:07.580686+00:00",
+  "finishedAtUtc": "2026-11-01T13:06:08.080693+00:00",
+  "exitCode": 0,
+  "summary": {
+    "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+    "id": "72b60b5c-3c73-4362-a3d6-57bd7a525bf9",
+    "name": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/bin/Hexalith.Folders.IntegrationTests/debug/Hexalith.Folders.IntegrationTests.dll",
+    "run-date": "2026-11-01",
+    "run-time": "13:06:07",
+    "start-rtf": "2026-11-01T13:06:07.7541459+00:00",
+    "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+    "target-framework": ".NETCoreApp,Version=v10.0",
+    "errors": "0",
+    "failed": "0",
+    "finish-rtf": "2026-11-01T13:06:08.0401387+00:00",
+    "not-run": "0",
+    "passed": "14",
+    "skipped": "0",
+    "time": "0.287",
+    "time-rtf": "00:00:00.2870000",
+    "total": "14"
+  }
+}

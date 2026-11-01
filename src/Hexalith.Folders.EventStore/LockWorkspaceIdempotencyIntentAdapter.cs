@@ -2,13 +2,18 @@ using System.Text.Json;
 
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.Contracts.Routing;
+using Hexalith.Folders.Routing;
 
 namespace Hexalith.Folders.EventStore;
 
 /// <summary>Trusted canonical intent adapter for LockWorkspace.</summary>
-internal sealed class LockWorkspaceIdempotencyIntentAdapter : IIdempotencyIntentAdapter
+internal sealed class LockWorkspaceIdempotencyIntentAdapter : IDeclaredIdempotencyIntentAdapter
 {
-    /// <inheritdoc />
+    /// <inheritdoc/>
+    public CommandIntentDeclaration Declaration => FoldersCommandCatalog.Commands.Single(declaration => declaration.Route.MessageType == CommandType);
+
+    /// <inheritdoc/>
     public string CommandType => "Hexalith.Folders.Commands.LockWorkspace";
 
     /// <inheritdoc />

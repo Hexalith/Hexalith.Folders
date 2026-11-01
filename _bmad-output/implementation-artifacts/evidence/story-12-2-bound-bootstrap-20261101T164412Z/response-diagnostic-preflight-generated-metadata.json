@@ -1,0 +1,121 @@
+{
+  "method": "Recover the compiled assembly version and its unique informational-version attribute from the actual PE. Substitute only those standard AssemblyInfo version attributes into the current shared generated template, then require exact equality with the PDB document SHA-256. This is reconstruction for audit, not a claim that the old obj file was retained. No product output is modified.",
+  "rows": [
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Composition/bin/Debug/net10.0/Hexalith.Builds.Tooling.pdb",
+      "sourcePath": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/obj/Debug/net10.0/Hexalith.Builds.Tooling.AssemblyInfo.cs",
+      "expectedPdbSha256": "c9e1f88c5445b5d06ef0fdc6dfb422a44b678466d35ce96c74da890aa0877e25",
+      "currentSharedObjSha256": "2ba4b96e1cc1cd45c68869c1b6ffc8df12dbe1f09f9837be2f4e32e594172aba",
+      "reconstructedSha256": "c9e1f88c5445b5d06ef0fdc6dfb422a44b678466d35ce96c74da890aa0877e25",
+      "matchesExpected": true,
+      "replacements": {
+        "AssemblyInformationalVersionAttribute": {
+          "currentSharedObj": "1.0.0-20261101183601+e9b74ab24914b7768a1dde7e3861349f577ca011",
+          "compiledAssembly": "1.0.0-20261101175539+e9b74ab24914b7768a1dde7e3861349f577ca011"
+        }
+      },
+      "assembly": {
+        "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Composition/bin/Debug/net10.0/Hexalith.Builds.Tooling.dll",
+        "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Composition/bin/Debug/net10.0/Hexalith.Builds.Tooling.pdb",
+        "mvid": "f09a54e6-9957-449f-bca0-5daa2b0d78a2",
+        "version": "1.0.0.0"
+      }
+    },
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.AppHost.Tests/bin/Debug/net10.0/Hexalith.Builds.Tooling.pdb",
+      "sourcePath": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/obj/Debug/net10.0/Hexalith.Builds.Tooling.AssemblyInfo.cs",
+      "expectedPdbSha256": "7699f475c60356dec8f83abd1c0b6259ce6e74ba92acba9d87fbe0e2c1cd0ac0",
+      "currentSharedObjSha256": "2ba4b96e1cc1cd45c68869c1b6ffc8df12dbe1f09f9837be2f4e32e594172aba",
+      "reconstructedSha256": "7699f475c60356dec8f83abd1c0b6259ce6e74ba92acba9d87fbe0e2c1cd0ac0",
+      "matchesExpected": true,
+      "replacements": {
+        "AssemblyInformationalVersionAttribute": {
+          "currentSharedObj": "1.0.0-20261101183601+e9b74ab24914b7768a1dde7e3861349f577ca011",
+          "compiledAssembly": "1.0.0-20261101175633+e9b74ab24914b7768a1dde7e3861349f577ca011"
+        }
+      },
+      "assembly": {
+        "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.AppHost.Tests/bin/Debug/net10.0/Hexalith.Builds.Tooling.dll",
+        "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.AppHost.Tests/bin/Debug/net10.0/Hexalith.Builds.Tooling.pdb",
+        "mvid": "84b1cb7e-1418-48d3-9f2d-877943f9d652",
+        "version": "1.0.0.0"
+      }
+    },
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.AppHost.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+      "sourcePath": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/obj/Debug/net10.0/Hexalith.Commons.UniqueIds.AssemblyInfo.cs",
+      "expectedPdbSha256": "7bc2327dd88a77fc6e79ecf6b559d771eba05b4a619dab44931a133b4ad0f016",
+      "currentSharedObjSha256": "012775cbf6b7481d867a40b2a8e1b481284fc7705d3f87e16a219b67be8c2c90",
+      "reconstructedSha256": "7bc2327dd88a77fc6e79ecf6b559d771eba05b4a619dab44931a133b4ad0f016",
+      "matchesExpected": true,
+      "replacements": {
+        "AssemblyFileVersionAttribute": {
+          "currentSharedObj": "1.0.0.0",
+          "compiledAssembly": "3.130.2.0"
+        },
+        "AssemblyVersionAttribute": {
+          "currentSharedObj": "1.0.0.0",
+          "compiledAssembly": "3.130.2.0"
+        },
+        "AssemblyInformationalVersionAttribute": {
+          "currentSharedObj": "1.0.0+0825abc8ed9338e5579ce5d995bd221dbaae9a1c",
+          "compiledAssembly": "3.130.2+0825abc8ed9338e5579ce5d995bd221dbaae9a1c"
+        }
+      },
+      "assembly": {
+        "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.AppHost.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+        "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.AppHost.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+        "mvid": "ca59b3ed-09d2-4768-a843-df5c7d70ab8a",
+        "version": "3.130.2.0"
+      }
+    },
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+      "sourcePath": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/obj/Debug/net10.0/Hexalith.Commons.UniqueIds.AssemblyInfo.cs",
+      "expectedPdbSha256": "7bc2327dd88a77fc6e79ecf6b559d771eba05b4a619dab44931a133b4ad0f016",
+      "currentSharedObjSha256": "012775cbf6b7481d867a40b2a8e1b481284fc7705d3f87e16a219b67be8c2c90",
+      "reconstructedSha256": "7bc2327dd88a77fc6e79ecf6b559d771eba05b4a619dab44931a133b4ad0f016",
+      "matchesExpected": true,
+      "replacements": {
+        "AssemblyFileVersionAttribute": {
+          "currentSharedObj": "1.0.0.0",
+          "compiledAssembly": "3.130.2.0"
+        },
+        "AssemblyVersionAttribute": {
+          "currentSharedObj": "1.0.0.0",
+          "compiledAssembly": "3.130.2.0"
+        },
+        "AssemblyInformationalVersionAttribute": {
+          "currentSharedObj": "1.0.0+0825abc8ed9338e5579ce5d995bd221dbaae9a1c",
+          "compiledAssembly": "3.130.2+0825abc8ed9338e5579ce5d995bd221dbaae9a1c"
+        }
+      },
+      "assembly": {
+        "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+        "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+        "mvid": "ca59b3ed-09d2-4768-a843-df5c7d70ab8a",
+        "version": "3.130.2.0"
+      }
+    },
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Builds.Tooling.pdb",
+      "sourcePath": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/obj/Debug/net10.0/Hexalith.Builds.Tooling.AssemblyInfo.cs",
+      "expectedPdbSha256": "07ba8853e8be2d807d0cc7398a68764d5efa2dc8a128954737a6b1709ae74655",
+      "currentSharedObjSha256": "2ba4b96e1cc1cd45c68869c1b6ffc8df12dbe1f09f9837be2f4e32e594172aba",
+      "reconstructedSha256": "07ba8853e8be2d807d0cc7398a68764d5efa2dc8a128954737a6b1709ae74655",
+      "matchesExpected": true,
+      "replacements": {
+        "AssemblyInformationalVersionAttribute": {
+          "currentSharedObj": "1.0.0-20261101183601+e9b74ab24914b7768a1dde7e3861349f577ca011",
+          "compiledAssembly": "1.0.0-20261101183602+e9b74ab24914b7768a1dde7e3861349f577ca011"
+        }
+      },
+      "assembly": {
+        "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Builds.Tooling.dll",
+        "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Builds.Tooling.pdb",
+        "mvid": "ae8017f5-5e0f-4e79-92d3-a40a4db7338e",
+        "version": "1.0.0.0"
+      }
+    }
+  ]
+}

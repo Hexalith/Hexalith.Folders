@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.EventStore.DomainService.Tests/Hexalith.EventStore.DomainService.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "--artifacts-path",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z",
+    "-m:1",
+    "-nr:false",
+    "-v:minimal"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "startedAtUtc": "2026-11-01T12:31:03.734389+00:00",
+  "finishedAtUtc": "2026-11-01T12:31:13.151870+00:00",
+  "exitCode": 0
+}

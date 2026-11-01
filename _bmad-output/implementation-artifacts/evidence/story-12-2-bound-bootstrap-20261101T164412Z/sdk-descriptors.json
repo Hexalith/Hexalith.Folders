@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "dotnet",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.Tests.dll",
+    "-parallel",
+    "none",
+    "-class",
+    "*IdempotencyDescriptorCompatibilityTests",
+    "-class",
+    "*RouteCatalogCodecTests",
+    "-class",
+    "*RouteCatalogValidatorTests",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/sdk-descriptors.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T17:08:32.239257+00:00",
+  "finishedAtUtc": "2026-11-01T17:08:33.054581+00:00",
+  "seconds": 0.8153221840038896,
+  "exitCode": 0
+}

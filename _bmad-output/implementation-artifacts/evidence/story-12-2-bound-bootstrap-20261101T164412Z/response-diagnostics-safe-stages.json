@@ -1,0 +1,130 @@
+[
+  {
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "message": "Executing action method Hexalith.EventStore.Controllers.CommandsController.SubmitBoundWorkload (Hexalith.EventStore.Gateway) - Validation state: Valid"
+  },
+  {
+    "category": "Hexalith.EventStore.Pipeline.LoggingBehavior",
+    "message": "MediatR pipeline entry: CorrelationId=01M6C6TK1HTAYJE9MHY4BJMBJE, CausationId=01M6C6TK1HTAYJE9MHY4BJMBJE, CommandType=BootstrapGlobalAdmin, Tenant=system, Domain=global-administrators, AggregateId=global-administrators, SourceIp=127.0.0.1, Endpoint=/api/v1/commands/bound/workload, UserId=(null), ReceivedAtUtc=11/01/2026 18:44:22 +00:00, Stage=PipelineEntry"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "message": "Command received: CorrelationId=01M6C6TDEEPD43RPND9ZDP0SQD, CausationId=01M6C6TDEDDXT9R4EM23Z8DKQT, CommandType=BootstrapGlobalAdmin, TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=CommandReceived"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Projections.ProjectionUpdateOrchestrator",
+    "message": "Projection update started: TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=ProjectionUpdateStarted"
+  },
+  {
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "message": "Executing action method Hexalith.EventStore.Controllers.CommandsController.SubmitBoundWorkload (Hexalith.EventStore.Gateway) - Validation state: Valid"
+  },
+  {
+    "category": "Hexalith.EventStore.Pipeline.LoggingBehavior",
+    "message": "MediatR pipeline entry: CorrelationId=01M6C6TRWW1RPC8C7MCY9ECRWN, CausationId=01M6C6TRWW1RPC8C7MCY9ECRWN, CommandType=BootstrapGlobalAdmin, Tenant=system, Domain=global-administrators, AggregateId=global-administrators, SourceIp=127.0.0.1, Endpoint=/api/v1/commands/bound/workload, UserId=(null), ReceivedAtUtc=11/01/2026 18:44:29 +00:00, Stage=PipelineEntry"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "message": "Command received: CorrelationId=01M6C6TDEEPD43RPND9ZDP0SQD, CausationId=01M6C6TDEDDXT9R4EM23Z8DKQT, CommandType=BootstrapGlobalAdmin, TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=CommandReceived"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Projections.ProjectionUpdateOrchestrator",
+    "message": "Projection update started: TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=ProjectionUpdateStarted"
+  },
+  {
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "message": "Executing action method Hexalith.EventStore.Controllers.CommandsController.SubmitBoundWorkload (Hexalith.EventStore.Gateway) - Validation state: Valid"
+  },
+  {
+    "category": "Hexalith.EventStore.Pipeline.LoggingBehavior",
+    "message": "MediatR pipeline entry: CorrelationId=01M6C6TYWEM553FHXR74C3PN99, CausationId=01M6C6TYWEM553FHXR74C3PN99, CommandType=BootstrapGlobalAdmin, Tenant=system, Domain=global-administrators, AggregateId=global-administrators, SourceIp=127.0.0.1, Endpoint=/api/v1/commands/bound/workload, UserId=(null), ReceivedAtUtc=11/01/2026 18:44:35 +00:00, Stage=PipelineEntry"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "message": "Command received: CorrelationId=01M6C6TDEEPD43RPND9ZDP0SQD, CausationId=01M6C6TDEDDXT9R4EM23Z8DKQT, CommandType=BootstrapGlobalAdmin, TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=CommandReceived"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Projections.ProjectionUpdateOrchestrator",
+    "message": "Projection update started: TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=ProjectionUpdateStarted"
+  },
+  {
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "message": "Executed action Hexalith.EventStore.Controllers.CommandsController.SubmitBoundWorkload (Hexalith.EventStore.Gateway) in 15988.5007ms"
+  },
+  {
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "message": "Executing action method Hexalith.EventStore.Controllers.CommandsController.SubmitBoundWorkload (Hexalith.EventStore.Gateway) - Validation state: Valid"
+  },
+  {
+    "category": "Hexalith.EventStore.Pipeline.LoggingBehavior",
+    "message": "MediatR pipeline entry: CorrelationId=01M6C6V4SN9Y2YCXCYSP778KWJ, CausationId=01M6C6V4SN9Y2YCXCYSP778KWJ, CommandType=BootstrapGlobalAdmin, Tenant=system, Domain=global-administrators, AggregateId=global-administrators, SourceIp=127.0.0.1, Endpoint=/api/v1/commands/bound/workload, UserId=(null), ReceivedAtUtc=11/01/2026 18:44:41 +00:00, Stage=PipelineEntry"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Projections.ProjectionUpdateOrchestrator",
+    "message": "Projection update started: TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=ProjectionUpdateStarted"
+  },
+  {
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "message": "Executed action Hexalith.EventStore.Controllers.CommandsController.SubmitBoundWorkload (Hexalith.EventStore.Gateway) in 12732.3342ms"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "message": "Command received: CorrelationId=01M6C6TDEEPD43RPND9ZDP0SQD, CausationId=01M6C6TDEDDXT9R4EM23Z8DKQT, CommandType=BootstrapGlobalAdmin, TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=CommandReceived"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Projections.ProjectionUpdateOrchestrator",
+    "message": "Projection update started: TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=ProjectionUpdateStarted"
+  },
+  {
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "message": "Executing action method Hexalith.EventStore.Controllers.CommandsController.SubmitBoundWorkload (Hexalith.EventStore.Gateway) - Validation state: Valid"
+  },
+  {
+    "category": "Hexalith.EventStore.Pipeline.LoggingBehavior",
+    "message": "MediatR pipeline entry: CorrelationId=01M6C6V9BH3RQFE5XC097KR20P, CausationId=01M6C6V9BH3RQFE5XC097KR20P, CommandType=BootstrapGlobalAdmin, Tenant=system, Domain=global-administrators, AggregateId=global-administrators, SourceIp=127.0.0.1, Endpoint=/api/v1/commands/bound/workload, UserId=(null), ReceivedAtUtc=11/01/2026 18:44:46 +00:00, Stage=PipelineEntry"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "message": "Command received: CorrelationId=01M6C6TDEEPD43RPND9ZDP0SQD, CausationId=01M6C6TDEDDXT9R4EM23Z8DKQT, CommandType=BootstrapGlobalAdmin, TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=CommandReceived"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Projections.ProjectionUpdateOrchestrator",
+    "message": "Projection update started: TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=ProjectionUpdateStarted"
+  },
+  {
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "message": "Executed action Hexalith.EventStore.Controllers.CommandsController.SubmitBoundWorkload (Hexalith.EventStore.Gateway) in 15189.0364ms"
+  },
+  {
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "message": "Executing action method Hexalith.EventStore.Controllers.CommandsController.SubmitBoundWorkload (Hexalith.EventStore.Gateway) - Validation state: Valid"
+  },
+  {
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "message": "Executed action method Hexalith.EventStore.Controllers.CommandsController.SubmitBoundWorkload (Hexalith.EventStore.Gateway), returned result Microsoft.AspNetCore.Mvc.ForbidResult in 0.1611ms."
+  },
+  {
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "message": "Executed action Hexalith.EventStore.Controllers.CommandsController.SubmitBoundWorkload (Hexalith.EventStore.Gateway) in 7.5842ms"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Projections.ProjectionUpdateOrchestrator",
+    "message": "Projection update started: TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=ProjectionUpdateStarted"
+  },
+  {
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "message": "Executed action Hexalith.EventStore.Controllers.CommandsController.SubmitBoundWorkload (Hexalith.EventStore.Gateway) in 12406.6331ms"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Projections.ProjectionUpdateOrchestrator",
+    "message": "Projection update started: TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=ProjectionUpdateStarted"
+  },
+  {
+    "category": "Hexalith.EventStore.Server.Projections.ProjectionUpdateOrchestrator",
+    "message": "Projection update started: TenantId=system, Domain=global-administrators, AggregateId=global-administrators, Stage=ProjectionUpdateStarted"
+  },
+  {
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "message": "Executed action Hexalith.EventStore.Controllers.CommandsController.SubmitBoundWorkload (Hexalith.EventStore.Gateway) in 12790.6452ms"
+  }
+]

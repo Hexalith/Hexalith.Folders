@@ -1,0 +1,315 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Folders.Server.Tests
+  Discovered:  Hexalith.Folders.Server.Tests
+  Starting:    Hexalith.Folders.Server.Tests
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CatalogCandidateCannotReplaceIndependentlyObservedExecutableTarget [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(210,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CatalogCandidateCannotReplaceIndependentlyObservedExecutableTarget()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogLifecycleEndpointsRetainNamedPoliciesAndRefuseMissingOrWrongAuthority(route: "/internal/routing/catalog-generation", readback: True) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(486,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogBuilder(RsaSecurityKey key)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(420,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogLifecycleEndpointsRetainNamedPoliciesAndRefuseMissingOrWrongAuthority(String route, Boolean readback)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogLifecycleEndpointsRetainNamedPoliciesAndRefuseMissingOrWrongAuthority(route: "/internal/routing/catalog/prepare", readback: False) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(486,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogBuilder(RsaSecurityKey key)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(420,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogLifecycleEndpointsRetainNamedPoliciesAndRefuseMissingOrWrongAuthority(String route, Boolean readback)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogLifecycleEndpointsRetainNamedPoliciesAndRefuseMissingOrWrongAuthority(route: "/internal/routing/catalog/ready", readback: False) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(486,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogBuilder(RsaSecurityKey key)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(420,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogLifecycleEndpointsRetainNamedPoliciesAndRefuseMissingOrWrongAuthority(String route, Boolean readback)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogLifecycleEndpointsRetainNamedPoliciesAndRefuseMissingOrWrongAuthority(route: "/internal/routing/catalog/commit", readback: False) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(486,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogBuilder(RsaSecurityKey key)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(420,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogLifecycleEndpointsRetainNamedPoliciesAndRefuseMissingOrWrongAuthority(String route, Boolean readback)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogLifecycleEndpointsRetainNamedPoliciesAndRefuseMissingOrWrongAuthority(route: "/internal/routing/catalog/rollback", readback: False) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(486,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogBuilder(RsaSecurityKey key)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(420,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogLifecycleEndpointsRetainNamedPoliciesAndRefuseMissingOrWrongAuthority(String route, Boolean readback)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogLifecycleEndpointsRetainNamedPoliciesAndRefuseMissingOrWrongAuthority(route: "/internal/routing/catalog/reconcile", readback: False) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(486,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogBuilder(RsaSecurityKey key)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(420,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogLifecycleEndpointsRetainNamedPoliciesAndRefuseMissingOrWrongAuthority(String route, Boolean readback)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(method: "GET", route: "/api/v1/folders/folder/lifecycle-status") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(50,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(String method, String route)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(method: "GET", route: "/api/v1/tasks/task/status?folderId=folder") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(50,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(String method, String route)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(method: "PUT", route: "/api/v1/provider-bindings/binding") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(50,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(String method, String route)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(method: "GET", route: "/api/v1/provider-bindings/binding") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(50,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(String method, String route)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(method: "GET", route: "/api/v1/provider-readiness/support-evidence") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(50,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(String method, String route)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(method: "GET", route: "/api/v1/ops-console/readiness-diagnostics") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(50,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(String method, String route)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(method: "GET", route: "/api/v1/folders/folder/audit-trail") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(50,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(String method, String route)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(method: "POST", route: "/api/v1/folders/folder/workspaces/workspace/conten"···) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(50,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(String method, String route)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(method: "POST", route: "/api/v1/folders/folder/workspaces/workspace/native"···) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(50,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.EveryHumanRouteGroupRejectsMissingInvalidWorkloadAndMixedCredentialsWithSafeV1Problems(String method, String route)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.UnclassifiedEndpointFailsStartupEvenWithAnAuthenticatedFallback [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(151,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.UnclassifiedEndpointFailsStartupEvenWithAnAuthenticatedFallback()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.ExactProbesAreAnonymousRootAndAliasesRequireHumanAndDiscoveryRequiresActualChannel [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(96,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.ExactProbesAreAnonymousRootAndAliasesRequireHumanAndDiscoveryRequiresActualChannel()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.WeakCanonicalOverrideFailsStartupWithoutCatalogConvention [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(164,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.WeakCanonicalOverrideFailsStartupWithoutCatalogConvention()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.LateUnclassifiedReplacementDeniesEveryCredentialBeforeHandlerWork [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(222,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.CreateBuilder(RSA rsa, Boolean development)
+        tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs(178,0): at Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests.LateUnclassifiedReplacementDeniesEveryCredentialBeforeHandlerWork()
+        --- End of stack trace from previous location ---
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:43641
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Folders.Server.Tests/debug
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ConfiguredOtlpStartsOneProviderPerSignalAndSubscribesFoldersSignals [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(252,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ConfiguredOtlpStartsOneProviderPerSignalAndSubscribesFoldersSignals()
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(291,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ConfiguredOtlpStartsOneProviderPerSignalAndSubscribesFoldersSignals()
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(291,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ConfiguredOtlpStartsOneProviderPerSignalAndSubscribesFoldersSignals()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(route: "/process", operation: "domain-service:process") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(526,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(String route, String operation)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(route: "/project", operation: "domain-service:project") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(526,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(String route, String operation)
+           at InvokeStub_FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(route: "/query", operation: "domain-service:query") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(526,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(String route, String operation)
+           at InvokeStub_FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(route: "/admin/operational-index-metadata", operation: "domain-service:metadata") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(526,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(String route, String operation)
+           at InvokeStub_FoldersServerHostCompositionTests.ProductionCallbackUsesItsOperationPolicy(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProtectedProductionDiscoveryAdvertisesOnlyProcessorBackedNamedAndSharedRoutes [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProtectedProductionDiscoveryAdvertisesOnlyProcessorBackedNamedAndSharedRoutes()
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProtectedProductionDiscoveryAdvertisesOnlyProcessorBackedNamedAndSharedRoutes()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.DeclaredServerProbesMatchTheActualProductionHost [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(392,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.DeclaredServerProbesMatchTheActualProductionHost()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionHostBindsIndependentPrivateProfilesAndConfiguredProviderServices [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(66,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionHostBindsIndependentPrivateProfilesAndConfiguredProviderServices()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionReadinessReportsHealthyDegradedAndUnavailableDapr(daprHealthy: True, tenantsDegraded: False, lag: 500, status: OK, body: "Healthy") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(353,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionReadinessReportsHealthyDegradedAndUnavailableDapr(Boolean daprHealthy, Boolean tenantsDegraded, Int64 lag, HttpStatusCode status, String body)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionReadinessReportsHealthyDegradedAndUnavailableDapr(daprHealthy: True, tenantsDegraded: False, lag: 501, status: OK, body: "Degraded") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(353,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionReadinessReportsHealthyDegradedAndUnavailableDapr(Boolean daprHealthy, Boolean tenantsDegraded, Int64 lag, HttpStatusCode status, String body)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionReadinessReportsHealthyDegradedAndUnavailableDapr(daprHealthy: True, tenantsDegraded: True, lag: 0, status: OK, body: "Degraded") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(353,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionReadinessReportsHealthyDegradedAndUnavailableDapr(Boolean daprHealthy, Boolean tenantsDegraded, Int64 lag, HttpStatusCode status, String body)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionReadinessReportsHealthyDegradedAndUnavailableDapr(daprHealthy: False, tenantsDegraded: False, lag: 0, status: ServiceUnavailable, body: "Unhealthy") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(353,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionReadinessReportsHealthyDegradedAndUnavailableDapr(Boolean daprHealthy, Boolean tenantsDegraded, Int64 lag, HttpStatusCode status, String body)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionHostRoutesBeforeSharedSecurityInEveryApiMode(mode: V1Only, route: "/api/v1/folders/folder-0123456789abcdef/acl") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(186,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionHostRoutesBeforeSharedSecurityInEveryApiMode(FoldersApiRoutingMode mode, String route)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionHostRoutesBeforeSharedSecurityInEveryApiMode(mode: Coexistence, route: "/api/v2/folders/folder-0123456789abcdef/acl") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(186,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionHostRoutesBeforeSharedSecurityInEveryApiMode(FoldersApiRoutingMode mode, String route)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionHostRoutesBeforeSharedSecurityInEveryApiMode(mode: V2Only, route: "/api/v2/folders/folder-0123456789abcdef/acl") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(186,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionHostRoutesBeforeSharedSecurityInEveryApiMode(FoldersApiRoutingMode mode, String route)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.SdkDefaultsInstallOneResilienceHandlerAndPartitionDaprTargets [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(298,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.SdkDefaultsInstallOneResilienceHandlerAndPartitionDaprTargets()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogActivationStillRefusesAnUntrustedCandidate [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogActivationStillRefusesAnUntrustedCandidate()
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.CatalogActivationStillRefusesAnUntrustedCandidate()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionHostRegistersReceiptAndDurableTenantAuthority [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs(25,0): at Hexalith.Folders.Server.Tests.FoldersProductionTestHost.CreateBuilder(IReadOnlyDictionary`2 settings, String environmentName, Boolean useCallbackCatalog)
+        tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs(47,0): at Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests.ProductionHostRegistersReceiptAndDurableTenantAuthority()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Finished:    Hexalith.Folders.Server.Tests (ID = '894408449178debe5daabcded025ca7d8d3c32d2282bfa7653487806833b2518')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Server.Tests  Total: 38, Errors: 0, Failed: 38, Skipped: 0, Not Run: 0, Time: 0.534s

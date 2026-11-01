@@ -1,0 +1,5 @@
+{
+  "pdb-qualified-inspection": "Unqualified broad inventory control: two stale Server source checksums in Workers.Tests; actual live modules matched their inventory. Both retained, Workers rebuilt/reexecuted 162/162, then full strict run repeated.",
+  "pdb-sealed-selection-inspection": "Final complete selection: zero ordinary or present-document checksum mismatches; all 106 actual mapped records have matching PE identities.",
+  "generatedDocuments": "2915 source-generator document records have no materialized file under obj; they are listed separately, with generated code bound by the qualified DLL/PDB hashes."
+}

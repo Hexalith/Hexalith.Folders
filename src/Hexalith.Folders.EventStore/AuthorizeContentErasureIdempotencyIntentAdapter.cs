@@ -1,11 +1,17 @@
 using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.Contracts.Routing;
+using Hexalith.Folders.Routing;
 using Hexalith.EventStore.Contracts.Commands;
 
 namespace Hexalith.Folders.EventStore;
 
 /// <summary>Admits the private source-generation erasure grant with an exact metadata-only intent.</summary>
-internal sealed class AuthorizeContentErasureIdempotencyIntentAdapter : IIdempotencyIntentAdapter
+internal sealed class AuthorizeContentErasureIdempotencyIntentAdapter : IDeclaredIdempotencyIntentAdapter
 {
+    /// <inheritdoc/>
+    public CommandIntentDeclaration Declaration => FoldersCommandCatalog.Commands.Single(declaration => declaration.Route.MessageType == CommandType);
+
+    /// <inheritdoc/>
     public string CommandType => "Hexalith.Folders.Commands.AuthorizeWorkspaceContentErasure";
     public string AdapterId => FoldersCanonicalIntentBuilder.AdapterId;
     public string OperationId => "authorize-content-erasure";

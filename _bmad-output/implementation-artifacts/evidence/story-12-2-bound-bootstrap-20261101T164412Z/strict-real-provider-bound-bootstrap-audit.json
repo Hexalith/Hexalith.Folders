@@ -1,0 +1,138 @@
+{
+  "capturedAtUtc": "2026-11-01T17:09:10.862622+00:00",
+  "source": {
+    "count": 27421,
+    "drift": [],
+    "headDrift": {}
+  },
+  "runtime": {
+    "folders": {
+      "count": 84,
+      "drift": []
+    },
+    "workers": {
+      "count": 82,
+      "drift": []
+    },
+    "gateway": {
+      "count": 95,
+      "drift": []
+    },
+    "tenants": {
+      "count": 92,
+      "drift": []
+    },
+    "memories": {
+      "count": 96,
+      "drift": []
+    },
+    "apphost": {
+      "count": 156,
+      "drift": []
+    },
+    "tests": {
+      "count": 401,
+      "drift": []
+    },
+    "observer": {
+      "count": 16,
+      "drift": []
+    },
+    "gateway-full": {
+      "count": 173,
+      "drift": []
+    },
+    "server-full": {
+      "count": 144,
+      "drift": []
+    },
+    "workers-full": {
+      "count": 144,
+      "drift": []
+    },
+    "integration-full": {
+      "count": 180,
+      "drift": []
+    },
+    "apphost-helpers-qualified": {
+      "count": 172,
+      "drift": []
+    },
+    "contracts-full": {
+      "count": 86,
+      "drift": []
+    },
+    "operational-histories": {
+      "count": 171,
+      "drift": []
+    },
+    "tenants-full-qualified": {
+      "count": 150,
+      "drift": []
+    },
+    "sdk-descriptors": {
+      "count": 112,
+      "drift": []
+    },
+    "sdk-registry": {
+      "count": 177,
+      "drift": []
+    },
+    "ui": {
+      "count": 44,
+      "drift": []
+    }
+  },
+  "runIds": [],
+  "ownedContainersRemaining": [],
+  "temporaryDirectories": {},
+  "containersAfter": {
+    "exitCode": 0,
+    "entries": [
+      "fe6c35911851cb5ed7e3d39cb7ab994d6a68c0d2bcc163198d21fe3867cf462a fluent-ui-blazor-mcp",
+      "f1e0a30a3a93a1542ee5ad74856e44d483a94f7a8e5ef769f398827815cc1da6 dapr_placement",
+      "8623af8b7bbd8ebd3d73221af72615162475f3f8a7190432e09e64e51befc826 dapr_scheduler",
+      "8d0788f8322fdb91a51f3960cb9a0ceab4a7b892f27bacf2147e97fc4d471922 dapr_redis",
+      "cb7c12622c180c9a16d24a67fc57115f8aeb0d038fed8793d6c9d49e11d1e488 dapr_zipkin"
+    ],
+    "stderr": ""
+  },
+  "aspireAfter": {
+    "argv": [
+      "aspire",
+      "ps",
+      "--format",
+      "json"
+    ],
+    "exitCode": 0,
+    "stdout": "[]\n",
+    "stderr": ""
+  },
+  "priorSeals": {
+    "filesChecked": 7714,
+    "drift": []
+  },
+  "nativeToolsAfter": {
+    "aspire": {
+      "path": "/home/administrator/.aspire/bin/aspire",
+      "sha256": "f8d7c23ede9c5b8efbe421e744810893e9ced96dd9a91030cc334e6f43fad6b3"
+    },
+    "dapr": {
+      "path": "/usr/local/bin/dapr",
+      "sha256": "43429557ff18a7230737b945699417ec391ad41bd431244c175b79ab3c904ce5"
+    },
+    "dotnet": {
+      "path": "/home/administrator/.dotnet/dotnet",
+      "sha256": "634efbf2414144d140d6f59d167342c8b3b53b4c34346ed786dd0470ddc9a3cb"
+    },
+    "docker": {
+      "path": "/mnt/wsl/docker-desktop/cli-tools/usr/bin/docker",
+      "sha256": "6f7a95d27f98fc8c5f6b220898988bf8f61dd9b040936797917cbdc72c6cabe6"
+    },
+    "dapr-runtime": {
+      "path": "/home/administrator/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488"
+    }
+  },
+  "actualBindings": 0
+}

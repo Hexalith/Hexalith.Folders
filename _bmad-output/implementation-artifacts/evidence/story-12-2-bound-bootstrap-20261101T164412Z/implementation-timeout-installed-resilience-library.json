@@ -1,0 +1,618 @@
+{
+  "ecosystem_dependencies": {
+    "status": "complete",
+    "issue_count": 0,
+    "ecosystems": [
+      ".NET Runtime",
+      "Microsoft.Extensions"
+    ],
+    "dependencies": [
+      {
+        "ecosystem": ".NET Runtime",
+        "kind": "Assembly reference",
+        "dependency": "System.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: System",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 1
+      },
+      {
+        "ecosystem": ".NET Runtime",
+        "kind": "Assembly reference",
+        "dependency": "System.ComponentModel.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: System",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 2
+      },
+      {
+        "ecosystem": ".NET Runtime",
+        "kind": "Assembly reference",
+        "dependency": "System.Net.Http, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: System",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 3
+      },
+      {
+        "ecosystem": ".NET Runtime",
+        "kind": "Assembly reference",
+        "dependency": "System.Collections, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: System",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 5
+      },
+      {
+        "ecosystem": ".NET Runtime",
+        "kind": "Assembly reference",
+        "dependency": "System.Threading.RateLimiting, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: System",
+        "version_or_range": "8.0.0.0",
+        "occurrence": 10
+      },
+      {
+        "ecosystem": ".NET Runtime",
+        "kind": "Assembly reference",
+        "dependency": "System.ComponentModel, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: System",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 13
+      },
+      {
+        "ecosystem": ".NET Runtime",
+        "kind": "Assembly reference",
+        "dependency": "System.Collections.Concurrent, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: System",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 19
+      },
+      {
+        "ecosystem": ".NET Runtime",
+        "kind": "Assembly reference",
+        "dependency": "System.Threading, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: System",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 20
+      },
+      {
+        "ecosystem": ".NET Runtime",
+        "kind": "Assembly reference",
+        "dependency": "System.Linq, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: System",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 22
+      },
+      {
+        "ecosystem": ".NET Runtime",
+        "kind": "Assembly reference",
+        "dependency": "System.Net.Primitives, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: System",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 23
+      },
+      {
+        "ecosystem": "Microsoft.Extensions",
+        "kind": "Assembly reference",
+        "dependency": "Microsoft.Extensions.Options, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: Microsoft.Extensions",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 6
+      },
+      {
+        "ecosystem": "Microsoft.Extensions",
+        "kind": "Assembly reference",
+        "dependency": "Microsoft.Extensions.Configuration.Abstractions, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: Microsoft.Extensions",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 7
+      },
+      {
+        "ecosystem": "Microsoft.Extensions",
+        "kind": "Assembly reference",
+        "dependency": "Microsoft.Extensions.Configuration.Binder, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: Microsoft.Extensions",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 8
+      },
+      {
+        "ecosystem": "Microsoft.Extensions",
+        "kind": "Assembly reference",
+        "dependency": "Microsoft.Extensions.DependencyInjection.Abstractions, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: Microsoft.Extensions",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 9
+      },
+      {
+        "ecosystem": "Microsoft.Extensions",
+        "kind": "Assembly reference",
+        "dependency": "Microsoft.Extensions.Configuration, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: Microsoft.Extensions",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 11
+      },
+      {
+        "ecosystem": "Microsoft.Extensions",
+        "kind": "Assembly reference",
+        "dependency": "Microsoft.Extensions.Http, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: Microsoft.Extensions",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 12
+      },
+      {
+        "ecosystem": "Microsoft.Extensions",
+        "kind": "Assembly reference",
+        "dependency": "Microsoft.Extensions.Diagnostics.ExceptionSummarization, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: Microsoft.Extensions",
+        "version_or_range": "10.11.0.0",
+        "occurrence": 14
+      },
+      {
+        "ecosystem": "Microsoft.Extensions",
+        "kind": "Assembly reference",
+        "dependency": "Microsoft.Extensions.Telemetry.Abstractions, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: Microsoft.Extensions",
+        "version_or_range": "10.11.0.0",
+        "occurrence": 17
+      },
+      {
+        "ecosystem": "Microsoft.Extensions",
+        "kind": "Assembly reference",
+        "dependency": "Microsoft.Extensions.ObjectPool, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: Microsoft.Extensions",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 18
+      },
+      {
+        "ecosystem": "Microsoft.Extensions",
+        "kind": "Assembly reference",
+        "dependency": "Microsoft.Extensions.Options.ConfigurationExtensions, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: Microsoft.Extensions",
+        "version_or_range": "10.0.0.0",
+        "occurrence": 21
+      },
+      {
+        "ecosystem": "Microsoft.Extensions",
+        "kind": "Assembly reference",
+        "dependency": "Microsoft.Extensions.Http.Diagnostics, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "declared_by": "Microsoft.Extensions.Http.Resilience, Version=10.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+        "matching_bases": "Assembly name family: Microsoft.Extensions",
+        "version_or_range": "10.11.0.0",
+        "occurrence": 24
+      }
+    ]
+  },
+  "file_name": "Microsoft.Extensions.Http.Resilience.dll",
+  "file_type": "dll",
+  "pdb_path": "/_/artifacts/obj/Microsoft.Extensions.Http.Resilience/Release/net10.0/Microsoft.Extensions.Http.Resilience.pdb",
+  "has_embedded_pdb": false,
+  "has_reproducible_flag": true,
+  "has_normalized_paths": true,
+  "has_source_link": false,
+  "source_link_unavailable_reason": "PDB not checked",
+  "is_deterministic": true,
+  "windows_pdb_detected": false,
+  "source": "File",
+  "last_modified": "2026-10-14T02:40:10Z",
+  "assembly_info": {
+    "assembly_name": "Microsoft.Extensions.Http.Resilience",
+    "assembly_version": "10.11.0.0",
+    "file_version": "10.1100.26.51307",
+    "informational_version": "10.11.0\u002B25f07afa51034e37b334210642d7dc5f191c142d",
+    "product": "Microsoft.Extensions.Http.Resilience",
+    "company": "Microsoft Corporation",
+    "copyright": "\u00A9 Microsoft Corporation. All rights reserved.",
+    "description": "Resilience mechanisms for HttpClient.",
+    "target_framework": ".NETCoreApp,Version=v10.0",
+    "culture": "neutral",
+    "architecture": "AnyCPU",
+    "is_any_cpu": true,
+    "prefers32_bit": false,
+    "is_executable": false,
+    "is_dll": true,
+    "is_signed": true,
+    "public_key_token": "31bf3856ad364e35",
+    "has_unsafe_code": false,
+    "runtime_version": "v4.0.30319",
+    "metadata_version": 0,
+    "compilation_type": "CoreCLR",
+    "is_native_aot": false,
+    "is_ready_to_run": false,
+    "has_managed_metadata": true,
+    "has_cor_header": true,
+    "has_il_code": true,
+    "type_definition_count": 142,
+    "method_definition_count": 593,
+    "references": [
+      {
+        "name": "System.Runtime",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "System.ComponentModel.Annotations",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "System.Net.Http",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Polly.Core",
+        "version": "8.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "c8a3ffc3f8f825cc"
+      },
+      {
+        "name": "System.Collections",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Microsoft.Extensions.Options",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "adb9793829ddae60"
+      },
+      {
+        "name": "Microsoft.Extensions.Configuration.Abstractions",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "adb9793829ddae60"
+      },
+      {
+        "name": "Microsoft.Extensions.Configuration.Binder",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "adb9793829ddae60"
+      },
+      {
+        "name": "Microsoft.Extensions.DependencyInjection.Abstractions",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "adb9793829ddae60"
+      },
+      {
+        "name": "System.Threading.RateLimiting",
+        "version": "8.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "cc7b13ffcd2ddd51"
+      },
+      {
+        "name": "Microsoft.Extensions.Configuration",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "adb9793829ddae60"
+      },
+      {
+        "name": "Microsoft.Extensions.Http",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "adb9793829ddae60"
+      },
+      {
+        "name": "System.ComponentModel",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Microsoft.Extensions.Diagnostics.ExceptionSummarization",
+        "version": "10.11.0.0",
+        "culture": "neutral",
+        "public_key_token": "31bf3856ad364e35"
+      },
+      {
+        "name": "Polly.Extensions",
+        "version": "8.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "c8a3ffc3f8f825cc"
+      },
+      {
+        "name": "Polly.RateLimiting",
+        "version": "8.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "c8a3ffc3f8f825cc"
+      },
+      {
+        "name": "Microsoft.Extensions.Telemetry.Abstractions",
+        "version": "10.11.0.0",
+        "culture": "neutral",
+        "public_key_token": "31bf3856ad364e35"
+      },
+      {
+        "name": "Microsoft.Extensions.ObjectPool",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "adb9793829ddae60"
+      },
+      {
+        "name": "System.Collections.Concurrent",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "System.Threading",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Microsoft.Extensions.Options.ConfigurationExtensions",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "adb9793829ddae60"
+      },
+      {
+        "name": "System.Linq",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "System.Net.Primitives",
+        "version": "10.0.0.0",
+        "culture": "neutral",
+        "public_key_token": "b03f5f7f11d50a3a"
+      },
+      {
+        "name": "Microsoft.Extensions.Http.Diagnostics",
+        "version": "10.11.0.0",
+        "culture": "neutral",
+        "public_key_token": "31bf3856ad364e35"
+      }
+    ]
+  },
+  "extension_methods": [
+    {
+      "method_name": "AddResilienceHandler",
+      "extended_type": "Microsoft.Extensions.DependencyInjection.IHttpClientBuilder",
+      "extension_class": "Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions",
+      "kind": "method",
+      "overloads": 2
+    },
+    {
+      "method_name": "AddStandardHedgingHandler",
+      "extended_type": "Microsoft.Extensions.DependencyInjection.IHttpClientBuilder",
+      "extension_class": "Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions",
+      "kind": "method",
+      "overloads": 2
+    },
+    {
+      "method_name": "AddStandardResilienceHandler",
+      "extended_type": "Microsoft.Extensions.DependencyInjection.IHttpClientBuilder",
+      "extension_class": "Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions",
+      "kind": "method",
+      "overloads": 3
+    },
+    {
+      "method_name": "RemoveAllResilienceHandlers",
+      "extended_type": "Microsoft.Extensions.DependencyInjection.IHttpClientBuilder",
+      "extension_class": "Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "Configure",
+      "extended_type": "Microsoft.Extensions.DependencyInjection.IServiceCollection",
+      "extension_class": "Microsoft.Extensions.Configuration.Binder.SourceGeneration.\u003CBindingExtensions_g\u003EF2C4030DBAFA70C7437B3EA5C8D284507B3243F302E5B354ABE44ECEBF54B902E__BindingExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "DisableFor",
+      "extended_type": "Microsoft.Extensions.Http.Resilience.HttpRetryStrategyOptions",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.HttpRetryStrategyOptionsExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "DisableForUnsafeHttpMethods",
+      "extended_type": "Microsoft.Extensions.Http.Resilience.HttpRetryStrategyOptions",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.HttpRetryStrategyOptionsExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "SelectPipelineBy",
+      "extended_type": "Microsoft.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.HttpResiliencePipelineBuilderExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "SelectPipelineByAuthority",
+      "extended_type": "Microsoft.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.HttpResiliencePipelineBuilderExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "Configure",
+      "extended_type": "Microsoft.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.HttpStandardResiliencePipelineBuilderExtensions",
+      "kind": "method",
+      "overloads": 3
+    },
+    {
+      "method_name": "SelectPipelineBy",
+      "extended_type": "Microsoft.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.HttpStandardResiliencePipelineBuilderExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "SelectPipelineByAuthority",
+      "extended_type": "Microsoft.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.HttpStandardResiliencePipelineBuilderExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "ConfigureOrderedGroups",
+      "extended_type": "Microsoft.Extensions.Http.Resilience.IRoutingStrategyBuilder",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.RoutingStrategyBuilderExtensions",
+      "kind": "method",
+      "overloads": 3
+    },
+    {
+      "method_name": "ConfigureWeightedGroups",
+      "extended_type": "Microsoft.Extensions.Http.Resilience.IRoutingStrategyBuilder",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.RoutingStrategyBuilderExtensions",
+      "kind": "method",
+      "overloads": 3
+    },
+    {
+      "method_name": "Configure",
+      "extended_type": "Microsoft.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.StandardHedgingHandlerBuilderExtensions",
+      "kind": "method",
+      "overloads": 3
+    },
+    {
+      "method_name": "SelectPipelineBy",
+      "extended_type": "Microsoft.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.StandardHedgingHandlerBuilderExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "SelectPipelineByAuthority",
+      "extended_type": "Microsoft.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.StandardHedgingHandlerBuilderExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "Bind",
+      "extended_type": "Microsoft.Extensions.Options.OptionsBuilder\u003CTOptions\u003E",
+      "extension_class": "Microsoft.Extensions.Configuration.Binder.SourceGeneration.\u003CBindingExtensions_g\u003EF2C4030DBAFA70C7437B3EA5C8D284507B3243F302E5B354ABE44ECEBF54B902E__BindingExtensions",
+      "kind": "method",
+      "overloads": 2
+    },
+    {
+      "method_name": "GetRequestMessage",
+      "extended_type": "Polly.ResilienceContext",
+      "extension_class": "Polly.HttpResilienceContextExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "SetRequestMessage",
+      "extended_type": "Polly.ResilienceContext",
+      "extension_class": "Polly.HttpResilienceContextExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "SelectByWeight",
+      "extended_type": "System.Collections.Generic.IList\u003CT\u003E",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.Routing.Internal.RoutingHelper",
+      "kind": "method"
+    },
+    {
+      "method_name": "GetDisplayName",
+      "extended_type": "System.ComponentModel.DataAnnotations.ValidationContext",
+      "extension_class": "Microsoft.Shared.Data.Validation.ValidationContextExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "GetMemberName",
+      "extended_type": "System.ComponentModel.DataAnnotations.ValidationContext",
+      "extension_class": "Microsoft.Shared.Data.Validation.ValidationContextExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "GetPipelineKeyProvider",
+      "extended_type": "System.IServiceProvider",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.Internal.PipelineKeyProviderHelper",
+      "kind": "method"
+    },
+    {
+      "method_name": "GetResilienceContext",
+      "extended_type": "System.Net.Http.HttpRequestMessage",
+      "extension_class": "System.Net.Http.HttpResilienceHttpRequestMessageExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "SetResilienceContext",
+      "extended_type": "System.Net.Http.HttpRequestMessage",
+      "extension_class": "System.Net.Http.HttpResilienceHttpRequestMessageExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "ReplaceHost",
+      "extended_type": "System.Uri",
+      "extension_class": "Microsoft.Extensions.Http.Resilience.Internal.UriExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "ToInvariantString",
+      "extended_type": "int",
+      "extension_class": "Microsoft.Shared.Text.NumericExtensions",
+      "kind": "method"
+    },
+    {
+      "method_name": "ToInvariantString",
+      "extended_type": "long",
+      "extension_class": "Microsoft.Shared.Text.NumericExtensions",
+      "kind": "method"
+    }
+  ],
+  "inspection_failures": [
+    {
+      "section": "Source Documents",
+      "finding": "Source document",
+      "reason": "A matching portable PDB remains unresolved after acquisition."
+    },
+    {
+      "section": "Compilation Options",
+      "finding": "Compilation option",
+      "reason": "A matching portable PDB remains unresolved after acquisition."
+    },
+    {
+      "section": "Compilation References",
+      "finding": "Compilation reference",
+      "reason": "A matching portable PDB remains unresolved after acquisition."
+    }
+  ],
+  "file_size": 135992,
+  "custom_attributes": [
+    {
+      "name": "AssemblyMetadata(IsTrimmable)",
+      "target": "Assembly",
+      "value": "True"
+    },
+    {
+      "name": "AssemblyMetadata(IsAotCompatible)",
+      "target": "Assembly",
+      "value": "True"
+    },
+    {
+      "name": "InternalsVisibleTo",
+      "target": "Assembly",
+      "value": "DynamicProxyGenAssembly2, PublicKey=0024000004800000940000000602000000240000525341310004000001000100c547cac37abd99c8db225ef2f6c8a3602f3b3606cc9891605d02baa56104f4cfc0734aa39b93bf7852f7d9266654753cc297e7d2edfe0bac1cdcf9f717241550e0a7b191195b7667bb4f64bcb8e2121380fd1d9d46ad2d92d2d15605093924cceaf74c4861eff62abf69b9291ed0a340e113be11e6a7d3113e92484cf7045cc7"
+    },
+    {
+      "name": "AssemblyMetadata(RepositoryUrl)",
+      "target": "Assembly",
+      "value": "https://github.com/dotnet/extensions"
+    },
+    {
+      "name": "InternalsVisibleTo",
+      "target": "Assembly",
+      "value": "Microsoft.Extensions.Http.Resilience.Tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100b5fc90e7027f67871e773a8fde8938c81dd402ba65b9201d60593e96c492651e889cc13f1415ebb53fac1131ae0bd333c5ee6021672d9718ea31a8aebd0da0072f25d87dba6fc90ffd598ed4da35e44c398c454307e8e33b8426143daec9f596836f97c8f74750e5975c64e2189f45def46b2a2b1247adc3652bf5c308055da9"
+    }
+  ]
+}

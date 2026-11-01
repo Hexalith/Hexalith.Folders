@@ -1,0 +1,11 @@
+{
+  "assemblies": 234,
+  "documentRecords": 40119,
+  "ordinaryDocumentRecords": 36451,
+  "ordinaryMismatches": [],
+  "allPresentMismatches": [],
+  "generatedMissing": 2915,
+  "sdkVersions": [
+    "3.130.2.0"
+  ]
+}

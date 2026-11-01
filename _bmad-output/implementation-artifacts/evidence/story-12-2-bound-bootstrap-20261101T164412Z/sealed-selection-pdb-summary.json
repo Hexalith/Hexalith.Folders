@@ -1,0 +1,57 @@
+{
+  "assemblies": 284,
+  "documentRecords": 47905,
+  "ordinaryDocumentRecords": 43494,
+  "ordinaryMismatches": [],
+  "allPresentMismatches": [
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Composition/bin/Debug/net10.0/Hexalith.Builds.Tooling.pdb",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/obj/Debug/net10.0/Hexalith.Builds.Tooling.AssemblyInfo.cs",
+      "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+      "expected": "c9e1f88c5445b5d06ef0fdc6dfb422a44b678466d35ce96c74da890aa0877e25",
+      "actual": "fe9507361983c11b699f64717aaa4e6b2076ff017e347b75088fb9f93658dc35",
+      "present": true,
+      "matches": false
+    },
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.AppHost.Tests/bin/Debug/net10.0/Hexalith.Builds.Tooling.pdb",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/obj/Debug/net10.0/Hexalith.Builds.Tooling.AssemblyInfo.cs",
+      "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+      "expected": "7699f475c60356dec8f83abd1c0b6259ce6e74ba92acba9d87fbe0e2c1cd0ac0",
+      "actual": "fe9507361983c11b699f64717aaa4e6b2076ff017e347b75088fb9f93658dc35",
+      "present": true,
+      "matches": false
+    },
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.AppHost.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/obj/Debug/net10.0/Hexalith.Commons.UniqueIds.AssemblyInfo.cs",
+      "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+      "expected": "7bc2327dd88a77fc6e79ecf6b559d771eba05b4a619dab44931a133b4ad0f016",
+      "actual": "012775cbf6b7481d867a40b2a8e1b481284fc7705d3f87e16a219b67be8c2c90",
+      "present": true,
+      "matches": false
+    },
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/obj/Debug/net10.0/Hexalith.Commons.UniqueIds.AssemblyInfo.cs",
+      "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+      "expected": "7bc2327dd88a77fc6e79ecf6b559d771eba05b4a619dab44931a133b4ad0f016",
+      "actual": "012775cbf6b7481d867a40b2a8e1b481284fc7705d3f87e16a219b67be8c2c90",
+      "present": true,
+      "matches": false
+    },
+    {
+      "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Builds.Tooling.pdb",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/obj/Debug/net10.0/Hexalith.Builds.Tooling.AssemblyInfo.cs",
+      "algorithm": "8829d00f-11b8-4213-878b-770e8597ac16",
+      "expected": "a7f85f464bc9e84038d50c056eb7c14bbd74a7d2042d33b7c60262858d9c3a62",
+      "actual": "fe9507361983c11b699f64717aaa4e6b2076ff017e347b75088fb9f93658dc35",
+      "present": true,
+      "matches": false
+    }
+  ],
+  "generatedMissing": 3501,
+  "sdkVersions": [
+    "3.130.2.0"
+  ]
+}

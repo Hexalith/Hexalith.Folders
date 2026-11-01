@@ -1,0 +1,684 @@
+{
+  "consumer": {
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Commons.UniqueIds/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.EventStore.Admin.Abstractions/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.EventStore.Aspire/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.EventStore.Client/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.EventStore.Contracts/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.EventStore.DomainService/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.EventStore.Gateway/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Admin.Abstractions/3.130.2": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.Server/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.EventStore.Server/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.EventStore.ServiceDefaults/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.EventStore.Testing/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.Server/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.AppHost/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Aspire/3.130.2": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.Folders.Aspire/1.0.0": "project",
+        "Hexalith.Memories.Aspire/1.0.0": "project",
+        "Hexalith.Tenants.Aspire/6.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.AppHost.Tests/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Aspire/3.130.2": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.Folders/1.0.0": "project",
+        "Hexalith.Folders.AppHost/1.0.0": "project",
+        "Hexalith.Folders.Aspire/1.0.0": "project",
+        "Hexalith.Folders.Client/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project",
+        "Hexalith.Folders.ServiceDefaults/1.0.0": "project",
+        "Hexalith.Folders.Workers/1.0.0": "project",
+        "Hexalith.McpCli.Abstractions/1.0.0": "project",
+        "Hexalith.Memories.Aspire/1.0.0": "project",
+        "Hexalith.Memories.Contracts/1.0.0": "project",
+        "Hexalith.Tenants.Aspire/6.0.0": "project",
+        "Hexalith.Tenants.Client/6.0.0": "project",
+        "Hexalith.Tenants.Contracts/6.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.Aspire/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.Cli/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Folders.Client/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.Client/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Folders.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.Contracts/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.EventStore/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Admin.Abstractions/3.130.2": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.Gateway/3.130.2": "project",
+        "Hexalith.EventStore.Server/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.Folders/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.IntegrationTests/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Aspire/3.130.2": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.Folders/1.0.0": "project",
+        "Hexalith.Folders.Aspire/1.0.0": "project",
+        "Hexalith.Folders.Cli/1.0.0": "project",
+        "Hexalith.Folders.Client/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project",
+        "Hexalith.Folders.Mcp/1.0.0": "project",
+        "Hexalith.Folders.Server/1.0.0": "project",
+        "Hexalith.Folders.ServiceDefaults/1.0.0": "project",
+        "Hexalith.Folders.Testing/1.0.0": "project",
+        "Hexalith.McpCli.Abstractions/1.0.0": "project",
+        "Hexalith.Memories.Aspire/1.0.0": "project",
+        "Hexalith.Memories.Client.Rest/1.0.0": "project",
+        "Hexalith.Memories.Contracts/1.0.0": "project",
+        "Hexalith.Tenants.Client/6.0.0": "project",
+        "Hexalith.Tenants.Contracts/6.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.Mcp/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Folders.Client/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.Server/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.Folders/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project",
+        "Hexalith.Folders.ServiceDefaults/1.0.0": "project",
+        "Hexalith.McpCli.Abstractions/1.0.0": "project",
+        "Hexalith.Memories.Client.Rest/1.0.0": "project",
+        "Hexalith.Memories.Contracts/1.0.0": "project",
+        "Hexalith.Tenants.Client/6.0.0": "project",
+        "Hexalith.Tenants.Contracts/6.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.Server.Tests/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.Server/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.EventStore.Testing/3.130.2": "project",
+        "Hexalith.Folders/1.0.0": "project",
+        "Hexalith.Folders.Client/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project",
+        "Hexalith.Folders.Server/1.0.0": "project",
+        "Hexalith.Folders.ServiceDefaults/1.0.0": "project",
+        "Hexalith.Folders.Testing/1.0.0": "project",
+        "Hexalith.McpCli.Abstractions/1.0.0": "project",
+        "Hexalith.Memories.Client.Rest/1.0.0": "project",
+        "Hexalith.Memories.Contracts/1.0.0": "project",
+        "Hexalith.Tenants.Client/6.0.0": "project",
+        "Hexalith.Tenants.Contracts/6.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.ServiceDefaults/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.Testing/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.Folders/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.Tests/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.Server/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.EventStore.Testing/3.130.2": "project",
+        "Hexalith.Folders/1.0.0": "project",
+        "Hexalith.Folders.Client/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project",
+        "Hexalith.Folders.Server/1.0.0": "project",
+        "Hexalith.Folders.ServiceDefaults/1.0.0": "project",
+        "Hexalith.Folders.Testing/1.0.0": "project",
+        "Hexalith.Folders.UI/1.0.0": "project",
+        "Hexalith.FrontComposer.Contracts/1.0.0": "project",
+        "Hexalith.FrontComposer.Contracts.UI/1.0.0": "project",
+        "Hexalith.FrontComposer.Shell/1.0.0": "project",
+        "Hexalith.McpCli.Abstractions/1.0.0": "project",
+        "Hexalith.Memories.Client.Rest/1.0.0": "project",
+        "Hexalith.Memories.Contracts/1.0.0": "project",
+        "Hexalith.Tenants.Client/6.0.0": "project",
+        "Hexalith.Tenants.Contracts/6.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.UI/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Folders.Client/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project",
+        "Hexalith.FrontComposer.Contracts/1.0.0": "project",
+        "Hexalith.FrontComposer.Contracts.UI/1.0.0": "project",
+        "Hexalith.FrontComposer.Shell/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.Workers/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.Folders/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project",
+        "Hexalith.Folders.ServiceDefaults/1.0.0": "project",
+        "Hexalith.McpCli.Abstractions/1.0.0": "project",
+        "Hexalith.Memories.Contracts/1.0.0": "project",
+        "Hexalith.Tenants.Client/6.0.0": "project",
+        "Hexalith.Tenants.Contracts/6.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Folders.Workers.Tests/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.Server/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.EventStore.Testing/3.130.2": "project",
+        "Hexalith.Folders/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project",
+        "Hexalith.Folders.Server/1.0.0": "project",
+        "Hexalith.Folders.ServiceDefaults/1.0.0": "project",
+        "Hexalith.Folders.Testing/1.0.0": "project",
+        "Hexalith.Folders.Workers/1.0.0": "project",
+        "Hexalith.McpCli.Abstractions/1.0.0": "project",
+        "Hexalith.Memories.Client.Rest/1.0.0": "project",
+        "Hexalith.Memories.Contracts/1.0.0": "project",
+        "Hexalith.Tenants.Client/6.0.0": "project",
+        "Hexalith.Tenants.Contracts/6.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.FrontComposer.Contracts/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.FrontComposer.Contracts.UI/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.FrontComposer.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.FrontComposer.Shell/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.FrontComposer.Contracts/1.0.0": "project",
+        "Hexalith.FrontComposer.Contracts.UI/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.McpCli.Abstractions/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.McpCli.Analyzers/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Memories.Aspire/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Memories.Client.Rest/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Memories.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Memories.Contracts/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Tenants.Aspire/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Aspire/3.130.2": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Tenants.Client/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.McpCli.Abstractions/1.0.0": "project",
+        "Hexalith.Tenants.Contracts/6.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Hexalith.Tenants.Contracts/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.McpCli.Abstractions/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/obj/Task36FoldObserver/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    }
+  },
+  "sdk": {
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/obj/Hexalith.Commons.UniqueIds/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/obj/Hexalith.EventStore.Client/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/obj/Hexalith.EventStore.Contracts/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/obj/Hexalith.EventStore.DomainService/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/obj/Hexalith.EventStore.DomainService.Tests/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.Server/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.EventStore.Testing/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/obj/Hexalith.EventStore.Server/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/obj/Hexalith.EventStore.ServiceDefaults/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/obj/Hexalith.EventStore.Testing/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.Server/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    }
+  },
+  "integration": {
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Commons.UniqueIds/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.EventStore.Aspire/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.EventStore.Client/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.EventStore.Contracts/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.EventStore.DomainService/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.EventStore.ServiceDefaults/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Folders/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Folders.Aspire/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Folders.Cli/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Folders.Client/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Folders.Client/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Folders.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Folders.Contracts/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Folders.IntegrationTests/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Aspire/3.130.2": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.Folders/1.0.0": "project",
+        "Hexalith.Folders.Aspire/1.0.0": "project",
+        "Hexalith.Folders.Cli/1.0.0": "project",
+        "Hexalith.Folders.Client/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project",
+        "Hexalith.Folders.Mcp/1.0.0": "project",
+        "Hexalith.Folders.Server/1.0.0": "project",
+        "Hexalith.Folders.ServiceDefaults/1.0.0": "project",
+        "Hexalith.Folders.Testing/1.0.0": "project",
+        "Hexalith.McpCli.Abstractions/1.0.0": "project",
+        "Hexalith.Memories.Aspire/1.0.0": "project",
+        "Hexalith.Memories.Client.Rest/1.0.0": "project",
+        "Hexalith.Memories.Contracts/1.0.0": "project",
+        "Hexalith.Tenants.Client/6.0.0": "project",
+        "Hexalith.Tenants.Contracts/6.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Folders.Mcp/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Folders.Client/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Folders.Server/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.DomainService/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.Folders/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project",
+        "Hexalith.Folders.ServiceDefaults/1.0.0": "project",
+        "Hexalith.McpCli.Abstractions/1.0.0": "project",
+        "Hexalith.Memories.Client.Rest/1.0.0": "project",
+        "Hexalith.Memories.Contracts/1.0.0": "project",
+        "Hexalith.Tenants.Client/6.0.0": "project",
+        "Hexalith.Tenants.Contracts/6.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Folders.ServiceDefaults/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Folders.Testing/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+        "Hexalith.Folders/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.McpCli.Abstractions/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.McpCli.Analyzers/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Memories.Aspire/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Memories.Client.Rest/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Memories.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Memories.Contracts/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Tenants.Client/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Client/3.130.2": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.McpCli.Abstractions/1.0.0": "project",
+        "Hexalith.Tenants.Contracts/6.0.0": "project"
+      },
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration/obj/Hexalith.Tenants.Contracts/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Commons.UniqueIds/1.0.0": "project",
+        "Hexalith.EventStore.Contracts/3.130.2": "project",
+        "Hexalith.McpCli.Abstractions/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    }
+  },
+  "contracts": {
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-contracts/obj/Hexalith.Folders.Aspire/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-contracts/obj/Hexalith.Folders.Contracts/project.assets.json": {
+      "hexalithLibraries": {},
+      "hexalithPackages": []
+    },
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-contracts/obj/Hexalith.Folders.Contracts.Tests/project.assets.json": {
+      "hexalithLibraries": {
+        "Hexalith.Folders.Aspire/1.0.0": "project",
+        "Hexalith.Folders.Contracts/1.0.0": "project"
+      },
+      "hexalithPackages": []
+    }
+  }
+}

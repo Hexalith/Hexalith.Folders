@@ -1,11 +1,17 @@
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.Contracts.Routing;
+using Hexalith.Folders.Routing;
 
 namespace Hexalith.Folders.EventStore;
 
 /// <summary>Canonical admission for the internal native lease/completion command.</summary>
-internal sealed class ChangeNativeTaskIdempotencyIntentAdapter : IIdempotencyIntentAdapter
+internal sealed class ChangeNativeTaskIdempotencyIntentAdapter : IDeclaredIdempotencyIntentAdapter
 {
+    /// <inheritdoc/>
+    public CommandIntentDeclaration Declaration => FoldersCommandCatalog.Commands.Single(declaration => declaration.Route.MessageType == CommandType);
+
+    /// <inheritdoc/>
     public string CommandType => "Hexalith.Folders.Commands.ChangeNativeTask";
     public string AdapterId => FoldersCanonicalIntentBuilder.AdapterId;
     public string OperationId => "change-native-task";

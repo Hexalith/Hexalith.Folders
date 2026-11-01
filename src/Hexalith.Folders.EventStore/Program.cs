@@ -6,6 +6,7 @@ using Hexalith.EventStore.Middleware;
 using Hexalith.EventStore.OpenApi;
 using Hexalith.EventStore.Server.Configuration;
 using Hexalith.EventStore.ServiceDefaults;
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.EventStore.SignalRHub;
 using Hexalith.Folders.EventStore;
 
@@ -16,11 +17,13 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.Services.AddDaprClient();
 builder.Services.AddHealthChecks()
-    .AddEventStoreDaprHealthChecks();
+    .AddEventStoreDaprHealthChecks()
+    .AddEventStoreAppChannelTokenHealthCheck();
 builder.Services.AddExceptionHandler<FoldersDomainServiceSafeDenialExceptionHandler>();
 builder.Services.AddEventStore();
 builder.Services.AddEventStoreServer(builder.Configuration);
-builder.Services.AddFoldersIdempotencyIntentAdapters();
+if (string.IsNullOrEmpty(builder.Configuration["EventStore:RouteCatalog:DevelopmentBootstrap:CatalogPath"]))
+    builder.Services.AddFoldersIdempotencyIntentAdapters();
 builder.Services.AddEventStoreDomainQueryRouting();
 builder.Services.AddEventStoreSignalR(builder.Configuration);
 
@@ -29,14 +32,14 @@ WebApplication app = builder.Build();
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseExceptionHandler();
 app.MapDefaultEndpoints();
+app.UseRouting();
 app.UseAuthentication();
 app.UseRateLimiter();
-app.UseAuthorization();
-app.UseCloudEvents();
 
 if (app.Configuration.GetValue("EventStore:OpenApi:Enabled", true))
 {
-    _ = app.MapOpenApi();
+    _ = app.MapOpenApi().RequireAuthorization(EventStoreHttpHostSecurityExtensions.HumanPolicy);
+    _ = app.UseEventStoreHumanSurface("/swagger");
     _ = app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/openapi/v1.json", "Hexalith EventStore API v1");
@@ -44,11 +47,26 @@ if (app.Configuration.GetValue("EventStore:OpenApi:Enabled", true))
     });
 }
 
-app.MapControllers();
+app.UseEventStoreHttpHostSecurity();
+app.UseAuthorization();
+if (!string.IsNullOrEmpty(app.Configuration["EventStore:RouteCatalog:DevelopmentBootstrap:CatalogPath"]))
+{
+    Hexalith.EventStore.ServiceDefaults.Routing.FiniteRouteCatalogReceiver.UseFiniteDevelopmentRouteCatalogReceiver(app,
+        Hexalith.EventStore.Server.Routing.RunScopedRouteCatalogGateway.Operation, technical: true);
+}
+app.UseCloudEvents();
+
+bool declarativeSubscriptions = app.Configuration.GetValue<bool>("Dapr:DeclarativeSubscriptions");
+app.MapControllers().WithEventStoreProjectionNotifications(app.Services, declarativeSubscriptions);
 app.MapErrorReferences();
 app.MapApiVersionFallback();
-app.MapSubscribeHandler();
-app.MapActorsHandlers();
+if (!declarativeSubscriptions)
+{
+    app.MapSubscribeHandler().RequireEventStoreChannel();
+}
+app.MapActorsHandlers()
+    .WithMetadata(EventStoreActorCallbackEndpointMetadata.Instance)
+    .RequireEventStoreChannel();
 app.MapApplicationRuntimeProofEndpoints();
 
 SignalROptions? signalROptions = app.Configuration
@@ -57,7 +75,8 @@ SignalROptions? signalROptions = app.Configuration
 
 if (signalROptions?.Enabled == true)
 {
-    _ = app.MapHub<ProjectionChangedHub>(ProjectionChangedHub.HubPath);
+    _ = app.MapHub<ProjectionChangedHub>(ProjectionChangedHub.HubPath)
+        .RequireAuthorization(EventStoreHttpHostSecurityExtensions.HumanPolicy);
     _ = app.MapSignalRRuntimeProofEndpoints();
 }
 

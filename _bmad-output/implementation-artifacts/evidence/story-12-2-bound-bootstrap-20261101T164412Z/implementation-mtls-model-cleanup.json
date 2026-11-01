@@ -1,0 +1,72 @@
+{
+  "scope": "Model-only callbacks; no Sentry/native runtime/container was launched; model credential strings are not real credentials.",
+  "cases": [
+    {
+      "binding": {
+        "runDirectory": "/tmp/hexalith-dapr/09adf7a87b68410b925593d5ce74a764",
+        "certificateDirectory": "/tmp/hexalith-dapr/09adf7a87b68410b925593d5ce74a764/dapr-credentials-1402B7606B92EA50E1BDE82F9A796A97",
+        "runtimeHome": "/tmp/folders-mtls-model-6ctZGe",
+        "applicationNamespace": "default",
+        "missingRuntime": false
+      },
+      "reportedCleanup": {
+        "runDirectory": "/tmp/hexalith-dapr/09adf7a87b68410b925593d5ce74a764",
+        "certificateDirectory": "/tmp/hexalith-dapr/09adf7a87b68410b925593d5ce74a764/dapr-credentials-1402B7606B92EA50E1BDE82F9A796A97",
+        "runtimeHome": "/tmp/folders-mtls-model-6ctZGe",
+        "runDirectoryExists": false,
+        "certificateDirectoryExists": false,
+        "runtimeHomeExists": false
+      },
+      "absentAtReceipt": {
+        "runDirectory": true,
+        "certificateDirectory": true,
+        "runtimeHome": true
+      }
+    },
+    {
+      "binding": {
+        "runDirectory": "/tmp/hexalith-dapr/dfe07507c62a4c11b6d832460cc64b2f",
+        "certificateDirectory": "/tmp/hexalith-dapr/dfe07507c62a4c11b6d832460cc64b2f/dapr-credentials-0F0CAE9BB25E846D938009F62561836A",
+        "runtimeHome": "/tmp/folders-mtls-model-9BVjuv",
+        "applicationNamespace": "folders-durability-model",
+        "missingRuntime": false
+      },
+      "reportedCleanup": {
+        "runDirectory": "/tmp/hexalith-dapr/dfe07507c62a4c11b6d832460cc64b2f",
+        "certificateDirectory": "/tmp/hexalith-dapr/dfe07507c62a4c11b6d832460cc64b2f/dapr-credentials-0F0CAE9BB25E846D938009F62561836A",
+        "runtimeHome": "/tmp/folders-mtls-model-9BVjuv",
+        "runDirectoryExists": false,
+        "certificateDirectoryExists": false,
+        "runtimeHomeExists": false
+      },
+      "absentAtReceipt": {
+        "runDirectory": true,
+        "certificateDirectory": true,
+        "runtimeHome": true
+      }
+    },
+    {
+      "binding": {
+        "runDirectory": "/tmp/hexalith-dapr/292ecaa35d3e4d0b9b6d1d7a28c595ea",
+        "certificateDirectory": "/tmp/hexalith-dapr/292ecaa35d3e4d0b9b6d1d7a28c595ea/dapr-credentials-3F4567F04EC85318DADD1C40E6C66D92",
+        "runtimeHome": "/tmp/folders-mtls-model-FfHJtF",
+        "applicationNamespace": "folders-durability-model",
+        "missingRuntime": true
+      },
+      "reportedCleanup": {
+        "runDirectory": "/tmp/hexalith-dapr/292ecaa35d3e4d0b9b6d1d7a28c595ea",
+        "certificateDirectory": "/tmp/hexalith-dapr/292ecaa35d3e4d0b9b6d1d7a28c595ea/dapr-credentials-3F4567F04EC85318DADD1C40E6C66D92",
+        "runtimeHome": "/tmp/folders-mtls-model-FfHJtF",
+        "runDirectoryExists": false,
+        "certificateDirectoryExists": false,
+        "runtimeHomeExists": false
+      },
+      "absentAtReceipt": {
+        "runDirectory": true,
+        "certificateDirectory": true,
+        "runtimeHome": true
+      }
+    }
+  ],
+  "allReportedAndObservedAbsent": true
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "category": "Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler",
+    "message": "EventStoreSidecarChannel was not authenticated. Failure message: channel-token-missing"
+  },
+  {
+    "category": "Hexalith.EventStore.ServiceDefaults.Routing.DevelopmentRouteCatalogBootstrapWorker",
+    "message": "Development catalog host tenants committed its independently observed generation."
+  },
+  {
+    "category": "Hexalith.EventStore.ServiceDefaults.Routing.DevelopmentRouteCatalogBootstrapWorker",
+    "message": "Development catalog host memories committed its independently observed generation."
+  },
+  {
+    "category": "Hexalith.EventStore.ServiceDefaults.Routing.DevelopmentRouteCatalogBootstrapWorker",
+    "message": "Development catalog host folders committed its independently observed generation."
+  },
+  {
+    "category": "Hexalith.EventStore.ServiceDefaults.Routing.DevelopmentRouteCatalogBootstrapWorker",
+    "message": "Development catalog host eventstore committed its independently observed generation."
+  }
+]

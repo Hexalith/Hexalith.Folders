@@ -1,0 +1,108 @@
+{
+  "capturedAtUtc": "2026-11-01T14:55:52.001318+00:00",
+  "source": {
+    "count": 27409,
+    "drift": [],
+    "headDrift": {}
+  },
+  "runtime": {
+    "folders": {
+      "count": 84,
+      "drift": []
+    },
+    "workers": {
+      "count": 82,
+      "drift": []
+    },
+    "gateway": {
+      "count": 95,
+      "drift": []
+    },
+    "tenants": {
+      "count": 92,
+      "drift": []
+    },
+    "memories": {
+      "count": 96,
+      "drift": []
+    },
+    "apphost": {
+      "count": 156,
+      "drift": []
+    },
+    "tests": {
+      "count": 401,
+      "drift": []
+    },
+    "observer": {
+      "count": 16,
+      "drift": []
+    },
+    "gateway-full": {
+      "count": 173,
+      "drift": []
+    },
+    "server-full": {
+      "count": 142,
+      "drift": []
+    },
+    "workers-full": {
+      "count": 144,
+      "drift": []
+    },
+    "integration-full": {
+      "count": 180,
+      "drift": []
+    },
+    "apphost-helpers": {
+      "count": 172,
+      "drift": []
+    },
+    "contracts-full": {
+      "count": 86,
+      "drift": []
+    },
+    "operational-histories": {
+      "count": 171,
+      "drift": []
+    },
+    "sdk-contracts-tests": {
+      "count": 112,
+      "drift": []
+    },
+    "sdk-server-tests": {
+      "count": 177,
+      "drift": []
+    }
+  },
+  "runIds": [],
+  "ownedContainersRemaining": [],
+  "temporaryDirectories": {},
+  "containersAfter": {
+    "exitCode": 0,
+    "entries": [
+      "fe6c35911851cb5ed7e3d39cb7ab994d6a68c0d2bcc163198d21fe3867cf462a fluent-ui-blazor-mcp",
+      "f1e0a30a3a93a1542ee5ad74856e44d483a94f7a8e5ef769f398827815cc1da6 dapr_placement",
+      "8623af8b7bbd8ebd3d73221af72615162475f3f8a7190432e09e64e51befc826 dapr_scheduler",
+      "8d0788f8322fdb91a51f3960cb9a0ceab4a7b892f27bacf2147e97fc4d471922 dapr_redis",
+      "cb7c12622c180c9a16d24a67fc57115f8aeb0d038fed8793d6c9d49e11d1e488 dapr_zipkin"
+    ],
+    "stderr": ""
+  },
+  "aspireAfter": {
+    "argv": [
+      "aspire",
+      "ps",
+      "--format",
+      "json"
+    ],
+    "exitCode": 0,
+    "stdout": "[]\n",
+    "stderr": ""
+  },
+  "priorSeals": {
+    "filesChecked": 7478,
+    "drift": []
+  },
+  "actualBindings": 0
+}

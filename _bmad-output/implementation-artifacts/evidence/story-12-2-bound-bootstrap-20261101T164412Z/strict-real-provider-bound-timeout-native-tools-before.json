@@ -1,0 +1,22 @@
+{
+  "aspire": {
+    "path": "/home/administrator/.aspire/bin/aspire",
+    "sha256": "f8d7c23ede9c5b8efbe421e744810893e9ced96dd9a91030cc334e6f43fad6b3"
+  },
+  "dapr": {
+    "path": "/usr/local/bin/dapr",
+    "sha256": "43429557ff18a7230737b945699417ec391ad41bd431244c175b79ab3c904ce5"
+  },
+  "dotnet": {
+    "path": "/home/administrator/.dotnet/dotnet",
+    "sha256": "634efbf2414144d140d6f59d167342c8b3b53b4c34346ed786dd0470ddc9a3cb"
+  },
+  "docker": {
+    "path": "/mnt/wsl/docker-desktop/cli-tools/usr/bin/docker",
+    "sha256": "6f7a95d27f98fc8c5f6b220898988bf8f61dd9b040936797917cbdc72c6cabe6"
+  },
+  "dapr-runtime": {
+    "path": "/home/administrator/.dapr/bin/daprd",
+    "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488"
+  }
+}

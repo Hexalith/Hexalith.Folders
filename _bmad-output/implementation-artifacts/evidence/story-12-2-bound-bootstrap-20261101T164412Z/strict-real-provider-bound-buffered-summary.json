@@ -1,0 +1,863 @@
+{
+  "result": [
+    {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "132.450"
+    }
+  ],
+  "sourceAudit": {
+    "count": 27424,
+    "drift": [],
+    "headDrift": {}
+  },
+  "runtimeGroups": {
+    "folders": {
+      "count": 84,
+      "drift": []
+    },
+    "workers": {
+      "count": 82,
+      "drift": []
+    },
+    "gateway": {
+      "count": 95,
+      "drift": []
+    },
+    "tenants": {
+      "count": 92,
+      "drift": []
+    },
+    "memories": {
+      "count": 96,
+      "drift": []
+    },
+    "apphost": {
+      "count": 164,
+      "drift": []
+    },
+    "tests": {
+      "count": 409,
+      "drift": []
+    },
+    "observer": {
+      "count": 16,
+      "drift": []
+    },
+    "gateway-full": {
+      "count": 173,
+      "drift": []
+    },
+    "server-full": {
+      "count": 144,
+      "drift": []
+    },
+    "workers-full": {
+      "count": 144,
+      "drift": []
+    },
+    "integration-full": {
+      "count": 180,
+      "drift": []
+    },
+    "apphost-helpers-qualified": {
+      "count": 180,
+      "drift": []
+    },
+    "contracts-full": {
+      "count": 86,
+      "drift": []
+    },
+    "operational-histories": {
+      "count": 171,
+      "drift": []
+    },
+    "tenants-full-qualified": {
+      "count": 150,
+      "drift": []
+    },
+    "sdk-descriptors": {
+      "count": 112,
+      "drift": []
+    },
+    "sdk-registry": {
+      "count": 177,
+      "drift": []
+    },
+    "tenants-apphost-defaults": {
+      "count": 171,
+      "drift": []
+    },
+    "platform-owner-output": {
+      "count": 123,
+      "drift": []
+    },
+    "ui": {
+      "count": 44,
+      "drift": []
+    }
+  },
+  "uniqueRuntimePaths": 2713,
+  "observedMappedRecords": 107,
+  "mappedMismatches": [],
+  "observationsOutsidePreRunInventory": [],
+  "processCleanup": {
+    "3285217": false,
+    "3294705": false,
+    "3294709": false,
+    "3294713": false,
+    "3294802": false,
+    "3295286": false,
+    "3295329": false,
+    "3295404": false,
+    "3295411": false,
+    "3308653": false,
+    "3308700": false,
+    "3308751": false,
+    "3308771": false,
+    "3308784": false,
+    "3308894": false,
+    "3309205": false,
+    "3309238": false,
+    "3309269": false,
+    "3309280": false,
+    "3309371": false
+  },
+  "directoryCleanup": {
+    "/tmp/hexalith-route-catalog-2X5VeH": false,
+    "/tmp/folders-durability-xxxb4i1p.p4q": false,
+    "/tmp/hexalith-dapr/c5c242b39454431cb375e719713d62cb": false,
+    "/tmp/hexalith-dapr/c5c242b39454431cb375e719713d62cb/dapr-credentials-E2F5015C2815A3C0CEFD21A8E43359B9": false
+  },
+  "nativeConfigurations": [
+    {
+      "path": "/tmp/hexalith-route-catalog-2X5VeH/folders-workers-proof-a.configuration.json",
+      "sha256": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+      "argument": "--config",
+      "processIds": [
+        3294705
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-xxxb4i1p.p4q/ordinary-proof/provider-secretstore.yaml",
+      "sha256": "3c25b0592673fd738b4040a90ec1bc0d1d90f4bc16fbf7351ce7dc6ded100381",
+      "argument": "--resources-path",
+      "processIds": [
+        3294705,
+        3294713
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-xxxb4i1p.p4q/ordinary-proof/llm.memories.yaml",
+      "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229",
+      "argument": "--resources-path",
+      "processIds": [
+        3294705,
+        3294713
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-xxxb4i1p.p4q/ordinary-proof/pubsub.yaml",
+      "sha256": "ea4860ad752430d59b5a751ecfd15c437f2472d5b4e02c8dca094560e8f7a840",
+      "argument": "--resources-path",
+      "processIds": [
+        3294705,
+        3294713
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-xxxb4i1p.p4q/ordinary-proof/statestore.yaml",
+      "sha256": "aa89ee1a1965107ed7fc677f912d47ea8f18be0ef203e85e8566ad119dd27dc7",
+      "argument": "--resources-path",
+      "processIds": [
+        3294705,
+        3294713
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-xxxb4i1p.p4q/ordinary-proof/resiliency.yaml",
+      "sha256": "b7a9c846d071568561e33d3ff5fe85fff9903035b6ed2d6231ea7ef4563ca914",
+      "argument": "--resources-path",
+      "processIds": [
+        3294705,
+        3294713
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-xxxb4i1p.p4q/ordinary-proof/secretstore.memories.yaml",
+      "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef",
+      "argument": "--resources-path",
+      "processIds": [
+        3294705,
+        3294713
+      ]
+    },
+    {
+      "path": "/tmp/aspire-dapr.ISSh6G/folders-routing-authority/folders-routing-authority.yaml",
+      "sha256": "cbcc6894ed8299018bc0d06211b7a650e3ca291f16094093cd40595480a3c407",
+      "argument": "--resources-path",
+      "processIds": [
+        3294705,
+        3294709,
+        3294713,
+        3294802,
+        3308653,
+        3308700,
+        3308751,
+        3308771
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-2X5VeH/memories.configuration.json",
+      "sha256": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+      "argument": "--config",
+      "processIds": [
+        3294709
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-xxxb4i1p.p4q/components/provider-secretstore.yaml",
+      "sha256": "3c25b0592673fd738b4040a90ec1bc0d1d90f4bc16fbf7351ce7dc6ded100381",
+      "argument": "--resources-path",
+      "processIds": [
+        3294709,
+        3294802,
+        3308653,
+        3308700,
+        3308751,
+        3308771,
+        3308894
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-xxxb4i1p.p4q/components/llm.memories.yaml",
+      "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229",
+      "argument": "--resources-path",
+      "processIds": [
+        3294709,
+        3294802,
+        3308653,
+        3308700,
+        3308751,
+        3308771,
+        3308894
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-xxxb4i1p.p4q/components/pubsub.yaml",
+      "sha256": "d9a845ec82330e7c57d2dbe58807593abc50f7e545a2912ae10bf1ad4322d888",
+      "argument": "--resources-path",
+      "processIds": [
+        3294709,
+        3294802,
+        3308653,
+        3308700,
+        3308751,
+        3308771,
+        3308894
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-xxxb4i1p.p4q/components/statestore.yaml",
+      "sha256": "a4b631d682765486ca95322f23b8d956d7c876d2eab0398f8093b8eb11765a60",
+      "argument": "--resources-path",
+      "processIds": [
+        3294709,
+        3294802,
+        3308653,
+        3308700,
+        3308751,
+        3308771,
+        3308894
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-xxxb4i1p.p4q/components/resiliency.yaml",
+      "sha256": "b7a9c846d071568561e33d3ff5fe85fff9903035b6ed2d6231ea7ef4563ca914",
+      "argument": "--resources-path",
+      "processIds": [
+        3294709,
+        3294802,
+        3308653,
+        3308700,
+        3308751,
+        3308771,
+        3308894
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-xxxb4i1p.p4q/components/secretstore.memories.yaml",
+      "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef",
+      "argument": "--resources-path",
+      "processIds": [
+        3294709,
+        3294802,
+        3308653,
+        3308700,
+        3308751,
+        3308771,
+        3308894
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-2X5VeH/folders-workers-proof-b.configuration.json",
+      "sha256": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+      "argument": "--config",
+      "processIds": [
+        3294713
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-2X5VeH/folders-workers-replica.configuration.json",
+      "sha256": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+      "argument": "--config",
+      "processIds": [
+        3294802
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-2X5VeH/eventstore.configuration.json",
+      "sha256": "cff4e059eafd60985d186b471e3bf4c89ec22b0c40719bdbca48b07b19d5387a",
+      "argument": "--config",
+      "processIds": [
+        3308653
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-2X5VeH/tenants.configuration.json",
+      "sha256": "9e3b3c6f590136961c7af420edbd22ca978c45176d71a81cdf0cada1511febe1",
+      "argument": "--config",
+      "processIds": [
+        3308700
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-2X5VeH/folders-workers.configuration.json",
+      "sha256": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+      "argument": "--config",
+      "processIds": [
+        3308751
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-2X5VeH/folders.configuration.json",
+      "sha256": "9e3b3c6f590136961c7af420edbd22ca978c45176d71a81cdf0cada1511febe1",
+      "argument": "--config",
+      "processIds": [
+        3308771
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-xxxb4i1p.p4q/configuration/accesscontrol.yaml",
+      "sha256": "d733c8d5876aa67c71a3f134c48aec78158e789852ed4b5cbecb55d12be978ea",
+      "argument": "--config",
+      "processIds": [
+        3308894
+      ]
+    }
+  ],
+  "mtlsInfrastructure": {
+    "/tmp/hexalith-dapr/c5c242b39454431cb375e719713d62cb": {
+      "kind": "runDirectory",
+      "files": {
+        "dapr-credentials-E2F5015C2815A3C0CEFD21A8E43359B9/issuer.crt": "aa0ee188e95439956fc6f950cd5f7e072e5cf6a1f078aecacf23b25799e830fd",
+        "dapr-credentials-E2F5015C2815A3C0CEFD21A8E43359B9/ca.crt": "9302affb9cd5057c15d69ee373d64595f70f2f07da332870b4ec4f7888024a75"
+      }
+    },
+    "/tmp/hexalith-dapr/c5c242b39454431cb375e719713d62cb/dapr-credentials-E2F5015C2815A3C0CEFD21A8E43359B9": {
+      "kind": "certificateDirectory",
+      "files": {
+        "issuer.crt": "aa0ee188e95439956fc6f950cd5f7e072e5cf6a1f078aecacf23b25799e830fd",
+        "ca.crt": "9302affb9cd5057c15d69ee373d64595f70f2f07da332870b4ec4f7888024a75"
+      }
+    }
+  },
+  "nativeProcesses": [
+    {
+      "processId": 3294705,
+      "startTicks": "29865718",
+      "namespace": "folders-durability-4ac153aff47a4442",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "folders-workers-proof-a-4ac153aff47a4442"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-2X5VeH/folders-workers-proof-a.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "26689"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-xxxb4i1p.p4q/ordinary-proof",
+          "/tmp/aspire-dapr.ISSh6G/folders-routing-authority"
+        ],
+        "--app-port": [
+          "36377"
+        ],
+        "--dapr-grpc-port": [
+          "24657"
+        ],
+        "--dapr-http-port": [
+          "14626"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:21448"
+        ]
+      }
+    },
+    {
+      "processId": 3294709,
+      "startTicks": "29865718",
+      "namespace": "folders-durability-4ac153aff47a4442",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "memories-4ac153aff47a4442"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-2X5VeH/memories.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "27569"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-xxxb4i1p.p4q/components",
+          "/tmp/aspire-dapr.ISSh6G/folders-routing-authority"
+        ],
+        "--app-port": [
+          "43003"
+        ],
+        "--dapr-grpc-port": [
+          "50002"
+        ],
+        "--dapr-http-port": [
+          "3502"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:21448"
+        ]
+      }
+    },
+    {
+      "processId": 3294713,
+      "startTicks": "29865718",
+      "namespace": "folders-durability-4ac153aff47a4442",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "folders-workers-proof-b-4ac153aff47a4442"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-2X5VeH/folders-workers-proof-b.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "12110"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-xxxb4i1p.p4q/ordinary-proof",
+          "/tmp/aspire-dapr.ISSh6G/folders-routing-authority"
+        ],
+        "--app-port": [
+          "42309"
+        ],
+        "--dapr-grpc-port": [
+          "12323"
+        ],
+        "--dapr-http-port": [
+          "20117"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:21448"
+        ]
+      }
+    },
+    {
+      "processId": 3294802,
+      "startTicks": "29865722",
+      "namespace": "folders-durability-4ac153aff47a4442",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "folders-workers-4ac153aff47a4442"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-2X5VeH/folders-workers-replica.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "17939"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-xxxb4i1p.p4q/components",
+          "/tmp/aspire-dapr.ISSh6G/folders-routing-authority"
+        ],
+        "--app-port": [
+          "44699"
+        ],
+        "--dapr-grpc-port": [
+          "26424"
+        ],
+        "--dapr-http-port": [
+          "15982"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:21448"
+        ]
+      }
+    },
+    {
+      "processId": 3308653,
+      "startTicks": "29867545",
+      "namespace": "folders-durability-4ac153aff47a4442",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "eventstore-4ac153aff47a4442"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-2X5VeH/eventstore.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "16911"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-xxxb4i1p.p4q/components",
+          "/tmp/aspire-dapr.ISSh6G/folders-routing-authority"
+        ],
+        "--app-port": [
+          "36079"
+        ],
+        "--dapr-grpc-port": [
+          "23907"
+        ],
+        "--dapr-http-port": [
+          "3501"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:21448"
+        ]
+      }
+    },
+    {
+      "processId": 3308700,
+      "startTicks": "29867547",
+      "namespace": "folders-durability-4ac153aff47a4442",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "tenants-4ac153aff47a4442"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-2X5VeH/tenants.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "25015"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-xxxb4i1p.p4q/components",
+          "/tmp/aspire-dapr.ISSh6G/folders-routing-authority"
+        ],
+        "--app-port": [
+          "36227"
+        ],
+        "--dapr-grpc-port": [
+          "28123"
+        ],
+        "--dapr-http-port": [
+          "10226"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:21448"
+        ]
+      }
+    },
+    {
+      "processId": 3308751,
+      "startTicks": "29867550",
+      "namespace": "folders-durability-4ac153aff47a4442",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "folders-workers-4ac153aff47a4442"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-2X5VeH/folders-workers.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "24141"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-xxxb4i1p.p4q/components",
+          "/tmp/aspire-dapr.ISSh6G/folders-routing-authority"
+        ],
+        "--app-port": [
+          "41167"
+        ],
+        "--dapr-grpc-port": [
+          "22059"
+        ],
+        "--dapr-http-port": [
+          "24973"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:21448"
+        ]
+      }
+    },
+    {
+      "processId": 3308771,
+      "startTicks": "29867551",
+      "namespace": "folders-durability-4ac153aff47a4442",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "folders-4ac153aff47a4442"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-2X5VeH/folders.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "17924"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-xxxb4i1p.p4q/components",
+          "/tmp/aspire-dapr.ISSh6G/folders-routing-authority"
+        ],
+        "--app-port": [
+          "38393"
+        ],
+        "--dapr-grpc-port": [
+          "10090"
+        ],
+        "--dapr-http-port": [
+          "12663"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:21448"
+        ]
+      }
+    },
+    {
+      "processId": 3308894,
+      "startTicks": "29867558",
+      "namespace": "folders-durability-4ac153aff47a4442",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "folders-ui-4ac153aff47a4442"
+        ],
+        "--config": [
+          "/tmp/folders-durability-xxxb4i1p.p4q/configuration/accesscontrol.yaml"
+        ],
+        "--dapr-internal-grpc-port": [
+          "25254"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-xxxb4i1p.p4q/components"
+        ],
+        "--app-port": [
+          "41993"
+        ],
+        "--dapr-grpc-port": [
+          "16368"
+        ],
+        "--dapr-http-port": [
+          "23337"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:21448"
+        ]
+      }
+    }
+  ],
+  "containerImageIds": {
+    "8839c91c4e3ea14690d101b6780f7575f4cbc1a75fbe2e68ac5f9af1e6b5db79 folders-provider-4ac153aff47a4442": "sha256:7c4e1db440be7b2ca685b49d0d7864cdd78e92431f531bf7893659def8200fc5",
+    "9242052e65255a3eafee1f61a40a00a293bb8cd29e2b191869eb0e34db60c9b7 folders-durability-4ac153aff47a4442": "sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541",
+    "8ad4817d103c8e52acacc11e62f1fa4bc56a7ace72301145a26f3d0156f935e0 dapr-placement-mtls-rayjrcbb": "sha256:0ac4fadf0016be85065cdebab952a8350e468cf9283d26777b0307a14a10aecc",
+    "87a1ced70b323615389804a063cb7b98b1fe51998cc937ab2c254ff025a717e7 dapr-scheduler-mtls-yfychdqc": "sha256:0ac4fadf0016be85065cdebab952a8350e468cf9283d26777b0307a14a10aecc",
+    "1512dc90364d90e542432730ea5d560d1e2b9c56180d2c72421ad68c4dd81e86 dapr-sentry-nnennmny": "sha256:4aacb3ca515ee6208dbafb2b44ebd9d9cdf216e390aa459543787624058c0d80",
+    "d71b79c29a63ed65ab4e9b2879c2cb93f1a94d675e5a2e32199e3c10886d101d memories-vectors-dvpqxdag": "sha256:5d5154123426693540ea6c1d9e638eae2bf2024879c839db6fcfdd7717e817c7",
+    "b28137d65f96011891bb24553f14c8507f51fbbb4a6e51f48b9aeecff4d204c9 security-rzsapaar": "sha256:f9ba7b2af90db8dc749a57ca9aedca51e840cb9224441ab546a968da941da900",
+    "ac8646917fd0ca611560984acdb3791fd3f5400d92ef551a053a39164552f7a2 memories-graphs-uvmmvmst": "sha256:4b7c79901ad409a39655f049b772adbc499b92ee2e01db80c3502572444df84d"
+  },
+  "bootstrapReceipts": {
+    "/tmp/hexalith-route-catalog-2X5VeH": [
+      {
+        "AttemptId": "e9d6c39be1804678a48179657c25b668",
+        "RootDigest": "df47b20d9e6ee6ffb578326d6f01138f9d8d6f862d8add0cb5d1a2f6e285d3aa",
+        "MessageId": "01M6C5TM35Q748XJXQK9GQ97RD",
+        "CorrelationId": "01M6C5TM36K2978VDRWM2X6N32",
+        "Phase": "attempted",
+        "HttpStatus": null,
+        "principalSha256": "f470213d9ae659187a19b9cb2169b4b400544f4d3f59250eda657154700da616",
+        "receiptSha256": "c1d2fceb8fcde7ac037d85cb4ab93550ae0cd75fcc87d5b8435d29868d9414a6"
+      }
+    ]
+  },
+  "newContainersObserved": [
+    "8839c91c4e3ea14690d101b6780f7575f4cbc1a75fbe2e68ac5f9af1e6b5db79 folders-provider-4ac153aff47a4442",
+    "9242052e65255a3eafee1f61a40a00a293bb8cd29e2b191869eb0e34db60c9b7 folders-durability-4ac153aff47a4442",
+    "8ad4817d103c8e52acacc11e62f1fa4bc56a7ace72301145a26f3d0156f935e0 dapr-placement-mtls-rayjrcbb",
+    "87a1ced70b323615389804a063cb7b98b1fe51998cc937ab2c254ff025a717e7 dapr-scheduler-mtls-yfychdqc",
+    "1512dc90364d90e542432730ea5d560d1e2b9c56180d2c72421ad68c4dd81e86 dapr-sentry-nnennmny",
+    "d71b79c29a63ed65ab4e9b2879c2cb93f1a94d675e5a2e32199e3c10886d101d memories-vectors-dvpqxdag",
+    "b28137d65f96011891bb24553f14c8507f51fbbb4a6e51f48b9aeecff4d204c9 security-rzsapaar",
+    "ac8646917fd0ca611560984acdb3791fd3f5400d92ef551a053a39164552f7a2 memories-graphs-uvmmvmst"
+  ],
+  "newContainersRemaining": [],
+  "aspireAfter": {
+    "argv": [
+      "aspire",
+      "ps",
+      "--format",
+      "json"
+    ],
+    "exitCode": 0,
+    "stdout": "[]\n",
+    "stderr": ""
+  },
+  "catalogReadbacks": {
+    "/tmp/hexalith-route-catalog-2X5VeH": {
+      "folders-workers-proof-b.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "df47b20d9e6ee6ffb578326d6f01138f9d8d6f862d8add0cb5d1a2f6e285d3aa",
+        "Profile": "Development",
+        "Serving": true,
+        "AttemptId": "e9d6c39be1804678a48179657c25b668",
+        "ActivationBindingDigest": "e69639218d878255513b816a09c9dac1f55430cef51cbf5f7e9111d63e092cb7"
+      },
+      "folders-workers-replica.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "df47b20d9e6ee6ffb578326d6f01138f9d8d6f862d8add0cb5d1a2f6e285d3aa",
+        "Profile": "Development",
+        "Serving": true,
+        "AttemptId": "e9d6c39be1804678a48179657c25b668",
+        "ActivationBindingDigest": "e69639218d878255513b816a09c9dac1f55430cef51cbf5f7e9111d63e092cb7"
+      },
+      "folders-workers.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "df47b20d9e6ee6ffb578326d6f01138f9d8d6f862d8add0cb5d1a2f6e285d3aa",
+        "Profile": "Development",
+        "Serving": true,
+        "AttemptId": "e9d6c39be1804678a48179657c25b668",
+        "ActivationBindingDigest": "e69639218d878255513b816a09c9dac1f55430cef51cbf5f7e9111d63e092cb7"
+      },
+      "memories.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "df47b20d9e6ee6ffb578326d6f01138f9d8d6f862d8add0cb5d1a2f6e285d3aa",
+        "Profile": "Development",
+        "Serving": true,
+        "AttemptId": "e9d6c39be1804678a48179657c25b668",
+        "ActivationBindingDigest": "e69639218d878255513b816a09c9dac1f55430cef51cbf5f7e9111d63e092cb7"
+      },
+      "folders-workers-proof-a.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "df47b20d9e6ee6ffb578326d6f01138f9d8d6f862d8add0cb5d1a2f6e285d3aa",
+        "Profile": "Development",
+        "Serving": true,
+        "AttemptId": "e9d6c39be1804678a48179657c25b668",
+        "ActivationBindingDigest": "e69639218d878255513b816a09c9dac1f55430cef51cbf5f7e9111d63e092cb7"
+      },
+      "tenants.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "df47b20d9e6ee6ffb578326d6f01138f9d8d6f862d8add0cb5d1a2f6e285d3aa",
+        "Profile": "Development",
+        "Serving": true,
+        "AttemptId": "e9d6c39be1804678a48179657c25b668",
+        "ActivationBindingDigest": "e69639218d878255513b816a09c9dac1f55430cef51cbf5f7e9111d63e092cb7"
+      },
+      "folders.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "df47b20d9e6ee6ffb578326d6f01138f9d8d6f862d8add0cb5d1a2f6e285d3aa",
+        "Profile": "Development",
+        "Serving": true,
+        "AttemptId": "e9d6c39be1804678a48179657c25b668",
+        "ActivationBindingDigest": "e69639218d878255513b816a09c9dac1f55430cef51cbf5f7e9111d63e092cb7"
+      },
+      "eventstore.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "df47b20d9e6ee6ffb578326d6f01138f9d8d6f862d8add0cb5d1a2f6e285d3aa",
+        "Profile": "Development",
+        "Serving": true,
+        "AttemptId": "e9d6c39be1804678a48179657c25b668",
+        "ActivationBindingDigest": "e69639218d878255513b816a09c9dac1f55430cef51cbf5f7e9111d63e092cb7"
+      }
+    }
+  },
+  "safeAcceptanceMilestones": [],
+  "strictTestSourceSha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90"
+}

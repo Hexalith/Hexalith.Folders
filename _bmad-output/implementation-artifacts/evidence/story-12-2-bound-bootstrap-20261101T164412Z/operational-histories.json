@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+    "-class",
+    "*OperationalStatus*",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/core-full.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T17:04:41.947146+00:00",
+  "finishedAtUtc": "2026-11-01T17:05:40.841008+00:00",
+  "seconds": 58.89668216201244,
+  "exitCode": 0
+}

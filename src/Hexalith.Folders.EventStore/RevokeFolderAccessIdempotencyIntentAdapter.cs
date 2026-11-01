@@ -1,12 +1,17 @@
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.Contracts.Routing;
+using Hexalith.Folders.Routing;
 
 namespace Hexalith.Folders.EventStore;
 
 /// <summary>Trusted canonical intent adapter for RevokeFolderAccess.</summary>
-internal sealed class RevokeFolderAccessIdempotencyIntentAdapter : IIdempotencyIntentAdapter
+internal sealed class RevokeFolderAccessIdempotencyIntentAdapter : IDeclaredIdempotencyIntentAdapter
 {
-    /// <inheritdoc />
+    /// <inheritdoc/>
+    public CommandIntentDeclaration Declaration => FoldersCommandCatalog.Commands.Single(declaration => declaration.Route.MessageType == CommandType);
+
+    /// <inheritdoc/>
     public string CommandType => "Hexalith.Folders.Commands.RevokeFolderAccess";
 
     /// <inheritdoc />

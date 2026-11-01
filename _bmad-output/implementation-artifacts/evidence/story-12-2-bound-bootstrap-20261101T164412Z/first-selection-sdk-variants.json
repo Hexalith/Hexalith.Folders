@@ -1,0 +1,727 @@
+{
+  "variants": {
+    "Hexalith.EventStore.Client.dll": {
+      "36ff2542e545283d8dfc1254fcceca3b5dbd6913ecc1c74d168b4f30dcd378ea": [
+        {
+          "group": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "memories",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "apphost",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "tests",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "observer",
+          "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "gateway-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "server-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "workers-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "integration-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "apphost-helpers-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "operational-histories",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "sdk-descriptors",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        },
+        {
+          "group": "sdk-registry",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        }
+      ],
+      "56175bc0e08be078a7144683b06df133a9d038f5190b9c2df27af89ad509b3cd": [
+        {
+          "group": "tenants-full-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        }
+      ]
+    },
+    "Hexalith.EventStore.Client.pdb": {
+      "0ea8661ca20795a0fa9f2999ec5fea2c2f14a4fb659058e304bfe90d14650f08": [
+        {
+          "group": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "memories",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "apphost",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "tests",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "observer",
+          "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "gateway-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "server-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "workers-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "integration-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "apphost-helpers-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "operational-histories",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "sdk-descriptors",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        },
+        {
+          "group": "sdk-registry",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        }
+      ],
+      "a335e007cdac6dba98debe0e47425021f136f09b8ff0914f34b27e57964f9e92": [
+        {
+          "group": "tenants-full-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb"
+        }
+      ]
+    },
+    "Hexalith.EventStore.Contracts.dll": {
+      "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5": [
+        {
+          "group": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "memories",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "apphost",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "tests",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "observer",
+          "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "gateway-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "server-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "workers-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "integration-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "apphost-helpers-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "operational-histories",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "sdk-descriptors",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        },
+        {
+          "group": "sdk-registry",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        }
+      ],
+      "ca99ed81eaffc7d7218f755306a00cc078a5a0f62e8a8f700682172450e9b904": [
+        {
+          "group": "tenants-full-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        }
+      ]
+    },
+    "Hexalith.EventStore.Contracts.pdb": {
+      "95bbb3e34cdae08cd7d38ab013be85b45e0affed551a0349f9272c9c165ce33a": [
+        {
+          "group": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "memories",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "apphost",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "tests",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "observer",
+          "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "gateway-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "server-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "workers-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "integration-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "apphost-helpers-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "operational-histories",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "sdk-descriptors",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        },
+        {
+          "group": "sdk-registry",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        }
+      ],
+      "209bbd2d12c740cff5f0bb5a78dc77048d5f5a154b1d47cb37b13f7a78b17c29": [
+        {
+          "group": "tenants-full-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb"
+        }
+      ]
+    },
+    "Hexalith.EventStore.DomainService.dll": {
+      "01a18cad78e452c1ce4d6519448eed74ec1a3ee692e5686763368f2eb246f485": [
+        {
+          "group": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "memories",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "tests",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "observer",
+          "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "gateway-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "server-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "workers-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "integration-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "apphost-helpers-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "operational-histories",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "sdk-descriptors",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        },
+        {
+          "group": "sdk-registry",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        }
+      ],
+      "edaa79018a287cab4bc631b759c765150c7df91920548dece22efb9556ada521": [
+        {
+          "group": "tenants-full-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        }
+      ]
+    },
+    "Hexalith.EventStore.DomainService.pdb": {
+      "332b66f0ae594481a653dc4a2f7929716f8ace5378d5f1361cb35d106fbff4bb": [
+        {
+          "group": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "memories",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "tests",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "observer",
+          "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "gateway-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "server-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "workers-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "integration-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "apphost-helpers-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "operational-histories",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "sdk-descriptors",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        },
+        {
+          "group": "sdk-registry",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        }
+      ],
+      "a637ef7e83d32a2e5866e0b956356a0b278bfc7eb687742d41bd87f4cde0e30a": [
+        {
+          "group": "tenants-full-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb"
+        }
+      ]
+    },
+    "Hexalith.EventStore.ServiceDefaults.dll": {
+      "a76fcedd5085c31cda0d6bcac3288e290aab3c22081b2e8175256adec4c9651e": [
+        {
+          "group": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "memories",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "apphost",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "tests",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "observer",
+          "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "gateway-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "server-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "workers-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "integration-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "apphost-helpers-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "operational-histories",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "sdk-descriptors",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        },
+        {
+          "group": "sdk-registry",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        }
+      ],
+      "7e5596587d8fc2e65d90cdafa791f8bc5b5e2e6dfafec669d60d963477ac26ea": [
+        {
+          "group": "tenants-full-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        }
+      ]
+    },
+    "Hexalith.EventStore.ServiceDefaults.pdb": {
+      "102cd29fd11a07b2402ed166d6fd8b7de98a9f59d714257e2b723d8f02c5ec5a": [
+        {
+          "group": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "memories",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "apphost",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "tests",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "observer",
+          "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "gateway-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "server-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "workers-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "integration-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "apphost-helpers-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "operational-histories",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "sdk-descriptors",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        },
+        {
+          "group": "sdk-registry",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        }
+      ],
+      "2bc5b29a1dc6c5a94ec8eb98052be6d7d5fe8da8537863c89f931ec7bca7e724": [
+        {
+          "group": "tenants-full-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb"
+        }
+      ]
+    },
+    "Hexalith.EventStore.Gateway.dll": {
+      "9419cc59facb88e7c5120f42afb601c8a50143eb32d154d9b69e00b195ede01b": [
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll"
+        },
+        {
+          "group": "gateway-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll"
+        },
+        {
+          "group": "sdk-registry",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll"
+        }
+      ],
+      "e75a0b7928343e2e682929ff0c4e985bde5b4bda5b25550c181f8ff75be6ea40": [
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll"
+        },
+        {
+          "group": "tenants-full-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll"
+        }
+      ]
+    },
+    "Hexalith.EventStore.Gateway.pdb": {
+      "577ab549988d2967b3db8ff27fb55d67b211987bcd67512977dd1705669afa83": [
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb"
+        },
+        {
+          "group": "gateway-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb"
+        },
+        {
+          "group": "sdk-registry",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb"
+        }
+      ],
+      "163aa77d6a686b60f318bc43d6b4220dbc10fd9a545216e1bfd14528014f7f6a": [
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb"
+        },
+        {
+          "group": "tenants-full-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb"
+        }
+      ]
+    },
+    "Hexalith.EventStore.Server.dll": {
+      "767b0e6e72a58751058f9f8e0067a510be57c7cca8e0d080c02aabb84cf74964": [
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll"
+        },
+        {
+          "group": "gateway-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll"
+        },
+        {
+          "group": "sdk-descriptors",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll"
+        },
+        {
+          "group": "sdk-registry",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll"
+        }
+      ],
+      "bb918e38e037fc6dc925286b1823a54c6ab0ce922521178b721a1e7aa7e66b47": [
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Server.dll"
+        },
+        {
+          "group": "server-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll"
+        },
+        {
+          "group": "workers-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll"
+        },
+        {
+          "group": "operational-histories",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll"
+        },
+        {
+          "group": "tenants-full-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll"
+        }
+      ]
+    },
+    "Hexalith.EventStore.Server.pdb": {
+      "09e50638fb7021817249a0019cb22ebd04f13aa501d8acc0f32b38b26abd2f52": [
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb"
+        },
+        {
+          "group": "gateway-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb"
+        },
+        {
+          "group": "sdk-descriptors",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb"
+        },
+        {
+          "group": "sdk-registry",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb"
+        }
+      ],
+      "d7eb7023ea5678f78a5043adafe90f0675b81943ebecd5ad2099a93e749eb611": [
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb"
+        },
+        {
+          "group": "server-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb"
+        },
+        {
+          "group": "workers-full",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb"
+        },
+        {
+          "group": "operational-histories",
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb"
+        },
+        {
+          "group": "tenants-full-qualified",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb"
+        }
+      ]
+    }
+  },
+  "observation": "Each alternative is confined to the Tenants Server.Tests selected output. All inspected SDK versions are 3.130.2.0 and every ordinary PDB document and present generated source checksum matches current source. Actual live host SDK copies are byte-identical. The owner test graph additionally builds its sample edge with an explicit global Version property; exact per-output hashes and MVIDs are retained rather than replaced or copied.",
+  "sourceEdge": "references/Hexalith.Tenants/samples/Hexalith.Tenants.Sample/Hexalith.Tenants.Sample.csproj",
+  "rawPdbAudit": "pdb-first-selection.raw.log"
+}

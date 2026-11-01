@@ -150,13 +150,15 @@ context:
 
 **Approved enrollment continuation:**
 
-Source implementation of the first three rows is complete and verified on the explicitly selected project-reference dependency binaries. The remaining rows retain current-source, command-positive and full-live qualification; the [new packet](evidence/story-12-2-security-enrollment-20261101/README.md) records their blockers without claiming whole-story completion.
+The first five rows are complete on the current source graph, with broad contract failures recorded separately. The [current intake packet](evidence/story-12-2-latest-eventstore-20261101T122955Z/README.md) supersedes the earlier source-build and signed-command blockers. Full live qualification remains open; earlier packets retain their exact-source dispositions without claiming whole-story completion.
 
 - [x] Approved current SDK enrollment: `FoldersServerHostComposition.cs`, `FoldersServerServiceCollectionExtensions.cs` and the owning EventStore public composition seams: adopt supported security/catalog registration while retaining the bespoke keyed processor and process/query/legacy projection handlers. Apply the public canonical-route convention to custom callbacks; never register internal SDK types, forge guard metadata or bypass catalog checks. If a bounded public SDK registration repair is necessary, implement/verify it in the root-declared EventStore repository under the existing approved minimal capability scope, without nested submodule or pin changes.
 - [x] Approved current SDK enrollment: explicitly classify all observed human v1/content/provider/console/audit endpoints and `/` with the SDK named bearer-only human policy, Dapr discovery/subscriptions with the actual-token channel policy, and canonical callbacks with their catalog policies. Preserve layered domain authorization, safe v1 errors and zero protected observation/effects on denial; mixed and wrong-kind credentials fail closed.
 - [x] Approved current SDK enrollment: `src/Hexalith.Folders.ServiceDefaults/Extensions.cs`, tracked health-path consumers, `deploy/observability/production/observability.yaml` and affected runbooks/tests: expose exact anonymous `/health`, `/alive`, `/ready`; preserve existing health aliases as authenticated endpoints and existing readiness checks. Update monitored paths and verify both Server and Workers. No deployment.
-- [ ] Approved current SDK enrollment: production Server/Workers security tests and existing callback/routing suites: require both SDK inventories to be empty; exercise actual catalog guards, positive flows, every route group, exact probes, aliases/root, actual sidecar tokens, mixed/wrong-kind credentials, weak canonical overrides and late unclassified endpoints through production pipelines. Preserve strict source/task/replay assertions.
-- [ ] Approved current SDK enrollment: build isolated Debug/all-project-reference runtime with consistent assembly identities; execute affected Server, Workers, Integration, Contracts, health/observability and operational histories individually. Requalify affected 10,001/32,769 production-handler histories when source/runtime changes prevent exact reuse. If SDK public registration changes, run affected owner registration/security regressions. Record broad failures separately rather than weakening assertions or substituting test-only production bypasses.
+- [x] Approved current SDK enrollment: production Server/Workers security tests and existing callback/routing suites: require both SDK inventories to be empty; exercise actual catalog guards, positive flows, every route group, exact probes, aliases/root, actual sidecar tokens, mixed/wrong-kind credentials, weak canonical overrides and late unclassified endpoints through production pipelines. Preserve strict source/task/replay assertions.
+- [x] Approved current SDK enrollment: build isolated Debug/all-project-reference runtime with consistent assembly identities; execute affected Server, Workers, Integration, Contracts, health/observability and operational histories individually. Requalify affected 10,001/32,769 production-handler histories when source/runtime changes prevent exact reuse. If SDK public registration changes, run affected owner registration/security regressions. Record broad failures separately rather than weakening assertions or substituting test-only production bypasses.
+- [x] Current-source live composition correction: `src/Hexalith.Folders.EventStore/Program.cs` and `tests/Hexalith.Folders.EventStore.Tests/FoldersEventStoreHostCompositionTests.cs`: consume the current SDK gateway's supported HTTP host enrollment, framework channel conventions/actor callback metadata, projection-notification convention and explicit human documentation/hub policies. Mirror the owning SDK host composition; retain Folders idempotency adapters, safe denials, commands and receipt/admission semantics. Prove empty public inventories and real host startup/credential separation. No internal registration or bypass.
+- [x] Current-source live composition correction: `src/Hexalith.Folders.AppHost/Program.cs` and affected topology/composition tests: bind the already-composed Tenants project and its own sidecar to one SDK-generated per-run app-channel token, as the current public Tenants helper requires. Use the existing public token API; preserve resource/store isolation, real workload/human authentication and strict live assertions/deadlines. Never retain generated tokens in evidence.
 - [ ] Approved current SDK enrollment: run the unchanged strict authenticated real-provider durability acceptance on final audited runtime; retain commands/results, source/runtime identities, failed attempts, SM4 measurements and exact owned-resource cleanup in a new evidence packet. Preserve all prior packets and distinguish this migration's completion from whole-story SDK broad-regression, Release/package/PD10, SM4 and independent-review gates.
 
 **Acceptance Criteria:**
@@ -839,3 +841,406 @@ On the selected project-reference dependency binaries, the final Server run has 
 Current integrated-source qualification remains blocked: external commits advanced root-declared dependencies during execution, and Server/Integration/AppHost builds now fail CS0246 for Tenants' `RouteOperationContract` against the selected EventStore source. Final consumer fallback builds explicitly use already-selected project-reference dependency outputs with `BuildProjectReferences=false`; they do not qualify that current complete source graph. External commits also recorded some task changes; this task issued no Git mutation or dependency update. Exact heads, source/runtime hashes and commands are retained.
 
 No new strict authenticated real-provider durability command was run, and no topology was launched. The initial exact-target Aspire baseline failed before startup with a mixed Commons CS1704; current AppHost compilation is blocked separately. Transient ENOSPC attempts remain retained alongside later complete RAM-TMPDIR results. Accurate command/admission declaration compatibility and genuine catalog activation/propagation still require the [owning integration handoff](evidence/story-12-2-security-enrollment-20261101/command-catalog-handoff.md); no guard or admission semantics were weakened. Story 12.2 stays in-progress for those gates, SDK broad regressions, Release/package/PD10, SM4 acknowledgement and independent whole-story review. Historical Task 36 remains bound to its selected candidate, with fresh selected-dependency component capacity coverage recorded separately.
+
+## Current EventStore intake — 2026-11-01
+
+The user requested pulling latest EventStore and identified its sibling-Tenants fallback. The non-recursive fast-forward-only pull is already current at `f704401ff9033919b1e9925564d814d7410bfe3d`. The SDK resolves `references/Hexalith.Tenants/src` beside its own checkout when nested Tenants source is absent; no nested submodule was initialized. Current SDK source contains `RouteOperationContract`, so the earlier CS0246 source-compatibility blocker is superseded.
+
+Current-source Debug builds of Server.Tests, IntegrationTests, AppHost.Tests, core Tests, Workers.Tests and SDK DomainService.Tests pass with zero warnings/errors. Use `-p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false`; the explicit existing catalog version prevents a Tenants-edge 3.129.0 assembly from replacing a 3.130.2 SDK runtime. No package/catalog file changes or `BuildProjectReferences=false` fallback are used. SDK tests need artifacts beneath the owning EventStore directory so source guardrails can find that repository.
+
+Exact commands, failed initial runtime/path controls and current results are under `.artifacts/story-12-2-latest-eventstore-20261101T122955Z/verification/`. Current consumer outputs are under that directory's sibling `coherent/`; SDK outputs are under `references/Hexalith.EventStore/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/`. The selection descriptor is `.artifacts/story-12-2-latest-eventstore-selection.json`. Preserve all earlier sealed packets.
+
+SDK sibling/authoring/composition controls pass 38/38; SDK HTTP security passes 6/6; Server enrollment/composition controls pass 38/38; the previously failed signed-command positive passes 1/1. Workers passes 162/162; operational histories pass 87/87 (including 10,001/32,769); AppHost HTTP/rebuild helpers pass 22/22. The initial full Server run passed 1,314/1,315 with a stale source-text assertion looking for `routes.MapFoldersServerEndpoints()` instead of `app.MapFoldersServerEndpoints()`. Only that identifier was corrected, retaining authentication-before-authorization-before-mapping checks; the corrected full run passes 1,315/1,315 with zero errors/skips. No live topology has started.
+
+**Integration corrections completed:** the initial current Integration suite had 781 passes and 72 failures, zero errors/skips. Four isolated fixtures were corrected while preserving all existing assertions, SDK credential-kind requirements and genuine production security qualification. The full corrected suite passes 853/853, zero failures/errors/skips; focused authentication/behavior passes 170/170 and topology passes 14/14. No SDK/admission redesign, production policy change or nested submodule initialization was needed.
+
+- `tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs`: the named human policy retains the SDK requirements and uses the fixture's existing explicit authentication scheme. Fixed-domain-context clients supply test authorization; authentication before rewriting, v1/v2 isolation, telemetry and disabled production v2 are preserved.
+- `tests/Hexalith.Folders.IntegrationTests/Authorization/ContextReadAuthorityTests.cs`: explicit authentication and authorization middleware restore the second layered-authority evaluation without changing call-count, unavailable/denial or zero-observation assertions.
+- `tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs` and `MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs`: the slim hosts compose authentication before the seam and authorization after routing. Transport-terminal, correlation, state and privacy assertions are unchanged.
+- Topology needed only a corrected task-owned output depth: `.artifacts/story-12-2-latest-eventstore-20261101T122955Z-integration` matches the existing fixed-depth Memories lookup. All 14 topology cases pass; no topology, Memories or dependency-source edit was made. All 21 selected Integration Hexalith dependencies are project references.
+
+The [current intake packet](evidence/story-12-2-latest-eventstore-20261101T122955Z/README.md) retains exact commands, failure controls, source/runtime fingerprints and all final results. Current Contracts builds cleanly and its full run has 623 passes and the same 11 pending PD10/CI conformance failures; frozen candidates and CI pins are unchanged. The approved qualification tasks and remaining live/governance/release/performance dispositions stay authoritative. Full live acceptance remains a separate unexecuted lane; its current fixture still assumes conventional output paths, so an isolated build alone cannot qualify loaded live host artifacts. Story 12.2 remains in-progress.
+
+## Current-source live composition and remaining catalog prerequisite — 2026-11-01
+
+The [new live packet](evidence/story-12-2-latest-eventstore-live-20261101T132347Z/README.md) records conventional Debug/source builds with the existing SDK version applied consistently, supported gateway HTTP/security/framework composition and one SDK-generated app-channel token shared by Tenants and its own sidecar. The original strict run failed startup in 249.092 seconds; the gateway lacked HTTP enrollment and Tenants discovery reported `channel-unconfigured`. Those composition gaps are corrected without changing the strict live test, its deadlines/retries, SDK guards, domain behavior or admission semantics.
+
+Focused actual gateway startup/security and safe-denial checks pass 5/5, retaining both real SDK HTTP/authorization startup validators and empty public inventories. AppHost HTTP/rebuild/model checks pass 23/23. The full gateway test project remains compile-blocked at `NativeTaskAdmissionTests.cs:49`, CS7036, because its registry construction uses the obsolete public API; the current SDK additionally requires genuine catalog authority and declared admission adapters. The fixture is preserved, and the narrow fallback project's exact linked inputs are retained rather than represented as a full-suite pass.
+
+The corrected unchanged strict real-provider run passes readiness for all seven sidecars, then fails 1/1 in 35.590 seconds with zero errors/skips: authenticated `BootstrapGlobalAdmin` expected HTTP 202 but received 503, code `unavailable`. The precise SDK `RouteCatalogUnavailableException` says an independently bound local catalog host identity and profile are required; the stack traverses the real route-catalog invocation and workload-assertion handlers. No post-bootstrap Folders commands or six-concern durability/SM4 assertions execute. Genuine catalog identity/profile, activation/propagation and compatible command/admission declarations remain an owning integration prerequisite; no authority was fabricated or guard weakened.
+
+The corrected run retains zero drift across 18,833 source/config inputs, 969 runtime files in eight output groups and all 13 repository heads, plus 35 actual mapped-module records. Both disposable attempts removed their exact owned containers and temporary directories; Aspire reports no running AppHosts. Raw live stdout/XML remain in ignored local artifacts; only sanitized diagnostics, summaries, paths and hashes enter the sealed packet. The prior packets remain unchanged. Story 12.2, the final live-qualification task and the separate broad SDK, contract/governance, Release/package/PD10, SM4 acknowledgement and independent whole-story review gates remain open.
+
+
+## Authorized catalog/admission compatibility continuation — 2026-11-01
+
+The user explicitly authorizes bounded compatibility work to resolve the current live SDK refusal,
+“An independently bound local catalog host identity and profile are required.” Resume from this spec
+and [the current live packet](evidence/story-12-2-latest-eventstore-live-20261101T132347Z/README.md).
+This authorization is recorded before implementation and supplements the existing prerequisite scope;
+all other frozen requirements and the original baseline remain unchanged.
+
+Authorized work: configure genuine SDK catalog identity/profile, activation and propagation through
+supported public APIs; migrate affected legacy admission adapters to supported declared adapters
+while preserving canonical intent, operation identities, retention and replay semantics; update
+`NativeTaskAdmissionTests` for the supported registry API without weakening any assertion. This is
+compatibility work only: no fabricated authority, guard bypass, new admission behavior, nested
+submodule initialization, dependency-pin update, staging, commit, push, publication or deployment.
+SDK-owned public capability work must be performed from its owning repository if necessary; stop
+for an owner decision only if preserving existing semantics proves impossible.
+
+### Active continuation tasks
+
+Implement only this continuation over the preserved existing working tree; do not redo historical
+completed tasks or rederive frozen decisions. Load the frontmatter context before implementation.
+Inspect tracked guidance/configuration/tests in each owning repository before editing it.
+
+- [x] Configure genuine independently bound local SDK catalog host identity/profile, activation and
+  propagation for every affected actual runtime host, through supported public SDK composition.
+  Preserve genuine workload/human/channel credentials, catalog receiver and invocation guards,
+  production handlers and all strict live assertions/deadlines/retries.
+- [x] Migrate affected legacy adapters to the SDK declared-adapter API with demonstrably identical
+  canonical intent bytes/digests, operation/adapter/version identities, nullable semantics, semantic
+  options, task/credential scope, retention and replay outcomes. No invented admission declaration.
+- [x] Update `tests/Hexalith.Folders.EventStore.Tests/NativeTaskAdmissionTests.cs` for the supported
+  registry API, preserving all original assertions and adding meaningful compatibility checks where
+  needed. Run the complete gateway test project and affected regressions.
+- [x] Build coherent conventional Debug project-reference outputs using
+  `-p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2
+  -m:1 -nr:false`; do not use `BuildProjectReferences=false`. Build actual Tenants/Memories runtime
+  hosts as required by the unchanged fixture. Preserve all failed attempts.
+- [ ] Rerun the unchanged strict authenticated real-provider durability acceptance after a pre-run
+  source/runtime/repository-head audit. Retain actual mapped module identities and exact owned
+  resource cleanup, commands/results, sanitized failure diagnostics and SM4 observations in a new
+  sealed packet. Existing runner/audit scripts under `.artifacts/story-12-2-current-live-composition-20261101T133424Z/`
+  and `.artifacts/story-12-2-latest-eventstore-live-20261101T132347Z/` may be adapted as task tooling;
+  never alter prior sealed packets or publish raw secrets/protected bodies.
+
+Implementation delegation executes the product/test changes and focused verification sequentially,
+then reports exact changed files, commands, results and remaining work to the parent. The parent
+performs final broad regression/live execution, independent diff/identity/cleanup auditing and packet
+sealing. No simultaneous builds may mutate selected outputs. Keep the separate contract/governance,
+Release/package/PD10, performance/SM4 and independent whole-story review gates explicit; story and
+sprint status remain in-progress until their actual requirements pass.
+
+
+### Catalog compatibility finding: qualification observer identity — 2026-11-01
+
+The first new strict attempt is retained under `.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider.*`.
+It fails initialization at the unchanged deadline: the existing test startup observer replaces the
+actual named handler with a `DispatchProxy`, so the real SDK correctly refuses to match it to the
+compiled `OperationalStatusProjectionHandler` declaration. All other cohort observations are
+present. Source/runtime/head drift is zero; exact observed processes, containers, fixture directory
+and SDK coordination directory are gone afterward.
+
+Within the already authorized compatibility work, replace this test instrumentation with opt-in
+`System.Diagnostics.DiagnosticListener` observation at the actual handler's `FoldCatchUpAsync` entry.
+Keep the real handler installed and the SDK's exact owner/type guard. Emit only source-stream and
+position metadata, only when the exact event is enabled; preserve the observer's existing
+`registered` and `fold/source/position/processId` records and every capacity callback-count assertion.
+Do not observe the writer's additional internal/Workers calls, change fold/persistence behavior or
+admission, or remove the independent content-clock setup. Add focused observer/real-handler identity
+and exact-count controls; rerun affected regressions and strict acceptance on the audited correction.
+This is an execution correction to preserve the existing test semantics, not a new owner approval
+or a change to frozen intent. The parent retains broad/live/audit/sealing ownership; implementation
+delegation makes this focused correction and focused checks sequentially, then hands outputs back.
+
+
+### Catalog compatibility finding: preserve existing Folders human admission — 2026-11-01
+
+The second strict run commits all eight genuine SDK host readbacks, then the unchanged human
+`BootstrapGlobalAdmin` call receives 403/unavailable. Tenants independently pins this operation to
+internal ingress; the SDK requires genuine workload/service admission for an internal operation.
+Its existing bound-workload bootstrap is a different flow and cannot transparently preserve the
+fixture's direct human POST assertion. Preserve that owner policy and the strict fixture pending
+an owner decision; do not manufacture service claims, reopen the operation, or substitute a receipt
+for the unchanged HTTP assertion.
+
+Before concluding this bounded continuation, correct our new Folders operation metadata against
+its actual existing caller: `FoldersGatewayHumanBearerHandler` relays the validated public human
+bearer for shipped v1 commands. Declare those existing commands as public ingress, retaining
+existing downstream layered authorization and eligibility for previously supported human callers;
+leave computed owner queries and legacy/named projections internal. This corrects inaccurate new
+metadata; it does not authorize new routes, grants, public v2, CLI/MCP exposure or frozen candidate
+changes. Add independent human-forwarder/actual operation-policy and disabled-v2 checks, retaining
+all original assertions and canonical intent byte goldens. Rerun the gateway and affected regressions,
+then the unchanged strict command on the corrected audited catalog, retaining its actual outcome.
+
+
+## Catalog/admission compatibility qualification and owner boundary — 2026-11-01
+
+The [sealed catalog/admission packet](evidence/story-12-2-catalog-admission-20261101T141540Z/README.md)
+retains the authorized public-SDK compatibility repair, all failed attempts and the final audited
+Debug/project-reference selection. All eight actual catalog hosts commit independently observed
+identity/profile and generation readbacks. All 18 adapters retain their original canonical methods;
+36 original-binary cases prove identical bytes, options, nullable values, scope, identities and
+retention. Original native-task assertions and strict/capacity acceptance sources are unchanged.
+
+Final full results: gateway 73/73, Server 1,324/1,324, Workers 162/162, Integration 853/853, operational
+histories 87/87 (including 10,001/32,769 positions), AppHost helpers 32/32; focused SDK contract/codec
+125/125 and observation/registry 24/24. Builds have zero warnings/errors. The final symbol audit
+resolves the retained stale Workers.Tests-copy control; all 106 actually mapped modules have exact
+SHA-256/PDB/MVID identities, all 36,451 ordinary PDB document records match current source, every
+selected SDK copy is version 3.130.2 and all 28 SDK artifact names have consistent bytes. Ten checked
+consumer/runtime project graphs contain no Hexalith package edges. No package release is claimed.
+
+The unchanged strict command was run four times: first initialization failure (249.412 seconds)
+from the obsolete test proxy, then three retained bootstrap failures after actual catalog commits
+(36.262, 37.004 and final 36.009 seconds). The proxy was replaced by opt-in metadata diagnostics at
+the real handler entry; original callback-count assertions remain. Folders command operation
+metadata now reflects its existing public human bearer forwarding, with computed owner queries
+and projections internal and public v2 still disabled. The final run has zero source/runtime/head
+drift across its captured inputs, all 13 heads unchanged, and exact cleanup of every observed
+owned process/container/fixture directory/SDK directory; Aspire reports no running AppHosts.
+
+**Owner decision is now required under the user's no-new-admission-behavior constraint.**
+Authenticated human `BootstrapGlobalAdmin` still expects HTTP 202 but gets 403/unavailable.
+Tenants explicitly declares bootstrap internal, independently pins that in its owner tests, and
+the SDK requires genuine workload/service admission for internal operations. The unchanged
+public command endpoint is human-only. No host/catalog configuration can preserve both this
+manual human admission and the existing owner/SDK policies. The packet's `owner-decision.json`
+identifies exact sources and the existing verified-human bound-workload bootstrap alternative.
+Do not change Tenants ingress/grants, synthesize service claims or origin proof, replace the
+HTTP assertion with a fabricated response/receipt, or weaken a guard. A fixture bootstrap-flow
+migration to the existing owner implementation needs an explicit decision; it must retain real
+administrator validation/attribution and reconcile actual isolated Dapr targets. No such migration
+was performed. No post-bootstrap Folders command, six-concern strict body or new SM4 measurement
+executed, and no new 10,001/32,769 authenticated HTTP coverage is claimed.
+
+The original live-qualification row stays unchecked; Story 12.2 and sprint status remain in-progress.
+Contracts retain exactly the prior 11 PD10/immutable-CI-pin failures (623/634 passed). Contract/
+governance, Release/package/PD10, SDK broad regressions, performance/SM4 and independent whole-story
+review remain separate open gates. The original baseline and all frozen text, existing packets,
+retained event identities, dependency pins, staged contents and Git refs are preserved. No staging,
+commit, push, branch change, nested submodule initialization/update, publication or deployment.
+
+
+## Approved verified administrator bootstrap migration — 2026-11-01
+
+The user answered **“approve”** to the proposed migration of fixture bootstrap to Tenants' existing
+bound workload flow with verified administrator attribution. This approval resolves the owner
+decision in [the catalog/admission packet](evidence/story-12-2-catalog-admission-20261101T141540Z/owner-decision.json)
+and is recorded before implementation. It permits replacing the fixture's obsolete manual human
+`BootstrapGlobalAdmin` POST/202 expectation with the actual owner-hosted, cryptographically verified
+human-to-bound-workload bootstrap. It does not permit changing Tenants' internal ingress, grants,
+SDK guards, canonical intent/identities/retention/replay, or the strict durability test body.
+
+### Active approved bootstrap continuation
+
+Resume only these tasks over the preserved working tree. Prior tasks/evidence remain authoritative
+for their exact selection; do not redo or rewrite historical work. Preserve the original baseline,
+frozen block, original capacity/strict test sources and all domain/replay/retention assertions.
+
+- [x] Configure the actual Tenants host's existing supported bootstrap settings and real OIDC
+  administrator credential, workload assertion, configured RSA proof key and private actual
+  delivery receipt. The existing installed bearer handler must validate exact administrator
+  subject/admin/payload and credential kind before it issues bound proof. The gateway must verify
+  the existing exact proof/caller/domain scope through `/api/v1/commands/bound/workload`. Never
+  synthesize a successful response, subject, service surface, authority or origin proof in Folders.
+- [x] Migrate `FolderDurabilityAcceptanceFixture.BootstrapAsync` to observe the real owner flow's
+  accepted HTTP status, attempt/root/principal binding, terminal delivery and original persisted
+  source/admin authority before tenant creation. A private receipt is delivery evidence, never
+  the authority or a fabricated replacement HTTP response. Preserve existing command/status
+  assertions outside the approved bootstrap transport change, and preserve existing deadlines/
+  retries and the strict six-concern durability body.
+- [x] Reconcile actual fixture-isolated Dapr targets through supported public configuration/API
+  seams; preserve canonical defaults and logical workload audiences. If a missing target-selection
+  setting requires bounded compatibility in Tenants or the SDK, inspect and edit from that owning
+  root-declared repository and test preserved defaults plus exact selected target. Keep source-read
+  and bootstrap guards intact; do not initialize nested submodules or alter dependency pins.
+- [x] Add focused positive and refusal controls for genuine administrator attribution, receipt/
+  generation binding, missing/wrong credentials or proof, original direct-human bootstrap denial,
+  exact target selection and terminal persisted-source checks. Keep all earlier adapter byte/digest/
+  scope/retention assertions and disabled public v2. Real signed surface profile configuration for
+  existing human/service callers may be aligned through the actual issuer's supported settings;
+  provision only the exact existing owner-required workload client/scopes in the new isolated issuer;
+  never widen business/domain authority, assign the service account the human administrator role/
+  subject, or relabel a human as a workload to pass a guard.
+- [x] Build coherent conventional Debug/project-reference outputs using the existing
+  `-p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2
+  -m:1 -nr:false`. Build actual Tenants/Memories runtime hosts as required. Run complete gateway
+  tests and affected Folders/owner regressions; no binary-only fallback or pin update.
+- [x] Rerun the unchanged strict authenticated real-provider durability class on final audited
+  assemblies. Retain every failed attempt, actual source/runtime/host identities, real committed
+  catalog/owner bootstrap evidence, SM4 observations and exact owned cleanup in a new sealed packet.
+
+Delegated implementation handles product/test changes and focused checks sequentially, then hands
+selected outputs back. Parent owns final broad/live/audit/sealing. Do not run simultaneous builds
+on selected outputs. Task tooling for this approval is `.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/`; existing
+`run.py`, `audit.py`, `live.py`, `summarize_live.py`, `verification-plan.json` are copied there for
+adaptation without modifying old packets. Selection descriptor: `.artifacts/story-12-2-bound-bootstrap-selection.json`.
+
+Continue autonomously within this approved migration, keeping the remaining contract/governance,
+Release/package/PD10, SDK broad-regression, performance/SM4 and independent whole-story review
+gates separate and open until actually satisfied. All no-staging/no-commit/no-push/no-publication/
+no-deployment/no-pin/no-nested-initialization constraints persist. Stop for a new owner decision
+only if another necessary change cannot preserve the authorized semantics.
+
+### Supported transport timeout compatibility within the approved bootstrap
+
+The retained `strict-real-provider-bound-import` attempt committed all eight catalogs but the
+owner rejected `HttpClient.Timeout == Timeout.InfiniteTimeSpan` before administrator validation.
+The installed standard HTTP resilience handler deliberately uses that transport representation;
+its existing finite total-request timeout remains in named `HttpStandardResilienceOptions`.
+Resolve that actual configured budget through public options only for the unnamed client's
+infinite transport timeout, and pass it to the existing positive finite catalog-readiness guard.
+Preserve existing finite-client timeout behavior, installed handlers/retries, cancellation,
+credential/proof/domain guards, and all fixture deadlines. Do not invent a fallback budget or
+accept unbounded readiness. An actual production-default registration control must bind the
+options name to the public pipeline name and prove the configured budget, cancellation and
+expiry. This is necessary compatibility for the approved existing owner bootstrap, not an
+authorization-policy or acceptance-body change; it is recorded before the repair.
+
+### Genuine isolated Dapr transport and caller binding
+
+The retained `strict-real-provider-bound-timeout` attempt produced a real owner HTTP 403 receipt.
+Actual sidecars reported mTLS disabled; exact-version Dapr source shows that unidentified peers
+receive the SDK-rendered global deny policy before application delivery. This is a source-backed
+diagnosis, not a captured Dapr rejection body. The existing signed-caller check also requires the
+real isolated physical AppId; canonical `tenants` alongside `tenants-<runId>` cannot pass it.
+
+Continue the approved compatibility work by configuring genuine task-owned local Dapr identity
+infrastructure through the public Platform/Sentry APIs, with real issued peer certificates and the
+actual isolated namespace/trust domain bound consistently to SDK-rendered policies. Preserve global
+deny and every existing operation/domain grant. Use the real isolated Tenants OIDC client identity
+for its assertion, proof caller and exact gateway allow-list/public-key entries; retain the canonical
+`tenants` defaults and logical `eventstore` audience. Select owner source-read proof caller from that
+same existing issuer configuration, defaulting to `tenants`; never drop the physical-caller check.
+The human administrator, canonical command/intent/operation/event identities and retention/replay
+inputs remain unchanged. No preexisting authority is inferred or forged.
+
+Keep existing startup/request/status deadlines and command retry behavior. Verify the actual model
+and positive/refusal identity controls, then run the affected regressions and unchanged strict class.
+Retain exact issued-infrastructure source/runtime identities and returned private directory paths;
+after application disposal remove only those task-created paths and prove their absence. Certificates,
+keys, tokens and protected bodies stay private. This continuation records the required transport
+configuration and default-preserving proof selection before implementation.
+
+Use Platform's canonical consumer source links and public local infrastructure helper. Its application
+namespace is currently hardcoded to `default` in both early and generated-sidecar callbacks; add one
+optional public application namespace parameter defaulting to `default`, thread it through the canonical
+helper/subscriber, and test both preserved defaults and selected/refused values from the owning Platform
+repository. Control-plane namespace remains `default`. Preserve the SDK workload ACL trust domain
+`public`; Sentry's `localhost` control-plane trust is a separate setting, as verified against the installed
+exact-version Dapr source. Do not guess or unify these distinct trust domains.
+
+### Bounded request framing compatibility
+
+The retained mTLS attempt reached successful `/process` and `/project`, one stored/published event and
+actor completion, then the owner observed HTTP 400. The unchanged Dapr policy logged an endpoint
+retry after its existing five-second attempt timeout. Exact-version source treats unknown-length
+`JsonContent` as streaming with no replay buffer; the consumed-body retry explanation is an inference
+because the actual rejection body was not captured. Cleanup also hit the existing Docker infrastructure
+deadline; retain that failure independently and do not extend it.
+
+Before the next run, buffer the existing exact bound bootstrap JSON through public `HttpContent`
+APIs, bounded by the endpoint's existing 1,048,576-byte request limit and caller cancellation. Verify
+unchanged serialized bytes, valid proof and repeatable content with a computed positive Content-Length.
+Preserve the unnamed client, installed handlers, every timeout/retry policy, original message/correlation
+IDs, canonical intent and retention/replay semantics. Add no owner retry, admission key, grant or
+substitute receipt. The next isolated run must still observe real HTTP acceptance, terminal delivery
+and exactly one original human-attributed event/projection; completion from this failed attempt cannot
+substitute for acceptance. This transport-only compatibility repair is recorded before implementation.
+
+### Existing durable bootstrap projection configuration
+
+The buffered and diagnostic attempts establish genuine admission, one source event and cached exact
+message replay, but synchronous compatible legacy projection delivery exceeds the unchanged five-second
+Dapr attempt budget before mediator exit. Preserve every transport timeout/retry and all guards. Select
+the SDK's existing durable polling mode only for the disposable fixture's `global-administrators` domain:
+`EventStore:Projections:Domains:global-administrators:RefreshIntervalMs=1000`. This matches the existing
+one-second activation recovery cadence; other domains, production defaults and all Folders delivery modes
+remain unchanged. This is existing supported configuration, not a new admission path or projection engine.
+
+The actual production pipeline writes the mandatory activation outbox before both legacy and fenced actor
+routing, including null admission keys; polling awaits persisted identity registration and executes the same
+guarded delivery with host cancellation. Do not disable delivery, add a detached task, change admission keys,
+or bypass finalization/persistence checks. HTTP 202 remains actual command acceptance, never proof of
+projection completion. Require terminal command completion and original retained human-attributed source,
+then observe initially absent administrator projection within the SAME existing 90-second deadline before
+`CreateTenant`. Any present malformed/contradictory authority still fails closed, and successful authority
+must satisfy the unchanged exact original membership/version/time assertions. Record this fixture-only
+existing scheduling selection and meaningful configuration/absence/refusal controls before implementation;
+the frozen persistence-before-delivery-ack requirement and strict six-concern body are preserved.
+
+### Natural framing for isolated proof-refusal controls
+
+The retained `strict-real-provider-durable-bootstrap` attempt obtained actual HTTP 202 and terminal
+Completed. Its newly added missing-proof control observed 403; the wrong-proof control then observed
+500. Gateway logs show repeated actual `ForbidResult` responses, followed by the real owning Dapr
+sidecar's bound-endpoint circuit opening. Exact installed Dapr source confirms that the unchanged
+unmatched retry policy retries buffered application 403 responses, counts them against the breaker,
+and maps the open circuit to HTTP 500. This is transport behavior, not failed proof validation.
+
+Preserve all configured policies, attempt counts, deadlines and both exact 403 assertions. Only these
+two intentionally invalid fixture probes use fresh natural `JsonContent` framing through the supported
+HTTP API, rather than the general helper's prebuffered `ByteArrayContent`. Add an optional content
+factory to the existing helper so every eligible existing outer retry still gets identical JSON with
+the same message/principal/header/catalog identities; retain its 75-second bound, the caller's existing
+90-second bound and its unchanged 429/eligible-503 rules. Dapr forwards the actual application refusal
+for non-replayable streaming content. Valid owner admission remains bounded and buffered with all
+existing retries and exactly-one retained-event checks. Verify natural framing, identical fresh content
+on eligible retries, cancellation and single 403 observation with focused controls. No guard, grant,
+admission behavior or frozen strict/capacity test body changes. Recorded before implementation.
+
+### Preserve the catalog-bound owner source runtime address
+
+The retained `strict-real-provider-proof-framing` attempt passed genuine bootstrap acceptance,
+terminal completion, all credential/proof refusals, exactly-one original human-attributed source and
+persisted administrator authority. Its subsequent authenticated `CreateTenant` failed because the
+Tenants domain-service administrator verifier could not read current native source authority. The
+actual exception is `RouteCatalogUnavailableException: The v2 invocation uses a different Dapr
+runtime endpoint.` The legacy owner source HTTP registration replaces configured `localhost` with
+`127.0.0.1`; the SDK intentionally binds the exact configured scheme/host/port and refuses that alias.
+
+Within the already approved public transport/catalog compatibility, remove only this legacy hostname
+rewrite and use the actual configured Dapr HTTP endpoint/port with the existing canonical fallback.
+Read these through the host configuration used by the SDK's state coordinates; preserve physical
+gateway target selection, logical audiences, proof scope, all retries/deadlines and every native source
+proof/final observation check. Do not accept aliases in the SDK guard or fall back to projection-only
+authority. Verify preserved no-override defaults, exact localhost/IPv4 endpoint selection and refusal
+on a catalog/address mismatch. Record this bounded owner registration repair before implementation;
+the original strict and capacity bodies and all other frozen requirements remain unchanged.
+
+
+## Saved continuation checkpoint — 2026-11-01
+
+Implementation stopped at the user's explicit “stop and save” request. The subsequent “push all
+changes” instruction authorizes staging, Conventional Commits and Git push of the saved working
+changes and their workspace references. It supersedes the earlier no-commit/no-push restriction for
+this Git operation only; package-version pins, nested initialization, publication and deployment
+restrictions remain. The evidence describes the executed pre-commit selection, not a later merge HEAD.
+
+The [new sealed checkpoint](evidence/story-12-2-bound-bootstrap-20261101T164412Z/README.md) and its
+[resume guide](evidence/story-12-2-bound-bootstrap-20261101T164412Z/RESUME.md) retain all nine live
+attempts, earlier build/test/preflight failures, exact commands, actual catalog/owner delivery evidence,
+source/PE/PDB/native/container identities and exact cleanup. All prior evidence seals remain unchanged.
+
+The supported bound owner bootstrap is verified: actual 202, terminal Completed, all four credential/
+proof refusals, original retained source exactly once with the real human attribution, committed
+catalog generation binding and persisted administrator membership. The final unchanged strict class
+still fails during fixture `CreateTenant`: the first native authority head read returns 200 in
+2516.8947 ms; the second read is pending when the existing five-second domain-service budget expires.
+The strict six-concern body was not entered. No observation, proof, final head check, timeout or guard
+was removed or relaxed. The repeated handler source frame is explained by async lease cleanup/rethrow,
+not demonstrated duplicate registration. No further bounded composition mismatch or justified repair
+was found; the retained timing/IL checkpoint explicitly does not prove all executions inherently exceed
+the budget. Resume diagnosis from this evidence rather than rerunning unchanged code for a lucky pass.
+
+Final executed regressions: gateway 73/73, Folders Server 1324/1324, Workers 162/162, integration
+853/853, operational core/history 87/87, Tenants Server 1666/1666, preserved Tenants AppHost defaults
+3/3, combined fixture helpers 82/82, SDK descriptor/codec/validator 125/125 and registry/observation
+24/24. Contracts remain 623/634 with the same 11 PD10/immutable CI-pin failures as before.
+
+The final selection audit binds 108 actual mapped identities, 2713 unique runtime files and 43494
+ordinary PDB source records. All ordinary checksums match; five generated metadata-only build profiles
+reconstruct exactly from PE attributes. Actual live SDK copies are byte-identical at 3.130.2.0; separately
+built regression metadata profiles remain explicit. All 15 checked project asset graphs contain only
+Hexalith project edges. Source/runtime/head drift during the final run is zero; every observed owned
+process, container and temporary directory is gone. The exact task-created PDB tool directory was
+also removed after its source was preserved.
+
+The original live-qualification acceptance row remains unchecked and Story/sprint stay in-progress.
+Contract/governance, Release/package/PD10, broader SDK and Platform regressions, performance/SM4 and
+independent whole-story review remain separate open gates. No whole-story review or release approval
+is implied by the successful bootstrap or by the requested Git push. No new performance result exists.

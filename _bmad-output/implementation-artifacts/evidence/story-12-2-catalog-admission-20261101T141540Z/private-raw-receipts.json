@@ -1,0 +1,567 @@
+[
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/apphost-build-human.raw.log",
+    "sha256": "442637958519589ee1b179841fc65bb785e66edf8b76e0519f8d85733fc2d57a",
+    "bytes": 6518
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/apphost-build-observer.raw.log",
+    "sha256": "2df996aa021e2c9ca61169d15e3a7d2652fdd1fad1733e206972b54b29a2e7b3",
+    "bytes": 6518
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/apphost-build.raw.log",
+    "sha256": "8c872cb7bbba34c41bb77002eb0bee45a76c15d667cc5ca733b3f17b80774f03",
+    "bytes": 6518
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/apphost-full.xml",
+    "sha256": "3b54a934bc6d549141a9d91dffe735ae6896d9823e5cb23f2bd0afaea8809665",
+    "bytes": 23266
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/apphost-helpers-human.raw.log",
+    "sha256": "8eaae93765ebba2cc1e316920ddf0ad60a945dab05fe7665e54a8bf7c6d9cbcf",
+    "bytes": 1951
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/apphost-helpers-human.xml",
+    "sha256": "d8612cf808b5005bd33304008add6bd97372069ed4da3d91e85a5df1287285bc",
+    "bytes": 23268
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/apphost-helpers-observer.raw.log",
+    "sha256": "c4bb934d89c785a3dbd33d8126e18fccaee291bd81a0f7e7f907388755bb5514",
+    "bytes": 1951
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/apphost-helpers-observer.xml",
+    "sha256": "e99ec58c1979617966e1caf762c3692f059d70dc0420ea79d3d437e7a745fd30",
+    "bytes": 23266
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/apphost-helpers.raw.log",
+    "sha256": "2a35fb7ffccf27d9106789a965207b57d45a3535b221c5b649c876546e88f816",
+    "bytes": 1951
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/contracts-build.raw.log",
+    "sha256": "d3a52a09399e17fb1ac959a74c2ac6ff4e5ce75792466b5a7eef1ba758fe577e",
+    "bytes": 793
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/contracts-full.raw.log",
+    "sha256": "94f234498d26bc065e1951fbac9f720c6c79313a0e59774be44bf6346bebd298",
+    "bytes": 129082
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/contracts-full.xml",
+    "sha256": "4c591624688c8b25a0dbb2ee2712c73657d28da12aad1814b25455ad75425291",
+    "bytes": 571923
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/core-build-human.raw.log",
+    "sha256": "29e331b601228f47509f4fc4652f5c80bdaa5eb6bec62710030b4fea1169ce2d",
+    "bytes": 5314
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/core-build-observer.raw.log",
+    "sha256": "80a430ff66389e94b2945f5a1d05eee976feb6a87c9edf789c31782df84b6c86",
+    "bytes": 5314
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/core-build.raw.log",
+    "sha256": "16bbe009d5e51b95d8e4cd0ef4eeb91a844d1b726b326cfc33f18332ccb5a34f",
+    "bytes": 5448
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/core-full.xml",
+    "sha256": "19545c863ed562fab2b28704da8a7c7f1780d02ee6d51bdac6654585b3b9e343",
+    "bytes": 86055
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-build-final.raw.log",
+    "sha256": "470454d867d36248a66ad9dcc975f7b10e82d0a6d422b2e4ddfe2aa3143b80e3",
+    "bytes": 4239
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-build-human.raw.log",
+    "sha256": "c7708b465ef03747887c38484571abfbd72c4c40d4db5f5181d96fc495b40a17",
+    "bytes": 4239
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-build-observer.raw.log",
+    "sha256": "c046eb32304a7b795f21437e8a1a26a02442c5ad3069e9c1cb8d88ce20245735",
+    "bytes": 4239
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-build.raw.log",
+    "sha256": "ebb75f14b4dfaef045637377afb798d02f58d8ee528c2aac0c3415718f0b240d",
+    "bytes": 4239
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-full-final.raw.log",
+    "sha256": "da78ae5fd46d508ee050ebdcdcceae010c15deb5511f17dcf8570245fb6cd542",
+    "bytes": 14978
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-full-final.xml",
+    "sha256": "8f07b4f0360717ff9f9e248e24c3f21854dc3459f953548d509d7980f544d53d",
+    "bytes": 55408
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-full-human.raw.log",
+    "sha256": "b34bd2ff2dd512249abac5aeea7f1b28af2c2be141f56a3712283ec9cf4322b0",
+    "bytes": 14978
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-full-human.xml",
+    "sha256": "efc8d2a9b855d97d58ab2e87b2d36d232b2b8ff55f165304c06685bba7f374da",
+    "bytes": 55409
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-full-observer.raw.log",
+    "sha256": "5ac793e0e58fbf62e521e531f57b18ad76a48f15fddf16a1a5904f885f718310",
+    "bytes": 14978
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-full-observer.xml",
+    "sha256": "8943eaa6d7ae519fabbe7f708644afb7e30d945f7e699ab3f5237a4856f306d6",
+    "bytes": 55401
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-full.raw.log",
+    "sha256": "2c4e1d6ce7376118b0d33c6beec476a4a2a5557527a4e22f0b7f99d58821b4aa",
+    "bytes": 17237
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-full.xml",
+    "sha256": "c1eb2eb95406e40f4c9ecbc30f867e243114d353b41e5a4ad442cf3ab76b1531",
+    "bytes": 57677
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/human-metadata-focused.raw.log",
+    "sha256": "d5189f728834b7854465e928e84cfc6e18137fd5eb68da762cb4faaae6a532a1",
+    "bytes": 13669
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/human-metadata-focused.xml",
+    "sha256": "a2a16bc3b1d5c46eadc99a90513bec0022904dd4fde6b0f084834efa2d84f047",
+    "bytes": 6195
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-build-corrected.raw.log",
+    "sha256": "fdf94e8aa5afc29efe799d7b9461cfd3a96db2660adca7ce9131a984bf5b62c1",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-build-final.raw.log",
+    "sha256": "1b28bc2cee001709be1d7b9fc509fcfe0962be19172ddf794954356f21e4e8cd",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-build.raw.log",
+    "sha256": "476443f3552b164561d6dfe8bc48ccf2488d3c7bdda9f29c13107222504171bf",
+    "bytes": 1494
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-build-audited.raw.log",
+    "sha256": "aa85ee0cdf731f7add2c646f1d28f856ef246b5ce2b96a5265bc55cd7baa4589",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-build-memory-config.raw.log",
+    "sha256": "277be3decbb77b867f5e3272eea8ff13ade410af855c28465099180ab207b583",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-build.raw.log",
+    "sha256": "435f700a7735f286d375fb7b2a2069b5bb9a2667b22ffe841bef738ff72d27d4",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-tests-audited.raw.log",
+    "sha256": "aa8aef17a91e2ff3107f9f3830dbea00d5af195561a026c81f216076530c732e",
+    "bytes": 3173
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-tests-audited.xml",
+    "sha256": "1d6ca9ff215bc7fdb7a1b5dc7429f9b909876c6da385b1b61e13998539699d99",
+    "bytes": 10527
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-tests-memory-config.raw.log",
+    "sha256": "097aca831084bb714dbbc7e1d815fbb72aa575d1fb69ad973d5d3b9edc4aa824",
+    "bytes": 993
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-tests-memory-config.xml",
+    "sha256": "2ef80d9c84485ea462e846acd72b7b5a8982d576c045d01f6698122e7a814ba6",
+    "bytes": 8598
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-tests.raw.log",
+    "sha256": "57a594e71b6db431df260f6b432c46c748c796fb153c22f149412c2da2851403",
+    "bytes": 5902
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-tests.xml",
+    "sha256": "0af2bb22f89c8c59f4c8e8ef34375b2c1a65223875a7bb04055489c8d5efea99",
+    "bytes": 13403
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-first-server-build.raw.log",
+    "sha256": "430d53809fc057ad90265555743b73585c20baeac17924ab52830d83c2dc9b2a",
+    "bytes": 1342
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-gateway-build-corrected.raw.log",
+    "sha256": "5cb7353080761916a2e3e63cfee8317e6cbc8b44810b5cd616f01d6403d9be87",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-gateway-build-final.raw.log",
+    "sha256": "1c617b258a84a59ee104e34b45497b8b606e1c49d7ed9569e064df861c0832c8",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-gateway-build.raw.log",
+    "sha256": "1ed0f559197a34b63e614a44a6da60f749841a313437aca75472d895711a8ae6",
+    "bytes": 948
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-gateway-tests.raw.log",
+    "sha256": "323e0086ed8b1d48e9e290f72f22938008c2a1772cfe55ac59edaadc18b53554",
+    "bytes": 15095
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-gateway-tests.xml",
+    "sha256": "b39d073e1afaf9ddd8f11d75b9f952b53042854f0c10e36abe313440db73a6d5",
+    "bytes": 54661
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-contracts-build.raw.log",
+    "sha256": "73a90a0792a33a09eacfb56fb66f4cc1432006cf32ae47864a0d51ebe04cfb43",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-custom-observation-tests-corrected.raw.log",
+    "sha256": "b341409d72769c5972e4380017f3252837fca47b1ace4aca1eb820c3b0debd52",
+    "bytes": 703
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-custom-observation-tests-corrected.xml",
+    "sha256": "7105f5e0f043f9db23a91b3576d29c0f3458b00fe79220f28605a725458df799",
+    "bytes": 18994
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-custom-observation-tests.raw.log",
+    "sha256": "5518d56684611dc713fc23b4d12dcc6ecc55bffbd5c97ba7b322180a0588c5e1",
+    "bytes": 467
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-descriptor-tests.raw.log",
+    "sha256": "ce59d01fbaf4e657d1e0a152f3992174bc386def2731c21eb91675c5a9891697",
+    "bytes": 719
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-descriptor-tests.xml",
+    "sha256": "21ae71edeb6eae96b2b25951cffd9b659d5e11f1cd7443430e2b876522d3d3b6",
+    "bytes": 91393
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-server-build-corrected.raw.log",
+    "sha256": "565170baad2d25c05b9976b64fd4c778ca17d8d3a6549146181dd90ce4cab6ba",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-server-build.raw.log",
+    "sha256": "0880bed65d976fa920dd48e002ddf9ce5b8f3feda8d10c9ec3101f59a0c29c69",
+    "bytes": 1514
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-tenants-host-build.raw.log",
+    "sha256": "868c7aa5469ae2f91ec3d409dbc7d23c541c58965e665d7a84374435413baaf1",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/integration-build-human.raw.log",
+    "sha256": "749b67fccace125c4982a4a2fada3ffd2e18061b157914988bf552d8464b47dc",
+    "bytes": 4572
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/integration-build-observer.raw.log",
+    "sha256": "4d03d1226e0da7210521d2c27027466cdf2792f30b733fbcf4d6ef8c7437267a",
+    "bytes": 4572
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/integration-build.raw.log",
+    "sha256": "47748433ffa034688845acf934c0fd8dda2dd5aa3a81f862e61cd54af8de2a34",
+    "bytes": 4974
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/integration-full-human.raw.log",
+    "sha256": "7eb12268db20faf7343526d2def417cd808c6d3b25f3b5ca5e694c1e48591c28",
+    "bytes": 510645
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/integration-full-human.xml",
+    "sha256": "252380d6d6e0e23fe5e810688196478d09fec00bdc2e7b53475acfc9fc77bd94",
+    "bytes": 687316
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/integration-full-observer.raw.log",
+    "sha256": "d731e52873698ea5dff833ec7701b8c159c0aedb8364ed86cdc664029253ffcc",
+    "bytes": 510653
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/integration-full-observer.xml",
+    "sha256": "e9157da3c6fb71266fbcd300aec6555f4896789d4f51b8ae30ff11430f754717",
+    "bytes": 687322
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/integration-full.raw.log",
+    "sha256": "e845eb243cf63f7216f9a6c5d4b1a034275bb741e2550057cc370ac6bc6ef54c",
+    "bytes": 510650
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/integration-full.xml",
+    "sha256": "9c497fd596baf68798da23ab16ee87cdd4c77b77c15517afefd9ca74a6048b9e",
+    "bytes": 687306
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/legacy-canonical-intent-baseline.raw.log",
+    "sha256": "1693b6deb2f3ed5d75fb1f9f23ee1d59bf4a5179de68fcd2fb924fa570977862",
+    "bytes": 38
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/legacy-canonical-intents.json",
+    "sha256": "ff7cd3ad367eade4204a5b985997cf18ef34ce4a1deeb4037fbe975b71941a6e",
+    "bytes": 139365
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/memories-host-build.raw.log",
+    "sha256": "ca31c04eb1cb59ac206110011031060c14aa2fee98cd823ed69a7a351bf8ee93",
+    "bytes": 2365
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/observer-fix-focused-tests-01.raw.log",
+    "sha256": "29dba6f24b938b2dfb7f2f5a889630e5aa7f73e17863667f58b988b4fd289873",
+    "bytes": 688
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/observer-fix-focused-tests-01.xml",
+    "sha256": "f7ef2b2e79d90bce9d931f9995b6a9c2f37a59c8491482a25c92f3646d0ddf15",
+    "bytes": 9210
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/observer-fix-server-build-01.raw.log",
+    "sha256": "6629a51d0a3d1edb7046e82c45a9b932eb3f1774f1d03cf725558c3aef4647ec",
+    "bytes": 1562
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/observer-fix-server-build-02.raw.log",
+    "sha256": "7bb9ec4de41b2c317f10d5f7e3f8f4948ddd3022d69d1d651a1a8cbe782e262b",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/operational-histories-human.raw.log",
+    "sha256": "0478e29de19bc2969d4c1fb4f760117a14ef3d38c3fb030d8a7bf1f3b980f9c8",
+    "bytes": 537
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/operational-histories-human.xml",
+    "sha256": "e24a00be05cb0673dcbbb6ecc01b3139e36ff537048116ac9549464a3a6d1215",
+    "bytes": 86059
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/operational-histories-observer.raw.log",
+    "sha256": "26ce55fddf2e7b12de899a390d8307831cea919840a5273a05e04572168309f9",
+    "bytes": 537
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/operational-histories-observer.xml",
+    "sha256": "493d874f0e10cc671222ef766e316596d3fae95603f1b52c9ff8f841d73c7503",
+    "bytes": 86063
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/operational-histories.raw.log",
+    "sha256": "ef468b0d8eeb30af7c95d19330ecd3b7a7061c19c18184c2dad6a655e4fb86f0",
+    "bytes": 537
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/pdb-audit-tool-build-complete.raw.log",
+    "sha256": "54c7cc9d5472b096716752ea9dd4270dfc14bb78091d325ed5378569b2c6636b",
+    "bytes": 241
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/pdb-audit-tool-build.raw.log",
+    "sha256": "43206c33284ebd6b5d71a6e2a431d546b45eb1380f709a434afeb41fe7ce6846",
+    "bytes": 277
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/pdb-final-inspection.raw.log",
+    "sha256": "7fe26a4b58a0fed7637d29039925eeee33dcbfab675dde308d1440161146320d",
+    "bytes": 24295696
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/pdb-qualified-inspection.raw.log",
+    "sha256": "e2a898505224bb7ffba12be18eac13a623499198372110fe974dd3a94fbade2d",
+    "bytes": 24306961
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/pdb-sealed-selection-inspection.raw.log",
+    "sha256": "d86ec0ff5d4faa8ae573455b1b8abf9748db112d8e2c6392e9e0b6ee8595f917",
+    "bytes": 24306959
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/pdb-source-inspection.raw.log",
+    "sha256": "74d262ec8bf418f380564d7ca706caa2cf6313a9c9c3933153a8685e681864b1",
+    "bytes": 23733251
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/public-registry-api.raw.log",
+    "sha256": "7d0d4e0ecf2831642b69751da3399621c57d210afd6cac86b045664de78fbf18",
+    "bytes": 640
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/server-build-human.raw.log",
+    "sha256": "6b857835291cfb2c516e4b008d320a526a7115036c848a899e91e53492c6f5f2",
+    "bytes": 4284
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/server-build-observer.raw.log",
+    "sha256": "7ae65d5dff540d80c5d9903167022070df536d26fd4d8a31cc6f2766e0db723f",
+    "bytes": 4284
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/server-build.raw.log",
+    "sha256": "c7f8c03e41983639339024ece2a7664d351d443ff32bc932b2e7b17bb21631e3",
+    "bytes": 4290
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/server-full-human.raw.log",
+    "sha256": "bb9d5904f39b050abed54d58cd0fe069ed4a0050bb60ef462c133982125b1bc7",
+    "bytes": 2102404
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/server-full-human.xml",
+    "sha256": "4f980accb6f9df127cfeb0cea9d910ec21a752f7e82f4a263bb0b31188169b6e",
+    "bytes": 915115
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/server-full-observer.raw.log",
+    "sha256": "b5f6d8df1833573e911a6604f6debbc8629af4905c9c66edcc20dd444bf1fe9d",
+    "bytes": 2084670
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/server-full-observer.xml",
+    "sha256": "b9e3fb872d62afc526124ce6919397d9d7cc2c0b383e04ccf20c9c741331109f",
+    "bytes": 909817
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/server-full.raw.log",
+    "sha256": "709ccdbdc94822df1fb73405e6bad6267e84d0d405a2e4605b788a9515d9e390",
+    "bytes": 2080458
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/server-full.xml",
+    "sha256": "9ff920f8029baef02fe90aeaafcf20ea669ea27bc7ee85e73a0c466bca9fceaa",
+    "bytes": 908425
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider-final-monitor.raw.log",
+    "sha256": "3688aa9b41d94d8cb9674dc401058edfc2ed873260ac5b315eb760d0345035e8",
+    "bytes": 30
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider-final.raw.log",
+    "sha256": "9abbe24705298443b5610936cc22e1cbbfdc836ebd42197f637d9f09b5247f02",
+    "bytes": 823636
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider-final.xml",
+    "sha256": "2b57395ae8b54b3dc799afdedc8e39852ca06c3d0b432f718d55b09bd577fbf4",
+    "bytes": 3400
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider-monitor.raw.log",
+    "sha256": "6f09e6e2c21b1586ccdb7d1bcca44c6f373b2c38ad3362bed775ff0a7dc43e9b",
+    "bytes": 30
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider-observer-monitor.raw.log",
+    "sha256": "3688aa9b41d94d8cb9674dc401058edfc2ed873260ac5b315eb760d0345035e8",
+    "bytes": 30
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider-observer.raw.log",
+    "sha256": "67f050544f46e5fb070cc07a06825aea17982501aad3f58e0236d8365f48ce9f",
+    "bytes": 822259
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider-observer.xml",
+    "sha256": "a07f31544c8916de016a24d70b6e2f8792d1587e74d36e6b18e878a1246fce55",
+    "bytes": 3400
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider-qualified-monitor.raw.log",
+    "sha256": "3688aa9b41d94d8cb9674dc401058edfc2ed873260ac5b315eb760d0345035e8",
+    "bytes": 30
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider-qualified.raw.log",
+    "sha256": "ce845e85679813b4f5ee320fe2d7fec0696bcb0e855975ae0a5cd5472077b2fb",
+    "bytes": 839784
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider-qualified.xml",
+    "sha256": "9dc7fc5f30c1573614aee3022fda8f1b425c7b49c9440404dac013463dcb8081",
+    "bytes": 3400
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider.raw.log",
+    "sha256": "1aa02973dbaec40d451458aeb765a69c00924e5398e079f20338cfc7552b60a8",
+    "bytes": 918394
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider.xml",
+    "sha256": "7245923abfc3a683b6db14bd89a089cc6964becb03c735c329e41a97a26c1793",
+    "bytes": 2743
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/tenants-host-build.raw.log",
+    "sha256": "d1b3e7b5900573476ff9285e3ba25c84d830c86fbc49b3e016dea364c7354e2b",
+    "bytes": 2097
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/workers-build-qualified.raw.log",
+    "sha256": "1d5d13cafd15dd7582abe50d9190e796028c8075abcf7dcddd08274422f6fb14",
+    "bytes": 4148
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/workers-build.raw.log",
+    "sha256": "e75a480f82aaae81db44a6b66350c0d475d5605a289dc846f12e198a28801803",
+    "bytes": 4298
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/workers-full-qualified.raw.log",
+    "sha256": "772f44126f5f35f9086f6af02954f61399afd64a61fe5c9efa8bc5a00805beb0",
+    "bytes": 163175
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/workers-full-qualified.xml",
+    "sha256": "3d3b32521e3dc8cf87fd264c432e09660da0701f56f18590d3a6030b80e5846c",
+    "bytes": 114348
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/workers-full.raw.log",
+    "sha256": "f7eef91f87eef11bb42415fb2fc3328fb509adc3cfbe96a2d03b55cf4eb4e320",
+    "bytes": 163177
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/workers-full.xml",
+    "sha256": "96a90d599cfd8b2a5a5f4797bf6cafbdaaae085eee76380a985ac9c1bd34a8d9",
+    "bytes": 114358
+  }
+]

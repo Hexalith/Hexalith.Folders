@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "/home/administrator/.dotnet/tools/ilspycmd",
+    "-il",
+    "-t",
+    "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T19:43:56.973007+00:00",
+  "finishedAtUtc": "2026-11-01T19:43:58.853129+00:00",
+  "elapsedSeconds": 1.880119688983541,
+  "exitCode": 0,
+  "assembly": {
+    "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "sha256": "a76fcedd5085c31cda0d6bcac3288e290aab3c22081b2e8175256adec4c9651e"
+  },
+  "output": {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-timeout-invocation-handler.il.txt",
+    "bytes": 7997624,
+    "sha256": "b4187bd1cce9134aacc2fd18ce4ee5e568e4883f35d984c69c3a3e7f374dffaf"
+  }
+}

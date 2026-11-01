@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityMtlsCompositionTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FoldersAppChannelCompositionTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FoldersDevelopmentCatalogCompositionTests",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/refusal-final-helpers.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T19:28:24.738488+00:00",
+  "finishedAtUtc": "2026-11-01T19:28:30.326368+00:00",
+  "seconds": 5.58788188098697,
+  "exitCode": 0
+}

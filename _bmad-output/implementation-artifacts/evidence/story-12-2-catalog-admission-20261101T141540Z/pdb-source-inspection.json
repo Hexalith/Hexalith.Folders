@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "dotnet",
+    "/tmp/folders-catalog-pdb-audit-pouehvfj/bin/Debug/net10.0/PdbAudit.dll",
+    ".artifacts/story-12-2-catalog-admission-20261101T141540Z/regressions-runtime-before.json"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T14:50:10.435177+00:00",
+  "finishedAtUtc": "2026-11-01T14:50:11.192888+00:00",
+  "seconds": 0.7577068000100553,
+  "exitCode": 0
+}

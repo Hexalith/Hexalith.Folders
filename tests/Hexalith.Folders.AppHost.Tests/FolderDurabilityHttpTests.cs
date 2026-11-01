@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 using Shouldly;
 using Xunit;
@@ -8,6 +9,81 @@ namespace Hexalith.Folders.AppHost.Tests;
 
 public sealed class FolderDurabilityHttpTests
 {
+    [Theory]
+    [InlineData(403, null, null, false, false)]
+    [InlineData(429, null, null, false, true)]
+    [InlineData(503, "idempotency_admission_unavailable", "service_unavailable", true, true)]
+    [InlineData(503, "folder_acl_unavailable", "read_model_unavailable", true, true)]
+    [InlineData(503, "provider_unavailable", "provider_unavailable", true, false)]
+    [InlineData(503, "idempotency_admission_unavailable", "service_unavailable", false, false)]
+    public async Task NaturalContentPreservesWireBytesAndExistingRetryRules(int status, string? code, string? category, bool retryable, bool shouldRetry)
+    {
+        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
+        deadline.CancelAfter(TimeSpan.FromSeconds(5));
+        int expectedRequests = shouldRetry ? 2 : 1;
+        DurabilityLoopbackHttpServer server = new(expectedRequests, attempt =>
+            (attempt == 1 ? (HttpStatusCode)status : HttpStatusCode.Forbidden,
+                JsonSerializer.Serialize(new { code, category, retryable })), deadline.Token);
+        await using var serverScope = server.ConfigureAwait(true);
+        using HttpClient client = new() { BaseAddress = server.Address };
+        var body = new { command = new { messageId = "same-message", correlationId = "same-correlation" }, principalId = "synthetic-test-principal" };
+        byte[] expectedBytes = JsonSerializer.SerializeToUtf8Bytes(body, JsonSerializerOptions.Web);
+        using HttpRequestMessage request = new(HttpMethod.Post, "/proof-control") { Content = JsonContent.Create(body) };
+        request.Headers.Add("X-Test-Identity", "same-header");
+        request.Content.Headers.ContentLanguage.Add("en");
+        await request.Content.LoadIntoBufferAsync(deadline.Token).ConfigureAwait(true);
+        request.Content.Headers.ContentLength.ShouldBe((long)expectedBytes.Length);
+        List<HttpContent> contents = [];
+
+        using HttpResponseMessage result = await FolderDurabilityHttp.SendAsync(client, request, false, deadline.Token, contentFactory: () =>
+        {
+            JsonContent content = JsonContent.Create(body);
+            content.Headers.ContentLength.ShouldBeNull();
+            contents.Add(content);
+            return content;
+        }).ConfigureAwait(true);
+
+        result.StatusCode.ShouldBe(shouldRetry ? HttpStatusCode.Forbidden : (HttpStatusCode)status);
+        result.RequestMessage.ShouldNotBeSameAs(request);
+        await server.Completion.ConfigureAwait(true);
+        server.Requests.Count.ShouldBe(expectedRequests);
+        contents.Count.ShouldBe(expectedRequests);
+        if (expectedRequests == 2) contents[0].ShouldNotBeSameAs(contents[1]);
+        foreach (var observed in server.Requests)
+        {
+            observed.RequestLine.ShouldBe("POST /proof-control HTTP/1.1");
+            observed.Headers.ShouldNotContainKey("Content-Length");
+            observed.Headers["Transfer-Encoding"].ShouldBe("chunked");
+            observed.Headers["Content-Type"].ShouldBe(request.Content.Headers.ContentType!.ToString());
+            observed.Headers["Content-Language"].ShouldBe("en");
+            observed.Headers["X-Test-Identity"].ShouldBe("same-header");
+            observed.Body.ShouldBe(expectedBytes);
+        }
+    }
+
+    [Fact]
+    public async Task NaturalContentStopsOnCallerCancellationWithoutAnotherRequest()
+    {
+        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
+        deadline.CancelAfter(TimeSpan.FromSeconds(5));
+        DurabilityLoopbackHttpServer server = new(1, _ => (HttpStatusCode.ServiceUnavailable,
+            JsonSerializer.Serialize(new { code = "idempotency_admission_unavailable", category = "service_unavailable", retryable = true })), deadline.Token);
+        await using var serverScope = server.ConfigureAwait(true);
+        using HttpClient client = new() { BaseAddress = server.Address };
+        using HttpRequestMessage request = new(HttpMethod.Post, "/proof-control");
+        int contents = 0;
+        Task<HttpResponseMessage> pending = FolderDurabilityHttp.SendAsync(client, request, false, deadline.Token, contentFactory: () =>
+        {
+            contents++;
+            return JsonContent.Create(new { messageId = "same-message" });
+        });
+        await server.Completion.ConfigureAwait(true);
+        deadline.Cancel();
+        await Should.ThrowAsync<OperationCanceledException>(() => pending).ConfigureAwait(true);
+        contents.ShouldBe(1);
+        server.Requests.ShouldHaveSingleItem();
+    }
+
     [Fact]
     public async Task TransientAdmissionAndThrottleRetriesPreserveExactRequestIdentity()
     {

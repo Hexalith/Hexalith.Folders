@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -13,6 +14,8 @@ namespace Hexalith.Folders.Server;
 public sealed class OperationalStatusProjectionHandler(OperationalStatusProjectionWriter writer)
     : IAsyncDomainSharedProjectionStreamingRebuildHandler
 {
+    private static readonly DiagnosticListener _foldDiagnostics = new("Hexalith.Folders.OperationalStatus");
+
     /// <inheritdoc/>
     public string Domain => FoldersServerModule.DomainName;
     /// <inheritdoc/>
@@ -70,7 +73,12 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
     /// <inheritdoc/>
     public Task<IReadOnlyList<ReadModelBatchOperation>> FoldCatchUpAsync(SharedProjectionDelivery delivery,
         long generation, SharedProjectionEpochCoordinator coordinator, CancellationToken cancellationToken)
-        => writer.FoldCatchUpAsync(delivery, generation, cancellationToken);
+    {
+        ArgumentNullException.ThrowIfNull(delivery);
+        if (_foldDiagnostics.IsEnabled("FoldCatchUp"))
+            _foldDiagnostics.Write("FoldCatchUp", new KeyValuePair<string, long>(delivery.SourceStream, delivery.EnvelopePosition));
+        return writer.FoldCatchUpAsync(delivery, generation, cancellationToken);
+    }
     /// <inheritdoc/>
     public Task<DomainSharedProjectionRebuildCandidate> CreateEmptyCandidateAsync(
         DomainSharedProjectionRebuildIdentity identity, CancellationToken cancellationToken)

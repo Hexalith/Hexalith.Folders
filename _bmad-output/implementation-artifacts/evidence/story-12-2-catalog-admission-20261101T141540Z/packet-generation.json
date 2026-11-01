@@ -1,0 +1,6 @@
+{
+  "generatedAtUtc": "2026-11-01T16:00:35.150922+00:00",
+  "source": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z",
+  "packet": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-catalog-admission-20261101T141540Z",
+  "policy": "Raw runtime stdout, raw XML and synthetic canonical payload fixture bodies stay private in ignored artifacts. Sealed packet contains exact command receipts, source/runtime identities, safe summaries and cleanup evidence."
+}

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "dotnet",
+    "references/Hexalith.Tenants/tests/Hexalith.Tenants.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.AppHost.Tests.dll",
+    "-class",
+    "*LocalDaprIdentityTests",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/tenants-apphost-defaults.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T17:57:47.861617+00:00",
+  "finishedAtUtc": "2026-11-01T17:57:48.750065+00:00",
+  "seconds": 0.888420678966213,
+  "exitCode": 0
+}

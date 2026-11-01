@@ -1,0 +1,81 @@
+{
+  "mappedModules": [
+    {
+      "processId": 193444,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "36ff2542e545283d8dfc1254fcceca3b5dbd6913ecc1c74d168b4f30dcd378ea",
+      "pdbSha256": "0ea8661ca20795a0fa9f2999ec5fea2c2f14a4fb659058e304bfe90d14650f08"
+    },
+    {
+      "processId": 193444,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+      "pdbSha256": "95bbb3e34cdae08cd7d38ab013be85b45e0affed551a0349f9272c9c165ce33a"
+    },
+    {
+      "processId": 193444,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "sha256": "613182d999b7bd61e790b3edc44682ae6877f3f59f3ba2e11b4cb5de0c93dff9",
+      "pdbSha256": "2e2d0767b35e1b53b8feee053b7b18d9a425a7867c556da4567f230b1078df9d"
+    },
+    {
+      "processId": 193444,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+      "sha256": "328ec6bd58d6720b3caef81f19819dde01b2e8b2c1ff183d888b1f4faf0d984a",
+      "pdbSha256": "47779895b312cfac570432cf6a2a6a7ec928492cb246fd11f6475160fd440f5a"
+    },
+    {
+      "processId": 193444,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.dll",
+      "sha256": "c7165ac36b98189b69b4c8d7bcc4ffec221ec2f790ba07daebb89ad1158bdbe8",
+      "pdbSha256": "abc7f1ad0d8ef216d11e5cddd5b9397fc8556e4eb25920fd1bd70a78d96bd2ee"
+    },
+    {
+      "processId": 193444,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll",
+      "sha256": "34d126eb2e54e02d80f04aa1500b159ac62727df0bad076b1f9002deb7322005",
+      "pdbSha256": "78c35961d8df48c3110302f32062f208e7e8e74cd74bd4c38ec9ef9bf5f4210e"
+    },
+    {
+      "processId": 193444,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Memories.Aspire.dll",
+      "sha256": "3e788f3b8e40399d1b0d92677b526069762ac803bae4164b7b8e60669ebc3587",
+      "pdbSha256": "6fc7edd896827854830c44d2001734d7b6c4ecbe8351a4071ada001ade5e5777"
+    },
+    {
+      "processId": 193444,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Aspire.dll",
+      "sha256": "e5eee34c8fd198151de071d85fd84ec9c62c52a4fa5bff5ff6ddedf07c11777e",
+      "pdbSha256": "dcc45c9b489e00a32489048fd5b3791ac45c69721251e82fa4ca983882f785c3"
+    }
+  ],
+  "newContainersSeen": [
+    "054cab9cfd121ee99e779a4f013dfc0aacd82fe81ddecfef475672a04a26b9ef folders-provider-ada38e8f940e8896",
+    "acacfb858d242d7487988bc9742565a6bda035be9ed4acf1fd24dbdcdb00412c folders-durability-ada38e8f940e8896"
+  ],
+  "temporaryDirectoriesSeen": [
+    "/tmp/folders-durability-5kgz5rw0.wfr"
+  ],
+  "catalogDirectories": {},
+  "containerImageIds": {
+    "054cab9cfd121ee99e779a4f013dfc0aacd82fe81ddecfef475672a04a26b9ef folders-provider-ada38e8f940e8896": "sha256:7c4e1db440be7b2ca685b49d0d7864cdd78e92431f531bf7893659def8200fc5",
+    "acacfb858d242d7487988bc9742565a6bda035be9ed4acf1fd24dbdcdb00412c folders-durability-ada38e8f940e8896": "sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541"
+  },
+  "nativeProcesses": []
+}

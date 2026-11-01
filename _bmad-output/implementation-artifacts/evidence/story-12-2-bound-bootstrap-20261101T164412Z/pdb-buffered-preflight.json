@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "dotnet",
+    "/tmp/folders-bound-bootstrap-pdb-audit-82a08c92/bin/Debug/net10.0/PdbAudit.dll",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/buffered-preflight-runtime-before.json"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T18:24:11.405746+00:00",
+  "finishedAtUtc": "2026-11-01T18:24:12.267370+00:00",
+  "seconds": 0.8616218580282293,
+  "exitCode": 0
+}

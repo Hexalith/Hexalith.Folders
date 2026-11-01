@@ -1,0 +1,32 @@
+{
+  "exception": "RouteCatalogUnavailableException",
+  "message": "An independently bound local catalog host identity and profile are required.",
+  "stackFrameGroups": [
+    [
+      "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.RequireLocalIdentity() in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs:line 222",
+      "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.AcquireCoreAsync(CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs:line 149",
+      "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.AcquireAsync(CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs:line 143",
+      "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs:line 155",
+      "Hexalith.EventStore.Server.DomainServices.DomainServiceWorkloadAssertionHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/DomainServices/DomainServiceWorkloadAssertionHandler.cs:line 94",
+      "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.RequireLocalIdentity() in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs:line 222",
+      "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.AcquireCoreAsync(CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs:line 149",
+      "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.AcquireAsync(CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs:line 143",
+      "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs:line 155",
+      "Hexalith.EventStore.Server.DomainServices.DomainServiceWorkloadAssertionHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/DomainServices/DomainServiceWorkloadAssertionHandler.cs:line 94"
+    ],
+    [
+      "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.RequireLocalIdentity() in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs:line 222",
+      "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.AcquireCoreAsync(CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs:line 149",
+      "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.AcquireAsync(CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs:line 143",
+      "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs:line 155",
+      "Hexalith.EventStore.Server.DomainServices.DomainServiceWorkloadAssertionHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/DomainServices/DomainServiceWorkloadAssertionHandler.cs:line 94"
+    ]
+  ],
+  "publicFailure": {
+    "operation": "BootstrapGlobalAdmin",
+    "status": 503,
+    "code": "unavailable"
+  },
+  "readinessMilestones": {},
+  "rawLogPolicy": "Raw stdout and XML remain only in the ignored artifacts directory; no tokens or payloads are copied into the review packet."
+}

@@ -1,0 +1,57 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Contracts/Hexalith.Memories.Contracts.csproj (in 80 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Analyzers/Hexalith.McpCli.Analyzers.csproj (in 190 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj (in 187 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj (in 187 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj (in 187 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj (in 188 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/Hexalith.McpCli.Abstractions.csproj (in 1 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Client.Rest/Hexalith.Memories.Client.Rest.csproj (in 194 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj (in 1 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj (in 190 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders/Hexalith.Folders.csproj (in 193 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj (in 196 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj (in 192 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj (in 91 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj (in 8 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj (in 9 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj (in 8 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj (in 199 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj (in 202 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj (in 264 ms).
+  Hexalith.Commons.UniqueIds -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Commons.UniqueIds/debug/Hexalith.Commons.UniqueIds.dll
+  Successfully created package '/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/package/debug/Hexalith.Commons.UniqueIds.1.0.0.nupkg'.
+  Successfully created package '/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/package/debug/Hexalith.Commons.UniqueIds.1.0.0.snupkg'.
+  Hexalith.Folders.Contracts -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Folders.Contracts/debug/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders.Client -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Folders.Client/debug/Hexalith.Folders.Client.dll
+  Hexalith.EventStore.Contracts -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.EventStore.Contracts/debug/Hexalith.EventStore.Contracts.dll
+  Hexalith.EventStore.Client -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.EventStore.Client/debug/Hexalith.EventStore.Client.dll
+  Hexalith.EventStore.ServiceDefaults -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.EventStore.ServiceDefaults/debug/Hexalith.EventStore.ServiceDefaults.dll
+  Hexalith.EventStore.DomainService -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.EventStore.DomainService/debug/Hexalith.EventStore.DomainService.dll
+  Hexalith.EventStore.Server -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.EventStore.Server/debug/Hexalith.EventStore.Server.dll
+  Hexalith.EventStore.Testing -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.EventStore.Testing/debug/Hexalith.EventStore.Testing.dll
+  Hexalith.Folders -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Folders/debug/Hexalith.Folders.dll
+  Hexalith.Folders.ServiceDefaults -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Folders.ServiceDefaults/debug/Hexalith.Folders.ServiceDefaults.dll
+  Hexalith.Commons.UniqueIds -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Commons.UniqueIds/debug/Hexalith.Commons.UniqueIds.dll
+  Hexalith.EventStore.Contracts -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.EventStore.Contracts/debug/Hexalith.EventStore.Contracts.dll
+  Hexalith.McpCli.Analyzers -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.McpCli.Analyzers/debug/Hexalith.McpCli.Analyzers.dll
+  Hexalith.McpCli.Abstractions -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.McpCli.Abstractions/debug/Hexalith.McpCli.Abstractions.dll
+  Hexalith.Tenants.Contracts -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Tenants.Contracts/debug/Hexalith.Tenants.Contracts.dll
+  Hexalith.EventStore.Client -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.EventStore.Client/debug/Hexalith.EventStore.Client.dll
+  Hexalith.McpCli.Analyzers -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.McpCli.Analyzers/debug/Hexalith.McpCli.Analyzers.dll
+  Hexalith.McpCli.Abstractions -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.McpCli.Abstractions/debug/Hexalith.McpCli.Abstractions.dll
+  Hexalith.Tenants.Client -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Tenants.Client/debug/Hexalith.Tenants.Client.dll
+  Hexalith.Tenants.Contracts -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Tenants.Contracts/debug/Hexalith.Tenants.Contracts.dll
+  Hexalith.Memories.Contracts -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Memories.Contracts/debug/Hexalith.Memories.Contracts.dll
+  Hexalith.Memories.Client.Rest -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Memories.Client.Rest/debug/Hexalith.Memories.Client.Rest.dll
+  Hexalith.Folders.Server -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Folders.Server/debug/Hexalith.Folders.Server.dll
+  Hexalith.Folders.Testing -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Folders.Testing/debug/Hexalith.Folders.Testing.dll
+  Hexalith.Memories.Contracts -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Memories.Contracts/debug/Hexalith.Memories.Contracts.dll
+  Hexalith.Memories.Client.Rest -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Memories.Client.Rest/debug/Hexalith.Memories.Client.Rest.dll
+  Hexalith.Folders.Server.Tests -> /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/bin/Hexalith.Folders.Server.Tests/debug/Hexalith.Folders.Server.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:17.66

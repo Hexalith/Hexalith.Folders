@@ -1,0 +1,1639 @@
+{
+  "mappedModules": [
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Builds.Tooling.dll",
+      "sha256": "8cd1c4d5a8ddd2dc88801f6c718d5b263ecd4875f9373e8b35c4b2ca2e861c46",
+      "pdbSha256": "143e3e40a38a877377951a45556337fe9e0029cef95596a59f7ee45810a0e956"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+      "sha256": "328ec6bd58d6720b3caef81f19819dde01b2e8b2c1ff183d888b1f4faf0d984a",
+      "pdbSha256": "47779895b312cfac570432cf6a2a6a7ec928492cb246fd11f6475160fd440f5a"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "36ff2542e545283d8dfc1254fcceca3b5dbd6913ecc1c74d168b4f30dcd378ea",
+      "pdbSha256": "0ea8661ca20795a0fa9f2999ec5fea2c2f14a4fb659058e304bfe90d14650f08"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+      "pdbSha256": "95bbb3e34cdae08cd7d38ab013be85b45e0affed551a0349f9272c9c165ce33a"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "sha256": "fa2e02f7fa5cbc77c25b2b86ad9e8b5116274135e6b847521bf991231928d6b0",
+      "pdbSha256": "0d8a721be03973d14eedaa8c624432f254c9f23282f754f425d87817adacdb2a"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.dll",
+      "sha256": "00a65b4857a46d6a9c7117126216379ba3eee70407b90f5b8ec5a84dcda10d53",
+      "pdbSha256": "54c133ec7bdc3342fe4379783d193bbeca2e6d0aee5c8052d54227592b7ef3de"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll",
+      "sha256": "34d126eb2e54e02d80f04aa1500b159ac62727df0bad076b1f9002deb7322005",
+      "pdbSha256": "78c35961d8df48c3110302f32062f208e7e8e74cd74bd4c38ec9ef9bf5f4210e"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Memories.Aspire.dll",
+      "sha256": "3e788f3b8e40399d1b0d92677b526069762ac803bae4164b7b8e60669ebc3587",
+      "pdbSha256": "6fc7edd896827854830c44d2001734d7b6c4ecbe8351a4071ada001ade5e5777"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Aspire.dll",
+      "sha256": "e5eee34c8fd198151de071d85fd84ec9c62c52a4fa5bff5ff6ddedf07c11777e",
+      "pdbSha256": "dcc45c9b489e00a32489048fd5b3791ac45c69721251e82fa4ca983882f785c3"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.dll",
+      "sha256": "7b672341281f0113683bf46bf122a1f139c428f476b78fcd912c07c53e446b18",
+      "pdbSha256": "7f712e0ff75d6d1ce94b86b80327dd83dbc312181952695e6df0dd90c776e9cc"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll",
+      "sha256": "c244038a1bde67cf72e7d8b0823954e98e4a86f44d00112378bb26dc9bce9dc1",
+      "pdbSha256": "f40e9cea08770abbfa6023d9cbe3b3a58789e0788ba56071640a3cbcd15337f8"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "sha256": "f6c53e456b94b734f2866ee3594a6d7515cfd13b29604979211187f983e8c3c6",
+      "pdbSha256": "6f2733b7b79711f170759f387c8e1b78043273e61832fd32ea47c84e6547c0e2"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "01a18cad78e452c1ce4d6519448eed74ec1a3ee692e5686763368f2eb246f485",
+      "pdbSha256": "332b66f0ae594481a653dc4a2f7929716f8ace5378d5f1361cb35d106fbff4bb"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "a76fcedd5085c31cda0d6bcac3288e290aab3c22081b2e8175256adec4c9651e",
+      "pdbSha256": "102cd29fd11a07b2402ed166d6fd8b7de98a9f59d714257e2b723d8f02c5ec5a"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+      "sha256": "218dc90f4acb8d01e2c95e5acb33e0457ccedf922214311d6e2cf4aafbec683b",
+      "pdbSha256": "cc11a7f95105d30a14ed4a7ef0d189e615684027d1490cf435370448b40de0cc"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "3392330df82074d1fe9b24cd2c2c6fdc318db8c9f4a01cd9e374947147f8cd66",
+      "pdbSha256": "b20167fccd0d0c3b1f8b4d010543ea1b0901cc0df704a008c7b041de5cc3e440"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+      "sha256": "58d7d6895258b28cc8d41223da0e7536511715edb03560a2cf2abc387ac52945",
+      "pdbSha256": "ddb61fc99544e1e2ff4499b40f54d852c6ceaf7824c7c42f18be82b14987bfe5"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "0b7f23b876a91e47f96584bedb37f8e7aa74be555ca87418443dd710aec1bf4a",
+      "pdbSha256": "206e78d41096579702c0c0e186baff1ff1b16c31076a1d6b8fbab59d57e96536"
+    },
+    {
+      "processId": 1223013,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "36ff2542e545283d8dfc1254fcceca3b5dbd6913ecc1c74d168b4f30dcd378ea",
+      "pdbSha256": "0ea8661ca20795a0fa9f2999ec5fea2c2f14a4fb659058e304bfe90d14650f08"
+    },
+    {
+      "processId": 1223013,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+      "pdbSha256": "95bbb3e34cdae08cd7d38ab013be85b45e0affed551a0349f9272c9c165ce33a"
+    },
+    {
+      "processId": 1223013,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "a76fcedd5085c31cda0d6bcac3288e290aab3c22081b2e8175256adec4c9651e",
+      "pdbSha256": "102cd29fd11a07b2402ed166d6fd8b7de98a9f59d714257e2b723d8f02c5ec5a"
+    },
+    {
+      "processId": 1223013,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "743f27e6f8bae2fb1334f3febb3d36c2d148e36af0c215ddd2f29ef56d0d686b",
+      "pdbSha256": "4b8953a74fbbfcc3d7ae02d55e676e29bd0d4d54f6a9462265a27500bac1ed1d"
+    },
+    {
+      "processId": 1223013,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "e65836580064d62b5c8afacfeb0e46b2ed5357a9e3b4cbb13e4a6f23ee65e771",
+      "pdbSha256": "d99c31e2b1a0e69de0948f1ad122eddc857b7d174def1999f4b10f9a4ac00ed7"
+    },
+    {
+      "processId": 1223013,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "3392330df82074d1fe9b24cd2c2c6fdc318db8c9f4a01cd9e374947147f8cd66",
+      "pdbSha256": "b20167fccd0d0c3b1f8b4d010543ea1b0901cc0df704a008c7b041de5cc3e440"
+    },
+    {
+      "processId": 1223013,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "55a94a2ea833c7be231f30a5155e30102a70d742d37423b8a857ddab97d633eb",
+      "pdbSha256": "805f6d3a43d37ec2db00badc27853121875fb7c312bedbfb185dc663d090bec9"
+    },
+    {
+      "processId": 1223013,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "0b7f23b876a91e47f96584bedb37f8e7aa74be555ca87418443dd710aec1bf4a",
+      "pdbSha256": "206e78d41096579702c0c0e186baff1ff1b16c31076a1d6b8fbab59d57e96536"
+    },
+    {
+      "processId": 1223014,
+      "comm": "Hexalith.Memori",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "36ff2542e545283d8dfc1254fcceca3b5dbd6913ecc1c74d168b4f30dcd378ea",
+      "pdbSha256": "0ea8661ca20795a0fa9f2999ec5fea2c2f14a4fb659058e304bfe90d14650f08"
+    },
+    {
+      "processId": 1223014,
+      "comm": "Hexalith.Memori",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+      "pdbSha256": "95bbb3e34cdae08cd7d38ab013be85b45e0affed551a0349f9272c9c165ce33a"
+    },
+    {
+      "processId": 1223014,
+      "comm": "Hexalith.Memori",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "01a18cad78e452c1ce4d6519448eed74ec1a3ee692e5686763368f2eb246f485",
+      "pdbSha256": "332b66f0ae594481a653dc4a2f7929716f8ace5378d5f1361cb35d106fbff4bb"
+    },
+    {
+      "processId": 1223014,
+      "comm": "Hexalith.Memori",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "a76fcedd5085c31cda0d6bcac3288e290aab3c22081b2e8175256adec4c9651e",
+      "pdbSha256": "102cd29fd11a07b2402ed166d6fd8b7de98a9f59d714257e2b723d8f02c5ec5a"
+    },
+    {
+      "processId": 1223014,
+      "comm": "Hexalith.Memori",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.AccessTelemetry.Contracts.dll",
+      "sha256": "7b1995362a8e81a13b536605b60a9b11662c4e1459da19824ef0275d8880c32a",
+      "pdbSha256": "09834f43e57fbb0749a458989c16d0ceedf437d48987cd5f83c5640675a94991"
+    },
+    {
+      "processId": 1223014,
+      "comm": "Hexalith.Memori",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll",
+      "sha256": "968defee34d990e5b22e0aee1fc96c9cdf0800e80ef90e12e20814ac46e97abd",
+      "pdbSha256": "d6a354d2930315c9f4b342d64d714d9cbc02e8ffb480c5e1242793c38343b31f"
+    },
+    {
+      "processId": 1223014,
+      "comm": "Hexalith.Memori",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.EventStore.dll",
+      "sha256": "41a5b6a533f941c2e49d271c7d8dd025a9f12c2e87f18f7164c4eeb0a116fe67",
+      "pdbSha256": "5c709a29256978c9f4257ce55aa1c4330ca4a626788eb6ffe055ded0e74654b8"
+    },
+    {
+      "processId": 1223014,
+      "comm": "Hexalith.Memori",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Server.dll",
+      "sha256": "fc02e54d1c196019d9608a8c46b37d7499a0c6c31c2b1f9be75b50f1f1c2961a",
+      "pdbSha256": "a9f5098906548da7bd029738dbb500f2890eb30bb5f2af1c49d38c1fe44fe71a"
+    },
+    {
+      "processId": 1223014,
+      "comm": "Hexalith.Memori",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.ServiceDefaults.dll",
+      "sha256": "e5be4b6149ab85dd1f6a8f12eee855bbc47e6f9b6adcd249595ae5627523812d",
+      "pdbSha256": "5dfda5e2a974dc1771965ba037e4fb69d632cdfa05dfa836721bb23cee1587ab"
+    },
+    {
+      "processId": 1223014,
+      "comm": "Hexalith.Memori",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Telemetry.dll",
+      "sha256": "8dbb66bb77e5578ad7d36cde5e4850a78e47dbf1594e460b135ca4ea810854d3",
+      "pdbSha256": "ab9be1d8e626600ad6862169c1d2292c161a7ea4fa4b9fd69b14bcc35a171251"
+    },
+    {
+      "processId": 1223018,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "36ff2542e545283d8dfc1254fcceca3b5dbd6913ecc1c74d168b4f30dcd378ea",
+      "pdbSha256": "0ea8661ca20795a0fa9f2999ec5fea2c2f14a4fb659058e304bfe90d14650f08"
+    },
+    {
+      "processId": 1223018,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+      "pdbSha256": "95bbb3e34cdae08cd7d38ab013be85b45e0affed551a0349f9272c9c165ce33a"
+    },
+    {
+      "processId": 1223018,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "a76fcedd5085c31cda0d6bcac3288e290aab3c22081b2e8175256adec4c9651e",
+      "pdbSha256": "102cd29fd11a07b2402ed166d6fd8b7de98a9f59d714257e2b723d8f02c5ec5a"
+    },
+    {
+      "processId": 1223018,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "743f27e6f8bae2fb1334f3febb3d36c2d148e36af0c215ddd2f29ef56d0d686b",
+      "pdbSha256": "4b8953a74fbbfcc3d7ae02d55e676e29bd0d4d54f6a9462265a27500bac1ed1d"
+    },
+    {
+      "processId": 1223018,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "e65836580064d62b5c8afacfeb0e46b2ed5357a9e3b4cbb13e4a6f23ee65e771",
+      "pdbSha256": "d99c31e2b1a0e69de0948f1ad122eddc857b7d174def1999f4b10f9a4ac00ed7"
+    },
+    {
+      "processId": 1223018,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "3392330df82074d1fe9b24cd2c2c6fdc318db8c9f4a01cd9e374947147f8cd66",
+      "pdbSha256": "b20167fccd0d0c3b1f8b4d010543ea1b0901cc0df704a008c7b041de5cc3e440"
+    },
+    {
+      "processId": 1223018,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "55a94a2ea833c7be231f30a5155e30102a70d742d37423b8a857ddab97d633eb",
+      "pdbSha256": "805f6d3a43d37ec2db00badc27853121875fb7c312bedbfb185dc663d090bec9"
+    },
+    {
+      "processId": 1223018,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "0b7f23b876a91e47f96584bedb37f8e7aa74be555ca87418443dd710aec1bf4a",
+      "pdbSha256": "206e78d41096579702c0c0e186baff1ff1b16c31076a1d6b8fbab59d57e96536"
+    },
+    {
+      "processId": 1223079,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "36ff2542e545283d8dfc1254fcceca3b5dbd6913ecc1c74d168b4f30dcd378ea",
+      "pdbSha256": "0ea8661ca20795a0fa9f2999ec5fea2c2f14a4fb659058e304bfe90d14650f08"
+    },
+    {
+      "processId": 1223079,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+      "pdbSha256": "95bbb3e34cdae08cd7d38ab013be85b45e0affed551a0349f9272c9c165ce33a"
+    },
+    {
+      "processId": 1223079,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "a76fcedd5085c31cda0d6bcac3288e290aab3c22081b2e8175256adec4c9651e",
+      "pdbSha256": "102cd29fd11a07b2402ed166d6fd8b7de98a9f59d714257e2b723d8f02c5ec5a"
+    },
+    {
+      "processId": 1223079,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "743f27e6f8bae2fb1334f3febb3d36c2d148e36af0c215ddd2f29ef56d0d686b",
+      "pdbSha256": "4b8953a74fbbfcc3d7ae02d55e676e29bd0d4d54f6a9462265a27500bac1ed1d"
+    },
+    {
+      "processId": 1223079,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "e65836580064d62b5c8afacfeb0e46b2ed5357a9e3b4cbb13e4a6f23ee65e771",
+      "pdbSha256": "d99c31e2b1a0e69de0948f1ad122eddc857b7d174def1999f4b10f9a4ac00ed7"
+    },
+    {
+      "processId": 1223079,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "3392330df82074d1fe9b24cd2c2c6fdc318db8c9f4a01cd9e374947147f8cd66",
+      "pdbSha256": "b20167fccd0d0c3b1f8b4d010543ea1b0901cc0df704a008c7b041de5cc3e440"
+    },
+    {
+      "processId": 1223079,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "55a94a2ea833c7be231f30a5155e30102a70d742d37423b8a857ddab97d633eb",
+      "pdbSha256": "805f6d3a43d37ec2db00badc27853121875fb7c312bedbfb185dc663d090bec9"
+    },
+    {
+      "processId": 1223079,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "0b7f23b876a91e47f96584bedb37f8e7aa74be555ca87418443dd710aec1bf4a",
+      "pdbSha256": "206e78d41096579702c0c0e186baff1ff1b16c31076a1d6b8fbab59d57e96536"
+    },
+    {
+      "processId": 1229736,
+      "comm": "dotnet",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+      "sha256": "a7050e99ff2aed1a0c6a4e214e27fd335045cda722ad39e78edc0b0059248412",
+      "pdbSha256": "1c9b5db8cc46a129df6a9e7742a2dd07a677af2b10aa53841b81946065ff1017"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.dll",
+      "sha256": "7b672341281f0113683bf46bf122a1f139c428f476b78fcd912c07c53e446b18",
+      "pdbSha256": "7f712e0ff75d6d1ce94b86b80327dd83dbc312181952695e6df0dd90c776e9cc"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "9f5a741c3e07c70b5af6230c41948afac9807819701b74f89f743f3dc17d00d2",
+      "pdbSha256": "3bab42fc35d9f9bd937182f0fe8dbab6b16274e8e4b37c5d7a6024492ddadc95"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+      "sha256": "27a37d55350af48bd77d2ad568bd5f2e8eca295850159b8d55f0564530047c41",
+      "pdbSha256": "ab3d1b5e10a829edec2063f00e726e2d54ab75eacba2aec6566d9bbfc99b54e7"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "36ff2542e545283d8dfc1254fcceca3b5dbd6913ecc1c74d168b4f30dcd378ea",
+      "pdbSha256": "0ea8661ca20795a0fa9f2999ec5fea2c2f14a4fb659058e304bfe90d14650f08"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+      "pdbSha256": "95bbb3e34cdae08cd7d38ab013be85b45e0affed551a0349f9272c9c165ce33a"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "01a18cad78e452c1ce4d6519448eed74ec1a3ee692e5686763368f2eb246f485",
+      "pdbSha256": "332b66f0ae594481a653dc4a2f7929716f8ace5378d5f1361cb35d106fbff4bb"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+      "sha256": "938ab08233c18cb18604586d7b1876efcf23b7e639cb9ab743fd10e980d51c51",
+      "pdbSha256": "885a81bdf83ed84fb69499748a186263cfe9586bda4b7b175ef21dca10b04fbd"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "sha256": "ead7e61e95493a4962eea5dd783fdd701bf0daaf0eaf7c361d8e9cc2f0a915bc",
+      "pdbSha256": "a2799fe64f7ef658884a975cdc1ac62145c8d2f6a74df821ea308c1af15055aa"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "a76fcedd5085c31cda0d6bcac3288e290aab3c22081b2e8175256adec4c9651e",
+      "pdbSha256": "102cd29fd11a07b2402ed166d6fd8b7de98a9f59d714257e2b723d8f02c5ec5a"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+      "sha256": "218dc90f4acb8d01e2c95e5acb33e0457ccedf922214311d6e2cf4aafbec683b",
+      "pdbSha256": "cc11a7f95105d30a14ed4a7ef0d189e615684027d1490cf435370448b40de0cc"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll",
+      "sha256": "c244038a1bde67cf72e7d8b0823954e98e4a86f44d00112378bb26dc9bce9dc1",
+      "pdbSha256": "f40e9cea08770abbfa6023d9cbe3b3a58789e0788ba56071640a3cbcd15337f8"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "3392330df82074d1fe9b24cd2c2c6fdc318db8c9f4a01cd9e374947147f8cd66",
+      "pdbSha256": "b20167fccd0d0c3b1f8b4d010543ea1b0901cc0df704a008c7b041de5cc3e440"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "sha256": "f6c53e456b94b734f2866ee3594a6d7515cfd13b29604979211187f983e8c3c6",
+      "pdbSha256": "6f2733b7b79711f170759f387c8e1b78043273e61832fd32ea47c84e6547c0e2"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+      "sha256": "58d7d6895258b28cc8d41223da0e7536511715edb03560a2cf2abc387ac52945",
+      "pdbSha256": "ddb61fc99544e1e2ff4499b40f54d852c6ceaf7824c7c42f18be82b14987bfe5"
+    },
+    {
+      "processId": 1230354,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "0b7f23b876a91e47f96584bedb37f8e7aa74be555ca87418443dd710aec1bf4a",
+      "pdbSha256": "206e78d41096579702c0c0e186baff1ff1b16c31076a1d6b8fbab59d57e96536"
+    },
+    {
+      "processId": 1230379,
+      "comm": "Hexalith.Tenant",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "9f5a741c3e07c70b5af6230c41948afac9807819701b74f89f743f3dc17d00d2",
+      "pdbSha256": "3bab42fc35d9f9bd937182f0fe8dbab6b16274e8e4b37c5d7a6024492ddadc95"
+    },
+    {
+      "processId": 1230379,
+      "comm": "Hexalith.Tenant",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "36ff2542e545283d8dfc1254fcceca3b5dbd6913ecc1c74d168b4f30dcd378ea",
+      "pdbSha256": "0ea8661ca20795a0fa9f2999ec5fea2c2f14a4fb659058e304bfe90d14650f08"
+    },
+    {
+      "processId": 1230379,
+      "comm": "Hexalith.Tenant",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+      "pdbSha256": "95bbb3e34cdae08cd7d38ab013be85b45e0affed551a0349f9272c9c165ce33a"
+    },
+    {
+      "processId": 1230379,
+      "comm": "Hexalith.Tenant",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "01a18cad78e452c1ce4d6519448eed74ec1a3ee692e5686763368f2eb246f485",
+      "pdbSha256": "332b66f0ae594481a653dc4a2f7929716f8ace5378d5f1361cb35d106fbff4bb"
+    },
+    {
+      "processId": 1230379,
+      "comm": "Hexalith.Tenant",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+      "sha256": "938ab08233c18cb18604586d7b1876efcf23b7e639cb9ab743fd10e980d51c51",
+      "pdbSha256": "885a81bdf83ed84fb69499748a186263cfe9586bda4b7b175ef21dca10b04fbd"
+    },
+    {
+      "processId": 1230379,
+      "comm": "Hexalith.Tenant",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "sha256": "ead7e61e95493a4962eea5dd783fdd701bf0daaf0eaf7c361d8e9cc2f0a915bc",
+      "pdbSha256": "a2799fe64f7ef658884a975cdc1ac62145c8d2f6a74df821ea308c1af15055aa"
+    },
+    {
+      "processId": 1230379,
+      "comm": "Hexalith.Tenant",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "a76fcedd5085c31cda0d6bcac3288e290aab3c22081b2e8175256adec4c9651e",
+      "pdbSha256": "102cd29fd11a07b2402ed166d6fd8b7de98a9f59d714257e2b723d8f02c5ec5a"
+    },
+    {
+      "processId": 1230379,
+      "comm": "Hexalith.Tenant",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+      "sha256": "58d7d6895258b28cc8d41223da0e7536511715edb03560a2cf2abc387ac52945",
+      "pdbSha256": "ddb61fc99544e1e2ff4499b40f54d852c6ceaf7824c7c42f18be82b14987bfe5"
+    },
+    {
+      "processId": 1230379,
+      "comm": "Hexalith.Tenant",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "0b7f23b876a91e47f96584bedb37f8e7aa74be555ca87418443dd710aec1bf4a",
+      "pdbSha256": "206e78d41096579702c0c0e186baff1ff1b16c31076a1d6b8fbab59d57e96536"
+    },
+    {
+      "processId": 1230379,
+      "comm": "Hexalith.Tenant",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.dll",
+      "sha256": "7b672341281f0113683bf46bf122a1f139c428f476b78fcd912c07c53e446b18",
+      "pdbSha256": "7f712e0ff75d6d1ce94b86b80327dd83dbc312181952695e6df0dd90c776e9cc"
+    },
+    {
+      "processId": 1230379,
+      "comm": "Hexalith.Tenant",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.dll",
+      "sha256": "1c32be687b49c1e04dc15adb68ebe41d0860ae701c1d16d3e5c0150265e3164b",
+      "pdbSha256": "f4af83a091f153e40ccd1a22e38def43178ba96b8baa5f1649230eaef369c00a"
+    },
+    {
+      "processId": 1230403,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "36ff2542e545283d8dfc1254fcceca3b5dbd6913ecc1c74d168b4f30dcd378ea",
+      "pdbSha256": "0ea8661ca20795a0fa9f2999ec5fea2c2f14a4fb659058e304bfe90d14650f08"
+    },
+    {
+      "processId": 1230403,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+      "pdbSha256": "95bbb3e34cdae08cd7d38ab013be85b45e0affed551a0349f9272c9c165ce33a"
+    },
+    {
+      "processId": 1230403,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "a76fcedd5085c31cda0d6bcac3288e290aab3c22081b2e8175256adec4c9651e",
+      "pdbSha256": "102cd29fd11a07b2402ed166d6fd8b7de98a9f59d714257e2b723d8f02c5ec5a"
+    },
+    {
+      "processId": 1230403,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "743f27e6f8bae2fb1334f3febb3d36c2d148e36af0c215ddd2f29ef56d0d686b",
+      "pdbSha256": "4b8953a74fbbfcc3d7ae02d55e676e29bd0d4d54f6a9462265a27500bac1ed1d"
+    },
+    {
+      "processId": 1230403,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "e65836580064d62b5c8afacfeb0e46b2ed5357a9e3b4cbb13e4a6f23ee65e771",
+      "pdbSha256": "d99c31e2b1a0e69de0948f1ad122eddc857b7d174def1999f4b10f9a4ac00ed7"
+    },
+    {
+      "processId": 1230403,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "3392330df82074d1fe9b24cd2c2c6fdc318db8c9f4a01cd9e374947147f8cd66",
+      "pdbSha256": "b20167fccd0d0c3b1f8b4d010543ea1b0901cc0df704a008c7b041de5cc3e440"
+    },
+    {
+      "processId": 1230403,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "55a94a2ea833c7be231f30a5155e30102a70d742d37423b8a857ddab97d633eb",
+      "pdbSha256": "805f6d3a43d37ec2db00badc27853121875fb7c312bedbfb185dc663d090bec9"
+    },
+    {
+      "processId": 1230403,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "0b7f23b876a91e47f96584bedb37f8e7aa74be555ca87418443dd710aec1bf4a",
+      "pdbSha256": "206e78d41096579702c0c0e186baff1ff1b16c31076a1d6b8fbab59d57e96536"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "36ff2542e545283d8dfc1254fcceca3b5dbd6913ecc1c74d168b4f30dcd378ea",
+      "pdbSha256": "0ea8661ca20795a0fa9f2999ec5fea2c2f14a4fb659058e304bfe90d14650f08"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "3f72f9d54c20f04754634e9bf2130ba65e98ff8353a9edc74fc86764b47e32e5",
+      "pdbSha256": "95bbb3e34cdae08cd7d38ab013be85b45e0affed551a0349f9272c9c165ce33a"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "01a18cad78e452c1ce4d6519448eed74ec1a3ee692e5686763368f2eb246f485",
+      "pdbSha256": "332b66f0ae594481a653dc4a2f7929716f8ace5378d5f1361cb35d106fbff4bb"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "a76fcedd5085c31cda0d6bcac3288e290aab3c22081b2e8175256adec4c9651e",
+      "pdbSha256": "102cd29fd11a07b2402ed166d6fd8b7de98a9f59d714257e2b723d8f02c5ec5a"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+      "sha256": "218dc90f4acb8d01e2c95e5acb33e0457ccedf922214311d6e2cf4aafbec683b",
+      "pdbSha256": "cc11a7f95105d30a14ed4a7ef0d189e615684027d1490cf435370448b40de0cc"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "sha256": "f6c53e456b94b734f2866ee3594a6d7515cfd13b29604979211187f983e8c3c6",
+      "pdbSha256": "6f2733b7b79711f170759f387c8e1b78043273e61832fd32ea47c84e6547c0e2"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "743f27e6f8bae2fb1334f3febb3d36c2d148e36af0c215ddd2f29ef56d0d686b",
+      "pdbSha256": "4b8953a74fbbfcc3d7ae02d55e676e29bd0d4d54f6a9462265a27500bac1ed1d"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "3392330df82074d1fe9b24cd2c2c6fdc318db8c9f4a01cd9e374947147f8cd66",
+      "pdbSha256": "b20167fccd0d0c3b1f8b4d010543ea1b0901cc0df704a008c7b041de5cc3e440"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll",
+      "sha256": "9c36aa59349b5a749fdff732a581db924e8d2f324df658883e244d778c5135ef",
+      "pdbSha256": "de8effd4ea62f854e0b346b0d39555484465fa166d0e6c6d0ad25f248d4deb04"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "55a94a2ea833c7be231f30a5155e30102a70d742d37423b8a857ddab97d633eb",
+      "pdbSha256": "805f6d3a43d37ec2db00badc27853121875fb7c312bedbfb185dc663d090bec9"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "0b7f23b876a91e47f96584bedb37f8e7aa74be555ca87418443dd710aec1bf4a",
+      "pdbSha256": "206e78d41096579702c0c0e186baff1ff1b16c31076a1d6b8fbab59d57e96536"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+      "sha256": "a7050e99ff2aed1a0c6a4e214e27fd335045cda722ad39e78edc0b0059248412",
+      "pdbSha256": "1c9b5db8cc46a129df6a9e7742a2dd07a677af2b10aa53841b81946065ff1017"
+    },
+    {
+      "processId": 1230467,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.Client.dll",
+      "sha256": "592b96612bd8c8d3714b801edc934a012cbe3472d31ab652ca77447a72c84a0c",
+      "pdbSha256": "9f2ccdd4454afeb653ec1018c9e60717fd6999b98370ce81fdb4f048d378c211"
+    },
+    {
+      "processId": 1230467,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.UI.dll",
+      "sha256": "5efa6fadf7456da0ff761d0d4ac36f0c2d6c9f9e1e71e99167547f4dad414328",
+      "pdbSha256": "5fe18d33ee6eed8c34d2ba68db496485ea36f3b653dc4512a7d0efdc305150b5"
+    },
+    {
+      "processId": 1230467,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.dll",
+      "sha256": "50293a3508d307d5ff85ea16fa9f5d26927645c42e55bf2ce50bbf9f9617b25b",
+      "pdbSha256": "ca516697c51ba1bc331a01dc85ae566060440db2d14d225f284dcf577a61df2d"
+    },
+    {
+      "processId": 1230467,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.dll",
+      "sha256": "71bcc18b59201391fb770808ff753410317fa601ee1dfda7433322b00e0d305a",
+      "pdbSha256": "d5928e7e14b2d8e41db131625de8f921f021f240a9925f1419c1223cb57124f0"
+    },
+    {
+      "processId": 1230467,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.dll",
+      "sha256": "d502915f4a560f4278155d43daa385a90b49e2462234722a517556c3f7cd3147",
+      "pdbSha256": "778b034d7aaf5932e2860f36e14e9bb51710e28dc0f6a438465594785d061d3d"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "9f5a741c3e07c70b5af6230c41948afac9807819701b74f89f743f3dc17d00d2",
+      "pdbSha256": "3bab42fc35d9f9bd937182f0fe8dbab6b16274e8e4b37c5d7a6024492ddadc95"
+    },
+    {
+      "processId": 1230436,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll",
+      "sha256": "968defee34d990e5b22e0aee1fc96c9cdf0800e80ef90e12e20814ac46e97abd",
+      "pdbSha256": "d6a354d2930315c9f4b342d64d714d9cbc02e8ffb480c5e1242793c38343b31f"
+    },
+    {
+      "processId": 1223079,
+      "comm": "Hexalith.Folder",
+      "catalogDirectory": "/tmp/hexalith-route-catalog-FFVooD",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "9f5a741c3e07c70b5af6230c41948afac9807819701b74f89f743f3dc17d00d2",
+      "pdbSha256": "3bab42fc35d9f9bd937182f0fe8dbab6b16274e8e4b37c5d7a6024492ddadc95"
+    },
+    {
+      "processId": 1216727,
+      "comm": "dotnet",
+      "catalogDirectory": null,
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "9f5a741c3e07c70b5af6230c41948afac9807819701b74f89f743f3dc17d00d2",
+      "pdbSha256": "3bab42fc35d9f9bd937182f0fe8dbab6b16274e8e4b37c5d7a6024492ddadc95"
+    }
+  ],
+  "newContainersSeen": [
+    "e465d1f08548426fddb4c09326e51b78bd20bdcde1551befbbb74879d3882d2b folders-provider-6cc432167211512a",
+    "d1ee6c78e769fe8c0bf3333f470268176c2e685ae962322d1be188e7586d1d19 folders-durability-6cc432167211512a",
+    "3f398bc33e1182e27f4eaace3eb8e8de7f84100c5135a4c3c714a619c6c0012c dapr-sentry-rekhnugm",
+    "da3d878edaca7214f2a653d78be3c343b79e3f2ef65b1ce0da069058ff6c8910 security-nmpsrepq",
+    "a9122c759963e60e1b56bfb83759b401da20450f7290458a6de61420716f19f9 memories-graphs-uvgjaegd",
+    "f6d17d9175b12b758bd7c7177e45924dd0b8182509f7a1b22c208ff01d06bcb4 memories-vectors-nefmxyew",
+    "848fe0bac0af4360a8c2199c7f39491040886318f49967c394fed7e6b80d4670 dapr-placement-mtls-bhvjtggy",
+    "60f7068eb3c487b85e6baa9a8174ab2f47940b7ac9625a1c22b72f7e7ac3d3ae dapr-scheduler-mtls-rfanfhff"
+  ],
+  "temporaryDirectoriesSeen": [
+    "/tmp/folders-durability-ykii31pf.j4c",
+    "/tmp/hexalith-dapr/c6ad8c29046d484980f9079798a06ec0",
+    "/tmp/hexalith-dapr/c6ad8c29046d484980f9079798a06ec0/dapr-credentials-2B381047C909C72F366824862439131B"
+  ],
+  "catalogDirectories": {
+    "/tmp/hexalith-route-catalog-FFVooD": {
+      "files": {
+        "folders-workers-replica.configuration.json": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+        "tenants.configuration.json": "e168b5d87818c1dc9097bc1bb65d8e6f04799fbea7e6753f7a45b95ee1af1639",
+        "memories.configuration.json": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+        "folders-workers-proof-b.configuration.json": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+        "folders-workers-replica.observation.json": "ee12972cb5b6aa5659f44e3ef83a5c4525e51a9ccd4139e9f9f27277aff51995",
+        "catalog.json": "25635ebbb1d6faf9090a97b81d523b19c42db8f30d744aeb0317b1d5daa6d110",
+        "folders-workers-proof-a.observation.json": "0f662868dc8aec2fd39e32ee040face504c9cd2597b0a90178927d5e4a83d926",
+        "folders-workers-proof-b.observation.json": "a0e07f2a102787f8540c3a2c1ef8eed46e6ebecd26ed9fa9f20be046fbf4b0ca",
+        "folders.configuration.json": "e168b5d87818c1dc9097bc1bb65d8e6f04799fbea7e6753f7a45b95ee1af1639",
+        "receipt.json": "c3d3facc2a8f65c49f1acdb805501470c8e0c5e6d2f0ff1e0ff7718a17920d9c",
+        "memories.observation.json": "f28c7eeeeffec199c7308101271811cd0669180b22192164d4221a0b9798206a",
+        "eventstore.configuration.json": "a7b65a807e5191c4674201b094c04ffadc44855a5f458f1e4cdcc8f674be322e",
+        "folders-workers-proof-a.configuration.json": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+        "authority.dependencies.json": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "authority.component.json": "ed857cd64f39393683966c386e24c1f8ade51f26cdf5179b489c082e46a72802",
+        "authority.backend.json": "7055bd66b6621da4264f8bf33a9fcc52dcdb2f64f5a2097d2f432dc5dfa1dcc6",
+        "folders-workers.configuration.json": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+        "eventstore.observation.json": "34fe2fc976155e66fdebd121179d810571c1db8a0d7fafb734b21daca55fb5f3",
+        "folders-workers.observation.json": "f5b88fac26069ca9527dcaec3b7d661bdeb6603d3b5414f96ca0a014b86b85a9",
+        "tenants.observation.json": "dfdb0586ad7f8b650c1109a477c50dfcf8e60d3981e7defc1c1c5d2c4b3922fb",
+        "folders-workers-replica.ready.json": "1e8977ecff895c97d99d18e53a7b495cfcc71d94403fd054af993c1a582e9d07",
+        "eventstore.ready.json": "ad15ff96d832ce3399d88014fbc3288b1b80aaff49650364b8f8e9588c7a3c97",
+        "folders-workers.ready.json": "056c76c35634be6a65f4c69bcce22692f868d13857b1e0ca8b74e0ff2cc6946f",
+        "folders-workers-proof-a.ready.json": "38645188746144096f38506b2caf717f48b85058b489ff348732af2439cd8b43",
+        "memories.ready.json": "528752a09232d47c7285423a750f7535a698ebdb86c9967a7f4e9adb30d17f4b",
+        "activation.json": "e9a98dd3b139ed06437fc61ffc384b82d386826120e55a4138445f414a247509",
+        "tenants.ready.json": "872bd570307653b120bcb3238dc96f0c4b326fc0d188c259cf0941183551055e",
+        "folders.observation.json": "8a907e02b5c13c982849446fe8ea70c52ef6943f70e03802a50cb6dac793e543",
+        "folders-workers-proof-b.ready.json": "94c7f175406a83cefd91f34838fc50e12dddc7b9dbbca0a9280fec7920a10fc3",
+        "folders.ready.json": "de3256f5fa417b5e17c96a994425e58fc68c750c70df306cbc11a2d6f5f55a90",
+        "folders-workers.committed.json.3ef3cbf818454c29a27cc2de5fbd78de.tmp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "folders-workers.committed.json": "b7ea118fd41c04fb6da95157cead4022952e0e3b72251340fd6cb454e458b860",
+        "tenants.committed.json": "b7ea118fd41c04fb6da95157cead4022952e0e3b72251340fd6cb454e458b860",
+        "folders-workers-proof-b.committed.json": "b7ea118fd41c04fb6da95157cead4022952e0e3b72251340fd6cb454e458b860",
+        "folders-workers-replica.committed.json": "b7ea118fd41c04fb6da95157cead4022952e0e3b72251340fd6cb454e458b860",
+        "folders.committed.json": "b7ea118fd41c04fb6da95157cead4022952e0e3b72251340fd6cb454e458b860",
+        "tenants.bootstrap.json": "41ef1e2c312879c8af7202f6d9fabfb2b847af93e25292c55ae3e40c5e0d16db",
+        "memories.committed.json": "b7ea118fd41c04fb6da95157cead4022952e0e3b72251340fd6cb454e458b860",
+        "eventstore.committed.json": "b7ea118fd41c04fb6da95157cead4022952e0e3b72251340fd6cb454e458b860",
+        "folders-workers-proof-a.committed.json": "b7ea118fd41c04fb6da95157cead4022952e0e3b72251340fd6cb454e458b860"
+      },
+      "readbacks": {
+        "folders-workers.committed.json": {
+          "Epoch": 1,
+          "Generation": 1,
+          "RootDigest": "25635ebbb1d6faf9090a97b81d523b19c42db8f30d744aeb0317b1d5daa6d110",
+          "Profile": "Development",
+          "Serving": true,
+          "AttemptId": "ee6171cd86064594bdd73e0c011e2e5f",
+          "ActivationBindingDigest": "61d0e71dfb7b7f6f1f2e04c77eaaab3660c4f6946183c86497ad89eb23f98d35"
+        },
+        "tenants.committed.json": {
+          "Epoch": 1,
+          "Generation": 1,
+          "RootDigest": "25635ebbb1d6faf9090a97b81d523b19c42db8f30d744aeb0317b1d5daa6d110",
+          "Profile": "Development",
+          "Serving": true,
+          "AttemptId": "ee6171cd86064594bdd73e0c011e2e5f",
+          "ActivationBindingDigest": "61d0e71dfb7b7f6f1f2e04c77eaaab3660c4f6946183c86497ad89eb23f98d35"
+        },
+        "folders-workers-proof-b.committed.json": {
+          "Epoch": 1,
+          "Generation": 1,
+          "RootDigest": "25635ebbb1d6faf9090a97b81d523b19c42db8f30d744aeb0317b1d5daa6d110",
+          "Profile": "Development",
+          "Serving": true,
+          "AttemptId": "ee6171cd86064594bdd73e0c011e2e5f",
+          "ActivationBindingDigest": "61d0e71dfb7b7f6f1f2e04c77eaaab3660c4f6946183c86497ad89eb23f98d35"
+        },
+        "folders-workers-replica.committed.json": {
+          "Epoch": 1,
+          "Generation": 1,
+          "RootDigest": "25635ebbb1d6faf9090a97b81d523b19c42db8f30d744aeb0317b1d5daa6d110",
+          "Profile": "Development",
+          "Serving": true,
+          "AttemptId": "ee6171cd86064594bdd73e0c011e2e5f",
+          "ActivationBindingDigest": "61d0e71dfb7b7f6f1f2e04c77eaaab3660c4f6946183c86497ad89eb23f98d35"
+        },
+        "folders.committed.json": {
+          "Epoch": 1,
+          "Generation": 1,
+          "RootDigest": "25635ebbb1d6faf9090a97b81d523b19c42db8f30d744aeb0317b1d5daa6d110",
+          "Profile": "Development",
+          "Serving": true,
+          "AttemptId": "ee6171cd86064594bdd73e0c011e2e5f",
+          "ActivationBindingDigest": "61d0e71dfb7b7f6f1f2e04c77eaaab3660c4f6946183c86497ad89eb23f98d35"
+        },
+        "memories.committed.json": {
+          "Epoch": 1,
+          "Generation": 1,
+          "RootDigest": "25635ebbb1d6faf9090a97b81d523b19c42db8f30d744aeb0317b1d5daa6d110",
+          "Profile": "Development",
+          "Serving": true,
+          "AttemptId": "ee6171cd86064594bdd73e0c011e2e5f",
+          "ActivationBindingDigest": "61d0e71dfb7b7f6f1f2e04c77eaaab3660c4f6946183c86497ad89eb23f98d35"
+        },
+        "eventstore.committed.json": {
+          "Epoch": 1,
+          "Generation": 1,
+          "RootDigest": "25635ebbb1d6faf9090a97b81d523b19c42db8f30d744aeb0317b1d5daa6d110",
+          "Profile": "Development",
+          "Serving": true,
+          "AttemptId": "ee6171cd86064594bdd73e0c011e2e5f",
+          "ActivationBindingDigest": "61d0e71dfb7b7f6f1f2e04c77eaaab3660c4f6946183c86497ad89eb23f98d35"
+        },
+        "folders-workers-proof-a.committed.json": {
+          "Epoch": 1,
+          "Generation": 1,
+          "RootDigest": "25635ebbb1d6faf9090a97b81d523b19c42db8f30d744aeb0317b1d5daa6d110",
+          "Profile": "Development",
+          "Serving": true,
+          "AttemptId": "ee6171cd86064594bdd73e0c011e2e5f",
+          "ActivationBindingDigest": "61d0e71dfb7b7f6f1f2e04c77eaaab3660c4f6946183c86497ad89eb23f98d35"
+        }
+      },
+      "bootstrapReceipts": [
+        {
+          "AttemptId": "ee6171cd86064594bdd73e0c011e2e5f",
+          "RootDigest": "25635ebbb1d6faf9090a97b81d523b19c42db8f30d744aeb0317b1d5daa6d110",
+          "MessageId": "01M6CA1NF9PVCR1TS5MEG1WKDZ",
+          "CorrelationId": "01M6CA1NFA9E7HPP07XX2W34AY",
+          "Phase": "attempted",
+          "HttpStatus": null,
+          "principalSha256": "f470213d9ae659187a19b9cb2169b4b400544f4d3f59250eda657154700da616",
+          "receiptSha256": "de19c0920d3f561b39f917c9f0b65402c6a0606f38c4036e2d1713016e15f170"
+        },
+        {
+          "AttemptId": "ee6171cd86064594bdd73e0c011e2e5f",
+          "RootDigest": "25635ebbb1d6faf9090a97b81d523b19c42db8f30d744aeb0317b1d5daa6d110",
+          "MessageId": "01M6CA1NF9PVCR1TS5MEG1WKDZ",
+          "CorrelationId": "01M6CA1NFA9E7HPP07XX2W34AY",
+          "Phase": "accepted",
+          "HttpStatus": 202,
+          "principalSha256": "f470213d9ae659187a19b9cb2169b4b400544f4d3f59250eda657154700da616",
+          "receiptSha256": "41ef1e2c312879c8af7202f6d9fabfb2b847af93e25292c55ae3e40c5e0d16db"
+        }
+      ]
+    }
+  },
+  "containerImageIds": {
+    "e465d1f08548426fddb4c09326e51b78bd20bdcde1551befbbb74879d3882d2b folders-provider-6cc432167211512a": "sha256:7c4e1db440be7b2ca685b49d0d7864cdd78e92431f531bf7893659def8200fc5",
+    "d1ee6c78e769fe8c0bf3333f470268176c2e685ae962322d1be188e7586d1d19 folders-durability-6cc432167211512a": "sha256:57e4255cc971b1c8d6f8a6ca283ac01bc3ecdd914273ef6bfaede87aaecd6541",
+    "3f398bc33e1182e27f4eaace3eb8e8de7f84100c5135a4c3c714a619c6c0012c dapr-sentry-rekhnugm": "sha256:4aacb3ca515ee6208dbafb2b44ebd9d9cdf216e390aa459543787624058c0d80",
+    "da3d878edaca7214f2a653d78be3c343b79e3f2ef65b1ce0da069058ff6c8910 security-nmpsrepq": "sha256:f9ba7b2af90db8dc749a57ca9aedca51e840cb9224441ab546a968da941da900",
+    "a9122c759963e60e1b56bfb83759b401da20450f7290458a6de61420716f19f9 memories-graphs-uvgjaegd": "sha256:4b7c79901ad409a39655f049b772adbc499b92ee2e01db80c3502572444df84d",
+    "f6d17d9175b12b758bd7c7177e45924dd0b8182509f7a1b22c208ff01d06bcb4 memories-vectors-nefmxyew": "sha256:5d5154123426693540ea6c1d9e638eae2bf2024879c839db6fcfdd7717e817c7",
+    "848fe0bac0af4360a8c2199c7f39491040886318f49967c394fed7e6b80d4670 dapr-placement-mtls-bhvjtggy": "sha256:0ac4fadf0016be85065cdebab952a8350e468cf9283d26777b0307a14a10aecc",
+    "60f7068eb3c487b85e6baa9a8174ab2f47940b7ac9625a1c22b72f7e7ac3d3ae dapr-scheduler-mtls-rfanfhff": "sha256:0ac4fadf0016be85065cdebab952a8350e468cf9283d26777b0307a14a10aecc"
+  },
+  "nativeProcesses": [
+    {
+      "processId": 1222359,
+      "startTicks": "30308735",
+      "namespace": "folders-durability-6cc432167211512a",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "folders-workers-proof-b-6cc432167211512a"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-FFVooD/folders-workers-proof-b.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "21363"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-ykii31pf.j4c/ordinary-proof",
+          "/tmp/aspire-dapr.aF5vZm/folders-routing-authority"
+        ],
+        "--app-port": [
+          "46043"
+        ],
+        "--dapr-grpc-port": [
+          "18600"
+        ],
+        "--dapr-http-port": [
+          "23754"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:26598"
+        ]
+      }
+    },
+    {
+      "processId": 1222360,
+      "startTicks": "30308735",
+      "namespace": "folders-durability-6cc432167211512a",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "folders-workers-6cc432167211512a"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-FFVooD/folders-workers-replica.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "11957"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-ykii31pf.j4c/components",
+          "/tmp/aspire-dapr.aF5vZm/folders-routing-authority"
+        ],
+        "--app-port": [
+          "46757"
+        ],
+        "--dapr-grpc-port": [
+          "25091"
+        ],
+        "--dapr-http-port": [
+          "22744"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:26598"
+        ]
+      }
+    },
+    {
+      "processId": 1222368,
+      "startTicks": "30308735",
+      "namespace": "folders-durability-6cc432167211512a",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "folders-workers-proof-a-6cc432167211512a"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-FFVooD/folders-workers-proof-a.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "20403"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-ykii31pf.j4c/ordinary-proof",
+          "/tmp/aspire-dapr.aF5vZm/folders-routing-authority"
+        ],
+        "--app-port": [
+          "44197"
+        ],
+        "--dapr-grpc-port": [
+          "13749"
+        ],
+        "--dapr-http-port": [
+          "25989"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:26598"
+        ]
+      }
+    },
+    {
+      "processId": 1222374,
+      "startTicks": "30308735",
+      "namespace": "folders-durability-6cc432167211512a",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "memories-6cc432167211512a"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-FFVooD/memories.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "14140"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-ykii31pf.j4c/components",
+          "/tmp/aspire-dapr.aF5vZm/folders-routing-authority"
+        ],
+        "--app-port": [
+          "44801"
+        ],
+        "--dapr-grpc-port": [
+          "50002"
+        ],
+        "--dapr-http-port": [
+          "3502"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:26598"
+        ]
+      }
+    },
+    {
+      "processId": 1229575,
+      "startTicks": "30310076",
+      "namespace": "folders-durability-6cc432167211512a",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "eventstore-6cc432167211512a"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-FFVooD/eventstore.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "24407"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-ykii31pf.j4c/components",
+          "/tmp/aspire-dapr.aF5vZm/folders-routing-authority"
+        ],
+        "--app-port": [
+          "46101"
+        ],
+        "--dapr-grpc-port": [
+          "29284"
+        ],
+        "--dapr-http-port": [
+          "3501"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:26598"
+        ]
+      }
+    },
+    {
+      "processId": 1229621,
+      "startTicks": "30310081",
+      "namespace": "folders-durability-6cc432167211512a",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "tenants-6cc432167211512a"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-FFVooD/tenants.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "19188"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-ykii31pf.j4c/components",
+          "/tmp/aspire-dapr.aF5vZm/folders-routing-authority"
+        ],
+        "--app-port": [
+          "38409"
+        ],
+        "--dapr-grpc-port": [
+          "22699"
+        ],
+        "--dapr-http-port": [
+          "26192"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:26598"
+        ]
+      }
+    },
+    {
+      "processId": 1229671,
+      "startTicks": "30310083",
+      "namespace": "folders-durability-6cc432167211512a",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "folders-6cc432167211512a"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-FFVooD/folders.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "22913"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-ykii31pf.j4c/components",
+          "/tmp/aspire-dapr.aF5vZm/folders-routing-authority"
+        ],
+        "--app-port": [
+          "38485"
+        ],
+        "--dapr-grpc-port": [
+          "22284"
+        ],
+        "--dapr-http-port": [
+          "21543"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:26598"
+        ]
+      }
+    },
+    {
+      "processId": 1229695,
+      "startTicks": "30310084",
+      "namespace": "folders-durability-6cc432167211512a",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "folders-workers-6cc432167211512a"
+        ],
+        "--config": [
+          "/tmp/hexalith-route-catalog-FFVooD/folders-workers.configuration.json"
+        ],
+        "--dapr-internal-grpc-port": [
+          "13889"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-ykii31pf.j4c/components",
+          "/tmp/aspire-dapr.aF5vZm/folders-routing-authority"
+        ],
+        "--app-port": [
+          "37711"
+        ],
+        "--dapr-grpc-port": [
+          "19802"
+        ],
+        "--dapr-http-port": [
+          "19132"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:26598"
+        ]
+      }
+    },
+    {
+      "processId": 1229810,
+      "startTicks": "30310092",
+      "namespace": "folders-durability-6cc432167211512a",
+      "executable": "/home/administrator/.hexalith/dapr/cli-1.18.2-runtime-1.18.7/.dapr/bin/daprd",
+      "sha256": "e988a6f53abec017fc9ebcb4f89de9bed11bce005eb49bd8e85e8d3d6adbf488",
+      "arguments": {
+        "--app-id": [
+          "folders-ui-6cc432167211512a"
+        ],
+        "--config": [
+          "/tmp/folders-durability-ykii31pf.j4c/configuration/accesscontrol.yaml"
+        ],
+        "--dapr-internal-grpc-port": [
+          "27058"
+        ],
+        "--resources-path": [
+          "/tmp/folders-durability-ykii31pf.j4c/components"
+        ],
+        "--app-port": [
+          "40501"
+        ],
+        "--dapr-grpc-port": [
+          "16294"
+        ],
+        "--dapr-http-port": [
+          "27890"
+        ],
+        "--app-protocol": [
+          "http"
+        ],
+        "--enable-mtls": [
+          true
+        ],
+        "--sentry-address": [
+          "localhost:26598"
+        ]
+      }
+    }
+  ],
+  "mtlsInfrastructure": {
+    "/tmp/hexalith-dapr/c6ad8c29046d484980f9079798a06ec0": {
+      "kind": "runDirectory",
+      "files": {
+        "dapr-credentials-2B381047C909C72F366824862439131B/issuer.crt": "fc5195d78a1fb3165b7e492dbec95f704c567f46d5ca99d8c1531b4f746fe9d6",
+        "dapr-credentials-2B381047C909C72F366824862439131B/ca.crt": "e056d99851ebe5225a2694f5e97796c5aef424b249cf76a68d54a67cc0e995b2"
+      }
+    },
+    "/tmp/hexalith-dapr/c6ad8c29046d484980f9079798a06ec0/dapr-credentials-2B381047C909C72F366824862439131B": {
+      "kind": "certificateDirectory",
+      "files": {
+        "issuer.crt": "fc5195d78a1fb3165b7e492dbec95f704c567f46d5ca99d8c1531b4f746fe9d6",
+        "ca.crt": "e056d99851ebe5225a2694f5e97796c5aef424b249cf76a68d54a67cc0e995b2"
+      }
+    }
+  },
+  "nativeConfigurations": [
+    {
+      "path": "/tmp/hexalith-route-catalog-FFVooD/folders-workers-proof-b.configuration.json",
+      "sha256": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+      "argument": "--config",
+      "processIds": [
+        1222359
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-ykii31pf.j4c/ordinary-proof/provider-secretstore.yaml",
+      "sha256": "4f2a8b01fbcad9e978dd7bb327855418f265a4dab356d971bdcb45d379fa68d8",
+      "argument": "--resources-path",
+      "processIds": [
+        1222359,
+        1222368
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-ykii31pf.j4c/ordinary-proof/llm.memories.yaml",
+      "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229",
+      "argument": "--resources-path",
+      "processIds": [
+        1222359,
+        1222368
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-ykii31pf.j4c/ordinary-proof/pubsub.yaml",
+      "sha256": "ad70ac8f767f04a43cf370d40e22bff12988bd473cde4b4a43f7f0e176446773",
+      "argument": "--resources-path",
+      "processIds": [
+        1222359,
+        1222368
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-ykii31pf.j4c/ordinary-proof/statestore.yaml",
+      "sha256": "fb5832dca4a01dd7c9b47cc4d714d66ce6d99f4e69088680fd4e684bde1a7658",
+      "argument": "--resources-path",
+      "processIds": [
+        1222359,
+        1222368
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-ykii31pf.j4c/ordinary-proof/resiliency.yaml",
+      "sha256": "7e2c3e220ceea50b51006f07d6359f7b79511a60c0bd5d55bc2187e5c8142958",
+      "argument": "--resources-path",
+      "processIds": [
+        1222359,
+        1222368
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-ykii31pf.j4c/ordinary-proof/secretstore.memories.yaml",
+      "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef",
+      "argument": "--resources-path",
+      "processIds": [
+        1222359,
+        1222368
+      ]
+    },
+    {
+      "path": "/tmp/aspire-dapr.aF5vZm/folders-routing-authority/folders-routing-authority.yaml",
+      "sha256": "ed857cd64f39393683966c386e24c1f8ade51f26cdf5179b489c082e46a72802",
+      "argument": "--resources-path",
+      "processIds": [
+        1222359,
+        1222360,
+        1222368,
+        1222374,
+        1229575,
+        1229621,
+        1229671,
+        1229695
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-FFVooD/folders-workers-replica.configuration.json",
+      "sha256": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+      "argument": "--config",
+      "processIds": [
+        1222360
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-ykii31pf.j4c/components/provider-secretstore.yaml",
+      "sha256": "4f2a8b01fbcad9e978dd7bb327855418f265a4dab356d971bdcb45d379fa68d8",
+      "argument": "--resources-path",
+      "processIds": [
+        1222360,
+        1222374,
+        1229575,
+        1229621,
+        1229671,
+        1229695,
+        1229810
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-ykii31pf.j4c/components/llm.memories.yaml",
+      "sha256": "44ac82937d333518bcee4289ae2b9facdf06bc5ce88654b2ca6e548839fba229",
+      "argument": "--resources-path",
+      "processIds": [
+        1222360,
+        1222374,
+        1229575,
+        1229621,
+        1229671,
+        1229695,
+        1229810
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-ykii31pf.j4c/components/pubsub.yaml",
+      "sha256": "01a63241e66ee22c7529b8f728842f598a50c35686bea5fccbba2e7ee26416fc",
+      "argument": "--resources-path",
+      "processIds": [
+        1222360,
+        1222374,
+        1229575,
+        1229621,
+        1229671,
+        1229695,
+        1229810
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-ykii31pf.j4c/components/statestore.yaml",
+      "sha256": "dbaf6d467bd59038440861db9d362e3e482a1409f023b1deeaeb1accce2f2079",
+      "argument": "--resources-path",
+      "processIds": [
+        1222360,
+        1222374,
+        1229575,
+        1229621,
+        1229671,
+        1229695,
+        1229810
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-ykii31pf.j4c/components/resiliency.yaml",
+      "sha256": "7e2c3e220ceea50b51006f07d6359f7b79511a60c0bd5d55bc2187e5c8142958",
+      "argument": "--resources-path",
+      "processIds": [
+        1222360,
+        1222374,
+        1229575,
+        1229621,
+        1229671,
+        1229695,
+        1229810
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-ykii31pf.j4c/components/secretstore.memories.yaml",
+      "sha256": "14ec65407b77459c1dc72624e563eb2bb00fe4fa939057fd37723a52988a49ef",
+      "argument": "--resources-path",
+      "processIds": [
+        1222360,
+        1222374,
+        1229575,
+        1229621,
+        1229671,
+        1229695,
+        1229810
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-FFVooD/folders-workers-proof-a.configuration.json",
+      "sha256": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+      "argument": "--config",
+      "processIds": [
+        1222368
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-FFVooD/memories.configuration.json",
+      "sha256": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+      "argument": "--config",
+      "processIds": [
+        1222374
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-FFVooD/eventstore.configuration.json",
+      "sha256": "a7b65a807e5191c4674201b094c04ffadc44855a5f458f1e4cdcc8f674be322e",
+      "argument": "--config",
+      "processIds": [
+        1229575
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-FFVooD/tenants.configuration.json",
+      "sha256": "e168b5d87818c1dc9097bc1bb65d8e6f04799fbea7e6753f7a45b95ee1af1639",
+      "argument": "--config",
+      "processIds": [
+        1229621
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-FFVooD/folders.configuration.json",
+      "sha256": "e168b5d87818c1dc9097bc1bb65d8e6f04799fbea7e6753f7a45b95ee1af1639",
+      "argument": "--config",
+      "processIds": [
+        1229671
+      ]
+    },
+    {
+      "path": "/tmp/hexalith-route-catalog-FFVooD/folders-workers.configuration.json",
+      "sha256": "2be1a87c998ff343a00403182dd9537d2ec15a94f0ee7d524517a9aa2c31ca06",
+      "argument": "--config",
+      "processIds": [
+        1229695
+      ]
+    },
+    {
+      "path": "/tmp/folders-durability-ykii31pf.j4c/configuration/accesscontrol.yaml",
+      "sha256": "42cdb36348cfb40906a1f8742bae28e96e45750134b9c9a199e274904f575f90",
+      "argument": "--config",
+      "processIds": [
+        1229810
+      ]
+    }
+  ]
+}

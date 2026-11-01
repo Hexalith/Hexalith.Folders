@@ -1,0 +1,8 @@
+{
+  ".gitmodules": true,
+  "Directory.Packages.props": true,
+  "Directory.Build.props": true,
+  "Directory.Build.targets": true,
+  "global.json": true,
+  "nuget.config": true
+}

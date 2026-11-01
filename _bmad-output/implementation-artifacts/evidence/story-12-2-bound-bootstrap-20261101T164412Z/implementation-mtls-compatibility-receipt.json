@@ -1,0 +1,431 @@
+{
+  "schemaVersion": 1,
+  "producer": "/root/bootstrap_impl",
+  "scope": "Approved genuine isolated Dapr transport, default-preserving namespace API and exact physical caller configuration; focused source/model checks only.",
+  "headsObservedAtReceipt": {
+    "/home/administrator/projects/hexalith/folders": "4de8e5d0e4ad16f33e7eae31f7323fe5bbf326b7",
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants": "9ed8737dedfbba660b9935b09696a74685201634",
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform": "75fd4c064054d176d1bb81eabf88ae630ae37c3e",
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds": "e9b74ab24914b7768a1dde7e3861349f577ca011"
+  },
+  "sourceHashes": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/DaprSelfHostedMtls.cs",
+      "exists": true,
+      "bytes": 31228,
+      "sha256": "3fa9ccf46cd70cdc2253dda51ad06b3bcf5f7f696b3b74a95ca1b86913489a7c"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/DaprSelfHostedMtlsSubscriber.cs",
+      "exists": true,
+      "bytes": 1424,
+      "sha256": "35e5f5b4418814e8df7fc5f73b3d25ea2531215978723b8dcf49060cd2cd7e24"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+      "exists": true,
+      "bytes": 3343,
+      "sha256": "bdabaa4d11222a5b4e6eb9bbe35b75937c3fbec87edaca1a203be83eef8a8576"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "exists": true,
+      "bytes": 97711,
+      "sha256": "802a53b7797d60ca0905a0161867ec87e55e8b54fd1c489da895f124dfead92d"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs",
+      "exists": true,
+      "bytes": 4969,
+      "sha256": "7a6536160aa27d0684a3a88a3be89945292438a97734d7c1054900bd8b19ea1f"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs",
+      "exists": true,
+      "bytes": 9971,
+      "sha256": "90d9814d2f18a71830ab117e58883719bfdb6823473d9b177b6fc3c81596a225"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityMtlsCompositionTests.cs",
+      "exists": true,
+      "bytes": 8577,
+      "sha256": "04f7058f28bb664516a61ded65c544c6109463578a4ff29ebbf13c75bd446816"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/Authorization/TenantOwnerSourceGateway.cs",
+      "exists": true,
+      "bytes": 5125,
+      "sha256": "fd0d0ec10666a2e4b8da24638ca11f211eabcce3ff6dc5c4a3994346df9f9283"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/Authorization/TenantOwnerSourceTargetTests.cs",
+      "exists": true,
+      "bytes": 2901,
+      "sha256": "57b2b7b2ab8512a8b8f4ea680fbeb08ebdaceb187738ef672ff70ce30d6b025f"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/Authorization/OwnerSourceTargetHttpHandler.cs",
+      "exists": true,
+      "bytes": 1769,
+      "sha256": "e1fb402fa4aa6b53c000df33f6a81c23101c4ecf2c61ee836a37d01a60216d2a"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapBoundCommandTests.cs",
+      "exists": true,
+      "bytes": 7355,
+      "sha256": "583c960ba390c71f5c3a55406d9a2577085e40477edbd6f0f7158ca09e890a42"
+    }
+  ],
+  "runtimeHashes": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Folders.AppHost.dll",
+      "exists": true,
+      "bytes": 57856,
+      "sha256": "388432cd8af842bbbc70df9de9a640cdc444c3032585b878f8d661a2e0eb0267"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Folders.AppHost.pdb",
+      "exists": true,
+      "bytes": 39752,
+      "sha256": "0824a62c511a3f5ff369e5b793857eb06ca0e7647264272cd580c6fadb879087"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Builds.Tooling.dll",
+      "exists": true,
+      "bytes": 1773568,
+      "sha256": "070e8c4011fa7f0ef2ee17499a765b9a7aac0cf2b75e9f3ad22c0c38b4d2fd17"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "exists": true,
+      "bytes": 624640,
+      "sha256": "655a46c5fcc1450f229e19020a60392a1ca0e0a6e28901979cfaf395b85898c0"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.pdb",
+      "exists": true,
+      "bytes": 131352,
+      "sha256": "6bfaf7cfcaaac74444b4ba2c4105d7401b332bbc31d865f65e677e1b6c60a853"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.dll",
+      "exists": true,
+      "bytes": 228864,
+      "sha256": "15dc9d853383f7ded2deea38df5342cf7c895ef54a07ca7680376ef1241dd087"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.pdb",
+      "exists": true,
+      "bytes": 80036,
+      "sha256": "1ab62a64c0c4aa6242d83967463fc45800c6866401fc1adda811b25cadf29229"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+      "exists": true,
+      "bytes": 1431040,
+      "sha256": "9bcf0eaec625b50feb564452a6799150896104fe0db1a717d736d49558f69dbf"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.pdb",
+      "exists": true,
+      "bytes": 292328,
+      "sha256": "9c0865fefb3123310124ccc453f5b14c4930e8c4558fd91476b8b83cc7a6bbfd"
+    }
+  ],
+  "configuration": {
+    "platformConsumption": "Canonical DaprSelfHostedMtls.cs and subscriber source links plus Builds.Tooling source project reference, matching the existing supported Tenants AppHost pattern.",
+    "publicClrCompatibility": "Original AddLocalApplicationInfrastructure(3 parameters), BindGeneratedSidecar(4 parameters) and ConfigureSidecar(6 parameters) signatures remain and forward with applicationNamespace=default. New overloads accept the selected namespace. Whitespace/missing selections fail before allocation.",
+    "namespace": "Actual per-run fixture DaprNamespace reaches both declared and generated sidecar callbacks. Control-plane namespace remains default.",
+    "trust": "Workload SPIFFE trust domain remains public. Control-plane trust domain remains localhost; SDK-rendered global deny and operation/domain grants are unchanged.",
+    "issuerOrdering": "The disposable realm import now provisions the exact physical EventStore and Tenants workload clients and physical Folders/Tenants audience scopes before any host starts. Existing users, secret placeholders, operations and human permissions remain; late duplicate rename/scope creation is removed.",
+    "callerBinding": "Tenants assertion clientId/azp, issuer workload identity, bound command proof caller and receiver allow-list/key/domain entries use the actual physical Tenants AppId. Source proof reads the same existing issuer configuration and retains its original tenants default. Logical receiving audience remains eventstore.",
+    "proofRefusalTransport": "Missing/wrong-proof controls invoke the actual gateway through the real Tenants sidecar, carrying an actual SDK-generated committed catalog binding. Dapr supplies the real channel/caller; the fixture never manufactures those headers. Missing/human controls remain direct 401.",
+    "privateRuntimeMetadata": "Fixture emits MTLS_RUNTIME_BINDING with only exact returned runDirectory/certificateDirectory before app startup. It deletes only those task-created paths after app disposal.",
+    "preserved": "All fixture deadlines/retry behavior and original strict/capacity test class bodies remain unchanged. No fake certificates, service/human relabeling, guard/ACL allow widening, nested initialization, pin/Git/release/publication/deployment change."
+  },
+  "modelCleanup": {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-model-cleanup.json",
+    "exists": true,
+    "bytes": 3067,
+    "sha256": "6acc1449e915ed56a0ff8e1e68124b233df83240b8fe0f82434fc8c4b7fb6038"
+  },
+  "actualModelCoverage": {
+    "result": "30/30 passed (same cases rerun after safe cleanup metadata only); includes five mTLS model cases and isolated issuer import ordering. These counts overlap and are not additive.",
+    "modelMtlsCases": [
+      "Legacy three-parameter default namespace",
+      "Selected isolated application namespace with unchanged control-plane identity",
+      "Missing native runtime refusal",
+      "Empty namespace refusal",
+      "Whitespace namespace refusal"
+    ],
+    "liveQualification": false
+  },
+  "ownerFocusedCoverage": "210/210 passed with default/selected source proof signature and foreign-caller refusal, bound bootstrap physical caller, prior credential/receipt/native administrator and timeout controls.",
+  "owningPlatformProjectBuilt": false,
+  "ownerValidationDisposition": {
+    "executed": "Canonical Platform helper/subscriber sources compiled in the supported Folders consumer; actual generated-sidecar callbacks exercised by FolderDurabilityMtlsCompositionTests.",
+    "notExecuted": "Actual Hexalith.Platform.Composition project/assembly and its broad owner test project were not built/run by this delegate.",
+    "relevantOwnerProject": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj",
+    "relevantOwnerClasses": [
+      "Hexalith.Platform.Composition.Tests.PlatformAppModelTests (partials PlatformRunIsolationTests.cs, PlatformRunIsolationReviewTests.cs, PlatformRetentionProfileTests.cs, PlatformDaprBindingsTests.cs)"
+    ],
+    "existingCanonicalConsumerProject": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.AppHost.Tests/Hexalith.Tenants.AppHost.Tests.csproj",
+    "existingCanonicalConsumerClass": "Hexalith.Tenants.AppHost.Tests.LocalDaprIdentityTests",
+    "graphLimit": "Platform.Composition.Tests has hardcoded nested Tenants/Parties/Memories project references whose source is absent in this umbrella selection. No nested submodule was initialized or graph rewritten."
+  },
+  "exactVersionDaprEvidence": [
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/v1.18.7/pkg/api/grpc/daprinternal.go",
+      "lines": "42-60,408-440",
+      "fact": "Receiver ACL runs before application delivery and refuses disallowed remote callers."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/v1.18.7/pkg/acl/acl.go",
+      "lines": "128-151,179-181",
+      "fact": "Missing authenticated SPIFFE identity selects global default policy."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/v1.18.7/pkg/security/sentry.go",
+      "lines": "52-64,120-129",
+      "fact": "Workloads omit requested trust domain; control-plane requests explicitly use configured control-plane trust."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/v1.18.7/pkg/sentry/server/validator/internal/common.go",
+      "lines": "39-47",
+      "fact": "An omitted requested workload trust domain defaults to public."
+    }
+  ],
+  "commands": [
+    {
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-apphost-build.log 2>&1",
+      "exitCode": 1,
+      "outcome": "failed",
+      "reportedElapsed": "00:00:58.81",
+      "warnings": 0,
+      "errors": 1,
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-apphost-build.log",
+        "exists": true,
+        "bytes": 756,
+        "sha256": "4afa2786d43bbfc69c0ff7767a7a28a25d4efeca0f61a97b14816182b2a4ff36"
+      },
+      "failure": "CS8122 in FolderDurabilityBootstrapEvidenceTests.cs(111,44): an expression tree may not contain an is pattern-matching operator. The corrected predicate preserves the original assertion."
+    },
+    {
+      "kind": "format-apply",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet format whitespace tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj --no-restore --include tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityMtlsCompositionTests.cs -v quiet > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-root-format.log 2>&1",
+      "exitCode": 0,
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-root-format.log",
+        "exists": true,
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-apphost-build-corrected.log 2>&1",
+      "exitCode": 0,
+      "outcome": "passed",
+      "reportedElapsed": "00:02:08.26",
+      "warnings": 0,
+      "errors": 0,
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-apphost-build-corrected.log",
+        "exists": true,
+        "bytes": 76,
+        "sha256": "282889f764ce9df9902859d9b14b06eafadd29c3dc0c5bac47ceabb955a4ba91"
+      }
+    },
+    {
+      "kind": "test",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class '*FolderDurabilityMtlsCompositionTests' -class '*FolderDurabilityBootstrapEvidenceTests' -xml .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-model-focused.xml > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-model-focused.log 2>&1",
+      "exitCode": 0,
+      "assemblies": [
+        {
+          "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+          "id": "9e285b9f-2164-474d-b582-7588e3eda019",
+          "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+          "run-date": "2026-11-01",
+          "run-time": "17:48:18",
+          "start-rtf": "2026-11-01T17:48:18.3867784+00:00",
+          "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+          "target-framework": ".NETCoreApp,Version=v10.0",
+          "errors": "0",
+          "failed": "0",
+          "finish-rtf": "2026-11-01T17:48:18.8107509+00:00",
+          "not-run": "0",
+          "passed": "30",
+          "skipped": "0",
+          "time": "0.424",
+          "time-rtf": "00:00:00.4240000",
+          "total": "30"
+        }
+      ],
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-model-focused.log",
+          "exists": true,
+          "bytes": 576,
+          "sha256": "4f01eba88dcbafe606629d7ea2bd439bb876f6b0bc50db67df73c7587998e182"
+        },
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-model-focused.xml",
+          "exists": true,
+          "bytes": 21746,
+          "sha256": "fafac933d20394d4da521ab49250f8af3b8a0dfd1066a4f6fb378f60ef926eca"
+        }
+      ]
+    },
+    {
+      "kind": "format-apply",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "command": "dotnet format whitespace tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj --no-restore --include tests/Hexalith.Tenants.Server.Tests/Authorization/TenantOwnerSourceTargetTests.cs tests/Hexalith.Tenants.Server.Tests/Authorization/OwnerSourceTargetHttpHandler.cs -v quiet > /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-owner-format.log 2>&1",
+      "exitCode": 0,
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-owner-format.log",
+        "exists": true,
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "command": "dotnet build tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-owner-build.log 2>&1",
+      "exitCode": 0,
+      "outcome": "passed",
+      "reportedElapsed": "00:00:13.04",
+      "warnings": 0,
+      "errors": 0,
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-owner-build.log",
+        "exists": true,
+        "bytes": 76,
+        "sha256": "e6708b0fc561881e15154a4faf757f91ee403bebdff28bc5bc6c2ff2bfb2ba6b"
+      }
+    },
+    {
+      "kind": "test",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "command": "dotnet tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll -class '*Bootstrap*' -class '*TenantOwnerSourceTargetTests' -class '*TenantsGlobalAdministratorAuthorityTests' -class '*TenantsGlobalAdministratorVerifierTests' -xml /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-owner-focused.xml > /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-owner-focused.log 2>&1",
+      "exitCode": 0,
+      "assemblies": [
+        {
+          "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+          "id": "3bc1ef80-22e6-410f-8a11-3c4a19c1e0a9",
+          "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+          "run-date": "2026-11-01",
+          "run-time": "17:49:27",
+          "start-rtf": "2026-11-01T17:49:27.5090994+00:00",
+          "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+          "target-framework": ".NETCoreApp,Version=v10.0",
+          "errors": "0",
+          "failed": "0",
+          "finish-rtf": "2026-11-01T17:49:30.6747172+00:00",
+          "not-run": "0",
+          "passed": "210",
+          "skipped": "0",
+          "time": "3.166",
+          "time-rtf": "00:00:03.1660000",
+          "total": "210"
+        }
+      ],
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-owner-focused.log",
+          "exists": true,
+          "bytes": 572,
+          "sha256": "9c5f55e411b00a38f5150e50e61f033e6604c16c46df08f99bbbc72f5959623d"
+        },
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-owner-focused.xml",
+          "exists": true,
+          "bytes": 157654,
+          "sha256": "b504ad38200b8efddcddf0d233aeaa005ad4c0be69eca368d90a05ad2c0e2913"
+        }
+      ]
+    },
+    {
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-apphost-build-model-evidence.log 2>&1",
+      "exitCode": 0,
+      "outcome": "passed",
+      "reportedElapsed": "00:01:18.26",
+      "warnings": 0,
+      "errors": 0,
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-apphost-build-model-evidence.log",
+        "exists": true,
+        "bytes": 76,
+        "sha256": "7899cf6ea76c8620c672306ca2d4f8b5054aa418260c0296f41a32513baff510"
+      }
+    },
+    {
+      "kind": "test",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class '*FolderDurabilityMtlsCompositionTests' -class '*FolderDurabilityBootstrapEvidenceTests' -xml .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-model-final.xml > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-model-final.log 2>&1",
+      "exitCode": 0,
+      "assemblies": [
+        {
+          "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+          "id": "a4d263d0-b390-4b19-8c9c-121c046dc5e8",
+          "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+          "run-date": "2026-11-01",
+          "run-time": "17:53:28",
+          "start-rtf": "2026-11-01T17:53:28.3837209+00:00",
+          "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+          "target-framework": ".NETCoreApp,Version=v10.0",
+          "errors": "0",
+          "failed": "0",
+          "finish-rtf": "2026-11-01T17:53:28.8166215+00:00",
+          "not-run": "0",
+          "passed": "30",
+          "skipped": "0",
+          "time": "0.433",
+          "time-rtf": "00:00:00.4330000",
+          "total": "30"
+        }
+      ],
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-model-final.log",
+          "exists": true,
+          "bytes": 576,
+          "sha256": "0af27e881011cdeecbbcd9ff7948b3658fa9cff5429c50ecb310bd33b636850a"
+        },
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-model-final.xml",
+          "exists": true,
+          "bytes": 23859,
+          "sha256": "be612b4f976d87c689dea747673c0eb3c783d9c97e0ba6a5991cb028fd0dee8c"
+        }
+      ]
+    },
+    {
+      "kind": "api-inspection",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dnx dotnet-inspect -y -- member DaprSelfHostedMtls --library src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Folders.AppHost.dll -n 100 > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-platform-public-api.log",
+      "exitCode": 0,
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-platform-public-api.log",
+        "exists": true,
+        "bytes": 802,
+        "sha256": "0962ced5c33efc0ed228a09d62c4e630acfa21c2cc4fcd823f88891ad37b78a1"
+      },
+      "limitation": "Inspector warned that generic-constraint classification for Aspire IResourceWithWaitSupport could not bind its dependency. The real consumer compilation and default/selected model calls passed; this is not a full generic-constraint metadata audit."
+    }
+  ],
+  "limitations": [
+    "Exact command wall-clock start/end timestamps were not captured; SDK/xUnit reported durations remain in logs/XML. All selected builds and test runs in this phase executed sequentially.",
+    "The retained initial CS8122 compile failure is separate from corrected and final build labels. No prior attempt was overwritten.",
+    "Model tests used model-only credential strings and a nonexecuted placeholder native file. No real Sentry certificate or live mTLS success is claimed. Parent owns the first audited live execution and broad owner/consumer qualification.",
+    "The receipt contains paths/hashes and support-safe facts only; no private certificate/key/token or protected command/response body is included."
+  ]
+}

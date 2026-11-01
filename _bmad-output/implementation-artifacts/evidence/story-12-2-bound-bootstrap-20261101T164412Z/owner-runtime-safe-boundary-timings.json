@@ -1,0 +1,95 @@
+[
+  {
+    "rawLine": 10744,
+    "category": "System.Net.Http.HttpClient.TenantOwnerSourceGateway.LogicalHandler",
+    "fields": {}
+  },
+  {
+    "rawLine": 10746,
+    "category": "System.Net.Http.HttpClient.TenantOwnerSourceGateway.ClientHandler",
+    "fields": {}
+  },
+  {
+    "rawLine": 10848,
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "fields": {}
+  },
+  {
+    "rawLine": 10850,
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "fields": {
+      "ActionName": "Hexalith.EventStore.Controllers.StreamsController.ReadWorkloadStreamAsync (Hexalith.EventStore.Gateway)"
+    }
+  },
+  {
+    "rawLine": 11142,
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "fields": {
+      "ActionName": "Hexalith.EventStore.Controllers.StreamsController.ReadWorkloadStreamAsync (Hexalith.EventStore.Gateway)",
+      "ActionResult": "Microsoft.AspNetCore.Mvc.OkObjectResult",
+      "ElapsedMilliseconds": 1582.1598
+    }
+  },
+  {
+    "rawLine": 11146,
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "fields": {
+      "ActionName": "Hexalith.EventStore.Controllers.StreamsController.ReadWorkloadStreamAsync (Hexalith.EventStore.Gateway)",
+      "ElapsedMilliseconds": 1584.3452
+    }
+  },
+  {
+    "rawLine": 11212,
+    "category": "System.Net.Http.HttpClient.TenantOwnerSourceGateway.ClientHandler",
+    "fields": {
+      "ElapsedMilliseconds": 2515.1798,
+      "StatusCode": 200
+    }
+  },
+  {
+    "rawLine": 11216,
+    "category": "System.Net.Http.HttpClient.TenantOwnerSourceGateway.LogicalHandler",
+    "fields": {
+      "ElapsedMilliseconds": 2516.8947,
+      "StatusCode": 200
+    }
+  },
+  {
+    "rawLine": 11218,
+    "category": "System.Net.Http.HttpClient.TenantOwnerSourceGateway.LogicalHandler",
+    "fields": {}
+  },
+  {
+    "rawLine": 11220,
+    "category": "System.Net.Http.HttpClient.TenantOwnerSourceGateway.ClientHandler",
+    "fields": {}
+  },
+  {
+    "rawLine": 11318,
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "fields": {}
+  },
+  {
+    "rawLine": 11320,
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "fields": {
+      "ActionName": "Hexalith.EventStore.Controllers.StreamsController.ReadWorkloadStreamAsync (Hexalith.EventStore.Gateway)"
+    }
+  },
+  {
+    "rawLine": 11432,
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "fields": {
+      "ActionName": "Hexalith.EventStore.Controllers.StreamsController.ReadWorkloadStreamAsync (Hexalith.EventStore.Gateway)",
+      "ElapsedMilliseconds": 772.5082
+    }
+  },
+  {
+    "rawLine": 11686,
+    "category": "Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker",
+    "fields": {
+      "ActionName": "Hexalith.EventStore.Controllers.CommandsController.Submit (Hexalith.EventStore.Gateway)",
+      "ElapsedMilliseconds": 6685.9185
+    }
+  }
+]

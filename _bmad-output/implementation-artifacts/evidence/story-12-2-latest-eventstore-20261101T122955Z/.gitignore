@@ -1,0 +1,5 @@
+!*.log
+!*.json
+!*.xml
+!*.txt
+!*.diff

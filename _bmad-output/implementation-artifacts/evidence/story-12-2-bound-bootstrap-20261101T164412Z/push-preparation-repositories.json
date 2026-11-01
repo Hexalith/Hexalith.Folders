@@ -1,0 +1,93 @@
+{
+  ".": {
+    "branch": "main",
+    "head": "4de8e5d0e4ad16f33e7eae31f7323fe5bbf326b7",
+    "status": "M _bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md\n M references/Hexalith.EventStore\n M references/Hexalith.Platform\n M references/Hexalith.Tenants\n M src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj\n M src/Hexalith.Folders.AppHost/Program.cs\n M src/Hexalith.Folders.EventStore/ArchiveFolderIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/AuthorizeContentErasureIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/BindRepositoryIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/ChangeNativeTaskIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/CommitWorkspaceIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/ConfigureBranchRefPolicyIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/ConfigureProviderBindingIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/CreateFolderIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/CreateRepositoryBackedFolderIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/GrantFolderAccessIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/LockWorkspaceIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/MutateFilesIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/OrganizationAclIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/PrepareWorkspaceIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/Program.cs\n M src/Hexalith.Folders.EventStore/ReleaseWorkspaceLockIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.EventStore/RevokeFolderAccessIdempotencyIntentAdapter.cs\n M src/Hexalith.Folders.Server/FolderDomainProcessor.cs\n M src/Hexalith.Folders.Server/FoldersProjectionCatalogDeclarations.cs\n M src/Hexalith.Folders.Server/FoldersServerHostComposition.cs\n M src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs\n M src/Hexalith.Folders.Workers/FoldersWorkersHostComposition.cs\n M tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs\n M tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttp.cs\n M tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttpTests.cs\n M tests/Hexalith.Folders.EventStore.Tests/FoldersEventStoreHostCompositionTests.cs\n M tests/Hexalith.Folders.EventStore.Tests/FoldersEventStoreHostFactory.cs\n M tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj\n M tests/Hexalith.Folders.EventStore.Tests/NativeTaskAdmissionTests.cs\n M tests/Hexalith.Folders.IntegrationTests/Authorization/ContextReadAuthorityTests.cs\n M tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs\n M tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs\n M tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs\n M tests/Hexalith.Folders.Server.Tests/Authentication/FoldersProductionAuthenticationTests.cs\n M tests/Hexalith.Folders.Server.Tests/FoldersProjectionCatalogFixture.cs\n M tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj\n D tests/tools/Task36FoldObserver/ObservedProjectionHandler.cs\n M tests/tools/Task36FoldObserver/Task36HostingStartup.cs\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-catalog-admission-20261101T141540Z/\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-latest-eventstore-20261101T122955Z/\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-latest-eventstore-live-20261101T132347Z/\n?? docs/operations/local-catalog-composition.md\n?? src/Hexalith.Folders.AppHost/FoldersDevelopmentCatalog.cs\n?? src/Hexalith.Folders.EventStore/FoldersCatalogAdapterSource.cs\n?? src/Hexalith.Folders.Server/FoldersRuntimeCatalogDeclarations.cs\n?? src/Hexalith.Folders/Routing/\n?? tests/Hexalith.Folders.AppHost.Tests/DurabilityLoopbackHttpServer.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidence.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapProjectionTests.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityCatalogBinding.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityCatalogBindingTests.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityMtlsCompositionTests.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FoldersAppChannelCompositionTests.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FoldersDevelopmentCatalogCompositionTests.cs\n?? tests/Hexalith.Folders.EventStore.Tests/AdmissionCatalogFixture.cs\n?? tests/Hexalith.Folders.EventStore.Tests/AdmissionCatalogStateStore.cs\n?? tests/Hexalith.Folders.EventStore.Tests/DeclaredFoldersIntentCompatibilityTests.cs\n?? tests/Hexalith.Folders.EventStore.Tests/Fixtures/\n?? tests/Hexalith.Folders.Server.Tests/FoldersHumanCommandCatalogTests.cs\n?? tests/Hexalith.Folders.Server.Tests/Task36FoldDiagnosticObserverTests.cs\n?? tests/Hexalith.Folders.Server.Tests/Task36FoldObservationCollection.cs\n?? tests/tools/Task36FoldObserver/FoldDiagnosticEventObserver.cs\n?? tests/tools/Task36FoldObserver/FoldDiagnosticObserver.cs\n?? tests/tools/Task36FoldObserver/FoldObservationSink.cs",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Folders.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Folders.git (push)",
+    "recentHistory": "4de8e5d0 build: merge origin/main into main via /pushall\n4e061b56 build: sync local changes via /pushall\n4a571144 build: record Builds at e9b74ab and EventStore at 2a1d16d\n4640e21f build: reconcile Folders main with origin/main\n95528d73 build: sync local changes via /pushall"
+  },
+  "references/Hexalith.Tenants": {
+    "branch": "main",
+    "head": "9ed8737dedfbba660b9935b09696a74685201634",
+    "status": "M docs/production-auth-readiness.md\n M src/Hexalith.Tenants/Authorization/TenantOwnerSourceGateway.cs\n M src/Hexalith.Tenants/Bootstrap/TenantBootstrapBoundCommand.cs\n M src/Hexalith.Tenants/Bootstrap/TenantBootstrapHostedService.cs\n M src/Hexalith.Tenants/Program.cs\n M tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapBoundCommandTests.cs\n?? src/Hexalith.Tenants/Authorization/TenantOwnerSourceGatewayRegistration.cs\n?? src/Hexalith.Tenants/Bootstrap/TenantBootstrapReadinessBudget.cs\n?? src/Hexalith.Tenants/Configuration/TenantEventStoreTarget.cs\n?? tests/Hexalith.Tenants.Server.Tests/Authorization/OwnerSourceTargetHttpHandler.cs\n?? tests/Hexalith.Tenants.Server.Tests/Authorization/TenantOwnerSourceRuntimeTests.cs\n?? tests/Hexalith.Tenants.Server.Tests/Authorization/TenantOwnerSourceTargetTests.cs\n?? tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapReadinessBudgetTests.cs",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Tenants.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Tenants.git (push)",
+    "recentHistory": "9ed8737d build: merge refs/remotes/origin/fix/qualify-sdk-3.130.1 into main via /pushall\n7df84727 fix: qualify the SDK catalog patch selection\na67fb6f3 fix(ci): align source qualification fixtures\n00e7f380 fix(ci): restore merged main compatibility\n8e785341 test: qualify the isolated workflow branch"
+  },
+  "references/Hexalith.AI.Tools": {
+    "branch": "main",
+    "head": "9b78aa008cfc62cd88ad0ea4b39b1f07311956ce",
+    "status": "",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.AI.Tools.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.AI.Tools.git (push)",
+    "recentHistory": "9b78aa0 build(deps): update commitlint to the latest version\n875758e fix(skills): skip origin HEAD in pushall merges\n70dbf73 docs: clarify the MCP and CLI migration plan scope\n5be77fc docs: state the commit validation Node prerequisite\n68e6037 docs: publish the MCP and CLI migration plan"
+  },
+  "references/Hexalith.EventStore": {
+    "branch": "main",
+    "head": "f704401ff9033919b1e9925564d814d7410bfe3d",
+    "status": "M src/Hexalith.EventStore.Contracts/Routing/IdempotencyDescriptorField.cs\n M src/Hexalith.EventStore.Contracts/Routing/RouteCatalogCodec.cs\n M src/Hexalith.EventStore.Contracts/Routing/RouteCatalogValidator.cs\n M src/Hexalith.EventStore.DomainService/DevelopmentDomainRouteCatalog.cs\n M tests/Hexalith.EventStore.Server.Tests/Routing/DevelopmentDomainRouteCatalogTests.cs\n?? tests/Hexalith.EventStore.Contracts.Tests/Routing/IdempotencyDescriptorCompatibilityTests.cs",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.EventStore.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.EventStore.git (push)",
+    "recentHistory": "f704401ff test(domain-service): resolve the sibling Tenants checkout when the nested one is absent\n2a1d16d76 fix(domain-service): register catalog guard through the public security seam\nba4c5548a build: merge refs/heads/fix/works-routing-catalog into main via /pushall\ndebe306ab build: merge refs/remotes/origin/main into main via /pushall\n6dc634c5c build: merge refs/heads/fix/parties-catalog-sdk-prerequisite into main via /pushall"
+  },
+  "references/Hexalith.FrontComposer": {
+    "branch": "main",
+    "head": "589d63aa1a91c9c602f4caa15deef48bcf035b0c",
+    "status": "",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.FrontComposer.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.FrontComposer.git (push)",
+    "recentHistory": "589d63aa test(15.5): pin every Gate 4 collector branch and close the story\nc46c1fb5 test(15.5): accept every Gate 4 override spelling and record the review\ne442544c fix: submodules\n6811bfd6 docs(15.5): resolve the precursor round-3 review patches\n51121f24 fix(a11y): stop announcing home card names and totals twice"
+  },
+  "references/Hexalith.Memories": {
+    "branch": "main",
+    "head": "e0f3408fee7100c02d8fbc752e74483ad2f71b5f",
+    "status": "",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Memories.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Memories.git (push)",
+    "recentHistory": "e0f3408f docs: record owner approval of the Builds publication qualification\nb67e9644 docs: bind the Builds qualification evidence to a clean commit\n68d0a860 test: qualify the pinned Builds publication contract offline\naa097b52 ci: adopt pinned shared CI and preserve verification gates\n2649a946 test: report owned workflow readiness failures"
+  },
+  "references/Hexalith.Commons": {
+    "branch": "main",
+    "head": "0825abc8ed9338e5579ce5d995bd221dbaae9a1c",
+    "status": "",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Commons.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Commons.git (push)",
+    "recentHistory": "0825abc build: merge refs/remotes/origin/fix/story-2-8-legacy-ci into main via /pushall\n6820f0a fix(ci): pin the legacy domain workflow\n0604bcf chore(release): 2.30.7 [skip ci]\n3a8d151 fix(ci): synchronize the latest shared build merge\nf79a7a2 fix(ci): synchronize shared nuget runner initialization"
+  },
+  "references/Hexalith.Builds": {
+    "branch": "main",
+    "head": "e9b74ab24914b7768a1dde7e3861349f577ca011",
+    "status": "",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Builds.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Builds.git (push)",
+    "recentHistory": "e9b74ab fix(module): pin platform model builds to the production common-props import\ndf13d9d build: synchronize shared package evidence\n7fd5fd3 fix(test): bind evidence to updated package pins\n426df28 build: reconcile updated shared package catalog\n045b541 build(deps): record refreshed package audit"
+  },
+  "references/Hexalith.PolymorphicSerializations": {
+    "branch": "main",
+    "head": "92ede24cc11129379efe52cfe7fd2c820c567f7f",
+    "status": "",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.PolymorphicSerializations.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.PolymorphicSerializations.git (push)",
+    "recentHistory": "92ede24 build(deps): synchronize the latest shared build fixes\nd5ed267 ci(release): retry verification after NuGet processing delays\n2e68a02 chore(release): 1.19.6 [skip ci]\ne75933e build(deps): sync submodules and update the .NET SDK\na9c0225 fix(skills): skip origin HEAD in pushall merges"
+  },
+  "references/Hexalith.Projects": {
+    "branch": "main",
+    "head": "353cfd33e54270a1acb028c1c66ecb7cd548f3e7",
+    "status": "",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Projects.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Projects.git (push)",
+    "recentHistory": "353cfd3 test(server): host the catalog-enforced EventStore query controller\n50f2671 build(deps): match packed dependency versions to the catalog\n980afc1 fix(ci): qualify G-6 without the deleted EventStore OQ8 capture validator\n32385f0 fix(ci): drop the redundant FrontComposer Builds and Platform root binding\n6499d84 build: advance root submodule pointers to the synced main tips"
+  },
+  "references/Hexalith.Platform": {
+    "branch": "main",
+    "head": "75fd4c064054d176d1bb81eabf88ae630ae37c3e",
+    "status": "M DaprSelfHostedMtls.cs\n M DaprSelfHostedMtlsSubscriber.cs",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Platform.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Platform.git (push)",
+    "recentHistory": "75fd4c06 build: merge refs/remotes/origin/fix/catalog-consumer-run-binding into main via /pushall\ne37d8cec fix: qualify scoped bindings for the SDK patch\nd9d0eb18 fix: bind catalog policies to the actual gateway\na397de8e fix: operator setup\n799d29b1 build: sync local changes via /pushall"
+  },
+  "references/Hexalith.McpCli": {
+    "branch": "main",
+    "head": "8d74baacbe0713950cf11e1fe348d77e98563f56",
+    "status": "",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.McpCli.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.McpCli.git (push)",
+    "recentHistory": "8d74baa feat(release): add guarded paired package publication\nb8cf5d8 docs: apply the story 4.17 second code review\nef32c98 build: sync eventstore to its protected main\n4cdc47c fix: harden the story 4.17 operator setup\nd7e2177 docs: record the story 4.17 code review"
+  },
+  "references/Hexalith.Parties": {
+    "branch": "main",
+    "head": "a3666267868da046db164bba2668efc1325d42d5",
+    "status": "",
+    "remotes": "origin\thttps://github.com/Hexalith/Hexalith.Parties.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Parties.git (push)",
+    "recentHistory": "a3666267 fix: release\nb1859b81 build: sync local changes via /pushall\ncc57ab3e build: sync local changes via /pushall\n4e2b2e8d fix: stories\n166fd757 docs: preserve operational evidence follow-ups"
+  }
+}

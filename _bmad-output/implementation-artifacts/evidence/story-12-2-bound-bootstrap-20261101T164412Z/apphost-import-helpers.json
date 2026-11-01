@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FoldersAppChannelCompositionTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FoldersDevelopmentCatalogCompositionTests",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/apphost-import-helpers.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T17:12:20.451183+00:00",
+  "finishedAtUtc": "2026-11-01T17:12:21.779776+00:00",
+  "seconds": 1.3285923970397562,
+  "exitCode": 0
+}

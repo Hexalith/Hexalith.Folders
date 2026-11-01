@@ -488,8 +488,10 @@ public sealed class ContextReadAuthorityTests
             http.User = new ClaimsPrincipal(new ClaimsIdentity(claims, "context-test"));
             await next(http).ConfigureAwait(true);
         });
+        app.UseAuthentication();
         app.UsePd10V2CandidateCompatibilitySeam();
         app.UseRouting();
+        app.UseAuthorization();
         app.MapFoldersServerEndpoints();
         return app;
     }
