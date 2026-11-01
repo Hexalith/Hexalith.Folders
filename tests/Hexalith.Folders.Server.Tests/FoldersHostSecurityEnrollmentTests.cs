@@ -240,7 +240,12 @@ public sealed class FoldersHostSecurityEnrollmentTests
         }
         return new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
         {
-            Issuer = Issuer, Audience = "folders", IssuedAt = now, NotBefore = now, Expires = now.AddMinutes(2), Claims = claims,
+            Issuer = Issuer,
+            Audience = "folders",
+            IssuedAt = now,
+            NotBefore = now,
+            Expires = now.AddMinutes(2),
+            Claims = claims,
             SigningCredentials = new(new RsaSecurityKey(rsa) { KeyId = "enrollment" }, SecurityAlgorithms.RsaSha256),
         });
     }

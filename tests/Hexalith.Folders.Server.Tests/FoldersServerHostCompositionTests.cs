@@ -189,7 +189,11 @@ public sealed class FoldersServerHostCompositionTests
         InMemoryFolderTenantAccessProjectionStore tenants = new();
         await tenants.SaveAsync(new FolderTenantAccessProjection
         {
-            TenantId = tenant, Enabled = true, Watermark = 1, ProjectionWatermark = "mode:1", LastEventTimestamp = now,
+            TenantId = tenant,
+            Enabled = true,
+            Watermark = 1,
+            ProjectionWatermark = "mode:1",
+            LastEventTimestamp = now,
             Principals = new Dictionary<string, FolderTenantPrincipalEvidence>(StringComparer.Ordinal) { [principal] = new(principal, "Member") },
         }, TestContext.Current.CancellationToken).ConfigureAwait(true);
         InMemoryEffectivePermissionsReadModel permissions = new();
@@ -217,10 +221,13 @@ public sealed class FoldersServerHostCompositionTests
             observed.ReadCount.ShouldBe(0);
             client.DefaultRequestHeaders.Authorization = new("Bearer", new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
             {
-                Issuer = "https://identity.example.test/realms/folders", Audience = "folders", Expires = DateTime.UtcNow.AddMinutes(2),
+                Issuer = "https://identity.example.test/realms/folders",
+                Audience = "folders",
+                Expires = DateTime.UtcNow.AddMinutes(2),
                 Claims = new Dictionary<string, object>
                 {
-                    ["sub"] = principal, [TenantContextOptions.EventStoreTenantClaimType] = tenant,
+                    ["sub"] = principal,
+                    [TenantContextOptions.EventStoreTenantClaimType] = tenant,
                     ["eventstore:permission"] = new[] { "read_metadata", "manage_folder_access" },
                     [RouteCatalogSurfacePolicy.ClaimType] = "ui",
                 },
@@ -354,7 +361,9 @@ public sealed class FoldersServerHostCompositionTests
         builder.Services.RemoveAll<Hexalith.Folders.ServiceDefaults.IReadinessSnapshotSource>();
         builder.Services.AddSingleton<Hexalith.Folders.ServiceDefaults.IReadinessSnapshotSource>(new HostReadinessSnapshotSource(new()
         {
-            DaprSidecarHealthy = daprHealthy, TenantsAvailabilityDegradedModeActive = tenantsDegraded, ProjectionLagMilliseconds = lag,
+            DaprSidecarHealthy = daprHealthy,
+            TenantsAvailabilityDegradedModeActive = tenantsDegraded,
+            ProjectionLagMilliseconds = lag,
         }));
         await using WebApplication app = builder.Build();
         app.UseFoldersServerPipeline();
@@ -503,7 +512,9 @@ public sealed class FoldersServerHostCompositionTests
     private static string CatalogAssertion(RsaSecurityKey key, string operation, string caller)
         => new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
         {
-            Issuer = "https://identity.example.test/realms/folders", Audience = "folders", Expires = DateTime.UtcNow.AddMinutes(2),
+            Issuer = "https://identity.example.test/realms/folders",
+            Audience = "folders",
+            Expires = DateTime.UtcNow.AddMinutes(2),
             Claims = new Dictionary<string, object>
             {
                 [EventStoreWorkloadAuthenticationDefaults.CallerClaimType] = caller,
