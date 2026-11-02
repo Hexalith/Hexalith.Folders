@@ -1,0 +1,146 @@
+[
+  {
+    "name": "mcpcli-core-tests",
+    "total": 731,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 4,
+    "notRun": 0
+  },
+  {
+    "name": "mcpcli-cli-tests",
+    "total": 487,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 2,
+    "notRun": 0
+  },
+  {
+    "name": "folders-catalog-model",
+    "total": 1,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  {
+    "name": "tenants-prior-configured-user",
+    "total": 1,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  {
+    "name": "tenants-prior-development-credential",
+    "total": 1,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  {
+    "name": "tenants-TenantBootstrapHostedServiceTests",
+    "total": 205,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  {
+    "name": "tenants-TenantsGlobalAdministratorAuthorityTests",
+    "total": 25,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  {
+    "name": "tenants-TenantBootstrapCommandTransportTests",
+    "total": 32,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  {
+    "name": "tenants-TenantBootstrapReadinessBudgetTests",
+    "total": 8,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  {
+    "name": "tenants-TenantBootstrapBoundCommandTests",
+    "total": 29,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  {
+    "name": "tenants-TenantBootstrapReceiptTests",
+    "total": 6,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  {
+    "name": "tenants-TenantBootstrapRedirectTests",
+    "total": 21,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  {
+    "name": "tenants-BootstrapConfigurationTests",
+    "total": 2,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  {
+    "name": "mcpcli-core-tests-sequential",
+    "total": 731,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 4,
+    "notRun": 0
+  },
+  {
+    "name": "mcpcli-cli-tests-sequential",
+    "total": 487,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 2,
+    "notRun": 0
+  },
+  {
+    "name": "review-core-scope-tests",
+    "total": 19,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  {
+    "name": "review-cli-scope-tests",
+    "total": 3,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  },
+  {
+    "name": "review-mcp-scope-tests",
+    "total": 14,
+    "errors": 0,
+    "failed": 0,
+    "skipped": 0,
+    "notRun": 0
+  }
+]

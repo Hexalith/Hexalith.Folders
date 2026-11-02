@@ -1,0 +1,7 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Folders.AppHost.Tests
+  Discovered:  Hexalith.Folders.AppHost.Tests
+  Starting:    Hexalith.Folders.AppHost.Tests
+  Finished:    Hexalith.Folders.AppHost.Tests (ID = '160118e0c818d733fb20ad13e96bd0956a12f1c72f524ab71c71f2003765f3d0')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.AppHost.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.823s

@@ -1,0 +1,8 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Testing/Hexalith.Tenants.Testing.csproj (in 165 ms).
+  2 of 3 projects are up-to-date for restore.
+  Hexalith.Tenants.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Release/net10.0/Hexalith.Tenants.Contracts.dll
+  Hexalith.Tenants.Server -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Release/net10.0/Hexalith.Tenants.Server.dll
+  Hexalith.Tenants.Testing -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Testing/bin/Release/net10.0/Hexalith.Tenants.Testing.dll
+  Actual pack-target catalog enrollment verified: Hexalith.Tenants.Testing
+  Successfully created package '/tmp/folders-cohort-final-20261102-ytqrwm20/feed/Hexalith.Tenants.Testing.7.0.0.nupkg'.

@@ -1,0 +1,31 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/Task36FoldObserver.csproj (in 478 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj (in 477 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj (in 1.11 sec).
+  13 of 16 projects are up-to-date for restore.
+  Hexalith.Folders.Contracts -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/bin/Release/net10.0/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders.Client -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/bin/Release/net10.0/Hexalith.Folders.Client.dll
+  Hexalith.Folders -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders/bin/Release/net10.0/Hexalith.Folders.dll
+  Hexalith.Folders.EventStore -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Release/net10.0/Hexalith.Folders.EventStore.dll
+  Hexalith.Folders.ServiceDefaults -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.ServiceDefaults/bin/Release/net10.0/Hexalith.Folders.ServiceDefaults.dll
+  Hexalith.Folders.Server -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Release/net10.0/Hexalith.Folders.Server.dll
+  Hexalith.Folders.UI -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Release/net10.0/Hexalith.Folders.UI.dll
+  Hexalith.Folders.Workers -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Release/net10.0/Hexalith.Folders.Workers.dll
+  Hexalith.Folders.Aspire -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Aspire/bin/Release/net10.0/Hexalith.Folders.Aspire.dll
+  Platform version catalog validated: Hexalith.EventStore.Aspire/4.0.0, CommunityToolkit.Aspire.Hosting.Dapr/13.6.2-beta.959, required range 13.6.2-beta.959 for net10.0.
+  Hexalith.Builds.Tooling -> /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/bin/Release/net10.0/Hexalith.Builds.Tooling.dll
+  Hexalith.Folders.AppHost -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Release/net10.0/Hexalith.Folders.AppHost.dll
+  Task36FoldObserver -> /home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Release/net10.0/Task36FoldObserver.dll
+  Hexalith.Tenants.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Release/net10.0/Hexalith.Tenants.Contracts.dll
+  Hexalith.Tenants.Server -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Release/net10.0/Hexalith.Tenants.Server.dll
+  Hexalith.Tenants -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Release/net10.0/Hexalith.Tenants.dll
+  Hexalith.Folders.AppHost.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Release/net10.0/Hexalith.Folders.AppHost.Tests.dll
+  Hexalith.Tenants.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Release/net10.0/Hexalith.Tenants.Contracts.dll
+  Hexalith.Tenants.Server -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Release/net10.0/Hexalith.Tenants.Server.dll
+  Hexalith.Tenants -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Release/net10.0/Hexalith.Tenants.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:14.07

@@ -1,0 +1,140 @@
+{
+  "status": "LOCAL_PACKAGE_COHORT_QUALIFIED_AFTER_REVIEW",
+  "packages": 17,
+  "verifiedMainAssemblies": 17,
+  "verifiedEmbeddedAssemblies": 1,
+  "cacheFeedMatches": 12,
+  "commands": 45,
+  "producerSources": "../sources.json",
+  "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac",
+  "allCommandsPassed": true,
+  "publication": false,
+  "deployment": false,
+  "activation": false,
+  "testCounts": [
+    {
+      "name": "folders-catalog-model",
+      "total": 1,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0
+    },
+    {
+      "name": "tenants-prior-configured-user",
+      "total": 1,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0
+    },
+    {
+      "name": "tenants-prior-development-credential",
+      "total": 1,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0
+    },
+    {
+      "name": "tenants-TenantBootstrapHostedServiceTests",
+      "total": 205,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0
+    },
+    {
+      "name": "tenants-TenantsGlobalAdministratorAuthorityTests",
+      "total": 25,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0
+    },
+    {
+      "name": "tenants-TenantBootstrapCommandTransportTests",
+      "total": 32,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0
+    },
+    {
+      "name": "tenants-TenantBootstrapReadinessBudgetTests",
+      "total": 8,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0
+    },
+    {
+      "name": "tenants-TenantBootstrapBoundCommandTests",
+      "total": 29,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0
+    },
+    {
+      "name": "tenants-TenantBootstrapReceiptTests",
+      "total": 6,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0
+    },
+    {
+      "name": "tenants-TenantBootstrapRedirectTests",
+      "total": 21,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0
+    },
+    {
+      "name": "tenants-BootstrapConfigurationTests",
+      "total": 2,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0
+    },
+    {
+      "name": "mcpcli-core-tests-final",
+      "total": 735,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 4,
+      "notRun": 0
+    },
+    {
+      "name": "mcpcli-cli-tests-final",
+      "total": 487,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 2,
+      "notRun": 0
+    },
+    {
+      "name": "mcpcli-mcp-tests-final",
+      "total": 72,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0
+    }
+  ],
+  "limits": [
+    "Historical inventory verifier retains its pre-existing Pending manifest bytes changed failure.",
+    "Legacy approved Tenants.Contracts 5.10.0 fixed-system enrollment remains unqualified against EventStore 4.0.0.",
+    "This local feed qualification does not establish published-package or operational acceptance."
+  ],
+  "producerPreflight": "producer-preflight.json",
+  "protectedComparison": "protected-comparison.json",
+  "verifierSha256": "eb4327adb4dad5c20c6c2fa266de26744abcc81d7250b97db3175ff798101d10",
+  "ownerCommitCapture": "../owner-commits.json",
+  "ownerCommitCaptureSha256": "298d42f4f8033abcf2aa270ba0b4ca439a3488378aea5bcca9f7d2c9d6b9a8c4",
+  "committedSnapshotPreflight": "committed-producer-preflight.json",
+  "committedProtection": "committed-protection.json"
+}

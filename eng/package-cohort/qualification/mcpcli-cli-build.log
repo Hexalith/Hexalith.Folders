@@ -1,0 +1,26 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/tests/fixtures/Catalog.Table.Contracts/Catalog.Table.Contracts.csproj (in 325 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/tests/fixtures/StdioHost/Hexalith.McpCli.StdioHost.csproj (in 591 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/tests/Hexalith.McpCli.Cli.Tests/Hexalith.McpCli.Cli.Tests.csproj (in 618 ms).
+  12 of 15 projects are up-to-date for restore.
+  Hexalith.McpCli.Analyzers -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Analyzers/bin/Debug/netstandard2.0/Hexalith.McpCli.Analyzers.dll
+  Hexalith.McpCli.Abstractions -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll
+  Hexalith.McpCli.Core -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Core/bin/Debug/net10.0/Hexalith.McpCli.Core.dll
+  Hexalith.McpCli.Mcp -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Mcp/bin/Debug/net10.0/Hexalith.McpCli.Mcp.dll
+  Hexalith.McpCli -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli/bin/Debug/net10.0/Hexalith.McpCli.dll
+  Hexalith.McpCli.Sample.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/tests/Hexalith.McpCli.Sample.Contracts/bin/Debug/net10.0/Hexalith.McpCli.Sample.Contracts.dll
+  Catalog.Lint.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/tests/fixtures/Catalog.Lint.Contracts/bin/Debug/net10.0/Catalog.Lint.Contracts.dll
+  Catalog.Routing.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/tests/fixtures/Catalog.Routing.Contracts/bin/Debug/net10.0/Catalog.Routing.Contracts.dll
+  Catalog.Table.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/tests/fixtures/Catalog.Table.Contracts/bin/Debug/net10.0/Catalog.Table.Contracts.dll
+  Catalog.String.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/tests/fixtures/Catalog.String.Contracts/bin/Debug/net10.0/Catalog.String.Contracts.dll
+  Catalog.Explicit.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/tests/fixtures/Catalog.Explicit.Contracts/bin/Debug/net10.0/Catalog.Explicit.Contracts.dll
+  Catalog.InvalidProvider.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/tests/fixtures/Catalog.InvalidProvider.Contracts/bin/Debug/net10.0/Catalog.InvalidProvider.Contracts.dll
+  Manifest.MarkedEmpty.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/tests/fixtures/Manifest.MarkedEmpty.Contracts/bin/Debug/net10.0/Manifest.MarkedEmpty.Contracts.dll
+  Hexalith.McpCli.StdioHost -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/tests/fixtures/StdioHost/bin/Debug/net10.0/Hexalith.McpCli.StdioHost.dll
+  Hexalith.McpCli.Cli.Tests -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/tests/Hexalith.McpCli.Cli.Tests/bin/Debug/net10.0/Hexalith.McpCli.Cli.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:12.56

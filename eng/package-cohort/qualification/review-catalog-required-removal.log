@@ -1,0 +1,2 @@
+Authoritative package catalog tests failed with 1 error(s):
+- Catalog is missing approved package 'Hexalith.Tenants.Server'.

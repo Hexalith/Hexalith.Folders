@@ -1,0 +1,5 @@
+Platform version catalog validation failed: dotnet catalog operation failed (1):    Determining projects to restore...
+/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/Props/.platform-catalog-c8a7377c88a9443cbff1d80d95f69db4/metadata.csproj : error NU1102: Unable to find package Hexalith.EventStore.Aspire with version (= 4.0.0)
+/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/Props/.platform-catalog-c8a7377c88a9443cbff1d80d95f69db4/metadata.csproj : error NU1102:   - Found 208 version(s) in nuget.org [ Nearest version: 3.133.0 ]
+  Failed to restore /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/Props/.platform-catalog-c8a7377c88a9443cbff1d80d95f69db4/metadata.csproj (in 350 ms).
+

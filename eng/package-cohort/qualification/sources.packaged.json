@@ -1,0 +1,87 @@
+[
+  {
+    "repository": "references/Hexalith.Builds",
+    "committedRevision": "13f503caecba9f449d84a8e005258626a64edd06",
+    "workingChanges": [
+      "Props/Directory.Packages.props",
+      "Tools/test-authoritative-package-catalog.ps1"
+    ],
+    "newFiles": [],
+    "patch": "Hexalith.Builds.packaged.source.patch",
+    "patchSha256": "a30e0ac0389115e31489270fccf2f27e7570b48b68818db2cc14688219fe39a8",
+    "workingFileSha256": {
+      "Props/Directory.Packages.props": "cdc2761f50f35f98c3e9eecb612e5d8b76ec89cac3edd86dda8fa628f4479a9b",
+      "Tools/test-authoritative-package-catalog.ps1": "f0b5529aacf2f82bb3a81ed0a2588785ceb695b953f2cfb8106f72b041a6467c"
+    }
+  },
+  {
+    "repository": "references/Hexalith.EventStore",
+    "committedRevision": "a9317e4b228adfbcdd6686a2f86171b464f34c06",
+    "workingChanges": [],
+    "newFiles": [],
+    "patch": "Hexalith.EventStore.packaged.source.patch",
+    "patchSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "workingFileSha256": {}
+  },
+  {
+    "repository": "references/Hexalith.McpCli",
+    "committedRevision": "829a98da7103b2124b2d95ee1d09db37620686a3",
+    "workingChanges": [
+      "Directory.Build.props",
+      "src/Hexalith.McpCli.Abstractions/HexalithCommandAttribute.cs",
+      "src/Hexalith.McpCli.Abstractions/HexalithQueryAttribute.cs",
+      "src/Hexalith.McpCli.Core/Catalog/CatalogBuilder.cs",
+      "src/Hexalith.McpCli.Core/Catalog/CatalogService.cs",
+      "src/Hexalith.McpCli.Core/Catalog/OperationDescriptor.cs",
+      "src/Hexalith.McpCli.Core/Catalog/OperationEnvelopeDocument.cs",
+      "src/Hexalith.McpCli.Core/Catalog/RoutingResolver.cs",
+      "src/Hexalith.McpCli.Core/Execution/OperationExecutor.cs",
+      "tests/Hexalith.McpCli.Cli.Tests/DiscoveryCommandTests.cs",
+      "tests/Hexalith.McpCli.Cli.Tests/QueryValidationCommandTests.cs",
+      "tests/Hexalith.McpCli.Core.Tests/QueryValidationTests.cs",
+      "tests/fixtures/Catalog.Routing.Contracts/ColonWireCommand.cs",
+      "tests/fixtures/Catalog.Routing.Contracts/ListItemsQuery.cs"
+    ],
+    "newFiles": [
+      "tests/Hexalith.McpCli.Cli.Tests/PlatformScopeCommandTests.cs",
+      "tests/Hexalith.McpCli.Core.Tests/PlatformScopeTests.cs"
+    ],
+    "patch": "Hexalith.McpCli.packaged.source.patch",
+    "patchSha256": "b59843005a140dfdef0ee4e7443ad5644d8637de7b62b71a9e837b2c7d2f5526",
+    "workingFileSha256": {
+      "Directory.Build.props": "681fb3b2bd6a15a6c5ff5776d51b5dfa326c798cd8cbb27e2d5f91f6e3e81e2c",
+      "src/Hexalith.McpCli.Abstractions/HexalithCommandAttribute.cs": "7d0c853de4e7f534ebf1b54906569b13330d8f36c52bb144a0b5d4a192f9db29",
+      "src/Hexalith.McpCli.Abstractions/HexalithQueryAttribute.cs": "385e7a8595a7a3d6e029dc760d7b61df49c3d28d3883d4223c56939f44e809de",
+      "src/Hexalith.McpCli.Core/Catalog/CatalogBuilder.cs": "7f60bf645c2c8e1c10ad951a9eb6618fde45ed41aca25143a35628b8e548b167",
+      "src/Hexalith.McpCli.Core/Catalog/CatalogService.cs": "e9b72ba417670bd2dc9aff09dc86a587c2dedda377a05781186fc338b743a3db",
+      "src/Hexalith.McpCli.Core/Catalog/OperationDescriptor.cs": "f1a69f2d355eace1f13783ea8fa06787f8eb889e7db36a31ce13b8ea96d8651c",
+      "src/Hexalith.McpCli.Core/Catalog/OperationEnvelopeDocument.cs": "f01d37e899c01173e2c40169f3765355f834849b3cdb0f4d7bd3b9227bfe4e1e",
+      "src/Hexalith.McpCli.Core/Catalog/RoutingResolver.cs": "701874c4846b71fef04d249edae9489d97fb915016310d8ac113e2319ee5321d",
+      "src/Hexalith.McpCli.Core/Execution/OperationExecutor.cs": "01ca47ed5ce9293e006dad2d3a0107b543a61a69c66e7346d1aa2e03fb8efe5c",
+      "tests/Hexalith.McpCli.Cli.Tests/DiscoveryCommandTests.cs": "fd9a7b52774b659a52e70aafef82c9e724526ec9bd8eed5b8c45bebaae41065c",
+      "tests/Hexalith.McpCli.Cli.Tests/QueryValidationCommandTests.cs": "df723b99b2a01fa7b219739814a9c608495809588724b6390a1e387ed5166607",
+      "tests/Hexalith.McpCli.Core.Tests/QueryValidationTests.cs": "22d98d8e008cb3e7cd93df3d0b92ee6d18bad8fe135826583e3c64f566ab13d6",
+      "tests/fixtures/Catalog.Routing.Contracts/ColonWireCommand.cs": "34d670e4cb19f3ef380b225eeae62547d1412c2de327cdc44ea257cbcb89d265",
+      "tests/fixtures/Catalog.Routing.Contracts/ListItemsQuery.cs": "ce964d1bf677da9609c398a249d9ac86184164761f72b430c83c8ce5f103b4bc",
+      "tests/Hexalith.McpCli.Cli.Tests/PlatformScopeCommandTests.cs": "90e1995b6fc7e85bb0a09ae2241e2e0540131f47cc228dca8020605ce60837f6",
+      "tests/Hexalith.McpCli.Core.Tests/PlatformScopeTests.cs": "5f36bf43c50f89ab595ce4725f34d382c078cb9c95bbf359dbd26c7a92224b12"
+    }
+  },
+  {
+    "repository": "references/Hexalith.Tenants",
+    "committedRevision": "93a5aa8385cc65c73b850738643d7f8204ee52da",
+    "workingChanges": [
+      "tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapCommandTransportTests.cs",
+      "tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapHostedServiceTests.cs",
+      "tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapReadinessBudgetTests.cs"
+    ],
+    "newFiles": [],
+    "patch": "Hexalith.Tenants.packaged.source.patch",
+    "patchSha256": "4c4c3203e4efdec2bd942af2985b8bc6cd347c041acc1b09855f865f404664ef",
+    "workingFileSha256": {
+      "tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapCommandTransportTests.cs": "3d605aa420a4d8a500b526b6e581e762f261e741d797f70f63b41fb8799e1586",
+      "tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapHostedServiceTests.cs": "758a70168880b5e3186a0d51bd3ff185f975bd1df3791a9110fe447154d1fba4",
+      "tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapReadinessBudgetTests.cs": "0360ab804353e18cc27edf9c432af2b3bdb4bddc31b2bcdfdb2d80a8d5b82297"
+    }
+  }
+]

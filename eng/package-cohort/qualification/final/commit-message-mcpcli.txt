@@ -1,0 +1,1 @@
+feat(scopes)!: support canonical platform request scopes

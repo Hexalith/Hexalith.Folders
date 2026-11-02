@@ -1,0 +1,6 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/Hexalith.EventStore.Admin.Abstractions.csproj (in 142 ms).
+  1 of 2 projects are up-to-date for restore.
+  Hexalith.EventStore.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/bin/Release/net10.0/Hexalith.EventStore.Contracts.dll
+  Hexalith.EventStore.Admin.Abstractions -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/bin/Release/net10.0/Hexalith.EventStore.Admin.Abstractions.dll
+  Successfully created package '/tmp/folders-cohort-final-20261102-ytqrwm20/feed/Hexalith.EventStore.Admin.Abstractions.4.0.0.nupkg'.

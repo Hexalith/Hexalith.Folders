@@ -1,0 +1,62 @@
+[
+  {
+    "package": "Hexalith.EventStore.Admin.Abstractions.4.0.0.nupkg",
+    "cachedArchiveSha256": "ee871b73c0efc5dcd77013987505d62bb6b65bae37babf403b9f7de39c1527fb",
+    "source": "/tmp/folders-canonical-cohort-20261102/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.Aspire.4.0.0.nupkg",
+    "cachedArchiveSha256": "56708c3beacd041f5de4367f4973da68d8b88cc50fe7b47f47cae506d22d1f23",
+    "source": "/tmp/folders-canonical-cohort-20261102/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.Client.4.0.0.nupkg",
+    "cachedArchiveSha256": "845c7738b89cd5a0a7af78b8c9bb3140e892ac6a5ad88f70ffbcee74a75abcda",
+    "source": "/tmp/folders-canonical-cohort-20261102/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.Contracts.4.0.0.nupkg",
+    "cachedArchiveSha256": "9c31c8c0f766f1b36d839b3f68bfd38db30910f67127477f57de93b73bf7ab08",
+    "source": "/tmp/folders-canonical-cohort-20261102/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.DomainService.4.0.0.nupkg",
+    "cachedArchiveSha256": "988b13f1dac2b15627a88c9184e649541df4dc0b4cc85557228f46b2b0223cc7",
+    "source": "/tmp/folders-canonical-cohort-20261102/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.Gateway.4.0.0.nupkg",
+    "cachedArchiveSha256": "cd9ff7e2e7462f444144729fbd6b891a763b5ee2e4675ef5fd43b549a0662159",
+    "source": "/tmp/folders-canonical-cohort-20261102/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.Server.4.0.0.nupkg",
+    "cachedArchiveSha256": "e0496219d4d5adae97aad85ce259476ae5003ab01feea6edc3240809f659eb04",
+    "source": "/tmp/folders-canonical-cohort-20261102/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.ServiceDefaults.4.0.0.nupkg",
+    "cachedArchiveSha256": "dbd68f12c560ec34cdf88c0cc0b68f8f14ea321eaea45ed488aa4cdba8a2dc88",
+    "source": "/tmp/folders-canonical-cohort-20261102/feed"
+  },
+  {
+    "package": "Hexalith.McpCli.Abstractions.2.0.0.nupkg",
+    "cachedArchiveSha256": "1975af187bd2c4f97c87147a4514b0075cbc2a6840df6d02f8e5111e449b2705",
+    "source": "/tmp/folders-canonical-cohort-20261102/feed"
+  },
+  {
+    "package": "Hexalith.Tenants.Aspire.7.0.0.nupkg",
+    "cachedArchiveSha256": "713a8176e8d184d5b10e87a4b7540e437bb3e1b2bff2155e1027aac8aa7c8486",
+    "source": "/tmp/folders-canonical-cohort-20261102/feed"
+  },
+  {
+    "package": "Hexalith.Tenants.Client.7.0.0.nupkg",
+    "cachedArchiveSha256": "20095a72b00994312f220b2fc2ef50efff0045a0bb1a1692f38758b36ec4676d",
+    "source": "/tmp/folders-canonical-cohort-20261102/feed"
+  },
+  {
+    "package": "Hexalith.Tenants.Contracts.7.0.0.nupkg",
+    "cachedArchiveSha256": "9681ebabedd25d87c6bdbcb4b6f83efb50da29dbbcc8006e4293579c11361f02",
+    "source": "/tmp/folders-canonical-cohort-20261102/feed"
+  }
+]

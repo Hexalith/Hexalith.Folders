@@ -1,0 +1,62 @@
+[
+  {
+    "package": "Hexalith.EventStore.Admin.Abstractions.4.0.0.nupkg",
+    "cachedArchiveSha256": "52773702ea7fdad895810d92003723a8bf7afee8afd0f81aa239d4fef38d5318",
+    "source": "/tmp/folders-cohort-final-20261102-ytqrwm20/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.Aspire.4.0.0.nupkg",
+    "cachedArchiveSha256": "646f7c44aa2a0c428283d7c26de2df46ab824a71ae20502329f1d5d23b0c4e83",
+    "source": "/tmp/folders-cohort-final-20261102-ytqrwm20/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.Client.4.0.0.nupkg",
+    "cachedArchiveSha256": "5c515dae6f476c3ba341124fa7300781f7914f8fc7e408c516d4954e33de4de4",
+    "source": "/tmp/folders-cohort-final-20261102-ytqrwm20/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.Contracts.4.0.0.nupkg",
+    "cachedArchiveSha256": "f7c6f4b226711bf018d05ac5d72e7216a12977403a5e41c39dcf3e6e5ab1ee4b",
+    "source": "/tmp/folders-cohort-final-20261102-ytqrwm20/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.DomainService.4.0.0.nupkg",
+    "cachedArchiveSha256": "226816cf9d288a5ceee71a2f445ec6f8d0ec8ebafec0b37cb89e0b6a5df7ae4f",
+    "source": "/tmp/folders-cohort-final-20261102-ytqrwm20/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.Gateway.4.0.0.nupkg",
+    "cachedArchiveSha256": "7f3e8d844fbf91d206d98133b335a4e8d4aa9d59ddb605db166113c8f8e1dec3",
+    "source": "/tmp/folders-cohort-final-20261102-ytqrwm20/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.Server.4.0.0.nupkg",
+    "cachedArchiveSha256": "e76b099d583026033455ed63f18c14255019049f2a8065ff9090e9d2736b84d4",
+    "source": "/tmp/folders-cohort-final-20261102-ytqrwm20/feed"
+  },
+  {
+    "package": "Hexalith.EventStore.ServiceDefaults.4.0.0.nupkg",
+    "cachedArchiveSha256": "9925391459a720946fdf2d3ba0d559450b82f9b6e703b6c712e34a040e932406",
+    "source": "/tmp/folders-cohort-final-20261102-ytqrwm20/feed"
+  },
+  {
+    "package": "Hexalith.McpCli.Abstractions.2.0.0.nupkg",
+    "cachedArchiveSha256": "05cff2a99f1494748a05d950aacd9cb1db518da9bfe25f307b88843b1223f3e8",
+    "source": "/tmp/folders-cohort-final-20261102-ytqrwm20/feed"
+  },
+  {
+    "package": "Hexalith.Tenants.Aspire.7.0.0.nupkg",
+    "cachedArchiveSha256": "422c8118d1c9b093c310126257e3dfc2a6e6046965e6d7003bcd4d7728d5b935",
+    "source": "/tmp/folders-cohort-final-20261102-ytqrwm20/feed"
+  },
+  {
+    "package": "Hexalith.Tenants.Client.7.0.0.nupkg",
+    "cachedArchiveSha256": "adc247227f1760a50cec8b0559233cea0d63481775967f78d72c27df2e32ba66",
+    "source": "/tmp/folders-cohort-final-20261102-ytqrwm20/feed"
+  },
+  {
+    "package": "Hexalith.Tenants.Contracts.7.0.0.nupkg",
+    "cachedArchiveSha256": "fae0a7fb64a0dc4c032a3da6e858f0f1ac0584d40c1be719ff57822c31bfda8d",
+    "source": "/tmp/folders-cohort-final-20261102-ytqrwm20/feed"
+  }
+]

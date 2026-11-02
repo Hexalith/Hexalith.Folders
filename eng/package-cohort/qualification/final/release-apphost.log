@@ -1,0 +1,30 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj (in 172 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj (in 253 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj (in 572 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Hexalith.Builds.Tooling.csproj (in 1.17 sec).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj (in 1.2 sec).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj (in 1.23 sec).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj (in 1.33 sec).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj (in 1.38 sec).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders/Hexalith.Folders.csproj (in 1.37 sec).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj (in 1.38 sec).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj (in 1.39 sec).
+  Hexalith.Folders.Contracts -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/bin/Release/net10.0/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders/bin/Release/net10.0/Hexalith.Folders.dll
+  Hexalith.Folders.EventStore -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Release/net10.0/Hexalith.Folders.EventStore.dll
+  Hexalith.Folders.ServiceDefaults -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.ServiceDefaults/bin/Release/net10.0/Hexalith.Folders.ServiceDefaults.dll
+  Hexalith.Folders.Server -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Release/net10.0/Hexalith.Folders.Server.dll
+  Hexalith.Folders.Client -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/bin/Release/net10.0/Hexalith.Folders.Client.dll
+  Hexalith.Folders.UI -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Release/net10.0/Hexalith.Folders.UI.dll
+  Hexalith.Folders.Workers -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Release/net10.0/Hexalith.Folders.Workers.dll
+  Hexalith.Folders.Aspire -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Aspire/bin/Release/net10.0/Hexalith.Folders.Aspire.dll
+  Platform version catalog validated: Hexalith.EventStore.Aspire/4.0.0, CommunityToolkit.Aspire.Hosting.Dapr/13.6.2-beta.959, required range 13.6.2-beta.959 for net10.0.
+  Hexalith.Builds.Tooling -> /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/bin/Release/net10.0/Hexalith.Builds.Tooling.dll
+  Hexalith.Folders.AppHost -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Release/net10.0/Hexalith.Folders.AppHost.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:01:25.16

@@ -3211,3 +3211,7 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md`
   summary: Reconcile the remaining Tenants bootstrap regressions against the merged EventStore and Tenants main commits.
   evidence: `_bmad-output/implementation-artifacts/evidence/story-1-17-merged-main-2026-11-02.json` records the focused Tenants authority suite at 25/25 and the broader bootstrap class at 203/205. The delegated credential claim and configured bootstrap tenant assertions fail. The corresponding tests also fail on the isolated current-main Tenants baseline, with timeouts rather than the merged assertion failures, so the broader class cannot be claimed as qualified.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-folders-canonical-package-cohort.md`
+  summary: Reconcile the approved legacy McpCli Tenants 5.10.0 fixed-system enrollment with the canonical EventStore 4 gateway under a new owner-approved enrollment decision.
+  evidence: The baseline executor already forwards fixedTenant=system, while selected baseline EventStore a9317e4b228adfbcdd6686a2f86171b464f34c06 rejects public system; canonical synthetic tests and Folders model qualification do not validate these real legacy operations. Preserve the historical published approval; do not infer operational acceptance from this package cohort.

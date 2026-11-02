@@ -1,0 +1,1 @@
+test(bootstrap): align canonical scope and delegated authority fixtures

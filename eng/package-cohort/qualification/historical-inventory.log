@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/verify-story-1-17-current-inventory-2026-11-02.py", line 85, in <module>
+    print(json.dumps(verify(), sort_keys=True))
+                     ~~~~~~^^
+  File "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/verify-story-1-17-current-inventory-2026-11-02.py", line 46, in verify
+    raise ValueError("Pending manifest bytes changed")
+ValueError: Pending manifest bytes changed

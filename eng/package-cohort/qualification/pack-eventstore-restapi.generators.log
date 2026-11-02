@@ -1,0 +1,4 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.RestApi.Generators/Hexalith.EventStore.RestApi.Generators.csproj (in 255 ms).
+  Hexalith.EventStore.RestApi.Generators -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.RestApi.Generators/bin/Release/netstandard2.0/Hexalith.EventStore.RestApi.Generators.dll
+  Successfully created package '/tmp/folders-canonical-cohort-20261102/feed/Hexalith.EventStore.RestApi.Generators.4.0.0.nupkg'.

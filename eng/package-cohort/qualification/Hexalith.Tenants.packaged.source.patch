@@ -1,0 +1,125 @@
+diff --git a/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapCommandTransportTests.cs b/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapCommandTransportTests.cs
+index e318376f..94aaaacb 100644
+--- a/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapCommandTransportTests.cs
++++ b/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapCommandTransportTests.cs
+@@ -155,11 +155,27 @@ public sealed class TenantBootstrapCommandTransportTests
+                 sent = request;
+                 request.Method.ShouldBe(HttpMethod.Post);
+                 request.RequestUri!.AbsoluteUri.ShouldStartWith("http://127.0.0.1:3500/v1.0/invoke/eventstore/method/");
++                request.Headers.GetValues("X-Hexalith-Scope").ShouldHaveSingleItem().ShouldBe(TenantPlatformScopes.GlobalAdministrators);
++                var authorization = request.Headers.Authorization.ShouldNotBeNull();
++                authorization.Scheme.ShouldBe("Bearer");
++                var validation = await new JsonWebTokenHandler().ValidateTokenAsync(authorization.Parameter.ShouldNotBeNull(),
++                    new TokenValidationParameters
++                    {
++                        ValidIssuer = "bootstrap-origin",
++                        ValidAudience = "bootstrap-reader",
++                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authentication:JwtBearer:SigningKey"]!)),
++                        ValidateIssuerSigningKey = true,
++                        ValidateLifetime = true,
++                    });
++                validation.IsValid.ShouldBeTrue();
++                validation.ClaimsIdentity.FindFirst("sub")!.Value.ShouldBe("bootstrap-administrator");
++                validation.ClaimsIdentity.FindFirst("global_admin")!.Value.ShouldBe("true");
++                validation.ClaimsIdentity.FindFirst("eventstore:permission")!.Value.ShouldBe("global-administrators:bootstrap");
++                validation.ClaimsIdentity.FindFirst("eventstore:tenant").ShouldBeNull();
+                 SubmitCommandRequest submitted;
+                 if (boundWorkload)
+                 {
+                     request.RequestUri.AbsolutePath.ShouldEndWith("/api/v1/commands/bound/workload");
+-                    request.Headers.Authorization.ShouldBeNull();
+                     request.Headers.GetValues(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName).ShouldHaveSingleItem().ShouldNotBeNullOrWhiteSpace();
+                     request.Content!.Headers.ContentLength.ShouldNotBeNull().ShouldBeGreaterThan(0L);
+                     byte[] bytes = await request.Content.ReadAsByteArrayAsync(token);
+@@ -175,23 +191,9 @@ public sealed class TenantBootstrapCommandTransportTests
+                     request.RequestUri.AbsolutePath.ShouldEndWith("/api/v1/commands");
+                     request.Headers.Contains(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName).ShouldBeFalse();
+                     request.Headers.Contains(BoundWorkloadCommandProof.HeaderName).ShouldBeFalse();
+-                    var authorization = request.Headers.Authorization.ShouldNotBeNull();
+-                    authorization.Scheme.ShouldBe("Bearer");
+-                    var validation = await new JsonWebTokenHandler().ValidateTokenAsync(authorization.Parameter.ShouldNotBeNull(),
+-                        new TokenValidationParameters
+-                        {
+-                            ValidIssuer = "bootstrap-origin",
+-                            ValidAudience = "bootstrap-reader",
+-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authentication:JwtBearer:SigningKey"]!)),
+-                            ValidateIssuerSigningKey = true,
+-                            ValidateLifetime = true,
+-                        });
+-                    validation.IsValid.ShouldBeTrue();
+-                    validation.ClaimsIdentity.FindFirst("sub")!.Value.ShouldBe("bootstrap-administrator");
+-                    validation.ClaimsIdentity.FindFirst("global_admin")!.Value.ShouldBe("true");
+                     submitted = (await request.Content!.ReadFromJsonAsync<SubmitCommandRequest>(token)).ShouldNotBeNull();
+                 }
+-                submitted.Tenant.ShouldBe(TenantIdentity.DefaultTenantId);
++                submitted.Tenant.ShouldBe(TenantPlatformScopes.GlobalAdministrators);
+                 submitted.Domain.ShouldBe(TenantIdentity.GlobalAdministratorsDomain);
+                 submitted.AggregateId.ShouldBe(TenantIdentity.GlobalAdministratorsAggregateId);
+                 submitted.CommandType.ShouldBe(nameof(BootstrapGlobalAdmin));
+@@ -394,7 +396,7 @@ public sealed class TenantBootstrapCommandTransportTests
+             originCalls.ShouldBe(1);
+ 
+             using RSA proofKey = RSA.Create(2048);
+-            var submitted = new SubmitCommandRequest("01ARZ3NDEKTSV4RRFFQ69G5FAV", TenantIdentity.DefaultTenantId,
++            var submitted = new SubmitCommandRequest("01ARZ3NDEKTSV4RRFFQ69G5FAV", TenantPlatformScopes.GlobalAdministrators,
+                 TenantIdentity.GlobalAdministratorsDomain, TenantIdentity.GlobalAdministratorsAggregateId, nameof(BootstrapGlobalAdmin),
+                 JsonSerializer.SerializeToElement(new BootstrapGlobalAdmin("bootstrap-administrator")), "01ARZ3NDEKTSV4RRFFQ69G5FAW");
+             var bound = new BoundWorkloadCommandRequest(submitted, "bootstrap-administrator");
+diff --git a/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapHostedServiceTests.cs b/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapHostedServiceTests.cs
+index 708ff37c..900ab347 100644
+--- a/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapHostedServiceTests.cs
++++ b/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapHostedServiceTests.cs
+@@ -10,6 +10,7 @@ using Hexalith.Commons.UniqueIds;
+ using Hexalith.EventStore.ErrorHandling;
+ using Hexalith.Tenants.Bootstrap;
+ using Hexalith.Tenants.Configuration;
++using Hexalith.Tenants.Contracts.Identity;
+ 
+ using Microsoft.Extensions.Configuration;
+ using Microsoft.Extensions.DependencyInjection;
+@@ -146,7 +147,7 @@ public class TenantBootstrapHostedServiceTests
+         capturedBody.ShouldNotBeNull();
+         using JsonDocument doc = JsonDocument.Parse(capturedBody);
+         JsonElement root = doc.RootElement;
+-        root.GetProperty("tenant").GetString().ShouldBe("system");
++        root.GetProperty("tenant").GetString().ShouldBe(TenantPlatformScopes.GlobalAdministrators);
+         // Bootstrap targets the global-administrators aggregate via its dedicated domain so
+         // the resulting projection request arrives at /project with
+         // ProjectionRequest.Domain == "global-administrators" and routes to
+@@ -777,7 +778,8 @@ public class TenantBootstrapHostedServiceTests
+         var jwt = (JsonWebToken)validation.SecurityToken;
+         jwt.Subject.ShouldBe("admin-user-1");
+         jwt.GetClaim("global_admin").Value.ShouldBe("true");
+-        jwt.GetClaim("eventstore:tenant").Value.ShouldBe("system");
++        jwt.GetClaim("eventstore:permission").Value.ShouldBe("global-administrators:bootstrap");
++        jwt.Claims.ShouldNotContain(claim => claim.Type == "eventstore:tenant");
+         (jwt.ValidTo - jwt.IssuedAt).ShouldBeLessThanOrEqualTo(TimeSpan.FromSeconds(TenantBootstrapCredentialProvider.DevelopmentTokenLifetimeSeconds));
+     }
+ 
+diff --git a/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapReadinessBudgetTests.cs b/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapReadinessBudgetTests.cs
+index 63eda741..84787919 100644
+--- a/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapReadinessBudgetTests.cs
++++ b/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapReadinessBudgetTests.cs
+@@ -15,6 +15,7 @@ using Hexalith.EventStore.ServiceDefaults.Routing;
+ #endif
+ using Hexalith.Tenants.Bootstrap;
+ using Hexalith.Tenants.Contracts.Commands;
++using Hexalith.Tenants.Contracts.Identity;
+ using Microsoft.AspNetCore.Authentication.JwtBearer;
+ using Microsoft.Extensions.Configuration;
+ using Microsoft.Extensions.DependencyInjection;
+@@ -120,11 +121,12 @@ public sealed class TenantBootstrapReadinessBudgetTests
+         using HttpClient client = services.GetRequiredService<IHttpClientFactory>().CreateClient();
+         TimeSpan budget = TenantBootstrapReadinessBudget.Resolve(client, scope.ServiceProvider);
+         budget.ShouldBe(TimeSpan.FromSeconds(1));
+-        var jwt = new JwtSecurityToken("bootstrap-budget-origin", "bootstrap-budget-reader", [new Claim("sub", "administrator"), new Claim("global_admin", "true")],
++        var jwt = new JwtSecurityToken("bootstrap-budget-origin", "bootstrap-budget-reader", [new Claim("sub", "administrator"), new Claim("global_admin", "true"), new Claim("eventstore:permission", "global-administrators:bootstrap")],
+             notBefore: DateTime.UtcNow.AddMinutes(-1), expires: DateTime.UtcNow.AddMinutes(2),
+             signingCredentials: new(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)), SecurityAlgorithms.HmacSha256));
+         string credential = new JwtSecurityTokenHandler().WriteToken(jwt);
+-        var command = new SubmitCommandRequest("01ARZ3NDEKTSV4RRFFQ69G5FAV", "system", "global-administrators", "global-administrators", nameof(BootstrapGlobalAdmin),
++        var command = new SubmitCommandRequest("01ARZ3NDEKTSV4RRFFQ69G5FAV", TenantPlatformScopes.GlobalAdministrators,
++            TenantIdentity.GlobalAdministratorsDomain, TenantIdentity.GlobalAdministratorsAggregateId, nameof(BootstrapGlobalAdmin),
+             JsonSerializer.SerializeToElement(new BootstrapGlobalAdmin("administrator")));
+         using DaprClient dapr = new DaprClientBuilder().UseHttpEndpoint("http://127.0.0.1:3500").Build();
+         using CancellationTokenSource caller = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);

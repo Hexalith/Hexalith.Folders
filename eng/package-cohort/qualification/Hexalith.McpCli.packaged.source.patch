@@ -1,0 +1,551 @@
+diff --git a/Directory.Build.props b/Directory.Build.props
+index c55aaf6..943a5ce 100644
+--- a/Directory.Build.props
++++ b/Directory.Build.props
+@@ -1,7 +1,8 @@
+ <Project>
+   <PropertyGroup>
+     <!-- Pin the gateway client and enrolled Contracts before the Builds catalog import; enrolled Contracts stay on the exact artifacts bound by the approved vectors. -->
+-    <HexalithEventStoreVersion Condition="'$(HexalithEventStoreVersion)' == ''">3.128.4</HexalithEventStoreVersion>
++    <HexalithEventStoreVersion Condition="'$(HexalithEventStoreVersion)' == ''">4.0.0</HexalithEventStoreVersion>
++    <HexalithMcpCliVersion Condition="'$(HexalithMcpCliVersion)' == ''">2.0.0</HexalithMcpCliVersion>
+     <HexalithPartiesVersion Condition="'$(HexalithPartiesVersion)' == ''">1.5.1</HexalithPartiesVersion>
+     <HexalithPartiesAspireVersion Condition="'$(HexalithPartiesAspireVersion)' == ''">2.0.0</HexalithPartiesAspireVersion>
+     <HexalithTenantsVersion Condition="'$(HexalithTenantsVersion)' == ''">5.10.0</HexalithTenantsVersion>
+@@ -20,7 +21,7 @@
+     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+     <IsPackable>true</IsPackable>
+     <IsPublishable>false</IsPublishable>
+-    <Version Condition="'$(Version)' == ''">1.0.0</Version>
++    <Version Condition="'$(Version)' == ''">2.0.0</Version>
+     <Authors>Hexalith Contributors</Authors>
+     <Company>Hexalith</Company>
+     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+diff --git a/src/Hexalith.McpCli.Abstractions/HexalithCommandAttribute.cs b/src/Hexalith.McpCli.Abstractions/HexalithCommandAttribute.cs
+index 5443e07..5bb0bdd 100644
+--- a/src/Hexalith.McpCli.Abstractions/HexalithCommandAttribute.cs
++++ b/src/Hexalith.McpCli.Abstractions/HexalithCommandAttribute.cs
+@@ -16,6 +16,9 @@ public sealed class HexalithCommandAttribute(string description) : Attribute
+     /// <summary>Gets or sets the ASCII lowercase kebab-case operation name part, overriding the name derived from the type name.</summary>
+     public string? Name { get; set; }
+ 
++    /// <summary>Gets or sets the exact cataloged platform request scope for this operation.</summary>
++    public string? PlatformScope { get; set; }
++
+     /// <summary>Gets or sets the gateway domain when no contract interface supplies it.</summary>
+     public string? Domain { get; set; }
+ 
+diff --git a/src/Hexalith.McpCli.Abstractions/HexalithQueryAttribute.cs b/src/Hexalith.McpCli.Abstractions/HexalithQueryAttribute.cs
+index 5da2975..278e06e 100644
+--- a/src/Hexalith.McpCli.Abstractions/HexalithQueryAttribute.cs
++++ b/src/Hexalith.McpCli.Abstractions/HexalithQueryAttribute.cs
+@@ -16,6 +16,9 @@ public sealed class HexalithQueryAttribute(string description) : Attribute
+     /// <summary>Gets or sets the ASCII lowercase kebab-case operation name part, overriding the name derived from the type name.</summary>
+     public string? Name { get; set; }
+ 
++    /// <summary>Gets or sets the exact cataloged platform request scope for this operation.</summary>
++    public string? PlatformScope { get; set; }
++
+     /// <summary>Gets or sets the gateway domain when no contract interface supplies it.</summary>
+     public string? Domain { get; set; }
+ 
+diff --git a/src/Hexalith.McpCli.Core/Catalog/CatalogBuilder.cs b/src/Hexalith.McpCli.Core/Catalog/CatalogBuilder.cs
+index 5df7b45..fce418e 100644
+--- a/src/Hexalith.McpCli.Core/Catalog/CatalogBuilder.cs
++++ b/src/Hexalith.McpCli.Core/Catalog/CatalogBuilder.cs
+@@ -44,7 +44,7 @@ public static class CatalogBuilder
+             if (marker.FixedTenant is not null && !RoutingResolver.IsTenantDomain(marker.FixedTenant))
+             {
+                 diagnostics.Add(Diagnostic(assemblyName, "invalid_routing_value",
+-                    $"Module FixedTenant '{marker.FixedTenant}' must be 1 to 64 lowercase ASCII letters, digits, or hyphens, starting and ending with a letter or digit."));
++                    $"Module FixedTenant '{marker.FixedTenant}' must be a canonical tenant: 1 to 64 lowercase ASCII letters, digits, or hyphens, starting and ending with a letter or digit."));
+                 continue;
+             }
+ 
+@@ -196,6 +196,14 @@ public static class CatalogBuilder
+                 $"HexalithQuery.AggregateId '{aggregateConstant}' must be 1 to 256 ASCII letters, digits, '.', '_', or '-', starting and ending with a letter or digit.");
+         }
+ 
++        string? platformScope = command?.PlatformScope ?? query?.PlatformScope;
++        if (platformScope is not null && (!RoutingResolver.IsPlatformScope(platformScope) || module.FixedTenant is not null))
++        {
++            throw new ContractDeclarationException("invalid_routing_value", module.FixedTenant is not null
++                ? $"{attribute}.PlatformScope cannot be combined with HexalithModule.FixedTenant."
++                : $"{attribute}.PlatformScope '{platformScope}' must be platform: followed by a canonical lowercase scope name.");
++        }
++
+         RoutingResolution routing = RoutingResolver.Resolve(type, kind, module, part, command, query);
+         var roleNames = new Dictionary<PropertyRole, string?>
+         {
+@@ -235,7 +243,7 @@ public static class CatalogBuilder
+         string description = command?.Description ?? query!.Description;
+         IReadOnlyList<LintFinding> lintFindings = DescriptionLinter.Inspect(type, description, kind, options, schema);
+         var operation = new OperationDescriptor(module.Name + "." + part, kind, description,
+-            example, schema, routing.Routing, accessor, aggregateConstant,
++            example, platformScope, schema, routing.Routing, accessor, aggregateConstant,
+             kind == OperationKind.Query && accessor is null && aggregateConstant is null, idempotencyRequired, type, lintFindings);
+         return (operation, routing.Warnings);
+     }
+diff --git a/src/Hexalith.McpCli.Core/Catalog/CatalogService.cs b/src/Hexalith.McpCli.Core/Catalog/CatalogService.cs
+index f8256e1..539da9a 100644
+--- a/src/Hexalith.McpCli.Core/Catalog/CatalogService.cs
++++ b/src/Hexalith.McpCli.Core/Catalog/CatalogService.cs
+@@ -70,7 +70,7 @@ public sealed class CatalogService(CatalogProvider provider, ExecutionAvailabili
+         (ModuleDescriptor module, OperationDescriptor descriptor) = selected;
+         string? reason = availability.ReasonFor(descriptor.Kind);
+         var arguments = new List<string>();
+-        if (module.FixedTenant is null)
++        if (module.FixedTenant is null && descriptor.PlatformScope is null)
+         {
+             arguments.Add("tenant");
+         }
+@@ -86,7 +86,7 @@ public sealed class CatalogService(CatalogProvider provider, ExecutionAvailabili
+         }
+ 
+         var envelope = new OperationEnvelopeDocument(module.FixedTenant, descriptor.AggregateIdRequired,
+-            descriptor.IdempotencyKeyRequired, Array.AsReadOnly(arguments.ToArray()));
++            descriptor.IdempotencyKeyRequired, Array.AsReadOnly(arguments.ToArray()), descriptor.PlatformScope);
+         var document = new OperationDescriptionDocument(descriptor.Name, PublicKind(descriptor.Kind), descriptor.Description,
+             descriptor.SchemaDocument, descriptor.Example is null ? null : JsonNode.Parse(descriptor.Example), envelope,
+             descriptor.LintFindings, reason is null, reason);
+diff --git a/src/Hexalith.McpCli.Core/Catalog/OperationDescriptor.cs b/src/Hexalith.McpCli.Core/Catalog/OperationDescriptor.cs
+index 0e1559c..9b9e201 100644
+--- a/src/Hexalith.McpCli.Core/Catalog/OperationDescriptor.cs
++++ b/src/Hexalith.McpCli.Core/Catalog/OperationDescriptor.cs
+@@ -8,7 +8,7 @@ namespace Hexalith.McpCli.Core.Catalog;
+ /// <summary>One resolved operation ready for discovery and execution.</summary>
+ public sealed class OperationDescriptor
+ {
+-    internal OperationDescriptor(string name, OperationKind kind, string description, string? example, DerivedSchema schema,
++    internal OperationDescriptor(string name, OperationKind kind, string description, string? example, string? platformScope, DerivedSchema schema,
+         OperationRouting routing, Func<JsonElement, string?>? aggregateIdAccessor, string? aggregateIdConstant,
+         bool aggregateIdRequired, bool idempotencyKeyRequired, Type contractType, IReadOnlyList<LintFinding> lintFindings)
+     {
+@@ -16,6 +16,7 @@ public sealed class OperationDescriptor
+         Kind = kind;
+         Description = description;
+         Example = example;
++        PlatformScope = platformScope;
+         Schema = schema;
+         Routing = routing;
+         AggregateIdAccessor = aggregateIdAccessor;
+@@ -42,6 +43,9 @@ public sealed class OperationDescriptor
+     /// <summary>Gets the validated sample payload, when declared.</summary>
+     public string? Example { get; }
+ 
++    /// <summary>Gets the operation's exact declared platform request scope, when any.</summary>
++    public string? PlatformScope { get; }
++
+     /// <summary>Gets the reusable derived payload schema and validator.</summary>
+     [JsonIgnore]
+     public DerivedSchema Schema { get; }
+diff --git a/src/Hexalith.McpCli.Core/Catalog/OperationEnvelopeDocument.cs b/src/Hexalith.McpCli.Core/Catalog/OperationEnvelopeDocument.cs
+index adef32d..4352d98 100644
+--- a/src/Hexalith.McpCli.Core/Catalog/OperationEnvelopeDocument.cs
++++ b/src/Hexalith.McpCli.Core/Catalog/OperationEnvelopeDocument.cs
+@@ -7,8 +7,10 @@ namespace Hexalith.McpCli.Core.Catalog;
+ /// <param name="AggregateIdRequired">Whether the caller must supply an aggregate identifier.</param>
+ /// <param name="IdempotencyKeyRequired">Whether the caller must supply an idempotency key.</param>
+ /// <param name="Arguments">The applicable envelope argument names.</param>
++/// <param name="PlatformScope">The operation's exact declared platform request scope, when any.</param>
+ public sealed record OperationEnvelopeDocument(
+     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? FixedTenant,
+     bool AggregateIdRequired,
+     bool IdempotencyKeyRequired,
+-    IReadOnlyList<string> Arguments);
++    IReadOnlyList<string> Arguments,
++    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? PlatformScope = null);
+diff --git a/src/Hexalith.McpCli.Core/Catalog/RoutingResolver.cs b/src/Hexalith.McpCli.Core/Catalog/RoutingResolver.cs
+index c44bb7a..7b7c7fa 100644
+--- a/src/Hexalith.McpCli.Core/Catalog/RoutingResolver.cs
++++ b/src/Hexalith.McpCli.Core/Catalog/RoutingResolver.cs
+@@ -119,6 +119,19 @@ internal static partial class RoutingResolver
+         CatalogDiagnostic Warning(string category, string message) => new(typeName, category, "warning", message);
+     }
+ 
++    internal static bool IsPlatformScope(string? value)
++    {
++        if (value is null || !value.StartsWith("platform:", StringComparison.Ordinal))
++        {
++            return false;
++        }
++
++        ReadOnlySpan<char> suffix = value.AsSpan("platform:".Length);
++        return suffix.Length > 0 && IsAsciiLowerOrDigit(suffix[0]) && IsAsciiLowerOrDigit(suffix[^1])
++            && !suffix.Contains("--", StringComparison.Ordinal)
++            && suffix.ToArray().All(character => IsAsciiLowerOrDigit(character) || character == '-');
++    }
++
+     internal static bool IsTenantDomain(string? value) => value is { Length: >= 1 and <= 64 }
+         && IsAsciiLowerOrDigit(value[0])
+         && IsAsciiLowerOrDigit(value[^1])
+diff --git a/src/Hexalith.McpCli.Core/Execution/OperationExecutor.cs b/src/Hexalith.McpCli.Core/Execution/OperationExecutor.cs
+index fff5764..3573bc6 100644
+--- a/src/Hexalith.McpCli.Core/Execution/OperationExecutor.cs
++++ b/src/Hexalith.McpCli.Core/Execution/OperationExecutor.cs
+@@ -111,13 +111,23 @@ public sealed class OperationExecutor(
+             return Fail(call, prefillValidation.Violations);
+         }
+ 
+-        string? tenant = ResolveTenant(module, call.Tenant, context, out PayloadViolation? tenantViolation);
++        // Public tenant input follows AD-27 normalization; declared fixed values remain exact.
++        string? perCallTenant = module.FixedTenant is null && operation.PlatformScope is null
++            ? call.Tenant?.ToLowerInvariant() : call.Tenant;
++        EnvelopeContext tenantContext = module.FixedTenant is null && operation.PlatformScope is null
++            ? context with { Tenant = context.Tenant?.ToLowerInvariant() } : context;
++        string? tenant = ResolveTenant(module, operation, perCallTenant, tenantContext, out PayloadViolation? tenantViolation);
+         if (tenantViolation is not null)
+         {
+             return Fail(call, tenantViolation);
+         }
+ 
+-        if (!RoutingResolver.IsTenantDomain(tenant))
++        if (tenant == "system" && module.FixedTenant is null)
++        {
++            return Fail(call, "/tenant", "The public tenant 'system' is reserved.");
++        }
++
++        if (operation.PlatformScope is null && !RoutingResolver.IsTenantDomain(tenant))
+         {
+             return Fail(call, "/tenant", tenant is null
+                 ? "A tenant is required for this operation."
+@@ -298,10 +308,20 @@ public sealed class OperationExecutor(
+             && raw.TryGetProperty(binding.SerializedName, out JsonElement supplied)
+             && supplied.ValueKind != JsonValueKind.Null;
+ 
+-    private static string? ResolveTenant(ModuleDescriptor module, string? perCall, EnvelopeContext context,
+-        out PayloadViolation? violation)
++    private static string? ResolveTenant(ModuleDescriptor module, OperationDescriptor operation, string? perCall,
++        EnvelopeContext context, out PayloadViolation? violation)
+     {
+         violation = null;
++        if (operation.PlatformScope is not null)
++        {
++            if (perCall is not null && !string.Equals(perCall, operation.PlatformScope, StringComparison.Ordinal))
++            {
++                violation = new PayloadViolation("/tenant", "The per-call tenant disagrees with the operation's platform scope.");
++            }
++
++            return operation.PlatformScope;
++        }
++
+         if (module.FixedTenant is not null)
+         {
+             if (perCall is not null && !string.Equals(perCall, module.FixedTenant, StringComparison.Ordinal))
+diff --git a/tests/Hexalith.McpCli.Cli.Tests/DiscoveryCommandTests.cs b/tests/Hexalith.McpCli.Cli.Tests/DiscoveryCommandTests.cs
+index 42a869e..42a2aec 100644
+--- a/tests/Hexalith.McpCli.Cli.Tests/DiscoveryCommandTests.cs
++++ b/tests/Hexalith.McpCli.Cli.Tests/DiscoveryCommandTests.cs
+@@ -629,7 +629,8 @@ public sealed class DiscoveryCommandTests
+                 {"name":"routing-fixture.items-list","kind":"read","description":"List all synthetic items.",
+                  "schema":{"type":["object","null"],"additionalProperties":false},
+                  "envelope":{"aggregateIdRequired":false,"idempotencyKeyRequired":false,
+-                    "arguments":["tenant","aggregateId","entityId","pageSize","offset","cursor"]},
++                    "arguments":["aggregateId","entityId","pageSize","offset","cursor"],
++                    "platformScope":"platform:routing"},
+                  "lintFindings":[],"submittable":false,"reason":"configuration_invalid"}
+                 """,
+             (false, "describe") => """
+diff --git a/tests/Hexalith.McpCli.Cli.Tests/QueryValidationCommandTests.cs b/tests/Hexalith.McpCli.Cli.Tests/QueryValidationCommandTests.cs
+index ddb7922..776ca92 100644
+--- a/tests/Hexalith.McpCli.Cli.Tests/QueryValidationCommandTests.cs
++++ b/tests/Hexalith.McpCli.Cli.Tests/QueryValidationCommandTests.cs
+@@ -53,7 +53,7 @@ public sealed class QueryValidationCommandTests
+             yield return ["routing-fixture.get-http2-status", "--aggregate-id", value, "/aggregateId"];
+         }
+ 
+-        foreach (string value in new[] { "-a", "a-", "a.b", "a_b", "A", "a/b", "a:b", "é", "a\n", new string('a', 65) })
++        foreach (string value in new[] { "-a", "a-", "a.b", "a_b", "a/b", "a:b", "é", "a\n", new string('a', 65) })
+         {
+             yield return ["routing-fixture.get-http2-status", "--tenant", value, "/tenant"];
+         }
+diff --git a/tests/Hexalith.McpCli.Core.Tests/QueryValidationTests.cs b/tests/Hexalith.McpCli.Core.Tests/QueryValidationTests.cs
+index 5c8d42c..570aca4 100644
+--- a/tests/Hexalith.McpCli.Core.Tests/QueryValidationTests.cs
++++ b/tests/Hexalith.McpCli.Core.Tests/QueryValidationTests.cs
+@@ -112,7 +112,7 @@ public sealed class QueryValidationTests
+     /// <summary>Provides invalid syntax and adjacent length boundaries for Gateway envelope identifiers.</summary>
+     public static IEnumerable<object?[]> InvalidEnvelopeIdentifiers()
+     {
+-        foreach (string value in new[] { "", " ", "-a", "a-", "a.b", "a_b", "A", "a/b", "a:b", "é", "a\n", new string('a', 65) })
++        foreach (string value in new[] { "", " ", "-a", "a-", "a.b", "a_b", "a/b", "a:b", "é", "a\n", new string('a', 65) })
+         {
+             yield return ["tenant", value];
+         }
+diff --git a/tests/fixtures/Catalog.Routing.Contracts/ColonWireCommand.cs b/tests/fixtures/Catalog.Routing.Contracts/ColonWireCommand.cs
+index a1ae68b..a75bc7d 100644
+--- a/tests/fixtures/Catalog.Routing.Contracts/ColonWireCommand.cs
++++ b/tests/fixtures/Catalog.Routing.Contracts/ColonWireCommand.cs
+@@ -5,5 +5,5 @@ namespace Catalog.Routing.Contracts;
+ /// <summary>Exercises a colon, which the Gateway permits in a command wire type.</summary>
+ /// <param name="ItemId">The aggregate identifier.</param>
+ [HexalithCommand("Command with a colon in its wire type.", Domain = "routing", WireType = "items:colon",
+-    AggregateIdProperty = nameof(ItemId))]
++    AggregateIdProperty = nameof(ItemId), PlatformScope = "platform:routing")]
+ public sealed record ColonWireCommand([property: HexalithIdentifier] string ItemId);
+diff --git a/tests/fixtures/Catalog.Routing.Contracts/ListItemsQuery.cs b/tests/fixtures/Catalog.Routing.Contracts/ListItemsQuery.cs
+index 146d11d..55986c7 100644
+--- a/tests/fixtures/Catalog.Routing.Contracts/ListItemsQuery.cs
++++ b/tests/fixtures/Catalog.Routing.Contracts/ListItemsQuery.cs
+@@ -4,5 +4,5 @@ namespace Catalog.Routing.Contracts;
+ 
+ /// <summary>Exercises a constant aggregate source and explicit operation naming.</summary>
+ [HexalithQuery("List all synthetic items.", Name = "items-list", Domain = "routing", WireType = "list-items-wire",
+-    ProjectionType = "routing-items", AggregateId = "routing-list")]
++    ProjectionType = "routing-items", AggregateId = "routing-list", PlatformScope = "platform:routing")]
+ public sealed record ListItemsQuery;
+diff --git a/tests/Hexalith.McpCli.Cli.Tests/PlatformScopeCommandTests.cs b/tests/Hexalith.McpCli.Cli.Tests/PlatformScopeCommandTests.cs
+new file mode 100644
+index 0000000..ff0d3e0
+--- /dev/null
++++ b/tests/Hexalith.McpCli.Cli.Tests/PlatformScopeCommandTests.cs
+@@ -0,0 +1,65 @@
++using System.Text.Json;
++using Shouldly;
++using static Hexalith.McpCli.Cli.Tests.QueryCliHarness;
++
++namespace Hexalith.McpCli.Cli.Tests;
++
++/// <summary>Exercises declared platform scopes through the built CLI verbs.</summary>
++public sealed class PlatformScopeCommandTests
++{
++    private const string ItemId = "01ARZ3NDEKTSV4RRFFQ69G5FAV";
++
++    /// <summary>Describe shows the fixed scope and omits the tenant argument.</summary>
++    [Fact]
++    public async Task DescribeReportsPlatformScopeAsync()
++    {
++        await using var harness = new QueryCliHarness();
++        (int exit, string output, string error) = await harness.InvokeAsync(
++            ["describe", "routing-fixture.items-list"], withUrl: false);
++
++        exit.ShouldBe(0, output + error);
++        using JsonDocument document = JsonDocument.Parse(output);
++        JsonElement envelope = document.RootElement.GetProperty("envelope");
++        envelope.GetProperty("platformScope").GetString().ShouldBe("platform:routing");
++        envelope.GetProperty("arguments").EnumerateArray().Select(item => item.GetString()).ShouldNotContain("tenant");
++        harness.Calls.ShouldBe(0);
++    }
++
++    /// <summary>Query sends its declared scope despite an unrelated session tenant.</summary>
++    [Fact]
++    public async Task QueryUsesDeclaredPlatformScopeAsync()
++    {
++        await using var harness = new QueryCliHarness();
++        (int exit, string output, string error) = await harness.InvokeAsync(
++            ["query", "routing-fixture.items-list", "--payload", "{}", "--aggregate-id", ItemId,
++                "--tenant", "session-tenant"]);
++
++        exit.ShouldBe(0, output + error);
++        harness.AssertRequest(JsonSerializer.Serialize(new
++        {
++            tenant = "platform:routing",
++            domain = "routing",
++            aggregateId = ItemId,
++            queryType = "list-items-wire",
++            projectionType = "routing-items",
++            payload = new { },
++        }));
++        AssertJson(output, """{"operation":"routing-fixture.items-list","tenant":"platform:routing","document":{"items":[]}}""");
++    }
++
++    /// <summary>Send uses its declared scope despite an unrelated session tenant.</summary>
++    [Fact]
++    public async Task SendUsesDeclaredPlatformScopeAsync()
++    {
++        await using var harness = new QueryCliHarness(commandResponse: true);
++        (int exit, string output, string error) = await harness.InvokeAsync(
++            ["send", "routing-fixture.colon-wire", "--payload", JsonSerializer.Serialize(new { ItemId }),
++                "--tenant", "session-tenant"]);
++
++        exit.ShouldBe(0, output + error);
++        using JsonDocument document = JsonDocument.Parse(output);
++        document.RootElement.GetProperty("tenant").GetString().ShouldBe("platform:routing");
++        document.RootElement.GetProperty("status").GetString().ShouldBe("accepted");
++        harness.Calls.ShouldBe(1);
++    }
++}
+diff --git a/tests/Hexalith.McpCli.Core.Tests/PlatformScopeTests.cs b/tests/Hexalith.McpCli.Core.Tests/PlatformScopeTests.cs
+new file mode 100644
+index 0000000..ef65712
+--- /dev/null
++++ b/tests/Hexalith.McpCli.Core.Tests/PlatformScopeTests.cs
+@@ -0,0 +1,178 @@
++using System.Reflection;
++using System.Reflection.Emit;
++using System.Text.Json;
++using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Contracts.Commands;
++using Hexalith.EventStore.Contracts.Queries;
++using Hexalith.McpCli.Abstractions;
++using Hexalith.McpCli.Core.Catalog;
++using Hexalith.McpCli.Core.Execution;
++using Hexalith.McpCli.Core.Serialization;
++using NSubstitute;
++using Shouldly;
++using Routing = global::Catalog.Routing.Contracts;
++
++namespace Hexalith.McpCli.Core.Tests;
++
++/// <summary>Checks declared platform scopes without changing ordinary tenant selection.</summary>
++public sealed class PlatformScopeTests
++{
++    private const string ItemId = "01ARZ3NDEKTSV4RRFFQ69G5FAV";
++
++    /// <summary>Discovery identifies platform operations and keeps ordinary tenant inputs visible.</summary>
++    [Fact]
++    public void DiscoveryShowsOnlyDeclaredPlatformScopes()
++    {
++        var provider = Provider();
++        ICatalog catalog = new CatalogService(provider, new ExecutionAvailability(false, true), strict: false);
++
++        foreach (string name in new[] { "routing-fixture.colon-wire", "routing-fixture.items-list" })
++        {
++            OperationDescriptionDocument description = catalog.Describe(name).Document.ShouldNotBeNull();
++            OperationEnvelopeDocument envelope = description.Envelope;
++            envelope.PlatformScope.ShouldBe("platform:routing");
++            envelope.FixedTenant.ShouldBeNull();
++            envelope.Arguments.ShouldNotContain("tenant");
++            JsonElement json = JsonSerializer.SerializeToElement(description, McpCliJson.Result);
++            json.GetProperty("envelope").GetProperty("platformScope").GetString().ShouldBe("platform:routing");
++            json.GetProperty("envelope").TryGetProperty("fixedTenant", out _).ShouldBeFalse();
++        }
++
++        OperationEnvelopeDocument ordinary = catalog.Describe("routing-fixture.get-http2-status")
++            .Document.ShouldNotBeNull().Envelope;
++        ordinary.PlatformScope.ShouldBeNull();
++        ordinary.Arguments.ShouldContain("tenant");
++    }
++
++    /// <summary>A declared query scope wins over a session tenant and reaches the gateway unchanged.</summary>
++    [Theory]
++    [InlineData(null)]
++    [InlineData("platform:routing")]
++    public async Task QueryForwardsDeclaredPlatformScopeAsync(string? callScope)
++    {
++        IEventStoreGatewayClient gateway = Gateway();
++        OperationOutcome outcome = await Executor(gateway).ExecuteAsync(
++            new RunQueryArguments("routing-fixture.items-list", "{}", Tenant: callScope, AggregateId: ItemId), Context("session-tenant"),
++            TestContext.Current.CancellationToken);
++
++        outcome.Error.ShouldBeNull();
++        outcome.Document.ShouldBeOfType<Hexalith.McpCli.Core.Execution.QueryResult>()
++            .Tenant.ShouldBe("platform:routing");
++        gateway.ReceivedCalls().ShouldHaveSingleItem().GetArguments()[0]
++            .ShouldBeOfType<SubmitQueryRequest>().Tenant.ShouldBe("platform:routing");
++    }
++
++    /// <summary>A declared command scope wins over a session tenant and reaches the gateway unchanged.</summary>
++    [Fact]
++    public async Task CommandForwardsDeclaredPlatformScopeAsync()
++    {
++        IEventStoreGatewayClient gateway = Gateway();
++        OperationOutcome outcome = await Executor(gateway).ExecuteAsync(
++            new SendCommandArguments("routing-fixture.colon-wire", $$"""{"ItemId":"{{ItemId}}"}"""),
++            Context("session-tenant"), TestContext.Current.CancellationToken);
++
++        outcome.Error.ShouldBeNull();
++        outcome.Document.ShouldBeOfType<CommandResult>().Tenant.ShouldBe("platform:routing");
++        gateway.ReceivedCalls().ShouldHaveSingleItem().GetArguments()[0]
++            .ShouldBeOfType<SubmitCommandRequest>().Tenant.ShouldBe("platform:routing");
++    }
++
++    /// <summary>Case variants of one explicit public tenant resolve to the same canonical scope.</summary>
++    [Fact]
++    public async Task PublicTenantIsCanonicalizedBeforeOverrideCheckAsync()
++    {
++        IEventStoreGatewayClient gateway = Gateway();
++        OperationOutcome outcome = await Executor(gateway).ExecuteAsync(
++            new RunQueryArguments("routing-fixture.get-http2-status", "{}", Tenant: "acme", AggregateId: ItemId),
++            Context("AcMe"), TestContext.Current.CancellationToken);
++
++        outcome.Error.ShouldBeNull();
++        gateway.ReceivedCalls().ShouldHaveSingleItem().GetArguments()[0]
++            .ShouldBeOfType<SubmitQueryRequest>().Tenant.ShouldBe("acme");
++    }
++
++    /// <summary>Conflicting per-call scopes are refused before any gateway call.</summary>
++    [Theory]
++    [InlineData("routing-fixture.items-list", "other-tenant")]
++    [InlineData("routing-fixture.items-list", "platform:other")]
++    [InlineData("routing-fixture.colon-wire", "system")]
++    public async Task PlatformScopeConflictIsRefusedAsync(string operation, string suppliedScope)
++    {
++        IEventStoreGatewayClient gateway = Gateway();
++        OperationCall call = operation.EndsWith("items-list", StringComparison.Ordinal)
++            ? new RunQueryArguments(operation, "{}", Tenant: suppliedScope)
++            : new SendCommandArguments(operation, $$"""{"ItemId":"{{ItemId}}"}""", Tenant: suppliedScope);
++
++        OperationOutcome outcome = await Executor(gateway).ExecuteAsync(call, Context(null),
++            TestContext.Current.CancellationToken);
++
++        outcome.Error.ShouldNotBeNull().Code.ShouldBe("validation_failed");
++        outcome.Error.Violations.ShouldNotBeNull().ShouldHaveSingleItem().Path.ShouldBe("/tenant");
++        gateway.ReceivedCalls().ShouldBeEmpty();
++    }
++
++    /// <summary>Public system is refused for variable-scope operations before gateway submission.</summary>
++    [Theory]
++    [InlineData(null, "system")]
++    [InlineData("system", null)]
++    [InlineData(null, "System")]
++    public async Task PublicSystemIsRefusedAsync(string? sessionTenant, string? callTenant)
++    {
++        IEventStoreGatewayClient gateway = Gateway();
++        OperationOutcome outcome = await Executor(gateway).ExecuteAsync(
++            new RunQueryArguments("routing-fixture.get-http2-status", "{}", Tenant: callTenant, AggregateId: ItemId),
++            Context(sessionTenant), TestContext.Current.CancellationToken);
++
++        outcome.Error.ShouldNotBeNull().Violations.ShouldNotBeNull().ShouldHaveSingleItem().Path.ShouldBe("/tenant");
++        gateway.ReceivedCalls().ShouldBeEmpty();
++    }
++
++    /// <summary>Malformed and module-conflicting declarations are excluded from the catalog.</summary>
++    [Theory]
++    [InlineData("platform:Upper", null)]
++    [InlineData("platform:", null)]
++    [InlineData("platform:double--dash", null)]
++    [InlineData("platform:routing", "fixed-tenant")]
++    public void InvalidPlatformDeclarationIsExcluded(string scope, string? moduleFixedTenant)
++    {
++        AssemblyBuilder assembly = AssemblyBuilder.DefineDynamicAssembly(
++            new AssemblyName("PlatformScopeProbe" + Guid.NewGuid().ToString("N")), AssemblyBuilderAccess.Run);
++        ConstructorInfo moduleConstructor = typeof(HexalithModuleAttribute).GetConstructor(
++            [typeof(string), typeof(string), typeof(IdentifierKind)])!;
++        assembly.SetCustomAttribute(new CustomAttributeBuilder(moduleConstructor,
++            ["scope-probe", "Platform scope validation probe.", IdentifierKind.String],
++            [typeof(HexalithModuleAttribute).GetProperty(nameof(HexalithModuleAttribute.FixedTenant))!],
++            [moduleFixedTenant]));
++        TypeBuilder type = assembly.DefineDynamicModule("probe").DefineType("ProbeQuery", TypeAttributes.Public);
++        ConstructorInfo queryConstructor = typeof(HexalithQueryAttribute).GetConstructor([typeof(string)])!;
++        type.SetCustomAttribute(new CustomAttributeBuilder(queryConstructor, ["Probe invalid platform scope."],
++            [typeof(HexalithQueryAttribute).GetProperty(nameof(HexalithQueryAttribute.PlatformScope))!],
++            [scope]));
++        _ = type.CreateType();
++
++        CatalogSnapshot catalog = CatalogBuilder.Build([assembly]);
++
++        catalog.Modules.Single().Operations.ShouldBeEmpty();
++        catalog.Diagnostics.ShouldContain(diagnostic => diagnostic.Category == "invalid_routing_value"
++            && diagnostic.TypeName == "ProbeQuery" && diagnostic.Message.Contains("PlatformScope", StringComparison.Ordinal));
++    }
++
++    private static CatalogProvider Provider() => new(() => [typeof(Routing.Module).Assembly],
++        new RecordingLogger<CatalogProvider>());
++
++    private static IOperationExecutor Executor(IEventStoreGatewayClient gateway)
++        => new OperationExecutor(Provider(), new ExecutionAvailability(false, true), gateway, strict: false);
++
++    private static EnvelopeContext Context(string? tenant) => new(tenant, null, false, new HashSet<string>());
++
++    private static IEventStoreGatewayClient Gateway()
++    {
++        IEventStoreGatewayClient gateway = Substitute.For<IEventStoreGatewayClient>();
++        gateway.SubmitQueryAsync(Arg.Any<SubmitQueryRequest>(), Arg.Any<string?>(), Arg.Any<CancellationToken>())
++            .Returns(Task.FromResult(new EventStoreQueryResult(ItemId,
++                JsonSerializer.SerializeToElement(new { items = Array.Empty<string>() }), false, null)));
++        gateway.SubmitCommandAsync(Arg.Any<SubmitCommandRequest>(), Arg.Any<CancellationToken>())
++            .Returns(Task.FromResult(new SubmitCommandResponse(ItemId)));
++        return gateway;
++    }
++}

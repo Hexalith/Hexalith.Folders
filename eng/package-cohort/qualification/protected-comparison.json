@@ -1,0 +1,56 @@
+{
+  "status": "pass",
+  "policySha256": "39fadd9ebd299ebc88d113e7634f82bc647a1b79fdf99531bb52ee2255a7353d",
+  "initialComparisonSha256": "1f0cb8ba9552ae107ab48858b1244da60517f2e771a748a99370d18c2682b699",
+  "authorizedAppend": {
+    "path": "_bmad-output/implementation-artifacts/deferred-work.md",
+    "beforeBytes": 336202,
+    "beforeSha256": "fc079f6ea6df9b2c89a1b90dd772131163c171b574460fa3865329f7ee9c586d",
+    "afterSha256": "7c0c1bb2c6dc4a92a636f9550b8f5c973f00078689ae02e9cb5273e411ea4189",
+    "appendOnly": true
+  },
+  "repositories": [
+    {
+      "repository": ".",
+      "baseline": "a1f752fd1755756ae69fe95322b14f3b2fb04ee8",
+      "protectedTrackedPaths": 13568,
+      "sha256Before": "3b1ad3255cd43374694526671a771d3e223f0135cd51652218bdd431ec7933f6",
+      "sha256After": "3b1ad3255cd43374694526671a771d3e223f0135cd51652218bdd431ec7933f6"
+    },
+    {
+      "repository": "references/Hexalith.Builds",
+      "baseline": "13f503caecba9f449d84a8e005258626a64edd06",
+      "protectedTrackedPaths": 3204,
+      "sha256Before": "478c5dad6491cc42261f698fd66ae2807bd0fce26ff9c0a58caeb1f0273cbac0",
+      "sha256After": "478c5dad6491cc42261f698fd66ae2807bd0fce26ff9c0a58caeb1f0273cbac0"
+    },
+    {
+      "repository": "references/Hexalith.EventStore",
+      "baseline": "a9317e4b228adfbcdd6686a2f86171b464f34c06",
+      "protectedTrackedPaths": 10079,
+      "sha256Before": "7c4c8a8cb76270f9d00eb34a2670df857fb55ddb5f0e470ead74f5aad56d9533",
+      "sha256After": "7c4c8a8cb76270f9d00eb34a2670df857fb55ddb5f0e470ead74f5aad56d9533"
+    },
+    {
+      "repository": "references/Hexalith.McpCli",
+      "baseline": "829a98da7103b2124b2d95ee1d09db37620686a3",
+      "protectedTrackedPaths": 14098,
+      "sha256Before": "599e02ad3df6bf5ac0654c336e59a61029a63c4dbb65e22c8994805513138575",
+      "sha256After": "599e02ad3df6bf5ac0654c336e59a61029a63c4dbb65e22c8994805513138575"
+    },
+    {
+      "repository": "references/Hexalith.Tenants",
+      "baseline": "93a5aa8385cc65c73b850738643d7f8204ee52da",
+      "protectedTrackedPaths": 4863,
+      "sha256Before": "2b53ac62fa3c5c7903388cbefcadbcdfa8dcfbb01144640aff05e0d66f5bd367",
+      "sha256After": "2b53ac62fa3c5c7903388cbefcadbcdfa8dcfbb01144640aff05e0d66f5bd367"
+    },
+    {
+      "repository": "references/Hexalith.Platform",
+      "baseline": "759bb89753de7e70cb0b0db61c7142e96ec5bac0",
+      "protectedTrackedPaths": 18561,
+      "sha256Before": "76c65e4c171fe3d827770acc94bf3f459d3e09c4270508037d7ab2477b1d2e8d",
+      "sha256After": "76c65e4c171fe3d827770acc94bf3f459d3e09c4270508037d7ab2477b1d2e8d"
+    }
+  ]
+}

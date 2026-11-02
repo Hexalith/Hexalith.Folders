@@ -1,0 +1,7 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj (in 206 ms).
+  1 of 2 projects are up-to-date for restore.
+  Hexalith.Tenants.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Release/net10.0/Hexalith.Tenants.Contracts.dll
+  Hexalith.Tenants.Client -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Client/bin/Release/net10.0/Hexalith.Tenants.Client.dll
+  Actual pack-target catalog enrollment verified: Hexalith.Tenants.Client
+  Successfully created package '/tmp/folders-canonical-cohort-20261102/feed/Hexalith.Tenants.Client.7.0.0.nupkg'.

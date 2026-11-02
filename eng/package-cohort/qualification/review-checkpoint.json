@@ -1,0 +1,23 @@
+{
+  "stage": "focused review corrections; final full qualification pending parent run",
+  "producerCandidate": "sources.json",
+  "initialPackagedSources": "sources.packaged.json",
+  "initialPackages": "packages.json",
+  "initialTestedConsumerArtifacts": "runtime-identities.json",
+  "reviewChecks": {
+    "Core.PlatformScopeTests": 19,
+    "Cli.PlatformScopeCommandTests": 3,
+    "Mcp.PlatformScopeProtocolTests": 14,
+    "failures": 0,
+    "skips": 0,
+    "authoritativeCatalog": "68 required identities; three family bindings; override rejection",
+    "removedTenantsServer": "expected rejection passed",
+    "producerPreflight": "pass; negative revision/hash checks pass",
+    "protectedVerifier": "pass; negative historical-prefix check passes"
+  },
+  "verifier": {
+    "path": "../verify-cohort.py",
+    "sha256": "aa65ce35d8ebc8baefa38c9e5e47b3229a0bd1c7ece55b76fc9614c23aea29a9"
+  },
+  "legacyEnrollment": "Tenants.Contracts 5.10.0 fixed-system operations remain unqualified against the EventStore 4.0.0 public gateway; approvals and vectors unchanged."
+}

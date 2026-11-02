@@ -1,0 +1,74 @@
+{
+  "algorithm": "SHA-256 of UTF-8 json.dumps(entries, sort_keys=True, separators=(comma, colon)); entries are keyed by baseline Git-tree path with mode, oid, sha256; see ../verify-cohort.py docstring.",
+  "selection": "git ls-tree -r -z --full-tree <baseline>; explicit exclusions below; untracked/new paths outside the baseline are not protected historical inputs.",
+  "authorizedNormalization": "Only the exact verified historical deferred-work prefix enters its aggregate; the append must match deferred-work-review-append.json.",
+  "reviewExclusions": {
+    "references/Hexalith.McpCli": [
+      "tests/Hexalith.McpCli.Cli.Tests/QueryCliHarness.cs"
+    ]
+  },
+  "repositories": [
+    {
+      "repository": ".",
+      "baseline": "a1f752fd1755756ae69fe95322b14f3b2fb04ee8",
+      "excludedPaths": [
+        ".gitattributes"
+      ],
+      "baselineAggregateSha256": "3b1ad3255cd43374694526671a771d3e223f0135cd51652218bdd431ec7933f6"
+    },
+    {
+      "repository": "references/Hexalith.Builds",
+      "baseline": "13f503caecba9f449d84a8e005258626a64edd06",
+      "excludedPaths": [
+        "Props/Directory.Packages.props",
+        "Tools/test-authoritative-package-catalog.ps1"
+      ],
+      "baselineAggregateSha256": "478c5dad6491cc42261f698fd66ae2807bd0fce26ff9c0a58caeb1f0273cbac0"
+    },
+    {
+      "repository": "references/Hexalith.EventStore",
+      "baseline": "a9317e4b228adfbcdd6686a2f86171b464f34c06",
+      "excludedPaths": [],
+      "baselineAggregateSha256": "7c4c8a8cb76270f9d00eb34a2670df857fb55ddb5f0e470ead74f5aad56d9533"
+    },
+    {
+      "repository": "references/Hexalith.McpCli",
+      "baseline": "829a98da7103b2124b2d95ee1d09db37620686a3",
+      "excludedPaths": [
+        "Directory.Build.props",
+        "src/Hexalith.McpCli.Abstractions/HexalithCommandAttribute.cs",
+        "src/Hexalith.McpCli.Abstractions/HexalithQueryAttribute.cs",
+        "src/Hexalith.McpCli.Core/Catalog/CatalogBuilder.cs",
+        "src/Hexalith.McpCli.Core/Catalog/CatalogService.cs",
+        "src/Hexalith.McpCli.Core/Catalog/OperationDescriptor.cs",
+        "src/Hexalith.McpCli.Core/Catalog/OperationEnvelopeDocument.cs",
+        "src/Hexalith.McpCli.Core/Catalog/RoutingResolver.cs",
+        "src/Hexalith.McpCli.Core/Execution/OperationExecutor.cs",
+        "tests/Hexalith.McpCli.Cli.Tests/DiscoveryCommandTests.cs",
+        "tests/Hexalith.McpCli.Cli.Tests/QueryCliHarness.cs",
+        "tests/Hexalith.McpCli.Cli.Tests/QueryValidationCommandTests.cs",
+        "tests/Hexalith.McpCli.Core.Tests/QueryValidationTests.cs",
+        "tests/fixtures/Catalog.Routing.Contracts/ColonWireCommand.cs",
+        "tests/fixtures/Catalog.Routing.Contracts/ListItemsQuery.cs"
+      ],
+      "baselineAggregateSha256": "599e02ad3df6bf5ac0654c336e59a61029a63c4dbb65e22c8994805513138575"
+    },
+    {
+      "repository": "references/Hexalith.Tenants",
+      "baseline": "93a5aa8385cc65c73b850738643d7f8204ee52da",
+      "excludedPaths": [
+        "tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapCommandTransportTests.cs",
+        "tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapHostedServiceTests.cs",
+        "tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapReadinessBudgetTests.cs"
+      ],
+      "baselineAggregateSha256": "2b53ac62fa3c5c7903388cbefcadbcdfa8dcfbb01144640aff05e0d66f5bd367"
+    },
+    {
+      "repository": "references/Hexalith.Platform",
+      "baseline": "759bb89753de7e70cb0b0db61c7142e96ec5bac0",
+      "excludedPaths": [],
+      "baselineAggregateSha256": "76c65e4c171fe3d827770acc94bf3f459d3e09c4270508037d7ab2477b1d2e8d"
+    }
+  ],
+  "commitCapture": "owner-commits.json binds exact qualified owner path sets and bytes. Root descendants are limited to the three recorded gitlinks, .gitattributes, this spec, eng/package-cohort artifacts, and the verified append; Platform remains exact-head."
+}

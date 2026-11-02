@@ -1,0 +1,20 @@
+[
+  {
+    "repository": "references/Hexalith.Builds",
+    "qualifiedBaseRevision": "13f503caecba9f449d84a8e005258626a64edd06",
+    "committedRevision": "aed2f87a469d57c7033b5a944f9fb83301bb4859",
+    "sourceWorkingFilesUnchanged": true
+  },
+  {
+    "repository": "references/Hexalith.McpCli",
+    "qualifiedBaseRevision": "829a98da7103b2124b2d95ee1d09db37620686a3",
+    "committedRevision": "4052803e86461dc2b9ba9d2343d0eabf59ce18fa",
+    "sourceWorkingFilesUnchanged": true
+  },
+  {
+    "repository": "references/Hexalith.Tenants",
+    "qualifiedBaseRevision": "93a5aa8385cc65c73b850738643d7f8204ee52da",
+    "committedRevision": "743c417664cf1313864978076522f50998abcf14",
+    "sourceWorkingFilesUnchanged": true
+  }
+]

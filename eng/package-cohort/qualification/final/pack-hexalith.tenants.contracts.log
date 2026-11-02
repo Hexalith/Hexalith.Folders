@@ -1,0 +1,5 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj (in 155 ms).
+  Hexalith.Tenants.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Release/net10.0/Hexalith.Tenants.Contracts.dll
+  Actual pack-target catalog enrollment verified: Hexalith.Tenants.Contracts
+  Successfully created package '/tmp/folders-cohort-final-20261102-ytqrwm20/feed/Hexalith.Tenants.Contracts.7.0.0.nupkg'.

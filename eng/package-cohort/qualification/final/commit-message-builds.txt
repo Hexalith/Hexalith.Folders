@@ -1,0 +1,1 @@
+build(deps): select the canonical EventStore McpCli and Tenants cohort

@@ -1,0 +1,41 @@
+[
+  {
+    "case": "revision",
+    "command": [
+      "python3",
+      "eng/package-cohort/verify-cohort.py",
+      "producers",
+      "--receipts",
+      "/tmp/folders-canonical-cohort-20261102/negative-preflight-revision"
+    ],
+    "expectedExit": "nonzero",
+    "actualExit": 1,
+    "error": "AssertionError: references/Hexalith.Builds: revision drift"
+  },
+  {
+    "case": "working-hash",
+    "command": [
+      "python3",
+      "eng/package-cohort/verify-cohort.py",
+      "producers",
+      "--receipts",
+      "/tmp/folders-canonical-cohort-20261102/negative-preflight-working-hash"
+    ],
+    "expectedExit": "nonzero",
+    "actualExit": 1,
+    "error": "AssertionError: references/Hexalith.Builds/Props/Directory.Packages.props: source drift"
+  },
+  {
+    "case": "deferred-prefix",
+    "command": [
+      "python3",
+      "eng/package-cohort/verify-cohort.py",
+      "protected",
+      "--receipts",
+      "/tmp/folders-canonical-cohort-20261102/negative-preflight-deferred-prefix"
+    ],
+    "expectedExit": "nonzero",
+    "actualExit": 1,
+    "error": "AssertionError: Deferred-work historical prefix changed"
+  }
+]

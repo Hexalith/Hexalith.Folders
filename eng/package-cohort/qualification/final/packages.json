@@ -1,0 +1,181 @@
+[
+  {
+    "package": "Hexalith.EventStore.Admin.Abstractions.4.0.0.nupkg",
+    "sha256": "52773702ea7fdad895810d92003723a8bf7afee8afd0f81aa239d4fef38d5318",
+    "assembly": "lib/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+    "assemblySha256": "c3ee6c8a0e99e2c5354549528c1ec663b55dccc5743cb2e5ff99d17380ea3bb7",
+    "sourceOutput": "references/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/bin/Release/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.EventStore.Aspire.4.0.0.nupkg",
+    "sha256": "646f7c44aa2a0c428283d7c26de2df46ab824a71ae20502329f1d5d23b0c4e83",
+    "assembly": "lib/net10.0/Hexalith.EventStore.Aspire.dll",
+    "assemblySha256": "8bbf81b5fe65858b9e798d7a6c83dcedd5c0a99d788e97de36df547316929f63",
+    "sourceOutput": "references/Hexalith.EventStore/src/Hexalith.EventStore.Aspire/bin/Release/net10.0/Hexalith.EventStore.Aspire.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.EventStore.Client.4.0.0.nupkg",
+    "sha256": "5c515dae6f476c3ba341124fa7300781f7914f8fc7e408c516d4954e33de4de4",
+    "assembly": "lib/net10.0/Hexalith.EventStore.Client.dll",
+    "assemblySha256": "923e94ed235dd63c4be99d0e6899bb28610af7bc796bd41152e0138e7303d8e3",
+    "sourceOutput": "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/bin/Release/net10.0/Hexalith.EventStore.Client.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.EventStore.Contracts.4.0.0.nupkg",
+    "sha256": "f7c6f4b226711bf018d05ac5d72e7216a12977403a5e41c39dcf3e6e5ab1ee4b",
+    "assembly": "lib/net10.0/Hexalith.EventStore.Contracts.dll",
+    "assemblySha256": "b2d6221db2c85d59811310430bf304fa377ccaeae1721d12c552f5d158c859d6",
+    "sourceOutput": "references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/bin/Release/net10.0/Hexalith.EventStore.Contracts.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.EventStore.DomainService.4.0.0.nupkg",
+    "sha256": "226816cf9d288a5ceee71a2f445ec6f8d0ec8ebafec0b37cb89e0b6a5df7ae4f",
+    "assembly": "lib/net10.0/Hexalith.EventStore.DomainService.dll",
+    "assemblySha256": "ef4bfbf0f4b6599c1595234e8f01e8420c0277f7f5799ece7a6994ad930c0587",
+    "sourceOutput": "references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/bin/Release/net10.0/Hexalith.EventStore.DomainService.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.EventStore.Gateway.4.0.0.nupkg",
+    "sha256": "7f3e8d844fbf91d206d98133b335a4e8d4aa9d59ddb605db166113c8f8e1dec3",
+    "assembly": "lib/net10.0/Hexalith.EventStore.Gateway.dll",
+    "assemblySha256": "e2f3116474c573260e7090a1aefa543e59dcc929a4a3990d7ad62f4c37b8df70",
+    "sourceOutput": "references/Hexalith.EventStore/src/Hexalith.EventStore.Gateway/bin/Release/net10.0/Hexalith.EventStore.Gateway.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.EventStore.RestApi.Generators.4.0.0.nupkg",
+    "sha256": "efc75968421296c6f329f5cf295fa328ded11c3d4f2823891fb0f9fd57ae6dcc",
+    "assembly": "analyzers/dotnet/cs/Hexalith.EventStore.RestApi.Generators.dll",
+    "assemblySha256": "09876d9dcf9d5e5998d09239c0e712cb0207560a355594aed9f3ee7924ef009b",
+    "sourceOutput": "references/Hexalith.EventStore/src/Hexalith.EventStore.RestApi.Generators/bin/Release/netstandard2.0/Hexalith.EventStore.RestApi.Generators.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.EventStore.Server.4.0.0.nupkg",
+    "sha256": "e76b099d583026033455ed63f18c14255019049f2a8065ff9090e9d2736b84d4",
+    "assembly": "lib/net10.0/Hexalith.EventStore.Server.dll",
+    "assemblySha256": "7c6bf8daac696c1739e50676aadda58cc87110cf306aaf746818b5c1cf79a96e",
+    "sourceOutput": "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/bin/Release/net10.0/Hexalith.EventStore.Server.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.EventStore.ServiceDefaults.4.0.0.nupkg",
+    "sha256": "9925391459a720946fdf2d3ba0d559450b82f9b6e703b6c712e34a040e932406",
+    "assembly": "lib/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "assemblySha256": "c5503efb503977b750dbb6241aa48175c6b657a1a8af663ea1bc1e9fd3724727",
+    "sourceOutput": "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/bin/Release/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.EventStore.SignalR.4.0.0.nupkg",
+    "sha256": "fddfc8677e8a98578c79520253e62adddae8310b0dfddeb33203a54665b11e99",
+    "assembly": "lib/net10.0/Hexalith.EventStore.SignalR.dll",
+    "assemblySha256": "d2d23be65d360d39dffd24ce17e6233e609f69916437781fd7b89da41f578581",
+    "sourceOutput": "references/Hexalith.EventStore/src/Hexalith.EventStore.SignalR/bin/Release/net10.0/Hexalith.EventStore.SignalR.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.EventStore.Testing.4.0.0.nupkg",
+    "sha256": "6106907f32b0d33f620c3f2e11717c111e693f1e1100e7d6c2b5d1bcc59c3832",
+    "assembly": "lib/net10.0/Hexalith.EventStore.Testing.dll",
+    "assemblySha256": "7c5ad5cac8589695b69f68880fd073ad73a7f0ce22a753c6b726b35844da8481",
+    "sourceOutput": "references/Hexalith.EventStore/src/Hexalith.EventStore.Testing/bin/Release/net10.0/Hexalith.EventStore.Testing.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.McpCli.Abstractions.2.0.0.nupkg",
+    "sha256": "05cff2a99f1494748a05d950aacd9cb1db518da9bfe25f307b88843b1223f3e8",
+    "assembly": "lib/net10.0/Hexalith.McpCli.Abstractions.dll",
+    "assemblySha256": "eacb32731b5d72cfcbf9be63a92d083dec8f78834932c607a3dd303bc306cf1c",
+    "sourceOutput": "references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/bin/Release/net10.0/Hexalith.McpCli.Abstractions.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "embeddedAssemblies": [
+      {
+        "archivePath": "analyzers/dotnet/cs/Hexalith.McpCli.Analyzers.dll",
+        "archiveSha256": "2beeffa0626c455d21521a88081ef72fc25957a1a41eeea22fdf595079efd7ed",
+        "producerPath": "references/Hexalith.McpCli/src/Hexalith.McpCli.Analyzers/bin/Release/netstandard2.0/Hexalith.McpCli.Analyzers.dll",
+        "producerSha256": "2beeffa0626c455d21521a88081ef72fc25957a1a41eeea22fdf595079efd7ed",
+        "matchesSourceOutput": true
+      }
+    ],
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.Tenants.Aspire.7.0.0.nupkg",
+    "sha256": "422c8118d1c9b093c310126257e3dfc2a6e6046965e6d7003bcd4d7728d5b935",
+    "assembly": "lib/net10.0/Hexalith.Tenants.Aspire.dll",
+    "assemblySha256": "a5ad1872d44a909f74ddcc5798924fa2b32d32d38aa1dc445e1d62c0a90b3247",
+    "sourceOutput": "references/Hexalith.Tenants/src/Hexalith.Tenants.Aspire/bin/Release/net10.0/Hexalith.Tenants.Aspire.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.Tenants.Client.7.0.0.nupkg",
+    "sha256": "adc247227f1760a50cec8b0559233cea0d63481775967f78d72c27df2e32ba66",
+    "assembly": "lib/net10.0/Hexalith.Tenants.Client.dll",
+    "assemblySha256": "d596b48432671f0300e80201146e995aeaecb083741f71626fa96f9a39a73139",
+    "sourceOutput": "references/Hexalith.Tenants/src/Hexalith.Tenants.Client/bin/Release/net10.0/Hexalith.Tenants.Client.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.Tenants.Contracts.7.0.0.nupkg",
+    "sha256": "fae0a7fb64a0dc4c032a3da6e858f0f1ac0584d40c1be719ff57822c31bfda8d",
+    "assembly": "lib/net10.0/Hexalith.Tenants.Contracts.dll",
+    "assemblySha256": "1a7665aa67dd775d7bd35e535246b44a5d59c6a3e7b7413e38de707b277e120d",
+    "sourceOutput": "references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Release/net10.0/Hexalith.Tenants.Contracts.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.Tenants.Server.7.0.0.nupkg",
+    "sha256": "cf6a665592e41b3cf5b43e65398757cceb6879735daf13071301cd2c963bcf3d",
+    "assembly": "lib/net10.0/Hexalith.Tenants.Server.dll",
+    "assemblySha256": "bd9ba2bee6e40d445f16d7272aaa0a513b33d635480ab98f82332e161daf1d31",
+    "sourceOutput": "references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Release/net10.0/Hexalith.Tenants.Server.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  },
+  {
+    "package": "Hexalith.Tenants.Testing.7.0.0.nupkg",
+    "sha256": "2882d71f70f5f78356beb1e4accc8c58334b16abe304c90a97bebc24e6e38e05",
+    "assembly": "lib/net10.0/Hexalith.Tenants.Testing.dll",
+    "assemblySha256": "c8ccf3500a165d726473d4145f1eb4ce5672ff76f5e0766fde05b9cd1c8acf1f",
+    "sourceOutput": "references/Hexalith.Tenants/src/Hexalith.Tenants.Testing/bin/Release/net10.0/Hexalith.Tenants.Testing.dll",
+    "matchesSourceOutput": true,
+    "producerSourcesReceipt": "../sources.json",
+    "producerSourcesSha256": "0d4b7a32d01a1636c57f8d152eb9f359c003f22615728501892df652b559d9ac"
+  }
+]

@@ -1,0 +1,93 @@
+[
+  {
+    "project": "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+    "configuration": "Release",
+    "libraries": {
+      "Hexalith.EventStore.Aspire/4.0.0": "package",
+      "Hexalith.EventStore.Client/4.0.0": "package",
+      "Hexalith.EventStore.Contracts/4.0.0": "package",
+      "Hexalith.EventStore.ServiceDefaults/4.0.0": "package",
+      "Hexalith.Tenants.Aspire/7.0.0": "package"
+    },
+    "outputSha256": {
+      "Hexalith.EventStore.ServiceDefaults.dll": "c5503efb503977b750dbb6241aa48175c6b657a1a8af663ea1bc1e9fd3724727",
+      "Hexalith.EventStore.Aspire.dll": "8bbf81b5fe65858b9e798d7a6c83dcedd5c0a99d788e97de36df547316929f63",
+      "Hexalith.EventStore.Client.dll": "923e94ed235dd63c4be99d0e6899bb28610af7bc796bd41152e0138e7303d8e3",
+      "Hexalith.EventStore.Contracts.dll": "b2d6221db2c85d59811310430bf304fa377ccaeae1721d12c552f5d158c859d6",
+      "Hexalith.Tenants.Aspire.dll": "a5ad1872d44a909f74ddcc5798924fa2b32d32d38aa1dc445e1d62c0a90b3247"
+    },
+    "depsSha256": "36b8651440c0531aa088e3fc2c39931d4ccf3a3c7701f295d908ac7d476f1238",
+    "testedAssembly": {
+      "path": "src/Hexalith.Folders.AppHost/bin/Release/net10.0/Hexalith.Folders.AppHost.dll",
+      "sha256": "2b6082af18b0e686bc67d9a7527bc01ab091e22852782c5a7ba02066ef97a420"
+    },
+    "qualificationCheckpoint": "Final parent qualification after review corrections"
+  },
+  {
+    "project": "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+    "configuration": "Release",
+    "libraries": {
+      "Hexalith.EventStore.Aspire/4.0.0": "package",
+      "Hexalith.EventStore.Client/4.0.0": "package",
+      "Hexalith.EventStore.Contracts/4.0.0": "package",
+      "Hexalith.EventStore.DomainService/4.0.0": "package",
+      "Hexalith.EventStore.ServiceDefaults/4.0.0": "package",
+      "Hexalith.McpCli.Abstractions/2.0.0": "package",
+      "Hexalith.Tenants.Aspire/7.0.0": "package",
+      "Hexalith.Tenants.Client/7.0.0": "package",
+      "Hexalith.Tenants.Contracts/7.0.0": "package"
+    },
+    "outputSha256": {
+      "Hexalith.EventStore.ServiceDefaults.dll": "c5503efb503977b750dbb6241aa48175c6b657a1a8af663ea1bc1e9fd3724727",
+      "Hexalith.EventStore.Aspire.dll": "8bbf81b5fe65858b9e798d7a6c83dcedd5c0a99d788e97de36df547316929f63",
+      "Hexalith.EventStore.DomainService.dll": "ef4bfbf0f4b6599c1595234e8f01e8420c0277f7f5799ece7a6994ad930c0587",
+      "Hexalith.McpCli.Abstractions.dll": "eacb32731b5d72cfcbf9be63a92d083dec8f78834932c607a3dd303bc306cf1c",
+      "Hexalith.EventStore.Client.dll": "923e94ed235dd63c4be99d0e6899bb28610af7bc796bd41152e0138e7303d8e3",
+      "Hexalith.EventStore.Contracts.dll": "b2d6221db2c85d59811310430bf304fa377ccaeae1721d12c552f5d158c859d6",
+      "Hexalith.Tenants.Contracts.dll": "1a7665aa67dd775d7bd35e535246b44a5d59c6a3e7b7413e38de707b277e120d",
+      "Hexalith.Tenants.Aspire.dll": "a5ad1872d44a909f74ddcc5798924fa2b32d32d38aa1dc445e1d62c0a90b3247",
+      "Hexalith.Tenants.Client.dll": "d596b48432671f0300e80201146e995aeaecb083741f71626fa96f9a39a73139"
+    },
+    "depsSha256": "d9f2681ae27361a0630a1d634c8db268ee0372c4a22967bbabaa3d1068b05186",
+    "testedAssembly": {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/bin/Release/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "sha256": "508f065bd028e44b36a704659bcecfb55b1fe2b79e8ce19c0cf6bfc8869f7d24"
+    },
+    "qualificationCheckpoint": "Final parent qualification after review corrections"
+  },
+  {
+    "project": "references/Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj",
+    "configuration": "Release",
+    "libraries": {
+      "Hexalith.EventStore.Admin.Abstractions/4.0.0": "package",
+      "Hexalith.EventStore.Client/4.0.0": "package",
+      "Hexalith.EventStore.Contracts/4.0.0": "package",
+      "Hexalith.EventStore.DomainService/4.0.0": "package",
+      "Hexalith.EventStore.Gateway/4.0.0": "package",
+      "Hexalith.EventStore.Server/4.0.0": "package",
+      "Hexalith.EventStore.ServiceDefaults/4.0.0": "package",
+      "Hexalith.McpCli.Abstractions/2.0.0": "package",
+      "Hexalith.Tenants.Contracts/7.0.0": "project",
+      "Hexalith.Tenants.Server/7.0.0": "project"
+    },
+    "outputSha256": {
+      "Hexalith.EventStore.ServiceDefaults.dll": "c5503efb503977b750dbb6241aa48175c6b657a1a8af663ea1bc1e9fd3724727",
+      "Hexalith.EventStore.DomainService.dll": "ef4bfbf0f4b6599c1595234e8f01e8420c0277f7f5799ece7a6994ad930c0587",
+      "Hexalith.EventStore.Admin.Abstractions.dll": "c3ee6c8a0e99e2c5354549528c1ec663b55dccc5743cb2e5ff99d17380ea3bb7",
+      "Hexalith.McpCli.Abstractions.dll": "eacb32731b5d72cfcbf9be63a92d083dec8f78834932c607a3dd303bc306cf1c",
+      "Hexalith.EventStore.Server.dll": "7c6bf8daac696c1739e50676aadda58cc87110cf306aaf746818b5c1cf79a96e",
+      "Hexalith.EventStore.Client.dll": "923e94ed235dd63c4be99d0e6899bb28610af7bc796bd41152e0138e7303d8e3",
+      "Hexalith.EventStore.Gateway.dll": "e2f3116474c573260e7090a1aefa543e59dcc929a4a3990d7ad62f4c37b8df70",
+      "Hexalith.EventStore.Contracts.dll": "b2d6221db2c85d59811310430bf304fa377ccaeae1721d12c552f5d158c859d6",
+      "Hexalith.Tenants.Contracts.dll": "1a7665aa67dd775d7bd35e535246b44a5d59c6a3e7b7413e38de707b277e120d",
+      "Hexalith.Tenants.Server.dll": "bd9ba2bee6e40d445f16d7272aaa0a513b33d635480ab98f82332e161daf1d31",
+      "Hexalith.Tenants.dll": "bdcb8019b5d3b1bf086a3c274a5ff3606a628c8601c8bfec553f1b2c86acd99d"
+    },
+    "depsSha256": "ecf9d92d55461e777c28f512227d427c6a7c02361442bccc60e62151ab425463",
+    "testedAssembly": {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Release/net10.0/Hexalith.Tenants.dll",
+      "sha256": "bdcb8019b5d3b1bf086a3c274a5ff3606a628c8601c8bfec553f1b2c86acd99d"
+    },
+    "qualificationCheckpoint": "Final parent qualification after review corrections"
+  }
+]
