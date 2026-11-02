@@ -144,6 +144,18 @@ os.execv(os.environ['TEST_REAL_GIT'], [os.environ['TEST_REAL_GIT'], *arguments])
     def test_workflow_selects_the_existing_package_prepare_hook(self) -> None:
         self.assertIn("      package-prepare-script: scripts/prepare-ci-topology-projects.sh\n",
                       (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8"))
+        workflow = (ROOT / ".github/workflows/contract-spine.yml").read_text(encoding="utf-8")
+        root_build_paths = (
+            "references/Hexalith.AI.Tools", "references/Hexalith.Builds", "references/Hexalith.Commons",
+            "references/Hexalith.EventStore", "references/Hexalith.FrontComposer", "references/Hexalith.Memories",
+            "references/Hexalith.PolymorphicSerializations", "references/Hexalith.Tenants",
+        )
+        build_step = f"        run: git submodule update --init --checkout {' '.join(root_build_paths)}\n"
+        prepare_step = "      - name: Prepare CI topology projects\n        run: bash scripts/prepare-ci-topology-projects.sh\n"
+        self.assertIn(build_step, workflow)
+        self.assertIn(prepare_step, workflow)
+        self.assertLess(workflow.index(build_step), workflow.index(prepare_step))
+        self.assertLess(workflow.index(prepare_step), workflow.index("      - name: Restore\n"))
 
     def test_rejects_nonmatching_github_context(self) -> None:
         for key, value in (("GITHUB_ACTIONS", ""), ("GITHUB_ACTIONS", "false"),

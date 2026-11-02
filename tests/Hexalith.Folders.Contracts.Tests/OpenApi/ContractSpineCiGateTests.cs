@@ -21,6 +21,9 @@ public sealed class ContractSpineCiGateTests
 
         workflow.ShouldContain("actions/checkout@v7");
         workflow.ShouldContain("submodules: false");
+        workflow.ShouldContain("run: bash scripts/prepare-ci-topology-projects.sh");
+        workflow.IndexOf("run: bash scripts/prepare-ci-topology-projects.sh", StringComparison.Ordinal)
+            .ShouldBeLessThan(workflow.IndexOf("run: dotnet restore Hexalith.Folders.CI.slnx", StringComparison.Ordinal));
         workflow.ShouldContain("actions/setup-dotnet@v6");
         workflow.ShouldContain("global-json-file: global.json");
         workflow.ShouldContain("dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1");

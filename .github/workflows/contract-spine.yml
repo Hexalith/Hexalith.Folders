@@ -26,6 +26,9 @@ jobs:
       - name: Initialize root-level build submodules
         run: git submodule update --init --checkout references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 
+      - name: Prepare CI topology projects
+        run: bash scripts/prepare-ci-topology-projects.sh
+
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v6
         with:
