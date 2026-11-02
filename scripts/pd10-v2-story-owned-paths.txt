@@ -229,6 +229,7 @@ src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
 src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs
 src/Hexalith.Folders.Server/FoldersProjectionCatalogDeclarations.cs
 src/Hexalith.Folders.Server/FoldersRequestJsonElementConverter.cs
+src/Hexalith.Folders.Server/FoldersRuntimeCatalogDeclarations.cs
 src/Hexalith.Folders.Server/FoldersServerHostComposition.cs
 src/Hexalith.Folders.Server/FoldersServerModule.cs
 src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
@@ -1034,6 +1035,7 @@ src/Hexalith.Folders/Queries/ProviderReadiness/ProviderSupportEvidenceQueryResul
 src/Hexalith.Folders/Queries/ProviderReadiness/ProviderSupportEvidenceReadModelRequest.cs
 src/Hexalith.Folders/Queries/ProviderReadiness/ProviderSupportEvidenceReadModelResult.cs
 src/Hexalith.Folders/Queries/ProviderReadiness/ProviderSupportEvidenceReadModelStatus.cs
+src/Hexalith.Folders/Routing/FoldersCommandCatalog.cs
 src/shared/AdapterCore/AdapterInvocation.cs
 src/shared/AdapterCore/BearerTransportPolicy.cs
 src/shared/AdapterCore/CredentialSources.cs
@@ -1184,6 +1186,7 @@ tests/Hexalith.Folders.Server.Tests/FoldersContextSearchFacadeRegistrationTests.
 tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs
 tests/Hexalith.Folders.Server.Tests/FoldersGatewayTransportTests.cs
 tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs
+tests/Hexalith.Folders.Server.Tests/FoldersHumanCommandCatalogTests.cs
 tests/Hexalith.Folders.Server.Tests/FoldersMutableEndpointSource.cs
 tests/Hexalith.Folders.Server.Tests/FoldersNativeGatewayBearerTests.cs
 tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs
@@ -1236,6 +1239,8 @@ tests/Hexalith.Folders.Server.Tests/ScopeCheckingFolderPermissionEvidenceProvide
 tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs
 tests/Hexalith.Folders.Server.Tests/ServerSmokeTests.cs
 tests/Hexalith.Folders.Server.Tests/ServiceDefaultsHealthEndpointTests.cs
+tests/Hexalith.Folders.Server.Tests/Task36FoldDiagnosticObserverTests.cs
+tests/Hexalith.Folders.Server.Tests/Task36FoldObservationCollection.cs
 tests/Hexalith.Folders.Server.Tests/TransportParityConformanceTests.cs
 tests/Hexalith.Folders.Server.Tests/VerifiedReceiptEventStoreAuthorizationValidatorTests.cs
 tests/Hexalith.Folders.Server.Tests/WorkspaceCleanupStatusEndpointTests.cs
@@ -1465,6 +1470,13 @@ tests/shared/Parity/InProcessRejectionPropagatingGatewayClient.cs
 tests/shared/Parity/MixedSurfaceScenario.cs
 tests/shared/Parity/ParityOracle.cs
 tests/shared/Parity/ParityScenarios.cs
+tests/tools/Task36FoldObserver/ContentQualificationClock.cs
+tests/tools/Task36FoldObserver/FoldDiagnosticEventObserver.cs
+tests/tools/Task36FoldObserver/FoldDiagnosticObserver.cs
+tests/tools/Task36FoldObserver/FoldObservationSink.cs
+tests/tools/Task36FoldObserver/StartupHook.cs
+tests/tools/Task36FoldObserver/Task36FoldObserver.csproj
+tests/tools/Task36FoldObserver/Task36HostingStartup.cs
 tests/tools/parity-oracle-generator/Program.cs
 tests/tools/parity-oracle-generator/README.md
 tests/tools/run-adr-runbook-docs-gates.ps1

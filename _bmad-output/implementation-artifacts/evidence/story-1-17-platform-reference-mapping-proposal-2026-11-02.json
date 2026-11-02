@@ -1,0 +1,70 @@
+{
+  "recordId": "story-1-17-platform-reference-mapping-proposal-2026-11-02",
+  "recordedAtUtc": "2026-11-02T13:55:53.250057+00:00",
+  "foldersHead": "4f41f84dbc21c501fb5ebcfae8ce1143e0905097",
+  "platformHead": "3d344e850471b6a21fc4649df7ede9a0390689b1",
+  "purpose": "Read-only direct-gitlink versus workspace-root declaration comparison for Story 1.17 Platform mapping",
+  "ownerRows": [
+    {
+      "owner": "EventStore",
+      "platformDirectGitlink": "7c93a1234d14c66f5ee85ed48caaee1d30a671f3",
+      "workspaceRootGitlink": "f2be45ede245211f549978358872875c5df28dc8",
+      "checkoutHead": "f2be45ede245211f549978358872875c5df28dc8",
+      "manifestPath": "references/Hexalith.EventStore/module/hexalith.module-manifest.v2.json",
+      "platformDirectManifestGitBlob": "37659bc419ffb00f59ef6877f4a589233efb03ac",
+      "workspaceRootManifestGitBlob": "37659bc419ffb00f59ef6877f4a589233efb03ac",
+      "platformDirectManifestSha256": "21eda6da824d5ae6135ff342dd8a5aae950b02420319b953a836dddeb00ce495",
+      "workspaceRootManifestSha256": "21eda6da824d5ae6135ff342dd8a5aae950b02420319b953a836dddeb00ce495",
+      "manifestBytesEqual": true,
+      "revisionsEqual": false
+    },
+    {
+      "owner": "Tenants",
+      "platformDirectGitlink": "a01e89854f711d1a93ae15695b438424c1ed4f0f",
+      "workspaceRootGitlink": "ba4639fa462341281f89aa7a08b7398477fc1ba9",
+      "checkoutHead": "ba4639fa462341281f89aa7a08b7398477fc1ba9",
+      "manifestPath": "references/Hexalith.Tenants/module/hexalith.module-manifest.v2.json",
+      "platformDirectManifestGitBlob": "0433268dfa4d5e7fa422ad1b68fa12b56cfba469",
+      "workspaceRootManifestGitBlob": "0433268dfa4d5e7fa422ad1b68fa12b56cfba469",
+      "platformDirectManifestSha256": "1588f3428ec29296c452fdd35bf95146142315aad3ad8ceb934e7a791f1fb522",
+      "workspaceRootManifestSha256": "1588f3428ec29296c452fdd35bf95146142315aad3ad8ceb934e7a791f1fb522",
+      "manifestBytesEqual": true,
+      "revisionsEqual": false
+    },
+    {
+      "owner": "Memories",
+      "platformDirectGitlink": "e8956eb5c1bd49297f86702f9606eb9b013bc2f1",
+      "workspaceRootGitlink": "46667b0d25c707bcdc961d59895bfe5a064bfd12",
+      "checkoutHead": "46667b0d25c707bcdc961d59895bfe5a064bfd12",
+      "manifestPath": "references/Hexalith.Memories/module/hexalith.module-manifest.v2.json",
+      "platformDirectManifestGitBlob": "82032cbe42172ace24e836319e1616df291a284d",
+      "workspaceRootManifestGitBlob": "82032cbe42172ace24e836319e1616df291a284d",
+      "platformDirectManifestSha256": "56f6dc8134d3f7cea06910e923a4736a450e00241e8e4a565ac9226897881840",
+      "workspaceRootManifestSha256": "56f6dc8134d3f7cea06910e923a4736a450e00241e8e4a565ac9226897881840",
+      "manifestBytesEqual": true,
+      "revisionsEqual": false
+    },
+    {
+      "owner": "Parties",
+      "platformDirectGitlink": "f4285584dce0dfa08e3336fca3c203a1b5e748c6",
+      "workspaceRootGitlink": "d06c316fd57cbfaa0b80cf8622ec0b8ec571c6a0",
+      "checkoutHead": "d06c316fd57cbfaa0b80cf8622ec0b8ec571c6a0",
+      "manifestPath": "references/Hexalith.Parties/module/hexalith.module-manifest.v2.json",
+      "platformDirectManifestGitBlob": "df996102b43356a9d93e09d510b2676aec2b9270",
+      "workspaceRootManifestGitBlob": "df996102b43356a9d93e09d510b2676aec2b9270",
+      "platformDirectManifestSha256": "86002eeb916c77bd753a3c618ce394125794baf421315604c9f551b762624504",
+      "workspaceRootManifestSha256": "86002eeb916c77bd753a3c618ce394125794baf421315604c9f551b762624504",
+      "manifestBytesEqual": true,
+      "revisionsEqual": false
+    }
+  ],
+  "conclusion": "All four module declaration blobs are byte-identical across Platform direct and root-declared revisions. The source revisions differ in every row; declaration equality qualifies metadata comparison only and does not authorize executable source substitution, publication or hosted acceptance.",
+  "proposedOwnerDecision": "Platform/owner should publish an explicit mapping that binds each executable source revision and declaration digest, or supply the exact direct-revision source roots outside nested submodule initialization. Re-run strict composition and graph gates on that declared tuple.",
+  "status": "PROPOSAL_ONLY",
+  "operationalControls": {
+    "routeMode": "V1Only",
+    "t0": null,
+    "activationAuthority": null,
+    "storyTracker": "backlog"
+  }
+}

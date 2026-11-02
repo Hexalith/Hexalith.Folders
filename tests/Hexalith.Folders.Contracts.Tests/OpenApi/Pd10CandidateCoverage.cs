@@ -112,6 +112,18 @@ internal static class Pd10CandidateCoverage
         }
         foreach (string path in Directory.EnumerateFiles(Path.Combine(repositoryRoot, "tests/Hexalith.Folders.Server.Tests"), "WorkspaceContent*.cs"))
             required.Add(Relative(repositoryRoot, path));
+        string serverTestsProject = Path.Combine(repositoryRoot, "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj");
+        foreach (XElement reference in XDocument.Load(serverTestsProject).Descendants("ProjectReference"))
+        {
+            string? include = reference.Attribute("Include")?.Value;
+            if (include is null) continue;
+            string project = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(serverTestsProject)!, include));
+            string relativeProject = Relative(repositoryRoot, project);
+            if (!relativeProject.StartsWith("tests/tools/", StringComparison.Ordinal)) continue;
+            required.Add(relativeProject);
+            foreach (string source in Directory.EnumerateFiles(Path.GetDirectoryName(project)!, "*.cs"))
+                required.Add(Relative(repositoryRoot, source));
+        }
         required.UnionWith(new[]
         {
             "tests/Hexalith.Folders.Server.Tests/FileContextEndpointTests.cs",

@@ -16,8 +16,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: a1b1779904dbe0b99674f22bf88fcd71df0422f49f66c091e87020dadfb07154
-artifact_count: 1478
+candidate_set_sha256: 7758899601d176951fa28fa41822363bd64be01c04e50f870addf018e8508607
+artifact_count: 1490
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -25,8 +25,8 @@ artifacts:
     sha256: 399de08d73c48d374192f8652b5256d44bb99f8416f9954c718a9001ef8e6491
   - path: ".github/workflows/contract-spine.yml"
     kind: file
-    bytes: 3103
-    sha256: 069b99905b6e31d95c041665e98395894167827b1c1762cbc04667dddcdbdd16
+    bytes: 3205
+    sha256: d8ea375bacba39fd5435100a2311f91a6f089773aca2c31e04782dced12bd705
   - path: "docs/contract/authorization-matrix.md"
     kind: file
     bytes: 49645
@@ -109,20 +109,20 @@ artifacts:
     sha256: 2c129ee0460c8504cd2c69a1345ebd89e75bae8418cc6551ea23e992e1f75deb
   - path: "scripts/pd10-v2-coverage-roots.txt"
     kind: file
-    bytes: 332
-    sha256: 11eb7eb921515b4f6fd36f0c873f80e8e26138769c3a0f002d1f111566d75ba5
+    bytes: 363
+    sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 105875
-    sha256: dc7cd9513d529d11b031899e6ded872d79fe803c07e6d29c795817f732055347
+    bytes: 106600
+    sha256: 0c4c5d08758f32ac9c79d336b46411cd805ed78a0b9e20a84d227807a664d470
   - path: "scripts/prepare-ci-topology-projects.sh"
     kind: file
-    bytes: 4278
-    sha256: 22647d256989b31273437494d3fe434eaa6d229297dac460dbf788be3f186b15
+    bytes: 6523
+    sha256: bf025ef289ce0f46c6696109fc05db22fe1db0611ab80a8b8877f98fe1394922
   - path: "scripts/tests/test_prepare_ci_topology_projects.py"
     kind: file
-    bytes: 12571
-    sha256: 124f9f0bd8f55b0b7945db22dcfb4276bc6b28e83baf2abf8ad45fb2d8d68cb1
+    bytes: 14624
+    sha256: fca6284205fb5d8770adcbe66085f52690a86fe416a178a9da5c46cc1c142779
   - path: "src/Hexalith.Folders.Cli/CliApplication.cs"
     kind: file
     bytes: 3443
@@ -493,8 +493,8 @@ artifacts:
     sha256: 23b3e7e2e667f686c971ea92b1e345a97680f31f9bf840f6188a1c4728cb3857
   - path: "src/Hexalith.Folders.EventStore/Program.cs"
     kind: file
-    bytes: 2280
-    sha256: cd509f244dedc29fc72a8f49c55eec67b56042d1879a4316a9f204f2be232e2a
+    bytes: 3431
+    sha256: 4f2e69e1ce58b3b235bbf1fe41251a0757df29d5f2f578961e2c3fa28d954781
   - path: "src/Hexalith.Folders.Mcp/Composition/BearerTokenHandler.cs"
     kind: file
     bytes: 612
@@ -881,8 +881,8 @@ artifacts:
     sha256: 50a196458ab1f091148ddac8194c8b5f4856c306582147be6e223ea6d7bc40e3
   - path: "src/Hexalith.Folders.Server/FolderDomainProcessor.cs"
     kind: file
-    bytes: 86872
-    sha256: ced775237da613e501354d8c55b38534f85b995ceb5358a966d2361b991cc793
+    bytes: 87943
+    sha256: c8f11d624e0dce3445a7bd56372b0a6af5b3d1b75a8f7f922c03e7b72fc8e058
   - path: "src/Hexalith.Folders.Server/FolderDomainProjectionHandler.cs"
     kind: file
     bytes: 3292
@@ -937,16 +937,20 @@ artifacts:
     sha256: 5c32a8b20a7fe0f3aa282ad8d051c407c8a9acbfd726406bb789252a1ea8547b
   - path: "src/Hexalith.Folders.Server/FoldersProjectionCatalogDeclarations.cs"
     kind: file
-    bytes: 1083
-    sha256: 5e1ab3afde0fa666ff9f4c214838bbc8851324d1846606e4aca8a02de9d73646
+    bytes: 1953
+    sha256: ff1214cf8a96a5a2da35a61a078b184e6d2cb078e6e5bee54f906f38667f09dc
   - path: "src/Hexalith.Folders.Server/FoldersRequestJsonElementConverter.cs"
     kind: file
     bytes: 1592
     sha256: d9aea2b77cbb1f885b54d05aac6f3e783c06ed2e818488c5ee054e633de47774
+  - path: "src/Hexalith.Folders.Server/FoldersRuntimeCatalogDeclarations.cs"
+    kind: file
+    bytes: 3716
+    sha256: e8d211c6223d1b52fb93958f96aa08cccdefadebfbe93b21050629f34205802b
   - path: "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs"
     kind: file
-    bytes: 7809
-    sha256: 4ad38d73bcb6941da0e07e642340ce8b2d37be0b88389ca470e7461fe0cd8a2e
+    bytes: 8201
+    sha256: 4f5dc3f31c5d2497b3bd65a706243b6579bdac979c541aa73cbfe721d874bbc8
   - path: "src/Hexalith.Folders.Server/FoldersServerModule.cs"
     kind: file
     bytes: 6639
@@ -969,8 +973,8 @@ artifacts:
     sha256: e9c8453df28835ca39cc263290880df8c608a888f6a3571b3c8262b3355c8bab
   - path: "src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs"
     kind: file
-    bytes: 8991
-    sha256: 55872a5e04072f36c8047aee8c97247c55521ddcc1edb8ed985be079a89105d3
+    bytes: 9384
+    sha256: 23ac2606f674753045b558bb28069c1c6bb27b4d12d5f57b1e51eba3581746f6
   - path: "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
     kind: file
     bytes: 22080
@@ -4163,6 +4167,10 @@ artifacts:
     kind: file
     bytes: 168
     sha256: 3c77f5cc5af45d27941cc7706e26ba10878261b9c1b1d665a9709800f34e80eb
+  - path: "src/Hexalith.Folders/Routing/FoldersCommandCatalog.cs"
+    kind: file
+    bytes: 8341
+    sha256: 5551430c8bb28199a3d4cfbdb81218e0b92ab7cbb65705bb33687fdee8f23d3c
   - path: "src/shared/AdapterCore/AdapterInvocation.cs"
     kind: file
     bytes: 2067
@@ -4265,8 +4273,8 @@ artifacts:
     sha256: 9ab57216173f9f589f670e9c47d65e40066fd9bd59b63770ce1663cc6150b2de
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/BaselineCiWorkflowConformanceTests.cs"
     kind: file
-    bytes: 28390
-    sha256: b96d456722715aa940e8f5e3bac8de95488881e1313bcd8ebc6cc672e9b3e7e5
+    bytes: 28435
+    sha256: 66899f6bd76c683ba4e8d6aa11b976bb16225c13f2fe1f0b83cbe1897ec48911
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/CapacityCalibrationConformanceTests.cs"
     kind: file
     bytes: 18987
@@ -4349,8 +4357,8 @@ artifacts:
     sha256: 67de7cdb5fe81f72cc0685e9720734230fab66f35510e4ee86224a2cd427e8e4
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineCiGateTests.cs"
     kind: file
-    bytes: 16739
-    sha256: 49c125f18091ebecf244f84aa5b3dbff3bdb6e581c2e7c57d326c63a8b907c57
+    bytes: 17051
+    sha256: 015dbd2bddd53bc2f236f8bca6d654b3dc21eea4c2d070105bd28011dd900a32
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineFoundationTests.cs"
     kind: file
     bytes: 25236
@@ -4393,12 +4401,12 @@ artifacts:
     sha256: 236b6a30548b885981a1048de112fa3d8a010e1c7c8d9b8164f40920c507b68b
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10CandidateCoverage.cs"
     kind: file
-    bytes: 7060
-    sha256: 15b7f412567833fc5f533631c72002d07fb381ed4a765d8474eef4c6b98e847e
+    bytes: 7936
+    sha256: 63dc4babb7e66aa4cbf60549d73e6ae0c096514852ebdb85b048b0411c3c19f5
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10ConformanceSetTests.cs"
     kind: file
-    bytes: 10403
-    sha256: 8099e4cbeba61964f300acc78536053ca30c30c58a590af1b6bec7f451483cfb
+    bytes: 10557
+    sha256: c635f8817012d7745e31afac1ff1b2e5a3343d92701e50a30a43a4dda5600fd4
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2CandidateContractTests.cs"
     kind: file
     bytes: 11080
@@ -4763,6 +4771,10 @@ artifacts:
     kind: file
     bytes: 15731
     sha256: 58b3ae5121aefabdd261c153867d4a653f89fce9b880ad005a0a31bea7af8109
+  - path: "tests/Hexalith.Folders.Server.Tests/FoldersHumanCommandCatalogTests.cs"
+    kind: file
+    bytes: 7744
+    sha256: e292efdb3c854cab6b99f084f3a47c7ff47a9ce52b9d1057ecff580e80d98523
   - path: "tests/Hexalith.Folders.Server.Tests/FoldersMutableEndpointSource.cs"
     kind: file
     bytes: 1088
@@ -4777,8 +4789,8 @@ artifacts:
     sha256: 2068f6fa48dfec4889e519fbe02ff95a60ac185d5a7874a84e1d490af1e5ced7
   - path: "tests/Hexalith.Folders.Server.Tests/FoldersProjectionCatalogFixture.cs"
     kind: file
-    bytes: 7443
-    sha256: 2de8648b32d50e7359cd51efbef34c77f03154cf97c14fa5aff8a0c9bca445b1
+    bytes: 7765
+    sha256: c96c6324333c88d691bedab0ee120cd0a9997550ebf777b7213b84c62fe24779
   - path: "tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs"
     kind: file
     bytes: 37418
@@ -4801,8 +4813,8 @@ artifacts:
     sha256: 0f763802a96444c891801d93f13d1f2cf003ceeea25722c56a8581b475196bcf
   - path: "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj"
     kind: file
-    bytes: 2872
-    sha256: b3b0992dc06039586e44acf69b6ee4bc9fc39992965bfb85e377cd48088c7ddb
+    bytes: 2993
+    sha256: 31a277da1fb16dfc7b9fdd58e6e73a047ac40834e49bb1bf70a155a012a32702
   - path: "tests/Hexalith.Folders.Server.Tests/HistoricalMutationAllowingDaprPolicy.cs"
     kind: file
     bytes: 427
@@ -4971,6 +4983,14 @@ artifacts:
     kind: file
     bytes: 7120
     sha256: a0d6406be85d01293b5cfe28c515f19de7a9c5002b9c0a6c52de4546b5188de0
+  - path: "tests/Hexalith.Folders.Server.Tests/Task36FoldDiagnosticObserverTests.cs"
+    kind: file
+    bytes: 7644
+    sha256: 61ee37c7c9d40fc765a4234d3e846fbf8efcbcc2ef191ad45bcbe1b6dbabe07f
+  - path: "tests/Hexalith.Folders.Server.Tests/Task36FoldObservationCollection.cs"
+    kind: file
+    bytes: 289
+    sha256: b3094a64b093cdb5bd9a01d7b7e3b7e684552547df00c0a1c510e5bc196ccbfa
   - path: "tests/Hexalith.Folders.Server.Tests/TransportParityConformanceTests.cs"
     kind: file
     bytes: 37946
@@ -5887,6 +5907,34 @@ artifacts:
     kind: file
     bytes: 9480
     sha256: d8b4ef9712d0134c5bf8f9d337b998b507ecc6d6aa51067e97d9106355ae58d8
+  - path: "tests/tools/Task36FoldObserver/ContentQualificationClock.cs"
+    kind: file
+    bytes: 413
+    sha256: 48237ec74801bae0eeac63eded945e4752c9f0cb191871493413c2ea584055fa
+  - path: "tests/tools/Task36FoldObserver/FoldDiagnosticEventObserver.cs"
+    kind: file
+    bytes: 662
+    sha256: 75a51df7fa7c770b3ca21c97d20972d20045a7e28d200f98683c9be77e3813b9
+  - path: "tests/tools/Task36FoldObserver/FoldDiagnosticObserver.cs"
+    kind: file
+    bytes: 2913
+    sha256: c84687d7fe5ae66b441da83f6578a65900c259bc8d0e025bfc94c0f0cdb82790
+  - path: "tests/tools/Task36FoldObserver/FoldObservationSink.cs"
+    kind: file
+    bytes: 521
+    sha256: 0c4c69e6980bd21b94dae9f23897e576a4954bab6d07b27c344c794e4f9a367f
+  - path: "tests/tools/Task36FoldObserver/StartupHook.cs"
+    kind: file
+    bytes: 286
+    sha256: ed92f9451f3e5a27121c4717410f44cb3e1338e1f64db3ca381b5e391d80081b
+  - path: "tests/tools/Task36FoldObserver/Task36FoldObserver.csproj"
+    kind: file
+    bytes: 521
+    sha256: 8d78c6ccf50922364474c96c44b7bc316ad725e94fa2fa8de5727cf2ecf33e77
+  - path: "tests/tools/Task36FoldObserver/Task36HostingStartup.cs"
+    kind: file
+    bytes: 1419
+    sha256: ecb562f6a28479401f777420c1c4692be8250a7609b6d6c0eb1917bab7d34f5a
   - path: "tests/tools/parity-oracle-generator/Program.cs"
     kind: file
     bytes: 84621

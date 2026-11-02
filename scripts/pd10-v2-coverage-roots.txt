@@ -10,3 +10,4 @@ tests/Hexalith.Folders.IntegrationTests
 tests/Hexalith.Folders.Server.Tests
 tests/Hexalith.Folders.Tests
 tests/shared
+tests/tools/Task36FoldObserver

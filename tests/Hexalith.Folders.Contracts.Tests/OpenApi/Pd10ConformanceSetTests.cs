@@ -106,6 +106,8 @@ public sealed class Pd10ConformanceSetTests
     [InlineData("src/Hexalith.Folders/Aggregates/StreamNameSegment.cs")]
     [InlineData("src/Hexalith.Folders/Hashing/LengthPrefixedHash.cs")]
     [InlineData("src/Hexalith.Folders.Server/Authentication/HumanAuthorityReceiptVerifier.cs")]
+    [InlineData("tests/tools/Task36FoldObserver/Task36FoldObserver.csproj")]
+    [InlineData("tests/tools/Task36FoldObserver/FoldDiagnosticObserver.cs")]
     public void CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency(string removedPath)
     {
         HashSet<string> complete = Pd10CandidateCoverage.RequiredPaths(RepositoryRoot);

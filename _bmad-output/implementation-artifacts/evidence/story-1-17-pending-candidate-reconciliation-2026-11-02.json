@@ -1,0 +1,195 @@
+{
+  "addedPaths": [
+    "src/Hexalith.Folders.Server/FoldersRuntimeCatalogDeclarations.cs",
+    "src/Hexalith.Folders/Routing/FoldersCommandCatalog.cs",
+    "tests/Hexalith.Folders.Server.Tests/FoldersHumanCommandCatalogTests.cs",
+    "tests/Hexalith.Folders.Server.Tests/Task36FoldDiagnosticObserverTests.cs",
+    "tests/Hexalith.Folders.Server.Tests/Task36FoldObservationCollection.cs",
+    "tests/tools/Task36FoldObserver/ContentQualificationClock.cs",
+    "tests/tools/Task36FoldObserver/FoldDiagnosticEventObserver.cs",
+    "tests/tools/Task36FoldObserver/FoldDiagnosticObserver.cs",
+    "tests/tools/Task36FoldObserver/FoldObservationSink.cs",
+    "tests/tools/Task36FoldObserver/StartupHook.cs",
+    "tests/tools/Task36FoldObserver/Task36FoldObserver.csproj",
+    "tests/tools/Task36FoldObserver/Task36HostingStartup.cs"
+  ],
+  "artifactCountAfter": 1490,
+  "artifactCountBefore": 1478,
+  "candidateSetSha256": "7758899601d176951fa28fa41822363bd64be01c04e50f870addf018e8508607",
+  "changedExistingPaths": [
+    ".github/workflows/contract-spine.yml",
+    "scripts/pd10-v2-coverage-roots.txt",
+    "scripts/pd10-v2-story-owned-paths.txt",
+    "scripts/prepare-ci-topology-projects.sh",
+    "scripts/tests/test_prepare_ci_topology_projects.py",
+    "src/Hexalith.Folders.EventStore/Program.cs",
+    "src/Hexalith.Folders.Server/FolderDomainProcessor.cs",
+    "src/Hexalith.Folders.Server/FoldersProjectionCatalogDeclarations.cs",
+    "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs",
+    "src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+    "tests/Hexalith.Folders.Contracts.Tests/Deployment/BaselineCiWorkflowConformanceTests.cs",
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineCiGateTests.cs",
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10CandidateCoverage.cs",
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10ConformanceSetTests.cs",
+    "tests/Hexalith.Folders.Server.Tests/FoldersProjectionCatalogFixture.cs",
+    "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj"
+  ],
+  "commands": [
+    {
+      "command": "python3 -m unittest scripts.tests.test_prepare_ci_topology_projects -v",
+      "exitCode": 0,
+      "result": "26/26 on final fca62842... script bytes; earlier pre-edit 26/26 is superseded"
+    },
+    {
+      "command": "dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseHexalithProjectReferences=false -m:1 -warnaserror",
+      "exitCode": 1,
+      "result": "Canceled after concurrent CI inputs changed; diagnostic only, no current full-solution qualification"
+    },
+    {
+      "command": "dotnet build tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --configuration Release -p:UseHexalithProjectReferences=false --no-restore -m:1 -warnaserror",
+      "exitCode": 0,
+      "result": "Final focused build; 0 warnings, 0 errors"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll -noLogo -noColor -class 'Hexalith.Folders.Server.Tests.FoldersHumanCommandCatalogTests' -class 'Hexalith.Folders.Server.Tests.Task36FoldDiagnosticObserverTests' -class 'Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests' -class 'Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests' -class 'Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests'",
+      "exitCode": 0,
+      "result": "57 total, 57 passed, no failures/skips; existing Release binaries for unchanged server/integration source"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll -noLogo -noColor -class 'Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests'",
+      "exitCode": 0,
+      "result": "19 total, 19 passed, no failures/skips; existing Release binary for unchanged routing source"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor -class 'Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests' -class 'Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests' -class 'Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests' -class 'Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests'",
+      "exitCode": 0,
+      "result": "27 total, 27 passed, no failures/skips; after first focused build on CI input hash snapshot"
+    },
+    {
+      "command": "python3 scripts/generate-pd10-v2-conformance-set.py --repository-root /home/administrator/projects/hexalith/folders --output /tmp/story117-inventory-a.yaml",
+      "exitCode": 0,
+      "result": "1490 rows; raw SHA-256 2c872d769456c344f8307ecf287116819ef1f962c1992ac0b8b11e71e90783fc"
+    },
+    {
+      "command": "python3 scripts/generate-pd10-v2-conformance-set.py --repository-root /home/administrator/projects/hexalith/folders --output /tmp/story117-inventory-b.yaml",
+      "exitCode": 0,
+      "result": "Byte identical to first scratch generation"
+    },
+    {
+      "command": "python3 _bmad-output/implementation-artifacts/evidence/verify-story-1-17-current-inventory-2026-11-02.py",
+      "exitCode": 0,
+      "result": "1490/1490 rows, ordered set, pending controls, 8 protected files and 3 concurrent CI input hashes pass"
+    },
+    {
+      "command": "python3 -O _bmad-output/implementation-artifacts/evidence/verify-story-1-17-current-inventory-2026-11-02.py",
+      "exitCode": 0,
+      "result": "Same independent results under optimized Python"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor -class 'Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests'",
+      "exitCode": 0,
+      "result": "18/18; includes two new transitive tool omission cases"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor -class 'Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests' -class 'Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests' -class 'Hexalith.Folders.Contracts.Tests.OpenApi.ProviderCompatibilityCatalogContractTests'",
+      "exitCode": 0,
+      "result": "227/227"
+    },
+    {
+      "command": "pwsh tests/tools/run-contract-parity-ci-gates.ps1 -SkipRestoreBuild -OutputReportPath /tmp/story117-inventory-parity-report.json",
+      "exitCode": 0,
+      "result": "12/12 categories passed; report status passed"
+    },
+    {
+      "command": "pwsh tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild",
+      "exitCode": 0,
+      "result": "Governance class passes 23/23 + 7/7 + 3/3; generated latest.json remains byte-identical to HEAD"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "result": "No whitespace errors"
+    }
+  ],
+  "concurrentCiInputHashes": {
+    ".github/workflows/contract-spine.yml": "d8ea375bacba39fd5435100a2311f91a6f089773aca2c31e04782dced12bd705",
+    "scripts/tests/test_prepare_ci_topology_projects.py": "fca6284205fb5d8770adcbe66085f52690a86fe416a178a9da5c46cc1c142779",
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineCiGateTests.cs": "015dbd2bddd53bc2f236f8bca6d654b3dc21eea4c2d070105bd28011dd900a32"
+  },
+  "controls": {
+    "activationAuthority": null,
+    "routeMode": "V1Only",
+    "stagingChecksExecuted": 0,
+    "t0": null,
+    "tracker": "backlog"
+  },
+  "manifestPath": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml",
+  "manifestSha256": "2c872d769456c344f8307ecf287116819ef1f962c1992ac0b8b11e71e90783fc",
+  "noRemoteOperations": true,
+  "noStageCommitPush": true,
+  "pendingControls": {
+    "approval_status": "pending-a6b",
+    "governance_status": "candidate-awaiting-a6b",
+    "production_exposure": "disabled",
+    "production_routed": "false",
+    "source_identity_qualification": "pending-after-approved-v1-addition",
+    "story_closure_claimed": "false"
+  },
+  "platformMapping": {
+    "nestedDeclarationPresent": false,
+    "owner": "Platform/Parties composition owner; explicit revision-bound direct input declaration required",
+    "platformDirectPartiesGitlink": "f4285584dce0dfa08e3336fca3c203a1b5e748c6",
+    "platformGitlinkAndCheckout": "3d344e850471b6a21fc4649df7ede9a0390689b1",
+    "retainedFirstFailingGate": "Strict Platform Release composition-test build fails on CA2007 analyzer errors; analyzer-disabled diagnostic then fails canonical graph before Describe because direct nested Parties module declaration is unavailable. Not rerun; exact Platform revision and input mismatch unchanged from prior receipt.",
+    "rootPartiesGitlink": "d06c316fd57cbfaa0b80cf8622ec0b8ec571c6a0"
+  },
+  "preservedPrefixBeforeAppend": {
+    "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": {
+      "bytes": 113874,
+      "sha256": "9e66a9269407abe2c7cf448b05e93c26c8fddd27097b02347d13926396a28e38"
+    },
+    "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md": {
+      "bytes": 239240,
+      "sha256": "cf12b72c2cbea9cf14dbdc9d464c18259d6202f661b7e1810ed73f4c0521db6d"
+    }
+  },
+  "priorManifestSha256": "ddce3ae7f0c4f1920b23d7a1e309b2bba96f8b36bfbf097d3a596144fd7ba748",
+  "protectedHashes": {
+    ".github/workflows/release.yml": "d6a69c9be2a657e02a35ee2d8109d8d3658299102ae157e816ff08ceac6d2345",
+    ".gitmodules": "c9daa495deb0a5903771cbbfeef10f6d376a3e521c8f6ad7447aae689c5bcf37",
+    "_bmad-output/implementation-artifacts/sprint-status.yaml": "7369c8a90ac5f1514fdf5ab5eab5e900759913850f3fe8730f984036d9e057f4",
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+    "_bmad-output/planning-artifacts/planning-story-manifest.yaml": "ba04ee232dcf74da85127af481336c8a17539cf7b0a17e4b1e95bba7aab84837",
+    "docs/contract/authorization-matrix.md": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420",
+    "src/Hexalith.Folders.Server/FoldersApiRouting.cs": "5eaf1a36aaebd3039cba6279bb3d94396b2202801407036d2b3bd5caba0d89ce",
+    "tools/release-packages.json": "f220b06f663b74a3d07af21d2ab5f513f6924677ea843a40d2303084e6d8cce2"
+  },
+  "recordId": "story-1-17-pending-candidate-reconciliation-2026-11-02",
+  "recordedAtUtc": "2026-11-02T13:48:18.470306+00:00",
+  "remainingBlockers": [
+    "Pending inventory is local source consistency only; no A6b/Section 9/A8 approval transfers to these bytes",
+    "Current full candidate is not an exact signed released pair or immutable hosted artifact",
+    "Platform direct Parties declaration and strict composition gate remain unresolved",
+    "Attempt-bound target/data and consumer disposition, hosted identity/delegation, staging, observation/recovery and closure decision remain absent"
+  ],
+  "removedPaths": [],
+  "rootHead": "4f41f84dbc21c501fb5ebcfae8ce1143e0905097",
+  "scope": "Current pending PD10 candidate inventory only; local source/behavior checks; no approval or operational activation",
+  "scratchGenerations": {
+    "byteEqual": true,
+    "first": "/tmp/story117-inventory-a.yaml",
+    "second": "/tmp/story117-inventory-b.yaml",
+    "sha256": "2c872d769456c344f8307ecf287116819ef1f962c1992ac0b8b11e71e90783fc"
+  },
+  "status": "LOCAL_PENDING_INVENTORY_CONSISTENT__ROLLOUT_HOLD",
+  "toolCompileClosure": {
+    "addedToolInputs": 7,
+    "guard": "scripts/pd10-v2-coverage-roots.txt plus independent ProjectReference traversal in tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10CandidateCoverage.cs",
+    "referencedProject": "tests/tools/Task36FoldObserver/Task36FoldObserver.csproj",
+    "sourceProject": "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj"
+  },
+  "verifier": {
+    "path": "_bmad-output/implementation-artifacts/evidence/verify-story-1-17-current-inventory-2026-11-02.py",
+    "sha256": "4cccdaa38562380c4bce890bdedfd1d1e45cb12a3207954f2802825ad6f82816"
+  }
+}
