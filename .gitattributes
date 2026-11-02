@@ -92,3 +92,16 @@ _bmad-output/implementation-artifacts/evidence/story-1-17-current-debug-distribu
 
 # Preserve additive production model qualification commands, receipts and capsules.
 _bmad-output/implementation-artifacts/evidence/story-1-17-production-source-model-2026-10-30* -text
+
+# Preserve the exact Story 1.17 hosted graph qualification bytes and hashes.
+_bmad-output/implementation-artifacts/evidence/story-1-17-platform-hosted-graph-qualification-2026-11-02* -text
+_bmad-output/implementation-artifacts/evidence/story-1-17-platform-hosted-graph-qualification-2026-11-02/** -text whitespace=cr-at-eol
+_bmad-output/implementation-artifacts/evidence/story-1-17-platform-hosted-graph-qualification-2026-11-02/platform-source-diff.patch -text -whitespace
+
+# Preserve the post-commit qualification addendum and its exact logs.
+_bmad-output/implementation-artifacts/evidence/story-1-17-committed-candidate-2026-11-02.json -text
+_bmad-output/implementation-artifacts/evidence/story-1-17-committed-candidate-2026-11-02/** -text whitespace=cr-at-eol
+
+# Preserve the revision-bound merged-main qualification and exact result bytes.
+_bmad-output/implementation-artifacts/evidence/story-1-17-merged-main-2026-11-02.json -text
+_bmad-output/implementation-artifacts/evidence/story-1-17-merged-main-2026-11-02/** -text whitespace=cr-at-eol

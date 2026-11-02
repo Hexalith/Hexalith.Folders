@@ -4,6 +4,7 @@ using Hexalith.EventStore.Aspire;
 using Hexalith.Folders.Aspire;
 using Hexalith.Memories.Aspire;
 using Hexalith.Tenants.Aspire;
+using Microsoft.Extensions.Configuration;
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
@@ -28,7 +29,8 @@ HexalithEventStoreResources eventStoreResources = builder.AddHexalithEventStore(
     adminServerDaprConfigPath: null,
     resiliencyConfigPath: resiliencyConfigPath,
     stateStoreComponentPath: stateStoreComponentPath,
-    pubSubComponentPath: pubSubComponentPath);
+    pubSubComponentPath: pubSubComponentPath,
+    eventStoreDaprHttpPort: builder.Configuration.GetValue<int?>("Folders:EventStoreDaprHttpPort") ?? 3501);
 IResourceBuilder<ProjectResource> eventStore = eventStoreResources.EventStore;
 
 // Keep local admission identities stable across AppHost restarts. The generated

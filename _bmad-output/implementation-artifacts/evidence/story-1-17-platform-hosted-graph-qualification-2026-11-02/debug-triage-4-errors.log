@@ -1,0 +1,88 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Hexalith.Builds.Tooling.csproj (in 515 ms).
+  Restored /tmp/hexalith-story-1-17-checkouts/Hexalith.Memories/src/Hexalith.Memories.EventStore/Hexalith.Memories.EventStore.csproj (in 595 ms).
+  Restored /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj (in 601 ms).
+  Restored /tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj (in 498 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Custody.Component/Hexalith.Platform.Custody.Component.csproj (in 604 ms).
+  Restored /tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants/src/Hexalith.Tenants.Server/Hexalith.Tenants.Server.csproj (in 548 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Custody/Hexalith.Platform.Custody.csproj (in 525 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Identity/Hexalith.Platform.Identity.csproj (in 624 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.EventStoreHost/Hexalith.Platform.EventStoreHost.csproj (in 610 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/Hexalith.Platform.Secrets.Runtime.csproj (in 23 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.EventStoreHost/Hexalith.Builds.Module.EventStoreHost.csproj (in 548 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Works.Runtime/Hexalith.Platform.Works.Runtime.csproj (in 609 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj (in 580 ms).
+  Restored /tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj (in 553 ms).
+  Restored /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj (in 612 ms).
+  Restored /tmp/hexalith-story-1-17-checkouts/Hexalith.Memories/src/Hexalith.Memories.EventStoreExtensions/Hexalith.Memories.EventStoreExtensions.csproj (in 75 ms).
+  Restored /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/Hexalith.EventStore.Admin.Abstractions.csproj (in 15 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Protection/Hexalith.Platform.Protection.csproj (in 161 ms).
+  Restored /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Gateway/Hexalith.EventStore.Gateway.csproj (in 17 ms).
+  Restored /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj (in 110 ms).
+  Restored /tmp/hexalith-story-1-17-checkouts/Hexalith.Memories/src/Hexalith.Memories.DomainService/Hexalith.Memories.DomainService.csproj (in 25 ms).
+  Restored /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj (in 126 ms).
+  Restored /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Aspire/Hexalith.EventStore.Aspire.csproj (in 114 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj (in 365 ms).
+  11 of 35 projects are up-to-date for restore.
+  Hexalith.Commons.UniqueIds -> /home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll
+  Hexalith.EventStore.Contracts -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll
+  Hexalith.McpCli.Analyzers -> /tmp/hexalith-story-1-17-checkouts/Hexalith.McpCli/src/Hexalith.McpCli.Analyzers/bin/Debug/netstandard2.0/Hexalith.McpCli.Analyzers.dll
+  Hexalith.McpCli.Abstractions -> /tmp/hexalith-story-1-17-checkouts/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll
+  Hexalith.Commons.UniqueIds -> /home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll
+  Hexalith.Tenants.Contracts -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll
+  Hexalith.Memories.Contracts -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Memories/src/Hexalith.Memories.Contracts/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll
+  Hexalith.EventStore.Contracts -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll
+  Hexalith.EventStore.Client -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Client/bin/Debug/net10.0/Hexalith.EventStore.Client.dll
+  Hexalith.EventStore.ServiceDefaults -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll
+  Hexalith.EventStore.Aspire -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Aspire/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll
+  Platform version catalog validated: Hexalith.EventStore.Aspire/3.132.2, CommunityToolkit.Aspire.Hosting.Dapr/13.6.2-beta.959, required range 13.6.2-beta.959 for net10.0.
+  Hexalith.Builds.Tooling -> /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/bin/Debug/net10.0/Hexalith.Builds.Tooling.dll
+  Hexalith.EventStore.DomainService -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll
+  Hexalith.Platform.Works.Runtime -> /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Works.Runtime/bin/Debug/net10.0/Hexalith.Platform.Works.Runtime.dll
+  Hexalith.Platform.Custody -> /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Custody/bin/Debug/net10.0/Hexalith.Platform.Custody.dll
+  Hexalith.Platform.Custody.Component -> /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Custody.Component/bin/Debug/net10.0/Hexalith.Platform.Custody.Component.dll
+  Hexalith.Platform.Secrets.Runtime -> /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/bin/Debug/net10.0/Hexalith.Platform.Secrets.Runtime.dll
+  Hexalith.McpCli.Analyzers -> /tmp/hexalith-story-1-17-checkouts/Hexalith.McpCli/src/Hexalith.McpCli.Analyzers/bin/Debug/netstandard2.0/Hexalith.McpCli.Analyzers.dll
+  Hexalith.McpCli.Abstractions -> /tmp/hexalith-story-1-17-checkouts/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll
+  Hexalith.Platform.Composition -> /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Composition/bin/Debug/net10.0/Hexalith.Platform.Composition.dll
+  Hexalith.EventStore.Admin.Abstractions -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll
+  Hexalith.EventStore.Server -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Server/bin/Debug/net10.0/Hexalith.EventStore.Server.dll
+  Hexalith.EventStore.Gateway -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Gateway/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll
+  Hexalith.Platform.Identity -> /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Identity/bin/Debug/net10.0/Hexalith.Platform.Identity.dll
+  Hexalith.Platform.Protection -> /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.Protection/bin/Debug/net10.0/Hexalith.Platform.Protection.dll
+  Hexalith.Platform.EventStoreHost -> /home/administrator/projects/hexalith/folders/references/Hexalith.Platform/src/Hexalith.Platform.EventStoreHost/bin/Debug/net10.0/Hexalith.Platform.EventStoreHost.dll
+  Hexalith.Builds.Module.EventStoreHost -> /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.EventStoreHost/bin/Debug/net10.0/Hexalith.Builds.Module.EventStoreHost.dll
+  Hexalith.Tenants.Contracts -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll
+  Hexalith.EventStore.Client -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Client/bin/Debug/net10.0/Hexalith.EventStore.Client.dll
+  Hexalith.EventStore.ServiceDefaults -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll
+  Hexalith.EventStore.DomainService -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll
+  Hexalith.EventStore.Server -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Server/bin/Debug/net10.0/Hexalith.EventStore.Server.dll
+  Hexalith.Tenants.Server -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Debug/net10.0/Hexalith.Tenants.Server.dll
+  Hexalith.EventStore.Admin.Abstractions -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll
+  Hexalith.EventStore.Gateway -> /tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore/src/Hexalith.EventStore.Gateway/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll
+  Hexalith.Tenants -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.dll
+  Hexalith.Parties.Contracts -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Parties/src/Hexalith.Parties.Contracts/bin/Debug/net10.0/Hexalith.Parties.Contracts.dll
+  Hexalith.Parties.Authentication -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Parties/src/Hexalith.Parties.Authentication/bin/Debug/net10.0/Hexalith.Parties.Authentication.dll
+  Hexalith.Parties.Projections -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Parties/src/Hexalith.Parties.Projections/bin/Debug/net10.0/Hexalith.Parties.Projections.dll
+  Hexalith.Parties.Security -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Parties/src/Hexalith.Parties.Security/bin/Debug/net10.0/Hexalith.Parties.Security.dll
+  Hexalith.Parties -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Parties/src/Hexalith.Parties/bin/Debug/net10.0/Hexalith.Parties.dll
+  Hexalith.Memories.EventStore -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Memories/src/Hexalith.Memories.EventStore/bin/Debug/net10.0/Hexalith.Memories.EventStore.dll
+  Hexalith.Memories.DomainService -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Memories/src/Hexalith.Memories.DomainService/bin/Debug/net10.0/Hexalith.Memories.DomainService.dll
+  Hexalith.Parties.EventStoreExtensions -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Parties/src/Hexalith.Parties.EventStoreExtensions/bin/Debug/net10.0/Hexalith.Parties.EventStoreExtensions.dll
+  Hexalith.Memories.EventStoreExtensions -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Memories/src/Hexalith.Memories.EventStoreExtensions/bin/Debug/net10.0/Hexalith.Memories.EventStoreExtensions.dll
+  Hexalith.Tenants.Server -> /tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Debug/net10.0/Hexalith.Tenants.Server.dll
+/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformCatalogOwnerParity.cs(30,19): error CA2007: Consider calling ConfigureAwait on the awaited task (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca2007) [/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj]
+/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformCatalogOwnerParity.cs(49,30): error CA2007: Consider calling ConfigureAwait on the awaited task (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca2007) [/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj]
+/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformCatalogOwnerParity.cs(55,35): error CA2007: Consider calling ConfigureAwait on the awaited task (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca2007) [/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj]
+/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformNativeTestPreparationTests.cs(124,13): error CA1062: In externally visible method 'Task PlatformNativeTestPreparationTests.CompleteActivationValidationRunsBeforeSourceProgressAndCredentialsAsync(string mutation)', validate parameter 'mutation' is non-null before using it. If appropriate, throw an 'ArgumentNullException' when the argument is 'null'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1062) [/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj]
+
+Build FAILED.
+
+/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformCatalogOwnerParity.cs(30,19): error CA2007: Consider calling ConfigureAwait on the awaited task (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca2007) [/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj]
+/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformCatalogOwnerParity.cs(49,30): error CA2007: Consider calling ConfigureAwait on the awaited task (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca2007) [/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj]
+/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformCatalogOwnerParity.cs(55,35): error CA2007: Consider calling ConfigureAwait on the awaited task (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca2007) [/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj]
+/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformNativeTestPreparationTests.cs(124,13): error CA1062: In externally visible method 'Task PlatformNativeTestPreparationTests.CompleteActivationValidationRunsBeforeSourceProgressAndCredentialsAsync(string mutation)', validate parameter 'mutation' is non-null before using it. If appropriate, throw an 'ArgumentNullException' when the argument is 'null'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1062) [/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj]
+    0 Warning(s)
+    4 Error(s)
+
+Time Elapsed 00:03:28.22

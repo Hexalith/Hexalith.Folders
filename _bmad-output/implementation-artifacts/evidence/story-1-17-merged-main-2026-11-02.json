@@ -1,0 +1,268 @@
+{
+  "recordId": "story-1-17-merged-main-2026-11-02",
+  "recordedAtUtc": "2026-11-02T17:49:28.842715+00:00",
+  "status": "PLATFORM_LOCAL_HOSTED_GRAPH_QUALIFIED_FOLDERS_STRICT_BUILD_BLOCKED",
+  "platformMainBaseline": "c635a2dc22f404d97c9fe7e27f7e7f4c9017943b",
+  "reviewedPlatformCandidate": "d891af161e9eb6eabc535e0ba50f910d0b323ca8",
+  "platformMergeCommit": "759bb89753de7e70cb0b0db61c7142e96ec5bac0",
+  "platformMapping": "eng/story-1-17-main-reference-mapping.json",
+  "platformMappingSha256": "0246bc7b41b28bde97199133b790477b8c9cdb4018eafa6cde888b6f5c26feb4",
+  "ownerApproval": "Approve current main tuple (Recommended), local qualification only; no publish or deploy",
+  "ownerRows": [
+    {
+      "owner": "EventStore",
+      "platformDirectRevision": "a3dbec2f8b6150a3ee33dcbfc2b6bf2fec274625",
+      "exportRevision": "a3dbec2f8b6150a3ee33dcbfc2b6bf2fec274625",
+      "declarationSha256": "21eda6da824d5ae6135ff342dd8a5aae950b02420319b953a836dddeb00ce495",
+      "exportRoot": "/tmp/hexalith-merge-all-20261102/direct/Hexalith.EventStore",
+      "rootSiblingSelected": false
+    },
+    {
+      "owner": "Tenants",
+      "platformDirectRevision": "b7824e4bba174b3a459364af24c99dedaf8f0738",
+      "exportRevision": "b7824e4bba174b3a459364af24c99dedaf8f0738",
+      "declarationSha256": "1588f3428ec29296c452fdd35bf95146142315aad3ad8ceb934e7a791f1fb522",
+      "exportRoot": "/tmp/hexalith-merge-all-20261102/direct/Hexalith.Tenants",
+      "rootSiblingSelected": false
+    },
+    {
+      "owner": "Memories",
+      "platformDirectRevision": "8aee7a1323160cb39d7b1415256dbfdcb032939a",
+      "exportRevision": "8aee7a1323160cb39d7b1415256dbfdcb032939a",
+      "declarationSha256": "56f6dc8134d3f7cea06910e923a4736a450e00241e8e4a565ac9226897881840",
+      "exportRoot": "/tmp/hexalith-merge-all-20261102/direct/Hexalith.Memories",
+      "rootSiblingSelected": false
+    },
+    {
+      "owner": "Parties",
+      "platformDirectRevision": "1d3576084ced39ec5104dac409becdbdd1c8635f",
+      "exportRevision": "1d3576084ced39ec5104dac409becdbdd1c8635f",
+      "declarationSha256": "86002eeb916c77bd753a3c618ce394125794baf421315604c9f551b762624504",
+      "exportRoot": "/tmp/hexalith-merge-all-20261102/direct/Hexalith.Parties",
+      "rootSiblingSelected": false
+    }
+  ],
+  "repositoryMerges": {
+    "EventStore": {
+      "mainCommit": "ff5a38f5b80d66bafbac9ddc2388510534fb0ddd",
+      "candidate": "6e498d1efcab4d82917eff25433dbf4efc291803",
+      "result": "Already incorporated upstream: all 15 source/test paths changed by the candidate merge tree match current EventStore main byte-for-byte. No duplicate merge was pushed."
+    },
+    "Tenants": {
+      "mainBaseline": "608e91460c9cbf0770672b13634af334bc885972",
+      "candidate": "0416f4329a27847485cc9cbe7ec27c580b528c7d",
+      "mergeCommit": "93a5aa8385cc65c73b850738643d7f8204ee52da"
+    },
+    "Platform": {
+      "mainBaseline": "c635a2dc22f404d97c9fe7e27f7e7f4c9017943b",
+      "candidate": "d891af161e9eb6eabc535e0ba50f910d0b323ca8",
+      "mergeCommit": "759bb89753de7e70cb0b0db61c7142e96ec5bac0"
+    },
+    "Folders": {
+      "mainBaseline": "0985d8a5b0eccf22f386f09e890234f482e33339",
+      "candidate": "996dbbec5f12b66bca186c5dfe2741811c88a583",
+      "gitlinksPreparedForMergedOwnerCommits": true
+    }
+  },
+  "verification": [
+    {
+      "id": "platform-strict-release",
+      "command": "dotnet build tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj --configuration Release -p:UseHexalithProjectReferences=false -p:HexalithBuildsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds -p:HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons -m:1 -nr:false -warnaserror",
+      "exitCode": 0,
+      "result": "Build succeeded; 0 warnings, 0 errors",
+      "log": "platform-strict-release.log"
+    },
+    {
+      "id": "platform-exact-source-debug",
+      "command": "dotnet build tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreRoot=/tmp/hexalith-merge-all-20261102/direct/Hexalith.EventStore -p:HexalithTenantsRoot=/tmp/hexalith-merge-all-20261102/direct/Hexalith.Tenants -p:HexalithMemoriesRoot=/tmp/hexalith-merge-all-20261102/direct/Hexalith.Memories -p:HexalithPartiesRoot=/tmp/hexalith-merge-all-20261102/direct/Hexalith.Parties -p:HexalithBuildsRoot=/tmp/hexalith-merge-all-20261102/direct/Hexalith.Builds -p:HexalithCommonsRoot=/tmp/hexalith-merge-all-20261102/direct/Hexalith.Commons -p:HexalithFrontComposerRoot=/tmp/hexalith-merge-all-20261102/direct/Hexalith.FrontComposer -p:HexalithMcpCliRoot=/tmp/hexalith-merge-all-20261102/direct/Hexalith.McpCli -p:HexalithPlatformRoot=/tmp/hexalith-merge-all-20261102/Hexalith.Platform -p:HexalithBuildPackageVersions1=/tmp/hexalith-merge-all-20261102/direct/Hexalith.Builds/Props/Directory.Packages.props -p:HexalithContainerProvenanceTargets=/tmp/hexalith-merge-all-20261102/direct/Hexalith.Builds/Props/ContainerProvenance.targets -m:1 -nr:false -warnaserror",
+      "exitCode": 0,
+      "result": "Build succeeded; 0 warnings, 0 errors on the committed Platform merge after one generated Commons ref-DLL retry",
+      "log": "platform-exact-source-debug.log"
+    },
+    {
+      "id": "platform-hosted-postcommit",
+      "command": "env HEXALITH_PLATFORM_HOSTED_EVENTSTORE_ROOT=/tmp/hexalith-merge-all-20261102/direct/Hexalith.EventStore HEXALITH_PLATFORM_HOSTED_TENANTS_ROOT=/tmp/hexalith-merge-all-20261102/direct/Hexalith.Tenants HEXALITH_PLATFORM_HOSTED_MEMORIES_ROOT=/tmp/hexalith-merge-all-20261102/direct/Hexalith.Memories HEXALITH_PLATFORM_HOSTED_PARTIES_ROOT=/tmp/hexalith-merge-all-20261102/direct/Hexalith.Parties dotnet tests/Hexalith.Platform.Composition.Tests/bin/Release/net10.0/Hexalith.Platform.Composition.Tests.dll -class Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests -result-xml /tmp/story117-platform-merged-v2-hosted.xml",
+      "exitCode": 0,
+      "result": "16 passed of 16; 0 errors, failures, skips, or not-run; executed at committed Platform merge HEAD",
+      "log": "platform-hosted-postcommit.log",
+      "xml": "platform-hosted-postcommit.xml"
+    },
+    {
+      "id": "platform-graph-postcommit",
+      "command": "env HEXALITH_PLATFORM_HOSTED_EVENTSTORE_ROOT=/tmp/hexalith-merge-all-20261102/direct/Hexalith.EventStore HEXALITH_PLATFORM_HOSTED_TENANTS_ROOT=/tmp/hexalith-merge-all-20261102/direct/Hexalith.Tenants HEXALITH_PLATFORM_HOSTED_MEMORIES_ROOT=/tmp/hexalith-merge-all-20261102/direct/Hexalith.Memories HEXALITH_PLATFORM_HOSTED_PARTIES_ROOT=/tmp/hexalith-merge-all-20261102/direct/Hexalith.Parties dotnet run --project eng/mcpcli-operator-setup/graph-export/GraphExport.csproj --configuration Release -p:UseHexalithProjectReferences=false -p:UseNuGetDeps=true -p:HexalithBuildsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds -p:HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons -p:HexalithBuildPackageVersions1=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/Props/Directory.Packages.props -- \"$PWD\" /tmp/story117-platform-merged-v2-graph.json",
+      "exitCode": 0,
+      "result": "Export SHA-256 820d410e1a892f13b64325d08d18358226c4f9e046328964acbbf1a8b2de6e55; matches prior maintained reference graph",
+      "graph": "platform-graph-postcommit.json"
+    },
+    {
+      "id": "eventstore-focused",
+      "result": "Current EventStore main ff5a38f5: strict Release build succeeded with 0 warnings/errors; 113/113 focused native source, controller, metadata, gateway tests passed",
+      "buildLog": "eventstore-strict-release.log",
+      "testLog": "eventstore-focused.log",
+      "buildCommand": "dotnet build tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj -c Release -p:UseHexalithProjectReferences=false -p:UseNuGetDeps=true -p:HexalithBuildPackageVersions1=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/Props/Directory.Packages.props -m:1 -nr:false -warnaserror",
+      "testCommand": "dotnet tests/Hexalith.EventStore.Server.Tests/bin/Release/net10.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests -class Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests -class Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests -class Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests -class Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests"
+    },
+    {
+      "id": "tenants-focused",
+      "result": "Merged Tenants main 93a5aa8 against EventStore main ff5a38f5: Debug source rebuild succeeded with 0 warnings/errors; 25/25 global administrator authority tests passed",
+      "buildLog": "tenants-strict-debug.log",
+      "testLog": "tenants-authority.log",
+      "buildCommand": "dotnet build tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreRoot=/tmp/hexalith-merge-all-20261102/main/Hexalith.EventStore -p:HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons -p:HexalithBuildsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds -p:HexalithBuildPackageVersions1=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/Props/Directory.Packages.props -p:HexalithContainerProvenanceTargets=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/Props/ContainerProvenance.targets -p:EventStoreVersion=4.0.0 -p:HexalithEventStoreVersion=4.0.0 -m:1 -nr:false -warnaserror -t:Rebuild",
+      "testCommand": "dotnet tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll -class Hexalith.Tenants.Server.Tests.Authorization.TenantsGlobalAdministratorAuthorityTests"
+    },
+    {
+      "id": "tenants-bootstrap-broader",
+      "result": "Merged Tenants main 93a5aa8 against EventStore main ff5a38f5: 203/205 passed; 2 failed (delegated credential claim and expected tenant identity). The two corresponding tests also failed on isolated prior Tenants main with timeouts; no broad pass claimed.",
+      "exitCode": 1,
+      "log": "tenants-bootstrap.log",
+      "baselineLog": "tenants-main-baseline-two.log",
+      "command": "dotnet tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll -class Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapHostedServiceTests"
+    },
+    {
+      "id": "folders-strict-release-blocker",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Release -p:UseHexalithProjectReferences=false -p:UseNuGetDeps=true -p:HexalithTenantsRoot=/tmp/hexalith-merge-all-20261102/Hexalith.Tenants -p:HexalithEventStoreRoot=/tmp/hexalith-merge-all-20261102/main/Hexalith.EventStore -p:HexalithBuildsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds -p:HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons -p:HexalithBuildPackageVersions1=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/Props/Directory.Packages.props -p:HexalithContainerProvenanceTargets=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/Props/ContainerProvenance.targets -m:1 -nr:false -warnaserror",
+      "exitCode": 1,
+      "result": "Final unmodified AppHost test project fails CS0246: RouteCatalogInvocationScope cannot be found when the selected merged Tenants host is compiled against Folders' package-mode EventStore catalog.",
+      "log": "folders-strict-release-blocker.log"
+    }
+  ],
+  "qualificationNotes": [
+    "No Platform nested submodule was initialized. The four exact owner commits were exported as detached Git worktrees outside Platform references.",
+    "Memories checkout applied CRLF to its tracked declaration despite the approved Git blob digest. The temporary export declaration was restored byte-for-byte from HEAD:module/hexalith.module-manifest.v2.json before hosted verification; git diff --quiet HEAD remained 0.",
+    "The first exact-source Debug attempt on final Platform merge hit a missing generated Commons ref DLL. The same command succeeded on retry with zero warnings/errors; both logs are retained.",
+    "The original user edit in Folders main FolderDurabilityAcceptanceFixture.cs was excluded from the isolated merge and preserved.",
+    "Folders package-mode test-target diagnostics were run without changing its authoritative Builds catalog. The temporary test-project adjustment was removed before the final strict build and merge."
+  ],
+  "controls": {
+    "routeMode": "V1Only",
+    "t0": null,
+    "activationAuthority": null,
+    "tracker": "backlog",
+    "historicalApprovalsPreserved": true,
+    "nestedSubmodulesInitialized": false,
+    "publication": false,
+    "deployment": false
+  },
+  "remainingBlockers": [
+    "Folders strict Release AppHost.Tests build fails CS0246 in merged Tenants source: RouteCatalogInvocationScope is absent from the Folders package-mode EventStore selection. Folders authoritative Builds catalog selects EventStore.Aspire 3.132.2, while current Tenants Contracts require the coordinated EventStore 4.0.0 and McpCli 2.0.0 cohort. An ad hoc 4.0.0 override was rejected by the catalog. A coherent, reviewed dependency migration is required.",
+    "The temporary source-bound Folders diagnostic build passed, but the selected-owner catalog model still failed 1/4 because the complete compiled declaration inventory could not be read. This is not a passing final-tree test.",
+    "Tenants bootstrap class has 2/205 failures. The same two tests failed on isolated prior Tenants main with different reasons; broad Tenants regression remains unqualified.",
+    "The separate Platform Protection.Tests project remains blocked by 186 analyzer/test fixture errors from prior candidate evidence; no Protection.Tests pass is claimed.",
+    "Story 12.2 live task acceptance and Story 1.17 release/intake/staging/activation and operational acceptance remain open. No publish or deploy was performed."
+  ],
+  "members": {
+    "eventstore-focused.log": {
+      "path": "story-1-17-merged-main-2026-11-02/eventstore-focused.log",
+      "bytes": 476,
+      "sha256": "55c7d6251f008509b93ba3274ac94967267db6bbcb79baaa864ee5923ccfc811"
+    },
+    "eventstore-strict-release.log": {
+      "path": "story-1-17-merged-main-2026-11-02/eventstore-strict-release.log",
+      "bytes": 4908,
+      "sha256": "5b499977c2f8dd438f4fa546954a1da426b858df7262797b85af58bb5abf2be9"
+    },
+    "folders-diagnostic-appchannel.log": {
+      "path": "story-1-17-merged-main-2026-11-02/folders-diagnostic-appchannel.log",
+      "bytes": 464,
+      "sha256": "6eb01bf46f42d8118d533fd64fb260235587d189e4a2f610622575da5ba61d85"
+    },
+    "folders-diagnostic-catalog-model-final-owners.log": {
+      "path": "story-1-17-merged-main-2026-11-02/folders-diagnostic-catalog-model-final-owners.log",
+      "bytes": 2858,
+      "sha256": "3c63114a75de053ca7a22c749c99daadaeb2649a1d6067032fc16cec269b5879"
+    },
+    "folders-diagnostic-catalog-model.log": {
+      "path": "story-1-17-merged-main-2026-11-02/folders-diagnostic-catalog-model.log",
+      "bytes": 2858,
+      "sha256": "e7539715d8058319b008c810bfb6da71f1089c52bd8f7dad2c45f8511d134a5b"
+    },
+    "folders-diagnostic-source-build.log": {
+      "path": "story-1-17-merged-main-2026-11-02/folders-diagnostic-source-build.log",
+      "bytes": 6097,
+      "sha256": "81b68e697a03f5be7adad76e3b74ef27cc61bca18e5b808ef3fdc8e1a7980f4b"
+    },
+    "folders-package-override-rejected.log": {
+      "path": "story-1-17-merged-main-2026-11-02/folders-package-override-rejected.log",
+      "bytes": 6015,
+      "sha256": "502f1f63cf635125901ab0594a82d9fd0eac80240c174aa732133584619405cd"
+    },
+    "folders-strict-release-blocker.log": {
+      "path": "story-1-17-merged-main-2026-11-02/folders-strict-release-blocker.log",
+      "bytes": 3708,
+      "sha256": "19a95391035b80ef931a198907614f940ca00f1282ea46227dc581c95bc7b434"
+    },
+    "platform-exact-source-debug.log": {
+      "path": "story-1-17-merged-main-2026-11-02/platform-exact-source-debug.log",
+      "bytes": 9147,
+      "sha256": "92db615f92785113a408adcb1605240e5713b5840424146b289050a988cd892b"
+    },
+    "platform-exact-source-first-attempt.log": {
+      "path": "story-1-17-merged-main-2026-11-02/platform-exact-source-first-attempt.log",
+      "bytes": 8951,
+      "sha256": "a9bb5ba022c44cc4bb64e903aa22a0968a1e3e4e8d5cae359c22b99e100d8077"
+    },
+    "platform-graph-postcommit.json": {
+      "path": "story-1-17-merged-main-2026-11-02/platform-graph-postcommit.json",
+      "bytes": 42872,
+      "sha256": "820d410e1a892f13b64325d08d18358226c4f9e046328964acbbf1a8b2de6e55"
+    },
+    "platform-hosted-checkout-eol.log": {
+      "path": "story-1-17-merged-main-2026-11-02/platform-hosted-checkout-eol.log",
+      "bytes": 13059,
+      "sha256": "a42710400b9c065e40e1e0c5e645af53ac5b7d42fe12cf2d0ec43cda9abd458e"
+    },
+    "platform-hosted-postcommit.log": {
+      "path": "story-1-17-merged-main-2026-11-02/platform-hosted-postcommit.log",
+      "bytes": 491,
+      "sha256": "e08af190058c542cf49210c0fff07866044a07090a72ac9c063a03dda4a46baf"
+    },
+    "platform-hosted-postcommit.xml": {
+      "path": "story-1-17-merged-main-2026-11-02/platform-hosted-postcommit.xml",
+      "bytes": 11505,
+      "sha256": "c820f63b66ae409d44a2e904f11eb6348d105577084d5b7aca28720d407bc4d9"
+    },
+    "platform-strict-release.log": {
+      "path": "story-1-17-merged-main-2026-11-02/platform-strict-release.log",
+      "bytes": 3115,
+      "sha256": "81d966a7c14199f9bf0df76e850656960f0e0f74b6158921d2525b1cf2cd4c42"
+    },
+    "tenants-authority.log": {
+      "path": "story-1-17-merged-main-2026-11-02/tenants-authority.log",
+      "bytes": 460,
+      "sha256": "85e2cef558434eba908698fa42f95f75c3f4888bfe2e8f2ba7ed1753d96c70f3"
+    },
+    "tenants-bootstrap.log": {
+      "path": "story-1-17-merged-main-2026-11-02/tenants-bootstrap.log",
+      "bytes": 4548,
+      "sha256": "3eb7bd6926332337cc659a8f3a33e8825fdeb93c4c8e7f1691d5236c7123595b"
+    },
+    "tenants-main-baseline-two.log": {
+      "path": "story-1-17-merged-main-2026-11-02/tenants-main-baseline-two.log",
+      "bytes": 2043,
+      "sha256": "e77e9d1b87109ebae2850c11f1cbd2bf37056e86e390bae6c08216a63355b6e8"
+    },
+    "tenants-strict-debug.log": {
+      "path": "story-1-17-merged-main-2026-11-02/tenants-strict-debug.log",
+      "bytes": 6615,
+      "sha256": "a103b1528f9764fe678945fd33af87e8035ebba29b7a3fb485f78d7eb7a30d16"
+    }
+  },
+  "diagnosticProbes": [
+    {
+      "id": "folders-temporary-source-bound-target",
+      "committed": false,
+      "result": "A temporary test-target change built the selected Tenants host against EventStore source with 0 warnings/errors, but it did not resolve catalog-model compatibility; the change was removed before the Folders merge.",
+      "buildLog": "folders-diagnostic-source-build.log",
+      "modelLog": "folders-diagnostic-catalog-model-final-owners.log",
+      "modelResult": "3/4 passed; compiled declaration inventory unavailable",
+      "appChannelLog": "folders-diagnostic-appchannel.log",
+      "appChannelResult": "3/3 passed under temporary diagnostic target"
+    },
+    {
+      "id": "folders-4-package-override",
+      "committed": false,
+      "result": "Authoritative Builds catalog rejected EventStore.Aspire 4.0.0 because it selects 3.132.2; no package or gitlink version was overridden in the merged tree.",
+      "log": "folders-package-override-rejected.log"
+    }
+  ]
+}

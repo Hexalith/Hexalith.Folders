@@ -1,0 +1,233 @@
+{
+  "recordId": "story-1-17-platform-hosted-graph-qualification-2026-11-02",
+  "recordedAtUtc": "2026-11-02T16:18:02.357032+00:00",
+  "status": "LOCAL_HOSTED_GRAPH_QUALIFIED_WITH_REMAINING_BLOCKERS",
+  "ownerApproval": {
+    "response": "approve and continue",
+    "scope": "exact Platform direct tuple for local qualification only",
+    "spec": "../spec-1-17-qualify-platform-hosted-reference-graph.md",
+    "platformApproval": "references/Hexalith.Platform/docs/implementation/story-1-17-reference-mapping-approval-2026-11-02.md",
+    "mapping": "references/Hexalith.Platform/eng/story-1-17-reference-mapping.json",
+    "mappingSha256": "46a4bef075af48791ec3f0bc4e4336de8597c36406ccad2f3ab5183e438b41cd"
+  },
+  "foldersHeadAtRecording": "17c664502e984083b0e779e679b3bca5bedfa0d7",
+  "platformHead": "3d344e850471b6a21fc4649df7ede9a0390689b1",
+  "foldersPlatformGitlink": "3d344e850471b6a21fc4649df7ede9a0390689b1",
+  "platformWorkingDiffSha256": "7971bec248f17ad28af6c6ec698e4c91efa1fd44ea0426f3eb3f88641f2f4201",
+  "ownerRows": [
+    {
+      "owner": "EventStore",
+      "platformDirectRevision": "7c93a1234d14c66f5ee85ed48caaee1d30a671f3",
+      "exportRevision": "7c93a1234d14c66f5ee85ed48caaee1d30a671f3",
+      "declarationSha256": "21eda6da824d5ae6135ff342dd8a5aae950b02420319b953a836dddeb00ce495",
+      "exportRoot": "/tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore",
+      "rootSiblingRevision": "f2be45ede245211f549978358872875c5df28dc8",
+      "rootSiblingSelected": false
+    },
+    {
+      "owner": "Tenants",
+      "platformDirectRevision": "a01e89854f711d1a93ae15695b438424c1ed4f0f",
+      "exportRevision": "a01e89854f711d1a93ae15695b438424c1ed4f0f",
+      "declarationSha256": "1588f3428ec29296c452fdd35bf95146142315aad3ad8ceb934e7a791f1fb522",
+      "exportRoot": "/tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants",
+      "rootSiblingRevision": "ba4639fa462341281f89aa7a08b7398477fc1ba9",
+      "rootSiblingSelected": false
+    },
+    {
+      "owner": "Memories",
+      "platformDirectRevision": "e8956eb5c1bd49297f86702f9606eb9b013bc2f1",
+      "exportRevision": "e8956eb5c1bd49297f86702f9606eb9b013bc2f1",
+      "declarationSha256": "56f6dc8134d3f7cea06910e923a4736a450e00241e8e4a565ac9226897881840",
+      "exportRoot": "/tmp/hexalith-story-1-17-checkouts/Hexalith.Memories",
+      "rootSiblingRevision": "46667b0d25c707bcdc961d59895bfe5a064bfd12",
+      "rootSiblingSelected": false
+    },
+    {
+      "owner": "Parties",
+      "platformDirectRevision": "f4285584dce0dfa08e3336fca3c203a1b5e748c6",
+      "exportRevision": "f4285584dce0dfa08e3336fca3c203a1b5e748c6",
+      "declarationSha256": "86002eeb916c77bd753a3c618ce394125794baf421315604c9f551b762624504",
+      "exportRoot": "/tmp/hexalith-story-1-17-checkouts/Hexalith.Parties",
+      "rootSiblingRevision": "d06c316fd57cbfaa0b80cf8622ec0b8ec571c6a0",
+      "rootSiblingSelected": false
+    }
+  ],
+  "ancillaryBuildInputs": [
+    {
+      "owner": "Builds",
+      "platformDirectRevision": "13f503caecba9f449d84a8e005258626a64edd06",
+      "selectedRoot": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "selectedRevision": "13f503caecba9f449d84a8e005258626a64edd06"
+    },
+    {
+      "owner": "Commons",
+      "platformDirectRevision": "11555ace9efcae2928a00122dcba91243e5a8a1a",
+      "selectedRoot": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons",
+      "selectedRevision": "11555ace9efcae2928a00122dcba91243e5a8a1a"
+    },
+    {
+      "owner": "AI.Tools",
+      "platformDirectRevision": "1745b6663ad32bb1288167135ed0f979366c53a0",
+      "selectedRoot": "/tmp/hexalith-story-1-17-checkouts/Hexalith.AI.Tools",
+      "selectedRevision": "1745b6663ad32bb1288167135ed0f979366c53a0"
+    },
+    {
+      "owner": "FrontComposer",
+      "platformDirectRevision": "07089dcbdad784a1d53037e9cea78d1d7becd8d6",
+      "selectedRoot": "/tmp/hexalith-story-1-17-checkouts/Hexalith.FrontComposer",
+      "selectedRevision": "07089dcbdad784a1d53037e9cea78d1d7becd8d6"
+    },
+    {
+      "owner": "McpCli",
+      "platformDirectRevision": "3bc89642ad43305531c4018b75b5e1b9e0681e10",
+      "selectedRoot": "/tmp/hexalith-story-1-17-checkouts/Hexalith.McpCli",
+      "selectedRevision": "3bc89642ad43305531c4018b75b5e1b9e0681e10"
+    }
+  ],
+  "commands": [
+    {
+      "id": "strict-release-composition",
+      "cwd": "references/Hexalith.Platform",
+      "command": "dotnet build tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj --configuration Release -p:UseHexalithProjectReferences=false -m:1 -nr:false -warnaserror",
+      "exitCode": 0,
+      "result": "Build succeeded; 0 warnings, 0 errors; analyzers enabled; final reviewed bytes",
+      "log": "strict-release.log"
+    },
+    {
+      "id": "exact-source-debug-composition",
+      "cwd": "references/Hexalith.Platform",
+      "command": "dotnet build tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreRoot=/tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore -p:HexalithTenantsRoot=/tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants -p:HexalithMemoriesRoot=/tmp/hexalith-story-1-17-checkouts/Hexalith.Memories -p:HexalithPartiesRoot=/tmp/hexalith-story-1-17-checkouts/Hexalith.Parties -p:HexalithBuildsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds -p:HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons -p:HexalithFrontComposerRoot=/tmp/hexalith-story-1-17-checkouts/Hexalith.FrontComposer -p:HexalithMcpCliRoot=/tmp/hexalith-story-1-17-checkouts/Hexalith.McpCli -p:HexalithPlatformRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Platform -m:1 -nr:false -warnaserror",
+      "exitCode": 0,
+      "result": "Build succeeded; 0 warnings, 0 errors; exact source roots explicit; final reviewed bytes",
+      "log": "debug-exact-source.log"
+    },
+    {
+      "id": "canonical-hosted-class",
+      "cwd": "references/Hexalith.Platform",
+      "command": "env HEXALITH_PLATFORM_HOSTED_EVENTSTORE_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore HEXALITH_PLATFORM_HOSTED_TENANTS_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants HEXALITH_PLATFORM_HOSTED_MEMORIES_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.Memories HEXALITH_PLATFORM_HOSTED_PARTIES_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.Parties dotnet tests/Hexalith.Platform.Composition.Tests/bin/Release/net10.0/Hexalith.Platform.Composition.Tests.dll -class Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests -result-xml /tmp/story117-hosted-final-review.xml",
+      "exitCode": 0,
+      "result": "16 total; 0 errors, failures, skips, not-run; includes canonical original 13 cases plus environment, dirty-source, and mapping-digest checks",
+      "log": "hosted-class.log",
+      "xml": "hosted-class.xml"
+    },
+    {
+      "id": "graph-export-consumer-build",
+      "cwd": "references/Hexalith.Platform",
+      "command": "dotnet build eng/mcpcli-operator-setup/graph-export/GraphExport.csproj --configuration Release -p:UseHexalithProjectReferences=false -m:1 -nr:false -warnaserror",
+      "exitCode": 0,
+      "result": "Build succeeded; 0 warnings, 0 errors",
+      "log": "graph-export-build.log"
+    },
+    {
+      "id": "protection-test-project-build",
+      "cwd": "references/Hexalith.Platform",
+      "command": "dotnet build tests/Hexalith.Platform.Protection.Tests/Hexalith.Platform.Protection.Tests.csproj --configuration Release -p:UseHexalithProjectReferences=false -p:HexalithEventStoreRoot=/tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore -m:1 -nr:false -warnaserror",
+      "exitCode": 1,
+      "result": "Blocked before tests: 186 analyzer errors in test/shared fixture sources (180 CA2007, 5 CA1062, 1 CA1822); 0 warnings",
+      "log": "protection-tests-build-blocker.log"
+    },
+    {
+      "id": "graph-export-execution",
+      "cwd": "references/Hexalith.Platform",
+      "command": "env HEXALITH_PLATFORM_HOSTED_EVENTSTORE_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore HEXALITH_PLATFORM_HOSTED_TENANTS_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants HEXALITH_PLATFORM_HOSTED_MEMORIES_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.Memories HEXALITH_PLATFORM_HOSTED_PARTIES_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.Parties dotnet run --project eng/mcpcli-operator-setup/graph-export/GraphExport.csproj --configuration Release -p:UseHexalithProjectReferences=false -p:UseNuGetDeps=true -- \"$PWD\" /tmp/story117-review-export.json",
+      "exitCode": 0,
+      "result": "Local graph export succeeded; graph SHA-256 820d410e1a892f13b64325d08d18358226c4f9e046328964acbbf1a8b2de6e55",
+      "log": "graph-export-run.log",
+      "graph": "graph-export.json"
+    }
+  ],
+  "historicalComparison": {
+    "priorReceipt": "story-1-17-current-tuple-local-2026-11-02/receipt.json",
+    "strictRelease": "258 CA errors",
+    "diagnosticHostedGraph": "0/1; absent nested Parties declaration"
+  },
+  "controls": {
+    "routeMode": "V1Only",
+    "t0": null,
+    "activationAuthority": null,
+    "tracker": "backlog",
+    "stagingChecksExecuted": 0,
+    "nestedPlatformReferenceGitMarkersPresent": false,
+    "publication": false,
+    "deployment": false
+  },
+  "remainingBlockers": [
+    "The separate strict Protection.Tests project does not build (186 test/fixture analyzer errors); no Protection.Tests execution is claimed.",
+    "This approval binds Platform HEAD 3d344e850471b6a21fc4649df7ede9a0390689b1 and its uncommitted working diff. A changed Platform revision requires a new mapping decision and requalification.",
+    "Exact current candidate release, immutable hosted artifact, tool/catalog and intake acceptance, hosted identity/delegation, target/data disposition, staging, observation/recovery, and operational closure remain unverified.",
+    "Concurrent Folders AppHost.Tests Tenants ProjectReference remains active in Release package mode; it belongs to separate Story 12.2 work and was not modified here."
+  ],
+  "members": {
+    "strict-release.log": {
+      "path": "story-1-17-platform-hosted-graph-qualification-2026-11-02/strict-release.log",
+      "bytes": 4436,
+      "sha256": "77ff5e5cad0b3e4a233bcaf14884dccb24692331f69c0d06f47d178e06fd1796"
+    },
+    "debug-exact-source.log": {
+      "path": "story-1-17-platform-hosted-graph-qualification-2026-11-02/debug-exact-source.log",
+      "bytes": 11117,
+      "sha256": "cb4abd1db48697f0f1958f10d56db829b57bd506e447cca0d022255dc19be2ad"
+    },
+    "hosted-class.log": {
+      "path": "story-1-17-platform-hosted-graph-qualification-2026-11-02/hosted-class.log",
+      "bytes": 490,
+      "sha256": "4c586a44d1de2189e5c6184052dd9b6ae20b81d3de55aa3666d14b51505110f4"
+    },
+    "hosted-class.xml": {
+      "path": "story-1-17-platform-hosted-graph-qualification-2026-11-02/hosted-class.xml",
+      "bytes": 11912,
+      "sha256": "63137d673743cb956813b3b59411f7a13fe827e22fa8b07dd089fe4522384fe6"
+    },
+    "graph-export-build.log": {
+      "path": "story-1-17-platform-hosted-graph-qualification-2026-11-02/graph-export-build.log",
+      "bytes": 1697,
+      "sha256": "358354fad4c0b783a3c1ab5ad04af6ddba6e92ead54b71f389f37892a3b56b97"
+    },
+    "protection-tests-build-blocker.log": {
+      "path": "story-1-17-platform-hosted-graph-qualification-2026-11-02/protection-tests-build-blocker.log",
+      "bytes": 178438,
+      "sha256": "5a0248862db2f846b4f05e4977f10d35830abb9564727af4e89e34794c19486b"
+    },
+    "debug-triage-4-errors.log": {
+      "path": "story-1-17-platform-hosted-graph-qualification-2026-11-02/debug-triage-4-errors.log",
+      "bytes": 16678,
+      "sha256": "2dff18cd33174d286effa9256769bd021950ccf25be2cabee0c1e355e8c5285d"
+    },
+    "platform-source-diff.patch": {
+      "path": "story-1-17-platform-hosted-graph-qualification-2026-11-02/platform-source-diff.patch",
+      "bytes": 222410,
+      "sha256": "7971bec248f17ad28af6c6ec698e4c91efa1fd44ea0426f3eb3f88641f2f4201"
+    },
+    "graph-export-run.log": {
+      "path": "story-1-17-platform-hosted-graph-qualification-2026-11-02/graph-export-run.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "graph-export.json": {
+      "path": "story-1-17-platform-hosted-graph-qualification-2026-11-02/graph-export.json",
+      "bytes": 42872,
+      "sha256": "820d410e1a892f13b64325d08d18358226c4f9e046328964acbbf1a8b2de6e55"
+    }
+  },
+  "review": {
+    "layers": [
+      "blind-hunter",
+      "edge-case-hunter",
+      "verification-gap"
+    ],
+    "triageRows": 21,
+    "patched": [
+      "ignored evidence logs",
+      "GraphExport invocation and test",
+      "standalone alternate revision fixture",
+      "index gitlink check",
+      "ignored executable source check",
+      "byte-stable attributes",
+      "dirty checkout and mapping digest tests"
+    ],
+    "deferred": [
+      "concurrent Folders AppHost.Tests package-mode Tenants reference",
+      "immutable Platform candidate required before release"
+    ]
+  }
+}

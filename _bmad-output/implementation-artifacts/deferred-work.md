@@ -3193,3 +3193,21 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-yaml-shapes.md`
   summary: Bound governance YAML parser argument errors for invalid Unicode code points.
   evidence: Independent review reproduced a file containing value: "\UFFFFFFFF" escaping LoadYamlStream as ArgumentOutOfRangeException with parser detail. The inherited loader catches only YamlException; SafetyInvariantGateTests already catches ArgumentException for the same parser path. Add a file-backed regression and bounded conversion in the governance loader; this is separate from structural-key and collection-shape validation.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-17-qualify-platform-hosted-reference-graph.md`
+  summary: Restore package-only CI evaluation for the concurrent Folders AppHost.Tests Tenants project reference.
+  evidence: Review confirmed the new Tenants ProjectReference remains present with Configuration=Release and UseNuGetDeps=true. This change was made by concurrent Story 12.2 work, not Story 1.17, and requires that owner to restore the CI dependency boundary.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-17-qualify-platform-hosted-reference-graph.md`
+  summary: Bind an immutable Platform candidate before release or operational acceptance.
+  evidence: The local approval pins Platform HEAD and records a SHA-256 of its working diff, but uncommitted working bytes are mutable after the local probe. The release handoff must identify a stable candidate and requalify if those bytes change.
+
+## Deferred from: Story 1.17 and 12.2 merged-main qualification (2026-11-02)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-17-qualify-platform-hosted-reference-graph.md`
+  summary: Align the Folders package catalog with the merged Tenants owner before treating the AppHost catalog model as qualified.
+  evidence: `_bmad-output/implementation-artifacts/evidence/story-1-17-merged-main-2026-11-02.json` records the final Release AppHost test-project build failing CS0246 because merged Tenants source uses `RouteCatalogInvocationScope`, which is absent from Folders' package-mode EventStore selection. A temporary source-bound diagnostic target built with zero errors and its app-channel tests passed 3/3, but the combined catalog model was 3/4: `SelectedOwnerCatalogBindsFinalAppIdsAndKeepsAllIntentPolicies` could not read the complete compiled declaration inventory. That target adjustment was removed before merge. The Folders Builds catalog selects EventStore.Aspire 3.132.2, while current Tenants Contracts require the coordinated EventStore 4.0.0 and McpCli 2.0.0 cohort. An ad hoc 4.0.0 override was rejected by the authoritative Builds catalog. Resolve this as a coherent, reviewed dependency migration; keep V1Only, unset T0, and null activation authority.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md`
+  summary: Reconcile the remaining Tenants bootstrap regressions against the merged EventStore and Tenants main commits.
+  evidence: `_bmad-output/implementation-artifacts/evidence/story-1-17-merged-main-2026-11-02.json` records the focused Tenants authority suite at 25/25 and the broader bootstrap class at 203/205. The delegated credential claim and configured bootstrap tenant assertions fail. The corresponding tests also fail on the isolated current-main Tenants baseline, with timeouts rather than the merged assertion failures, so the broader class cannot be claimed as qualified.
