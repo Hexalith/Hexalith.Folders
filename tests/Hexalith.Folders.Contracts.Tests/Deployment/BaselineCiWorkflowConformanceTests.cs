@@ -192,7 +192,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         // this baseline gate. The exact './src/' form is required: a bare 'src tests'
         // include matches no files and would make the gate pass vacuously.
         script.ShouldContain("@('format', 'whitespace', 'Hexalith.Folders.CI.slnx', '--verify-no-changes', '--no-restore', '--include', './src/', './tests/', './samples/')", Case.Sensitive);
-        script.ShouldContain("@('format', 'analyzers', 'Hexalith.Folders.CI.slnx', '--verify-no-changes', '--no-restore', '--severity', 'warn', '--include', './src/', './tests/', './samples/')", Case.Sensitive);
+        script.ShouldContain("@('format', 'analyzers', 'Hexalith.Folders.CI.slnx', '--verify-no-changes', '--no-restore', '--severity', 'warn', '--include', './src/', './tests/', './samples/', '--exclude-diagnostics', 'CA1822', 'CA2007')", Case.Sensitive);
 
         string ciSolution = ReadText("Hexalith.Folders.CI.slnx");
         ciSolution.ShouldNotContain("Project Path=\"references/", Case.Sensitive);

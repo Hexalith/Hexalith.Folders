@@ -57,3 +57,28 @@ selected_status="$(git -C "$module_path" status --porcelain --untracked-files=al
 [[ -z "$selected_status" ]] || fail "The selected Memories checkout must be clean, including untracked metadata."
 [[ -f "$module_path/src/Hexalith.Memories.Server/Hexalith.Memories.Server.csproj" ]] || fail "Memories server project metadata is unavailable."
 echo "[ci-topology] Prepared $module_path at $recorded_sha."
+
+# The AppHost compiles Platform-owned mTLS source files. The reusable Builds
+# initializer respects update=none, so fetch this one recorded root explicitly.
+module_path=references/Hexalith.Platform
+module_url=https://github.com/Hexalith/Hexalith.Platform.git
+[[ ! -L "$module_path" ]] || fail "The Platform root path must not be a symbolic link."
+[[ "$(git config --file .gitmodules --get-all submodule.Hexalith.Platform.path)" = "$module_path" &&
+   "$(git config --file .gitmodules --get-all submodule.Hexalith.Platform.url)" = "$module_url" &&
+   "$(git config --file .gitmodules --get-all submodule.Hexalith.Platform.update)" = none ]] ||
+    fail "The root Platform declaration is missing or changed."
+[[ "$(git config --file .gitmodules --get-regexp '^submodule\..*\.path$' | awk -v path="$module_path" '$2 == path { count++ } END { print count+0 }')" = 1 ]] ||
+    fail "The Platform path must have exactly one root declaration."
+configured_url="$(git config --get submodule.Hexalith.Platform.url || true)"
+[[ -z "$configured_url" || "$configured_url" = "$module_url" ]] || fail "The local Platform URL differs from the root declaration."
+read -r mode object_type recorded_sha recorded_path <<< "$(git ls-tree HEAD -- "$module_path")"
+[[ "$mode" = 160000 && "$object_type" = commit && "$recorded_sha" =~ ^[0-9a-f]{40}$ && "$recorded_path" = "$module_path" ]] ||
+    fail "Platform must be a root gitlink recorded in HEAD."
+git diff --cached --quiet HEAD -- "$module_path" || fail "The Platform gitlink has staged changes."
+git -c submodule.recurse=false -c fetch.recurseSubmodules=false submodule update --init --checkout -- "$module_path"
+[[ "$(git -C "$module_path" rev-parse HEAD)" = "$recorded_sha" ]] || fail "The Platform checkout differs from the recorded gitlink."
+selected_status="$(git -C "$module_path" status --porcelain --untracked-files=all)" || fail "Cannot inspect the Platform checkout worktree."
+[[ -z "$selected_status" ]] || fail "The Platform checkout must be clean, including untracked metadata."
+[[ -f "$module_path/DaprSelfHostedMtls.cs" && -f "$module_path/DaprSelfHostedMtlsSubscriber.cs" ]] ||
+    fail "Platform mTLS source files are unavailable."
+echo "[ci-topology] Prepared $module_path at $recorded_sha."

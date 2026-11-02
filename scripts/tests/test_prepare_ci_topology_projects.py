@@ -13,10 +13,15 @@ import unittest
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts/prepare-ci-topology-projects.sh"
 MODULE = "references/Hexalith.Memories"
+PLATFORM_MODULE = "references/Hexalith.Platform"
 RECORDED_SHA = "0123456789abcdef0123456789abcdef01234567"
 UPDATE = [
     "-c", "submodule.recurse=false", "-c", "fetch.recurseSubmodules=false",
     "submodule", "update", "--init", "--checkout", "--", MODULE,
+]
+PLATFORM_UPDATE = [
+    "-c", "submodule.recurse=false", "-c", "fetch.recurseSubmodules=false",
+    "submodule", "update", "--init", "--checkout", "--", PLATFORM_MODULE,
 ]
 
 
@@ -41,10 +46,15 @@ class PrepareCiTopologyProjectsTests(unittest.TestCase):
             '[submodule "Hexalith.Memories"]\n'
             f'\tpath = {MODULE}\n'
             '\turl = https://github.com/Hexalith/Hexalith.Memories.git\n'
+            '\tupdate = none\n'
+            '[submodule "Hexalith.Platform"]\n'
+            f'\tpath = {PLATFORM_MODULE}\n'
+            '\turl = https://github.com/Hexalith/Hexalith.Platform.git\n'
             '\tupdate = none\n', encoding="utf-8",
         )
         self.git("add", ".gitmodules", "Hexalith.Folders.slnx", "scripts")
         self.git("update-index", "--add", "--cacheinfo", f"160000,{RECORDED_SHA},{MODULE}")
+        self.git("update-index", "--add", "--cacheinfo", f"160000,{RECORDED_SHA},{PLATFORM_MODULE}")
         self.git("commit", "-m", "test: declare standalone Folders fixture")
 
         # Read-only Git probes use the isolated real fixture. The only update
@@ -64,11 +74,17 @@ if 'submodule' in arguments:
     project = pathlib.Path(os.environ['GITHUB_WORKSPACE']) / 'references/Hexalith.Memories/src/Hexalith.Memories.Server/Hexalith.Memories.Server.csproj'
     project.parent.mkdir(parents=True, exist_ok=True)
     project.write_text('<Project />\\n', encoding='utf-8')
+    platform = pathlib.Path(os.environ['GITHUB_WORKSPACE']) / 'references/Hexalith.Platform'
+    platform.mkdir(parents=True, exist_ok=True)
+    for name in ('DaprSelfHostedMtls.cs', 'DaprSelfHostedMtlsSubscriber.cs'):
+        (platform / name).write_text('// fixture\\n', encoding='utf-8')
     raise SystemExit(0)
-if arguments == ['-C', 'references/Hexalith.Memories', 'rev-parse', 'HEAD']:
+if arguments in (['-C', 'references/Hexalith.Memories', 'rev-parse', 'HEAD'],
+                 ['-C', 'references/Hexalith.Platform', 'rev-parse', 'HEAD']):
     print(os.environ.get('TEST_CHECKOUT_SHA', os.environ['TEST_RECORDED_SHA']))
     raise SystemExit(0)
-if arguments == ['-C', 'references/Hexalith.Memories', 'status', '--porcelain', '--untracked-files=all']:
+if arguments in (['-C', 'references/Hexalith.Memories', 'status', '--porcelain', '--untracked-files=all'],
+                 ['-C', 'references/Hexalith.Platform', 'status', '--porcelain', '--untracked-files=all']):
     if os.environ.get('TEST_CHECKOUT_STATUS_EXIT'):
         raise SystemExit(int(os.environ['TEST_CHECKOUT_STATUS_EXIT']))
     print(os.environ.get('TEST_CHECKOUT_STATUS', ''), end='')
@@ -117,12 +133,13 @@ os.execv(os.environ['TEST_REAL_GIT'], [os.environ['TEST_REAL_GIT'], *arguments])
         self.git("add", ".gitmodules")
         self.git("commit", "-m", "test: alter fixture declaration")
 
-    def test_standalone_dispatch_checks_out_only_the_recorded_root_gitlink(self) -> None:
+    def test_standalone_dispatch_checks_out_recorded_memories_and_platform_roots(self) -> None:
         result = self.prepare()
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
-        self.assertEqual([UPDATE], [json.loads(line) for line in self.log.read_text().splitlines()])
+        self.assertEqual([UPDATE, PLATFORM_UPDATE], [json.loads(line) for line in self.log.read_text().splitlines()])
         self.assertIn(RECORDED_SHA, result.stdout)
         self.assertFalse((self.workspace / MODULE / ".git").exists())
+        self.assertFalse((self.workspace / PLATFORM_MODULE / ".git").exists())
 
     def test_workflow_selects_the_existing_package_prepare_hook(self) -> None:
         self.assertIn("      package-prepare-script: scripts/prepare-ci-topology-projects.sh\n",
