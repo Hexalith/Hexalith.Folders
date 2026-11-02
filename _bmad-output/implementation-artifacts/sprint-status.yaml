@@ -150,6 +150,7 @@ development_status:
   4-20-prove-durable-file-mutation-and-bounded-context-lifecycle: backlog
   4-21-prove-real-commit-retry-conflict-and-unknown-outcome-reconci: backlog
   4-22-implement-the-pd11-guard-discriminated-lifecycle: backlog
+  # needs 1.17
   4-23-enforce-canonical-lock-identity-and-c7-lock-timing: backlog
   epic-4-retrospective: optional
 
