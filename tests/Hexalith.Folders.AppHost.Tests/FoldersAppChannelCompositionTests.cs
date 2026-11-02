@@ -15,6 +15,24 @@ namespace Hexalith.Folders.AppHost.Tests;
 /// <summary>Inspects the real AppHost model without starting its external resources.</summary>
 public sealed class FoldersAppChannelCompositionTests
 {
+    /// <summary>Keeps the default sidecar port while allowing an isolated live lane to avoid an occupied listener.</summary>
+    [Theory]
+    [InlineData(null, 3501)]
+    [InlineData("35991", 35991)]
+    public async Task EventStoreSidecarUsesTheSelectedHttpPort(string? selectedPort, int expectedPort)
+    {
+        string[] args = selectedPort is null
+            ? ["--EnableKeycloak=false"]
+            : ["--EnableKeycloak=false", "--Folders:EventStoreDaprHttpPort=" + selectedPort];
+        IDistributedApplicationTestingBuilder builder = await DistributedApplicationTestingBuilder
+            .CreateAsync<Projects.Hexalith_Folders_AppHost>(args, TestContext.Current.CancellationToken)
+            .ConfigureAwait(true);
+        await using System.Runtime.CompilerServices.ConfiguredAsyncDisposable builderScope = builder.ConfigureAwait(true);
+        ProjectResource eventStore = builder.Resources.OfType<ProjectResource>().Single(resource => resource.Name == "eventstore");
+        IDaprSidecarResource sidecar = eventStore.Annotations.OfType<DaprSidecarAnnotation>().Single().Sidecar;
+        sidecar.Annotations.OfType<DaprSidecarOptionsAnnotation>().Single().Options.DaprHttpPort.ShouldBe(expectedPort);
+    }
+
     /// <summary>Requires Tenants and its own sidecar to use the same private per-run SDK token parameter.</summary>
     [Fact]
     public async Task TenantsAndItsOwnSidecarShareOneSecretAppChannelParameter()

@@ -138,6 +138,11 @@ Run the class explicitly: the separate FR58 scenario still has downstream prereq
 durability run requires one passing scenario, zero failures and **zero skips**. Initialization failures,
 authorization failures and startup/dependency timeouts fail the lane. Without opt-in it skips normally.
 
+The EventStore Aspire helper uses Dapr HTTP port 3501 by default. When another local AppHost already
+owns that port, set `Folders__EventStoreDaprHttpPort` to a free port for this disposable run; the AppHost
+passes it to the helper's supported `eventStoreDaprHttpPort` option. This changes the sidecar listener
+only and does not change the durability assertions or request deadlines.
+
 The fixture owns a random Redis container bound to a random loopback port, temporary Dapr component
 copies, unique app IDs for every sidecar, a standalone actor namespace, and the AppHost it builds.
 Dapr mDNS discovery uses app IDs independently of the actor namespace. The fixture rewrites copied

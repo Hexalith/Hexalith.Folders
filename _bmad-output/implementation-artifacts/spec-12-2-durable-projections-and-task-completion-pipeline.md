@@ -33,6 +33,10 @@ context:
 
 **Approved current SDK enrollment (2026-11-01):** The user approved [the bounded Folders host-security migration](proposal-12-2-current-sdk-security-enrollment.md). Explicit human/channel/canonical endpoint classification, supported SDK security/catalog registration, authenticated root and historical health aliases, anonymous exact `/health`, `/alive`, `/ready` probes, and corresponding monitoring/runbook/test changes are authorized exceptions to preserving prior route authentication/probe behavior. Preserve domain handlers, layered authorization, canonical v1 outcomes, workload/channel/catalog/replay guards and disabled public v2. The prior minimal SDK capability authorization permits any necessary bounded public-composition repair in its owning repository; it does not permit bypassing the newer SDK boundary. No deployment, publication, package/gitlink update, commit, push or performance redesign is authorized.
 
+**Approved native authority read-path performance (2026-11-02):** The user authorized performance work on the Tenants/EventStore native administrator source read path to complete Story 12.2's strict real-provider acceptance. Preserve every required source read, proof and final observation check, the existing five-second domain-service deadline, authorization and fail-closed behavior. This approval supersedes the prior performance-redesign exclusion only for that path; it does not authorize publication, dependency or gitlink updates, commit, push, public v2 exposure or weaker acceptance assertions.
+
+**Approved bootstrap-path performance (2026-11-02):** After a strict run stopped at bootstrap, the user explicitly answered “Yes, optimize bootstrap too” to a request to optimize that command path. This permits bounded bootstrap-path performance work while preserving Dapr's existing five-second attempt limit, durable/catalog/security guards and every unchanged strict assertion. It does not authorize treating a failed HTTP response as accepted, changing admission semantics, or weakening source/projection proof.
+
 **Never:** Write Dapr/domain storage directly, invent provider/cleanup success, or replace retained event bytes. Exclude bodies and credentials. Keep transition evidence, diagnostics and search projections with Epics 4/6/10; content, provider commit execution, idempotency admission, confidentiality and destructive cleanup remain with 12.3–12.7/4.22. No deployment or public v2 exposure. Dependency changes are limited to the approved minimal SDK capability.
 
 **Decisions (2026-10-20, Jerome; review round 4):**
@@ -1244,3 +1248,37 @@ The original live-qualification acceptance row remains unchecked and Story/sprin
 Contract/governance, Release/package/PD10, broader SDK and Platform regressions, performance/SM4 and
 independent whole-story review remain separate open gates. No whole-story review or release approval
 is implied by the successful bootstrap or by the requested Git push. No new performance result exists.
+
+## Native authority read continuation — 2026-11-02
+
+The user approved bounded performance work on the Tenants/EventStore native administrator source read,
+with every source/proof/final observation, the five-second domain-service deadline, the SDK guards and
+the unchanged strict assertions preserved. EventStore now holds one durable catalog fence across that
+complete Tenants read and revalidates local catalog facts for each exact workload stream-read request.
+The supported AppHost EventStore sidecar port is configurable for disposable live runs; its default is
+unchanged. After the user's bootstrap-path continuation, EventStore also computes each declaration
+digest once per fresh local catalog observation, preserving the same exact inventory checks. Focused
+SDK, Tenants and AppHost checks passed as recorded in the [new evidence packet](evidence/story-12-2-native-read-performance-20261102/README.md).
+The EventStore native stream route now groups its same ordered actor proof inspections and bounded
+range into one actor turn; the external head/page/head and final observation remain unchanged.
+
+Two strict class attempts failed before `CreateTenant`. The default port collided with an already
+running local AppHost. With an isolated port, a real `BootstrapGlobalAdmin` actor completed in
+5,478.4952 ms, beyond Dapr's existing five-second attempt, and bootstrap retries ended with HTTP 500
+`ERR_DIRECT_INVOKE`. A third current-source run with isolated port 35992 passed genuine bootstrap
+(202, terminal Completed, retained source, projected authority) and reached `CreateTenant`. Its native
+head returned 200 in 869 ms and page in 2,446 ms, but the next head was pending at the unchanged
+five-second domain-service deadline. `CreateTenant` returned HTTP 500 `unavailable`; the strict
+six-concern body was not entered. The third run used byte-identical SDK copies and cleaned its
+owned resources.
+
+A fourth current-source run with the grouped actor reads passed genuine bootstrap, completed
+`CreateTenant` in 4,396.9103 ms, and entered the strict body. Its tenant-authority assertion passed.
+The first `InitializeOrganizationAclBaseline` command then exceeded the unchanged 40-second test
+client timeout. The actor completed the command; the gateway spent 16,801 ms on projection delivery
+and additional time on repeated execution-fence awaits before the client canceled. The body stopped
+before the six durability concerns and SM4 measurement. The [packet](evidence/story-12-2-native-read-performance-20261102/README.md)
+records source/runtime hashes, exact command outcomes and cleanup. General command/projection
+delivery optimization lies outside the approved native-read and bootstrap scopes. The strict task,
+SM4, broad SDK/Release/package/PD10 and whole-story review gates remain open; Story and sprint status
+remain in-progress.
