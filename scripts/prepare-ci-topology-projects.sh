@@ -58,6 +58,27 @@ selected_status="$(git -C "$module_path" status --porcelain --untracked-files=al
 [[ -f "$module_path/src/Hexalith.Memories.Server/Hexalith.Memories.Server.csproj" ]] || fail "Memories server project metadata is unavailable."
 echo "[ci-topology] Prepared $module_path at $recorded_sha."
 
+# The AppHost resolves the real Tenants project during model-only tests. Its
+# update=none declaration makes the generic submodule initializer skip it.
+module_path=references/Hexalith.Tenants
+module_url=https://github.com/Hexalith/Hexalith.Tenants.git
+[[ ! -L "$module_path" ]] || fail "The Tenants root path must not be a symbolic link."
+[[ "$(git config --file .gitmodules --get-all submodule.Hexalith.Tenants.path)" = "$module_path" &&
+   "$(git config --file .gitmodules --get-all submodule.Hexalith.Tenants.url)" = "$module_url" &&
+   "$(git config --file .gitmodules --get-all submodule.Hexalith.Tenants.update)" = none ]] ||
+    fail "The root Tenants declaration is missing or changed."
+read -r mode object_type recorded_sha recorded_path <<< "$(git ls-tree HEAD -- "$module_path")"
+[[ "$mode" = 160000 && "$object_type" = commit && "$recorded_sha" =~ ^[0-9a-f]{40}$ && "$recorded_path" = "$module_path" ]] ||
+    fail "Tenants must be a root gitlink recorded in HEAD."
+git -c submodule.recurse=false -c fetch.recurseSubmodules=false submodule update --init --checkout -- "$module_path"
+[[ "$(git -C "$module_path" rev-parse HEAD)" = "$recorded_sha" ]] || fail "The Tenants checkout differs from the recorded gitlink."
+[[ -f "$module_path/src/Hexalith.Tenants/Hexalith.Tenants.csproj" ]] || fail "The Tenants project is unavailable."
+echo "[ci-topology] Prepared $module_path at $recorded_sha."
+
+# Model-only AppHost tests run the Dapr hosting lifecycle hook, which resolves
+# the CLI even though the tests never start a sidecar.
+bash "$script_root/scripts/install-dapr-cli.sh"
+
 # The AppHost compiles Platform-owned mTLS source files. The reusable Builds
 # initializer respects update=none, so fetch this one recorded root explicitly.
 module_path=references/Hexalith.Platform

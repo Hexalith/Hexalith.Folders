@@ -14,6 +14,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts/prepare-ci-topology-projects.sh"
 MODULE = "references/Hexalith.Memories"
 PLATFORM_MODULE = "references/Hexalith.Platform"
+TENANTS_MODULE = "references/Hexalith.Tenants"
 RECORDED_SHA = "0123456789abcdef0123456789abcdef01234567"
 UPDATE = [
     "-c", "submodule.recurse=false", "-c", "fetch.recurseSubmodules=false",
@@ -22,6 +23,10 @@ UPDATE = [
 PLATFORM_UPDATE = [
     "-c", "submodule.recurse=false", "-c", "fetch.recurseSubmodules=false",
     "submodule", "update", "--init", "--checkout", "--", PLATFORM_MODULE,
+]
+TENANTS_UPDATE = [
+    "-c", "submodule.recurse=false", "-c", "fetch.recurseSubmodules=false",
+    "submodule", "update", "--init", "--checkout", "--", TENANTS_MODULE,
 ]
 
 
@@ -41,6 +46,10 @@ class PrepareCiTopologyProjectsTests(unittest.TestCase):
         (self.workspace / "scripts").mkdir()
         self.script = self.workspace / "scripts" / SCRIPT.name
         shutil.copyfile(SCRIPT, self.script)
+        (self.workspace / "scripts/install-dapr-cli.sh").write_text(
+            '#!/usr/bin/env bash\nset -euo pipefail\nprintf "%s\\n" fixture-dapr-cli >> "$GITHUB_PATH"\n',
+            encoding="utf-8",
+        )
         self.declaration = self.workspace / ".gitmodules"
         self.declaration.write_text(
             '[submodule "Hexalith.Memories"]\n'
@@ -50,11 +59,16 @@ class PrepareCiTopologyProjectsTests(unittest.TestCase):
             '[submodule "Hexalith.Platform"]\n'
             f'\tpath = {PLATFORM_MODULE}\n'
             '\turl = https://github.com/Hexalith/Hexalith.Platform.git\n'
+            '\tupdate = none\n'
+            '[submodule "Hexalith.Tenants"]\n'
+            f'\tpath = {TENANTS_MODULE}\n'
+            '\turl = https://github.com/Hexalith/Hexalith.Tenants.git\n'
             '\tupdate = none\n', encoding="utf-8",
         )
         self.git("add", ".gitmodules", "Hexalith.Folders.slnx", "scripts")
         self.git("update-index", "--add", "--cacheinfo", f"160000,{RECORDED_SHA},{MODULE}")
         self.git("update-index", "--add", "--cacheinfo", f"160000,{RECORDED_SHA},{PLATFORM_MODULE}")
+        self.git("update-index", "--add", "--cacheinfo", f"160000,{RECORDED_SHA},{TENANTS_MODULE}")
         self.git("commit", "-m", "test: declare standalone Folders fixture")
 
         # Read-only Git probes use the isolated real fixture. The only update
@@ -78,9 +92,13 @@ if 'submodule' in arguments:
     platform.mkdir(parents=True, exist_ok=True)
     for name in ('DaprSelfHostedMtls.cs', 'DaprSelfHostedMtlsSubscriber.cs'):
         (platform / name).write_text('// fixture\\n', encoding='utf-8')
+    tenant_project = pathlib.Path(os.environ['GITHUB_WORKSPACE']) / 'references/Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj'
+    tenant_project.parent.mkdir(parents=True, exist_ok=True)
+    tenant_project.write_text('<Project />\\n', encoding='utf-8')
     raise SystemExit(0)
 if arguments in (['-C', 'references/Hexalith.Memories', 'rev-parse', 'HEAD'],
-                 ['-C', 'references/Hexalith.Platform', 'rev-parse', 'HEAD']):
+                 ['-C', 'references/Hexalith.Platform', 'rev-parse', 'HEAD'],
+                 ['-C', 'references/Hexalith.Tenants', 'rev-parse', 'HEAD']):
     print(os.environ.get('TEST_CHECKOUT_SHA', os.environ['TEST_RECORDED_SHA']))
     raise SystemExit(0)
 if arguments in (['-C', 'references/Hexalith.Memories', 'status', '--porcelain', '--untracked-files=all'],
@@ -108,6 +126,7 @@ os.execv(os.environ['TEST_REAL_GIT'], [os.environ['TEST_REAL_GIT'], *arguments])
             "GITHUB_ACTIONS": "true", "GITHUB_SERVER_URL": "https://github.com",
             "GITHUB_REPOSITORY": "Hexalith/Hexalith.Folders", "GITHUB_WORKSPACE": str(self.workspace),
             "TEST_REAL_GIT": self.real_git, "TEST_UPDATE_LOG": str(self.log), "TEST_RECORDED_SHA": RECORDED_SHA,
+            "RUNNER_TEMP": str(self.root), "GITHUB_PATH": str(self.root / "github-path"),
         })
 
     def git(self, *arguments: str) -> subprocess.CompletedProcess[str]:
@@ -133,10 +152,11 @@ os.execv(os.environ['TEST_REAL_GIT'], [os.environ['TEST_REAL_GIT'], *arguments])
         self.git("add", ".gitmodules")
         self.git("commit", "-m", "test: alter fixture declaration")
 
-    def test_standalone_dispatch_checks_out_recorded_memories_and_platform_roots(self) -> None:
+    def test_standalone_dispatch_checks_out_recorded_memories_tenants_and_platform_roots(self) -> None:
         result = self.prepare()
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
-        self.assertEqual([UPDATE, PLATFORM_UPDATE], [json.loads(line) for line in self.log.read_text().splitlines()])
+        self.assertEqual([UPDATE, TENANTS_UPDATE, PLATFORM_UPDATE], [json.loads(line) for line in self.log.read_text().splitlines()])
+        self.assertIn("fixture-dapr-cli", (self.root / "github-path").read_text())
         self.assertIn(RECORDED_SHA, result.stdout)
         self.assertFalse((self.workspace / MODULE / ".git").exists())
         self.assertFalse((self.workspace / PLATFORM_MODULE / ".git").exists())
