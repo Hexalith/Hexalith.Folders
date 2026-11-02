@@ -1223,7 +1223,9 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             using HttpResponseMessage issued = await issuer.PostAsync("/realms/hexalith/protocol/openid-connect/token",
                 new FormUrlEncodedContent(new Dictionary<string, string>
                 {
-                    ["grant_type"] = "client_credentials", ["client_id"] = AppId("tenants"), ["client_secret"] = _bootstrapWorkloadSecret,
+                    ["grant_type"] = "client_credentials",
+                    ["client_id"] = AppId("tenants"),
+                    ["client_secret"] = _bootstrapWorkloadSecret,
                     ["scope"] = "eventstore-audience.eventstore eventstore-operation.eventstore.command-submit",
                 }), deadline.Token).ConfigureAwait(false);
             await RequireStatusAsync(issued, HttpStatusCode.OK, "Real owner bootstrap refusal-control assertion").ConfigureAwait(false);

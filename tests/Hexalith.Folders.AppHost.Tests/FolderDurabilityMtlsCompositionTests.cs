@@ -39,8 +39,11 @@ public sealed class FolderDurabilityMtlsCompositionTests
             : DaprSelfHostedMtls.AddLocalApplicationInfrastructure(builder, root, sentry, selectedNamespace);
         TestContext.Current.TestOutputHelper!.WriteLine("MTLS_MODEL_BINDING " + JsonSerializer.Serialize(new
         {
-            runDirectory = owned.RunDirectory, certificateDirectory = owned.CertificateDirectory, runtimeHome,
-            applicationNamespace = selectedNamespace ?? "default", missingRuntime,
+            runDirectory = owned.RunDirectory,
+            certificateDirectory = owned.CertificateDirectory,
+            runtimeHome,
+            applicationNamespace = selectedNamespace ?? "default",
+            missingRuntime,
         }));
         try
         {
@@ -96,8 +99,11 @@ public sealed class FolderDurabilityMtlsCompositionTests
             Directory.Exists(owned.RunDirectory).ShouldBeFalse();
             TestContext.Current.TestOutputHelper!.WriteLine("MTLS_MODEL_CLEANUP " + JsonSerializer.Serialize(new
             {
-                runDirectory = owned.RunDirectory, certificateDirectory = owned.CertificateDirectory, runtimeHome,
-                runDirectoryExists = Directory.Exists(owned.RunDirectory), certificateDirectoryExists = Directory.Exists(owned.CertificateDirectory),
+                runDirectory = owned.RunDirectory,
+                certificateDirectory = owned.CertificateDirectory,
+                runtimeHome,
+                runDirectoryExists = Directory.Exists(owned.RunDirectory),
+                certificateDirectoryExists = Directory.Exists(owned.CertificateDirectory),
                 runtimeHomeExists = Directory.Exists(runtimeHome),
             }));
         }

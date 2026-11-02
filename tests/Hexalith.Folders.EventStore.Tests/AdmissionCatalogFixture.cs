@@ -35,8 +35,12 @@ internal sealed class AdmissionCatalogFixture : IDisposable
         services.AddSingleton<IOptions<RouteCatalogHostOptions>>(Options.Create(options));
         services.AddSingleton<IOptions<IdempotencyAdmissionOptions>>(Options.Create(new IdempotencyAdmissionOptions
         {
-            Enabled = true, ActiveDigestKeyVersion = "test1", DigestKeySource = IdempotencyDigestKeySource.Configuration,
-            DigestKeySecretStoreName = "test-secrets", DigestKeySecretName = "test-ring", DigestKeySecretGeneration = "test1",
+            Enabled = true,
+            ActiveDigestKeyVersion = "test1",
+            DigestKeySource = IdempotencyDigestKeySource.Configuration,
+            DigestKeySecretStoreName = "test-secrets",
+            DigestKeySecretName = "test-ring",
+            DigestKeySecretGeneration = "test1",
             DigestKeys = new() { ["test1"] = Convert.ToBase64String(new byte[32]) },
         }));
         services.AddSingleton<IIdempotencyDigestKeyProvider, ConfigurationIdempotencyDigestKeyProvider>();

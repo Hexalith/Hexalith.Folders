@@ -41,5 +41,6 @@ public sealed class FolderDurabilityCatalogBindingTests
     }
 
     private static RouteCatalogGenerationReadback Readback() => new(3, 1, new string('a', 64), new string('c', 64),
-        new string('d', 64), "Development", [], true) { AttemptId = "owned-attempt", ActivationBindingDigest = new string('e', 64) };
+        new string('d', 64), "Development", [], true)
+    { AttemptId = "owned-attempt", ActivationBindingDigest = new string('e', 64) };
 }

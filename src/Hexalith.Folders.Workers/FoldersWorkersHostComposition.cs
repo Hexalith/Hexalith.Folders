@@ -26,10 +26,13 @@ public static class FoldersWorkersHostComposition
                     builder.Configuration["EventStore:DomainService:AppId"] ?? FoldersWorkersModule.AppId,
                     [], [], [], [], [], token).ConfigureAwait(false);
                 var executable = typeof(FoldersWorkersHostComposition).Assembly;
-                return actual with { ExecutableOwners = new Dictionary<string, string>
+                return actual with
                 {
-                    [executable.FullName!] = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(executable.Location))),
-                } };
+                    ExecutableOwners = new Dictionary<string, string>
+                    {
+                        [executable.FullName!] = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(executable.Location))),
+                    }
+                };
             });
         builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>();
         builder.Services.AddSingleton<IFolderTenantAccessProjectionStore, EventStoreFolderTenantAccessProjectionStore>();

@@ -26,12 +26,12 @@ public sealed class FoldersDevelopmentCatalogCompositionTests
                 ["--EnableKeycloak=false"], TestContext.Current.CancellationToken).ConfigureAwait(true);
             await using var builderScope = builder.ConfigureAwait(true);
             foreach (ProjectResource project in builder.Resources.OfType<ProjectResource>())
-            foreach (DaprSidecarAnnotation sidecar in project.Annotations.OfType<DaprSidecarAnnotation>())
-            {
-                var annotation = sidecar.Sidecar.Annotations.OfType<DaprSidecarOptionsAnnotation>().Single();
-                sidecar.Sidecar.Annotations.Remove(annotation);
-                sidecar.Sidecar.Annotations.Add(new DaprSidecarOptionsAnnotation(annotation.Options with { AppId = project.Name + "-selected" }));
-            }
+                foreach (DaprSidecarAnnotation sidecar in project.Annotations.OfType<DaprSidecarAnnotation>())
+                {
+                    var annotation = sidecar.Sidecar.Annotations.OfType<DaprSidecarOptionsAnnotation>().Single();
+                    sidecar.Sidecar.Annotations.Remove(annotation);
+                    sidecar.Sidecar.Annotations.Add(new DaprSidecarOptionsAnnotation(annotation.Options with { AppId = project.Name + "-selected" }));
+                }
             string source = builder.Resources.OfType<DaprComponentResource>().Single(component => component.Name == "statestore").Options!.LocalPath!;
             string isolated = Path.Combine(temporary, "model-only-state.yaml");
             await File.WriteAllTextAsync(isolated, (await File.ReadAllTextAsync(source, TestContext.Current.CancellationToken).ConfigureAwait(true))
@@ -63,7 +63,9 @@ public sealed class FoldersDevelopmentCatalogCompositionTests
             Directory.Delete(temporary, recursive: true);
             TestContext.Current.TestOutputHelper!.WriteLine("CATALOG_MODEL_CLEANUP " + JsonSerializer.Serialize(new
             {
-                temporary, temporaryExists = Directory.Exists(temporary), catalogDirectory,
+                temporary,
+                temporaryExists = Directory.Exists(temporary),
+                catalogDirectory,
                 catalogDirectoryExists = catalogDirectory is not null && Directory.Exists(catalogDirectory),
             }));
         }

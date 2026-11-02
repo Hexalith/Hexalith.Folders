@@ -67,10 +67,13 @@ public sealed class Task36FoldDiagnosticObserverTests
             (await DispatchAsync(first, "first")).Status.ShouldBe(ProjectionDispatchStatus.AlreadyCompleted);
             FoldRows(path).Count.ShouldBe(1);
 
-            ProjectionRequest conflict = first with { Events = [first.Events[0] with
+            ProjectionRequest conflict = first with
+            {
+                Events = [first.Events[0] with
             {
                 Payload = JsonSerializer.SerializeToUtf8Bytes(OperationalStatusTestData.Created() with { DisplayName = "conflicting-source" }),
-            }] };
+            }]
+            };
             var rejected = await DispatchAsync(conflict, "conflict");
             rejected.Status.ShouldBe(ProjectionDispatchStatus.Failed);
             rejected.ReasonCode.ShouldBe(ProjectionDispatchReasonCodes.DeliveryIdentityConflict);
