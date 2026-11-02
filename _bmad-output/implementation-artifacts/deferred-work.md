@@ -3193,3 +3193,11 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-yaml-shapes.md`
   summary: Bound governance YAML parser argument errors for invalid Unicode code points.
   evidence: Independent review reproduced a file containing value: "\UFFFFFFFF" escaping LoadYamlStream as ArgumentOutOfRangeException with parser detail. The inherited loader catches only YamlException; SafetyInvariantGateTests already catches ArgumentException for the same parser path. Add a file-backed regression and bounded conversion in the governance loader; this is separate from structural-key and collection-shape validation.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-17-qualify-platform-hosted-reference-graph.md`
+  summary: Restore package-only CI evaluation for the concurrent Folders AppHost.Tests Tenants project reference.
+  evidence: Review confirmed the new Tenants ProjectReference remains present with Configuration=Release and UseNuGetDeps=true. This change was made by concurrent Story 12.2 work, not Story 1.17, and requires that owner to restore the CI dependency boundary.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-17-qualify-platform-hosted-reference-graph.md`
+  summary: Bind an immutable Platform candidate before release or operational acceptance.
+  evidence: The local approval pins Platform HEAD and records a SHA-256 of its working diff, but uncommitted working bytes are mutable after the local probe. The release handoff must identify a stable candidate and requalify if those bytes change.

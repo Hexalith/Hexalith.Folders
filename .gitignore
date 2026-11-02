@@ -120,6 +120,8 @@ StyleCopReport.xml
 *.tmp_proj
 *_wpftmp.csproj
 *.log
+!_bmad-output/implementation-artifacts/evidence/story-1-17-platform-hosted-graph-qualification-2026-11-02/*.log
+!_bmad-output/implementation-artifacts/evidence/story-1-17-committed-candidate-2026-11-02/*.log
 *.tlog
 *.vspscc
 *.vssscc

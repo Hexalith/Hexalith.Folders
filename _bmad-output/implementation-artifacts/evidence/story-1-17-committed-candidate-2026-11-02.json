@@ -1,0 +1,139 @@
+{
+  "recordId": "story-1-17-committed-candidate-2026-11-02",
+  "recordedAtUtc": "2026-11-02T16:47:56.708248+00:00",
+  "status": "COMMITTED_CANDIDATE_LOCAL_GRAPH_QUALIFIED_WITH_REMAINING_BLOCKERS",
+  "priorQualification": "story-1-17-platform-hosted-graph-qualification-2026-11-02.json",
+  "platformCandidateCommit": "d891af161e9eb6eabc535e0ba50f910d0b323ca8",
+  "platformApprovedBaseline": "3d344e850471b6a21fc4649df7ede9a0390689b1",
+  "platformCandidateDiffSha256": "55d3493cf357b257eb74502faaf2dc09afe588806c7b7d5384f4a5e7d8444750",
+  "platformBranch": "fix/story-1-17-hosted-reference-graph-20261102",
+  "platformRemote": "origin/fix/story-1-17-hosted-reference-graph-20261102",
+  "mappingSha256": "46a4bef075af48791ec3f0bc4e4336de8597c36406ccad2f3ab5183e438b41cd",
+  "ownerRows": [
+    {
+      "owner": "EventStore",
+      "platformDirectRevision": "7c93a1234d14c66f5ee85ed48caaee1d30a671f3",
+      "exportRevision": "7c93a1234d14c66f5ee85ed48caaee1d30a671f3",
+      "declarationSha256": "21eda6da824d5ae6135ff342dd8a5aae950b02420319b953a836dddeb00ce495",
+      "exportRoot": "/tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore",
+      "rootSiblingRevision": "f2be45ede245211f549978358872875c5df28dc8",
+      "rootSiblingSelected": false
+    },
+    {
+      "owner": "Tenants",
+      "platformDirectRevision": "a01e89854f711d1a93ae15695b438424c1ed4f0f",
+      "exportRevision": "a01e89854f711d1a93ae15695b438424c1ed4f0f",
+      "declarationSha256": "1588f3428ec29296c452fdd35bf95146142315aad3ad8ceb934e7a791f1fb522",
+      "exportRoot": "/tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants",
+      "rootSiblingRevision": "ba4639fa462341281f89aa7a08b7398477fc1ba9",
+      "rootSiblingSelected": false
+    },
+    {
+      "owner": "Memories",
+      "platformDirectRevision": "e8956eb5c1bd49297f86702f9606eb9b013bc2f1",
+      "exportRevision": "e8956eb5c1bd49297f86702f9606eb9b013bc2f1",
+      "declarationSha256": "56f6dc8134d3f7cea06910e923a4736a450e00241e8e4a565ac9226897881840",
+      "exportRoot": "/tmp/hexalith-story-1-17-checkouts/Hexalith.Memories",
+      "rootSiblingRevision": "46667b0d25c707bcdc961d59895bfe5a064bfd12",
+      "rootSiblingSelected": false
+    },
+    {
+      "owner": "Parties",
+      "platformDirectRevision": "f4285584dce0dfa08e3336fca3c203a1b5e748c6",
+      "exportRevision": "f4285584dce0dfa08e3336fca3c203a1b5e748c6",
+      "declarationSha256": "86002eeb916c77bd753a3c618ce394125794baf421315604c9f551b762624504",
+      "exportRoot": "/tmp/hexalith-story-1-17-checkouts/Hexalith.Parties",
+      "rootSiblingRevision": "d06c316fd57cbfaa0b80cf8622ec0b8ec571c6a0",
+      "rootSiblingSelected": false
+    }
+  ],
+  "commands": [
+    {
+      "id": "strict-release-composition",
+      "cwd": "references/Hexalith.Platform",
+      "command": "dotnet build tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj --configuration Release -p:UseHexalithProjectReferences=false -m:1 -nr:false -warnaserror",
+      "exitCode": 0,
+      "result": "Build succeeded; 0 warnings, 0 errors; committed candidate",
+      "log": "strict-release.log"
+    },
+    {
+      "id": "exact-source-debug-composition",
+      "cwd": "references/Hexalith.Platform",
+      "command": "dotnet build tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreRoot=/tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore -p:HexalithTenantsRoot=/tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants -p:HexalithMemoriesRoot=/tmp/hexalith-story-1-17-checkouts/Hexalith.Memories -p:HexalithPartiesRoot=/tmp/hexalith-story-1-17-checkouts/Hexalith.Parties -p:HexalithBuildsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Builds -p:HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons -p:HexalithFrontComposerRoot=/tmp/hexalith-story-1-17-checkouts/Hexalith.FrontComposer -p:HexalithMcpCliRoot=/tmp/hexalith-story-1-17-checkouts/Hexalith.McpCli -p:HexalithPlatformRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Platform -m:1 -nr:false -warnaserror",
+      "exitCode": 0,
+      "result": "Build succeeded; 0 warnings, 0 errors; committed candidate",
+      "log": "debug-exact-source.log"
+    },
+    {
+      "id": "canonical-hosted-class",
+      "cwd": "references/Hexalith.Platform",
+      "command": "env HEXALITH_PLATFORM_HOSTED_EVENTSTORE_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore HEXALITH_PLATFORM_HOSTED_TENANTS_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants HEXALITH_PLATFORM_HOSTED_MEMORIES_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.Memories HEXALITH_PLATFORM_HOSTED_PARTIES_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.Parties dotnet tests/Hexalith.Platform.Composition.Tests/bin/Release/net10.0/Hexalith.Platform.Composition.Tests.dll -class Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests -result-xml /tmp/story117-committed-hosted.xml",
+      "exitCode": 0,
+      "result": "16 passed of 16; 0 failures, errors, skips or not-run",
+      "log": "hosted-class.log",
+      "xml": "hosted-class.xml"
+    },
+    {
+      "id": "committed-graph-export",
+      "cwd": "references/Hexalith.Platform",
+      "command": "env HEXALITH_PLATFORM_HOSTED_EVENTSTORE_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.EventStore HEXALITH_PLATFORM_HOSTED_TENANTS_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.Tenants HEXALITH_PLATFORM_HOSTED_MEMORIES_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.Memories HEXALITH_PLATFORM_HOSTED_PARTIES_ROOT=/tmp/hexalith-story-1-17-checkouts/Hexalith.Parties dotnet run --project eng/mcpcli-operator-setup/graph-export/GraphExport.csproj --configuration Release -p:UseHexalithProjectReferences=false -p:UseNuGetDeps=true -- \"$PWD\" /tmp/story117-committed-graph.json",
+      "exitCode": 0,
+      "result": "Exported JSON matched maintained chart semantically; SHA-256 820d410e1a892f13b64325d08d18358226c4f9e046328964acbbf1a8b2de6e55",
+      "log": "graph-export.log",
+      "graph": "graph-export.json"
+    }
+  ],
+  "controls": {
+    "routeMode": "V1Only",
+    "t0": null,
+    "activationAuthority": null,
+    "tracker": "backlog",
+    "stagingChecksExecuted": 0,
+    "nestedPlatformReferenceGitMarkersPresent": false,
+    "publication": false,
+    "deployment": false,
+    "branchPush": {
+      "remote": "origin",
+      "branch": "fix/story-1-17-hosted-reference-graph-20261102",
+      "commit": "d891af161e9eb6eabc535e0ba50f910d0b323ca8"
+    }
+  },
+  "remainingBlockers": [
+    "The separate strict Protection.Tests project does not build (186 test/fixture analyzer errors); no Protection.Tests execution is claimed.",
+    "The candidate is one direct commit above the approved Platform baseline and is locally qualified. Integration or rebase onto newer Platform main requires a fresh mapping decision and requalification.",
+    "Exact current candidate release, immutable hosted artifact, tool/catalog and intake acceptance, hosted identity/delegation, target/data disposition, staging, observation/recovery, and operational closure remain unverified.",
+    "Concurrent Folders AppHost.Tests Tenants ProjectReference remains active in Release package mode; it belongs to separate Story 12.2 work and was not modified here."
+  ],
+  "members": {
+    "debug-exact-source.log": {
+      "path": "story-1-17-committed-candidate-2026-11-02/debug-exact-source.log",
+      "bytes": 10720,
+      "sha256": "0527e0c82105321a5fa08abc609b51f5e5ec5fef29bab918361d7f290ad3f0bb"
+    },
+    "graph-export.json": {
+      "path": "story-1-17-committed-candidate-2026-11-02/graph-export.json",
+      "bytes": 42872,
+      "sha256": "820d410e1a892f13b64325d08d18358226c4f9e046328964acbbf1a8b2de6e55"
+    },
+    "graph-export.log": {
+      "path": "story-1-17-committed-candidate-2026-11-02/graph-export.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "hosted-class.log": {
+      "path": "story-1-17-committed-candidate-2026-11-02/hosted-class.log",
+      "bytes": 490,
+      "sha256": "9ad08567c98c3575f34364a3194e95d6fe3e5d0cbb120ce42f83c7cb726d07fe"
+    },
+    "hosted-class.xml": {
+      "path": "story-1-17-committed-candidate-2026-11-02/hosted-class.xml",
+      "bytes": 11913,
+      "sha256": "3dd867504b3ce47ea3cf20acf1f629a4b4ab91e150e3cae63716210dfa732f04"
+    },
+    "strict-release.log": {
+      "path": "story-1-17-committed-candidate-2026-11-02/strict-release.log",
+      "bytes": 2565,
+      "sha256": "a3facce3e5352e31f1dc004fa57d629bc52dd4de7c31729129b30e21ddfe80a0"
+    }
+  }
+}
