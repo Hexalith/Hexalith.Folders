@@ -263,7 +263,7 @@ development_status:
 
   epic-12: in-progress
   12-1-eventstore-backed-folder-repository-retire-noop-and-implemen: done
-  # needs eventstore 
+  # needs Stories 4.22 and 11.15
   12-2-durable-projections-and-task-completion-pipeline: in-progress
   12-3-durable-workspace-file-content-store-and-content-read-source: review
   12-4-real-git-commit-executor-and-provider-write-path: backlog

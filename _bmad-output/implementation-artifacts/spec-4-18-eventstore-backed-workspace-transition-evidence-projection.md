@@ -41,25 +41,23 @@ context:
 
 ## Code Map
 
-- `src/Hexalith.Folders/Queries/Folders/WorkspaceTransitionEvidenceQueryHandler.cs` — keep authorization-before-read and the current safe-denial mapping.
-- `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs` — line 87 is the in-memory reader; lines 100–118 move the other operational readers to EventStore. `Save` only seeds tests.
-- `src/Hexalith.Folders/Queries/Folders/WorkspaceTransitionEvidenceSnapshot.cs` and `src/Hexalith.Folders.Client` — audit values are timestamps. `hexalith.folders.v2.yaml` also allows string and boolean; regenerate from `nswag.json`.
-- `src/Hexalith.Folders/Projections/SemanticIndexing/EventStoreSemanticIndexingBridgeStore.cs` — reuse `IReadModelStore` and `ReadModelWritePolicy`. Leave that store unchanged.
-- `src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs`, `FolderEventReplay.cs`, `FoldersServerServiceCollectionExtensions.cs` line 201, and `FoldersDomainServiceEndpoints.cs` line 475 — replay, store registration, and the existing GET route. Keep this projection separate from operational status.
-- `src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs` — unguarded C6 remains Story 4.22's. `LockLeaseBecameStale` and the new projection types are absent.
+- `src/Hexalith.Folders/Queries/Folders/WorkspaceTransitionEvidenceQueryHandler.cs` — authorization precedes read; preserve safe denial. `WorkspaceTransitionEvidenceSnapshot.cs` permits timestamp audit values only.
+- `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs` — transition reader is in memory; other operational readers use EventStore.
+- `src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs` — SDK streaming rebuild/batch pattern; keep projections separate. `FoldersServerHostComposition.cs` registers host services.
+- `src/Hexalith.Folders.Server/FolderEventReplay.cs` — ordered replay/identity checks. `FoldersDomainServiceEndpoints.cs` maps the safe GET result.
 
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `_bmad-output/planning-artifacts/planning-story-manifest.yaml` — require acceptance records and runtime evidence for the EventStore evolution release and Stories 12.1, 12.2, and 4.22 before production code.
-- [ ] `src/Hexalith.Folders/Projections/WorkspaceTransitionEvidence/WorkspaceTransitionEvidenceProjection.cs` — fold approved C6 events in envelope order; reject bad identity, sequence, and duplicates.
-- [ ] `src/Hexalith.Folders/Projections/WorkspaceTransitionEvidence/EventStoreWorkspaceTransitionEvidenceStore.cs` — read and write scoped snapshots through the EventStore read-model SDK, one type per file.
-- [ ] `src/Hexalith.Folders/Queries/Folders/WorkspaceTransitionEvidenceSnapshot.cs` and `WorkspaceTransitionEvidenceQueryHandler.cs` — accept the approved audit values and suppress stale, foreign, or corrupt metadata.
-- [ ] `src/Hexalith.Folders.Server/WorkspaceTransitionEvidenceProjectionHandler.cs` and `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs` — register the durable reader beside the operational-status swap; return canonical unavailable when the store fails.
-- [ ] `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs` and `src/Hexalith.Folders.Client/nswag.json` — regenerate the mixed audit-value client.
-- [ ] `tests/Hexalith.Folders.Tests/Projections/WorkspaceTransitionEvidence/WorkspaceTransitionEvidenceProjectionTests.cs` and `tests/Hexalith.Folders.Tests/Queries/Folders/WorkspaceTransitionEvidenceQueryHandlerTests.cs` — cover the matrix, including denial before read.
-- [ ] `tests/Hexalith.Folders.Server.Tests/GetWorkspaceTransitionEvidenceEndpointTests.cs` and `tests/Hexalith.Folders.Client.Tests/WorkspaceTransitionEvidenceClientTests.cs` — cover route safety and the mixed-value round-trip.
-- [ ] `tests/Hexalith.Folders.IntegrationTests/WorkspaceTransitionEvidenceDurabilityTests.cs` — assert stored contents, restart, empty-checkpoint replay, and faults on the real processor and store.
+- [ ] `_bmad-output/planning-artifacts/planning-story-manifest.yaml` — verify accepted EventStore evolution and 12.1, 12.2, 4.22, 11.15 evidence before code.
+- [ ] `src/Hexalith.Folders/Projections/WorkspaceTransitionEvidence/WorkspaceTransitionEvidenceProjection.cs` — fold guarded C6 events in order; reject identity, sequence and duplicate errors.
+- [ ] `src/Hexalith.Folders/Projections/WorkspaceTransitionEvidence/EventStoreWorkspaceTransitionEvidenceStore.cs` — persist scoped snapshots through the SDK, one type per file.
+- [ ] `src/Hexalith.Folders/Queries/Folders/WorkspaceTransitionEvidenceSnapshot.cs` and `WorkspaceTransitionEvidenceQueryHandler.cs` — support mixed audit values; suppress stale, foreign and corrupt evidence.
+- [ ] `src/Hexalith.Folders.Server/WorkspaceTransitionEvidenceProjectionHandler.cs` and `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs` — register projector/reader; map store failure to canonical unavailable.
+- [ ] `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs` and `src/Hexalith.Folders.Client/nswag.json` — regenerate the mixed-value Client from the contract.
+- [ ] `tests/Hexalith.Folders.Tests/Projections/WorkspaceTransitionEvidence/WorkspaceTransitionEvidenceProjectionTests.cs` and `tests/Hexalith.Folders.Tests/Queries/Folders/WorkspaceTransitionEvidenceQueryHandlerTests.cs` — cover folding and the edge matrix.
+- [ ] `tests/Hexalith.Folders.Server.Tests/GetWorkspaceTransitionEvidenceEndpointTests.cs` and `tests/Hexalith.Folders.Client.Tests/WorkspaceTransitionEvidenceClientTests.cs` — prove safe routing and mixed-value round trip.
+- [ ] `tests/Hexalith.Folders.IntegrationTests/WorkspaceTransitionEvidenceDurabilityTests.cs` — assert persisted contents, restart, empty-checkpoint replay and faults.
 
 **Acceptance Criteria:**
 - Given accepted prerequisites, when deployed projection, restart, and empty-checkpoint replay run, then persisted evidence is deterministic and durable.
@@ -72,24 +70,18 @@ context:
 
 ## Review Triage Log
 
-## Design Notes
-
-Keep domain evidence apart from reader authority, and widen timestamp, string, and boolean audit values in one generation. Preparatory work stays deferred. No migration or external side effect is proposed.
-
 ## Verification
 
-**Readiness recheck (2026-10-31):** Folders `02bd98cf29e6a3b787d8c6ae747f5e0d71762a72`; EventStore `7b1df62102efb19da03553a890c62eb5ad6aeafe`.
+**Readiness recheck (2026-11-02):** Folders `88b44fdefd5f0512ebc89bb213ead18e66eb7337`; EventStore checkout `f2be45ede245211f549978358872875c5df28dc8`.
 
-- 12.1 `done`; retain `evidence/story-12-1-durability-2026-10-18-complete.json`.
-- 12.2 `in-progress`, review loop 4; `evidence/story-12-2-durability.json` `full_acceptance: false`; `evidence/story-12-2-v2-source-requalification-pending.yaml` `story_closure_claimed: false`.
-- Latest 12.2 receipt, `evidence/story-12-2-sidecar-startup-20261022T105749Z/qualification.json`: `task36_selected_candidate_consumer_qualified: true`, `whole_story_complete: false`. Focused Task 36 qualification does not close whole-story acceptance.
-- 4.22 `backlog`, no spec; guarded C6 implementation and `LockLeaseBecameStale` remain absent. 11.15 `backlog` is on the manifest edge and outside the frozen resume list.
-- `EXT-ES-EVENT-EVOLUTION` accepted only at `ead4949d30b37d3a976f5c9197789a91701f1a72` in `story-12-1-eventstore-6-6-acceptance-2026-10-11.yaml` for 12.1 source/SDK compatibility.
+- `sprint-status.yaml`: 12.1 `done`; 12.2 `in-progress`; 4.22 and 11.15 `backlog`.
+- `evidence/story-12-2-durability.json`: `full_acceptance: false`; the 2026-11-01 Story 12.2 checkpoint leaves live qualification and whole-story review open.
+- `story-12-1-eventstore-6-6-acceptance-2026-10-11.yaml`: EventStore evolution accepted at `ead4949d30b37d3a976f5c9197789a91701f1a72` for source/SDK compatibility only.
 
-12.2 is open and 4.22 has not started, so this spec stays draft under the existing defer decision. The transition-evidence reader remains in-memory and the durable projector is absent. Only readiness evidence was refreshed; no implementation or build ran.
+The frozen defer decision keeps this spec `draft`. The reader remains in memory; no projector, implementation or build ran.
 
 **Commands:**
 - `dotnet build Hexalith.Folders.slnx -c Debug` after prerequisite acceptance.
-- Build and run core, Server, Client, and integration projects individually; use built xUnit v3 assemblies with `-class` and assert persisted end-state.
+- Build/run core, Server, Client and integration projects separately; invoke built xUnit v3 assemblies with `-class` and assert stored end-state.
 - `pwsh -File tests/tools/run-contract-spine-gates.ps1` and `pwsh -File tests/tools/run-safety-invariant-gates.ps1`.
 - `git diff --check`.
