@@ -208,7 +208,8 @@ public sealed class ScaffoldContractTests
         // round-trip by publishing real SearchIndexEntryChanged/Removed CloudEvents through the worker's pub/sub
         // component (and to reuse FoldersSemanticIndexingDefaults). Memories.Contracts flows in transitively; this is
         // a test project, so it is not subject to the production Memories-isolation rule (see ForbiddenReferencesAreNotIntroduced).
-        AssertReferences(references, "Hexalith.Folders.AppHost.Tests", ["Hexalith.Folders.AppHost", "Hexalith.Folders.Aspire", "Hexalith.Folders.Client", "Hexalith.Folders.Workers", "Task36FoldObserver"]);
+        // The build-only Tenants reference supplies the selected owner assemblies for the catalog composition test.
+        AssertReferences(references, "Hexalith.Folders.AppHost.Tests", ["Hexalith.Folders.AppHost", "Hexalith.Folders.Aspire", "Hexalith.Folders.Client", "Hexalith.Folders.Workers", "Hexalith.Tenants", "Task36FoldObserver"]);
         AssertReferences(references, "Hexalith.Folders.LoadTests.Tests", ["Hexalith.Folders.LoadTests"]);
         AssertReferences(references, "Hexalith.Folders.PatternExamples", ["Hexalith.Folders.Client", "Hexalith.Folders.Contracts"]);
     }
