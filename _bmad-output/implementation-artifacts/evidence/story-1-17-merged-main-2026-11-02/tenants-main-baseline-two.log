@@ -1,0 +1,19 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Tenants.Server.Tests
+  Discovered:  Hexalith.Tenants.Server.Tests
+  Starting:    Hexalith.Tenants.Server.Tests
+    Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapHostedServiceTests.Development_symmetric_credential_is_a_short_lived_delegated_token_for_the_configured_administrator [FAIL]
+      System.Threading.Tasks.TaskCanceledException : A task was canceled.
+      Stack Trace:
+        tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapHostedServiceTests.cs(1779,0): at Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapHostedServiceTests.WaitUntilAsync(Func`1 condition)
+        tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapHostedServiceTests.cs(764,0): at Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapHostedServiceTests.Development_symmetric_credential_is_a_short_lived_delegated_token_for_the_configured_administrator()
+        --- End of stack trace from previous location ---
+    Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapHostedServiceTests.StartAsync_with_configured_userId_sends_BootstrapGlobalAdmin_command [FAIL]
+      System.Threading.Tasks.TaskCanceledException : A task was canceled.
+      Stack Trace:
+        tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapHostedServiceTests.cs(1779,0): at Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapHostedServiceTests.WaitUntilAsync(Func`1 condition)
+        tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapHostedServiceTests.cs(143,0): at Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapHostedServiceTests.StartAsync_with_configured_userId_sends_BootstrapGlobalAdmin_command()
+        --- End of stack trace from previous location ---
+  Finished:    Hexalith.Tenants.Server.Tests (ID = 'df6d5627a1255ed63527dc6d2cbf894db200ea7bc417cde11c82253b3c225a68')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Tenants.Server.Tests  Total: 2, Errors: 0, Failed: 2, Skipped: 0, Not Run: 0, Time: 4.267s

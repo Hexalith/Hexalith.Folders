@@ -1,0 +1,36 @@
+  Determining projects to restore...
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj (in 92 ms).
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj (in 193 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Hexalith.Builds.Tooling.csproj (in 198 ms).
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders/Hexalith.Folders.csproj (in 200 ms).
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj (in 201 ms).
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj (in 200 ms).
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj (in 201 ms).
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Folders/tests/tools/Task36FoldObserver/Task36FoldObserver.csproj (in 201 ms).
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj (in 202 ms).
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj (in 202 ms).
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj (in 262 ms).
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj (in 262 ms).
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Folders/tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj (in 262 ms).
+  Hexalith.Folders.Contracts -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Contracts/bin/Release/net10.0/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders.Client -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Client/bin/Release/net10.0/Hexalith.Folders.Client.dll
+  Hexalith.Folders -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders/bin/Release/net10.0/Hexalith.Folders.dll
+  Hexalith.Folders.EventStore -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.EventStore/bin/Release/net10.0/Hexalith.Folders.EventStore.dll
+  Hexalith.Folders.ServiceDefaults -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.ServiceDefaults/bin/Release/net10.0/Hexalith.Folders.ServiceDefaults.dll
+  Hexalith.Folders.Server -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Server/bin/Release/net10.0/Hexalith.Folders.Server.dll
+  Hexalith.Folders.UI -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.UI/bin/Release/net10.0/Hexalith.Folders.UI.dll
+  Hexalith.Folders.Workers -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Workers/bin/Release/net10.0/Hexalith.Folders.Workers.dll
+  Hexalith.Folders.Aspire -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Aspire/bin/Release/net10.0/Hexalith.Folders.Aspire.dll
+  Platform version catalog validated: Hexalith.EventStore.Aspire/3.132.2, CommunityToolkit.Aspire.Hosting.Dapr/13.6.2-beta.959, required range 13.6.2-beta.959 for net10.0.
+  Hexalith.Builds.Tooling -> /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/bin/Release/net10.0/Hexalith.Builds.Tooling.dll
+  Hexalith.Folders.AppHost -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.AppHost/bin/Release/net10.0/Hexalith.Folders.AppHost.dll
+  Platform version catalog validation failed: Catalog field Hexalith.EventStore.Aspire has inconsistent build selection '4.0.0'; authoritative catalog selects '3.132.2'. Change the catalog instead of overriding controlled selections.
+/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Hexalith.Builds.Tooling.csproj(62,5): error MSB3073: The command "pwsh -NoLogo -NoProfile -File "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/../../../Tools/write-platform-version-catalog.ps1" -CatalogPath "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/../../../Props/Directory.Packages.props" -OutputPath "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/obj/Release/net10.0//platform-version-catalog.json" -BuildSelectionsPath "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/obj/Release/net10.0//platform-version-catalog.build.txt" -Configuration "Release" -TargetFramework "net10.0"" exited with code 1.
+
+Build FAILED.
+
+/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Hexalith.Builds.Tooling.csproj(62,5): error MSB3073: The command "pwsh -NoLogo -NoProfile -File "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/../../../Tools/write-platform-version-catalog.ps1" -CatalogPath "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/../../../Props/Directory.Packages.props" -OutputPath "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/obj/Release/net10.0//platform-version-catalog.json" -BuildSelectionsPath "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/obj/Release/net10.0//platform-version-catalog.build.txt" -Configuration "Release" -TargetFramework "net10.0"" exited with code 1.
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:12.98

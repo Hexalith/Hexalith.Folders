@@ -1,0 +1,100 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Platform.Composition.Tests
+  Discovered:  Hexalith.Platform.Composition.Tests
+  Starting:    Hexalith.Platform.Composition.Tests
+    Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedPublishRequiresVerifiedMappingAndGraphPathBeforeAddingResources [FAIL]
+      Shouldly.ShouldAssertException : Should.Throw<InvalidDataException>(PlatformAppModel.ComposeEntry(drift)).Message
+          should contain (case insensitive comparison)
+      "source revision"
+          but was actually
+      "Hosted reference Memories declaration digest differs from the approved bytes."
+      Stack Trace:
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(215,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedPublishRequiresVerifiedMappingAndGraphPathBeforeAddingResources()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedPublicRoutesMatchOnlyTheDeclaredPublicServers [FAIL]
+      System.IO.InvalidDataException : Hosted reference Memories declaration digest differs from the approved bytes.
+      Stack Trace:
+        src/Hexalith.Platform.Composition/PlatformHostedReferenceMapping.cs(81,0): at Hexalith.Platform.Composition.PlatformHostedReferenceMapping.Verify(String platformRoot, IReadOnlyDictionary`2 sourceRoots)
+        src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs(59,0): at Hexalith.Platform.Composition.PlatformHostedPublishing.ReferenceOptions(String root, IReadOnlyDictionary`2 sourceRoots)
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(27,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.ReferenceOptions()
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(93,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedPublicRoutesMatchOnlyTheDeclaredPublicServers()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.SharedAclUsesTheSelectedHostedNamespaceAndTrustDomain [FAIL]
+      System.IO.InvalidDataException : Hosted reference Memories declaration digest differs from the approved bytes.
+      Stack Trace:
+        src/Hexalith.Platform.Composition/PlatformHostedReferenceMapping.cs(81,0): at Hexalith.Platform.Composition.PlatformHostedReferenceMapping.Verify(String platformRoot, IReadOnlyDictionary`2 sourceRoots)
+        src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs(59,0): at Hexalith.Platform.Composition.PlatformHostedPublishing.ReferenceOptions(String root, IReadOnlyDictionary`2 sourceRoots)
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(27,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.ReferenceOptions()
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(299,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.SharedAclUsesTheSelectedHostedNamespaceAndTrustDomain()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.LocalTimesheetsOptInPrecedesReadinessValidationEvenWithoutEnabledServers(disabled: False) [FAIL]
+      System.IO.InvalidDataException : Hosted reference Memories declaration digest differs from the approved bytes.
+      Stack Trace:
+        src/Hexalith.Platform.Composition/PlatformHostedReferenceMapping.cs(81,0): at Hexalith.Platform.Composition.PlatformHostedReferenceMapping.Verify(String platformRoot, IReadOnlyDictionary`2 sourceRoots)
+        src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs(59,0): at Hexalith.Platform.Composition.PlatformHostedPublishing.ReferenceOptions(String root, IReadOnlyDictionary`2 sourceRoots)
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(27,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.ReferenceOptions()
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(292,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.LocalTimesheetsOptInPrecedesReadinessValidationEvenWithoutEnabledServers(Boolean disabled)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.LocalTimesheetsOptInPrecedesReadinessValidationEvenWithoutEnabledServers(disabled: True) [FAIL]
+      System.IO.InvalidDataException : Hosted reference Memories declaration digest differs from the approved bytes.
+      Stack Trace:
+        src/Hexalith.Platform.Composition/PlatformHostedReferenceMapping.cs(81,0): at Hexalith.Platform.Composition.PlatformHostedReferenceMapping.Verify(String platformRoot, IReadOnlyDictionary`2 sourceRoots)
+        src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs(59,0): at Hexalith.Platform.Composition.PlatformHostedPublishing.ReferenceOptions(String root, IReadOnlyDictionary`2 sourceRoots)
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(27,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.ReferenceOptions()
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(292,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.LocalTimesheetsOptInPrecedesReadinessValidationEvenWithoutEnabledServers(Boolean disabled)
+           at InvokeStub_PlatformHostedPublishingTests.LocalTimesheetsOptInPrecedesReadinessValidationEvenWithoutEnabledServers(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedPublishRejectsDirtyApprovedRevisionSources [FAIL]
+      Shouldly.ShouldAssertException : Should.Throw<InvalidDataException>(PlatformAppModel.ComposeEntry(dirty)).Message
+          should contain (case insensitive comparison)
+      "source revision or tracked bytes"
+          but was actually
+      "Hosted reference Memories declaration digest differs from the approved bytes."
+      Stack Trace:
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(247,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedPublishRejectsDirtyApprovedRevisionSources()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedPublishWritesTheCanonicalGraphAndAddsOnlyNativeWorkloadsAndEnvironment [FAIL]
+      System.IO.InvalidDataException : Hosted reference Memories declaration digest differs from the approved bytes.
+      Stack Trace:
+        src/Hexalith.Platform.Composition/PlatformHostedReferenceMapping.cs(81,0): at Hexalith.Platform.Composition.PlatformHostedReferenceMapping.Verify(String platformRoot, IReadOnlyDictionary`2 sourceRoots)
+        src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs(59,0): at Hexalith.Platform.Composition.PlatformHostedPublishing.ReferenceOptions(String root, IReadOnlyDictionary`2 sourceRoots)
+        src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs(93,0): at Hexalith.Platform.Composition.PlatformHostedPublishing.ComposeNativeProbe(IDistributedApplicationBuilder builder)
+        src/Hexalith.Platform.Composition/PlatformAppModel.cs(27,0): at Hexalith.Platform.Composition.PlatformAppModel.ComposeEntry(IDistributedApplicationBuilder builder)
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(168,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedPublishWritesTheCanonicalGraphAndAddsOnlyNativeWorkloadsAndEnvironment()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.NeutralReferenceGraphAndLocalBindingHaveIdenticalServersAndReadiness [FAIL]
+      System.IO.InvalidDataException : Hosted reference Memories declaration digest differs from the approved bytes.
+      Stack Trace:
+        src/Hexalith.Platform.Composition/PlatformHostedReferenceMapping.cs(81,0): at Hexalith.Platform.Composition.PlatformHostedReferenceMapping.Verify(String platformRoot, IReadOnlyDictionary`2 sourceRoots)
+        src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs(59,0): at Hexalith.Platform.Composition.PlatformHostedPublishing.ReferenceOptions(String root, IReadOnlyDictionary`2 sourceRoots)
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(27,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.ReferenceOptions()
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(59,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.NeutralReferenceGraphAndLocalBindingHaveIdenticalServersAndReadiness()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedGraphDoesNotReadTheLocalProfileAndMatchesTheMaintainedChartInput [FAIL]
+      System.IO.InvalidDataException : Hosted reference Memories declaration digest differs from the approved bytes.
+      Stack Trace:
+        src/Hexalith.Platform.Composition/PlatformHostedReferenceMapping.cs(81,0): at Hexalith.Platform.Composition.PlatformHostedReferenceMapping.Verify(String platformRoot, IReadOnlyDictionary`2 sourceRoots)
+        src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs(59,0): at Hexalith.Platform.Composition.PlatformHostedPublishing.ReferenceOptions(String root, IReadOnlyDictionary`2 sourceRoots)
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(27,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.ReferenceOptions()
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(79,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedGraphDoesNotReadTheLocalProfileAndMatchesTheMaintainedChartInput()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedReferenceOptionsReadsApprovedEnvironmentRoots [FAIL]
+      System.IO.InvalidDataException : Hosted reference Memories declaration digest differs from the approved bytes.
+      Stack Trace:
+        src/Hexalith.Platform.Composition/PlatformHostedReferenceMapping.cs(81,0): at Hexalith.Platform.Composition.PlatformHostedReferenceMapping.Verify(String platformRoot, IReadOnlyDictionary`2 sourceRoots)
+        src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs(59,0): at Hexalith.Platform.Composition.PlatformHostedPublishing.ReferenceOptions(String root, IReadOnlyDictionary`2 sourceRoots)
+        src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs(53,0): at Hexalith.Platform.Composition.PlatformHostedPublishing.ReferenceOptions(String root)
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(229,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedReferenceOptionsReadsApprovedEnvironmentRoots()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Finished:    Hexalith.Platform.Composition.Tests (ID = '2ed9a88c102e07b10f841a550198a8afb68a92689a21ef2bb375f12e7bc15dea')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Platform.Composition.Tests  Total: 16, Errors: 0, Failed: 10, Skipped: 0, Not Run: 0, Time: 12.830s

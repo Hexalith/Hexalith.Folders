@@ -1,0 +1,21 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Folders.AppHost.Tests
+  Discovered:  Hexalith.Folders.AppHost.Tests
+  Starting:    Hexalith.Folders.AppHost.Tests
+    Hexalith.Folders.AppHost.Tests.FoldersDevelopmentCatalogCompositionTests.SelectedOwnerCatalogBindsFinalAppIdsAndKeepsAllIntentPolicies [FAIL]
+      Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogUnavailableException : The complete compiled declaration inventory cannot be read.
+      Stack Trace:
+           at Hexalith.EventStore.ServiceDefaults.Routing.CompiledRouteCatalogDeclarations.Read(IEnumerable`1 assemblies)
+           at Hexalith.EventStore.Aspire.DevelopmentRouteCatalogAspireExtensions.BuildCatalog(String gatewayAppId, IReadOnlyList`1 owners, IReadOnlyDictionary`2 apps, DevelopmentRouteCatalogCompositionOptions options, DevelopmentRouteCatalogCustody custody)
+           at Hexalith.EventStore.Aspire.DevelopmentRouteCatalogAspireExtensions.Compose(IDistributedApplicationBuilder builder, IResourceBuilder`1 gateway, IReadOnlyList`1 owners, IReadOnlyList`1 receivers, JsonObject stateComponent, String daprNamespace, DevelopmentRouteCatalogCompositionOptions options)
+           at Hexalith.EventStore.Aspire.DevelopmentRouteCatalogAspireExtensions.AddEventStoreDevelopmentRouteCatalog(IDistributedApplicationBuilder builder, IResourceBuilder`1 gateway, IReadOnlyList`1 owners, IReadOnlyList`1 receivers, String stateStoreComponentPath, DevelopmentRouteCatalogCompositionOptions options, String daprNamespace)
+        src/Hexalith.Folders.AppHost/FoldersDevelopmentCatalog.cs(56,0): at Hexalith.Folders.AppHost.FoldersDevelopmentCatalog.Compose(IDistributedApplicationBuilder builder, DevelopmentRouteCatalogCompositionOptions options, String stateStorePath, String daprNamespace)
+        tests/Hexalith.Folders.AppHost.Tests/FoldersDevelopmentCatalogCompositionTests.cs(39,0): at Hexalith.Folders.AppHost.Tests.FoldersDevelopmentCatalogCompositionTests.SelectedOwnerCatalogBindsFinalAppIdsAndKeepsAllIntentPolicies()
+        tests/Hexalith.Folders.AppHost.Tests/FoldersDevelopmentCatalogCompositionTests.cs(59,0): at Hexalith.Folders.AppHost.Tests.FoldersDevelopmentCatalogCompositionTests.SelectedOwnerCatalogBindsFinalAppIdsAndKeepsAllIntentPolicies()
+        --- End of stack trace from previous location ---
+      Output:
+        CATALOG_MODEL_OWNED {"temporary":"/tmp/folders-catalog-model-lpqbQH"}
+        CATALOG_MODEL_CLEANUP {"temporary":"/tmp/folders-catalog-model-lpqbQH","temporaryExists":false,"catalogDirectory":null,"catalogDirectoryExists":false}
+  Finished:    Hexalith.Folders.AppHost.Tests (ID = 'a2caa98dba2fd2a17ee982537f5ec21547dc61676bb3c198706860f7730d4578')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.AppHost.Tests  Total: 4, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 0.481s

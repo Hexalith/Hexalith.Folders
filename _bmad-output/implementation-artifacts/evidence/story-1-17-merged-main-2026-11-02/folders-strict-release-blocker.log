@@ -1,0 +1,29 @@
+  Determining projects to restore...
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj (in 195 ms).
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Tenants/src/Hexalith.Tenants.Server/Hexalith.Tenants.Server.csproj (in 164 ms).
+  Restored /tmp/hexalith-merge-all-20261102/Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj (in 200 ms).
+  13 of 16 projects are up-to-date for restore.
+  Hexalith.Folders.Contracts -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Contracts/bin/Release/net10.0/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders.Client -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Client/bin/Release/net10.0/Hexalith.Folders.Client.dll
+  Hexalith.Folders -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders/bin/Release/net10.0/Hexalith.Folders.dll
+  Hexalith.Folders.EventStore -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.EventStore/bin/Release/net10.0/Hexalith.Folders.EventStore.dll
+  Hexalith.Folders.ServiceDefaults -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.ServiceDefaults/bin/Release/net10.0/Hexalith.Folders.ServiceDefaults.dll
+  Hexalith.Folders.Server -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Server/bin/Release/net10.0/Hexalith.Folders.Server.dll
+  Hexalith.Folders.UI -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.UI/bin/Release/net10.0/Hexalith.Folders.UI.dll
+  Hexalith.Folders.Workers -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Workers/bin/Release/net10.0/Hexalith.Folders.Workers.dll
+  Hexalith.Folders.Aspire -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.Aspire/bin/Release/net10.0/Hexalith.Folders.Aspire.dll
+  Platform version catalog validated: Hexalith.EventStore.Aspire/3.132.2, CommunityToolkit.Aspire.Hosting.Dapr/13.6.2-beta.959, required range 13.6.2-beta.959 for net10.0.
+  Hexalith.Builds.Tooling -> /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/bin/Release/net10.0/Hexalith.Builds.Tooling.dll
+  Hexalith.Folders.AppHost -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/src/Hexalith.Folders.AppHost/bin/Release/net10.0/Hexalith.Folders.AppHost.dll
+  Task36FoldObserver -> /tmp/hexalith-merge-all-20261102/Hexalith.Folders/tests/tools/Task36FoldObserver/bin/Release/net10.0/Task36FoldObserver.dll
+  Hexalith.Tenants.Contracts -> /tmp/hexalith-merge-all-20261102/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Release/net10.0/Hexalith.Tenants.Contracts.dll
+  Hexalith.Tenants.Server -> /tmp/hexalith-merge-all-20261102/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Release/net10.0/Hexalith.Tenants.Server.dll
+/tmp/hexalith-merge-all-20261102/Hexalith.Tenants/src/Hexalith.Tenants/Authorization/TenantsGlobalAdministratorAuthority.cs(26,5): error CS0246: The type or namespace name 'RouteCatalogInvocationScope' could not be found (are you missing a using directive or an assembly reference?) [/tmp/hexalith-merge-all-20261102/Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj]
+
+Build FAILED.
+
+/tmp/hexalith-merge-all-20261102/Hexalith.Tenants/src/Hexalith.Tenants/Authorization/TenantsGlobalAdministratorAuthority.cs(26,5): error CS0246: The type or namespace name 'RouteCatalogInvocationScope' could not be found (are you missing a using directive or an assembly reference?) [/tmp/hexalith-merge-all-20261102/Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj]
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:05.53
