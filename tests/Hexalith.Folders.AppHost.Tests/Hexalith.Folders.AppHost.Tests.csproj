@@ -35,4 +35,13 @@
     </PackageReference>
   </ItemGroup>
 
+  <!-- The CI solution can map out-of-solution project references to Debug even when this
+       test project is built in Release. The catalog model loads the selected host output. -->
+  <Target Name="BuildSelectedTenantsCatalogOwner" AfterTargets="Build" Condition="'$(HexalithTenantsRoot)' != ''">
+    <MSBuild Projects="$(HexalithTenantsRoot)/src/Hexalith.Tenants/Hexalith.Tenants.csproj"
+             Targets="Build"
+             Properties="Configuration=$(Configuration);BuildingSolutionFile=false;ShouldUnsetParentConfigurationAndPlatform=false"
+             RemoveProperties="CurrentSolutionConfigurationContents" />
+  </Target>
+
 </Project>
