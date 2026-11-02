@@ -7,6 +7,8 @@
   <ItemGroup>
     <ProjectReference Include="../../src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj" />
     <ProjectReference Include="../tools/Task36FoldObserver/Task36FoldObserver.csproj" ReferenceOutputAssembly="false" IsAspireProjectResource="false" />
+    <!-- Aspire registers the Tenants runtime with SuppressBuild; compile its selected owner for catalog model tests. -->
+    <ProjectReference Include="$(HexalithTenantsRoot)/src/Hexalith.Tenants/Hexalith.Tenants.csproj" ReferenceOutputAssembly="false" IsAspireProjectResource="false" Condition="'$(HexalithTenantsRoot)' != ''" />
     <!-- Referencing the AppHost (IsAspireProjectResource=false so this test project is not itself an Aspire
          resource) generates the Projects.Hexalith_Folders_AppHost metadata type the testing builder boots. -->
     <ProjectReference Include="..\..\src\Hexalith.Folders.AppHost\Hexalith.Folders.AppHost.csproj">
