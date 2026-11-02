@@ -184,7 +184,7 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Mcp", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.UI", ["Hexalith.Folders.Client", "Hexalith.FrontComposer.Shell"]);
         AssertReferences(references, "Hexalith.Folders.Workers", ["Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Memories.Contracts", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
-        AssertReferences(references, "Hexalith.Folders.AppHost", ["Hexalith.EventStore.Aspire", "Hexalith.Folders.Aspire", "Hexalith.Folders.EventStore", "Hexalith.Folders.Server", "Hexalith.Folders.UI", "Hexalith.Folders.Workers", "Hexalith.Memories.Aspire", "Hexalith.Tenants.Aspire"]);
+        AssertReferences(references, "Hexalith.Folders.AppHost", ["Hexalith.Builds.Tooling", "Hexalith.EventStore.Aspire", "Hexalith.Folders.Aspire", "Hexalith.Folders.EventStore", "Hexalith.Folders.Server", "Hexalith.Folders.UI", "Hexalith.Folders.Workers", "Hexalith.Memories.Aspire", "Hexalith.Tenants.Aspire"]);
         AssertReferences(references, "Hexalith.Folders.Aspire", []);
         AssertReferences(references, "Hexalith.Folders.ServiceDefaults", ["Hexalith.EventStore.ServiceDefaults"]);
         AssertReferences(references, "Hexalith.Folders.Testing", ["Hexalith.EventStore.ServiceDefaults", "Hexalith.Folders", "Hexalith.Folders.Contracts"]);
@@ -195,7 +195,7 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.EventStore", ["Hexalith.EventStore.DomainService", "Hexalith.EventStore.Gateway", "Hexalith.Folders"]);
         AssertReferences(references, "Hexalith.Folders.EventStore.Tests", ["Hexalith.Folders.EventStore", "Hexalith.Folders.Server"]);
         AssertReferences(references, "Hexalith.Folders.Tests", ["Hexalith.EventStore.Testing", "Hexalith.Folders", "Hexalith.Folders.Client", "Hexalith.Folders.Server", "Hexalith.Folders.Testing", "Hexalith.Folders.UI"]);
-        AssertReferences(references, "Hexalith.Folders.Server.Tests", ["Hexalith.Commons.UniqueIds", "Hexalith.EventStore.Testing", "Hexalith.Folders.Client", "Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.Server.Tests", ["Hexalith.Commons.UniqueIds", "Hexalith.EventStore.Testing", "Hexalith.Folders.Client", "Hexalith.Folders.Server", "Hexalith.Folders.Testing", "Task36FoldObserver"]);
         AssertReferences(references, "Hexalith.Folders.Client.Tests", ["Hexalith.Folders.Client", "Hexalith.Folders.Client.Generation.Shared", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Cli.Tests", ["Hexalith.Folders.Cli", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Mcp.Tests", ["Hexalith.Folders.Mcp", "Hexalith.Folders.Testing"]);
