@@ -978,6 +978,11 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         }
 
         IResourceBuilder<ProjectResource> gateway = _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "eventstore"));
+        // This fixture owns a fresh isolated store and starts the current hosted activation worker.
+        // Only Folders commands may acknowledge after durable outbox admission; the unchanged
+        // acceptance body waits for each persisted projection before depending on it.
+        gateway.WithEnvironment("EventStore__Projections__WorkerBackedResponsesEnabled", "true")
+            .WithEnvironment("EventStore__Projections__WorkerBackedResponseDomains__0", "folders");
         foreach ((string registration, string target) in new[]
         {
             ("system|tenants|v1", "tenants"), ("system|global-administrators|v1", "tenants"),

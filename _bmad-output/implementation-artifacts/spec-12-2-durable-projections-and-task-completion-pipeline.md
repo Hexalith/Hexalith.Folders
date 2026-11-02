@@ -1282,3 +1282,28 @@ records source/runtime hashes, exact command outcomes and cleanup. General comma
 delivery optimization lies outside the approved native-read and bootstrap scopes. The strict task,
 SM4, broad SDK/Release/package/PD10 and whole-story review gates remain open; Story and sprint status
 remain in-progress.
+
+## Further performance continuation — 2026-11-02
+
+The user subsequently approved broader EventStore command/projection-path optimization, preserving
+the existing 40-second HTTP limit, durable guards and strict assertions. That approval supersedes
+the prior scope exclusion above. The disposable fixture now selects the SDK worker-backed response
+path for `folders` only; Tenants and global-administrators retain their synchronous behavior.
+EventStore's optional domain set preserves the switch's previous all-domain behavior when omitted.
+Catalog structural validation is reused only for a previously validated exact activation binding
+and freshly recaptured complete local identity. A native page's fresh range metadata read now
+validates its inside proof, retaining the initial and post-read proofs and all event checks.
+Immutable loaded-assembly route declarations are computed once by the domain observer while the
+executable bytes, installed receivers, component, ACL, configuration and identity are freshly
+checked each time. Focused affected EventStore tests passed 61/61 in the isolated candidate.
+
+Further strict runs still have no passing live qualification. Bootstrap completed in 1,682.1 ms
+with the catalog cache, but `CreateTenant` then exceeded the unchanged five-second native-read
+budget. A later run completed `CreateTenant` in 4,843.9272 ms; `AddUserToTenant` exceeded the same
+budget before the first organization command. Two other attempts failed during Dapr startup,
+before code acceptance could be assessed. A trial two-second projection retry interval was
+removed because its run failed during startup. The exact runs, source/runtime hashes, private
+log hashes and cleanup are in the [evidence packet](evidence/story-12-2-native-read-performance-20261102/README.md).
+The shared merged checkout's targeted EventStore test build is separately blocked by 11 existing
+`CS0246 PlatformScope` errors from its pinned Tenants/EventStore graph. The unchanged strict six
+durability concerns and SM4 measurement remain unqualified; Story and sprint remain in-progress.
