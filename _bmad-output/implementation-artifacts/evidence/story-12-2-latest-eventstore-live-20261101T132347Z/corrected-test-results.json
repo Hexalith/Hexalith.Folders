@@ -1,0 +1,257 @@
+{
+  "app-channel-model-final": {
+    "summary": {
+      "total": "1",
+      "passed": "1",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.214"
+    },
+    "cases": [
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FoldersAppChannelCompositionTests.TenantsAndItsOwnSidecarShareOneSecretAppChannelParameter",
+        "result": "Pass"
+      }
+    ]
+  },
+  "app-channel-model": {
+    "summary": {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.243"
+    },
+    "cases": [
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FoldersAppChannelCompositionTests.TenantsAndItsOwnSidecarShareOneSecretAppChannelParameter",
+        "result": "Fail"
+      }
+    ]
+  },
+  "apphost-helpers-final": {
+    "summary": {
+      "total": "23",
+      "passed": "23",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.073"
+    },
+    "cases": [
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.CallerCancellationStopsWithoutClaimingCompletion",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.MalformedCompletionCannotAdvanceTheFixture",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.UnresolvedActionDeadlineFailsWithLastOutcome",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.TerminalOrUnsupportedOutcomesReturnImmediately(status: Failed, reason: \\\"projection_handler_failure\\\")",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.TerminalOrUnsupportedOutcomesReturnImmediately(status: Failed, reason: \\\"delivery_identity_conflict\\\")",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.TerminalOrUnsupportedOutcomesReturnImmediately(status: Indeterminate, reason: \\\"delivery_reconciliation_required\\\")",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.TerminalOrUnsupportedOutcomesReturnImmediately(status: Indeterminate, reason: \\\"malformed_projection_outcome\\\")",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.NonretryableHttpFailureStopsTheAction(status: 400)",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.NonretryableHttpFailureStopsTheAction(status: 401)",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.NonretryableHttpFailureStopsTheAction(status: 422)",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.UncertainActionResumesWithExactBodySessionAndHeadersUntilCompleted",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FoldersAppChannelCompositionTests.TenantsAndItsOwnSidecarShareOneSecretAppChannelParameter",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.FreshDeniedReadinessStopsBeforeAnyPositiveMutation",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.ReadRetriesHonorCallerCancellationWithoutClaimingSuccess",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.TransientAdmissionAndThrottleRetriesPreserveExactRequestIdentity",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 503, code: \\\"unknown_provider_outcome\\\", category: \\\"unknown_provider_outcome\\\", retryable: True)",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 503, code: \\\"provider_unavailable\\\", category: \\\"provider_unavailable\\\", retryable: True)",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 503, code: \\\"idempotency_admission_unavailable\\\", category: \\\"service_unavailable\\\", retryable: False)",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 503, code: \\\"folder_acl_stale\\\", category: \\\"read_model_unavailable\\\", retryable: False)",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 403, code: \\\"authorization_denied\\\", category: \\\"authorization_denied\\\", retryable: False)",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 409, code: \\\"idempotency_conflict\\\", category: \\\"idempotency_conflict\\\", retryable: False)",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 500, code: \\\"internal_error\\\", category: \\\"internal_error\\\", retryable: True)",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.ReadinessWaitsForFreshAclAndOperationalRowsAtTheRetainedHead",
+        "result": "Pass"
+      }
+    ]
+  },
+  "gateway-focused-final": {
+    "summary": {
+      "total": "5",
+      "passed": "4",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.908"
+    },
+    "cases": [
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostEnrollsHttpSecurityAndSeparatesHumanDocumentationFromSidecarCallbacks",
+        "result": "Fail"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 401, code: \\\"authentication_failure\\\")",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 403, code: \\\"authorization_denied\\\")",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 404, code: \\\"not_found_to_caller\\\")",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 503, code: \\\"read_model_unavailable\\\")",
+        "result": "Pass"
+      }
+    ]
+  },
+  "gateway-focused-qualified": {
+    "summary": {
+      "total": "5",
+      "passed": "5",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.963"
+    },
+    "cases": [
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostEnrollsHttpSecurityAndSeparatesHumanDocumentationFromSidecarCallbacks",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 401, code: \\\"authentication_failure\\\")",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 403, code: \\\"authorization_denied\\\")",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 404, code: \\\"not_found_to_caller\\\")",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 503, code: \\\"read_model_unavailable\\\")",
+        "result": "Pass"
+      }
+    ]
+  },
+  "gateway-focused": {
+    "summary": {
+      "total": "5",
+      "passed": "5",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.026"
+    },
+    "cases": [
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostEnrollsHttpSecurityAndSeparatesHumanDocumentationFromSidecarCallbacks",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 401, code: \\\"authentication_failure\\\")",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 403, code: \\\"authorization_denied\\\")",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 404, code: \\\"not_found_to_caller\\\")",
+        "result": "Pass"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 503, code: \\\"read_model_unavailable\\\")",
+        "result": "Pass"
+      }
+    ]
+  },
+  "strict-real-provider": {
+    "summary": {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "35.590"
+    },
+    "cases": [
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures",
+        "result": "Fail"
+      }
+    ],
+    "failures": [
+      {
+        "exceptionType": "Xunit.Sdk.TestPipelineException",
+        "message": "Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync\n---- System.InvalidOperationException : Authenticated BootstrapGlobalAdmin: expected 202, observed 503; code=unavailable.",
+        "stackTrace": "\n----- Inner Stack Trace -----\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.RequireStatusAsync(HttpResponseMessage response, HttpStatusCode expected, String operation) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 628\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.SubmitAsync(String tenant, String domain, String aggregate, String command, Object payload, String token) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1183\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.BootstrapAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1035\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 128\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 133"
+      }
+    ]
+  }
+}

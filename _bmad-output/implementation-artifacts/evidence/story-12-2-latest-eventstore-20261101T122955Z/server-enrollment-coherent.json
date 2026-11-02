@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "dotnet",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent/bin/Hexalith.Folders.Server.Tests/debug/Hexalith.Folders.Server.Tests.dll",
+    "-class",
+    "Hexalith.Folders.Server.Tests.FoldersHostSecurityEnrollmentTests",
+    "-class",
+    "Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests",
+    "-result-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/verification/server-enrollment-coherent.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T12:37:53.531105+00:00",
+  "finishedAtUtc": "2026-11-01T12:38:55.823495+00:00",
+  "exitCode": 0,
+  "summary": {
+    "total": "38",
+    "passed": "38",
+    "failed": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "62.008"
+  }
+}

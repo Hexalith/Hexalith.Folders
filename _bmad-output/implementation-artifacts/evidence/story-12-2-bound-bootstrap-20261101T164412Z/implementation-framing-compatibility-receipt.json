@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "producer": "/root/bootstrap_impl",
+  "recordedAtUtc": "2026-11-01T18:20:54.784386+00:00",
+  "scope": "Approved bounded request framing compatibility in the existing owner bootstrap only; no live run by this agent.",
+  "commandReceipts": {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-command-receipts.json",
+    "bytes": 7311,
+    "sha256": "edcdb8c3078f66952521745166f60a9db299916b42b0b08bfbc9955249bfa945"
+  },
+  "headsObserved": {
+    "/home/administrator/projects/hexalith/folders": "4de8e5d0e4ad16f33e7eae31f7323fe5bbf326b7",
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants": "9ed8737dedfbba660b9935b09696a74685201634",
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore": "f704401ff9033919b1e9925564d814d7410bfe3d"
+  },
+  "sourceIdentities": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/Bootstrap/TenantBootstrapBoundCommand.cs",
+      "bytes": 5260,
+      "sha256": "888c33e6f40aff9017c1f4a97f327475cb43444076bbe958c57804fd0ef4aecd"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapBoundCommandTests.cs",
+      "bytes": 12284,
+      "sha256": "4eff7439cc40a83af1e114da814a2aae6295fdd48b710dfa5141bc8a5c6c0103"
+    }
+  ],
+  "runtimeIdentities": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.dll",
+      "bytes": 228864,
+      "sha256": "45c965bf17117ed1b90ebd02615c553a4e6ff5e582bf42cb195496e9a61a8605"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.pdb",
+      "bytes": 80100,
+      "sha256": "dd1c6c4b7dc5c7654f94afec4e59b0c748c6190128d8c00415fe5769f09c2c56"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+      "bytes": 1439744,
+      "sha256": "8395c85d4d0037d56beabd5b343be81648ef65e1150c327f1e71bc6c0881f4d1"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.pdb",
+      "bytes": 293628,
+      "sha256": "09b81d51d4dd082a58f582643a7d1c3665426bc1159fca51268e51a0cd1116e6"
+    }
+  ],
+  "implementation": {
+    "publicApi": "HttpContent.LoadIntoBufferAsync(long maxBufferSize, CancellationToken cancellationToken)",
+    "maxBufferSize": 1048576,
+    "existingLimitOwner": "references/Hexalith.EventStore/src/Hexalith.EventStore/Controllers/CommandsController.cs SubmitBoundWorkload RequestSizeLimit(1_048_576)",
+    "lifetime": "Request is disposed if header/proof construction or bounded buffering fails.",
+    "cancellation": "Caller token passed to buffering and explicitly checked before/after buffering because the retained first focused run demonstrated small JsonContent may complete despite prior cancellation.",
+    "preserved": [
+      "Exact bound JSON and proof",
+      "Original message/correlation IDs and null admission key",
+      "Unnamed production HttpClient and its installed handlers",
+      "All existing timeouts and retry policies",
+      "Credential, proof, caller and domain guards",
+      "Fixture deadlines and strict acceptance requirements"
+    ]
+  },
+  "focusedRuns": [
+    {
+      "label": "implementation-framing-owner-focused",
+      "xml": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-focused.xml",
+        "bytes": 162285,
+        "sha256": "fbdd489d5c2238703fbbdf7e65ec23f91c1606048a2639f89684f22179848fac"
+      },
+      "assemblies": [
+        {
+          "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+          "id": "9c95769c-697f-46ff-bb5c-bf98bcea5560",
+          "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+          "run-date": "2026-11-01",
+          "run-time": "18:18:39",
+          "start-rtf": "2026-11-01T18:18:39.0765453+00:00",
+          "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+          "target-framework": ".NETCoreApp,Version=v10.0",
+          "errors": "0",
+          "failed": "1",
+          "finish-rtf": "2026-11-01T18:18:42.3054120+00:00",
+          "not-run": "0",
+          "passed": "211",
+          "skipped": "0",
+          "time": "3.229",
+          "time-rtf": "00:00:03.2290000",
+          "total": "212"
+        }
+      ],
+      "controls": [
+        "Existing credential/caller/domain positive and refusal cases",
+        "Positive finite Content-Length before any content read",
+        "Byte-identical first and repeated serialization",
+        "Valid signed bound proof after repeated writes",
+        "Actual loopback HTTP Content-Length without Transfer-Encoding and unchanged body",
+        "Existing1MiB limit refusal",
+        "Cancellation after assertion issuance before dispatch"
+      ]
+    },
+    {
+      "label": "implementation-framing-owner-focused-cancellation",
+      "xml": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-focused-cancellation.xml",
+        "bytes": 159105,
+        "sha256": "facb90ca3a345e7d6169b3375f0c4d617a1aaef4944b21371e79e5610ec9ed43"
+      },
+      "assemblies": [
+        {
+          "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+          "id": "81638f7b-1dab-466c-b862-21eb43169b81",
+          "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+          "run-date": "2026-11-01",
+          "run-time": "18:19:31",
+          "start-rtf": "2026-11-01T18:19:31.7858450+00:00",
+          "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+          "target-framework": ".NETCoreApp,Version=v10.0",
+          "errors": "0",
+          "failed": "0",
+          "finish-rtf": "2026-11-01T18:19:34.9830745+00:00",
+          "not-run": "0",
+          "passed": "212",
+          "skipped": "0",
+          "time": "3.197",
+          "time-rtf": "00:00:03.1970000",
+          "total": "212"
+        }
+      ],
+      "controls": [
+        "Existing credential/caller/domain positive and refusal cases",
+        "Positive finite Content-Length before any content read",
+        "Byte-identical first and repeated serialization",
+        "Valid signed bound proof after repeated writes",
+        "Actual loopback HTTP Content-Length without Transfer-Encoding and unchanged body",
+        "Existing1MiB limit refusal",
+        "Cancellation after assertion issuance before dispatch"
+      ]
+    }
+  ],
+  "primarySourceEvidence": [
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/v1.18.7/pkg/api/http/directmessaging.go",
+      "httpStatus": 200,
+      "bytes": 16764,
+      "sha256": "e21f456b086478f6ee5e6d580f8b12d88736b157fdcd2eb98f2d1d7495a5121c",
+      "lines": "137-151;201-211;315-327",
+      "purpose": "Unknown-length HTTP requests become streaming; returned application HTTP error bodies/status are propagated."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/v1.18.7/pkg/messaging/v1/invoke_method_request.go",
+      "httpStatus": 200,
+      "bytes": 11880,
+      "sha256": "b155889fa99f42fbeed5405a8d0712bcf49324a8ce80f4797ac60ab2904909bc",
+      "lines": "178-203",
+      "purpose": "Streaming request WithReplay is a no-op."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/v1.18.7/pkg/resiliency/policy.go",
+      "httpStatus": 200,
+      "bytes": 10904,
+      "sha256": "14a92807ca6aae49f75f048d16b8a3b306643b85e7931abc1aa0a1da62b964d3",
+      "lines": "175-223;269-297",
+      "purpose": "Timeout wrapper returns context error; configured retry wrapper can retry timeout independently of operation callback."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dotnet/runtime/v10.0.0/src/libraries/System.Net.Http.Json/src/System/Net/Http/Json/JsonContent.cs",
+      "httpStatus": 200,
+      "bytes": 8664,
+      "sha256": "d09c29f06c4deff1a66ffe7fc0af312fe43993cb08c11bbcea9871f1aa296aba",
+      "lines": "96-100",
+      "purpose": "Reference .NET10 source TryComputeLength returns false; installed-runtime behavior is independently verified by focused framing tests, not asserted byte-equivalent to this source tag."
+    }
+  ],
+  "retainedIntermediateLive": {
+    "label": "strict-real-provider-bound-mtls",
+    "rawLog": {
+      "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-mtls.raw.log",
+      "bytes": 1369933,
+      "sha256": "8c3a6f8a484be168ac0eb51fe3ca7e0048418444a931c2934c47a39e74455494"
+    },
+    "accepted": false,
+    "observedOutcomes": [
+      {
+        "kind": "domain-and-actor-completion",
+        "lines": [
+          7473,
+          7477,
+          7567,
+          7569,
+          7571,
+          7573,
+          7575,
+          7577
+        ],
+        "domainHttpStatus": 200,
+        "domainResult": "Success",
+        "eventCount": 1,
+        "actorStatus": "Completed",
+        "messageId": "01M6C4MFPW18JPEGDGASD3QAX0",
+        "correlationId": "01M6C4MFPZJ475Y6TDJH18H8H9"
+      },
+      {
+        "kind": "projection-transport-response",
+        "lines": [
+          7801,
+          7813,
+          7917,
+          7921
+        ],
+        "httpStatus": 200
+      },
+      {
+        "kind": "installed-transport-retry",
+        "line": 7779,
+        "observedTimestamp": "2026-11-01T18:06:17.1480000Z",
+        "retryDelay": "1s"
+      },
+      {
+        "kind": "owner-http-response",
+        "lines": [
+          8027,
+          8031,
+          8033
+        ],
+        "httpStatus": 400,
+        "receiptPhase": "response-received",
+        "source": "Existing real owner receipt and retained HTTP logs; no replacement acceptance inferred."
+      },
+      {
+        "kind": "fixture-disposal-failure",
+        "line": 8467,
+        "exceptionType": "System.InvalidOperationException",
+        "safeMessage": "docker exceeded the acceptance infrastructure timeout."
+      }
+    ],
+    "diagnosis": {
+      "classification": "source-backed inference",
+      "explanation": "The existing five-second endpoint attempt timed out after command execution and its installed retry could receive the consumed unknown-length request body, producing pre-pipeline HTTP400. Actual rejection body/model-state evidence was not retained, so the exact400 payload is not proven.",
+      "notInferred": [
+        "Business or domain authorization failure",
+        "A second domain execution",
+        "Successful strict acceptance from actor completion",
+        "A captured Dapr rejection body"
+      ]
+    }
+  },
+  "limits": [
+    "No new live Dapr execution or acceptance claim; parent owns the next runtime refresh and strict run.",
+    "Loopback framing control observes actual HTTP bytes without Dapr and is not a live command acceptance substitute.",
+    "Exact command argv, cwd, start/finish UTC, exit codes, elapsed time and log hashes are captured by implementation-framing-run.py; arbitrary earlier read-only shell timing is not reconstructed.",
+    "Targeted formatter commands succeeded; no broad owner whitespace-pass claim. git diff --check exited0 with a CRLF normalization warning for the changed test file.",
+    "The deprecated xUnit -xml switch emitted a warning but produced the retained XML files."
+  ]
+}

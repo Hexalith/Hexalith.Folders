@@ -1,0 +1,6 @@
+{
+  "firstFinalAudit": "failed before sealing; no product/build/live execution followed",
+  "retainedOriginalScript": "finalize_audit_first.py",
+  "cause": "Original broad comparator included separately built SDK/Folders regression outputs with metadata-only build profiles; preflight already checked actual live byte uniformity.",
+  "correction": "Use the same positive actual-live group selection as the passing preflight. All regression groups remain inventoried and must still pass ordinary PDB source, generated metadata and SDK-version checks. No runtime/product guard or output is changed."
+}

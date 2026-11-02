@@ -1,0 +1,137 @@
+{
+  "capturedAtUtc": "2026-11-01T19:37:33.148142+00:00",
+  "producer": "/root/bootstrap_impl",
+  "scope": "Focused11/11 production registration transport controls; captured before selected-output handoff.",
+  "files": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/Authorization/TenantOwnerSourceGatewayRegistration.cs",
+      "bytes": 1475,
+      "sha256": "f66dd795238832ba8f3c0aa7a8969f61758faf7d368ddba4502a659f01b37467"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/Authorization/OwnerSourceTargetHttpHandler.cs",
+      "bytes": 2483,
+      "sha256": "0314093ccfbf51b28ce4fdde2c3bf7d8bd9a010da7070d1293864836e050f7a8"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/Authorization/TenantOwnerSourceRuntimeTests.cs",
+      "bytes": 6557,
+      "sha256": "6c6250380fd8f85bfa4b240cf4717b0c8e559d38758c236b287b5195658abc3e"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+      "bytes": 1449472,
+      "sha256": "50118dd3e3c38ec713f8dd6be85761ce4ded47873b65d7bb5565a62f017f9b8d"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.pdb",
+      "bytes": 295084,
+      "sha256": "6c9c528dce73cca6228ee649bd0a962742c4eb7d7645fc307bbbfd52cd9da8b6"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.dll",
+      "bytes": 228864,
+      "sha256": "1c32be687b49c1e04dc15adb68ebe41d0860ae701c1d16d3e5c0150265e3164b"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.pdb",
+      "bytes": 80132,
+      "sha256": "f4af83a091f153e40ccd1a22e38def43178ba96b8baa5f1649230eaef369c00a"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "bytes": 975872,
+      "sha256": "ca99ed81eaffc7d7218f755306a00cc078a5a0f62e8a8f700682172450e9b904"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+      "bytes": 240008,
+      "sha256": "209bbd2d12c740cff5f0bb5a78dc77048d5f5a154b1d47cb37b13f7a78b17c29"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "bytes": 573440,
+      "sha256": "7e5596587d8fc2e65d90cdafa791f8bc5b5e2e6dfafec669d60d963477ac26ea"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+      "bytes": 147912,
+      "sha256": "2bc5b29a1dc6c5a94ec8eb98052be6d7d5fe8da8537863c89f931ec7bca7e724"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "bytes": 1360384,
+      "sha256": "56175bc0e08be078a7144683b06df133a9d038f5190b9c2df27af89ad509b3cd"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+      "bytes": 337552,
+      "sha256": "a335e007cdac6dba98debe0e47425021f136f09b8ff0914f34b27e57964f9e92"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "bytes": 1358848,
+      "sha256": "edaa79018a287cab4bc631b759c765150c7df91920548dece22efb9556ada521"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+      "bytes": 316216,
+      "sha256": "a637ef7e83d32a2e5866e0b956356a0b278bfc7eb687742d41bd87f4cde0e30a"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "bytes": 4696064,
+      "sha256": "dbf5483a12c07032a057f117813aab8c3535889c9bd20046c4798c9a2881a89a"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+      "bytes": 1130832,
+      "sha256": "07aedc986827fa9954d914d1e06cf9917d3be25137edf68efb0fc6f834597f1e"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+      "bytes": 948224,
+      "sha256": "32dfc78472d439c5b34a2fd283f3eafe663e3086a0cffe1742b20c1628e57c8d"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb",
+      "bytes": 250996,
+      "sha256": "97bcbacb5b08fa08f1aa5585e0a9ce1d4b1580ceece10cc2317695071b90a6f1"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.deps.json",
+      "bytes": 92342,
+      "sha256": "4c7ea360c12bd5e3c32f3cc4f076e3aa2edc678db9fb693ac9cdb35743d3fc21"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.runtimeconfig.json",
+      "bytes": 416,
+      "sha256": "4761a312947a31a30aec259d9ee6f10407d89806d812cd102f3b3aec250dc8b4"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Dapr.Common.dll",
+      "bytes": 78848,
+      "sha256": "a17129663d6fa08f2d8117343fc6a859a86fc3c60743215633813ebdb0d2bf6f"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.dll",
+      "bytes": 228864,
+      "sha256": "1c32be687b49c1e04dc15adb68ebe41d0860ae701c1d16d3e5c0150265e3164b"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.pdb",
+      "bytes": 80132,
+      "sha256": "f4af83a091f153e40ccd1a22e38def43178ba96b8baa5f1649230eaef369c00a"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "bytes": 573440,
+      "sha256": "a76fcedd5085c31cda0d6bcac3288e290aab3c22081b2e8175256adec4c9651e"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+      "bytes": 147912,
+      "sha256": "102cd29fd11a07b2402ed166d6fd8b7de98a9f59d714257e2b723d8f02c5ec5a"
+    }
+  ]
+}

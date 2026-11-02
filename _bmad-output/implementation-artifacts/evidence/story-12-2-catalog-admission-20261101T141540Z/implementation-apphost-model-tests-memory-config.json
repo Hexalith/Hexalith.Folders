@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-parallel",
+    "none",
+    "-class",
+    "*FoldersDevelopmentCatalogCompositionTests",
+    "-class",
+    "*FolderDurabilityCatalogBindingTests",
+    "-class",
+    "*FoldersAppChannelCompositionTests",
+    "-xml",
+    ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-tests-memory-config.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T14:47:30.181132+00:00",
+  "finishedAtUtc": "2026-11-01T14:47:30.975049+00:00",
+  "seconds": 0.7939244090230204,
+  "exitCode": 0
+}

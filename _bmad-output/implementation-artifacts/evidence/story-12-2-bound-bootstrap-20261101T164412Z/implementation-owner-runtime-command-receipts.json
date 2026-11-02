@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "producer": "/root/bootstrap_impl",
+  "commands": [
+    {
+      "label": "implementation-owner-runtime-server-build",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false"
+      ],
+      "startedAtUtc": "2026-11-01T19:35:29.699516+00:00",
+      "finishedAtUtc": "2026-11-01T19:35:37.438328+00:00",
+      "elapsedSeconds": 7.738810416019987,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-server-build.log",
+        "bytes": 5005,
+        "sha256": "da79ebcd4c8e812b6b246188fbc472d9e1cd3715146e4ef643882a61436aae17"
+      }
+    },
+    {
+      "label": "implementation-owner-runtime-focused",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+        "-class",
+        "*TenantOwnerSourceRuntimeTests",
+        "-class",
+        "*TenantOwnerSourceTargetTests",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-focused.xml"
+      ],
+      "startedAtUtc": "2026-11-01T19:36:04.789283+00:00",
+      "finishedAtUtc": "2026-11-01T19:36:05.580971+00:00",
+      "elapsedSeconds": 0.7916889740154147,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-focused.log",
+        "bytes": 571,
+        "sha256": "8e6cc05f8fbc67df8765eb830e39070a31d9fdda1d81b267eb99b3a21172700a"
+      }
+    },
+    {
+      "label": "implementation-owner-runtime-host-build",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "argv": [
+        "dotnet",
+        "build",
+        "src/Hexalith.Tenants/Hexalith.Tenants.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false"
+      ],
+      "startedAtUtc": "2026-11-01T19:36:09.842830+00:00",
+      "finishedAtUtc": "2026-11-01T19:36:18.990437+00:00",
+      "elapsedSeconds": 9.148208612052258,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-host-build.log",
+        "bytes": 3067,
+        "sha256": "5c12f3a8a2712e109bdb34b4426ac04ee377d3318457f2cb3e392de816753b3b"
+      }
+    },
+    {
+      "label": "implementation-owner-runtime-whitespace",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj",
+        "--no-restore",
+        "--verify-no-changes",
+        "--include",
+        "src/Hexalith.Tenants/Authorization/TenantOwnerSourceGatewayRegistration.cs",
+        "tests/Hexalith.Tenants.Server.Tests/Authorization/OwnerSourceTargetHttpHandler.cs",
+        "tests/Hexalith.Tenants.Server.Tests/Authorization/TenantOwnerSourceRuntimeTests.cs"
+      ],
+      "startedAtUtc": "2026-11-01T19:36:42.325653+00:00",
+      "finishedAtUtc": "2026-11-01T19:36:46.402178+00:00",
+      "elapsedSeconds": 4.07652370800497,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-whitespace.log",
+        "bytes": 123,
+        "sha256": "239c224f01960886368326d9ef5ebdcce071dcd0996d157bef6a963fc1eaa49c"
+      }
+    }
+  ]
+}

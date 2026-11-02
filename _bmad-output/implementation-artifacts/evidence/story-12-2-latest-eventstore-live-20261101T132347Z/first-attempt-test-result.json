@@ -1,0 +1,18 @@
+{
+  "summary": {
+    "total": "1",
+    "passed": "0",
+    "failed": "1",
+    "errors": "0",
+    "skipped": "0",
+    "time": "249.092"
+  },
+  "failures": [
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures",
+      "exceptionType": "Xunit.Sdk.TestPipelineException",
+      "message": "Class fixture type 'Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture' threw in InitializeAsync\n---- System.Threading.Tasks.TaskCanceledException : A task was canceled.",
+      "stackTrace": "\n----- Inner Stack Trace -----\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.StartAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1009\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 127\n   at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 133"
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "producer": "/root/bootstrap_impl",
+  "commands": [
+    {
+      "label": "implementation-polling-root-format",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "--no-restore",
+        "--include",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidence.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapProjectionTests.cs",
+        "-v",
+        "quiet"
+      ],
+      "startedAtUtc": "2026-11-01T19:03:36.831168+00:00",
+      "finishedAtUtc": "2026-11-01T19:03:45.886084+00:00",
+      "elapsedSeconds": 9.054910627019126,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-format.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "implementation-polling-root-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "startedAtUtc": "2026-11-01T19:03:50.781073+00:00",
+      "finishedAtUtc": "2026-11-01T19:04:57.677693+00:00",
+      "elapsedSeconds": 66.90103511599591,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-build.log",
+        "bytes": 76,
+        "sha256": "d7b68a0993079ed855b6e29cc957515144a3957fcf2bfbc7f2e4d064153d4300"
+      }
+    },
+    {
+      "label": "implementation-polling-root-focused",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "*FolderDurabilityBootstrap*Tests",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused.xml"
+      ],
+      "startedAtUtc": "2026-11-01T19:05:12.974801+00:00",
+      "finishedAtUtc": "2026-11-01T19:05:13.108259+00:00",
+      "elapsedSeconds": 0.13346060999901965,
+      "exitCode": 3,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused.log",
+        "bytes": 176,
+        "sha256": "ec1941ccf6c09cae64dd3976e9459925f2062afcd45b0292bcd0744bfc43ec2f"
+      }
+    },
+    {
+      "label": "implementation-polling-root-focused-valid-filter",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "*FolderDurabilityBootstrapEvidenceTests",
+        "-class",
+        "*FolderDurabilityBootstrapProjectionTests",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused-valid-filter.xml"
+      ],
+      "startedAtUtc": "2026-11-01T19:05:19.844158+00:00",
+      "finishedAtUtc": "2026-11-01T19:05:25.534642+00:00",
+      "elapsedSeconds": 5.690483255020808,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused-valid-filter.log",
+        "bytes": 576,
+        "sha256": "6c1f9fd2f925b64a096037193212bc58c5a5dce2f5405406df6f7605e177c1d7"
+      }
+    },
+    {
+      "label": "implementation-polling-root-diff-check",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidence.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapProjectionTests.cs"
+      ],
+      "startedAtUtc": "2026-11-01T19:06:20.585658+00:00",
+      "finishedAtUtc": "2026-11-01T19:06:20.593172+00:00",
+      "elapsedSeconds": 0.007522824045736343,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-diff-check.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "capturedAtUtc": "2026-11-01T19:38:41.634392+00:00",
+  "producer": "/root/bootstrap_impl",
+  "scope": "Recorded spec subsection Preserve the catalog-bound owner source runtime address. Owner registration only; no further live attempt.",
+  "changedFiles": [
+    "references/Hexalith.Tenants/src/Hexalith.Tenants/Authorization/TenantOwnerSourceGatewayRegistration.cs",
+    "references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/Authorization/OwnerSourceTargetHttpHandler.cs",
+    "references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/Authorization/TenantOwnerSourceRuntimeTests.cs"
+  ],
+  "implementation": "Typed client BaseAddress now comes from public RouteCatalogStateCoordinates.Capture(host IConfiguration, DI IOptions<RouteCatalogHostOptions>.Value).HttpEndpoint; no localhost alias rewrite. Physical gateway routing and workload/proof behavior unchanged.",
+  "checks": {
+    "serverTestProjectBuild": "exit0;0warnings;0errors",
+    "actualTenantsHostBuild": "exit0;0warnings;0errors",
+    "focusedTests": {
+      "total": "11",
+      "failed": "0",
+      "newCases": 7,
+      "existingCases": 4,
+      "xml": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-focused.xml",
+        "bytes": 10477,
+        "sha256": "ce11dfb16fba68c54ed0884f6c9cbd918ccb56b4cc99ba3d3269db3691faaf83"
+      }
+    },
+    "targetedWhitespace": "exit0; generic workspace-load warnings were emitted, not expanded or suppressed. No formatter edits.",
+    "targetedGitDiffCheck": "exit0; untracked newly introduced story files are not represented in tracked git diff output."
+  },
+  "controlCoverage": [
+    "No endpoint/port override preserves exact127.0.0.1:3500 default.",
+    "Selected port uses exact127.0.0.1 fallback.",
+    "Explicitlocalhost andIPv4 endpoints preserve exactscheme/host/port and override port setting.",
+    "Real production SDK HttpClient filter and validated catalog snapshot add exactroot/binding/epoch headers.",
+    "Real RSA proof and logicaleventstore audience remain valid with selected physical gateway/caller.",
+    "Catalog hostalias, port andscheme mismatches refuseConfiguration before transport; each lease releases once."
+  ],
+  "receipts": {
+    "implementation-owner-runtime-command-receipts.json": {
+      "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-command-receipts.json",
+      "bytes": 4235,
+      "sha256": "9ce4e4669b1f491d9413ccf028940f7d377551a5afff9108694cb45192601b45"
+    },
+    "implementation-owner-runtime-tested-identities.json": {
+      "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-tested-identities.json",
+      "bytes": 7848,
+      "sha256": "7b5e4c7a95881a7d0291bf63ae63c5510cd70069aad29aa56ce35a1621ba7dd9"
+    },
+    "implementation-owner-runtime-diagnosis.json": {
+      "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-diagnosis.json",
+      "bytes": 7463,
+      "sha256": "f1e2a99233f323dcee3b54b595e03eb4c9001708480fadf55047310b434722f9"
+    },
+    "implementation-owner-runtime-source-before.json": {
+      "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-source-before.json",
+      "bytes": 1167,
+      "sha256": "888d5d5ef0e932a6bd9afb5f7414e74302b6307cf3a73caf6739004fc39f7262"
+    }
+  },
+  "strictBodiesPreserved": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+      "beforeSha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "afterSha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs",
+      "beforeSha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "afterSha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "unchanged": true
+    }
+  ],
+  "relatedAddressSearch": "No additional localhost-to127.0.0.1 rewrite remains in Tenants source. SeparateTenants.Api resolver andUI read-addressselection were inspected and left unchanged.",
+  "handoff": "Selected-output ownership released to parent after bothbuilds, focused11/11, whitespaceverify and testedidentitycapture. Subsequent work here is receipt writing only. Parent owns broadregressions, finalruntime/PDBrefresh, preflight andlive.",
+  "risksAndLimits": [
+    "This repair has focused transport/catalog coverage; a fresh liveCreateTenant result is still required.",
+    "No timeout, retry, guard, authority folding, retention, canonical identity or replay policy changed.",
+    "No SDK/Platform, strict/capacity, rootfixture or otherowner product source changed in thisphase."
+  ]
+}

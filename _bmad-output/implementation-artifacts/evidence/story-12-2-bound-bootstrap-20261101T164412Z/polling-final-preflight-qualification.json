@@ -1,0 +1,14 @@
+{
+  "ordinaryDocumentRecords": 43492,
+  "ordinaryMismatches": [],
+  "unresolvedGeneratedMismatches": [],
+  "exactMetadataReconstructions": 4,
+  "sdkVersions": [
+    "3.130.2.0"
+  ],
+  "liveSdkArtifactNames": 16,
+  "liveSdkVariants": {},
+  "frozenSpecBlockUnchanged": true,
+  "strictBodyUnchanged": true,
+  "passed": true
+}

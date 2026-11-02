@@ -1,0 +1,7 @@
+{
+  "initialSha256": "50e373767347d92647b73039ebec51e0d9da950348c846d307227d8f15942824",
+  "currentSha256": "29b11daf413016be7b8374190f8a4ae3bb7385ab3790a8047f597b8f41ca17cf",
+  "byteIdentical": false,
+  "stagedDiff": [],
+  "disposition": "Index bytes changed during read-only status/diff inspections (stat metadata/cache). No staging command ran, staged contents remain identical to the unchanged HEAD, and the original index was not overwritten."
+}

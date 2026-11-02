@@ -1,0 +1,6 @@
+{
+  "path": "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+  "sha256": "37287447edc3f2d50c6ddaa008e9491ab848561d66641366f1bc9fc952112321",
+  "executionSnapshotSha256": "a23f635fb356535a4a4e5f7be15ad7906322660178e3354e844c0594a20a5a61",
+  "reason": "Only completed bounded-task markers and truthful qualification/owner-decision result were recorded after the immutable execution audit. Frozen block and original baseline remain unchanged."
+}

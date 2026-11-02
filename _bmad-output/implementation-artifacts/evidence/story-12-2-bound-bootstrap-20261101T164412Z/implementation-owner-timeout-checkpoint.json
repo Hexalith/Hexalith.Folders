@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "savedAtUtc": "2026-11-01T19:48:12.141950+00:00",
+  "producer": "/root/bootstrap_impl",
+  "status": "Stopped at explicit user request. No further investigation, edits, builds, tests or live attempts.",
+  "attempt": "strict-real-provider-owner-runtime",
+  "existingEvidence": {
+    "rawLog": "strict-real-provider-owner-runtime.raw.log",
+    "parentSafeTimings": "owner-runtime-safe-boundary-timings.json",
+    "runtimeBefore": "strict-real-provider-owner-runtime-runtime-before.json",
+    "parentSummary": "strict-real-provider-owner-runtime-summary.json",
+    "ilInspectionCommand": "implementation-owner-timeout-inspection-command.json",
+    "ilOutput": "implementation-owner-timeout-invocation-handler.il.txt"
+  },
+  "safeObservedTimings": [
+    {
+      "rawLine": 10744,
+      "atUtc": "2026-11-01T19:41:10.0420000Z",
+      "event": "First owner native head request begins."
+    },
+    {
+      "rawLine": 10850,
+      "atUtc": "2026-11-01T19:41:10.9480000Z",
+      "event": "Gateway StreamsController action begins."
+    },
+    {
+      "rawLine": 11146,
+      "atUtc": "2026-11-01T19:41:12.5310000Z",
+      "event": "Gateway first action ends.",
+      "actionMilliseconds": 1584.3452
+    },
+    {
+      "rawLine": 11216,
+      "atUtc": "2026-11-01T19:41:12.5600000Z",
+      "event": "First owner request completesHTTP200.",
+      "clientMilliseconds": 2516.8947
+    },
+    {
+      "rawLine": 11218,
+      "atUtc": "2026-11-01T19:41:12.5660000Z",
+      "event": "Second owner request begins."
+    },
+    {
+      "rawLine": 11320,
+      "atUtc": "2026-11-01T19:41:13.4650000Z",
+      "event": "Gateway second StreamsController action begins."
+    },
+    {
+      "rawLine": 11426,
+      "atUtc": "2026-11-01T19:41:14.2360000Z",
+      "event": "Domain service configured5s budget cancellation.",
+      "configuredTimeoutElapsed": true,
+      "timeoutSeconds": 5
+    }
+  ],
+  "sourceFindings": [
+    "RouteCatalogInvocationHandler source157-172 acquires one lease and awaits one InvokeRemoteAsync inside await-using disposal.",
+    "Installed SendAsync state-machine IL catches the awaited exception, awaits configured DisposeAsync atIL_0a77, then ExceptionDispatchInfo.Throw atIL_0b01; duplicate SendAsync:172 frames do not demonstrate duplicate handlers. One InvokeRemoteAsync frame appears in the actual exception stack.",
+    "AddEventStoreRouteCatalog registration marker and TryAddEnumerable prevent repeated catalog filter registration. Only one production RouteCatalogInvocationHandler constructor site was found.",
+    "Exact Dapr.AspNetCore1.19.0 AddDaprClient uses TryAddSingleton; the owner additional call does not add a second DaprClient.",
+    "AuthoritativeEventStreamReader requires initial head, contiguous page, closing head. TenantsGlobalAdministratorAuthority separately requires final native metadata with matching proof and observation time. Current cancellation occurred during the page; the latter two observations were not reached.",
+    "RouteCatalogAuthority.AcquireCoreAsync validates actual local observation and performs durable CAS; public observer re-captures current host inputs. No supported configuration bypass was identified."
+  ],
+  "primaryDaprSource": {
+    "url": "https://raw.githubusercontent.com/dapr/dotnet-sdk/v1.19.0/src/Dapr.AspNetCore/DaprServiceCollectionExtensions.cs",
+    "physicalLines": [
+      33,
+      56
+    ],
+    "claim": "AddDaprClient selects TryAddSingleton for default lifetime."
+  },
+  "installedIlEvidence": {
+    "physicalLines": [
+      75965,
+      76065
+    ],
+    "stateMachine": "RouteCatalogInvocationHandler.<SendAsync>d__22",
+    "inspectedAssemblySha256": "a76fcedd5085c31cda0d6bcac3288e290aab3c22081b2e8175256adec4c9651e",
+    "shaPresentInActualAttemptRuntimeBeforeMetadata": true
+  },
+  "conclusion": "No concrete supported composition mismatch or semantics-preserving bounded repair identified. The observed mandatory source-read path exceeded the fixed domain budget in this run. No guard, check, cache, deadline, retry or authority behavior was changed.",
+  "limits": [
+    "The observed2.5s first request does not prove all possible executions inherently exceed5s.",
+    "Current logs do not isolate time spent in catalog re-capture/CAS versus actor work; no performance root-cause claim is made.",
+    "IL tool emitted whole-assembly output despite type selection; exact command/result and assembly hash are retained.",
+    "Read-only exploratory source/API commands lack a consolidated exact timing receipt. No executed command timing was reconstructed.",
+    "One exploratory metadata-shape print failed on a list instead of a dictionary; it did not affect source, runtime or findings.",
+    "No additional checks or analyses are planned in this stopped session."
+  ]
+}

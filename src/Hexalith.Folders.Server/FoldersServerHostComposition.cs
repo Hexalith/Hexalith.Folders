@@ -83,6 +83,10 @@ public static class FoldersServerHostComposition
         builder.Services.AddScoped<IOrganizationAclRepository>(static sp =>
             sp.GetRequiredService<ActorFoldedOrganizationProviderBindingRepository>());
 
+        builder.Services.AddSingleton(new LegacyProjectionCatalogRegistration(
+            FoldersRuntimeCatalogDeclarations.Routes.Where(route => route.Kind == "projection").ToArray()));
+        builder.Services.AddEventStoreDevelopmentDomainCatalog(builder.Configuration,
+            typeof(FoldersRuntimeCatalogDeclarations).Assembly);
         builder.Services.AddHostedService<FolderRepositoryStartupAssertion>();
 
         // Validate scoped service lifetimes at build time so a missing or misconfigured DI
@@ -133,6 +137,7 @@ public static class FoldersServerHostComposition
         app.MapEventStoreDomainProjectionEndpoints();
         app.MapEventStoreDomainProjectionMetadataEndpoint();
         app.MapEventStoreRouteCatalog();
+        app.UseEventStoreDevelopmentDomainCatalog();
 
         return app;
     }

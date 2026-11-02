@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+    "-parallel",
+    "none",
+    "-xml",
+    ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-gateway-tests.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T14:35:59.886540+00:00",
+  "finishedAtUtc": "2026-11-01T14:36:04.673428+00:00",
+  "seconds": 4.788250737008639,
+  "exitCode": 0
+}

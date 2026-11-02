@@ -1,0 +1,9 @@
+{
+  "path": "/tmp/folders-catalog-pdb-audit-pouehvfj",
+  "sourceSha256": {
+    "Program.cs": "289f0dbc6ca3a6771343cf61361d949fdfac6212b8b6a26156a56c3b7630acc1",
+    "PdbAudit.csproj": "38e201f047792df530db8c7d157c2b6b19d1ed2e4134dba5da5c59e97d3b0da2"
+  },
+  "operation": "shutil.rmtree on this exact task-created tool directory after final audit completed",
+  "existsAfter": false
+}

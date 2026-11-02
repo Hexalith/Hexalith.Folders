@@ -1,0 +1,101 @@
+{
+  "adapterFiles": [
+    {
+      "path": "src/Hexalith.Folders.EventStore/ArchiveFolderIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "f838fed9e38eb3a04cd68456dedf321ebb20833df659a96867e2382f397d4746"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/AuthorizeContentErasureIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "c02fa647d43d02c0155e1668e68e43ac19c142f70a61ae6c6b05afa8e5b52357"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/BindRepositoryIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "3fad120ac64a042f3d8ecdad75aaa4b9eacbaaf115145ec88cca0c0afd5ee040"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/ChangeNativeTaskIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "018edfd48efc761f1f03459299d3cc8958b40a5f1cdaa2eafdc0ff24625d3628"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/CommitWorkspaceIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "157bc14afd463f56f75899bde39b6d453fe5aed769d47164f88d2fbdf1310c19"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/ConfigureBranchRefPolicyIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "dc43e2ed5f06793fb38e62a093102d8807379175e76849720f4226bf5d3f0b9b"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/ConfigureProviderBindingIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "030943e6867bc302245efa3826fb44a9fa9f8cd8448fcb83b3b804f86dbe76ba"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/CreateFolderIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "9c96a5315aed23d5cfb1912c61ecd1db05405fde6c4c3c96948a9fae9e4fbfed"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/CreateRepositoryBackedFolderIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "3c4d55b658aec5f3b463b7b4e91e8c33b8ee781441ef62688d04b9b7438aa27e"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/GrantFolderAccessIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "da09c8a6366b7b670e62abc68d235f1e6f993b838763e9c2e03ea351c740e6a0"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/LockWorkspaceIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "1ff63e75e2349072c6168586f34ee2b10735686d5faca4a289c1141388dff7e6"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/MutateFilesIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "784a3043e2e90335e55c3a3b6c42c32a36b57542ca8230e3dd03ef9f72b79b89"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/OrganizationAclIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "6092412943fa6b24112c8842a92d8fbc3ea5bde9db7ee792cadbedb580bcac71"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/PrepareWorkspaceIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "890207a98a308200627a6b5b15a45e9dead2a19962c4525f0671f67851b0bc5a"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/ReleaseWorkspaceLockIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "6395cd7dc07022f90da169f9d916bb6343084612471b0e85c0c19314d82b8aac"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/RevokeFolderAccessIdempotencyIntentAdapter.cs",
+      "unchangedMethodAndFollowingHelpers": true,
+      "sha256": "e84d83ec3ebf5cc1c55e4fe2171da12550729a850a0809033924cca9644602d8"
+    }
+  ],
+  "canonicalBuilderUnchanged": true,
+  "nativeAssertionsBefore": [
+    "validator.Validate(request).IsValid.ShouldBeTrue();",
+    "validator.Validate(request with { MessageId = \"native_bad\" }).IsValid.ShouldBeFalse();",
+    "descriptor.OperationId.ShouldBe(\"change-native-task\"); descriptor.AdapterId.ShouldBe(\"hexalith-folders\");",
+    "descriptor.RetentionTier.ShouldBe(IdempotencyReplayRetentionTier.Mutation);",
+    "registry.Resolve(command with { Payload = changed }).CanonicalIntent.ShouldNotBe(descriptor.CanonicalIntent);"
+  ],
+  "nativeAssertionsNow": [
+    "validator.Validate(request).IsValid.ShouldBeTrue();",
+    "validator.Validate(request with { MessageId = \"native_bad\" }).IsValid.ShouldBeFalse();",
+    "descriptor.OperationId.ShouldBe(\"change-native-task\"); descriptor.AdapterId.ShouldBe(\"hexalith-folders\");",
+    "descriptor.RetentionTier.ShouldBe(IdempotencyReplayRetentionTier.Mutation);",
+    "registry.Resolve(command with { Payload = changed }).CanonicalIntent.ShouldNotBe(descriptor.CanonicalIntent);"
+  ],
+  "nativeAssertionsPreserved": true,
+  "strictAcceptanceSourceUnchanged": true
+}

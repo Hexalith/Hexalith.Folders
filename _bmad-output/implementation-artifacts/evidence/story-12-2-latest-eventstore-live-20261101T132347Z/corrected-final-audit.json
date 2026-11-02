@@ -1,0 +1,65 @@
+{
+  "capturedAtUtc": "2026-11-01T13:40:50.262904+00:00",
+  "source": {
+    "count": 18833,
+    "drift": [],
+    "headDrift": {}
+  },
+  "runtime": {
+    "folders": {
+      "count": 79,
+      "drift": []
+    },
+    "workers": {
+      "count": 77,
+      "drift": []
+    },
+    "gateway": {
+      "count": 87,
+      "drift": []
+    },
+    "tenants": {
+      "count": 84,
+      "drift": []
+    },
+    "memories": {
+      "count": 89,
+      "drift": []
+    },
+    "apphost": {
+      "count": 153,
+      "drift": []
+    },
+    "tests": {
+      "count": 387,
+      "drift": []
+    },
+    "observer": {
+      "count": 13,
+      "drift": []
+    }
+  },
+  "runIds": [
+    "3c3b217884662183"
+  ],
+  "ownedContainersRemaining": [],
+  "taskTemporaryDirectories": {
+    "/tmp/folders-durability-gmg351mb.g0c": false
+  },
+  "result": {
+    "total": "1",
+    "passed": "0",
+    "failed": "1",
+    "errors": "0",
+    "skipped": "0",
+    "time": "35.590"
+  },
+  "failure": {
+    "operation": "BootstrapGlobalAdmin",
+    "expectedStatus": 202,
+    "actualStatus": 503,
+    "publicCode": "unavailable",
+    "sdkException": "RouteCatalogUnavailableException",
+    "sdkMessage": "An independently bound local catalog host identity and profile are required."
+  }
+}

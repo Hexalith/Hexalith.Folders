@@ -1,0 +1,8 @@
+{
+  "artifacts": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z",
+  "receipts": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/verification",
+  "coherentArtifacts": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z/coherent",
+  "sdkArtifacts": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/.artifacts/story-12-2-latest-eventstore-20261101T122955Z",
+  "sdkVersion": "3.130.2",
+  "contractsArtifacts": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-latest-eventstore-20261101T122955Z-contracts"
+}

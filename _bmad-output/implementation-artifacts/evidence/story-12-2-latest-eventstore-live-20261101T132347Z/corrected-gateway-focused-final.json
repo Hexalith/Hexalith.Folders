@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "dotnet",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-live-composition-20261101T133424Z/focused-gateway/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+    "-class",
+    "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-live-composition-20261101T133424Z/gateway-focused-final.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T13:37:54.455204+00:00",
+  "finishedAtUtc": "2026-11-01T13:37:55.550533+00:00",
+  "seconds": 1.0953256010543555,
+  "exitCode": 1
+}

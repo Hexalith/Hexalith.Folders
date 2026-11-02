@@ -1,0 +1,71 @@
+{
+  "ordinaryDocumentRecords": 43494,
+  "ordinaryMismatches": [],
+  "unresolvedGeneratedMismatches": [],
+  "exactMetadataReconstructions": 5,
+  "sdkVersions": [
+    "3.130.2.0"
+  ],
+  "liveSdkArtifactNames": 16,
+  "liveSdkVariants": {
+    "Hexalith.EventStore.Gateway.dll": {
+      "32dfc78472d439c5b34a2fd283f3eafe663e3086a0cffe1742b20c1628e57c8d": [
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll"
+        }
+      ],
+      "938ab08233c18cb18604586d7b1876efcf23b7e639cb9ab743fd10e980d51c51": [
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll"
+        }
+      ]
+    },
+    "Hexalith.EventStore.Gateway.pdb": {
+      "97bcbacb5b08fa08f1aa5585e0a9ce1d4b1580ceece10cc2317695071b90a6f1": [
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb"
+        }
+      ],
+      "885a81bdf83ed84fb69499748a186263cfe9586bda4b7b175ef21dca10b04fbd": [
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb"
+        }
+      ]
+    },
+    "Hexalith.EventStore.Server.dll": {
+      "dbf5483a12c07032a057f117813aab8c3535889c9bd20046c4798c9a2881a89a": [
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll"
+        }
+      ],
+      "ead7e61e95493a4962eea5dd783fdd701bf0daaf0eaf7c361d8e9cc2f0a915bc": [
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Server.dll"
+        }
+      ]
+    },
+    "Hexalith.EventStore.Server.pdb": {
+      "07aedc986827fa9954d914d1e06cf9917d3be25137edf68efb0fc6f834597f1e": [
+        {
+          "group": "gateway",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb"
+        }
+      ],
+      "a2799fe64f7ef658884a975cdc1ac62145c8d2f6a74df821ea308c1af15055aa": [
+        {
+          "group": "tenants",
+          "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb"
+        }
+      ]
+    }
+  },
+  "frozenSpecBlockUnchanged": true,
+  "strictBodyUnchanged": true,
+  "passed": false
+}

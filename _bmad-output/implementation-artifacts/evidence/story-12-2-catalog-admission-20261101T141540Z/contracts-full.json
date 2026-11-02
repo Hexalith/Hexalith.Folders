@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/contracts-full.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T14:54:08.774102+00:00",
+  "finishedAtUtc": "2026-11-01T14:54:53.776865+00:00",
+  "seconds": 45.003609882027376,
+  "exitCode": 1
+}

@@ -1,0 +1,424 @@
+{
+  "gateway-build": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "gateway-full": [
+    "dotnet",
+    "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-full.xml"
+  ],
+  "server-build": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "server-full": [
+    "dotnet",
+    "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/server-full.xml"
+  ],
+  "workers-build": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "workers-full": [
+    "dotnet",
+    "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/workers-full.xml"
+  ],
+  "integration-build": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "integration-full": [
+    "dotnet",
+    "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/integration-full.xml"
+  ],
+  "apphost-build": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "apphost-helpers": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FoldersAppChannelCompositionTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FoldersDevelopmentCatalogCompositionTests",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/apphost-full.xml"
+  ],
+  "strict-real-provider": [
+    "env",
+    "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true",
+    "FOLDERS_TASK36_FOLD_LOG=/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/fold-callbacks.jsonl",
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+    "-showLiveOutput",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider.xml"
+  ],
+  "core-build": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "contracts-build": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "contracts-full": [
+    "dotnet",
+    "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/contracts-full.xml"
+  ],
+  "operational-histories": [
+    "dotnet",
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+    "-class",
+    "*OperationalStatus*",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/core-full.xml"
+  ],
+  "tenants-host-build": [
+    "dotnet",
+    "build",
+    "references/Hexalith.Tenants/src/Hexalith.Tenants.Server/Hexalith.Tenants.Server.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "memories-host-build": [
+    "dotnet",
+    "build",
+    "references/Hexalith.Memories/src/Hexalith.Memories.Server/Hexalith.Memories.Server.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "gateway-build-final": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "gateway-full-final": [
+    "dotnet",
+    "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-full-final.xml"
+  ],
+  "gateway-build-observer": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "server-build-observer": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "integration-build-observer": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "core-build-observer": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "apphost-build-observer": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "gateway-full-observer": [
+    "dotnet",
+    "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-full-observer.xml"
+  ],
+  "server-full-observer": [
+    "dotnet",
+    "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/server-full-observer.xml"
+  ],
+  "integration-full-observer": [
+    "dotnet",
+    "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/integration-full-observer.xml"
+  ],
+  "operational-histories-observer": [
+    "dotnet",
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+    "-class",
+    "*OperationalStatus*",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/operational-histories-observer.xml"
+  ],
+  "apphost-helpers-observer": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FoldersAppChannelCompositionTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FoldersDevelopmentCatalogCompositionTests",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/apphost-helpers-observer.xml"
+  ],
+  "gateway-build-human": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "server-build-human": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "integration-build-human": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "core-build-human": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "apphost-build-human": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "gateway-full-human": [
+    "dotnet",
+    "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/gateway-full-human.xml"
+  ],
+  "server-full-human": [
+    "dotnet",
+    "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/server-full-human.xml"
+  ],
+  "integration-full-human": [
+    "dotnet",
+    "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/integration-full-human.xml"
+  ],
+  "operational-histories-human": [
+    "dotnet",
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+    "-class",
+    "*OperationalStatus*",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/operational-histories-human.xml"
+  ],
+  "apphost-helpers-human": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FoldersAppChannelCompositionTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FoldersDevelopmentCatalogCompositionTests",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/apphost-helpers-human.xml"
+  ],
+  "human-metadata-focused": [
+    "dotnet",
+    "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+    "-class",
+    "*FoldersHumanCommandCatalogTests",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/human-metadata-focused.xml"
+  ],
+  "workers-build-qualified": [
+    "dotnet",
+    "build",
+    "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false"
+  ],
+  "workers-full-qualified": [
+    "dotnet",
+    "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/workers-full-qualified.xml"
+  ]
+}

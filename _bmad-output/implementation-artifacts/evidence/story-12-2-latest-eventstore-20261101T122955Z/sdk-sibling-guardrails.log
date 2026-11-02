@@ -1,0 +1,93 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.EventStore.DomainService.Tests
+  Discovered:  Hexalith.EventStore.DomainService.Tests
+  Starting:    Hexalith.EventStore.DomainService.Tests
+    Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.InteractiveUiHosts_DoNotHostGeneratedOrHandWrittenCommandQueryControllers [FAIL]
+      System.IO.DirectoryNotFoundException : Could not locate repository root from the test working directory.
+      Stack Trace:
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1501,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.FindRepositoryRoot()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(618,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.InteractiveUiHostRoots()+MoveNext()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(565,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.InteractiveUiHosts_DoNotHostGeneratedOrHandWrittenCommandQueryControllers()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.SampleReferenceModule_DoesNotReferenceDaprPackagesDirectly [FAIL]
+      System.IO.DirectoryNotFoundException : Could not locate repository root from the test working directory.
+      Stack Trace:
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1501,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.FindRepositoryRoot()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1468,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.SampleDomainProjectPath()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(468,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.SampleReferenceModule_DoesNotReferenceDaprPackagesDirectly()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModuleRoots_UsesInitializedTenantsDomainServiceRoot [FAIL]
+      System.IO.DirectoryNotFoundException : Could not locate repository root from the test working directory.
+      Stack Trace:
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1501,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.FindRepositoryRoot()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(547,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModuleRoots_UsesInitializedTenantsDomainServiceRoot()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModules_DoNotShipOwnAppHostAspireOrServiceDefaultsProject [FAIL]
+      System.IO.DirectoryNotFoundException : Could not locate repository root from the test working directory.
+      Stack Trace:
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1501,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.FindRepositoryRoot()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(597,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModuleRoots()+MoveNext()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(195,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModules_DoNotShipOwnAppHostAspireOrServiceDefaultsProject()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.TenantsDomainService_DoesNotReferenceGeneratedApiHostOrDeclarePerMessageControllers [FAIL]
+      System.IO.DirectoryNotFoundException : Could not locate repository root from the test working directory.
+      Stack Trace:
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1501,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.FindRepositoryRoot()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(417,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.TenantsDomainService_DoesNotReferenceGeneratedApiHostOrDeclarePerMessageControllers()
+        --- End of stack trace from previous location ---
+    Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.SampleProgram_UsesCanonicalDomainServiceHostWithoutNormalModeBoilerplate [FAIL]
+      System.IO.DirectoryNotFoundException : Could not locate repository root from the test working directory.
+      Stack Trace:
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1501,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.FindRepositoryRoot()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1471,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.SampleDomainProgramPath()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(526,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.SampleProgram_UsesCanonicalDomainServiceHostWithoutNormalModeBoilerplate()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.SampleReferenceModule_ReferencesOnlyTheDomainServiceSdkAndDomainContracts [FAIL]
+      System.IO.DirectoryNotFoundException : Could not locate repository root from the test working directory.
+      Stack Trace:
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1501,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.FindRepositoryRoot()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1468,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.SampleDomainProjectPath()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(344,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.SampleReferenceModule_ReferencesOnlyTheDomainServiceSdkAndDomainContracts()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModules_DoNotDeclareLegacyNonAggregateDomainProcessors [FAIL]
+      System.IO.DirectoryNotFoundException : Could not locate repository root from the test working directory.
+      Stack Trace:
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1501,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.FindRepositoryRoot()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(597,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModuleRoots()+MoveNext()
+           at System.Linq.Enumerable.SelectManySingleSelectorIterator`2.ToArray()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(489,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModules_DoNotDeclareLegacyNonAggregateDomainProcessors()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModules_DoNotReImplementPlatformOwnedStateCursorTelemetryHealthOrEndpointSeams [FAIL]
+      System.IO.DirectoryNotFoundException : Could not locate repository root from the test working directory.
+      Stack Trace:
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1501,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.FindRepositoryRoot()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(597,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModuleRoots()+MoveNext()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(243,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModules_DoNotReImplementPlatformOwnedStateCursorTelemetryHealthOrEndpointSeams()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModules_DoNotReDeclareProjectionActor [FAIL]
+      System.IO.DirectoryNotFoundException : Could not locate repository root from the test working directory.
+      Stack Trace:
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1501,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.FindRepositoryRoot()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(597,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModuleRoots()+MoveNext()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(216,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.DomainModules_DoNotReDeclareProjectionActor()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.SampleReferenceModule_UsesCompiledContractsLibraryWithoutGeneratedApiHostLeakage [FAIL]
+      System.IO.DirectoryNotFoundException : Could not locate repository root from the test working directory.
+      Stack Trace:
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1501,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.FindRepositoryRoot()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(1468,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.SampleDomainProjectPath()
+        tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs(369,0): at Hexalith.EventStore.DomainService.Tests.DomainModuleAuthoringGuardrailTests.SampleReferenceModule_UsesCompiledContractsLibraryWithoutGeneratedApiHostLeakage()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Finished:    Hexalith.EventStore.DomainService.Tests (ID = 'df6de18714c04a633d4fc39a53efdd35184a5d544e491fd0874a8dd82f004eda')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.EventStore.DomainService.Tests  Total: 38, Errors: 0, Failed: 11, Skipped: 0, Not Run: 0, Time: 0.496s

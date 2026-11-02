@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "dotnet",
+    "run",
+    "--project",
+    ".artifacts/story-12-2-catalog-admission-20261101T141540Z/baseline-probe/Probe.csproj",
+    "--",
+    ".artifacts/story-12-2-catalog-admission-20261101T141540Z/legacy-canonical-intents.json"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T14:25:57.570671+00:00",
+  "finishedAtUtc": "2026-11-01T14:25:59.226466+00:00",
+  "seconds": 1.6557935269665904,
+  "exitCode": 0
+}

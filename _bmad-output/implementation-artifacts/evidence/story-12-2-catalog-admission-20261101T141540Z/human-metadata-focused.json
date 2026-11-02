@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+    "-class",
+    "*FoldersHumanCommandCatalogTests",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/human-metadata-focused.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T15:41:30.700925+00:00",
+  "finishedAtUtc": "2026-11-01T15:41:34.357271+00:00",
+  "seconds": 3.656346134026535,
+  "exitCode": 0
+}

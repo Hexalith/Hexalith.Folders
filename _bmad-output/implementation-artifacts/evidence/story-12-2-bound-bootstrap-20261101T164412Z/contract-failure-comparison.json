@@ -1,0 +1,29 @@
+{
+  "currentFailures": [
+    "Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests.BaselineWorkflowShouldExposeMechanicalGateCategoriesWithoutInfrastructure",
+    "Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests.BaselineWorkflowShouldUseStableTriggersCheckoutSdkAndCache",
+    "Hexalith.Folders.Contracts.Tests.Deployment.ContractParityCiWorkflowConformanceTests.ContractParityWorkflowShouldExposeStableBlockingJobWithBaselineSetupPosture",
+    "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests.CiWorkflowShouldUseSharedReleaseMtpValidationAndRetainFoldersGates",
+    "Hexalith.Folders.Contracts.Tests.Deployment.ScheduledDriftAndPolicyWorkflowConformanceTests.ExistingPrCiAndContractSpineLanesShouldRemainUsable",
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.CandidateCoverageIncludesIndependentRuntimeDependencyClosure",
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.GeneratorRejectsOutputThatAliasesARequiredCandidateInput",
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.GeneratorReproducesTheCommittedManifestByteForByte",
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.InventoryCoversEveryRuntimeAndTestCompileInputIncludingExtractedHelpers",
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.ManifestBindsEveryListedCandidateArtifactAndOrderedSetDigest",
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2ContractTests.ConformanceSetBindsEveryCandidateArtifactWithoutChangingReleaseAuthority"
+  ],
+  "priorFailures": [
+    "Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests.BaselineWorkflowShouldExposeMechanicalGateCategoriesWithoutInfrastructure",
+    "Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests.BaselineWorkflowShouldUseStableTriggersCheckoutSdkAndCache",
+    "Hexalith.Folders.Contracts.Tests.Deployment.ContractParityCiWorkflowConformanceTests.ContractParityWorkflowShouldExposeStableBlockingJobWithBaselineSetupPosture",
+    "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests.CiWorkflowShouldUseSharedReleaseMtpValidationAndRetainFoldersGates",
+    "Hexalith.Folders.Contracts.Tests.Deployment.ScheduledDriftAndPolicyWorkflowConformanceTests.ExistingPrCiAndContractSpineLanesShouldRemainUsable",
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.CandidateCoverageIncludesIndependentRuntimeDependencyClosure",
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.GeneratorRejectsOutputThatAliasesARequiredCandidateInput",
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.GeneratorReproducesTheCommittedManifestByteForByte",
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.InventoryCoversEveryRuntimeAndTestCompileInputIncludingExtractedHelpers",
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests.ManifestBindsEveryListedCandidateArtifactAndOrderedSetDigest",
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2ContractTests.ConformanceSetBindsEveryCandidateArtifactWithoutChangingReleaseAuthority"
+  ],
+  "identical": true
+}

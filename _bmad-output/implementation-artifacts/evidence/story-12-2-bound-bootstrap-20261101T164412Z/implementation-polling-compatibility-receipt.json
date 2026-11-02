@@ -1,0 +1,350 @@
+{
+  "schemaVersion": 1,
+  "producer": "/root/bootstrap_impl",
+  "recordedAtUtc": "2026-11-01T19:07:43.941138+00:00",
+  "scope": "Spec-recorded existing durable polling configuration only for isolated bootstrap; absent-only observation; focused root checks. No SDK/owner product edits or diagnostic SDK-code changes.",
+  "headsObserved": {
+    "/home/administrator/projects/hexalith/folders": "4de8e5d0e4ad16f33e7eae31f7323fe5bbf326b7",
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore": "f704401ff9033919b1e9925564d814d7410bfe3d",
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants": "9ed8737dedfbba660b9935b09696a74685201634"
+  },
+  "spec": {
+    "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+    "bytes": 172730,
+    "sha256": "8ce94a6eb9a95706362649b1833bad1467f9b955321a8e11792b8bc191a6aca2",
+    "frozenBlockSha256": "594ee179697159c0d4bb561258de1ced5942925ba755a96856d2d07f0f5ad61c",
+    "subsection": "Existing durable bootstrap projection configuration"
+  },
+  "sourceIdentities": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "bytes": 98393,
+      "sha256": "39a46906065e2fd5320b53e592b2930c5cfb0972fe8e411765867c82cd16325e"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs",
+      "bytes": 5323,
+      "sha256": "bdd5c4e6fc877d115a2fcb230e70a4cd581c62f3cd714543793bed7ed9d536f7"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidence.cs",
+      "bytes": 5545,
+      "sha256": "47627f5bb9a9e7ebb506764e3def145e9624d40d5374cfe680f1f638f01e8834"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapProjectionTests.cs",
+      "bytes": 6660,
+      "sha256": "e7f2ab83a9aeba7896bc873cac42f9ddbdee54ab3b301090659d89b3d81e4741"
+    }
+  ],
+  "strictBodiesUnchanged": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs",
+      "bytes": 28221,
+      "sha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "priorExpectedSha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+      "bytes": 52369,
+      "sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "priorExpectedSha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "unchanged": true
+    }
+  ],
+  "sdkSourceEvidence": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Pipeline/SubmitCommandHandler.cs",
+      "bytes": 43468,
+      "sha256": "0f57914c23889e1377c1a0cd0a196ca5eead2fa26548bdafbf56bf9c2d69be2b",
+      "priorExpectedSha256": "0f57914c23889e1377c1a0cd0a196ca5eead2fa26548bdafbf56bf9c2d69be2b",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Projections/ProjectionUpdateOrchestrator.cs",
+      "bytes": 150805,
+      "sha256": "85969fb32365ca8a9043554a2dc3d724fd85ddfced6a594f377191cb7d9e183e",
+      "priorExpectedSha256": "85969fb32365ca8a9043554a2dc3d724fd85ddfced6a594f377191cb7d9e183e",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Projections/ProjectionCheckpointTracker.cs",
+      "bytes": 49952,
+      "sha256": "34084f196c6e04ca041952a91a432f3fda3e558058e78a3cfc962bd10017af35",
+      "priorExpectedSha256": "34084f196c6e04ca041952a91a432f3fda3e558058e78a3cfc962bd10017af35",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Projections/ProjectionPollerService.cs",
+      "bytes": 16349,
+      "sha256": "f695f2229e67414521966d91cd8d225ad9845385d56ce370167adf6641a54a28",
+      "priorExpectedSha256": "f695f2229e67414521966d91cd8d225ad9845385d56ce370167adf6641a54a28",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Projections/ProjectionActivationWorker.cs",
+      "bytes": 4746,
+      "sha256": "1f809bf93a064f7f1c550bd7a8b0d81577b5d0df7a24cce7050b3c9773a37025",
+      "priorExpectedSha256": "1f809bf93a064f7f1c550bd7a8b0d81577b5d0df7a24cce7050b3c9773a37025",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Configuration/ProjectionOptions.cs",
+      "bytes": 5476,
+      "sha256": "e81ca458c20ab3e703b57ef2ed53b47754961175570143aec2b083b4e38a6f48",
+      "priorExpectedSha256": "e81ca458c20ab3e703b57ef2ed53b47754961175570143aec2b083b4e38a6f48",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Configuration/ServiceCollectionExtensions.cs",
+      "bytes": 24481,
+      "sha256": "dfec1162e5a9dd4da3b9745cc8c701b40a3c33c868cf4a08b11d11d017218ffb",
+      "priorExpectedSha256": "dfec1162e5a9dd4da3b9745cc8c701b40a3c33c868cf4a08b11d11d017218ffb",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/ProjectionDispatchOptions.cs",
+      "bytes": 9955,
+      "sha256": "bfc5cc4a8cdfd7ab3996ee5231b5efaa18c9d697d303c1ee8084835b862067a3",
+      "priorExpectedSha256": "bfc5cc4a8cdfd7ab3996ee5231b5efaa18c9d697d303c1ee8084835b862067a3",
+      "unchanged": true
+    }
+  ],
+  "configuration": {
+    "resource": "isolated actual eventstore ProjectResource only",
+    "key": "EventStore:Projections:Domains:global-administrators:RefreshIntervalMs",
+    "environmentVariable": "EventStore__Projections__Domains__global-administrators__RefreshIntervalMs",
+    "value": 1000,
+    "publicConfigurationOwner": "EventStoreServerServiceCollectionExtensions binds ProjectionOptions from EventStore:Projections",
+    "otherModes": "Production defaults, other domains and all Folders delivery modes untouched.",
+    "durabilitySourceFacts": [
+      {
+        "source": "SubmitCommandHandler.cs350-366",
+        "fact": "Production-registered projection activation outbox is awaited before legacy and fenced routing, including null admission key/session."
+      },
+      {
+        "source": "ProjectionUpdateOrchestrator.cs140-159; ProjectionCheckpointTracker.cs493-522,730-741,833-845",
+        "fact": "Positive per-domain refresh awaits TrackIdentityAsync, which persists paged scope/index identity through Dapr CAS. Registration failure is logged; mandatory pre-routing outbox remains available for recovery."
+      },
+      {
+        "source": "ProjectionPollerService.cs81-88,133-145,179-187; ServiceCollectionExtensions.cs157-158,266-306",
+        "fact": "Registered existing host worker calls the same guarded DeliverProjectionAsync with host stoppingToken. WorkersEnabled defaults true; no worker is disabled."
+      },
+      {
+        "source": "ProjectionOptions.cs24-33; ProjectionPollerService.cs179-187; ProjectionDispatchOptions.cs65,71",
+        "fact": "Default refresh0 selects immediate mode. Poll tick uses smallest positive configured interval, or60000ms when none. Activation recovery scan and retry base delay each already default1s; selected1000ms matches that existing cadence without changing retry settings."
+      }
+    ]
+  },
+  "observation": {
+    "helper": "FolderDurabilityBootstrapEvidence.WaitForAuthorityAsync",
+    "callerBudget": "Existing single90s deadline in ObserveOwnerBootstrapAsync; caller token passed to every read/delay; no new production timeout.",
+    "behavior": "Only null/initially absent projection is polled. Any present value is immediately passed to the unchanged exact Authority assertions; storage/parse/contradiction errors propagate immediately.",
+    "requiredBeforeCreateTenant": [
+      "Actual HTTP202 receipt bound to catalog attempt/root/human principal",
+      "Actual command terminal Completed with original message/correlation IDs",
+      "Exactly one complete original retained human-attributed administrator event",
+      "Persisted administrator authority with exact membership, sequence version1 and nondefault timestamp"
+    ],
+    "acceptanceIsNotCompletion": true
+  },
+  "commands": [
+    {
+      "label": "implementation-polling-root-format",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "--no-restore",
+        "--include",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidence.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapProjectionTests.cs",
+        "-v",
+        "quiet"
+      ],
+      "startedAtUtc": "2026-11-01T19:03:36.831168+00:00",
+      "finishedAtUtc": "2026-11-01T19:03:45.886084+00:00",
+      "elapsedSeconds": 9.054910627019126,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-format.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "implementation-polling-root-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "startedAtUtc": "2026-11-01T19:03:50.781073+00:00",
+      "finishedAtUtc": "2026-11-01T19:04:57.677693+00:00",
+      "elapsedSeconds": 66.90103511599591,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-build.log",
+        "bytes": 76,
+        "sha256": "d7b68a0993079ed855b6e29cc957515144a3957fcf2bfbc7f2e4d064153d4300"
+      }
+    },
+    {
+      "label": "implementation-polling-root-focused",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "*FolderDurabilityBootstrap*Tests",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused.xml"
+      ],
+      "startedAtUtc": "2026-11-01T19:05:12.974801+00:00",
+      "finishedAtUtc": "2026-11-01T19:05:13.108259+00:00",
+      "elapsedSeconds": 0.13346060999901965,
+      "exitCode": 3,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused.log",
+        "bytes": 176,
+        "sha256": "ec1941ccf6c09cae64dd3976e9459925f2062afcd45b0292bcd0744bfc43ec2f"
+      }
+    },
+    {
+      "label": "implementation-polling-root-focused-valid-filter",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "*FolderDurabilityBootstrapEvidenceTests",
+        "-class",
+        "*FolderDurabilityBootstrapProjectionTests",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused-valid-filter.xml"
+      ],
+      "startedAtUtc": "2026-11-01T19:05:19.844158+00:00",
+      "finishedAtUtc": "2026-11-01T19:05:25.534642+00:00",
+      "elapsedSeconds": 5.690483255020808,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused-valid-filter.log",
+        "bytes": 576,
+        "sha256": "6c1f9fd2f925b64a096037193212bc58c5a5dce2f5405406df6f7605e177c1d7"
+      }
+    },
+    {
+      "label": "implementation-polling-root-diff-check",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidence.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapProjectionTests.cs"
+      ],
+      "startedAtUtc": "2026-11-01T19:06:20.585658+00:00",
+      "finishedAtUtc": "2026-11-01T19:06:20.593172+00:00",
+      "elapsedSeconds": 0.007522824045736343,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-diff-check.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "commandReceiptFile": {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-command-receipts.json",
+    "bytes": 5274,
+    "sha256": "22b12a043194987d27abe8d305ae483dc2be5e4beed073d65e9e0f3bfac55651"
+  },
+  "focusedCheck": {
+    "xml": {
+      "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused-valid-filter.xml",
+      "bytes": 27582,
+      "sha256": "49928022b66457bbb3feda9603137ae4fdda75a87b41b1e1a44032ebb3535a14"
+    },
+    "assemblies": [
+      {
+        "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "35ce5d2a-a457-4c55-b1cb-fa9cdf4e9a02",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "run-date": "2026-11-01",
+        "run-time": "19:05:20",
+        "start-rtf": "2026-11-01T19:05:20.0680305+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-11-01T19:05:25.4876673+00:00",
+        "not-run": "0",
+        "passed": "38",
+        "skipped": "0",
+        "time": "5.419",
+        "time-rtf": "00:00:05.4189999",
+        "total": "38"
+      }
+    ],
+    "newControlCount": 13,
+    "controlScope": [
+      "Actual AppHost gateway model only adds the selected domain key",
+      "Other host and existing domain/default projection modes preserved",
+      "Initially absent then valid authority succeeds",
+      "Present contradictory principal/version/time and malformed authority fail immediately, including after initial absence",
+      "Existing caller cancellation stops absent observation",
+      "Storage errors never become absence"
+    ],
+    "externalResourcesStarted": false
+  },
+  "retainedFailedAttempt": {
+    "label": "implementation-polling-root-focused",
+    "exitCode": 3,
+    "reason": "Unsupported interior wildcard in xUnit class filter; no tests executed and no XML created. Corrected exact class filters executed in separate valid-filter label.",
+    "log": {
+      "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused.log",
+      "bytes": 176,
+      "sha256": "ec1941ccf6c09cae64dd3976e9459925f2062afcd45b0292bcd0744bfc43ec2f"
+    }
+  },
+  "earlierFailedLiveEvidencePreserved": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-buffered-summary.json",
+      "bytes": 26531,
+      "sha256": "95142560595a6a94c6c3202856b458dc47710ca9f6c2776d6241cb0d24436092"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-response-diagnostics-summary.json",
+      "bytes": 26531,
+      "sha256": "62a3e539a4c4ba2ea8d2667ccfa37c6f4cb5f5e95683d347f84a7442715c5082"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/response-diagnostics-safe-stages.json",
+      "bytes": 9525,
+      "sha256": "8065f0e36f62190f73276edf566404f13570c982dda287addf33f60efbdb7e87"
+    }
+  ],
+  "limits": [
+    "Selected-output ownership released to parent after build/focused/diff checks; no further edits/build/tests by this agent. Parent owns combined checks, coherent runtime refresh and strict live.",
+    "Runtime hashes were not captured before handoff in this phase; no post-handoff byte identity is represented as the tested binary. XML and exact build/test command metadata are retained; parent final audit binds runtime bytes.",
+    "Formatter scoped to the bootstrap configuration/evidence/new test files; fixture edits hand-formatted and targeted diff-check passed. No broad formatting claim.",
+    "No new live acceptance, projection completion or performance result is claimed. The existing HTTP202 receipt remains mandatory and is not synthesized.",
+    "xUnit -xml deprecation warning retained."
+  ]
+}

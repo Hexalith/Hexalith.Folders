@@ -1,0 +1,92 @@
+{
+  "status": "owner-decision-required",
+  "operation": "BootstrapGlobalAdmin",
+  "unchangedFixture": {
+    "caller": "genuinely authenticated administrator human bearer",
+    "endpoint": "POST /api/v1/commands",
+    "requiredStatus": 202,
+    "observedStatus": 403,
+    "publicCode": "unavailable"
+  },
+  "reason": "The committed owner operation explicitly has internal ingress; the SDK admits an internal operation only through a genuinely authenticated workload/service principal. The existing endpoint is human-only. No catalog host configuration can preserve this exact human request and HTTP 202 assertion while preserving both policies.",
+  "sources": [
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Routing/TenantCatalogDeclarations.cs",
+      "line": 30,
+      "fact": "Bootstrap is explicitly internal."
+    },
+    {
+      "path": "references/Hexalith.Tenants/tests/Hexalith.Tenants.Contracts.Tests/TenantCatalogTests.cs",
+      "line": 40,
+      "fact": "Owner test independently pins internal bootstrap ingress."
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/RouteCatalogSurfacePolicy.cs",
+      "line": 18,
+      "fact": "Every non-public operation is refused for human surfaces."
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore/Pipeline/RouteCatalogEligibilityBehavior.cs",
+      "line": 37,
+      "fact": "Internal eligibility requires genuine authenticated workload and service surface."
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore/Controllers/CommandsController.cs",
+      "line": 67,
+      "fact": "Original command route is human-only; bound/workload is a separate existing route."
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "line": 1071,
+      "fact": "Unchanged bootstrap driver submits human bearer and retains required HTTP 202."
+    }
+  ],
+  "recommendedDecision": "Authorize an explicit fixture bootstrap-flow migration to the existing Tenants verified-human bound-workload bootstrap, preserving administrator validation/attribution, existing authority, original canonical intent/identities/retention/replay, strict durability body, deadlines and retries. Keep Tenants bootstrap internal and all guards active.",
+  "existingSupportedAlternative": {
+    "configuration": [
+      "Tenants:BootstrapGlobalAdminEnabled",
+      "Tenants:BootstrapGlobalAdminUserId",
+      "Tenants:BootstrapBoundWorkloadEnabled",
+      "Tenants:BootstrapBoundWorkloadReceiptPath"
+    ],
+    "ownerExample": "references/Hexalith.Tenants/src/Hexalith.Tenants.AppHost/TenantsDevelopmentRoutingCatalog.cs:25",
+    "implementation": "references/Hexalith.Tenants/src/Hexalith.Tenants/Bootstrap/TenantBootstrapHostedService.cs:113",
+    "validation": "references/Hexalith.Tenants/src/Hexalith.Tenants/Bootstrap/TenantBootstrapBoundCommand.cs:32",
+    "endpoint": "POST /api/v1/commands/bound/workload",
+    "prerequisites": [
+      "Actual installed bearer validation of the administrator",
+      "Exact subject/admin/payload binding",
+      "Real Tenants workload assertion and configured RSA proof key",
+      "Committed catalog",
+      "Reconciliation of canonical eventstore Dapr targets with fixture-isolated AppIds",
+      "Private actual delivery receipt and original persisted-source completion verification"
+    ],
+    "limitation": "Enabling the hosted flow alone does not preserve the unchanged manual public bootstrap assertion; a second bootstrap is also a domain rejection. Remaining post-bootstrap compatibility has not executed."
+  },
+  "prohibitedActionsNotTaken": [
+    "No Tenants ingress/grant change",
+    "No synthesized service claims or trusted origin",
+    "No fabricated or substituted HTTP 202",
+    "No guard bypass",
+    "No strict assertion/deadline/retry change",
+    "No staging, commit, push, branch or dependency-pin mutation",
+    "No publication or deployment"
+  ],
+  "finalAttempt": "strict-real-provider-qualified",
+  "finalResult": [
+    {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "36.009"
+    }
+  ],
+  "catalogHostReadbacks": 8,
+  "source": {
+    "count": 27414,
+    "headDrift": {}
+  },
+  "exactSafeFailure": "Authenticated BootstrapGlobalAdmin: expected 202, observed 403; code=unavailable."
+}

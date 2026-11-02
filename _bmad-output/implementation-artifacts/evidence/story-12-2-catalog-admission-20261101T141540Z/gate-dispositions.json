@@ -1,0 +1,19 @@
+{
+  "catalogIdentityActivationPropagation": "passed: 8 actual committed host readbacks",
+  "canonicalAdapterCompatibility": "passed: all 18 adapters, 36 original canonical cases including metadata fields/options/scopes/nulls; original intent methods, builder, encoder, identities and retention preserved",
+  "gateway": "73/73 passed",
+  "server": "1324/1324 passed",
+  "workers": "162/162 passed after final coherent refresh",
+  "integration": "853/853 passed",
+  "operationalHistories": "87/87 passed including 10001/32769 positions through existing production handler/SDK",
+  "apphostHelpers": "32/32 passed",
+  "sdkAffectedContracts": "125/125 passed",
+  "sdkAffectedObservationRegistry": "24/24 passed",
+  "strictLive": "failed: 0 passed, 1 failed, 0 errors/skips; 36.009 seconds; authenticated human BootstrapGlobalAdmin requires 202 and gets 403/unavailable under owner internal-only policy",
+  "contractGovernance": "open: 623/634 passed, same 11 PD10/immutable-CI-pin failures as prior intake; candidates/manifests/pins untouched",
+  "releasePackagePD10": "open; no Release/package publication or dependency pin update",
+  "performanceSM4": "open; no new measurements because strict body never executed; prior acknowledgement finding remains",
+  "sdkBroadRegression": "separate open gate; focused 149 cases do not replace broad owner qualification",
+  "wholeStoryReview": "open; no independent whole-story review or story completion claimed",
+  "storyStatus": "in-progress"
+}

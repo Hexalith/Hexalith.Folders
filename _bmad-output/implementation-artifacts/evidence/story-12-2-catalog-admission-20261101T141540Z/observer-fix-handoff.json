@@ -1,0 +1,43 @@
+{
+  "changed_files": [
+    "src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+    "tests/tools/Task36FoldObserver/Task36HostingStartup.cs",
+    "tests/tools/Task36FoldObserver/FoldDiagnosticObserver.cs",
+    "tests/tools/Task36FoldObserver/FoldDiagnosticEventObserver.cs",
+    "tests/tools/Task36FoldObserver/FoldObservationSink.cs",
+    "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+    "tests/Hexalith.Folders.Server.Tests/Task36FoldDiagnosticObserverTests.cs",
+    "tests/Hexalith.Folders.Server.Tests/Task36FoldObservationCollection.cs"
+  ],
+  "deleted_files": [
+    "tests/tools/Task36FoldObserver/ObservedProjectionHandler.cs"
+  ],
+  "focused_result": {
+    "passed": 12,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 2.865
+  },
+  "build_result": "Conventional Debug source graph, zero warnings/errors; standard task flags; no BuildProjectReferences=false.",
+  "receipts": [
+    "observer-fix-server-build-01.json",
+    "observer-fix-server-build-02.json",
+    "observer-fix-focused-tests-01.json"
+  ],
+  "preserved_current_sha256": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d",
+    "tests/Hexalith.Folders.AppHost.Tests/Task36QualificationEvidence.cs": "b25a81cb4024bd199a6f3adddafab175e411893ecf318a44e524352d3f36633c",
+    "tests/tools/Task36FoldObserver/ContentQualificationClock.cs": "48237ec74801bae0eeac63eded945e4752c9f0cb191871493413c2ea584055fa",
+    "tests/tools/Task36FoldObserver/StartupHook.cs": "ed92f9451f3e5a27121c4717410f44cb3e1338e1f64db3ca381b5e391d80081b"
+  },
+  "sdk_source_changed_by_this_correction": false,
+  "strict_or_capacity_assertions_modified": false,
+  "content_clock_setup": "The original conditional registration lines in Task36HostingStartup are unchanged.",
+  "parent_remaining": [
+    "fresh affected broad tests and final coherent runtime build",
+    "unchanged strict real-provider acceptance",
+    "pre/post source/runtime/head/module/cleanup audit and packet seal"
+  ]
+}

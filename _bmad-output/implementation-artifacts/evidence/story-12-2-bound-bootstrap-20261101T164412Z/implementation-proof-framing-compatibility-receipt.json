@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 1,
+  "producer": "/root/bootstrap_impl",
+  "recordedAtUtc": "2026-11-01T19:29:50.110769+00:00",
+  "scope": "Spec-recorded natural framing only for isolated missing/wrong-proof controls; optional helper content factory defaults to unchanged buffering. No live run by this agent.",
+  "headsObserved": {
+    "/home/administrator/projects/hexalith/folders": "4de8e5d0e4ad16f33e7eae31f7323fe5bbf326b7",
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore": "f704401ff9033919b1e9925564d814d7410bfe3d",
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants": "9ed8737dedfbba660b9935b09696a74685201634"
+  },
+  "spec": {
+    "path": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+    "bytes": 174393,
+    "sha256": "624161ac7723e4b2399260f01dae849185d7baf6449422e582f89711d7f8a1c1",
+    "subsection": "Natural framing for isolated proof-refusal controls",
+    "frozenBlockSha256": "594ee179697159c0d4bb561258de1ced5942925ba755a96856d2d07f0f5ad61c",
+    "frozenUnchangedFromPollingReceipt": true
+  },
+  "implementation": {
+    "files": [
+      "FolderDurabilityHttp.cs",
+      "FolderDurabilityAcceptanceFixture.cs",
+      "FolderDurabilityHttpTests.cs",
+      "DurabilityLoopbackHttpServer.cs"
+    ],
+    "contentFactory": "Optional Func<HttpContent> creates fresh natural JsonContent for each existing outer request; bypasses template byte buffering only when supplied.",
+    "requestIdentity": "Each proof-control body including original message/correlation/principal is captured once outside the factory; URI and request headers still cloned by existing helper.",
+    "contentHeaders": "Original content metadata copied onto fresh content, excluding buffered Content-Length so the content supplies natural framing.",
+    "preserved": [
+      "Default ByteArrayContent buffering for all other calls",
+      "Valid owner bounded buffered request and its production handlers",
+      "Existing75s helper deadline and90s caller deadline",
+      "Existing429 and eligible503 outer retry decisions/delays",
+      "All installed Dapr policies, retry counts and circuit settings",
+      "Expected actual403 assertions, original source/admin authority assertions and strict/capacity bodies"
+    ]
+  },
+  "commands": [
+    {
+      "label": "implementation-proof-framing-root-format",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "--no-restore",
+        "--include",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttp.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttpTests.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/DurabilityLoopbackHttpServer.cs",
+        "-v",
+        "quiet"
+      ],
+      "startedAtUtc": "2026-11-01T19:21:51.770273+00:00",
+      "finishedAtUtc": "2026-11-01T19:21:59.252744+00:00",
+      "elapsedSeconds": 7.482467691006605,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-format.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "implementation-proof-framing-root-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "startedAtUtc": "2026-11-01T19:22:36.043853+00:00",
+      "finishedAtUtc": "2026-11-01T19:23:56.402023+00:00",
+      "elapsedSeconds": 80.36193376104347,
+      "exitCode": 1,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-build.log",
+        "bytes": 15137,
+        "sha256": "1bf899d96706ee9a1de17c48bb5f49f75c5e3cadc8e9799e57c68c10ac2d6e1d"
+      }
+    },
+    {
+      "label": "implementation-proof-framing-root-format-await",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "--no-restore",
+        "--include",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttp.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttpTests.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/DurabilityLoopbackHttpServer.cs",
+        "-v",
+        "quiet"
+      ],
+      "startedAtUtc": "2026-11-01T19:24:51.803927+00:00",
+      "finishedAtUtc": "2026-11-01T19:24:58.772052+00:00",
+      "elapsedSeconds": 6.968121952959336,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-format-await.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "implementation-proof-framing-root-build-await",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "startedAtUtc": "2026-11-01T19:25:14.044699+00:00",
+      "finishedAtUtc": "2026-11-01T19:26:31.434543+00:00",
+      "elapsedSeconds": 77.3931913060369,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-build-await.log",
+        "bytes": 76,
+        "sha256": "8519e666df05ba7e14343a2c4260f3aa5300013b8284c7651e2c39dd0c05379c"
+      }
+    },
+    {
+      "label": "implementation-proof-framing-root-focused",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "*FolderDurabilityHttpTests",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-focused.xml"
+      ],
+      "startedAtUtc": "2026-11-01T19:26:59.571462+00:00",
+      "finishedAtUtc": "2026-11-01T19:27:01.151991+00:00",
+      "elapsedSeconds": 1.580530807026662,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-focused.log",
+        "bytes": 859,
+        "sha256": "cff785b587c2c50701a23df809d7d09c366f350b652a04b4228f51361746631c"
+      }
+    },
+    {
+      "label": "implementation-proof-framing-root-diff-check",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttp.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttpTests.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/DurabilityLoopbackHttpServer.cs"
+      ],
+      "startedAtUtc": "2026-11-01T19:28:15.550719+00:00",
+      "finishedAtUtc": "2026-11-01T19:28:15.556266+00:00",
+      "elapsedSeconds": 0.00553576200036332,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-diff-check.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "commandReceiptFile": {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-command-receipts.json",
+    "bytes": 6232,
+    "sha256": "d9bc84cf07261711738b5b4c5506dcf6cac83519d9bd2cbb367805954bb6659c"
+  },
+  "focusedCheck": {
+    "xml": {
+      "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-focused.xml",
+      "bytes": 13205,
+      "sha256": "2bfb5756b55b50bd47b9d89cf14554f74c37b463ef618aa7718b34b075d1bc7b"
+    },
+    "assemblies": [
+      {
+        "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "9fc7406c-14d4-46a9-bcf3-f52afdf329e8",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "run-date": "2026-11-01",
+        "run-time": "19:26:59",
+        "start-rtf": "2026-11-01T19:26:59.7332750+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-11-01T19:27:01.1311800+00:00",
+        "not-run": "0",
+        "passed": "18",
+        "skipped": "0",
+        "time": "1.398",
+        "time-rtf": "00:00:01.3980000",
+        "total": "18"
+      }
+    ],
+    "newControls": 7,
+    "actualLoopbackHttp": true,
+    "actualDapr": false,
+    "observations": [
+      "Unknown-length natural JsonContent produces real HTTP1.1 chunked framing without Content-Length, despite buffered original template",
+      "Exact JSON bytes plus request and content-header identity across eligible429/503 retries",
+      "Distinct content instances and successful repeated HTTP sends prove fresh content/request per attempt",
+      "Permanent403 and noneligible503 returned once without helper retry",
+      "Caller cancellation stops the factory path before another request",
+      "Existing default helper identity/readiness/permanent-outcome regressions continue to pass"
+    ],
+    "testSafetyBudget": "Loopback controls use their own5s safety token; no fixture/request deadline changed."
+  },
+  "testedIdentitiesCapturedBeforeHandoff": {
+    "capturedAtUtc": "2026-11-01T19:28:15.618144+00:00",
+    "timing": "After passing focused18/18 checks and before selected-output handoff; no builds/tests concurrent.",
+    "identities": [
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "bytes": 680448,
+        "sha256": "fa2e02f7fa5cbc77c25b2b86ad9e8b5116274135e6b847521bf991231928d6b0"
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.pdb",
+        "bytes": 138172,
+        "sha256": "0d8a721be03973d14eedaa8c624432f254c9f23282f754f425d87817adacdb2a"
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.deps.json",
+        "bytes": 127949,
+        "sha256": "89f9abade63b1cf7f625c8cd6bec5731a60f5c6fe1606ab63ef10ee54707a53f"
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.runtimeconfig.json",
+        "bytes": 416,
+        "sha256": "4761a312947a31a30aec259d9ee6f10407d89806d812cd102f3b3aec250dc8b4"
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttp.cs",
+        "bytes": 6968,
+        "sha256": "83c62a47662ce31cb3544e0a09acf42b841a72c03a82036c17808c4dfac46b22"
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+        "bytes": 98517,
+        "sha256": "533ca410f74af89ef955e78a8a7d1cb78ff6ca73c7e6cc6fc1898164d6784127"
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttpTests.cs",
+        "bytes": 10709,
+        "sha256": "6aaa33e7bbfc7915d7501349c7ed037f0e0978f21048c71cb0d3a9b7ffdf5371"
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/DurabilityLoopbackHttpServer.cs",
+        "bytes": 5026,
+        "sha256": "c0ca93173d6230d9a2cc7e5a39863039fdf92d65f74463d435715411e3c3ff3e"
+      }
+    ]
+  },
+  "testedIdentityFile": {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-tested-identities.json",
+    "bytes": 2291,
+    "sha256": "9a16826f3dd309e91649c93a8083c82fcd08813823313656aa49b627b65c35d5"
+  },
+  "retainedFailure": {
+    "label": "implementation-proof-framing-root-build",
+    "exitCode": 1,
+    "errors": 19,
+    "category": "CA2007 only",
+    "resolution": "ConfigureAwait(false) in non-test helper; ConfigureAwait(true) and configured async disposal in xUnit methods. No analyzer suppression or policy relaxation.",
+    "log": {
+      "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-build.log",
+      "bytes": 15137,
+      "sha256": "1bf899d96706ee9a1de17c48bb5f49f75c5e3cadc8e9799e57c68c10ac2d6e1d"
+    }
+  },
+  "payloadFreeTransportDiagnosis": {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-diagnosis.json",
+    "bytes": 9009,
+    "sha256": "2b3d9d21583c1212927b5c11ca5934f9f7c10393bda36754c12965d22c83e096"
+  },
+  "latestFailedLiveEvidence": {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-durable-bootstrap-summary.json",
+    "bytes": 26943,
+    "sha256": "e37fe3e8ab464fe5373124707b95a7b905f2c228b65155bc2c5a6d6ecabecb5b"
+  },
+  "preservedSourceChecks": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs",
+      "bytes": 28221,
+      "sha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "priorExpectedSha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+      "bytes": 52369,
+      "sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "priorExpectedSha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs",
+      "bytes": 5323,
+      "sha256": "bdd5c4e6fc877d115a2fcb230e70a4cd581c62f3cd714543793bed7ed9d536f7",
+      "priorExpectedSha256": "bdd5c4e6fc877d115a2fcb230e70a4cd581c62f3cd714543793bed7ed9d536f7",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidence.cs",
+      "bytes": 5545,
+      "sha256": "47627f5bb9a9e7ebb506764e3def145e9624d40d5374cfe680f1f638f01e8834",
+      "priorExpectedSha256": "47627f5bb9a9e7ebb506764e3def145e9624d40d5374cfe680f1f638f01e8834",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/DaprComponents/resiliency.yaml",
+      "bytes": 2357,
+      "sha256": "2b50e4ac3e47d2ac73809939ea5f3fb67e0485c64d2a0b8f39732e86cbb59edf",
+      "priorExpectedSha256": "2b50e4ac3e47d2ac73809939ea5f3fb67e0485c64d2a0b8f39732e86cbb59edf",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.AppHost/DaprComponents/resiliency.yaml",
+      "bytes": 2205,
+      "sha256": "f4eb2ede8f7c2c70543bd836f10ffd3d993e35ebf5818cc7545e2345cd5a3d75",
+      "priorExpectedSha256": "f4eb2ede8f7c2c70543bd836f10ffd3d993e35ebf5818cc7545e2345cd5a3d75",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.AppHost/DaprComponents/resiliency.yaml",
+      "bytes": 2441,
+      "sha256": "bf24aa2365007bc8f046850af8e77829e7c9f9052bf4bb332808604b6fe77057",
+      "priorExpectedSha256": "bf24aa2365007bc8f046850af8e77829e7c9f9052bf4bb332808604b6fe77057",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/Bootstrap/TenantBootstrapBoundCommand.cs",
+      "bytes": 5260,
+      "sha256": "888c33e6f40aff9017c1f4a97f327475cb43444076bbe958c57804fd0ef4aecd",
+      "priorExpectedSha256": "888c33e6f40aff9017c1f4a97f327475cb43444076bbe958c57804fd0ef4aecd",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore/Controllers/CommandsController.cs",
+      "bytes": 21647,
+      "sha256": "76dfb2702e6c92a3be8721de007973f83b7b62ca8f408ff3d1272defc8a98ca7",
+      "priorExpectedSha256": "76dfb2702e6c92a3be8721de007973f83b7b62ca8f408ff3d1272defc8a98ca7",
+      "unchanged": true
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/TechnicalHttpRouteCatalogReceiver.cs",
+      "bytes": 31462,
+      "sha256": "151b4be36fb8858a37ec32dcdb3fa7c7947016508ff64efa8ef7dbd76b307f10",
+      "priorExpectedSha256": "151b4be36fb8858a37ec32dcdb3fa7c7947016508ff64efa8ef7dbd76b307f10",
+      "unchanged": true
+    }
+  ],
+  "handoff": "Selected-output ownership released after passing corrected build,18focused tests, targeted diff-check and tested-identity capture. Parent owns final82helper/gateway checks, PDB/source preflight, coherent runtime refresh, strict live and sealing.",
+  "limits": [
+    "No post-handoff runtime bytes are presented as the tested assembly; identities were captured before parent regained ownership.",
+    "Loopback403 is a real HTTP fixture-transport control, not a substitute gateway proof or live bootstrap receipt.",
+    "No new live acceptance or strict success claim. Existing prior actual202+Completed plus wrong-proof500 failure remains retained.",
+    "Targeted whitespace format excludes the large fixture source; changed fixture lines were hand-formatted and targeted diff-check passed.",
+    "xUnit -xml deprecation warning retained."
+  ]
+}

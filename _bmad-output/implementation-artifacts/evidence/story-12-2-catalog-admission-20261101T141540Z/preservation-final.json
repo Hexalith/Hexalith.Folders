@@ -1,0 +1,75 @@
+{
+  "adapterFiles": [
+    {
+      "path": "src/Hexalith.Folders.EventStore/ArchiveFolderIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/AuthorizeContentErasureIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/BindRepositoryIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/ChangeNativeTaskIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/CommitWorkspaceIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/ConfigureBranchRefPolicyIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/ConfigureProviderBindingIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/CreateFolderIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/CreateRepositoryBackedFolderIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/GrantFolderAccessIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/LockWorkspaceIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/MutateFilesIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/OrganizationAclIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/PrepareWorkspaceIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/ReleaseWorkspaceLockIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/RevokeFolderAccessIdempotencyIntentAdapter.cs",
+      "intentMethodAndHelpersUnchanged": true
+    }
+  ],
+  "canonicalBuilderUnchanged": true,
+  "strictAcceptanceSourceUnchanged": true,
+  "nativeAssertionsPreserved": true,
+  "capacityAcceptanceSourceUnchanged": true,
+  "frozenSpecBlockUnchanged": true,
+  "baselineCommit": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "stagedDiff": []
+}

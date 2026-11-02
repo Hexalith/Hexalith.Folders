@@ -1,0 +1,77 @@
+{
+  "capturedAtUtc": "2026-11-01T13:46:10.408586+00:00",
+  "source": {
+    "count": 18833,
+    "drift": []
+  },
+  "runtime": {
+    "folders": {
+      "count": 79,
+      "drift": []
+    },
+    "workers": {
+      "count": 77,
+      "drift": []
+    },
+    "gateway": {
+      "count": 87,
+      "drift": []
+    },
+    "tenants": {
+      "count": 84,
+      "drift": []
+    },
+    "memories": {
+      "count": 89,
+      "drift": []
+    },
+    "apphost": {
+      "count": 153,
+      "drift": []
+    },
+    "tests": {
+      "count": 387,
+      "drift": []
+    },
+    "observer": {
+      "count": 13,
+      "drift": []
+    }
+  },
+  "headDrift": {},
+  "focusedGatewayFinalRuntime": {
+    "count": 619,
+    "drift": []
+  },
+  "historicalPackets": {
+    "story-12-2-current-consumer-20261031": {
+      "count": 64,
+      "drift": []
+    },
+    "story-12-2-selective-enrollment-20261101": {
+      "count": 20,
+      "drift": []
+    },
+    "story-12-2-security-enrollment-20261101": {
+      "count": 199,
+      "drift": []
+    },
+    "story-12-2-latest-eventstore-20261101T122955Z": {
+      "count": 97,
+      "drift": []
+    }
+  },
+  "mappedModuleRecords": {
+    "count": 35,
+    "mismatches": []
+  },
+  "frozenIntentMatchesHead": true,
+  "baselineCommit": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "gitDiffCheck": {
+    "exitCode": 0,
+    "output": ""
+  },
+  "stagedDiff": [],
+  "eventstoreWorkingTree": "",
+  "scope": "Independent current-source/runtime and recorded mapped-module comparison. Historical packet byte seals only; their former external runtime/source paths are not requalified."
+}

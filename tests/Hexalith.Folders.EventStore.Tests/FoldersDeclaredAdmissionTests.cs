@@ -70,7 +70,7 @@ public sealed class FoldersDeclaredAdmissionTests
         state.Leases.ShouldBeEmpty();
     }
 
-    /// <summary>Checks the custom descriptor labels against actual legacy encoder component values.</summary>
+    /// <summary>Checks the shared catalog fields against actual legacy intent and encoder component values.</summary>
     [Fact]
     public async Task DescriptorLabelsMapToCompleteExistingEncoderComponents()
     {
@@ -83,18 +83,37 @@ public sealed class FoldersDeclaredAdmissionTests
             CommandIntentDeclaration declaration = adapter.Declaration;
             RouteCatalogValidator.ValidateDeclaration(declaration.Route);
             RouteCatalogValidator.ValidateDescriptor(declaration.DescriptorSchema);
-            declaration.DescriptorSchema.SchemaId.ShouldBe($"folders-{legacy.OperationId}-intent");
+            declaration.DescriptorSchema.SchemaId.ShouldBe($"folders-{legacy.OperationId}-descriptor");
             declaration.RequiresAuthenticatedSubject.ShouldBeFalse();
-            declaration.Route.Execution!.HandlerType.ShouldBe(typeof(FolderDomainProcessor).FullName);
+            declaration.Route.Execution!.HandlerType.ShouldBe(FoldersRuntimeCatalogDeclarations.Commands
+                .Single(command => command.Route.MessageType == legacy.CommandType).Route.Execution!.HandlerType);
             declaration.Route.Execution.AliasPolicy.ShouldBe("exact");
             declaration.Route.Execution.Aliases.ShouldBe([legacy.CommandType]);
-            declaration.DescriptorSchema.Fields.Select(static field => field.Name).Order(StringComparer.Ordinal)
-                .ShouldBe(new[] { "credential-scope", "delegated-task-scope", "semantic-json", "semantic-payload-sha256", "target" });
             declaration.DescriptorSchema.Fields.ShouldAllBe(static field => field.Type == "string");
 
             SubmitCommand command = Command(legacy);
             IdempotencyCanonicalIntent intent = adapter.CreateIntent(new IdempotencyIntentCommand(command.CommandType,
                 command.Tenant, command.Domain, command.AggregateId, command.Payload, command.Extensions));
+            using JsonDocument semantic = JsonDocument.Parse(intent.SemanticPayload);
+            Dictionary<string, IdempotencyDescriptorField> payloadFields = declaration.DescriptorSchema.Fields
+                .Where(static field => field.Source == "payload").ToDictionary(static field => field.Name, StringComparer.Ordinal);
+            payloadFields.Keys.Order(StringComparer.Ordinal).ShouldBe(
+                semantic.RootElement.EnumerateObject().Select(static field => field.Name).Order(StringComparer.Ordinal));
+            foreach (JsonProperty field in semantic.RootElement.EnumerateObject())
+            {
+                if (field.Value.ValueKind == JsonValueKind.Null)
+                {
+                    payloadFields[field.Name].Nullable.ShouldBeTrue();
+                }
+            }
+
+            declaration.DescriptorSchema.Fields.Single(static field => field.Source == "target").Name.ShouldBe("target");
+            declaration.DescriptorSchema.Fields.Where(static field => field.Source == "semantic-option")
+                .Select(static field => field.Name).ShouldBe(intent.SemanticOptions!.Keys);
+            declaration.DescriptorSchema.Fields.Any(static field => field.Source == "delegated-task-scope")
+                .ShouldBe(intent.DelegatedTaskScope is not null);
+            declaration.DescriptorSchema.Fields.Any(static field => field.Source == "credential-scope")
+                .ShouldBe(intent.CredentialScope is not null);
             Dictionary<byte, byte[]> encoded = ReadFields((await fixture.Registry.ResolveAsync(command, TestContext.Current.CancellationToken).ConfigureAwait(true)).CanonicalIntent);
             Encoding.UTF8.GetString(encoded[6]).ShouldBe(intent.CanonicalTarget); // target:string
             Encoding.UTF8.GetString(encoded[7]).ShouldBe(Encoding.UTF8.GetString(intent.SemanticPayload)); // semantic-json:string
@@ -236,7 +255,7 @@ public sealed class FoldersDeclaredAdmissionTests
         state.Ready.ShouldBeEmpty();
     }
 
-    /// <summary>Keeps public discovery and full compiled schema-three enrollment independently unavailable.</summary>
+    /// <summary>Keeps public discovery unavailable until compiled operations are activated in a schema-three catalog.</summary>
     [Fact]
     public async Task SchemaTwoAdmissionDoesNotEnableSchemaThreePublicDiscovery()
     {
@@ -245,9 +264,9 @@ public sealed class FoldersDeclaredAdmissionTests
         RoutingCatalogMetadataController controller = new(fixture.Authority);
         StatusCodeResult response = (await controller.Get(TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldBeOfType<StatusCodeResult>();
         response.StatusCode.ShouldBe(503);
-        // Static admission declarations alone do not enroll complete executable operation schemas.
-        Should.Throw<RouteCatalogUnavailableException>(() => CompiledRouteCatalogDeclarations.ReadOperations(
-            [typeof(FolderDomainProcessor).Assembly, typeof(FoldersCommandIntentDeclarations).Assembly]));
+        // Compiled operation metadata does not promote a historical schema-two authority to public discovery.
+        CompiledRouteCatalogDeclarations.ReadOperations(
+            [typeof(FolderDomainProcessor).Assembly, typeof(FoldersCommandIntentDeclarations).Assembly]).ShouldNotBeEmpty();
         (await fixture.Store.ReadAsync(TestContext.Current.CancellationToken).ConfigureAwait(true)).State.Leases.ShouldBeEmpty();
     }
 

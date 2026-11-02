@@ -1,0 +1,225 @@
+{
+  "result": [
+    {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "36.262"
+    }
+  ],
+  "sourceAudit": {
+    "count": 27413,
+    "drift": [],
+    "headDrift": {}
+  },
+  "runtimeGroups": {
+    "folders": {
+      "count": 84,
+      "drift": []
+    },
+    "workers": {
+      "count": 82,
+      "drift": []
+    },
+    "gateway": {
+      "count": 95,
+      "drift": []
+    },
+    "tenants": {
+      "count": 92,
+      "drift": []
+    },
+    "memories": {
+      "count": 96,
+      "drift": []
+    },
+    "apphost": {
+      "count": 156,
+      "drift": []
+    },
+    "tests": {
+      "count": 401,
+      "drift": []
+    },
+    "observer": {
+      "count": 16,
+      "drift": []
+    },
+    "gateway-full": {
+      "count": 173,
+      "drift": []
+    },
+    "server-full": {
+      "count": 144,
+      "drift": []
+    },
+    "workers-full": {
+      "count": 144,
+      "drift": []
+    },
+    "integration-full": {
+      "count": 180,
+      "drift": []
+    },
+    "apphost-helpers": {
+      "count": 172,
+      "drift": []
+    },
+    "contracts-full": {
+      "count": 86,
+      "drift": []
+    },
+    "operational-histories": {
+      "count": 171,
+      "drift": []
+    },
+    "gateway-full-final": {
+      "count": 173,
+      "drift": []
+    },
+    "gateway-full-observer": {
+      "count": 173,
+      "drift": []
+    },
+    "server-full-observer": {
+      "count": 144,
+      "drift": []
+    },
+    "integration-full-observer": {
+      "count": 180,
+      "drift": []
+    },
+    "operational-histories-observer": {
+      "count": 171,
+      "drift": []
+    },
+    "apphost-helpers-observer": {
+      "count": 172,
+      "drift": []
+    },
+    "sdk-contracts-tests": {
+      "count": 112,
+      "drift": []
+    },
+    "sdk-server-tests": {
+      "count": 177,
+      "drift": []
+    },
+    "ui": {
+      "count": 44,
+      "drift": []
+    }
+  },
+  "uniqueRuntimePaths": 2253,
+  "observedMappedRecords": 106,
+  "mappedMismatches": [],
+  "observationsOutsidePreRunInventory": [],
+  "processCleanup": {
+    "1867554": false,
+    "1869927": false,
+    "1869928": false,
+    "1869929": false,
+    "1872010": false,
+    "1877435": false,
+    "1877920": false,
+    "1877944": false,
+    "1877978": false,
+    "1877999": false,
+    "1878025": false
+  },
+  "directoryCleanup": {
+    "/tmp/hexalith-route-catalog-4wZBW1": false,
+    "/tmp/folders-durability-al2dp1js.s0d": false
+  },
+  "newContainersObserved": [
+    "acf120cfeb140af679a272946a69382b55be498e4ec090c259dd88c5e7c7f5dd folders-provider-4b1e08c861ab7c7b",
+    "498a05828ccc6a0dc75a6cf7997ee9cabfa8a642cf28e6cd8eb11226550e034d folders-durability-4b1e08c861ab7c7b",
+    "611e7663ca9c0bd4382d722428fbd331cfc4ab96b6f0c5e98cdadf23b76f3b12 memories-vectors-xvuxbfyp",
+    "502bdaff86ee47ae8b527189fd58ee422c78b1107b85ffcabb174e6182836e67 security-pgvtnenb",
+    "618cbfaabc7b412864020f8c55b809724f8ea0dcb5a33ce2352cb03826c7d7de memories-graphs-aadpkxeb"
+  ],
+  "newContainersRemaining": [],
+  "aspireAfter": {
+    "argv": [
+      "aspire",
+      "ps",
+      "--format",
+      "json"
+    ],
+    "exitCode": 0,
+    "stdout": "[]\n",
+    "stderr": ""
+  },
+  "catalogReadbacks": {
+    "/tmp/hexalith-route-catalog-4wZBW1": {
+      "tenants.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "2203bc608f8bfdfe43dcfef8a50c1cc7dae5242dd12a98fb23e8801a142a9f3d",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "025790790cfb7f54dcbd3ecfb676677a0d94aa5070ccd5c2842a477fc0fddf42"
+      },
+      "folders-workers-proof-b.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "2203bc608f8bfdfe43dcfef8a50c1cc7dae5242dd12a98fb23e8801a142a9f3d",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "025790790cfb7f54dcbd3ecfb676677a0d94aa5070ccd5c2842a477fc0fddf42"
+      },
+      "folders-workers-replica.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "2203bc608f8bfdfe43dcfef8a50c1cc7dae5242dd12a98fb23e8801a142a9f3d",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "025790790cfb7f54dcbd3ecfb676677a0d94aa5070ccd5c2842a477fc0fddf42"
+      },
+      "folders.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "2203bc608f8bfdfe43dcfef8a50c1cc7dae5242dd12a98fb23e8801a142a9f3d",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "025790790cfb7f54dcbd3ecfb676677a0d94aa5070ccd5c2842a477fc0fddf42"
+      },
+      "folders-workers.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "2203bc608f8bfdfe43dcfef8a50c1cc7dae5242dd12a98fb23e8801a142a9f3d",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "025790790cfb7f54dcbd3ecfb676677a0d94aa5070ccd5c2842a477fc0fddf42"
+      },
+      "memories.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "2203bc608f8bfdfe43dcfef8a50c1cc7dae5242dd12a98fb23e8801a142a9f3d",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "025790790cfb7f54dcbd3ecfb676677a0d94aa5070ccd5c2842a477fc0fddf42"
+      },
+      "eventstore.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "2203bc608f8bfdfe43dcfef8a50c1cc7dae5242dd12a98fb23e8801a142a9f3d",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "025790790cfb7f54dcbd3ecfb676677a0d94aa5070ccd5c2842a477fc0fddf42"
+      },
+      "folders-workers-proof-a.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "2203bc608f8bfdfe43dcfef8a50c1cc7dae5242dd12a98fb23e8801a142a9f3d",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "025790790cfb7f54dcbd3ecfb676677a0d94aa5070ccd5c2842a477fc0fddf42"
+      }
+    }
+  },
+  "safeAcceptanceMilestones": [],
+  "strictTestSourceSha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90"
+}

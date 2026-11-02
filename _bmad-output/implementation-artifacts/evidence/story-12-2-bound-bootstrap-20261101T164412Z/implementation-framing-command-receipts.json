@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "producer": "/root/bootstrap_impl",
+  "commands": [
+    {
+      "label": "implementation-framing-owner-format",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj",
+        "--no-restore",
+        "--include",
+        "src/Hexalith.Tenants/Bootstrap/TenantBootstrapBoundCommand.cs",
+        "tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapBoundCommandTests.cs",
+        "-v",
+        "quiet"
+      ],
+      "startedAtUtc": "2026-11-01T18:18:02.067403+00:00",
+      "finishedAtUtc": "2026-11-01T18:18:07.122203+00:00",
+      "elapsedSeconds": 5.054796364041977,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-format.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "implementation-framing-owner-build",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "startedAtUtc": "2026-11-01T18:18:11.762078+00:00",
+      "finishedAtUtc": "2026-11-01T18:18:25.470143+00:00",
+      "elapsedSeconds": 13.71077556500677,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-build.log",
+        "bytes": 76,
+        "sha256": "812e2f9903c88382ee311ec77fe35b9cf1611825b8c6bacefe47dd92e38be270"
+      }
+    },
+    {
+      "label": "implementation-framing-owner-focused",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+        "-class",
+        "*Bootstrap*",
+        "-class",
+        "*TenantOwnerSourceTargetTests",
+        "-class",
+        "*TenantsGlobalAdministratorAuthorityTests",
+        "-class",
+        "*TenantsGlobalAdministratorVerifierTests",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-focused.xml"
+      ],
+      "startedAtUtc": "2026-11-01T18:18:38.858231+00:00",
+      "finishedAtUtc": "2026-11-01T18:18:42.367789+00:00",
+      "elapsedSeconds": 3.5095542229828425,
+      "exitCode": 1,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-focused.log",
+        "bytes": 3802,
+        "sha256": "d120343d631bce8a2694a86d18ffedec5ccdcaa0a6829310ef331a35dd4a30b1"
+      }
+    },
+    {
+      "label": "implementation-framing-owner-format-cancellation",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj",
+        "--no-restore",
+        "--include",
+        "src/Hexalith.Tenants/Bootstrap/TenantBootstrapBoundCommand.cs",
+        "tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapBoundCommandTests.cs",
+        "-v",
+        "quiet"
+      ],
+      "startedAtUtc": "2026-11-01T18:18:58.315177+00:00",
+      "finishedAtUtc": "2026-11-01T18:19:03.428617+00:00",
+      "elapsedSeconds": 5.113435578998178,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-format-cancellation.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "implementation-framing-owner-build-cancellation",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "startedAtUtc": "2026-11-01T18:19:07.771994+00:00",
+      "finishedAtUtc": "2026-11-01T18:19:27.120135+00:00",
+      "elapsedSeconds": 19.350309655012097,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-build-cancellation.log",
+        "bytes": 76,
+        "sha256": "7bcc5a20c8542b820e8b028c49250fd9fba4dbc95374f9e16213ab9878bb7fea"
+      }
+    },
+    {
+      "label": "implementation-framing-owner-focused-cancellation",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+        "-class",
+        "*Bootstrap*",
+        "-class",
+        "*TenantOwnerSourceTargetTests",
+        "-class",
+        "*TenantsGlobalAdministratorAuthorityTests",
+        "-class",
+        "*TenantsGlobalAdministratorVerifierTests",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-focused-cancellation.xml"
+      ],
+      "startedAtUtc": "2026-11-01T18:19:31.576608+00:00",
+      "finishedAtUtc": "2026-11-01T18:19:35.021274+00:00",
+      "elapsedSeconds": 3.444663100002799,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-focused-cancellation.log",
+        "bytes": 572,
+        "sha256": "0deaa89c0059c81167cb520537567e38a6551297ff2d12e00282588e52c218f1"
+      }
+    },
+    {
+      "label": "implementation-framing-owner-diff-check",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "startedAtUtc": "2026-11-01T18:19:50.830903+00:00",
+      "finishedAtUtc": "2026-11-01T18:19:50.840533+00:00",
+      "elapsedSeconds": 0.009619998978450894,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-diff-check.log",
+        "bytes": 174,
+        "sha256": "3afc3fa475a364b32c8035669f18be2fea029208dd530f125ca08820a3f9ccc4"
+      }
+    }
+  ]
+}

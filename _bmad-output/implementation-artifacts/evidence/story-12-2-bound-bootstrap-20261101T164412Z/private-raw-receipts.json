@@ -1,0 +1,1047 @@
+[
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/apphost-build.raw.log",
+    "sha256": "afb9d5c0ff2ede5972fc2b4e7119ae8bfe62d6fea22b48b9d8334d4f9b203f97",
+    "bytes": 6518
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/apphost-final-build.raw.log",
+    "sha256": "57672ff738cba9a75f95d2e149ea166b35927f587148b7e3221afa6cf1da8fe1",
+    "bytes": 6518
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/apphost-final-helpers.raw.log",
+    "sha256": "e2721a19da6f989d7ac4184e1ec7c680b44499ecb421c31d59333f66c94b0559",
+    "bytes": 1951
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/apphost-final-helpers.xml",
+    "sha256": "a2a2ddb48f3741a4a7d4740cb3b82ca03a4b6630ced568755938e973ca8f890e",
+    "bytes": 39054
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/apphost-helpers-qualified.raw.log",
+    "sha256": "c65b9857f24ef116ffd7909d57692cb8d534c2ef75d38728cf7a922873f6e1bd",
+    "bytes": 1951
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/apphost-helpers-qualified.xml",
+    "sha256": "a6f52d3def638ca9252de6fbbb2089cdf2107046055700929b74044670da2b15",
+    "bytes": 38402
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/apphost-import-build.raw.log",
+    "sha256": "04d3459c8a4fb68cea00bcfa0661c7dffdb4f07861f1ecabbfa8f72ee10e13db",
+    "bytes": 6518
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/apphost-import-helpers.raw.log",
+    "sha256": "cd5f4736fcbfc57a4178639fed27e46a35a72036578395781ad90eeee119bc88",
+    "bytes": 1951
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/apphost-import-helpers.xml",
+    "sha256": "899d6c674ccdc4a1901ac86685d3e43e4b2f2b6740b1d83c4fdf808f3199a6d4",
+    "bytes": 39049
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/bootstrap-fixture-before.cs",
+    "sha256": "8e18d41d07d6e9780925fa31cdb1a511205ecdb14686690254093d63f106dbf6",
+    "bytes": 85129
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/buffer-apphost-build.raw.log",
+    "sha256": "6c62edbc0fa61393eca69d3ec7ab4488247a5afcccad318032684d7a6582f470",
+    "bytes": 7681
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/buffer-apphost-helpers.raw.log",
+    "sha256": "028c07bc3dc489c33017b9fc1fe0e8b8216a661faef60297bafaebe23ade8aef",
+    "bytes": 1951
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/buffer-apphost-helpers.xml",
+    "sha256": "b8731c5fbd476916a0390c6aa3f032c6d3f959863e08ba2f261080d3ed60dcca",
+    "bytes": 46228
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/buffer-gateway-build.raw.log",
+    "sha256": "dcfb9e3fe31d82d37346fbf4dbb3088fb11a20761a5d535f2783c2a6dc69d11e",
+    "bytes": 4239
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/buffer-gateway-full.raw.log",
+    "sha256": "1e19efce4f0bb3a31c0cc2b6b0fb0e94b8b45a05fc5926076c7678e02371c88d",
+    "bytes": 14978
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/buffer-gateway-full.xml",
+    "sha256": "1463cf7eb0d1e8e539c6205bc873fda52911b8bd5fae64d671cc8d06b7692b04",
+    "bytes": 55403
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/buffer-memories-build.raw.log",
+    "sha256": "c1c504e1868f80fea516a67545da0700eca98084d8d60d667c5151c8c6565ec7",
+    "bytes": 2365
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/buffer-tenants-full.raw.log",
+    "sha256": "ea5209d62ee80ff4a6e164d7f5b622b7d9d980e9c68c57515597cb3ab2677a6e",
+    "bytes": 573
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/buffer-tenants-full.xml",
+    "sha256": "187ed4866d5539b933382e8b32d9265079826404d33d42258794efccb04e47c7",
+    "bytes": 1214825
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/buffer-tenants-runtime-build.raw.log",
+    "sha256": "98cc1604c5c48aa27995ab363c0086f5dbe76fb7f35993d2a13c1f0802235110",
+    "bytes": 3067
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/buffer-tenants-tests-build.raw.log",
+    "sha256": "43649d4c9d6cb3eeb9176c6e4fd959eaf524bbcfddbddfd92a6e0ba1e6d2648a",
+    "bytes": 5402
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/container-api-decompiled.cs",
+    "sha256": "72cb30464dc3be85470f0fcffd51409b3182542fc290d1cd659021a8c8d4be24",
+    "bytes": 99522
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/contracts-build.raw.log",
+    "sha256": "f5ebfc28e732232b8aedc2ae045a3cdd393b29d66dc972f059021b15cd4475f7",
+    "bytes": 641
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/contracts-full.raw.log",
+    "sha256": "b7767c25dfe0dfda182c34a7e68fdab81c8254ece514a6c34aef1181fde0538f",
+    "bytes": 129300
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/contracts-full.xml",
+    "sha256": "cbeee1a90c9b3b72d89fda0d2d9b57acb8e57108c0f77ae9d4f6c2ca52ddb37b",
+    "bytes": 572183
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/core-build.raw.log",
+    "sha256": "6791d80d1f27a0218096986bf3007f5a1a95e6d1b57f6a3927194542ab98a3f6",
+    "bytes": 5314
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/core-full.xml",
+    "sha256": "9ad1f8b8ac6861a102beb45511cfe934f8df3ea704c355073d6bb13af6e5341c",
+    "bytes": 86050
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/gateway-build.raw.log",
+    "sha256": "8e36c620340b2d12a40463b601ff3857c8327279a904c302996c9c82b63f048e",
+    "bytes": 4239
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/gateway-final-build.raw.log",
+    "sha256": "18f52d3b0e1cdb02a12e13a5190a5e072673e5c6426c403bcc0d120cf543a048",
+    "bytes": 4239
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/gateway-final-full.raw.log",
+    "sha256": "87fe7cd8d88f8f49768235ce07e9a78918121ce5d432c476e5e7a9311d49bd25",
+    "bytes": 14978
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/gateway-final-full.xml",
+    "sha256": "7a9672ba67f0f57d11e3b19c5e65c0269f8f0456020b493766cb6cbba221fb97",
+    "bytes": 55404
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/gateway-full.raw.log",
+    "sha256": "b9d2bdd0bf6cf85fc27536e003cb8cfbfd6e5971df52a3f721a353ec8b3a10cc",
+    "bytes": 14978
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/gateway-full.xml",
+    "sha256": "fc9990bce0a51a64455c70b1f4f5ca4410b9bd348c20d359babc87cb03d69d3c",
+    "bytes": 55401
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-2.log",
+    "sha256": "918152f9568521adfe3cfa64336bd1c1002bc3a229a096d439b00645a0b7bcc8",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-correct-scopes.log",
+    "sha256": "5a6b1233e915d73bf70787cee5c9fc7192da2b5d87a276b9c135de100cbaedb2",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-final-formatted.log",
+    "sha256": "412a35f5ad52bf042d412cf2fb9143f3afcc17f211d193877084292ad42a99b8",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-final-secret-parameters.log",
+    "sha256": "87ec4c557a3e1d7a883a5f86bd5ab1370219e97eecc4a17d37581b836496a2fc",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-final.log",
+    "sha256": "eb1dc1960577e45bbe590087efaa56c31affa4193da021ba988a4f5a0b37fd68",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build-verified.log",
+    "sha256": "de9edd2d038b9279a270b7611fd11b1c7391751da8e77c7e45761bc5d77d6beb",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-build.log",
+    "sha256": "82fd2710fb12889222112d813c00b9cceb85c8371a93e4aa8fd346b7f4d3d031",
+    "bytes": 986
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-apphost-new-format.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-evidence.log",
+    "sha256": "8ee11a0281315dd11a3770036afc3a7d8bafd05e06e62ff120627da374697548",
+    "bytes": 576
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-evidence.xml",
+    "sha256": "529522de3224c36cb41f0f7c2171cbd2257cc0fb1ec67fe7f879f918a5f7036d",
+    "bytes": 14679
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-focused-final.log",
+    "sha256": "bc35a6a9d686aa60f25f1806594be7ab331b948ddd2347c4adc3b7f36802f414",
+    "bytes": 1159
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-focused-final.xml",
+    "sha256": "3acd071a182d60f4b8a8b0dc7a9636056cfdff8f893e1105d9be6e57737ea70e",
+    "bytes": 30518
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-focused-formatted.log",
+    "sha256": "0167c953ea82050281cbab33065ea7328e7fb0a9a268327efefaecb63c4e8183",
+    "bytes": 1159
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-bootstrap-focused-formatted.xml",
+    "sha256": "040f4c53a373a96b4cccd924a510f0dd4ed16f9a1e46fa477b8a83fb47d5c81c",
+    "bytes": 30520
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-build-cancellation.log",
+    "sha256": "7bcc5a20c8542b820e8b028c49250fd9fba4dbc95374f9e16213ab9878bb7fea",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-build.log",
+    "sha256": "812e2f9903c88382ee311ec77fe35b9cf1611825b8c6bacefe47dd92e38be270",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-diff-check.log",
+    "sha256": "3afc3fa475a364b32c8035669f18be2fea029208dd530f125ca08820a3f9ccc4",
+    "bytes": 174
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-focused-cancellation.log",
+    "sha256": "0deaa89c0059c81167cb520537567e38a6551297ff2d12e00282588e52c218f1",
+    "bytes": 572
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-focused-cancellation.xml",
+    "sha256": "facb90ca3a345e7d6169b3375f0c4d617a1aaef4944b21371e79e5610ec9ed43",
+    "bytes": 159105
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-focused.log",
+    "sha256": "d120343d631bce8a2694a86d18ffedec5ccdcaa0a6829310ef331a35dd4a30b1",
+    "bytes": 3802
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-focused.xml",
+    "sha256": "fbdd489d5c2238703fbbdf7e65ec23f91c1606048a2639f89684f22179848fac",
+    "bytes": 162285
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-format-cancellation.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-framing-owner-format.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-gateway-build.log",
+    "sha256": "e733971ad14d16aae591ebc6b2e253f63b406240a95fc6f42ee3e9784a6d2582",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-gateway-full.log",
+    "sha256": "a00171ffe97cd9c380ac86b88e3218274cb9c9c58f9dd3bcb4aca4b8dcc06df8",
+    "bytes": 14978
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-gateway-full.xml",
+    "sha256": "535b8053cb377e7f8659ef26707c50a9ae6aac8a2c7a8d6b19056ab023ea0025",
+    "bytes": 55416
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-apphost-build-corrected.log",
+    "sha256": "282889f764ce9df9902859d9b14b06eafadd29c3dc0c5bac47ceabb955a4ba91",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-apphost-build-model-evidence.log",
+    "sha256": "7899cf6ea76c8620c672306ca2d4f8b5054aa418260c0296f41a32513baff510",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-apphost-build.log",
+    "sha256": "4afa2786d43bbfc69c0ff7767a7a28a25d4efeca0f61a97b14816182b2a4ff36",
+    "bytes": 756
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-model-final.log",
+    "sha256": "0af27e881011cdeecbbcd9ff7948b3658fa9cff5429c50ecb310bd33b636850a",
+    "bytes": 576
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-model-final.xml",
+    "sha256": "be612b4f976d87c689dea747673c0eb3c783d9c97e0ba6a5991cb028fd0dee8c",
+    "bytes": 23859
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-model-focused.log",
+    "sha256": "4f01eba88dcbafe606629d7ea2bd439bb876f6b0bc50db67df73c7587998e182",
+    "bytes": 576
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-model-focused.xml",
+    "sha256": "fafac933d20394d4da521ab49250f8af3b8a0dfd1066a4f6fb378f60ef926eca",
+    "bytes": 21746
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-owner-build.log",
+    "sha256": "e6708b0fc561881e15154a4faf757f91ee403bebdff28bc5bc6c2ff2bfb2ba6b",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-owner-focused.log",
+    "sha256": "9c5f55e411b00a38f5150e50e61f033e6604c16c46df08f99bbbc72f5959623d",
+    "bytes": 572
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-owner-focused.xml",
+    "sha256": "b504ad38200b8efddcddf0d233aeaa005ad4c0be69eca368d90a05ad2c0e2913",
+    "bytes": 157654
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-owner-format.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-platform-public-api.log",
+    "sha256": "0962ced5c33efc0ed228a09d62c4e630acfa21c2cc4fcd823f88891ad37b78a1",
+    "bytes": 802
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-mtls-root-format.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-focused.log",
+    "sha256": "8e6cc05f8fbc67df8765eb830e39070a31d9fdda1d81b267eb99b3a21172700a",
+    "bytes": 571
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-focused.xml",
+    "sha256": "ce11dfb16fba68c54ed0884f6c9cbd918ccb56b4cc99ba3d3269db3691faaf83",
+    "bytes": 10477
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-host-build.log",
+    "sha256": "5c12f3a8a2712e109bdb34b4426ac04ee377d3318457f2cb3e392de816753b3b",
+    "bytes": 3067
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-server-build.log",
+    "sha256": "da79ebcd4c8e812b6b246188fbc472d9e1cd3715146e4ef643882a61436aae17",
+    "bytes": 5005
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-owner-runtime-whitespace.log",
+    "sha256": "239c224f01960886368326d9ef5ebdcce071dcd0996d157bef6a963fc1eaa49c",
+    "bytes": 123
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-build.log",
+    "sha256": "d7b68a0993079ed855b6e29cc957515144a3957fcf2bfbc7f2e4d064153d4300",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-diff-check.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused-valid-filter.log",
+    "sha256": "6c1f9fd2f925b64a096037193212bc58c5a5dce2f5405406df6f7605e177c1d7",
+    "bytes": 576
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused-valid-filter.xml",
+    "sha256": "49928022b66457bbb3feda9603137ae4fdda75a87b41b1e1a44032ebb3535a14",
+    "bytes": 27582
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-focused.log",
+    "sha256": "ec1941ccf6c09cae64dd3976e9459925f2062afcd45b0292bcd0744bfc43ec2f",
+    "bytes": 176
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-polling-root-format.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-build-await.log",
+    "sha256": "8519e666df05ba7e14343a2c4260f3aa5300013b8284c7651e2c39dd0c05379c",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-build.log",
+    "sha256": "1bf899d96706ee9a1de17c48bb5f49f75c5e3cadc8e9799e57c68c10ac2d6e1d",
+    "bytes": 15137
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-diff-check.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-focused.log",
+    "sha256": "cff785b587c2c50701a23df809d7d09c366f350b652a04b4228f51361746631c",
+    "bytes": 859
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-focused.xml",
+    "sha256": "2bfb5756b55b50bd47b9d89cf14554f74c37b463ef618aa7718b34b075d1bc7b",
+    "bytes": 13205
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-format-await.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-format.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-build-final.log",
+    "sha256": "30a0e28a4859f76b8fba43bb51348d6caf3885270e518efa595579a52f5a7725",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-build.log",
+    "sha256": "e7ded67c6f66622f80c7038bd5b35e8a838094bba4eb229a94a341acfe598ad5",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-focused.log",
+    "sha256": "476dbbf4f6250fdf6178142c5a3d239413410d2f1f0996d2375a4b61300d5546",
+    "bytes": 572
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-focused.xml",
+    "sha256": "e9bee12b11cdd1802a015214a8e3488829c469d610a441a56ba6ac72cb101356",
+    "bytes": 151051
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-format.log",
+    "sha256": "eb963de585ee582b10c1f160b8c8f9eec990975a02f12e15a0a2d67d514291b0",
+    "bytes": 72312
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-full.log",
+    "sha256": "4033ba0af8181098914904bbd0f2fa1641f6a8d06764f283b5b877205370b6c7",
+    "bytes": 573
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-full.xml",
+    "sha256": "ee7645916aad00e025cb7282f3185179513bf1e6ccc2f79d91e1c9925609fd09",
+    "bytes": 1206946
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-tenants-new-format.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-installed-options-name.log",
+    "sha256": "0b8140fd5d79a7c77c0fc0bc3b50df27422eddc7406bdac6bce6fd7daeca163c",
+    "bytes": 484
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-owner-build.log",
+    "sha256": "d524e2f6655407ad63eea07a0cf6cede2a789d89a846555a4594ab41b5f0294b",
+    "bytes": 76
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-owner-focused.log",
+    "sha256": "4815f6f2ad7b3583e28b837ee2d050d5dc1e50865f0f374205490f1c9c1f136b",
+    "bytes": 572
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-owner-focused.xml",
+    "sha256": "8649778442bfb2bd07bc4271871d00e4a7f5d5a358bf1adfb70d2640b3bf32c1",
+    "bytes": 156855
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-owner-format.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-polly-default-il.log",
+    "sha256": "95741ea0582fa550a22a8befd93a8a3be805323e8b9c028e9fe104a8740c2711",
+    "bytes": 613
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-public-pipeline-name-api.log",
+    "sha256": "53b3e611dad0cf60fad790fc2ebe7976700071d87cdce350e7757ebccdcc0ca8",
+    "bytes": 551
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-standard-handler-api.log",
+    "sha256": "f8fcf078e59cc6830025fcc32d13873839c2bfe7efa83d36739f5842cb05d8f5",
+    "bytes": 6580
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-standard-options-il.log",
+    "sha256": "e3c1b5befeadf7f58c14769a9190236caf070573639d6f29bf5274c9540603f2",
+    "bytes": 2435
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/integration-build.raw.log",
+    "sha256": "3a8ac5799c9f491e519f44829ae1cbeab46a62d619469c3164d1b2a53ac885dd",
+    "bytes": 4572
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/integration-full.raw.log",
+    "sha256": "0cd8dc6b439f4f7df1b7639cb7ffd07bedd00973c7cf966102363f13519e183f",
+    "bytes": 514060
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/integration-full.xml",
+    "sha256": "ddfdedcc68bff1403598a9cfcc9f929da155fd6b566eb589a0269a082a20826f",
+    "bytes": 687342
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/keycloak-api-decompiled.cs",
+    "sha256": "ee7aa5c14643008890f63ae477d9279fbbe3153226611afb7b68d67a3fe6cc30",
+    "bytes": 17319
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/memories-host-build.raw.log",
+    "sha256": "509e449f5199bb408c9ff46f1ac4f42c3eb79dc67511dccc4698cc67667d8118",
+    "bytes": 2365
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/memories-mtls-direct-build.raw.log",
+    "sha256": "b0031c75d5333b42d12e3581c7d2c08e2881d15c3ffbe6dc5e1e830aa7bb9b7d",
+    "bytes": 2365
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/mtls-apphost-build.raw.log",
+    "sha256": "b5c2ff17c53d8d9d472391912aeaa4f134692fdf8db8c287ff59a4ebf458198e",
+    "bytes": 7681
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/mtls-apphost-helpers.raw.log",
+    "sha256": "d02c544816249ee46d524432fbd18bfe6b0384b05ecb6c3b626627823a4c794a",
+    "bytes": 1951
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/mtls-apphost-helpers.xml",
+    "sha256": "fb5df24494e6f88a6059c1001696c659dba9769176e840be07fd9f066aefa0b8",
+    "bytes": 40360
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/mtls-complete-helpers.raw.log",
+    "sha256": "617ec82b19852755c6acbd81163a06bce8d74f98d3a152c66b18a3a9d574ddca",
+    "bytes": 1951
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/mtls-complete-helpers.xml",
+    "sha256": "299fc2bda3d9911456542d51678cb171e3cbc4355c420374ef3a6e89d2735493",
+    "bytes": 46238
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/mtls-gateway-build.raw.log",
+    "sha256": "48141588055221d71c2d21dc172a8cd6dd3aaf65b092cdc250432cbeba8e1d44",
+    "bytes": 4239
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/mtls-gateway-full.raw.log",
+    "sha256": "1cf5f7032ba83c945d84348f469538af56940a40f1be8519bfae71d36ba69b37",
+    "bytes": 14978
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/mtls-gateway-full.xml",
+    "sha256": "b0e5fdc6e9549a0766da1eef4fb58e73d366227ea21c67311fc28091a8ffe558",
+    "bytes": 55407
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/mtls-tenants-full.raw.log",
+    "sha256": "3dc5a19af03fab8d6b029ab956d1fa66b79cc7c97a9fafb883b326e75b1897b9",
+    "bytes": 573
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/mtls-tenants-full.xml",
+    "sha256": "9f62898fdf1f464f3fe7b28cfa6708e9ca6ecc07b515ec350d3ff6f91187bccc",
+    "bytes": 1213508
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/mtls-tenants-runtime-build.raw.log",
+    "sha256": "c8a5cecf3b7a4a3a44116b38461a2fe279a1b8de7b41c68088a7760c7b7511e8",
+    "bytes": 3067
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/mtls-tenants-tests-build.raw.log",
+    "sha256": "6d90ae31a95a9c7128b704e19153ae19d00ccc5976955556ce686d4814cc0449",
+    "bytes": 5402
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/operational-histories.raw.log",
+    "sha256": "2065d86deccd7fa12675fe890635d96867281d6dfbc3a057e0923aedad65d0a7",
+    "bytes": 537
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/owner-runtime-gateway-full.raw.log",
+    "sha256": "3ae784ee3a6888c1c018b5a7094a08f302c858739b7e88370812820c9340d9e3",
+    "bytes": 14978
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/owner-runtime-gateway-full.xml",
+    "sha256": "ba410994db09744f4f93b12cb8453e9a25071015e798dce34599334bc0de859c",
+    "bytes": 55397
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/owner-runtime-gateway-refresh-build.raw.log",
+    "sha256": "1c9efdfcf812cd5808acc6bb847fd1465124e1516eb0f1bd928a9df40d59c91b",
+    "bytes": 4239
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/owner-runtime-gateway-refreshed-full.raw.log",
+    "sha256": "d20b9dbde585b5c98797fc82fef94142802889c30753e5276cfe7b7e3f6ce639",
+    "bytes": 14978
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/owner-runtime-gateway-refreshed-full.xml",
+    "sha256": "584404b82feef3bc79174856d83dc41958f19925247fba79ebeaebe336325ae1",
+    "bytes": 55397
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/owner-runtime-helpers.raw.log",
+    "sha256": "a81930e6f6baf1bc8d6f166f9f0b4fe4dfbbcc3d2b70f05e943b56eab2f50196",
+    "bytes": 1951
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/owner-runtime-helpers.xml",
+    "sha256": "ad67cee8c60f59a7232b429c870b6edb428ffc658be0d82516a7febd17ba2ad5",
+    "bytes": 60675
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/owner-runtime-tenants-full.raw.log",
+    "sha256": "a8186375059d540a328509b97f2ae2ebe7687c60f40c3c64e02978400ed81e9e",
+    "bytes": 573
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/owner-runtime-tenants-full.xml",
+    "sha256": "b8c424c41036e230fbb36f402a01b7aa8dd30341bce47f6b1d0a05cca7983b6b",
+    "bytes": 1220942
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/pdb-buffered-preflight.raw.log",
+    "sha256": "b7fc5e9632a8ccd32a63823d80129091562a6a3e7fc2c4526f85d9553121461d",
+    "bytes": 29251412
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/pdb-first-selection.raw.log",
+    "sha256": "9a93e5a4adfff1e3e179b625835e89a56c8a7747391b365806c2b1fecc92afe0",
+    "bytes": 26080359
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/pdb-mtls-preflight.raw.log",
+    "sha256": "158051b42d6c9f515c5b2fad91b8f11dbc4015e57b07a503909d20cf638472c8",
+    "bytes": 29251415
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/pdb-owner-runtime-final-preflight.raw.log",
+    "sha256": "c26609381f4114c0fbe48cd7f6f08f99342adf463c888276d790233f3a1a1304",
+    "bytes": 29253205
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/pdb-owner-runtime-refreshed-preflight.raw.log",
+    "sha256": "36074c6c28aa0650136957f9209e5b56d032e7d94722d0109e67b985ca0810f8",
+    "bytes": 29253205
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/pdb-polling-final-preflight.raw.log",
+    "sha256": "f95ceada03e4e28838db36255415f9496af8fede715ef7e59eb3395c58e80461",
+    "bytes": 29251994
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/pdb-refusal-final-preflight.raw.log",
+    "sha256": "5334ab372a89527ba9a8d02bbb955bc251ab41e0ac481f82bf1dbe8c1c316d83",
+    "bytes": 29252566
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/pdb-response-diagnostic-preflight.raw.log",
+    "sha256": "74284399d955523aab662fdda309621e69d1a4e1c2d77b0a7cf321eadc42267d",
+    "bytes": 29251412
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/pdb-sealed-selection-inspection.raw.log",
+    "sha256": "36074c6c28aa0650136957f9209e5b56d032e7d94722d0109e67b985ca0810f8",
+    "bytes": 29253205
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/pdb-tool-build.raw.log",
+    "sha256": "0c7f0352be30925a42b743c42731e3b6b03c259519b6e44691c86ef3ca0f860f",
+    "bytes": 293
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/platform-owner-build.raw.log",
+    "sha256": "b88d54a6a3d4caed17e5033bbd5d33ee867c63271d50fe9c89ad61ef882f8d60",
+    "bytes": 4509
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/polling-complete-helpers.raw.log",
+    "sha256": "2d05b6a56b3ebdd0176c8239fb8b69e77270843d6f1cd7d112f31bf57b6cf360",
+    "bytes": 1951
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/polling-complete-helpers.xml",
+    "sha256": "f6540d4fcfc93ce8a8cd80e8d7242e57f13ed9d91138fc5127b933de68e195dd",
+    "bytes": 55818
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/polling-final-memory-build.raw.log",
+    "sha256": "53e40251156b4634083ffd150830ea99ec569f2a96a0e5ba93c03037afcb3454",
+    "bytes": 2365
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/polling-gateway-full.raw.log",
+    "sha256": "e29fed3961411104d149081bd3b00a18db5266bf20b652a13614ee7a5b7789e8",
+    "bytes": 14978
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/polling-gateway-full.xml",
+    "sha256": "e02b2946ccc9108a817f763d35e446f6b1526cb1a1473a456fdeb66a1cc987fa",
+    "bytes": 55412
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/refusal-final-gateway-full.raw.log",
+    "sha256": "f52a0b18cebf4b76b77c97c21bc7870176daf915c6ec1d6343ac63d779e52317",
+    "bytes": 14978
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/refusal-final-gateway-full.xml",
+    "sha256": "02da774214252aef310957cb837a9523e86d03193481d78c45fe7d8e1dd1aed1",
+    "bytes": 55411
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/refusal-final-helpers.raw.log",
+    "sha256": "51bc978c3867e50f10f186a04cda1d6116de5c788542adc6aafa81c4b3c4a759",
+    "bytes": 1951
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/refusal-final-helpers.xml",
+    "sha256": "b03345170c930d2166f93669e50ce5a5badba089fcd7370273deb2959b44117c",
+    "bytes": 60679
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/response-diagnostics-apphost-build.raw.log",
+    "sha256": "fc32a4ed264f8ae92251778ab0aaeb2d5b6c00ff90732627cde12a67618cc48a",
+    "bytes": 7681
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/response-diagnostics-memory-build.raw.log",
+    "sha256": "c75f8353b25d5812ed80c877069b7d8bdb549ce88acf8b5eec58c008dd4d4891",
+    "bytes": 2365
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/sdk-contracts-build.raw.log",
+    "sha256": "3e0f0e261cb68cbe51918399cba023160c253d410190d9f109b7f71372e4117c",
+    "bytes": 2161
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/sdk-descriptors.raw.log",
+    "sha256": "20da1e3e3092b11175cb5347edbff07a50fb64e0e31763ef913db3eda3be1289",
+    "bytes": 719
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/sdk-descriptors.xml",
+    "sha256": "8658151d903216cb3c49fda51e61e787c305e6ee338a6f697d7fe104f8dc4d58",
+    "bytes": 91496
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/sdk-registry.raw.log",
+    "sha256": "e406391c9abbac367a979aa0eb52e70749bad81e7418d7f304c6336d387812ea",
+    "bytes": 703
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/sdk-registry.xml",
+    "sha256": "55009f05b2893d29427aa1290124286f9db9489fb45965498b53f44c9063ba64",
+    "bytes": 18993
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/sdk-server-build.raw.log",
+    "sha256": "c40993247eae373ab1dd1a6c967c6e5b77388bddd12056e8f5f490a1e9d05db3",
+    "bytes": 3936
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/server-build.raw.log",
+    "sha256": "fcc9c23c107ef94528010753e651b60b5d9e3172124e34cf0e140068c319f4a7",
+    "bytes": 4284
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/server-full.raw.log",
+    "sha256": "37b7a19caa10e44b98b689e72dfafa6d026ffd5a720157c70dde8a346c31f93a",
+    "bytes": 2093430
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/server-full.xml",
+    "sha256": "e019754292486f6cf0822f2b7cbe8db10a0d14bfc88c017d72a93cac674d4efe",
+    "bytes": 915142
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-acceptance-before.cs",
+    "sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+    "bytes": 52369
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-bootstrap-monitor.raw.log",
+    "sha256": "9471efc809f5c387248d04b7848e686e7ae1a898bbf2e56dba3faceeb42867b4",
+    "bytes": 28
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-bootstrap.raw.log",
+    "sha256": "05268fe4a7fdf11b7db7f16c0c52e517ff84efaae78137c3c93585e9799bf31a",
+    "bytes": 1672
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-bootstrap.xml",
+    "sha256": "d561abc0cc67641c677fcbc67fce78c846032239974b939001c0a3ab8d4f7fb4",
+    "bytes": 2884
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-buffered-monitor.raw.log",
+    "sha256": "2259d90829e324cd5429a82928aae07487d508de36721cccc5ea9dc9b833055a",
+    "bytes": 30
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-buffered.raw.log",
+    "sha256": "c89fc42324163a28b402506227b8b00fc9522182e615eed775ea40dd81315186",
+    "bytes": 2772325
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-buffered.xml",
+    "sha256": "a8a94044bb00b9e680b7d33f30453a3c8d8b2560e318190da1f9872de3481bf4",
+    "bytes": 2980
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-import-monitor.raw.log",
+    "sha256": "eb29cff9067f3302ca3e827542871d094be085f3452a02ae5d367d4c2866d21b",
+    "bytes": 30
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-import.raw.log",
+    "sha256": "812987ae98b21917a3ef55f43e2d118d9972acb9c4e089513bcfdf65d1eb40ef",
+    "bytes": 973657
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-import.xml",
+    "sha256": "5e009af0d8e8ed7fd2fe870d4c1ee89e35d7ff4766128427eed6e509e37ac45d",
+    "bytes": 2980
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-mtls-monitor.raw.log",
+    "sha256": "2259d90829e324cd5429a82928aae07487d508de36721cccc5ea9dc9b833055a",
+    "bytes": 30
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-mtls.raw.log",
+    "sha256": "8c3a6f8a484be168ac0eb51fe3ca7e0048418444a931c2934c47a39e74455494",
+    "bytes": 1369933
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-mtls.xml",
+    "sha256": "5758a8031a54e0d2c839a4d977ee5e9a357f761e605ba725a227fa0335b3222c",
+    "bytes": 2993
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-timeout-monitor.raw.log",
+    "sha256": "eb29cff9067f3302ca3e827542871d094be085f3452a02ae5d367d4c2866d21b",
+    "bytes": 30
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-timeout.raw.log",
+    "sha256": "d676d1c4a13e9a73e9ea6d4d91d09d20b834affbeaeeb793cc02b8d814f0bcf4",
+    "bytes": 963103
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-bound-timeout.xml",
+    "sha256": "fab14e7c72e0bd2bf389f730191ccec0702d8b3689916b1e2abb2e07471cde2b",
+    "bytes": 3686
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-durable-bootstrap-monitor.raw.log",
+    "sha256": "9b688765cb5b42f58427d8d1b0e1196643978727baf04edc30a89630e69eac3b",
+    "bytes": 30
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-durable-bootstrap.raw.log",
+    "sha256": "925637208f6e7b895ddb68ff60e205e544548649c0c18a5b532191cd87bea565",
+    "bytes": 1765802
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-durable-bootstrap.xml",
+    "sha256": "ab1c2a09ebd577e7567b0aa0ae423d0a590ef48f67ace9284ec738d1e9385b02",
+    "bytes": 3331
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-owner-runtime-monitor.raw.log",
+    "sha256": "9b688765cb5b42f58427d8d1b0e1196643978727baf04edc30a89630e69eac3b",
+    "bytes": 30
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-owner-runtime.raw.log",
+    "sha256": "90ecab91dc9e9fdbc2c2650dee59902c833dae8eac1fb95735914ff54ad9c012",
+    "bytes": 2271846
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-owner-runtime.xml",
+    "sha256": "a4a56718ba9bbf6c998b479618a9f6f901a6e97100ae123a579fd8bde14db64a",
+    "bytes": 3392
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-proof-framing-monitor.raw.log",
+    "sha256": "9b688765cb5b42f58427d8d1b0e1196643978727baf04edc30a89630e69eac3b",
+    "bytes": 30
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-proof-framing.raw.log",
+    "sha256": "971405d6a88b99114a41c4652617df0f9afa61a2b39257ee009651d9500019bb",
+    "bytes": 2089808
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-proof-framing.xml",
+    "sha256": "792517980fb78493fd60cb95a6700222f693465030d07d800524a7ddadac712b",
+    "bytes": 3392
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-response-diagnostics-monitor.raw.log",
+    "sha256": "2259d90829e324cd5429a82928aae07487d508de36721cccc5ea9dc9b833055a",
+    "bytes": 30
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-response-diagnostics.raw.log",
+    "sha256": "32f1714757d4c535f7702b9edb4c543dd830b82d8050e12c718f17001d85de9e",
+    "bytes": 2897701
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-response-diagnostics.xml",
+    "sha256": "1cbada1e85c6f2f69d32610d746e305c03e1df1572a84bbd21ada91e101e258d",
+    "bytes": 2980
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/tenants-apphost-build.raw.log",
+    "sha256": "68c6491b102409444d67ab20fd63e235f4beb594fe796a58eafa15843948560d",
+    "bytes": 12775
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/tenants-apphost-defaults.raw.log",
+    "sha256": "71790f11bd0f0ca51aedc158574d5f206bda009b4e56acbb83ac2843f7202873",
+    "bytes": 575
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/tenants-apphost-defaults.xml",
+    "sha256": "a82369d9b66c66196c9d9ddeadcc0300586e038c3063700b59ed77a5b5ba2a6d",
+    "bytes": 3025
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/tenants-full-qualified.raw.log",
+    "sha256": "340441824b985dd0cb83beed2bff72e784d8c4322d17101b8144f2f43e3f340e",
+    "bytes": 573
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/tenants-full-qualified.xml",
+    "sha256": "bc90d44b05a23f67be3648c9847b089ce5cb38b36fd40087409e76afdd358ea0",
+    "bytes": 1207004
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/tenants-host-build.raw.log",
+    "sha256": "c82dff98ffdb689d0d10b72838b8c4a8ce303e860121ede3ff3ac6f126295fe0",
+    "bytes": 2097
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/tenants-runtime-build.raw.log",
+    "sha256": "3b9dbf817820ed2bf8482167537f60c67671094760bab80cbecb739cc6022618",
+    "bytes": 2670
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/tenants-tests-build.raw.log",
+    "sha256": "a2b953726f89e1d492d73afa046d143854b2aacad48bc250ea42924cc153ae3c",
+    "bytes": 5005
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/tenants-timeout-full.raw.log",
+    "sha256": "bd5d417d8a589a5f7835077544438fe788516e3c8356f1ca243e90a9226b9c95",
+    "bytes": 573
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/tenants-timeout-full.xml",
+    "sha256": "d0f51aba1a50785ab5c8a3f468cd707d4c1caf13a2ce61d473a659e44cc0768e",
+    "bytes": 1212671
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/tenants-timeout-runtime-build.raw.log",
+    "sha256": "ca304bbf8eeb6bddf109d52dd40d2eb6e05295c289a5938155da26c74506f435",
+    "bytes": 3067
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/tenants-timeout-tests-build.raw.log",
+    "sha256": "e9e0d50d5f4503c8f7828f4fea3b1f34ad242a26ac3c16f8c0c4663297dd1520",
+    "bytes": 5402
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/workers-build.raw.log",
+    "sha256": "8ff500756460195333229e5573d5564360fb502edb67abcaa38919fcac72bc5a",
+    "bytes": 4148
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/workers-full.raw.log",
+    "sha256": "05dc01f186fb70db979f96768f6b5ea38870a91976a354fc6e2429620dfcec00",
+    "bytes": 163183
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/workers-full.xml",
+    "sha256": "2eb2f2e238ef4ebc6c6427bbeea16a481a6b0e99264d769eaadc24d14caef5f4",
+    "bytes": 114350
+  }
+]

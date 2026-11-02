@@ -1,0 +1,16 @@
+{
+  "label": "buffer-apphost-helpers",
+  "event": "An earlier passing62-case helper run was repeated under the same label after payload-free diagnostic logging was added. Its prior private XML/raw file was replaced; this is not a retained distinct failed attempt. All failed builds/focused/live attempts use distinct retained labels.",
+  "priorToolTranscriptReceipt": {
+    "startedAtUtc": "2026-11-01T18:23:34.759457+00:00",
+    "finishedAtUtc": "2026-11-01T18:23:36.085572+00:00",
+    "seconds": 1.326109957008157,
+    "exitCode": 0,
+    "total": 62,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "currentReceipt": "buffer-apphost-helpers.json",
+  "scope": "Helper source/assertions unchanged; only fixture logging configuration changed. Final current binary passed the same62 controls and preflight."
+}

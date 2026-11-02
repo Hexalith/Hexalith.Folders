@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "dotnet",
+    "/tmp/folders-catalog-pdb-audit-pouehvfj/bin/Debug/net10.0/PdbAudit.dll",
+    ".artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider-final-runtime-before.json"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T15:50:56.252775+00:00",
+  "finishedAtUtc": "2026-11-01T15:50:56.901775+00:00",
+  "seconds": 0.6489995280280709,
+  "exitCode": 0
+}

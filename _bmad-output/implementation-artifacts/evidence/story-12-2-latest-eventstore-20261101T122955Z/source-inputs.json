@@ -1,0 +1,21 @@
+{
+  ".gitmodules": "c9daa495deb0a5903771cbbfeef10f6d376a3e521c8f6ad7447aae689c5bcf37",
+  "Directory.Build.props": "cc30ee0ae15320e771aa1834d9cfa2053cb257bdf33966c87ca39dc8a4da0bfd",
+  "Directory.Build.targets": "142ee531ce5bf030f68c057ac43153ca912da76bb9bca4666f7ca92574ae578a",
+  "Directory.Packages.props": "c8351c554ea90792eae487eadd8d6a08faeb0719e62341a929d81f7f44fdcd08",
+  "global.json": "47b842a8d37355ae2684a808d95964d3c607be8870f1c902428f852fc06328ef",
+  "references/Hexalith.EventStore/Directory.Build.props": "66b2d5f9b4b60ef17fff045881badc565fcca6e4dfb51919aee760feebb6f477",
+  "references/Hexalith.EventStore/global.json": "8f1a6f3d126acf6d138769cb8c312eae3bbecdd07f64b43bb482b1e088e1e765",
+  "references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Routing/RouteOperationContract.cs": "5ae24bdd2a7452713f7fd6ee9f6daff34cbff59e317b5b2fda87f0ca5d3dab8a",
+  "references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/DomainModuleAuthoringGuardrailTests.cs": "7076d0fa8b5513f54240a1ec383c648e139de2d0effe67301a38cb6de0f78d02",
+  "references/Hexalith.Tenants/Directory.Build.props": "7992124dbd59a94f77c78c1531a73a6f952b1ae5498e767d6a4ee7438a81abad",
+  "references/Hexalith.Tenants/Directory.Build.targets": "5a5ab7ad25c25a59e0acfad636b33dc99947442d9d2e55134a28bd8e9e41360d",
+  "references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Routing/TenantCatalogDeclarations.cs": "a0c20d20f1c255a48ef44a3f82b056c685f3959b23e28d1bcaf50ae713d5602b",
+  "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs": "4ad38d73bcb6941da0e07e642340ce8b2d37be0b88389ca470e7461fe0cd8a2e",
+  "src/Hexalith.Folders.Testing/Hosting/FoldersServerTestHostServiceCollectionExtensions.cs": "929f7e9cdc62a5902552ec164e5fca76ea3277638c57deea30465f1b578b1d5a",
+  "tests/Hexalith.Folders.Server.Tests/Authentication/FoldersProductionAuthenticationTests.cs": "c1e62dfdfa243dffbd0bb147e2a2ee9b1bbf8d474f75cff72ca86b92159a9bee",
+  "tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs": "6fe208a7ec29c1e65e3d7d71f80cda6687472c5d9c05a2e874759d26ee490d3c",
+  "tests/Hexalith.Folders.IntegrationTests/Authorization/ContextReadAuthorityTests.cs": "355d3b132b6f41eabe60897984308cd8523ab7218edca16b96630dc44933e449",
+  "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs": "27dedadab93f1b0ea46c566b5a97495713e053323381425b5741decdf35424c2",
+  "tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs": "c65561f1c9295a3a0982dc793628cc40e6c71ab0d09f74204223df9e02f518a1"
+}

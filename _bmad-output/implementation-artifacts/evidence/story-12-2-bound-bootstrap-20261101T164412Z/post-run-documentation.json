@@ -1,0 +1,7 @@
+{
+  "path": "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+  "beforeSha256": "ee3e3c2fb47869a323df30a5e0f78d80c1fc4833e8d41d6be5974e17dd6e9786",
+  "afterSha256": "2bf99b80c0b37a6cecb1f3d17685a3c49926f89604514dd523c4bfbc724d0600",
+  "change": "Checked executed continuation tasks and appended factual stop/save/Git authorization checkpoint after live observer completed. Original acceptance row/status/baseline/frozen block preserved.",
+  "frozenBlockUnchanged": true
+}

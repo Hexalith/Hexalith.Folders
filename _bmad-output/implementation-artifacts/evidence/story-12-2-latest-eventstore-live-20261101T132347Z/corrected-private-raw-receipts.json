@@ -1,0 +1,107 @@
+{
+  "strict-real-provider.xml": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/strict-real-provider.xml",
+    "sha256": "59df4162951fe7442f037b1eaa6c7305368eecba26219b40bffcbb38b370ad25",
+    "retainedLocallyOnly": true
+  },
+  "app-channel-model.xml": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/app-channel-model.xml",
+    "sha256": "29822fa8476c939675cb378049d7e5ace54273d5d62fb80c23f0365c4d08f8b1",
+    "retainedLocallyOnly": true
+  },
+  "app-channel-model-final.xml": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/app-channel-model-final.xml",
+    "sha256": "aa0c21c6cbc612965d718caeec82afb1476e17eb0cb45aaf3630eec49ffeca68",
+    "retainedLocallyOnly": true
+  },
+  "gateway-focused.xml": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/gateway-focused.xml",
+    "sha256": "22ccf417c8c730b0f2a1599c776d752719db2192683d124a6d38b963c1e1e26f",
+    "retainedLocallyOnly": true
+  },
+  "gateway-focused-final.xml": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/gateway-focused-final.xml",
+    "sha256": "ab2bddcf4284142c8f42afa03a9f089e955f8e922d2512dfb7969ce8651be582",
+    "retainedLocallyOnly": true
+  },
+  "gateway-focused-qualified.xml": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/gateway-focused-qualified.xml",
+    "sha256": "673ec17f64b28805782fd036ef299d3ff62d6839208db2d1da85256dc33e25ab",
+    "retainedLocallyOnly": true
+  },
+  "apphost-helpers-final.xml": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/apphost-helpers-final.xml",
+    "sha256": "a6deaf3f3a75ed3b66bf572db63745ada1d4e08c428cc9a8a17b3a30080e278c",
+    "retainedLocallyOnly": true
+  },
+  "app-channel-model.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/app-channel-model.raw.log",
+    "sha256": "087d7333acd0717e3d5f2ee83f9febfbd1ac5b601a2dba5fad77585576469b9b",
+    "retainedLocallyOnly": true
+  },
+  "gateway-tests-build.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/gateway-tests-build.raw.log",
+    "sha256": "5b15724833deb209ae28de481455948e95afefb5b24116a3ae9cf26a1c89c3a1",
+    "retainedLocallyOnly": true
+  },
+  "apphost-helpers-final.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/apphost-helpers-final.raw.log",
+    "sha256": "4bfcb2e7f7b8e85978ef622781b7588addc620560b111f8c022eadd7b8fd47b0",
+    "retainedLocallyOnly": true
+  },
+  "gateway-focused.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/gateway-focused.raw.log",
+    "sha256": "b0a7ba064388f410846e6c244ba2caf0a383669537633cb9c060ec1ca6842ced",
+    "retainedLocallyOnly": true
+  },
+  "gateway-focused-build-qualified.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/gateway-focused-build-qualified.raw.log",
+    "sha256": "fcea1d3e0f7af4e97e19cf08203edd301caa8f94edc74c815c717dc21d2f7478",
+    "retainedLocallyOnly": true
+  },
+  "apphost-tests-build-corrected.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/apphost-tests-build-corrected.raw.log",
+    "sha256": "137d147abe25746aec20d7a34430ed1085db00c132425ac730b51d12348a3e7c",
+    "retainedLocallyOnly": true
+  },
+  "gateway-focused-build-final.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/gateway-focused-build-final.raw.log",
+    "sha256": "937cd4b801f1d768b01c623e08781df2fe3f52e2eb3d5a4b88048b8e606eaaf2",
+    "retainedLocallyOnly": true
+  },
+  "apphost-tests-build.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/apphost-tests-build.raw.log",
+    "sha256": "96cfc9a662377889144f179c83eabdbd98669e48032a9d7051ac8271b44917a5",
+    "retainedLocallyOnly": true
+  },
+  "app-channel-model-final.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/app-channel-model-final.raw.log",
+    "sha256": "879f2610353f067b0b1e61a4145a6b9f0ed47540a8ee2e6274beb52d7e5040fe",
+    "retainedLocallyOnly": true
+  },
+  "strict-real-provider.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/strict-real-provider.raw.log",
+    "sha256": "8a3c1a8d8fde0e634df710e4e900cf68832a12aab007f0d1e99700a526800184",
+    "retainedLocallyOnly": true
+  },
+  "apphost-tests-build-final.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/apphost-tests-build-final.raw.log",
+    "sha256": "4bf846e58aa3b54fcc42eb98b59186b23380cc524d0c005afe793337ed839921",
+    "retainedLocallyOnly": true
+  },
+  "gateway-focused-qualified.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/gateway-focused-qualified.raw.log",
+    "sha256": "f3d73c3a045c0f67d49485824fc216fbf6f3d26909fad9d1b4370f6411277828",
+    "retainedLocallyOnly": true
+  },
+  "gateway-focused-build.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/gateway-focused-build.raw.log",
+    "sha256": "b4f30bd77fed06ad52eb3aaef9db26aa30ff45f9bdad5efc1ad0f2b3b4962962",
+    "retainedLocallyOnly": true
+  },
+  "gateway-focused-final.raw.log": {
+    "path": ".artifacts/story-12-2-current-live-composition-20261101T133424Z/gateway-focused-final.raw.log",
+    "sha256": "a4f60a9f08c70a9cbf60e40b4ad7e061afc674318f3cea14730273e6ba2be03d",
+    "retainedLocallyOnly": true
+  }
+}

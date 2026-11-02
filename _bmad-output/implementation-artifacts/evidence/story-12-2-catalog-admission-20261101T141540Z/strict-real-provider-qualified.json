@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "env",
+    "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true",
+    "FOLDERS_TASK36_FOLD_LOG=/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/fold-callbacks.jsonl",
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+    "-showLiveOutput",
+    "-xml",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-catalog-admission-20261101T141540Z/strict-real-provider-qualified.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T15:53:47.244174+00:00",
+  "finishedAtUtc": "2026-11-01T15:54:23.444157+00:00",
+  "seconds": 36.20112608297495,
+  "exitCode": 1
+}

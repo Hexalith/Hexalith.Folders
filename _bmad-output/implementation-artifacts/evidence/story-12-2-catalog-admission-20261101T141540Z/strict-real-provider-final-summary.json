@@ -1,0 +1,249 @@
+{
+  "result": [
+    {
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "37.004"
+    }
+  ],
+  "sourceAudit": {
+    "count": 27414,
+    "drift": [],
+    "headDrift": {}
+  },
+  "runtimeGroups": {
+    "folders": {
+      "count": 84,
+      "drift": []
+    },
+    "workers": {
+      "count": 82,
+      "drift": []
+    },
+    "gateway": {
+      "count": 95,
+      "drift": []
+    },
+    "tenants": {
+      "count": 92,
+      "drift": []
+    },
+    "memories": {
+      "count": 96,
+      "drift": []
+    },
+    "apphost": {
+      "count": 156,
+      "drift": []
+    },
+    "tests": {
+      "count": 401,
+      "drift": []
+    },
+    "observer": {
+      "count": 16,
+      "drift": []
+    },
+    "gateway-full": {
+      "count": 173,
+      "drift": []
+    },
+    "server-full": {
+      "count": 144,
+      "drift": []
+    },
+    "workers-full": {
+      "count": 144,
+      "drift": []
+    },
+    "integration-full": {
+      "count": 180,
+      "drift": []
+    },
+    "apphost-helpers": {
+      "count": 172,
+      "drift": []
+    },
+    "contracts-full": {
+      "count": 86,
+      "drift": []
+    },
+    "operational-histories": {
+      "count": 171,
+      "drift": []
+    },
+    "gateway-full-final": {
+      "count": 173,
+      "drift": []
+    },
+    "gateway-full-observer": {
+      "count": 173,
+      "drift": []
+    },
+    "server-full-observer": {
+      "count": 144,
+      "drift": []
+    },
+    "integration-full-observer": {
+      "count": 180,
+      "drift": []
+    },
+    "operational-histories-observer": {
+      "count": 171,
+      "drift": []
+    },
+    "apphost-helpers-observer": {
+      "count": 172,
+      "drift": []
+    },
+    "gateway-full-human": {
+      "count": 173,
+      "drift": []
+    },
+    "server-full-human": {
+      "count": 144,
+      "drift": []
+    },
+    "integration-full-human": {
+      "count": 180,
+      "drift": []
+    },
+    "operational-histories-human": {
+      "count": 171,
+      "drift": []
+    },
+    "apphost-helpers-human": {
+      "count": 172,
+      "drift": []
+    },
+    "human-metadata-focused": {
+      "count": 144,
+      "drift": []
+    },
+    "sdk-contracts-tests": {
+      "count": 112,
+      "drift": []
+    },
+    "sdk-server-tests": {
+      "count": 177,
+      "drift": []
+    },
+    "ui": {
+      "count": 44,
+      "drift": []
+    }
+  },
+  "uniqueRuntimePaths": 2253,
+  "observedMappedRecords": 106,
+  "mappedMismatches": [],
+  "observationsOutsidePreRunInventory": [],
+  "processCleanup": {
+    "2378054": false,
+    "2380556": false,
+    "2380557": false,
+    "2380596": false,
+    "2382487": false,
+    "2387519": false,
+    "2388077": false,
+    "2388081": false,
+    "2388098": false,
+    "2388178": false,
+    "2388224": false
+  },
+  "directoryCleanup": {
+    "/tmp/hexalith-route-catalog-OAldXd": false,
+    "/tmp/folders-durability-d3vwsswr.0o5": false
+  },
+  "newContainersObserved": [
+    "7682ca22304ce8a2f2b21b3f4f17f54f927283be3d1c1a53d8790d2ae0851450 folders-provider-f97c8e4ba06231d5",
+    "dda93d9dd63c461d2258cc1bdc9c1a6440a93204a6f8853c6fa16498aef5f222 folders-durability-f97c8e4ba06231d5",
+    "41e64d0e550b04e4de85bf4a35ba9d8a27456ab63cd60a5fe62108a3d881679f memories-graphs-tswpmate",
+    "5ecf5f39587b4444f42a8b19efbf96323e798358b3175b5ecd2f1ae8f0696f9c memories-vectors-jsnrutas",
+    "7214cefc7477d7b1d39a9324fc2007f55125b8afa0a53a17db11deaed4e37430 security-vnmagycp"
+  ],
+  "newContainersRemaining": [],
+  "aspireAfter": {
+    "argv": [
+      "aspire",
+      "ps",
+      "--format",
+      "json"
+    ],
+    "exitCode": 0,
+    "stdout": "[]\n",
+    "stderr": ""
+  },
+  "catalogReadbacks": {
+    "/tmp/hexalith-route-catalog-OAldXd": {
+      "tenants.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "fab9f874086e64cefc654f13d42c81858b55366f6500f7702ad8c111dd4390fa",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "9d91416ea2ead43e1fdec1f315e2db6fd64d2c9b6d76a8348129464bb9c44b2d"
+      },
+      "folders-workers-proof-b.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "fab9f874086e64cefc654f13d42c81858b55366f6500f7702ad8c111dd4390fa",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "9d91416ea2ead43e1fdec1f315e2db6fd64d2c9b6d76a8348129464bb9c44b2d"
+      },
+      "folders-workers-replica.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "fab9f874086e64cefc654f13d42c81858b55366f6500f7702ad8c111dd4390fa",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "9d91416ea2ead43e1fdec1f315e2db6fd64d2c9b6d76a8348129464bb9c44b2d"
+      },
+      "folders.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "fab9f874086e64cefc654f13d42c81858b55366f6500f7702ad8c111dd4390fa",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "9d91416ea2ead43e1fdec1f315e2db6fd64d2c9b6d76a8348129464bb9c44b2d"
+      },
+      "folders-workers.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "fab9f874086e64cefc654f13d42c81858b55366f6500f7702ad8c111dd4390fa",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "9d91416ea2ead43e1fdec1f315e2db6fd64d2c9b6d76a8348129464bb9c44b2d"
+      },
+      "memories.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "fab9f874086e64cefc654f13d42c81858b55366f6500f7702ad8c111dd4390fa",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "9d91416ea2ead43e1fdec1f315e2db6fd64d2c9b6d76a8348129464bb9c44b2d"
+      },
+      "eventstore.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "fab9f874086e64cefc654f13d42c81858b55366f6500f7702ad8c111dd4390fa",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "9d91416ea2ead43e1fdec1f315e2db6fd64d2c9b6d76a8348129464bb9c44b2d"
+      },
+      "folders-workers-proof-a.committed.json": {
+        "Epoch": 1,
+        "Generation": 1,
+        "RootDigest": "fab9f874086e64cefc654f13d42c81858b55366f6500f7702ad8c111dd4390fa",
+        "Profile": "Development",
+        "Serving": true,
+        "ActivationBindingDigest": "9d91416ea2ead43e1fdec1f315e2db6fd64d2c9b6d76a8348129464bb9c44b2d"
+      }
+    }
+  },
+  "safeAcceptanceMilestones": [],
+  "strictTestSourceSha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90"
+}

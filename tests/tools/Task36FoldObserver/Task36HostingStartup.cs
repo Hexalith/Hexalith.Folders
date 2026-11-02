@@ -1,9 +1,9 @@
-using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.DomainService.Content;
 using Dapr.Client;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 [assembly: HostingStartup(typeof(Task36FoldObserver.Task36HostingStartup))]
 
@@ -22,19 +22,9 @@ public sealed class Task36HostingStartup : IHostingStartup
                 services.AddScoped<IAuthoritativeContentStore>(provider => new DaprAuthoritativeContentStore(
                     provider.GetRequiredService<DaprClient>(), provider.GetRequiredService<IContentAuthority>(),
                     provider.GetRequiredService<IOptions<AuthoritativeContentOptions>>(), new ContentQualificationClock(clockPath)));
-            services.AddSingleton<IEnumerable<IAsyncDomainProjectionHandler>>(provider =>
-                services.Where(d => d.ServiceType == typeof(IAsyncDomainProjectionHandler)).Select(d =>
-                {
-                    var handler = (IAsyncDomainProjectionHandler)(d.ImplementationInstance
-                        ?? d.ImplementationFactory?.Invoke(provider)
-                        ?? ActivatorUtilities.GetServiceOrCreateInstance(provider, d.ImplementationType!));
-                    if (handler is not IAsyncDomainSharedProjectionStreamingRebuildHandler streaming
-                        || handler.ProjectionType != "operational-status") return handler;
-                    var proxy = System.Reflection.DispatchProxy.Create<IAsyncDomainSharedProjectionStreamingRebuildHandler, ObservedProjectionHandler>();
-                    ((ObservedProjectionHandler)(object)proxy).Inner = streaming;
-                    ObservedProjectionHandler.Record("registered", null, null);
-                    return (IAsyncDomainProjectionHandler)proxy;
-                }).ToArray());
+            services.AddHostedService(_ => new FoldDiagnosticObserver(
+                Environment.GetEnvironmentVariable("FOLDERS_TASK36_FOLD_LOG")
+                    ?? throw new InvalidOperationException("Qualification fold sink is required.")));
         });
     }
 }

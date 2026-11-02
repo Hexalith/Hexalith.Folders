@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "producer": "/root/bootstrap_impl",
+  "commands": [
+    {
+      "label": "implementation-proof-framing-root-format",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "--no-restore",
+        "--include",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttp.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttpTests.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/DurabilityLoopbackHttpServer.cs",
+        "-v",
+        "quiet"
+      ],
+      "startedAtUtc": "2026-11-01T19:21:51.770273+00:00",
+      "finishedAtUtc": "2026-11-01T19:21:59.252744+00:00",
+      "elapsedSeconds": 7.482467691006605,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-format.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "implementation-proof-framing-root-build",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "startedAtUtc": "2026-11-01T19:22:36.043853+00:00",
+      "finishedAtUtc": "2026-11-01T19:23:56.402023+00:00",
+      "elapsedSeconds": 80.36193376104347,
+      "exitCode": 1,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-build.log",
+        "bytes": 15137,
+        "sha256": "1bf899d96706ee9a1de17c48bb5f49f75c5e3cadc8e9799e57c68c10ac2d6e1d"
+      }
+    },
+    {
+      "label": "implementation-proof-framing-root-format-await",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "--no-restore",
+        "--include",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttp.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttpTests.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/DurabilityLoopbackHttpServer.cs",
+        "-v",
+        "quiet"
+      ],
+      "startedAtUtc": "2026-11-01T19:24:51.803927+00:00",
+      "finishedAtUtc": "2026-11-01T19:24:58.772052+00:00",
+      "elapsedSeconds": 6.968121952959336,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-format-await.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "implementation-proof-framing-root-build-await",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "startedAtUtc": "2026-11-01T19:25:14.044699+00:00",
+      "finishedAtUtc": "2026-11-01T19:26:31.434543+00:00",
+      "elapsedSeconds": 77.3931913060369,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-build-await.log",
+        "bytes": 76,
+        "sha256": "8519e666df05ba7e14343a2c4260f3aa5300013b8284c7651e2c39dd0c05379c"
+      }
+    },
+    {
+      "label": "implementation-proof-framing-root-focused",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "*FolderDurabilityHttpTests",
+        "-xml",
+        "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-focused.xml"
+      ],
+      "startedAtUtc": "2026-11-01T19:26:59.571462+00:00",
+      "finishedAtUtc": "2026-11-01T19:27:01.151991+00:00",
+      "elapsedSeconds": 1.580530807026662,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-focused.log",
+        "bytes": 859,
+        "sha256": "cff785b587c2c50701a23df809d7d09c366f350b652a04b4228f51361746631c"
+      }
+    },
+    {
+      "label": "implementation-proof-framing-root-diff-check",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttp.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttpTests.cs",
+        "tests/Hexalith.Folders.AppHost.Tests/DurabilityLoopbackHttpServer.cs"
+      ],
+      "startedAtUtc": "2026-11-01T19:28:15.550719+00:00",
+      "finishedAtUtc": "2026-11-01T19:28:15.556266+00:00",
+      "elapsedSeconds": 0.00553576200036332,
+      "exitCode": 0,
+      "output": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-proof-framing-root-diff-check.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ]
+}

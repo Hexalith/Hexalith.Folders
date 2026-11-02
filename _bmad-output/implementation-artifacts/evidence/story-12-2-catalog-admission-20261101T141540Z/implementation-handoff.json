@@ -1,0 +1,566 @@
+{
+  "folders_changed_files": [
+    "src/Hexalith.Folders.EventStore/ArchiveFolderIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/AuthorizeContentErasureIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/BindRepositoryIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/ChangeNativeTaskIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/CommitWorkspaceIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/ConfigureBranchRefPolicyIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/ConfigureProviderBindingIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/CreateFolderIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/CreateRepositoryBackedFolderIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/GrantFolderAccessIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/LockWorkspaceIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/MutateFilesIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/OrganizationAclIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/PrepareWorkspaceIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/ReleaseWorkspaceLockIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders.EventStore/RevokeFolderAccessIdempotencyIntentAdapter.cs",
+    "src/Hexalith.Folders/Routing/FoldersCommandCatalog.cs",
+    "src/Hexalith.Folders.EventStore/FoldersCatalogAdapterSource.cs",
+    "src/Hexalith.Folders.EventStore/Program.cs",
+    "src/Hexalith.Folders.Server/FolderDomainProcessor.cs",
+    "src/Hexalith.Folders.Server/FoldersProjectionCatalogDeclarations.cs",
+    "src/Hexalith.Folders.Server/FoldersRuntimeCatalogDeclarations.cs",
+    "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs",
+    "src/Hexalith.Folders.Workers/FoldersWorkersHostComposition.cs",
+    "src/Hexalith.Folders.AppHost/Program.cs",
+    "src/Hexalith.Folders.AppHost/FoldersDevelopmentCatalog.cs",
+    "docs/operations/local-catalog-composition.md",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityCatalogBinding.cs",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityCatalogBindingTests.cs",
+    "tests/Hexalith.Folders.AppHost.Tests/FoldersDevelopmentCatalogCompositionTests.cs",
+    "tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj",
+    "tests/Hexalith.Folders.EventStore.Tests/NativeTaskAdmissionTests.cs",
+    "tests/Hexalith.Folders.EventStore.Tests/AdmissionCatalogFixture.cs",
+    "tests/Hexalith.Folders.EventStore.Tests/AdmissionCatalogStateStore.cs",
+    "tests/Hexalith.Folders.EventStore.Tests/DeclaredFoldersIntentCompatibilityTests.cs",
+    "tests/Hexalith.Folders.EventStore.Tests/Fixtures/legacy-canonical-intents.json",
+    "tests/Hexalith.Folders.Server.Tests/FoldersProjectionCatalogFixture.cs"
+  ],
+  "sdk_changed_files": [
+    "src/Hexalith.EventStore.Contracts/Routing/IdempotencyDescriptorField.cs",
+    "src/Hexalith.EventStore.Contracts/Routing/RouteCatalogCodec.cs",
+    "src/Hexalith.EventStore.Contracts/Routing/RouteCatalogValidator.cs",
+    "src/Hexalith.EventStore.DomainService/DevelopmentDomainRouteCatalog.cs",
+    "tests/Hexalith.EventStore.Contracts.Tests/Routing/IdempotencyDescriptorCompatibilityTests.cs",
+    "tests/Hexalith.EventStore.Server.Tests/Routing/DevelopmentDomainRouteCatalogTests.cs"
+  ],
+  "preserved": [
+    "all preexisting working-tree edits",
+    "all original CreateIntent method bodies",
+    "FoldersCanonicalIntentBuilder",
+    "CanonicalIdempotencyIntentEncoder",
+    "NativeTaskAdmissionTests original assertions",
+    "strict acceptance test assertions/deadlines/retries",
+    "frozen spec and earlier evidence",
+    "Git index, heads, dependency pins and nested submodules"
+  ],
+  "focused_results": {
+    "gateway": {
+      "passed": 72,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "seconds": 4.572,
+      "note": "New independent dispatch-constant/deserializer inventory test added after this run; parent fresh broad run required."
+    },
+    "sdk_descriptor_codec_validator": {
+      "passed": 125,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0
+    },
+    "sdk_custom_observation_registry": {
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0
+    },
+    "apphost_model_readback_channel": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "seconds": 0.565
+    }
+  },
+  "build_mode": [
+    "Debug",
+    "UseHexalithProjectReferences=true",
+    "UseNuGetDeps=false",
+    "HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false",
+    "no BuildProjectReferences=false"
+  ],
+  "commands": [
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-build-corrected.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:34:38.372663+00:00",
+      "finishedAtUtc": "2026-11-01T14:34:45.932086+00:00",
+      "seconds": 7.559417793003377,
+      "exitCode": 0
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-build-final.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:41:58.480116+00:00",
+      "finishedAtUtc": "2026-11-01T14:42:04.507119+00:00",
+      "seconds": 6.02700336498674,
+      "exitCode": 0
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-build.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:33:02.449294+00:00",
+      "finishedAtUtc": "2026-11-01T14:33:17.589187+00:00",
+      "seconds": 15.141078361019026,
+      "exitCode": 1
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-build-audited.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:45:20.682602+00:00",
+      "finishedAtUtc": "2026-11-01T14:45:26.936326+00:00",
+      "seconds": 6.253726263996214,
+      "exitCode": 0
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-build-memory-config.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:46:49.478656+00:00",
+      "finishedAtUtc": "2026-11-01T14:46:55.246481+00:00",
+      "seconds": 5.767824658018071,
+      "exitCode": 0
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-build.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:44:15.028001+00:00",
+      "finishedAtUtc": "2026-11-01T14:44:23.713076+00:00",
+      "seconds": 8.685071430983953,
+      "exitCode": 0
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-tests-audited.json",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-parallel",
+        "none",
+        "-class",
+        "*FoldersDevelopmentCatalogCompositionTests",
+        "-class",
+        "*FolderDurabilityCatalogBindingTests",
+        "-class",
+        "*FoldersAppChannelCompositionTests",
+        "-xml",
+        ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-tests-audited.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:46:14.612529+00:00",
+      "finishedAtUtc": "2026-11-01T14:46:15.460825+00:00",
+      "seconds": 0.8482962379930541,
+      "exitCode": 1
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-tests-memory-config.json",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-parallel",
+        "none",
+        "-class",
+        "*FoldersDevelopmentCatalogCompositionTests",
+        "-class",
+        "*FolderDurabilityCatalogBindingTests",
+        "-class",
+        "*FoldersAppChannelCompositionTests",
+        "-xml",
+        ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-tests-memory-config.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:47:30.181132+00:00",
+      "finishedAtUtc": "2026-11-01T14:47:30.975049+00:00",
+      "seconds": 0.7939244090230204,
+      "exitCode": 0
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-tests.json",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-parallel",
+        "none",
+        "-class",
+        "*FoldersDevelopmentCatalogCompositionTests",
+        "-class",
+        "*FolderDurabilityCatalogBindingTests",
+        "-class",
+        "*FoldersAppChannelCompositionTests",
+        "-xml",
+        ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-apphost-model-tests.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:42:51.018962+00:00",
+      "finishedAtUtc": "2026-11-01T14:42:51.558365+00:00",
+      "seconds": 0.5393980179796927,
+      "exitCode": 1
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-first-server-build.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:24:56.894369+00:00",
+      "finishedAtUtc": "2026-11-01T14:25:05.607398+00:00",
+      "seconds": 8.714725841011386,
+      "exitCode": 1
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-gateway-build-corrected.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:29:52.302598+00:00",
+      "finishedAtUtc": "2026-11-01T14:29:58.407708+00:00",
+      "seconds": 6.105109210999217,
+      "exitCode": 0
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-gateway-build-final.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:35:16.951675+00:00",
+      "finishedAtUtc": "2026-11-01T14:35:20.815979+00:00",
+      "seconds": 3.8643035879940726,
+      "exitCode": 0
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-gateway-build.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:27:31.990957+00:00",
+      "finishedAtUtc": "2026-11-01T14:27:42.267386+00:00",
+      "seconds": 10.277890891011339,
+      "exitCode": 1
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-gateway-tests.json",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+        "-parallel",
+        "none",
+        "-xml",
+        ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-gateway-tests.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:35:59.886540+00:00",
+      "finishedAtUtc": "2026-11-01T14:36:04.673428+00:00",
+      "seconds": 4.788250737008639,
+      "exitCode": 0
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-contracts-build.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/Hexalith.EventStore.Contracts.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:37:24.010746+00:00",
+      "finishedAtUtc": "2026-11-01T14:37:27.061339+00:00",
+      "seconds": 3.0505877299583517,
+      "exitCode": 0
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-custom-observation-tests-corrected.json",
+      "argv": [
+        "dotnet",
+        "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+        "-parallel",
+        "none",
+        "-class",
+        "*DevelopmentDomainRouteCatalogTests",
+        "-class",
+        "*DeclaredIdempotencyRegistryTests",
+        "-xml",
+        ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-custom-observation-tests-corrected.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:41:15.318010+00:00",
+      "finishedAtUtc": "2026-11-01T14:41:16.184452+00:00",
+      "seconds": 0.8664409129996784,
+      "exitCode": 0
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-custom-observation-tests.json",
+      "argv": [
+        "dotnet",
+        "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+        "-parallel",
+        "none",
+        "-class",
+        "*DevelopmentDomainRouteCatalogTests",
+        "-class",
+        "*DeclaredIdempotencyRegistryTests",
+        "-xml",
+        ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-custom-observation-tests.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:39:27.616319+00:00",
+      "finishedAtUtc": "2026-11-01T14:39:27.866988+00:00",
+      "seconds": 0.2506659810314886,
+      "exitCode": 1
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-descriptor-tests.json",
+      "argv": [
+        "dotnet",
+        "references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.Tests.dll",
+        "-parallel",
+        "none",
+        "-class",
+        "*IdempotencyDescriptorCompatibilityTests",
+        "-class",
+        "*RouteCatalogCodecTests",
+        "-class",
+        "*RouteCatalogValidatorTests",
+        "-xml",
+        ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-descriptor-tests.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:38:45.029554+00:00",
+      "finishedAtUtc": "2026-11-01T14:38:45.603484+00:00",
+      "seconds": 0.5739315600367263,
+      "exitCode": 0
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-server-build-corrected.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:39:36.871820+00:00",
+      "finishedAtUtc": "2026-11-01T14:39:45.796535+00:00",
+      "seconds": 8.924702939984854,
+      "exitCode": 0
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-sdk-server-build.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:38:53.081201+00:00",
+      "finishedAtUtc": "2026-11-01T14:39:02.004521+00:00",
+      "seconds": 8.923321893031243,
+      "exitCode": 1
+    },
+    {
+      "receipt": ".artifacts/story-12-2-catalog-admission-20261101T141540Z/implementation-tenants-host-build.json",
+      "argv": [
+        "dotnet",
+        "build",
+        "references/Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=3.130.2",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-11-01T14:43:25.389526+00:00",
+      "finishedAtUtc": "2026-11-01T14:43:28.400568+00:00",
+      "seconds": 3.011036215000786,
+      "exitCode": 0
+    }
+  ],
+  "cleanup": {
+    "final_model": {
+      "temporary": "/tmp/folders-catalog-model-HdhRgg",
+      "catalog": "/tmp/hexalith-route-catalog-R9sJFs",
+      "both_absent": true,
+      "evidence": "implementation-apphost-model-tests-memory-config.xml"
+    },
+    "failed_audited_model": {
+      "temporary": "/tmp/folders-catalog-model-fC5ovO",
+      "absent": true,
+      "sdk_failed_coordination_path": "Not exposed by SDK exception; SDK own failure catch disposed custody and deleted its newly owned directory."
+    },
+    "first_model_failure": "Finally deleted its owned temporary directory, but exact path was not captured by that original test version. No full exact-path cleanup claim is made.",
+    "live_topologies_started": 0
+  },
+  "parent_remaining": [
+    "fresh broad consumer and affected SDK regressions, including new independent inventory test and scoped projection fixture",
+    "coherent conventional final runtime host builds, including Memories",
+    "unchanged strict authenticated real-provider execution and any established compatibility corrections",
+    "source/runtime/head/module/PDB identity and owned-resource audit; sealed sanitized packet",
+    "whole-story independent review and separately open SDK broad, contract/governance, Release/package/PD10, SM4 performance gates"
+  ],
+  "known_limitations": [
+    "Model checks bind real compiled owner artifacts and final selected sidecar options but do not qualify running host catalog activation.",
+    "AdmissionCatalogFixture is a real committed SDK authority with actual registered-adapter observation over an explicitly isolated component model; target metadata is modelled and is not claimed as live receiver observation.",
+    "Tenants Program currently has a literal eventstore target for TenantOwnerSourceGateway; any actual isolated-AppId invocation failure remains for parent live triage.",
+    "No publication, deployment, package/gitlink update, staging, commit, push, nested initialization or admission redesign was performed."
+  ]
+}

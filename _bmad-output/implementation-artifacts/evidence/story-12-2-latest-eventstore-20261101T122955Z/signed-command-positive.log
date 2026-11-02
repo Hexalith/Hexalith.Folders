@@ -1,0 +1,16 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Folders.Server.Tests
+  Discovered:  Hexalith.Folders.Server.Tests
+  Starting:    Hexalith.Folders.Server.Tests
+    Hexalith.Folders.Server.Tests.ProductionProcessWireEventTests.SignedWorkloadAndHumanReceiptAreAcceptedByProductionProcessRegistration [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=3.130.2.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.ProductionProcessWireEventTests.SignedWorkloadAndHumanReceiptAreAcceptedByProductionProcessRegistration()
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.ProductionProcessWireEventTests.SignedWorkloadAndHumanReceiptAreAcceptedByProductionProcessRegistration()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Finished:    Hexalith.Folders.Server.Tests (ID = '894408449178debe5daabcded025ca7d8d3c32d2282bfa7653487806833b2518')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Server.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 0.166s

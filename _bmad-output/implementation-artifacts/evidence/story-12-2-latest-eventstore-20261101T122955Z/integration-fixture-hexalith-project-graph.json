@@ -1,0 +1,23 @@
+{
+  "Hexalith.Commons.UniqueIds/1.0.0": "project",
+  "Hexalith.EventStore.Aspire/3.130.2": "project",
+  "Hexalith.EventStore.Client/3.130.2": "project",
+  "Hexalith.EventStore.Contracts/3.130.2": "project",
+  "Hexalith.EventStore.DomainService/3.130.2": "project",
+  "Hexalith.EventStore.ServiceDefaults/3.130.2": "project",
+  "Hexalith.Folders/1.0.0": "project",
+  "Hexalith.Folders.Aspire/1.0.0": "project",
+  "Hexalith.Folders.Cli/1.0.0": "project",
+  "Hexalith.Folders.Client/1.0.0": "project",
+  "Hexalith.Folders.Contracts/1.0.0": "project",
+  "Hexalith.Folders.Mcp/1.0.0": "project",
+  "Hexalith.Folders.Server/1.0.0": "project",
+  "Hexalith.Folders.ServiceDefaults/1.0.0": "project",
+  "Hexalith.Folders.Testing/1.0.0": "project",
+  "Hexalith.McpCli.Abstractions/1.0.0": "project",
+  "Hexalith.Memories.Aspire/1.0.0": "project",
+  "Hexalith.Memories.Client.Rest/1.0.0": "project",
+  "Hexalith.Memories.Contracts/1.0.0": "project",
+  "Hexalith.Tenants.Client/6.0.0": "project",
+  "Hexalith.Tenants.Contracts/6.0.0": "project"
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "resource": "folders-ui",
+    "line": "LIFECYCLE_PROBE sidecar=eventstore"
+  },
+  {
+    "resource": "eventstore",
+    "line": "      6: 2026-11-01T13:26:46.3880000Z {\"EventId\":11,\"LogLevel\":\"Error\",\"Category\":\"Microsoft.Extensions.Hosting.Internal.Host\",\"Message\":\"Hosting failed to start\",\"Exception\":\"System.InvalidOperationException: Shared HTTP security requires UseEventStoreHttpHostSecurity() enrollment before startup.\\n   at Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityStartupValidator.StartingAsync(CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreHttpHostSecurityStartupValidator.cs:line 21\\n   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable\\u00601 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List\\u00601 exceptions, Func\\u00603 operation)\",\"State\":{\"{OriginalFormat}\":\"Hosting failed to start\"}}"
+  },
+  {
+    "resource": "eventstore",
+    "line": "      7: 2026-11-01T13:26:47.3600000Z Unhandled exception. System.InvalidOperationException: Shared HTTP security requires UseEventStoreHttpHostSecurity() enrollment before startup."
+  },
+  {
+    "resource": "tenants-dapr-cli",
+    "line": "      95: 2026-11-01T13:26:49.7620000Z time=\"2026-11-01T14:26:49.762120672+01:00\" level=error msg=\"app returned http status code 401 from subscription endpoint\" app_id=tenants-24e1bfc46bc93e6b instance=DESKTOP-VIOG240 scope=dapr.runtime.processor.subscription type=log ver=1.18.7"
+  },
+  {
+    "resource": "tenants",
+    "line": "      19: 2026-11-01T13:26:49.7580000Z {\"EventId\":5501,\"LogLevel\":\"Warning\",\"Category\":\"Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler\",\"Message\":\"Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-unconfigured, StatusCode=401, Path=/dapr/config, CorrelationId=c11796a57d6363db23b1f0056cf31dbd\",\"State\":{\"Message\":\"CorrelationId=c11796a57d6363db23b1f0056cf31dbd,Path=/dapr/config,StatusCode=401,Reason=channel-unconfigured,Scheme=EventStoreSidecarChannel,{OriginalFormat}=Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme={Scheme}, Reason={Reason}, StatusCode={StatusCode}, Path={Path}, CorrelationId={CorrelationId}\",\"CorrelationId\":\"c11796a57d6363db23b1f0056cf31dbd\",\"Path\":\"/dapr/config\",\"StatusCode\":401,\"Reason\":\"channel-unconfigured\",\"Scheme\":\"EventStoreSidecarChannel\",\"{OriginalFormat}\":\"Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme={Scheme}, Reason={Reason}, StatusCode={StatusCode}, Path={Path}, CorrelationId={CorrelationId}\"}}"
+  },
+  {
+    "resource": "tenants",
+    "line": "      22: 2026-11-01T13:26:49.7610000Z {\"EventId\":5501,\"LogLevel\":\"Warning\",\"Category\":\"Hexalith.EventStore.ServiceDefaults.Authentication.DaprSidecarChannelAuthenticationHandler\",\"Message\":\"Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme=EventStoreSidecarChannel, Reason=channel-unconfigured, StatusCode=401, Path=/dapr/subscribe, CorrelationId=a9b62959c1114c17e69927f5944ee34d\",\"State\":{\"Message\":\"CorrelationId=a9b62959c1114c17e69927f5944ee34d,Path=/dapr/subscribe,StatusCode=401,Reason=channel-unconfigured,Scheme=EventStoreSidecarChannel,{OriginalFormat}=Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme={Scheme}, Reason={Reason}, StatusCode={StatusCode}, Path={Path}, CorrelationId={CorrelationId}\",\"CorrelationId\":\"a9b62959c1114c17e69927f5944ee34d\",\"Path\":\"/dapr/subscribe\",\"StatusCode\":401,\"Reason\":\"channel-unconfigured\",\"Scheme\":\"EventStoreSidecarChannel\",\"{OriginalFormat}\":\"Internal credential denied: SecurityEvent=InternalAuthenticationDenied, Scheme={Scheme}, Reason={Reason}, StatusCode={StatusCode}, Path={Path}, CorrelationId={CorrelationId}\"}}"
+  }
+]

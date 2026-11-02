@@ -1,0 +1,25 @@
+{
+  "capturedAtUtc": "2026-11-01T19:34:42.080922+00:00",
+  "files": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/Authorization/TenantOwnerSourceGatewayRegistration.cs",
+      "exists": true,
+      "sha256": "2a0171a13ab0caef3bedabe8aaa6a1b8371d230fea5673036b13afaf845887e5"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/Authorization/OwnerSourceTargetHttpHandler.cs",
+      "exists": true,
+      "sha256": "e1fb402fa4aa6b53c000df33f6a81c23101c4ecf2c61ee836a37d01a60216d2a"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+      "exists": true,
+      "sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs",
+      "exists": true,
+      "sha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc"
+    }
+  ]
+}

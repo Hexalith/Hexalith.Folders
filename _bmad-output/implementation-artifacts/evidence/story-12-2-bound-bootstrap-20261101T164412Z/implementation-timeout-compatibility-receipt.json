@@ -1,0 +1,298 @@
+{
+  "schemaVersion": 1,
+  "producer": "/root/bootstrap_impl",
+  "scope": "Approved owner-only transport/readiness compatibility; parent owns final broad/live and auditing.",
+  "failureBasis": {
+    "source": "Parent-observed strict-real-provider-bound-import attempt",
+    "reportedFinding": "All eight catalogs committed; owner rejected an infinite HttpClient transport timeout before receipt creation. No new live run was performed by this delegate."
+  },
+  "repair": {
+    "files": [
+      "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/Bootstrap/TenantBootstrapHostedService.cs",
+      "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/Bootstrap/TenantBootstrapReadinessBudget.cs",
+      "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapReadinessBudgetTests.cs"
+    ],
+    "behavior": "When and only when the unnamed client transport timeout is InfiniteTimeSpan, read its installed named HttpStandardResilienceOptions.TotalRequestTimeout.Timeout through public IOptionsMonitor. Preserve finite client timeouts; refuse invalid/infinite or request-dependent budgets. Pass the value to the unchanged positive CreateAsync readiness guard.",
+    "optionsName": "-standard",
+    "fallbackBudget": null,
+    "preserved": "No transport timeout assignment, standard handler/retry reconfiguration, credential/proof/domain admission change, fixture deadline/assertion edit, dependency pin, Git mutation, publication or deployment.",
+    "publicNameBinding": "ProductionDefaultPipelineProvidesItsActualConfiguredFiniteBudget compares the constant to public AddHttpClient(Options.DefaultName).AddStandardResilienceHandler().PipelineName, then uses actual EventStore ServiceDefaults registration and a distinct configured total timeout. The real factory client is infinite before and after budget selection."
+  },
+  "installedAssemblyIdentities": [
+    {
+      "path": "/home/administrator/.nuget/packages/microsoft.extensions.http.resilience/10.11.0/lib/net10.0/Microsoft.Extensions.Http.Resilience.dll",
+      "exists": true,
+      "bytes": 135992,
+      "sha256": "b28b929922d42b1c979ee403f454387f4522bf973c149753f5300ae959d70531",
+      "assemblyIdentity": {
+        "assembly_name": "Microsoft.Extensions.Http.Resilience",
+        "assembly_version": "10.11.0.0",
+        "file_version": "10.1100.26.51307",
+        "informational_version": "10.11.0+25f07afa51034e37b334210642d7dc5f191c142d",
+        "target_framework": ".NETCoreApp,Version=v10.0",
+        "culture": "neutral",
+        "public_key_token": "31bf3856ad364e35"
+      }
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Microsoft.Extensions.Http.Resilience.dll",
+      "exists": true,
+      "bytes": 135992,
+      "sha256": "b28b929922d42b1c979ee403f454387f4522bf973c149753f5300ae959d70531",
+      "assemblyIdentity": {
+        "assembly_name": "Microsoft.Extensions.Http.Resilience",
+        "assembly_version": "10.11.0.0",
+        "file_version": "10.1100.26.51307",
+        "informational_version": "10.11.0+25f07afa51034e37b334210642d7dc5f191c142d",
+        "target_framework": ".NETCoreApp,Version=v10.0",
+        "culture": "neutral",
+        "public_key_token": "31bf3856ad364e35"
+      }
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Microsoft.Extensions.Http.Resilience.dll",
+      "exists": true,
+      "bytes": 135992,
+      "sha256": "b28b929922d42b1c979ee403f454387f4522bf973c149753f5300ae959d70531",
+      "assemblyIdentity": {
+        "assembly_name": "Microsoft.Extensions.Http.Resilience",
+        "assembly_version": "10.11.0.0",
+        "file_version": "10.1100.26.51307",
+        "informational_version": "10.11.0+25f07afa51034e37b334210642d7dc5f191c142d",
+        "target_framework": ".NETCoreApp,Version=v10.0",
+        "culture": "neutral",
+        "public_key_token": "31bf3856ad364e35"
+      }
+    }
+  ],
+  "installedCopiesHaveIdenticalBytes": true,
+  "sourceEvidence": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Extensions.cs",
+      "lines": "45-48",
+      "fact": "The actual production service defaults install the standard resilience handler for HTTP clients, retaining SDK-selected target circuits."
+    },
+    {
+      "artifact": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-standard-handler-api.log",
+      "fact": "The installed AddStandardResilienceHandler registers HttpStandardResilienceOptions using its client name plus standard pipeline identity."
+    },
+    {
+      "artifact": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-installed-options-name.log",
+      "fact": "Installed helper forms clientName + \"-\" + \"standard\". This internal implementation was inspected only; product code uses public options and the public PipelineName test."
+    },
+    {
+      "artifact": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-public-pipeline-name-api.log",
+      "fact": "IHttpStandardResiliencePipelineBuilder.PipelineName is public."
+    },
+    {
+      "artifact": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-standard-options-il.log",
+      "fact": "Installed standard options retain a total timeout strategy and a ten-second default attempt strategy."
+    },
+    {
+      "artifact": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-polly-default-il.log",
+      "fact": "The installed Polly timeout default is thirty seconds; the repair does not hardcode or substitute that default."
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/Bootstrap/TenantBootstrapHostedService.cs",
+      "exists": true,
+      "bytes": 12600,
+      "sha256": "80d6a3c825706d5a2f0d6fe7a7f2846018fe56cf653c7939fe8ea28b8d59a63e"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/Bootstrap/TenantBootstrapReadinessBudget.cs",
+      "exists": true,
+      "bytes": 1630,
+      "sha256": "0dd34bed08d5eb40959a1c1a3aa7bf13f2696dce4ab37bd90bc94ab1b1e5cfcb"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapReadinessBudgetTests.cs",
+      "exists": true,
+      "bytes": 9468,
+      "sha256": "2336acc8015114c60ea3aa4a1e4742f033b6aa8283d814ade770d57860273b8c"
+    }
+  ],
+  "testCoverage": [
+    "Public pipeline-name/actual production registration/configured finite total budget without changing infinite transport or retry/attempt settings",
+    "Existing finite client budget with no options fallback",
+    "Zero, negative, infinite and request-dependent configured budgets fail closed",
+    "Valid installed bearer validation followed by catalog readiness expiry; no workload assertion issued",
+    "Valid installed bearer validation followed by caller cancellation; no workload assertion issued",
+    "Prior bootstrap credentials/proofs/receipt, physical source target and native administrator controls remain passing"
+  ],
+  "commands": [
+    {
+      "kind": "format-apply",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "command": "dotnet format whitespace tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj --no-restore --include src/Hexalith.Tenants/Bootstrap/TenantBootstrapReadinessBudget.cs tests/Hexalith.Tenants.Server.Tests/Bootstrap/TenantBootstrapReadinessBudgetTests.cs -v quiet > /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-owner-format.log 2>&1",
+      "exitCode": 0,
+      "result": "success; empty log; only two new files formatted",
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-owner-format.log",
+          "exists": true,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "kind": "build",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "command": "dotnet build tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=3.130.2 -m:1 -nr:false -v:quiet > /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-owner-build.log 2>&1",
+      "exitCode": 0,
+      "result": "success; zero warnings/errors",
+      "reportedBuildElapsed": "00:00:11.64",
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-owner-build.log",
+          "exists": true,
+          "bytes": 76,
+          "sha256": "d524e2f6655407ad63eea07a0cf6cede2a789d89a846555a4594ab41b5f0294b"
+        }
+      ]
+    },
+    {
+      "kind": "focused-tests",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "command": "dotnet tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll -class '*Bootstrap*' -class '*TenantOwnerSourceTargetTests' -class '*TenantsGlobalAdministratorAuthorityTests' -class '*TenantsGlobalAdministratorVerifierTests' -xml /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-owner-focused.xml > /home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-owner-focused.log 2>&1",
+      "exitCode": 0,
+      "assemblies": [
+        {
+          "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+          "id": "14834758-9eae-4692-857b-fd7a7f541fbf",
+          "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+          "run-date": "2026-11-01",
+          "run-time": "17:22:01",
+          "start-rtf": "2026-11-01T17:22:01.0862299+00:00",
+          "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+          "target-framework": ".NETCoreApp,Version=v10.0",
+          "errors": "0",
+          "failed": "0",
+          "finish-rtf": "2026-11-01T17:22:04.2590444+00:00",
+          "not-run": "0",
+          "passed": "209",
+          "skipped": "0",
+          "time": "3.173",
+          "time-rtf": "00:00:03.1730000",
+          "total": "209"
+        }
+      ],
+      "result": "209 passed, zero failed/errors/skipped; includes 8 new timeout controls",
+      "artifacts": [
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-owner-focused.log",
+          "exists": true,
+          "bytes": 572,
+          "sha256": "4815f6f2ad7b3583e28b837ee2d050d5dc1e50865f0f374205490f1c9c1f136b"
+        },
+        {
+          "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-owner-focused.xml",
+          "exists": true,
+          "bytes": 156855,
+          "sha256": "8649778442bfb2bd07bc4271871d00e4a7f5d5a358bf1adfb70d2640b3bf32c1"
+        }
+      ]
+    },
+    {
+      "kind": "diff-check",
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "command": "git diff --check",
+      "exitCode": 0,
+      "result": "success; empty output"
+    },
+    {
+      "kind": "read-only-api-inspection",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dnx dotnet-inspect -y -- library /home/administrator/.nuget/packages/microsoft.extensions.http.resilience/10.11.0/lib/net10.0/Microsoft.Extensions.Http.Resilience.dll --json > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-installed-resilience-library.json",
+      "exitCode": 0,
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-installed-resilience-library.json",
+        "exists": true,
+        "bytes": 25779,
+        "sha256": "2ed59b548497348da66d9a4d6b589db7d2401f84cf812097eaacc226893af3f6"
+      }
+    },
+    {
+      "kind": "read-only-api-inspection",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dnx dotnet-inspect -y -- member ResilienceHttpClientBuilderExtensions --package Microsoft.Extensions.Http.Resilience@10.11.0 AddStandardResilienceHandler:1 -v d > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-standard-handler-api.log",
+      "exitCode": 0,
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-standard-handler-api.log",
+        "exists": true,
+        "bytes": 6580,
+        "sha256": "f8fcf078e59cc6830025fcc32d13873839c2bfe7efa83d36739f5842cb05d8f5"
+      }
+    },
+    {
+      "kind": "read-only-api-inspection",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dnx dotnet-inspect -y -- member PipelineNameHelper --package Microsoft.Extensions.Http.Resilience@10.11.0 --all GetName:1 -v d -S 'Decompiled Source' > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-installed-options-name.log",
+      "exitCode": 0,
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-installed-options-name.log",
+        "exists": true,
+        "bytes": 484,
+        "sha256": "0b8140fd5d79a7c77c0fc0bc3b50df27422eddc7406bdac6bce6fd7daeca163c"
+      }
+    },
+    {
+      "kind": "read-only-api-inspection",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dnx dotnet-inspect -y -- member IHttpStandardResiliencePipelineBuilder --package Microsoft.Extensions.Http.Resilience@10.11.0 -m PipelineName > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-public-pipeline-name-api.log",
+      "exitCode": 0,
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-public-pipeline-name-api.log",
+        "exists": true,
+        "bytes": 551,
+        "sha256": "53b3e611dad0cf60fad790fc2ebe7976700071d87cdce350e7757ebccdcc0ca8"
+      }
+    },
+    {
+      "kind": "read-only-api-inspection",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dnx dotnet-inspect -y -- member HttpStandardResilienceOptions --package Microsoft.Extensions.Http.Resilience@10.11.0 .ctor:1 -v d -S IL > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-standard-options-il.log",
+      "exitCode": 0,
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-standard-options-il.log",
+        "exists": true,
+        "bytes": 2435,
+        "sha256": "e3c1b5befeadf7f58c14769a9190236caf070573639d6f29bf5274c9540603f2"
+      }
+    },
+    {
+      "kind": "read-only-api-inspection",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dnx dotnet-inspect -y -- member TimeoutStrategyOptions --package Polly.Core@8.4.2 .ctor:1 -v d -S IL > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-polly-default-il.log",
+      "exitCode": 0,
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-polly-default-il.log",
+        "exists": true,
+        "bytes": 613,
+        "sha256": "95741ea0582fa550a22a8befd93a8a3be805323e8b9c028e9fe104a8740c2711"
+      }
+    },
+    {
+      "kind": "failed-read-only-inspection",
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dnx dotnet-inspect -y -- library --library /home/administrator/.nuget/packages/microsoft.extensions.http.resilience/10.11.0/lib/net10.0/Microsoft.Extensions.Http.Resilience.dll --json > .artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-installed-resilience-identity.json",
+      "exitCode": 1,
+      "error": "Unrecognized command or argument '/home/administrator/.nuget/packages/microsoft.extensions.http.resilience/10.11.0/lib/net10.0/Microsoft.Extensions.Http.Resilience.dll'.",
+      "artifact": {
+        "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/implementation-timeout-installed-resilience-identity.json",
+        "exists": true,
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "disposition": "Retained empty failed-attempt file; corrected invocation is the separate installed-resilience-library.json receipt."
+    }
+  ],
+  "executionNotes": [
+    "Format completed before the owner build was launched; build completed before focused tests were launched. API inspection commands ran read-only in parallel after those checks.",
+    "Exact wall-clock start/end timestamps were not captured; reported build and xUnit durations are retained in their own results.",
+    "The current installed package and two owner output copies were hashed read-only. These hashes are not a new claim about parent-observed live loaded modules.",
+    "The earlier broad/full owner and gateway results remain separate historical executions; this repair executed the focused owner lane only."
+  ]
+}

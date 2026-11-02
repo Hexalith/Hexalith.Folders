@@ -1,0 +1,122 @@
+{
+  "records": [
+    {
+      "xml": "apphost-full.xml",
+      "kind": "CATALOG_MODEL_OWNED",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-GI1YO9"
+      }
+    },
+    {
+      "xml": "apphost-full.xml",
+      "kind": "CATALOG_MODEL_OWNED",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-GI1YO9",
+        "catalogDirectory": "/tmp/hexalith-route-catalog-ACa0GC"
+      }
+    },
+    {
+      "xml": "apphost-full.xml",
+      "kind": "CATALOG_MODEL_CLEANUP",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-GI1YO9",
+        "temporaryExists": false,
+        "catalogDirectory": "/tmp/hexalith-route-catalog-ACa0GC",
+        "catalogDirectoryExists": false
+      }
+    },
+    {
+      "xml": "apphost-helpers-human.xml",
+      "kind": "CATALOG_MODEL_OWNED",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-Qu95m6"
+      }
+    },
+    {
+      "xml": "apphost-helpers-human.xml",
+      "kind": "CATALOG_MODEL_OWNED",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-Qu95m6",
+        "catalogDirectory": "/tmp/hexalith-route-catalog-sXcVRB"
+      }
+    },
+    {
+      "xml": "apphost-helpers-human.xml",
+      "kind": "CATALOG_MODEL_CLEANUP",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-Qu95m6",
+        "temporaryExists": false,
+        "catalogDirectory": "/tmp/hexalith-route-catalog-sXcVRB",
+        "catalogDirectoryExists": false
+      }
+    },
+    {
+      "xml": "apphost-helpers-observer.xml",
+      "kind": "CATALOG_MODEL_OWNED",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-ZR1qem"
+      }
+    },
+    {
+      "xml": "apphost-helpers-observer.xml",
+      "kind": "CATALOG_MODEL_OWNED",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-ZR1qem",
+        "catalogDirectory": "/tmp/hexalith-route-catalog-VWTnRW"
+      }
+    },
+    {
+      "xml": "apphost-helpers-observer.xml",
+      "kind": "CATALOG_MODEL_CLEANUP",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-ZR1qem",
+        "temporaryExists": false,
+        "catalogDirectory": "/tmp/hexalith-route-catalog-VWTnRW",
+        "catalogDirectoryExists": false
+      }
+    },
+    {
+      "xml": "implementation-apphost-model-tests-audited.xml",
+      "kind": "CATALOG_MODEL_OWNED",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-fC5ovO"
+      }
+    },
+    {
+      "xml": "implementation-apphost-model-tests-audited.xml",
+      "kind": "CATALOG_MODEL_CLEANUP",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-fC5ovO",
+        "temporaryExists": false,
+        "catalogDirectory": null,
+        "catalogDirectoryExists": false
+      }
+    },
+    {
+      "xml": "implementation-apphost-model-tests-memory-config.xml",
+      "kind": "CATALOG_MODEL_OWNED",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-HdhRgg"
+      }
+    },
+    {
+      "xml": "implementation-apphost-model-tests-memory-config.xml",
+      "kind": "CATALOG_MODEL_OWNED",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-HdhRgg",
+        "catalogDirectory": "/tmp/hexalith-route-catalog-R9sJFs"
+      }
+    },
+    {
+      "xml": "implementation-apphost-model-tests-memory-config.xml",
+      "kind": "CATALOG_MODEL_CLEANUP",
+      "record": {
+        "temporary": "/tmp/folders-catalog-model-HdhRgg",
+        "temporaryExists": false,
+        "catalogDirectory": "/tmp/hexalith-route-catalog-R9sJFs",
+        "catalogDirectoryExists": false
+      }
+    }
+  ],
+  "limitation": "The earliest model-only failure executed its finally cleanup without recording its deleted temp path. SDK Compose failure catch also deletes its coordination directory before returning; that generated path was not exposed. These failed controls are retained without claiming a path-specific audit. All live attempts separately retain exact observed paths and removal evidence."
+}

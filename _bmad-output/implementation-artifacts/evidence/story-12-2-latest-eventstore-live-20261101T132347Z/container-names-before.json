@@ -1,0 +1,7 @@
+[
+  "fluent-ui-blazor-mcp",
+  "dapr_placement",
+  "dapr_scheduler",
+  "dapr_redis",
+  "dapr_zipkin"
+]

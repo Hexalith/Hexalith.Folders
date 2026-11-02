@@ -1,0 +1,57 @@
+{
+  "capturedAtUtc": "2026-11-01T13:31:09.506515+00:00",
+  "source": {
+    "count": 18832,
+    "drift": []
+  },
+  "runtime": {
+    "folders": {
+      "count": 79,
+      "drift": []
+    },
+    "workers": {
+      "count": 77,
+      "drift": []
+    },
+    "gateway": {
+      "count": 87,
+      "drift": []
+    },
+    "tenants": {
+      "count": 84,
+      "drift": []
+    },
+    "memories": {
+      "count": 89,
+      "drift": []
+    },
+    "apphost": {
+      "count": 153,
+      "drift": []
+    },
+    "tests": {
+      "count": 387,
+      "drift": []
+    },
+    "observer": {
+      "count": 13,
+      "drift": []
+    }
+  },
+  "runIds": [
+    "24e1bfc46bc93e6b"
+  ],
+  "ownedContainersRemaining": [],
+  "taskTemporaryDirectories": {
+    "/tmp/folders-durability-xihgugau.nbp": false
+  },
+  "result": {
+    "total": 1,
+    "passed": 0,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 249.092
+  },
+  "failure": "Startup deadline expired in sidecar readiness. Gateway had already failed startup because UseEventStoreHttpHostSecurity was not enrolled; Tenants reported channel-unconfigured on discovery."
+}

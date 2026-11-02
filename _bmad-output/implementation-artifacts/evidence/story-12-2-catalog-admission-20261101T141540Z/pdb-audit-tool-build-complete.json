@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "dotnet",
+    "build",
+    "/tmp/folders-catalog-pdb-audit-pouehvfj/PdbAudit.csproj",
+    "-c",
+    "Debug",
+    "-m:1",
+    "-nr:false"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T15:36:29.665475+00:00",
+  "finishedAtUtc": "2026-11-01T15:36:30.452239+00:00",
+  "seconds": 0.7867629599641077,
+  "exitCode": 0
+}

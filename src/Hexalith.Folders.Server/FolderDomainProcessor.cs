@@ -39,8 +39,23 @@ public sealed partial class FolderDomainProcessor(
     IOrganizationAclRepository? actorOrganizationAclRepository = null,
     Microsoft.AspNetCore.Http.IHttpContextAccessor? httpContextAccessor = null,
     Content.WorkspaceContentBatch? contentBatch = null,
-    Hexalith.EventStore.DomainService.Content.IAuthoritativeContentStore? authoritativeContent = null) : IDomainProcessor
+    Hexalith.EventStore.DomainService.Content.IAuthoritativeContentStore? authoritativeContent = null) : IDomainProcessor, Hexalith.EventStore.DomainService.IDomainCommandPayloadInventory
 {
+    /// <inheritdoc/>
+    public IReadOnlyList<Type> CommandPayloadTypes => CatalogPayloadTypes;
+
+    /// <summary>Gets the exact payload sequence enforced by the existing command dispatch branches.</summary>
+    internal static IReadOnlyList<Type> CatalogPayloadTypes { get; } =
+    [
+        typeof(CreateFolderPayload), typeof(ArchiveFolderPayload),
+        typeof(FolderAccessMutationPayload), typeof(FolderAccessMutationPayload),
+        typeof(OrganizationAclMutationPayload), typeof(OrganizationAclMutationPayload), typeof(OrganizationAclMutationPayload),
+        typeof(ConfigureProviderBindingPayload), typeof(CreateRepositoryBackedFolderPayload), typeof(BindRepositoryPayload),
+        typeof(BranchRefPolicyPayload), typeof(PrepareWorkspacePayload), typeof(LockWorkspacePayload),
+        typeof(Content.WorkspaceNativeTaskCommand), typeof(ReleaseWorkspaceLockPayload), typeof(FileMutationPayload),
+        typeof(Content.WorkspaceContentErasureRequest), typeof(CommitWorkspacePayload),
+    ];
+
     private static readonly JsonSerializerOptions PayloadJsonOptions = new(JsonSerializerDefaults.Web)
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,

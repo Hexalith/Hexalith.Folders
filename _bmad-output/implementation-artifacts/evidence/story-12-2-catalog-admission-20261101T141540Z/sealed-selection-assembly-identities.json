@@ -1,0 +1,1406 @@
+[
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.Tests.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.Tests.pdb",
+    "mvid": "b2f69d63-cf10-4082-9e94-cc103ef5f636",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+    "mvid": "613c1df3-cca0-4c35-b2b7-fe845ea54dbe",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.pdb",
+    "mvid": "c5331f1e-0b0e-47c5-b4fc-fb55b850cb3a",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.pdb",
+    "mvid": "450b6531-2e35-4b99-8ac2-950ab1fe32e4",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Admin.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Admin.Server.pdb",
+    "mvid": "3804217c-f96a-4223-8382-816f5a1ad7fe",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.CatalogConstruction.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.CatalogConstruction.pdb",
+    "mvid": "54c15988-86f2-47f2-8f76-1c9a12bc74ed",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb",
+    "mvid": "b83764bc-81c4-4bb8-9532-032dbfa11a6d",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.pdb",
+    "mvid": "33094c8f-5c3e-4a06-98ea-b187a34e3d2c",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Sample.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Sample.Contracts.pdb",
+    "mvid": "aa0706a0-d612-4acd-8676-d9170c2b7d73",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Sample.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Sample.pdb",
+    "mvid": "1de27e80-c6db-4138-a62f-fd1e9bd91658",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+    "mvid": "613c1df3-cca0-4c35-b2b7-fe845ea54dbe",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.pdb",
+    "mvid": "76f3b4d2-28e7-4668-b5e5-6d5bcf33e787",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.pdb",
+    "mvid": "c5331f1e-0b0e-47c5-b4fc-fb55b850cb3a",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+    "mvid": "db250ffd-27fb-4278-b6c1-b128e2307d22",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+    "mvid": "b0daea8f-3945-4f73-bfc7-6edcaac83fdb",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.pdb",
+    "mvid": "82e4c5da-1224-4759-a581-2d3cfb13fc94",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.AccessTelemetry.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.AccessTelemetry.Contracts.pdb",
+    "mvid": "8b2aa6b2-9f45-4805-8c65-8c8510a424d7",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb",
+    "mvid": "45d6c3ae-755a-454a-8f39-f65099c495fa",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.EventStore.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.EventStore.pdb",
+    "mvid": "63276366-f9ed-4c01-a4f5-738f448069cc",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Server.pdb",
+    "mvid": "24497b96-466f-4496-a5c5-327a93d3c91e",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.ServiceDefaults.pdb",
+    "mvid": "9beca0ab-3de2-436a-a50b-1a11929ac8a0",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Telemetry.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Telemetry.pdb",
+    "mvid": "122a0077-4114-4c73-afbe-6cda71a68503",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.pdb",
+    "mvid": "450b6531-2e35-4b99-8ac2-950ab1fe32e4",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb",
+    "mvid": "b83764bc-81c4-4bb8-9532-032dbfa11a6d",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+    "mvid": "613c1df3-cca0-4c35-b2b7-fe845ea54dbe",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+    "mvid": "db250ffd-27fb-4278-b6c1-b128e2307d22",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+    "mvid": "b0daea8f-3945-4f73-bfc7-6edcaac83fdb",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.pdb",
+    "mvid": "08a83171-0aa8-43c4-bd31-c609d384f8f1",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.pdb",
+    "mvid": "82e4c5da-1224-4759-a581-2d3cfb13fc94",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Aspire.pdb",
+    "mvid": "0813cf43-4178-48f8-820b-c509d6c7c2ce",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Folders.AppHost.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Folders.AppHost.pdb",
+    "mvid": "419ee9a1-bd68-4d80-9e54-bee78a11817d",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Folders.Aspire.pdb",
+    "mvid": "2f2edb9d-1479-433b-9d71-8ba9d36b0fa4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Memories.Aspire.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Memories.Aspire.pdb",
+    "mvid": "45169d5d-4ed4-4241-bddd-1fbcda3c0ab1",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Tenants.Aspire.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Tenants.Aspire.pdb",
+    "mvid": "22a762a0-ce08-4b6c-8e5e-52368e3ef02c",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.pdb",
+    "mvid": "450b6531-2e35-4b99-8ac2-950ab1fe32e4",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb",
+    "mvid": "b83764bc-81c4-4bb8-9532-032dbfa11a6d",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+    "mvid": "613c1df3-cca0-4c35-b2b7-fe845ea54dbe",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+    "mvid": "6176fccb-a09d-4f9c-b203-f4bf90d3cb13",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.pdb",
+    "mvid": "67d71220-0c59-4330-9672-d521764a8e86",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.pdb",
+    "mvid": "bcdbba02-3f26-4c39-95ec-38935e05e2a4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+    "mvid": "6176fccb-a09d-4f9c-b203-f4bf90d3cb13",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.pdb",
+    "mvid": "bcdbba02-3f26-4c39-95ec-38935e05e2a4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+    "mvid": "5883da01-18a4-467e-939c-9f6df535e134",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+    "mvid": "35482275-2d66-4b7b-bb1e-27689113005e",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+    "mvid": "db250ffd-27fb-4278-b6c1-b128e2307d22",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb",
+    "mvid": "07f151e0-c55e-4427-952a-964b6baca845",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb",
+    "mvid": "45d6c3ae-755a-454a-8f39-f65099c495fa",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+    "mvid": "f083fff9-ef28-4976-a1e4-511af9bd1dab",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+    "mvid": "b0daea8f-3945-4f73-bfc7-6edcaac83fdb",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.Client.pdb",
+    "mvid": "ff7caf0b-4611-450c-bb3e-cbbd26278310",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+    "mvid": "6176fccb-a09d-4f9c-b203-f4bf90d3cb13",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.UI.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.UI.pdb",
+    "mvid": "a58f3481-d2b9-47a0-91f2-809da81c43f4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.pdb",
+    "mvid": "e46cfe6a-81d8-4d1a-8239-076a62379c2d",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.pdb",
+    "mvid": "c3f8280c-5ce7-4019-ad2a-5e070722ef1d",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+    "mvid": "9b4dee8f-ac25-43a1-9d9f-ce70d7d68d12",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+    "mvid": "6176fccb-a09d-4f9c-b203-f4bf90d3cb13",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.pdb",
+    "mvid": "bcdbba02-3f26-4c39-95ec-38935e05e2a4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+    "mvid": "35482275-2d66-4b7b-bb1e-27689113005e",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.pdb",
+    "mvid": "9fb91d34-03a7-4056-9849-53c16300cccb",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+    "mvid": "db250ffd-27fb-4278-b6c1-b128e2307d22",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb",
+    "mvid": "45d6c3ae-755a-454a-8f39-f65099c495fa",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+    "mvid": "f083fff9-ef28-4976-a1e4-511af9bd1dab",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+    "mvid": "b0daea8f-3945-4f73-bfc7-6edcaac83fdb",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.pdb",
+    "mvid": "0813cf43-4178-48f8-820b-c509d6c7c2ce",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.pdb",
+    "mvid": "419ee9a1-bd68-4d80-9e54-bee78a11817d",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.pdb",
+    "mvid": "ee961020-2c1f-4bb1-8f00-3b8ab7585963",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Aspire.pdb",
+    "mvid": "2f2edb9d-1479-433b-9d71-8ba9d36b0fa4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.pdb",
+    "mvid": "ff7caf0b-4611-450c-bb3e-cbbd26278310",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+    "mvid": "6176fccb-a09d-4f9c-b203-f4bf90d3cb13",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb",
+    "mvid": "bcdbba02-3f26-4c39-95ec-38935e05e2a4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+    "mvid": "35482275-2d66-4b7b-bb1e-27689113005e",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.pdb",
+    "mvid": "9fb91d34-03a7-4056-9849-53c16300cccb",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+    "mvid": "db250ffd-27fb-4278-b6c1-b128e2307d22",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Memories.Aspire.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Memories.Aspire.pdb",
+    "mvid": "45169d5d-4ed4-4241-bddd-1fbcda3c0ab1",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb",
+    "mvid": "45d6c3ae-755a-454a-8f39-f65099c495fa",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Aspire.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Aspire.pdb",
+    "mvid": "22a762a0-ce08-4b6c-8e5e-52368e3ef02c",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+    "mvid": "f083fff9-ef28-4976-a1e4-511af9bd1dab",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+    "mvid": "b0daea8f-3945-4f73-bfc7-6edcaac83fdb",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Aspire.pdb",
+    "mvid": "2f2edb9d-1479-433b-9d71-8ba9d36b0fa4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+    "mvid": "6176fccb-a09d-4f9c-b203-f4bf90d3cb13",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.pdb",
+    "mvid": "128a3052-9397-49de-abb0-4c28f124813a",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.pdb",
+    "mvid": "450b6531-2e35-4b99-8ac2-950ab1fe32e4",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb",
+    "mvid": "b83764bc-81c4-4bb8-9532-032dbfa11a6d",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+    "mvid": "613c1df3-cca0-4c35-b2b7-fe845ea54dbe",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+    "mvid": "6176fccb-a09d-4f9c-b203-f4bf90d3cb13",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.pdb",
+    "mvid": "67d71220-0c59-4330-9672-d521764a8e86",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.pdb",
+    "mvid": "0d93cf98-2264-4e72-955e-4a961a40e342",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb",
+    "mvid": "bcdbba02-3f26-4c39-95ec-38935e05e2a4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+    "mvid": "5883da01-18a4-467e-939c-9f6df535e134",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+    "mvid": "35482275-2d66-4b7b-bb1e-27689113005e",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+    "mvid": "db250ffd-27fb-4278-b6c1-b128e2307d22",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb",
+    "mvid": "07f151e0-c55e-4427-952a-964b6baca845",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb",
+    "mvid": "45d6c3ae-755a-454a-8f39-f65099c495fa",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+    "mvid": "f083fff9-ef28-4976-a1e4-511af9bd1dab",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+    "mvid": "b0daea8f-3945-4f73-bfc7-6edcaac83fdb",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.pdb",
+    "mvid": "0813cf43-4178-48f8-820b-c509d6c7c2ce",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Aspire.pdb",
+    "mvid": "2f2edb9d-1479-433b-9d71-8ba9d36b0fa4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Cli.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Cli.pdb",
+    "mvid": "9e8935c4-6416-4430-be94-cac4a0a37b59",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Client.pdb",
+    "mvid": "ff7caf0b-4611-450c-bb3e-cbbd26278310",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+    "mvid": "6176fccb-a09d-4f9c-b203-f4bf90d3cb13",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.pdb",
+    "mvid": "f27857c5-d906-4bbc-ae4b-0787c28af320",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Mcp.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Mcp.pdb",
+    "mvid": "59b1fb68-a4f7-478b-bfed-5debe430f139",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.pdb",
+    "mvid": "bcdbba02-3f26-4c39-95ec-38935e05e2a4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+    "mvid": "5883da01-18a4-467e-939c-9f6df535e134",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+    "mvid": "35482275-2d66-4b7b-bb1e-27689113005e",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb",
+    "mvid": "80d503f7-2730-4053-956d-a8688aba203a",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+    "mvid": "db250ffd-27fb-4278-b6c1-b128e2307d22",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Memories.Aspire.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Memories.Aspire.pdb",
+    "mvid": "45169d5d-4ed4-4241-bddd-1fbcda3c0ab1",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb",
+    "mvid": "07f151e0-c55e-4427-952a-964b6baca845",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb",
+    "mvid": "45d6c3ae-755a-454a-8f39-f65099c495fa",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+    "mvid": "f083fff9-ef28-4976-a1e4-511af9bd1dab",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+    "mvid": "b0daea8f-3945-4f73-bfc7-6edcaac83fdb",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+    "mvid": "613c1df3-cca0-4c35-b2b7-fe845ea54dbe",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.pdb",
+    "mvid": "c5331f1e-0b0e-47c5-b4fc-fb55b850cb3a",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.pdb",
+    "mvid": "ff7caf0b-4611-450c-bb3e-cbbd26278310",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+    "mvid": "6176fccb-a09d-4f9c-b203-f4bf90d3cb13",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb",
+    "mvid": "bcdbba02-3f26-4c39-95ec-38935e05e2a4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+    "mvid": "5883da01-18a4-467e-939c-9f6df535e134",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.pdb",
+    "mvid": "a68fc929-06aa-454a-b71b-4a878ec09a6b",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+    "mvid": "35482275-2d66-4b7b-bb1e-27689113005e",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb",
+    "mvid": "80d503f7-2730-4053-956d-a8688aba203a",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+    "mvid": "db250ffd-27fb-4278-b6c1-b128e2307d22",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb",
+    "mvid": "07f151e0-c55e-4427-952a-964b6baca845",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb",
+    "mvid": "45d6c3ae-755a-454a-8f39-f65099c495fa",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+    "mvid": "f083fff9-ef28-4976-a1e4-511af9bd1dab",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+    "mvid": "b0daea8f-3945-4f73-bfc7-6edcaac83fdb",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Task36FoldObserver.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Task36FoldObserver.pdb",
+    "mvid": "4aef2f6a-3a74-4cdc-a663-95bbb6ba1ddd",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+    "mvid": "613c1df3-cca0-4c35-b2b7-fe845ea54dbe",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.pdb",
+    "mvid": "c5331f1e-0b0e-47c5-b4fc-fb55b850cb3a",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.pdb",
+    "mvid": "ff7caf0b-4611-450c-bb3e-cbbd26278310",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+    "mvid": "6176fccb-a09d-4f9c-b203-f4bf90d3cb13",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb",
+    "mvid": "bcdbba02-3f26-4c39-95ec-38935e05e2a4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+    "mvid": "5883da01-18a4-467e-939c-9f6df535e134",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+    "mvid": "35482275-2d66-4b7b-bb1e-27689113005e",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb",
+    "mvid": "80d503f7-2730-4053-956d-a8688aba203a",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.pdb",
+    "mvid": "30aa8a1e-186e-4858-9e08-3eab91107877",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.pdb",
+    "mvid": "a58f3481-d2b9-47a0-91f2-809da81c43f4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.pdb",
+    "mvid": "e46cfe6a-81d8-4d1a-8239-076a62379c2d",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.pdb",
+    "mvid": "c3f8280c-5ce7-4019-ad2a-5e070722ef1d",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.pdb",
+    "mvid": "9b4dee8f-ac25-43a1-9d9f-ce70d7d68d12",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+    "mvid": "db250ffd-27fb-4278-b6c1-b128e2307d22",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb",
+    "mvid": "07f151e0-c55e-4427-952a-964b6baca845",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb",
+    "mvid": "45d6c3ae-755a-454a-8f39-f65099c495fa",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+    "mvid": "f083fff9-ef28-4976-a1e4-511af9bd1dab",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+    "mvid": "b0daea8f-3945-4f73-bfc7-6edcaac83fdb",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+    "mvid": "613c1df3-cca0-4c35-b2b7-fe845ea54dbe",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.pdb",
+    "mvid": "c5331f1e-0b0e-47c5-b4fc-fb55b850cb3a",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+    "mvid": "6176fccb-a09d-4f9c-b203-f4bf90d3cb13",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb",
+    "mvid": "bcdbba02-3f26-4c39-95ec-38935e05e2a4",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+    "mvid": "5883da01-18a4-467e-939c-9f6df535e134",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+    "mvid": "35482275-2d66-4b7b-bb1e-27689113005e",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.pdb",
+    "mvid": "80d503f7-2730-4053-956d-a8688aba203a",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.pdb",
+    "mvid": "9fb91d34-03a7-4056-9849-53c16300cccb",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.pdb",
+    "mvid": "db3e7783-63cd-4dca-9225-34a1e9fd2a43",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+    "mvid": "db250ffd-27fb-4278-b6c1-b128e2307d22",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb",
+    "mvid": "07f151e0-c55e-4427-952a-964b6baca845",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb",
+    "mvid": "45d6c3ae-755a-454a-8f39-f65099c495fa",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+    "mvid": "f083fff9-ef28-4976-a1e4-511af9bd1dab",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+    "mvid": "b0daea8f-3945-4f73-bfc7-6edcaac83fdb",
+    "version": "6.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+    "mvid": "820058b4-be97-44c9-9397-f62cbb94a111",
+    "version": "1.0.0.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+    "mvid": "c4f696de-0388-418e-9e02-a892438e42d8",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+    "mvid": "6170c93e-3112-4e8d-bbce-37b56ec18ade",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+    "mvid": "cf844cbc-2e00-4b19-baed-4325243b76c0",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+    "mvid": "5b73d921-8e2b-45af-941b-d85f927e2b37",
+    "version": "3.130.2.0"
+  },
+  {
+    "dll": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+    "pdb": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.pdb",
+    "mvid": "4aef2f6a-3a74-4cdc-a663-95bbb6ba1ddd",
+    "version": "1.0.0.0"
+  }
+]

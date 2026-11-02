@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "dotnet",
+    "build",
+    "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-current-live-composition-20261101T133424Z/focused-gateway/FocusedGatewayTests.csproj",
+    "-c",
+    "Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:HexalithEventStoreVersion=3.130.2",
+    "-m:1",
+    "-nr:false",
+    "-v:minimal"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "startedAtUtc": "2026-11-01T13:38:28.803411+00:00",
+  "finishedAtUtc": "2026-11-01T13:38:32.427818+00:00",
+  "seconds": 3.624373861006461,
+  "exitCode": 0
+}

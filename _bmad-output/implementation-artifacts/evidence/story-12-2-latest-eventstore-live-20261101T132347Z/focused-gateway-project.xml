@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <AssemblyName>Hexalith.Folders.EventStore.Tests</AssemblyName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj" />
+    <ProjectReference Include="/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/FoldersEventStoreHostCompositionTests.cs" Link="FoldersEventStoreHostCompositionTests.cs" />
+    <Compile Include="/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/FoldersEventStoreHostFactory.cs" Link="FoldersEventStoreHostFactory.cs" />
+  </ItemGroup>
+</Project>

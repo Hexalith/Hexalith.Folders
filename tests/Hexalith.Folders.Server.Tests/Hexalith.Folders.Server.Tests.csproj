@@ -16,6 +16,7 @@
     <Compile Include="../shared/OperationalStatus/*.cs" Link="OperationalStatus/%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="../tools/Task36FoldObserver/Task36FoldObserver.csproj" IsAspireProjectResource="false" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Server\Hexalith.Folders.Server.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Testing\Hexalith.Folders.Testing.csproj" />
   </ItemGroup>

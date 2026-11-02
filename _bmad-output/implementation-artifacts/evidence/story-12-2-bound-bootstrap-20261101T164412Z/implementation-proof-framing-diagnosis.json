@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-11-01T19:23:29.042873+00:00",
+  "daprVersionObserved": "1.18.7",
+  "failedAttempt": "strict-real-provider-durable-bootstrap",
+  "rawLog": {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-durable-bootstrap.raw.log",
+    "bytes": 1765802,
+    "sha256": "925637208f6e7b895ddb68ff60e205e544548649c0c18a5b532191cd87bea565"
+  },
+  "nativeToolEvidence": {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-durable-bootstrap-native-tools-before.json",
+    "bytes": 894,
+    "sha256": "4e2266e3ead065762f5c39da82a037679b63c475982105575baf9e4442189a23"
+  },
+  "sourceBeforeEvidence": {
+    "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-bound-bootstrap-20261101T164412Z/strict-real-provider-durable-bootstrap-source-before.json",
+    "bytes": 4993652,
+    "sha256": "38514e1e1893787b92f8724834c355fd358585c4de8f404666232e2ec49adc5b"
+  },
+  "helperBeforeAttemptSha256": "dfe64e45e8ef6b9b980ae87548302390a5060043ccf056e99d2de141c1718167",
+  "observedGatewayRefusals": [
+    {
+      "rawLine": 8436,
+      "timestamp": "2026-11-01T19:08:52.7380000Z",
+      "actionResult": "Microsoft.AspNetCore.Mvc.ForbidResult",
+      "actionDurationMilliseconds": 0.0821,
+      "controlGroup": "missing-proof"
+    },
+    {
+      "rawLine": 8622,
+      "timestamp": "2026-11-01T19:08:54.0520000Z",
+      "actionResult": "Microsoft.AspNetCore.Mvc.ForbidResult",
+      "actionDurationMilliseconds": 0.0374,
+      "controlGroup": "missing-proof"
+    },
+    {
+      "rawLine": 8840,
+      "timestamp": "2026-11-01T19:08:55.3540000Z",
+      "actionResult": "Microsoft.AspNetCore.Mvc.ForbidResult",
+      "actionDurationMilliseconds": 0.0252,
+      "controlGroup": "missing-proof"
+    },
+    {
+      "rawLine": 9068,
+      "timestamp": "2026-11-01T19:08:56.6530000Z",
+      "actionResult": "Microsoft.AspNetCore.Mvc.ForbidResult",
+      "actionDurationMilliseconds": 0.0277,
+      "controlGroup": "missing-proof"
+    },
+    {
+      "rawLine": 9204,
+      "timestamp": "2026-11-01T19:08:57.5170000Z",
+      "actionResult": "Microsoft.AspNetCore.Mvc.ForbidResult",
+      "actionDurationMilliseconds": 0.1026,
+      "controlGroup": "wrong-proof"
+    },
+    {
+      "rawLine": 9350,
+      "timestamp": "2026-11-01T19:08:58.7340000Z",
+      "actionResult": "Microsoft.AspNetCore.Mvc.ForbidResult",
+      "actionDurationMilliseconds": 0.0463,
+      "controlGroup": "wrong-proof"
+    },
+    {
+      "rawLine": 9612,
+      "timestamp": "2026-11-01T19:09:00.1890000Z",
+      "actionResult": "Microsoft.AspNetCore.Mvc.ForbidResult",
+      "actionDurationMilliseconds": 0.0483,
+      "controlGroup": "wrong-proof"
+    }
+  ],
+  "observedDaprRetries": [
+    {
+      "rawLine": 8414,
+      "timestamp": "2026-11-01T19:08:52.7830000Z",
+      "delay": "1s"
+    },
+    {
+      "rawLine": 9190,
+      "timestamp": "2026-11-01T19:08:57.5410000Z",
+      "delay": "1s"
+    }
+  ],
+  "observedCircuitOpening": {
+    "rawLine": 9594,
+    "timestamp": "2026-11-01T19:09:00.2000000Z",
+    "from": "closed",
+    "to": "open",
+    "endpoint": "api/v1/commands/bound/workload"
+  },
+  "observedFixtureFailure": {
+    "rawLine": 9949,
+    "expectedHttpStatus": 403,
+    "actualHttpStatus": 500,
+    "codeLabel": "unavailable",
+    "codeLabelProvenance": "Fixture RequireStatusAsync fallback when response has no string code property; it is not a captured Dapr/SDK reason."
+  },
+  "installedPolicySelection": {
+    "source": {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/DaprComponents/resiliency.yaml",
+      "bytes": 2357,
+      "sha256": "2b50e4ac3e47d2ac73809939ea5f3fb67e0485c64d2a0b8f39732e86cbb59edf"
+    },
+    "retryMaxRetries": 3,
+    "retryDelay": "1s",
+    "attemptTimeout": "5s",
+    "breakerTrip": "consecutiveFailures > 3",
+    "breakerInterval": "10s",
+    "breakerTimeout": "30s",
+    "httpStatusMatching": "not configured; all application HTTP errors retry"
+  },
+  "diagnosis": {
+    "classification": "Observed gateway refusal and real circuit opening, with source-backed HTTP500 mapping.",
+    "cause": "The general fixture helper buffers JsonContent into ByteArrayContent, making invalid proof controls replayable. The unchanged Dapr retry policy replays application403 responses, feeding the endpoint breaker; open-circuit infrastructure error maps to500.",
+    "notClaimed": [
+      "A captured ERR_DIRECT_INVOKE response body",
+      "A proof parser FormatException",
+      "A successful full strict durability run",
+      "Additional admitted administrator commands"
+    ]
+  },
+  "primarySources": [
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/v1.18.7/pkg/resiliency/retry.go",
+      "httpStatus": 200,
+      "sha256": "f2635f0c0e3cc370a179699e5d85b626fb354fd4524f9707be87c4f802fab85a",
+      "bytes": 5644,
+      "lineReferenceConvention": "Physical raw source lines, including blank lines.",
+      "ranges": [
+        {
+          "startsAtPhysicalRawLine": 138,
+          "endsAtPhysicalRawLine": 150
+        }
+      ],
+      "purpose": "Unspecified status matching retries HTTP403."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/v1.18.7/pkg/resiliency/policy.go",
+      "httpStatus": 200,
+      "sha256": "14a92807ca6aae49f75f048d16b8a3b306643b85e7931abc1aa0a1da62b964d3",
+      "bytes": 10904,
+      "lineReferenceConvention": "Physical raw source lines, including blank lines.",
+      "ranges": [
+        {
+          "startsAtPhysicalRawLine": 238,
+          "endsAtPhysicalRawLine": 262
+        },
+        {
+          "startsAtPhysicalRawLine": 131,
+          "endsAtPhysicalRawLine": 142
+        }
+      ],
+      "purpose": "Configured retries wrap circuit execution; an open circuit stops retries permanently."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/v1.18.7/pkg/api/http/directmessaging.go",
+      "httpStatus": 200,
+      "sha256": "e21f456b086478f6ee5e6d580f8b12d88736b157fdcd2eb98f2d1d7495a5121c",
+      "bytes": 16764,
+      "lineReferenceConvention": "Physical raw source lines, including blank lines.",
+      "ranges": [
+        {
+          "startsAtPhysicalRawLine": 147,
+          "endsAtPhysicalRawLine": 153
+        },
+        {
+          "startsAtPhysicalRawLine": 217,
+          "endsAtPhysicalRawLine": 229
+        },
+        {
+          "startsAtPhysicalRawLine": 284,
+          "endsAtPhysicalRawLine": 291
+        },
+        {
+          "startsAtPhysicalRawLine": 341,
+          "endsAtPhysicalRawLine": 357
+        }
+      ],
+      "purpose": "Buffered application errors participate in retry policy; streaming application refusal is forwarded directly; open-circuit non-CodeError falls through direct-invocation error mapping."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/v1.18.7/pkg/messaging/v1/invoke_method_request.go",
+      "httpStatus": 200,
+      "sha256": "b155889fa99f42fbeed5405a8d0712bcf49324a8ce80f4797ac60ab2904909bc",
+      "bytes": 11880,
+      "lineReferenceConvention": "Physical raw source lines, including blank lines.",
+      "ranges": [
+        {
+          "startsAtPhysicalRawLine": 181,
+          "endsAtPhysicalRawLine": 190
+        }
+      ],
+      "purpose": "Natural streaming requests disable replay buffering."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/v1.18.7/pkg/resiliency/breaker/circuitbreaker.go",
+      "httpStatus": 200,
+      "sha256": "4fd191c405f901ca779147da52a1e4e346128f2b13faf41ea5d3b68fccd6b3b1",
+      "bytes": 5364,
+      "lineReferenceConvention": "Physical raw source lines, including blank lines.",
+      "ranges": [
+        {
+          "startsAtPhysicalRawLine": 72,
+          "endsAtPhysicalRawLine": 74
+        },
+        {
+          "startsAtPhysicalRawLine": 109,
+          "endsAtPhysicalRawLine": 112
+        }
+      ],
+      "purpose": "Open-state errors are permanent and actual breaker transitions are logged."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dapr/dapr/v1.18.7/pkg/messages/predefined.go",
+      "httpStatus": 200,
+      "sha256": "e84436e682e4e68c9e06c1075ba2fc5d0625e8241f5e3fa203dc4e469b3773bf",
+      "bytes": 13173,
+      "lineReferenceConvention": "Physical raw source lines, including blank lines.",
+      "ranges": [
+        {
+          "startsAtPhysicalRawLine": 71,
+          "endsAtPhysicalRawLine": 71
+        }
+      ],
+      "purpose": "Direct-invocation infrastructure error defaults to HTTP500."
+    }
+  ],
+  "repairScope": "Only missing/wrong-proof controls use a fresh natural JsonContent factory. Default helper buffering, valid owner buffered admission, HTTP statuses, request identities/headers, all policy files and75s/90s deadline/retry rules stay unchanged.",
+  "privacy": "No credentials, principal values, request/response bodies, keys or tokens retained in this diagnosis."
+}
