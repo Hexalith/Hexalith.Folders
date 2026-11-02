@@ -1,0 +1,7 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Folders.IntegrationTests
+  Discovered:  Hexalith.Folders.IntegrationTests
+  Starting:    Hexalith.Folders.IntegrationTests
+  Finished:    Hexalith.Folders.IntegrationTests (ID = '20fc245c02ffaeb037db6cb57f8c5128e63cfce9d5e3348de7ab452172be837a')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.IntegrationTests  Total: 19, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 74.968s

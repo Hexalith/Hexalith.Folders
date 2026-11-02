@@ -1,0 +1,17 @@
+xUnit.net v3 In-Process Runner v4.0.2+0c7aa4991f (64-bit .NET 10.0.14)
+  Discovering: Hexalith.Platform.Composition.Tests
+  Discovered:  Hexalith.Platform.Composition.Tests
+  Starting:    Hexalith.Platform.Composition.Tests
+    Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedGraphDoesNotReadTheLocalProfileAndMatchesTheMaintainedChartInput [FAIL]
+      System.IO.InvalidDataException : ../../../../../references/Hexalith.Parties/module/hexalith.module-manifest.v2.json: manifest: Supply an existing readable manifest file.
+      Stack Trace:
+        /_/src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionDeclarationClosure.cs(73,0): at Hexalith.Builds.Tooling.Runtime.CompositionDeclarationClosure.LoadDeclarations(CompositionDeclarationOptions options)
+        /_/src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionDeclarationClosure.cs(27,0): at Hexalith.Builds.Tooling.Runtime.CompositionDeclarationClosure.Load(CompositionDeclarationOptions options)
+        src/Hexalith.Platform.Composition/PlatformDeclarationSet.cs(14,0): at Hexalith.Platform.Composition.PlatformDeclarationSet.Load(PlatformCompositionOptions options)
+        src/Hexalith.Platform.Composition/PlatformApplicationGraph.cs(10,0): at Hexalith.Platform.Composition.PlatformApplicationGraph.Resolve(PlatformCompositionOptions options)
+        tests/Hexalith.Platform.Composition.Tests/PlatformHostedPublishingTests.cs(49,0): at Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedGraphDoesNotReadTheLocalProfileAndMatchesTheMaintainedChartInput()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Finished:    Hexalith.Platform.Composition.Tests (ID = 'c7b1aef83163ba97b73df654f1069c3e4d91d12b48b2aa5e6970d725bc0f9349')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Platform.Composition.Tests  Total: 1, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 0.263s

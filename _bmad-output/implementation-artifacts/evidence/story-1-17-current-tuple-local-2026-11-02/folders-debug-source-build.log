@@ -1,0 +1,114 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Client.Rest/Hexalith.Memories.Client.Rest.csproj (in 375 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders/Hexalith.Folders.csproj (in 433 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Aspire/Hexalith.Memories.Aspire.csproj (in 399 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Testing/Hexalith.FrontComposer.Testing.csproj (in 258 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj (in 380 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.LoadTests.Tests/Hexalith.Folders.LoadTests.Tests.csproj (in 457 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Aspire/Hexalith.Tenants.Aspire.csproj (in 459 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj (in 433 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj (in 456 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj (in 456 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj (in 457 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj (in 460 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Hexalith.FrontComposer.Shell.csproj (in 17 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj (in 460 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts/Hexalith.FrontComposer.Contracts.csproj (in 23 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj (in 33 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj (in 460 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj (in 88 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj (in 76 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj (in 11 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Hexalith.Builds.Tooling.csproj (in 97 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj (in 90 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/Task36FoldObserver.csproj (in 83 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts.UI/Hexalith.FrontComposer.Contracts.UI.csproj (in 10 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj (in 101 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj (in 112 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/load/Hexalith.Folders.LoadTests.csproj (in 101 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj (in 141 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj (in 23 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj (in 135 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj (in 125 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj (in 145 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj (in 41 ms).
+  24 of 57 projects are up-to-date for restore.
+  Hexalith.Folders.Contracts -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders.Client -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/bin/Debug/net10.0/Hexalith.Folders.Client.dll
+  Hexalith.Folders.Sample -> /home/administrator/projects/hexalith/folders/samples/Hexalith.Folders.Sample/bin/Debug/net10.0/Hexalith.Folders.Sample.dll
+  Hexalith.Folders.Sample.Tests -> /home/administrator/projects/hexalith/folders/samples/Hexalith.Folders.Sample.Tests/bin/Debug/net10.0/Hexalith.Folders.Sample.Tests.dll
+  Hexalith.Commons.UniqueIds -> /home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll
+  Successfully created package '/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/bin/Debug/Hexalith.Commons.UniqueIds.1.0.0.nupkg'.
+  Successfully created package '/home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/bin/Debug/Hexalith.Commons.UniqueIds.1.0.0.snupkg'.
+  Hexalith.EventStore.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll
+  Hexalith.EventStore.Client -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/bin/Debug/net10.0/Hexalith.EventStore.Client.dll
+  Hexalith.Folders -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.Folders.dll
+  Hexalith.EventStore.Admin.Abstractions -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll
+  Hexalith.EventStore.ServiceDefaults -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll
+  Hexalith.EventStore.DomainService -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll
+  Hexalith.EventStore.Server -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/bin/Debug/net10.0/Hexalith.EventStore.Server.dll
+  Hexalith.EventStore.Gateway -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Gateway/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll
+  Hexalith.Folders.EventStore -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll
+  Hexalith.Folders.ServiceDefaults -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.ServiceDefaults/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll
+  Hexalith.Commons.UniqueIds -> /home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll
+  Hexalith.EventStore.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll
+  Hexalith.McpCli.Analyzers -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Analyzers/bin/Debug/netstandard2.0/Hexalith.McpCli.Analyzers.dll
+  Hexalith.McpCli.Abstractions -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll
+  Hexalith.Tenants.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll
+  Hexalith.EventStore.Client -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/bin/Debug/net10.0/Hexalith.EventStore.Client.dll
+  Hexalith.McpCli.Analyzers -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Analyzers/bin/Debug/netstandard2.0/Hexalith.McpCli.Analyzers.dll
+  Hexalith.McpCli.Abstractions -> /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll
+  Hexalith.Tenants.Client -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Client/bin/Debug/net10.0/Hexalith.Tenants.Client.dll
+  Hexalith.Tenants.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll
+  Hexalith.Memories.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Contracts/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll
+  Hexalith.Memories.Client.Rest -> /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Client.Rest/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll
+  Hexalith.Folders.Server -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll
+  Hexalith.FrontComposer.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.dll
+  Hexalith.FrontComposer.Contracts.UI -> /home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.dll
+  Hexalith.FrontComposer.Shell -> /home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.dll
+  Hexalith.FrontComposer.Contracts.UI -> /home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts.UI/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.UI.dll
+  Hexalith.FrontComposer.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts/bin/Debug/net10.0/Hexalith.FrontComposer.Contracts.dll
+  Hexalith.Folders.UI -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Debug/net10.0/Hexalith.Folders.UI.dll
+  Hexalith.Memories.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Contracts/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll
+  Hexalith.Folders.Workers -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll
+  Hexalith.Folders.Aspire -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Aspire/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll
+  Hexalith.EventStore.Aspire -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Aspire/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll
+  Hexalith.EventStore.ServiceDefaults -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll
+  Hexalith.EventStore.Aspire -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Aspire/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll
+  Hexalith.Tenants.Aspire -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Aspire/bin/Debug/net10.0/Hexalith.Tenants.Aspire.dll
+  Hexalith.Memories.Aspire -> /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Aspire/bin/Debug/net10.0/Hexalith.Memories.Aspire.dll
+  Platform version catalog validated: Hexalith.EventStore.Aspire/3.132.2, CommunityToolkit.Aspire.Hosting.Dapr/13.6.2-beta.959, required range 13.6.2-beta.959 for net10.0.
+  Hexalith.Builds.Tooling -> /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/bin/Debug/net10.0/Hexalith.Builds.Tooling.dll
+  Hexalith.Folders.AppHost -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Folders.AppHost.dll
+  Hexalith.Folders.Cli -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Cli/bin/Debug/net10.0/Hexalith.Folders.Cli.dll
+  Hexalith.Folders.Client.Generation.Shared -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/Generation/Shared/bin/Debug/net10.0/Hexalith.Folders.Client.Generation.Shared.dll
+  Hexalith.Folders.Mcp -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Mcp/bin/Debug/net10.0/Hexalith.Folders.Mcp.dll
+  Hexalith.Folders.Testing -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.Folders.Testing.dll
+  Task36FoldObserver -> /home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll
+  Hexalith.Folders.AppHost.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll
+  Hexalith.Folders.Cli.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.Cli.Tests.dll
+  Hexalith.Folders.Client.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.Tests.dll
+  Hexalith.Folders.Contracts.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll
+  Hexalith.Memories.Client.Rest -> /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Client.Rest/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll
+  Hexalith.Folders.EventStore.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll
+  Hexalith.Folders.IntegrationTests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll
+  Hexalith.Folders.LoadTests -> /home/administrator/projects/hexalith/folders/tests/load/bin/Debug/net10.0/Hexalith.Folders.LoadTests.dll
+  Hexalith.Folders.LoadTests.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Folders.LoadTests.Tests.dll
+  Hexalith.Folders.Mcp.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.Mcp.Tests.dll
+  Hexalith.EventStore.Testing -> /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Testing/bin/Debug/net10.0/Hexalith.EventStore.Testing.dll
+  Hexalith.Folders.Server.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll
+  Hexalith.Folders.Testing.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.Folders.Testing.Tests.dll
+  Hexalith.Folders.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll
+  Hexalith.Folders.UI.E2E.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.E2E.Tests.dll
+  Hexalith.FrontComposer.Shell -> /home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/bin/Debug/net10.0/Hexalith.FrontComposer.Shell.dll
+  Hexalith.FrontComposer.Testing -> /home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Testing/bin/Debug/net10.0/Hexalith.FrontComposer.Testing.dll
+  Hexalith.Folders.UI.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.Tests.dll
+  Hexalith.Folders.Workers.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll
+  Hexalith.Folders.ParityOracleGenerator -> /home/administrator/projects/hexalith/folders/tests/tools/parity-oracle-generator/bin/Debug/net10.0/Hexalith.Folders.ParityOracleGenerator.dll
+  Hexalith.Folders.PatternExamples -> /home/administrator/projects/hexalith/folders/tests/tools/pattern-examples/bin/Debug/net10.0/Hexalith.Folders.PatternExamples.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:04:26.26

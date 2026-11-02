@@ -1,0 +1,122 @@
+CONTRACT-PARITY-CI category=server-vs-spine project=tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.355s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.424s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.331s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 7, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.939s
+CONTRACT-PARITY-CI category=previous-spine project=tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.846s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.800s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 2.564s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 2.018s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 2.519s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 2.647s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 2.221s
+CONTRACT-PARITY-CI category=generated-client project=tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.212s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.272s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.467s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 16.578s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.220s
+CONTRACT-PARITY-CI category=idempotency-helpers project=tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.695s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.266s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.259s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.237s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.230s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.347s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.271s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.165s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.456s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.145s
+CONTRACT-PARITY-CI category=parity-oracle-schema project=tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.389s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.332s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.225s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.159s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.156s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 1.911s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 1.856s
+CONTRACT-PARITY-CI category=parity-oracle-determinism project=tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.732s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 3.735s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 1.596s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 3, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 4.491s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 2.135s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 2.281s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 2.520s
+CONTRACT-PARITY-CI category=pd10-v2-conformance-set project=tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 5, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 1.378s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 16, Errors: 0, Failed: 5, Skipped: 0, Not Run: 0, Time: 10.689s
+CONTRACT-PARITY-CI category=sdk-transport-parity project=tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 216, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.431s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 4, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.268s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 3, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.295s
+CONTRACT-PARITY-CI category=rest-sdk-golden-parity project=tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.IntegrationTests  Total: 97, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 37.368s
+CONTRACT-PARITY-CI category=cli-behavioral-parity project=tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Cli.Tests  Total: 620, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.400s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Cli.Tests  Total: 12, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.255s
+CONTRACT-PARITY-CI category=mcp-behavioral-parity project=tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Mcp.Tests  Total: 571, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.573s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Mcp.Tests  Total: 7, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.375s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Mcp.Tests  Total: 9, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.681s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Mcp.Tests  Total: 4, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.325s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Mcp.Tests  Total: 58, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.171s
+CONTRACT-PARITY-CI category=mixed-surface-handoff project=tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.IntegrationTests  Total: 587, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.667s
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.IntegrationTests  Total: 8, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 4.179s

@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/home/administrator/projects/hexalith/folders/scripts/generate-pd10-v2-conformance-set.py", line 135, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/home/administrator/projects/hexalith/folders/scripts/generate-pd10-v2-conformance-set.py", line 83, in main
+    paths = candidate_paths(root, output)
+  File "/home/administrator/projects/hexalith/folders/scripts/generate-pd10-v2-conformance-set.py", line 50, in candidate_paths
+    raise RuntimeError("Candidate inventory omits runtime/test compile inputs: " + ", ".join(missing))
+RuntimeError: Candidate inventory omits runtime/test compile inputs: src/Hexalith.Folders.Server/FoldersRuntimeCatalogDeclarations.cs, src/Hexalith.Folders/Routing/FoldersCommandCatalog.cs, tests/Hexalith.Folders.Server.Tests/FoldersHumanCommandCatalogTests.cs, tests/Hexalith.Folders.Server.Tests/Task36FoldDiagnosticObserverTests.cs, tests/Hexalith.Folders.Server.Tests/Task36FoldObservationCollection.cs

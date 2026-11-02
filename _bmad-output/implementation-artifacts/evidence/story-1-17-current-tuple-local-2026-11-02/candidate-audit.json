@@ -1,0 +1,88 @@
+{
+  "manifestPath": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml",
+  "manifestSha256": "ddce3ae7f0c4f1920b23d7a1e309b2bba96f8b36bfbf097d3a596144fd7ba748",
+  "recordedArtifactCount": 1478,
+  "rowCount": 1478,
+  "hashMismatchCount": 10,
+  "mismatches": [
+    {
+      "path": "scripts/prepare-ci-topology-projects.sh",
+      "recordedBytes": 4278,
+      "actualBytes": 6523,
+      "recordedSha256": "22647d256989b31273437494d3fe434eaa6d229297dac460dbf788be3f186b15",
+      "actualSha256": "bf025ef289ce0f46c6696109fc05db22fe1db0611ab80a8b8877f98fe1394922"
+    },
+    {
+      "path": "scripts/tests/test_prepare_ci_topology_projects.py",
+      "recordedBytes": 12571,
+      "actualBytes": 13673,
+      "recordedSha256": "124f9f0bd8f55b0b7945db22dcfb4276bc6b28e83baf2abf8ad45fb2d8d68cb1",
+      "actualSha256": "e42fdd3542b2d30fb79f3828285c4ef4521923c6d7ef1bbc77e4d4934d200320"
+    },
+    {
+      "path": "src/Hexalith.Folders.EventStore/Program.cs",
+      "recordedBytes": 2280,
+      "actualBytes": 3431,
+      "recordedSha256": "cd509f244dedc29fc72a8f49c55eec67b56042d1879a4316a9f204f2be232e2a",
+      "actualSha256": "4f2e69e1ce58b3b235bbf1fe41251a0757df29d5f2f578961e2c3fa28d954781"
+    },
+    {
+      "path": "src/Hexalith.Folders.Server/FolderDomainProcessor.cs",
+      "recordedBytes": 86872,
+      "actualBytes": 87943,
+      "recordedSha256": "ced775237da613e501354d8c55b38534f85b995ceb5358a966d2361b991cc793",
+      "actualSha256": "c8f11d624e0dce3445a7bd56372b0a6af5b3d1b75a8f7f922c03e7b72fc8e058"
+    },
+    {
+      "path": "src/Hexalith.Folders.Server/FoldersProjectionCatalogDeclarations.cs",
+      "recordedBytes": 1083,
+      "actualBytes": 1953,
+      "recordedSha256": "5e1ab3afde0fa666ff9f4c214838bbc8851324d1846606e4aca8a02de9d73646",
+      "actualSha256": "ff1214cf8a96a5a2da35a61a078b184e6d2cb078e6e5bee54f906f38667f09dc"
+    },
+    {
+      "path": "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs",
+      "recordedBytes": 7809,
+      "actualBytes": 8201,
+      "recordedSha256": "4ad38d73bcb6941da0e07e642340ce8b2d37be0b88389ca470e7461fe0cd8a2e",
+      "actualSha256": "4f5dc3f31c5d2497b3bd65a706243b6579bdac979c541aa73cbfe721d874bbc8"
+    },
+    {
+      "path": "src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+      "recordedBytes": 8991,
+      "actualBytes": 9384,
+      "recordedSha256": "55872a5e04072f36c8047aee8c97247c55521ddcc1edb8ed985be079a89105d3",
+      "actualSha256": "23ac2606f674753045b558bb28069c1c6bb27b4d12d5f57b1e51eba3581746f6"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Contracts.Tests/Deployment/BaselineCiWorkflowConformanceTests.cs",
+      "recordedBytes": 28390,
+      "actualBytes": 28435,
+      "recordedSha256": "b96d456722715aa940e8f5e3bac8de95488881e1313bcd8ebc6cc672e9b3e7e5",
+      "actualSha256": "66899f6bd76c683ba4e8d6aa11b976bb16225c13f2fe1f0b83cbe1897ec48911"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/FoldersProjectionCatalogFixture.cs",
+      "recordedBytes": 7443,
+      "actualBytes": 7765,
+      "recordedSha256": "2de8648b32d50e7359cd51efbef34c77f03154cf97c14fa5aff8a0c9bca445b1",
+      "actualSha256": "c96c6324333c88d691bedab0ee120cd0a9997550ebf777b7213b84c62fe24779"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+      "recordedBytes": 2872,
+      "actualBytes": 2993,
+      "recordedSha256": "b3b0992dc06039586e44acf69b6ee4bc9fc39992965bfb85e377cd48088c7ddb",
+      "actualSha256": "31a277da1fb16dfc7b9fdd58e6e73a047ac40834e49bb1bf70a155a012a32702"
+    }
+  ],
+  "missingCompileInputs": [
+    "src/Hexalith.Folders.Server/FoldersRuntimeCatalogDeclarations.cs",
+    "src/Hexalith.Folders/Routing/FoldersCommandCatalog.cs",
+    "tests/Hexalith.Folders.Server.Tests/FoldersHumanCommandCatalogTests.cs",
+    "tests/Hexalith.Folders.Server.Tests/Task36FoldDiagnosticObserverTests.cs",
+    "tests/Hexalith.Folders.Server.Tests/Task36FoldObservationCollection.cs"
+  ],
+  "generationAttempt": "candidate-generation.log",
+  "candidateInventoryModified": false
+}

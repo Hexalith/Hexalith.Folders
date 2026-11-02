@@ -1,0 +1,277 @@
+{
+  "recordId": "story-1-17-current-tuple-local-2026-11-02",
+  "recordedAtUtc": "2026-11-02T12:23:26+00:00",
+  "status": "HOLD",
+  "scope": "Current clean workspace local gates and source/consumer identity only; no hosted/operational qualification",
+  "sdkVersion": "10.0.403",
+  "sourceTuple": "source-tuple.json",
+  "candidateAudit": "candidate-audit.json",
+  "controls": {
+    "routeMode": "V1Only",
+    "t0": null,
+    "activationAuthority": null,
+    "tracker": "backlog",
+    "stagingChecksExecuted": 0
+  },
+  "protectedFiles": {
+    ".gitmodules": "c9daa495deb0a5903771cbbfeef10f6d376a3e521c8f6ad7447aae689c5bcf37",
+    "_bmad-output/implementation-artifacts/sprint-status.yaml": "7369c8a90ac5f1514fdf5ab5eab5e900759913850f3fe8730f984036d9e057f4",
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+    "_bmad-output/planning-artifacts/planning-story-manifest.yaml": "ba04ee232dcf74da85127af481336c8a17539cf7b0a17e4b1e95bba7aab84837",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml": "ddce3ae7f0c4f1920b23d7a1e309b2bba96f8b36bfbf097d3a596144fd7ba748",
+    "docs/contract/authorization-matrix.md": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420",
+    "src/Hexalith.Folders.Server/FoldersApiRouting.cs": "5eaf1a36aaebd3039cba6279bb3d94396b2202801407036d2b3bd5caba0d89ce",
+    "tools/release-packages.json": "f220b06f663b74a3d07af21d2ab5f513f6924677ea843a40d2303084e6d8cce2",
+    ".github/workflows/release.yml": "d6a69c9be2a657e02a35ee2d8109d8d3658299102ae157e816ff08ceac6d2345",
+    "references/Hexalith.Builds/Props/Directory.Packages.props": "e9603914e54c287c2841a4351669b7f3641e0a9ef2be83e9cf159d97d2d68588",
+    "references/Hexalith.Platform/.config/dotnet-tools.json": "6882681348eb78096c3f235461c0f6eee4b95167d8fe950e92eec36a4b08f29f",
+    "references/Hexalith.Platform/hexalith-platform.json": "c4172c482c4b9354349325a5a001e2adff6b3e93c23a6f837f2272659965d564",
+    "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformHostedPublishing.cs": "bbf6a96fad6bb2151458a24ae985fd3af5e9d9ff2c07f842bc17d67cda78c781",
+    "references/Hexalith.Projects/module/hexalith.module-manifest.v2.json": "7028d15cca15ac35fb8172a43537e45000307127f42499196817ca5a3772a754"
+  },
+  "preservedPrefixes": {
+    "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": {
+      "bytes": 109332,
+      "sha256": "eb38dd79497678e0f2ae62fe0a7d2fde3e9853ff69d9148e57cc640ad17cd830"
+    },
+    "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md": {
+      "bytes": 236127,
+      "sha256": "6b4f4f56e901adc97b62efe44244bfb84c086048bd8c82232e9e3579388a3015"
+    }
+  },
+  "commands": [
+    {
+      "id": "folders-debug-source",
+      "repository": ".",
+      "command": "dotnet build Hexalith.Folders.CI.slnx --configuration Debug -p:UseHexalithProjectReferences=true -m:1 -warnaserror",
+      "exitCode": 0,
+      "result": "Build succeeded; 0 warnings, 0 errors; 00:04:26.26",
+      "log": "folders-debug-source-build.log"
+    },
+    {
+      "id": "folders-release-package",
+      "repository": ".",
+      "command": "dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseHexalithProjectReferences=false -m:1 -warnaserror",
+      "exitCode": 0,
+      "result": "Build succeeded; 0 warnings, 0 errors; final captured run 00:01:34.98",
+      "log": "folders-release-package-build.log"
+    },
+    {
+      "id": "projects-release-package",
+      "repository": "references/Hexalith.Projects",
+      "command": "dotnet build Hexalith.Projects.CI.slnx --configuration Release -p:UseHexalithProjectReferences=false -m:1 -warnaserror",
+      "exitCode": 0,
+      "result": "Build succeeded; 0 warnings, 0 errors; final captured run 00:00:23.40",
+      "log": "projects-release-package-build.log"
+    },
+    {
+      "id": "projects-adapters",
+      "repository": "references/Hexalith.Projects",
+      "command": "dotnet tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.Tests.dll -class 'Hexalith.Projects.Server.Tests.ProjectFolderDirectoryTests' -class 'Hexalith.Projects.Server.Tests.ProjectFileReferenceDirectoryTests' -class 'Hexalith.Projects.Server.Tests.DelegatedProjectDirectoryRegistrationTests'",
+      "exitCode": 0,
+      "result": "85 total, 85 passed, 0 failed/skipped/errors/not run",
+      "log": "projects-adapters.log"
+    },
+    {
+      "id": "folders-governance",
+      "repository": ".",
+      "command": "dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll -class 'Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests' -class 'Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests' -class 'Hexalith.Folders.Contracts.Tests.OpenApi.ProviderCompatibilityCatalogContractTests'",
+      "exitCode": 0,
+      "result": "227 total, 227 passed, 0 failed/skipped/errors/not run",
+      "log": "folders-governance-classes.log"
+    },
+    {
+      "id": "folders-routing",
+      "repository": ".",
+      "command": "dotnet tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll -class 'Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests'",
+      "exitCode": 0,
+      "result": "19 total, 19 passed, 0 failed/skipped/errors/not run",
+      "log": "folders-routing.log",
+      "logPolicy": "sanitized runner summary only; resource-bearing test logs discarded"
+    },
+    {
+      "id": "candidate-class",
+      "repository": ".",
+      "command": "dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll -class 'Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests'",
+      "exitCode": 1,
+      "result": "16 total, 11 passed, 5 failed; stale rows and omitted compile inputs",
+      "log": "folders-conformance-class.log"
+    },
+    {
+      "id": "candidate-generation",
+      "repository": ".",
+      "command": "python3 scripts/generate-pd10-v2-conformance-set.py --repository-root /home/administrator/projects/hexalith/folders --output /home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-tuple-local-2026-11-02/scratch-pending.yaml",
+      "exitCode": 1,
+      "result": "Refused five omitted runtime/test compile inputs before writing output",
+      "log": "candidate-generation.log"
+    },
+    {
+      "id": "parity",
+      "repository": ".",
+      "command": "pwsh tests/tools/run-contract-parity-ci-gates.ps1 -SkipRestoreBuild -OutputReportPath /home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-tuple-local-2026-11-02/parity-report.json",
+      "exitCode": 1,
+      "result": "11/12 categories passed; pd10-v2-conformance-set failed",
+      "log": "parity-run.log",
+      "report": "parity-report.json",
+      "logPolicy": "sanitized category and runner summaries only; resource-bearing test logs discarded"
+    },
+    {
+      "id": "platform-strict-release",
+      "repository": "references/Hexalith.Platform",
+      "command": "dotnet build tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj --configuration Release -p:UseHexalithProjectReferences=false -m:1 -warnaserror",
+      "exitCode": 1,
+      "result": "258 CA analyzer errors; first CA2007 at src/Hexalith.Platform.Composition/PlatformRoutingCatalogMetadata.cs:23; 0 warnings",
+      "log": "platform-strict-release-build.log"
+    },
+    {
+      "id": "platform-diagnostic-release",
+      "repository": "references/Hexalith.Platform",
+      "command": "dotnet build tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj --configuration Release -p:UseHexalithProjectReferences=false -p:RunAnalyzers=false -m:1 -warnaserror",
+      "exitCode": 0,
+      "result": "Diagnostic only; 0 warnings/errors; does not clear strict gate",
+      "log": "platform-diagnostic-release-build.log"
+    },
+    {
+      "id": "platform-canonical-graph",
+      "repository": "references/Hexalith.Platform",
+      "command": "dotnet tests/Hexalith.Platform.Composition.Tests/bin/Release/net10.0/Hexalith.Platform.Composition.Tests.dll -method 'Hexalith.Platform.Composition.Tests.PlatformHostedPublishingTests.HostedGraphDoesNotReadTheLocalProfileAndMatchesTheMaintainedChartInput'",
+      "exitCode": 1,
+      "result": "0/1; missing nested Parties declaration before Describe",
+      "log": "platform-canonical-graph.log",
+      "buildProfile": "diagnostic Release with RunAnalyzers=false"
+    }
+  ],
+  "packageBinding": {
+    "source": "references/Hexalith.Projects/src/Hexalith.Projects.Server/obj/project.assets.json",
+    "resolvedIds": [
+      "Hexalith.Folders.Client/1.3.3",
+      "Hexalith.Folders.Contracts/1.3.3"
+    ],
+    "archives": {
+      "Client": {
+        "member": "hexalith.folders.client.1.3.3.nupkg",
+        "sha256": "b6e6d9f3455bb43245b88fb59d606e626ed47b6692d57c68e67f4394634df123",
+        "runtimeMember": "projects-runtime-Hexalith.Folders.Client.dll",
+        "runtimeSha256": "56726617129e355af833db4683d0de5de9ac289c139330ba4ae63e7d3e367105"
+      },
+      "Contracts": {
+        "member": "hexalith.folders.contracts.1.3.3.nupkg",
+        "sha256": "961998e537cd8b2ab7aa6abf722d77c8072b3ded3d9d074fa547bc07ce09a8c4",
+        "runtimeMember": "projects-runtime-Hexalith.Folders.Contracts.dll",
+        "runtimeSha256": "eff86154587a677780b65e81659f1b8a81f8bb14ca79de165c58c641f5fe29e2"
+      }
+    },
+    "currentSourceReleaseDllSha256": {
+      "Client": "4dbca250c89c6fe7d841feee1b79e651f290cbc0e4e673684a07d0c6fe33320b",
+      "Contracts": "3cd42d02215546a0ffd5749745c58f62a70679bff9c5c8d15e74b44ceac4c671"
+    },
+    "limit": "Cached package identities and loaded payload equality are local evidence; current Folders full candidate is newer and no current immutable hosted artifact is qualified here"
+  },
+  "blockers": [
+    {
+      "owner": "Folders candidate owner",
+      "reason": "Pending-only 1478-row inventory has 10 stale hashes and five omitted compile inputs; current scope forbids inventory replacement. The PD10 conformance class and parity category fail."
+    },
+    {
+      "owner": "Platform composition/Parties owner with Builds tool owner",
+      "reason": "Canonical graph cannot load the Parties declaration through Platform direct inputs; root sibling Parties revision differs from Platform direct gitlink. Strict Platform Release test build has 258 CA analyzer errors. Exact changed-tuple tool/catalog/composition acceptance remains open."
+    },
+    {
+      "owner": "Folders release operator and protected production reviewer",
+      "reason": "No signed current full-candidate publication or immutable hosted artifact qualified by this local run."
+    },
+    {
+      "owner": "Administrator with Platform/module operators",
+      "reason": "Attempt-locked target/consumer/retained-data disposition, hosted identity/delegation, staging, observation/recovery, production latency and authorized closure remain absent."
+    }
+  ],
+  "noRemoteOperations": true,
+  "noSourceOrDependencyEdits": true,
+  "limits": [
+    "No local Aspire topology run on this changed tuple.",
+    "No adoption/intake or operational acceptance inferred.",
+    "The temporary sibling resolver experiment was reverted after detecting mismatched owner gitlinks; the final Platform checkout is clean."
+  ],
+  "members": {
+    "candidate-audit.json": {
+      "bytes": 4091,
+      "sha256": "3273fd671909f50628f5f96333d72314a9dd6c1731ff91f89e4ab68fabf2cebe"
+    },
+    "candidate-generation.log": {
+      "bytes": 1011,
+      "sha256": "3f011b54d84b40afcf11c7a7038907b33cbba9e7f1ed977b4827e06a118e99a8"
+    },
+    "folders-conformance-class.log": {
+      "bytes": 116056,
+      "sha256": "1bda94c4238f53d72cc5372baf78f9bd05321ffa318344fe74f985ccf9cfa48d"
+    },
+    "folders-debug-source-build.log": {
+      "bytes": 18089,
+      "sha256": "70431f811b2e5ab0f5dd830de326b546ec449231f4b63bf53b712a7c3ec79c0f"
+    },
+    "folders-governance-classes.log": {
+      "bytes": 477,
+      "sha256": "f4d01fac3707714c3e7df8637b83391ecf8f94ac07d9f52206972683fae94bd3"
+    },
+    "folders-release-package-build.log": {
+      "bytes": 9348,
+      "sha256": "36a454ce86f6d7720348a0a9dca6be007b348d984657942911f2e0d685e102b8"
+    },
+    "folders-routing.log": {
+      "bytes": 481,
+      "sha256": "c76e1d7fe394ba842be612af7bf9f4a5ec555f63bc98aee56cb24cebc8e7338a"
+    },
+    "hexalith.folders.client.1.3.3.nupkg": {
+      "bytes": 238099,
+      "sha256": "b6e6d9f3455bb43245b88fb59d606e626ed47b6692d57c68e67f4394634df123"
+    },
+    "hexalith.folders.contracts.1.3.3.nupkg": {
+      "bytes": 33871,
+      "sha256": "961998e537cd8b2ab7aa6abf722d77c8072b3ded3d9d074fa547bc07ce09a8c4"
+    },
+    "parity-report.json": {
+      "bytes": 24304,
+      "sha256": "a9601b08ff8be249e73e46c9d944a5ba511147a2a70e3f58e34366f5e04b18ce"
+    },
+    "parity-run.log": {
+      "bytes": 9048,
+      "sha256": "bc742d834123a4544a25000b25d90523b20afe3606247b4d4849247fb2e7fb35"
+    },
+    "platform-canonical-graph.log": {
+      "bytes": 2044,
+      "sha256": "3cf7aad14a712f1e04b552e3b79a0873a2f5da8f4659b7eec1db06b48e909c8c"
+    },
+    "platform-diagnostic-release-build.log": {
+      "bytes": 2565,
+      "sha256": "5516e423c9eb5ca11cf628b4d09142d2e7e098852f69b8e78752c1bf924e0bbc"
+    },
+    "platform-strict-release-build.log": {
+      "bytes": 368589,
+      "sha256": "cc0e932ada7de8bae33294008cb062e0f4911660b1398ab6c492e6e17a99159e"
+    },
+    "projects-adapters.log": {
+      "bytes": 465,
+      "sha256": "7126385489d1fddaf5ee25a24b7ce49613b19d6915cda4007b64b03e059f4ce1"
+    },
+    "projects-release-package-build.log": {
+      "bytes": 8604,
+      "sha256": "50960db7c7e31154e5236d3e6a4fe2c21829c3fca007057aeef5f28a61f0fc01"
+    },
+    "projects-runtime-Hexalith.Folders.Client.dll": {
+      "bytes": 901120,
+      "sha256": "56726617129e355af833db4683d0de5de9ac289c139330ba4ae63e7d3e367105"
+    },
+    "projects-runtime-Hexalith.Folders.Contracts.dll": {
+      "bytes": 46592,
+      "sha256": "eff86154587a677780b65e81659f1b8a81f8bb14ca79de165c58c641f5fe29e2"
+    },
+    "source-tuple.json": {
+      "bytes": 3194,
+      "sha256": "f8416d211b9fe163c2b11ad2a7eb3456b02aee624fcbb51260f04d80f7cbdcb0"
+    },
+    "verify.py": {
+      "bytes": 4843,
+      "sha256": "a55a2069f48e21977d74964d93583ae32be34edb4c48626f696ea848ea1c1eee"
+    }
+  }
+}
