@@ -16,7 +16,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 7758899601d176951fa28fa41822363bd64be01c04e50f870addf018e8508607
+candidate_set_sha256: 02dfa7c3c14804867e19313d519e925645aec85f869b3559731b5c563b5f4f65
 artifact_count: 1490
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -117,12 +117,12 @@ artifacts:
     sha256: 0c4c5d08758f32ac9c79d336b46411cd805ed78a0b9e20a84d227807a664d470
   - path: "scripts/prepare-ci-topology-projects.sh"
     kind: file
-    bytes: 6523
-    sha256: bf025ef289ce0f46c6696109fc05db22fe1db0611ab80a8b8877f98fe1394922
+    bytes: 8110
+    sha256: 0314820f3241a9e938cb8904c05102710229ed7dc62ee161d49b18b7f3a9d64e
   - path: "scripts/tests/test_prepare_ci_topology_projects.py"
     kind: file
-    bytes: 14624
-    sha256: fca6284205fb5d8770adcbe66085f52690a86fe416a178a9da5c46cc1c142779
+    bytes: 15896
+    sha256: 4c6e4f6c6b3859271d11c20708c47c00d15e59680d5dd6682a955b19b7fc0461
   - path: "src/Hexalith.Folders.Cli/CliApplication.cs"
     kind: file
     bytes: 3443

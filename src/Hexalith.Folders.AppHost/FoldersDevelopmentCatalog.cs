@@ -59,8 +59,11 @@ public static class FoldersDevelopmentCatalog
     private static Assembly Load(ProjectResource project, string artifact)
     {
         string directory = Path.GetDirectoryName(project.GetProjectMetadata().ProjectPath)!;
-        string target = Path.Combine(directory, "bin", "Debug", "net10.0", artifact);
-        if (!File.Exists(target)) throw new InvalidOperationException("Build the selected Debug/source catalog owner before composing its runtime: " + target);
+        string? configuration = new DirectoryInfo(Path.GetDirectoryName(typeof(FoldersDevelopmentCatalog).Assembly.Location)!).Parent?.Name;
+        if (configuration is not ("Debug" or "Release"))
+            throw new InvalidOperationException("The selected AppHost build configuration is unavailable.");
+        string target = Path.Combine(directory, "bin", configuration, "net10.0", artifact);
+        if (!File.Exists(target)) throw new InvalidOperationException("Build the selected source catalog owner before composing its runtime: " + target);
         Assembly loaded = Assembly.LoadFrom(target);
         if (!SHA256.HashData(File.ReadAllBytes(loaded.Location)).AsSpan().SequenceEqual(SHA256.HashData(File.ReadAllBytes(target))))
             throw new InvalidOperationException("The selected catalog owner differs from the loaded executable artifact.");
