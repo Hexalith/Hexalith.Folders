@@ -1,0 +1,910 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+    "-result-xml",
+    "/tmp/story12-2-resume-20261102-1EZDgA/final-eventstore.tests-private.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-02T21:24:44.668097+00:00",
+  "utc_end": "2026-11-02T21:24:50.527572+00:00",
+  "exit_code": 0,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-resume-20261102-1EZDgA/final-eventstore.tests-private.log",
+    "sha256": "599e89800fa155586fa671a2db87f395afb18d5964a5560dcb3c20ba5864204c"
+  },
+  "private_xml": {
+    "path": "/tmp/story12-2-resume-20261102-1EZDgA/final-eventstore.tests-private.xml",
+    "sha256": "d0852241a549d54891796e211050c06d6df6bf57d48ef0f121249be52fcd36af"
+  },
+  "summary": {
+    "assemblies": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+        "run-date": "2026-11-02",
+        "run-time": "21:24:44",
+        "errors": "0",
+        "failed": "0",
+        "passed": "123",
+        "skipped": "0",
+        "time": "3.640",
+        "total": "123"
+      }
+    ],
+    "tests": [
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.RegistryRefusesBeforeActivationAndWhilePreparedButNotCommitted",
+        "result": "Pass",
+        "time": "0.349",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "RegistryRefusesBeforeActivationAndWhilePreparedButNotCommitted"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.CreateFolder\\\")",
+        "result": "Pass",
+        "time": "0.123",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.ArchiveFolder\\\")",
+        "result": "Pass",
+        "time": "0.121",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.GrantFolderAccess\\\")",
+        "result": "Pass",
+        "time": "0.139",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.RevokeFolderAccess\\\")",
+        "result": "Pass",
+        "time": "0.17",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.InitializeOrganizationAc\\\"\u00b7\u00b7\u00b7)",
+        "result": "Pass",
+        "time": "0.16",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.GrantOrganizationAclPrin\\\"\u00b7\u00b7\u00b7)",
+        "result": "Pass",
+        "time": "0.14",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.RevokeOrganizationAclPri\\\"\u00b7\u00b7\u00b7)",
+        "result": "Pass",
+        "time": "0.134",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.ConfigureProviderBinding\\\")",
+        "result": "Pass",
+        "time": "0.144",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.CreateRepositoryBackedFo\\\"\u00b7\u00b7\u00b7)",
+        "result": "Pass",
+        "time": "0.092",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.BindRepository\\\")",
+        "result": "Pass",
+        "time": "0.085",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.ConfigureBranchRefPolicy\\\")",
+        "result": "Pass",
+        "time": "0.085",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.PrepareWorkspace\\\")",
+        "result": "Pass",
+        "time": "0.079",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.LockWorkspace\\\")",
+        "result": "Pass",
+        "time": "0.09",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.ChangeNativeTask\\\")",
+        "result": "Pass",
+        "time": "0.088",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.ReleaseWorkspaceLock\\\")",
+        "result": "Pass",
+        "time": "0.084",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.MutateFiles\\\")",
+        "result": "Pass",
+        "time": "0.085",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.AuthorizeWorkspaceConten\\\"\u00b7\u00b7\u00b7)",
+        "result": "Pass",
+        "time": "0.086",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission(commandType: \\\"Hexalith.Folders.Commands.CommitWorkspace\\\")",
+        "result": "Pass",
+        "time": "0.083",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "EveryProductionAdapterResolvesItsExactLegacyBytesAfterCommittedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.ObserverRejectsCandidatePolicyThatDisagreesWithInstalledAdapters(mismatch: \\\"policy\\\")",
+        "result": "Pass",
+        "time": "0.045",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "ObserverRejectsCandidatePolicyThatDisagreesWithInstalledAdapters"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.ObserverRejectsCandidatePolicyThatDisagreesWithInstalledAdapters(mismatch: \\\"schema\\\")",
+        "result": "Pass",
+        "time": "0.038",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "ObserverRejectsCandidatePolicyThatDisagreesWithInstalledAdapters"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.ObserverRejectsCandidatePolicyThatDisagreesWithInstalledAdapters(mismatch: \\\"tier\\\")",
+        "result": "Pass",
+        "time": "0.041",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "ObserverRejectsCandidatePolicyThatDisagreesWithInstalledAdapters"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.ObserverRejectsCandidatePolicyThatDisagreesWithInstalledAdapters(mismatch: \\\"key-policy\\\")",
+        "result": "Pass",
+        "time": "0.041",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "ObserverRejectsCandidatePolicyThatDisagreesWithInstalledAdapters"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.DescriptorLabelsMapToCompleteExistingEncoderComponents",
+        "result": "Pass",
+        "time": "0.233",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "DescriptorLabelsMapToCompleteExistingEncoderComponents"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.LegacyFixtureDiscriminatorsExactlyMatchProductionAdapters",
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "LegacyFixtureDiscriminatorsExactlyMatchProductionAdapters"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.SchemaTwoAdmissionDoesNotEnableSchemaThreePublicDiscovery",
+        "result": "Pass",
+        "time": "0.084",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "SchemaTwoAdmissionDoesNotEnableSchemaThreePublicDiscovery"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.MalformedPayloadAfterAdmissionReleasesLeaseAndAllowsValidResolution",
+        "result": "Pass",
+        "time": "0.084",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "MalformedPayloadAfterAdmissionReleasesLeaseAndAllowsValidResolution"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.CommandsOutsideTheExactCommittedScopeAreRefused(mismatch: \\\"tenant\\\")",
+        "result": "Pass",
+        "time": "0.072",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "CommandsOutsideTheExactCommittedScopeAreRefused"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.CommandsOutsideTheExactCommittedScopeAreRefused(mismatch: \\\"domain\\\")",
+        "result": "Pass",
+        "time": "0.071",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "CommandsOutsideTheExactCommittedScopeAreRefused"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.CommandsOutsideTheExactCommittedScopeAreRefused(mismatch: \\\"discriminator\\\")",
+        "result": "Pass",
+        "time": "0.068",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "CommandsOutsideTheExactCommittedScopeAreRefused"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.IncompleteAdmissionCannotBeSealedOrBecomeServing",
+        "result": "Pass",
+        "time": "0.017",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "IncompleteAdmissionCannotBeSealedOrBecomeServing"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.RegisteredPolicyDriftIsRefusedBeforeCreatingIntent(mismatch: \\\"declaration\\\")",
+        "result": "Pass",
+        "time": "0.071",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "RegisteredPolicyDriftIsRefusedBeforeCreatingIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.RegisteredPolicyDriftIsRefusedBeforeCreatingIntent(mismatch: \\\"policy\\\")",
+        "result": "Pass",
+        "time": "0.074",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "RegisteredPolicyDriftIsRefusedBeforeCreatingIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.RegisteredPolicyDriftIsRefusedBeforeCreatingIntent(mismatch: \\\"schema\\\")",
+        "result": "Pass",
+        "time": "0.075",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "RegisteredPolicyDriftIsRefusedBeforeCreatingIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.RegisteredPolicyDriftIsRefusedBeforeCreatingIntent(mismatch: \\\"version\\\")",
+        "result": "Pass",
+        "time": "0.072",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "RegisteredPolicyDriftIsRefusedBeforeCreatingIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests.RegisteredPolicyDriftIsRefusedBeforeCreatingIntent(mismatch: \\\"tier\\\")",
+        "result": "Pass",
+        "time": "0.07",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionTests",
+        "method": "RegisteredPolicyDriftIsRefusedBeforeCreatingIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostStartsWithEveryProductionDeclaration",
+        "result": "Pass",
+        "time": "0.16",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostStartsWithEveryProductionDeclaration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostedGateRefusesIncompleteOrDriftedProductionRegistration(mismatch: \\\"missing\\\")",
+        "result": "Pass",
+        "time": "0.012",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostedGateRefusesIncompleteOrDriftedProductionRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostedGateRefusesIncompleteOrDriftedProductionRegistration(mismatch: \\\"duplicate\\\")",
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostedGateRefusesIncompleteOrDriftedProductionRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostedGateRefusesIncompleteOrDriftedProductionRegistration(mismatch: \\\"undeclared\\\")",
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostedGateRefusesIncompleteOrDriftedProductionRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostedGateRefusesIncompleteOrDriftedProductionRegistration(mismatch: \\\"declaration\\\")",
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostedGateRefusesIncompleteOrDriftedProductionRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostedGateRefusesIncompleteOrDriftedProductionRegistration(mismatch: \\\"policy\\\")",
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostedGateRefusesIncompleteOrDriftedProductionRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostedGateRefusesIncompleteOrDriftedProductionRegistration(mismatch: \\\"schema\\\")",
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostedGateRefusesIncompleteOrDriftedProductionRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostedGateRefusesIncompleteOrDriftedProductionRegistration(mismatch: \\\"version\\\")",
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostedGateRefusesIncompleteOrDriftedProductionRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostedGateRefusesIncompleteOrDriftedProductionRegistration(mismatch: \\\"tier\\\")",
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostedGateRefusesIncompleteOrDriftedProductionRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostedGateRefusesIncompleteOrDriftedProductionRegistration(mismatch: \\\"subject\\\")",
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostedGateRefusesIncompleteOrDriftedProductionRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostedGateRefusesIncompleteOrDriftedProductionRegistration(mismatch: \\\"adapter-id\\\")",
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostedGateRefusesIncompleteOrDriftedProductionRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostedGateRefusesIncompleteOrDriftedProductionRegistration(mismatch: \\\"operation-id\\\")",
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostedGateRefusesIncompleteOrDriftedProductionRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostedGateRefusesIncompleteOrDriftedProductionRegistration(mismatch: \\\"descriptor-version\\\")",
+        "result": "Pass",
+        "time": "0.016",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostedGateRefusesIncompleteOrDriftedProductionRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests.HostedGateRefusesIncompleteOrDriftedProductionRegistration(mismatch: \\\"retention-tier\\\")",
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDeclaredAdmissionHostedTests",
+        "method": "HostedGateRefusesIncompleteOrDriftedProductionRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests.BranchPolicyBehaviorFieldsParticipateWhilePatternSetOrderDoesNot",
+        "result": "Pass",
+        "time": "0.097",
+        "type": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests",
+        "method": "BranchPolicyBehaviorFieldsParticipateWhilePatternSetOrderDoesNot"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests.CallerSelectedCredentialScopeShouldBeRejected(scope: \\\"\\\\\\\"another_scope\\\\\\\"\\\")",
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests",
+        "method": "CallerSelectedCredentialScopeShouldBeRejected"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests.CallerSelectedCredentialScopeShouldBeRejected(scope: \\\"null\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests",
+        "method": "CallerSelectedCredentialScopeShouldBeRejected"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests.CallerSelectedCredentialScopeShouldBeRejected(scope: \\\"42\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests",
+        "method": "CallerSelectedCredentialScopeShouldBeRejected"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests.DifferentRepositoryBindingIdShouldChangeCanonicalIntent",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests",
+        "method": "DifferentRepositoryBindingIdShouldChangeCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests.CredentialScopeShouldComeFromTheFixedServerPolicy",
+        "result": "Pass",
+        "time": "0.008",
+        "type": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests",
+        "method": "CredentialScopeShouldComeFromTheFixedServerPolicy"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests.EquivalentPayloadsShouldProduceTheSameCanonicalIntent",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.CreateRepositoryBackedFolderIdempotencyIntentAdapterTests",
+        "method": "EquivalentPayloadsShouldProduceTheSameCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersIdempotencyIntentAdapterCatalogTests.CatalogShouldFailClosedWhenAMutationCommandTypeIsMissing",
+        "result": "Pass",
+        "time": "0.098",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersIdempotencyIntentAdapterCatalogTests",
+        "method": "CatalogShouldFailClosedWhenAMutationCommandTypeIsMissing"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersIdempotencyIntentAdapterCatalogTests.CatalogShouldFailClosedWhenACommandTypeIsDuplicated",
+        "result": "Pass",
+        "time": "0.01",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersIdempotencyIntentAdapterCatalogTests",
+        "method": "CatalogShouldFailClosedWhenACommandTypeIsDuplicated"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersIdempotencyIntentAdapterCatalogTests.CatalogShouldStartWhenTheRegisteredSetIsComplete",
+        "result": "Pass",
+        "time": "0.045",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersIdempotencyIntentAdapterCatalogTests",
+        "method": "CatalogShouldStartWhenTheRegisteredSetIsComplete"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersIdempotencyIntentAdapterCatalogTests.RegisteredAdaptersShouldMatchEveryFoldersMutationCommandType",
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersIdempotencyIntentAdapterCatalogTests",
+        "method": "RegisteredAdaptersShouldMatchEveryFoldersMutationCommandType"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.NumericOrUnknownPrincipalKindShouldFailAdmission(principalKind: \\\"0\\\")",
+        "result": "Pass",
+        "time": "0.117",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "NumericOrUnknownPrincipalKindShouldFailAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.NumericOrUnknownPrincipalKindShouldFailAdmission(principalKind: \\\"1\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "NumericOrUnknownPrincipalKindShouldFailAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.NumericOrUnknownPrincipalKindShouldFailAdmission(principalKind: \\\"2\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "NumericOrUnknownPrincipalKindShouldFailAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.NumericOrUnknownPrincipalKindShouldFailAdmission(principalKind: \\\"3\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "NumericOrUnknownPrincipalKindShouldFailAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.NumericOrUnknownPrincipalKindShouldFailAdmission(principalKind: \\\"4\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "NumericOrUnknownPrincipalKindShouldFailAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.NumericOrUnknownPrincipalKindShouldFailAdmission(principalKind: \\\"unknown\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "NumericOrUnknownPrincipalKindShouldFailAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.OppositeOperationIntentShouldNotReplayAsEquivalent",
+        "result": "Pass",
+        "time": "0.016",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "OppositeOperationIntentShouldNotReplayAsEquivalent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.DelegatedServiceWireTokenAndNamedKindShouldHaveOneCanonicalIntent(operationId: \\\"initialize-organization-acl-baseline\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "DelegatedServiceWireTokenAndNamedKindShouldHaveOneCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.DelegatedServiceWireTokenAndNamedKindShouldHaveOneCanonicalIntent(operationId: \\\"grant-organization-acl-principal\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "DelegatedServiceWireTokenAndNamedKindShouldHaveOneCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.DelegatedServiceWireTokenAndNamedKindShouldHaveOneCanonicalIntent(operationId: \\\"revoke-organization-acl-principal\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "DelegatedServiceWireTokenAndNamedKindShouldHaveOneCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.ReorderedAndDuplicatedBaselineOperationsShouldHaveOneCanonicalIntent",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "ReorderedAndDuplicatedBaselineOperationsShouldHaveOneCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent(operationId: \\\"initialize-organization-acl-baseline\\\", location: \\\"operation\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent(operationId: \\\"grant-organization-acl-principal\\\", location: \\\"operation\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent(operationId: \\\"revoke-organization-acl-principal\\\", location: \\\"operation\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent(operationId: \\\"initialize-organization-acl-baseline\\\", location: \\\"payload\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent(operationId: \\\"grant-organization-acl-principal\\\", location: \\\"payload\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent(operationId: \\\"revoke-organization-acl-principal\\\", location: \\\"payload\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent(operationId: \\\"initialize-organization-acl-baseline\\\", location: \\\"schema\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent(operationId: \\\"grant-organization-acl-principal\\\", location: \\\"schema\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent(operationId: \\\"revoke-organization-acl-principal\\\", location: \\\"schema\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.DifferentlyCasedRootAndOperationMembersFailStrictAdmission(member: \\\"RequestSchemaVersion\\\", atRoot: True)",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "DifferentlyCasedRootAndOperationMembersFailStrictAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.DifferentlyCasedRootAndOperationMembersFailStrictAdmission(member: \\\"Operations\\\", atRoot: True)",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "DifferentlyCasedRootAndOperationMembersFailStrictAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.DifferentlyCasedRootAndOperationMembersFailStrictAdmission(member: \\\"PrincipalKind\\\", atRoot: False)",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "DifferentlyCasedRootAndOperationMembersFailStrictAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.DifferentlyCasedRootAndOperationMembersFailStrictAdmission(member: \\\"PrincipalId\\\", atRoot: False)",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "DifferentlyCasedRootAndOperationMembersFailStrictAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests.DifferentlyCasedRootAndOperationMembersFailStrictAdmission(member: \\\"Action\\\", atRoot: False)",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.OrganizationAclIdempotencyIntentAdapterTests",
+        "method": "DifferentlyCasedRootAndOperationMembersFailStrictAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDomainServiceSafeDenialExceptionHandlerTests.SafeDenialProblemShouldKeepStatusTitleAndCategoryConsistent(status: 401, code: \\\"authentication_failure\\\", title: \\\"Authentication required\\\", retryable: False)",
+        "result": "Pass",
+        "time": "0.163",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDomainServiceSafeDenialExceptionHandlerTests",
+        "method": "SafeDenialProblemShouldKeepStatusTitleAndCategoryConsistent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDomainServiceSafeDenialExceptionHandlerTests.SafeDenialProblemShouldKeepStatusTitleAndCategoryConsistent(status: 403, code: \\\"authorization_denied\\\", title: \\\"Authorization denied\\\", retryable: False)",
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDomainServiceSafeDenialExceptionHandlerTests",
+        "method": "SafeDenialProblemShouldKeepStatusTitleAndCategoryConsistent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDomainServiceSafeDenialExceptionHandlerTests.SafeDenialProblemShouldKeepStatusTitleAndCategoryConsistent(status: 404, code: \\\"not_found_to_caller\\\", title: \\\"Resource not available\\\", retryable: False)",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDomainServiceSafeDenialExceptionHandlerTests",
+        "method": "SafeDenialProblemShouldKeepStatusTitleAndCategoryConsistent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersDomainServiceSafeDenialExceptionHandlerTests.SafeDenialProblemShouldKeepStatusTitleAndCategoryConsistent(status: 503, code: \\\"read_model_unavailable\\\", title: \\\"Read model unavailable\\\", retryable: True)",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersDomainServiceSafeDenialExceptionHandlerTests",
+        "method": "SafeDenialProblemShouldKeepStatusTitleAndCategoryConsistent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FolderAccessIdempotencyIntentTests.BatchOutsideTheOneEntryPublicContractFailsClosed",
+        "result": "Pass",
+        "time": "0.061",
+        "type": "Hexalith.Folders.EventStore.Tests.FolderAccessIdempotencyIntentTests",
+        "method": "BatchOutsideTheOneEntryPublicContractFailsClosed"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 401, code: \\\"authentication_failure\\\")",
+        "result": "Pass",
+        "time": "0.6",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests",
+        "method": "CommandHostHandlesSafeDenialBeforeItsGlobalFallback"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 403, code: \\\"authorization_denied\\\")",
+        "result": "Pass",
+        "time": "0.119",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests",
+        "method": "CommandHostHandlesSafeDenialBeforeItsGlobalFallback"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 404, code: \\\"not_found_to_caller\\\")",
+        "result": "Pass",
+        "time": "0.074",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests",
+        "method": "CommandHostHandlesSafeDenialBeforeItsGlobalFallback"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostHandlesSafeDenialBeforeItsGlobalFallback(status: 503, code: \\\"read_model_unavailable\\\")",
+        "result": "Pass",
+        "time": "0.081",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests",
+        "method": "CommandHostHandlesSafeDenialBeforeItsGlobalFallback"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests.CommandHostEnrollsHttpSecurityAndSeparatesHumanDocumentationFromSidecarCallbacks",
+        "result": "Pass",
+        "time": "0.324",
+        "type": "Hexalith.Folders.EventStore.Tests.FoldersEventStoreHostCompositionTests",
+        "method": "CommandHostEnrollsHttpSecurityAndSeparatesHumanDocumentationFromSidecarCallbacks"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.NativeTaskAdmissionTests.NativeCommandsPassRealRequestValidationAndExactKeyedAdmission(operation: \\\"acquire\\\")",
+        "result": "Pass",
+        "time": "0.451",
+        "type": "Hexalith.Folders.EventStore.Tests.NativeTaskAdmissionTests",
+        "method": "NativeCommandsPassRealRequestValidationAndExactKeyedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.NativeTaskAdmissionTests.NativeCommandsPassRealRequestValidationAndExactKeyedAdmission(operation: \\\"renew\\\")",
+        "result": "Pass",
+        "time": "0.127",
+        "type": "Hexalith.Folders.EventStore.Tests.NativeTaskAdmissionTests",
+        "method": "NativeCommandsPassRealRequestValidationAndExactKeyedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.NativeTaskAdmissionTests.NativeCommandsPassRealRequestValidationAndExactKeyedAdmission(operation: \\\"release\\\")",
+        "result": "Pass",
+        "time": "0.143",
+        "type": "Hexalith.Folders.EventStore.Tests.NativeTaskAdmissionTests",
+        "method": "NativeCommandsPassRealRequestValidationAndExactKeyedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.NativeTaskAdmissionTests.NativeCommandsPassRealRequestValidationAndExactKeyedAdmission(operation: \\\"complete\\\")",
+        "result": "Pass",
+        "time": "0.138",
+        "type": "Hexalith.Folders.EventStore.Tests.NativeTaskAdmissionTests",
+        "method": "NativeCommandsPassRealRequestValidationAndExactKeyedAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.CommitWorkspaceIdempotencyIntentAdapterTests.EquivalentPayloadsShouldProduceTheSameCanonicalIntent",
+        "result": "Pass",
+        "time": "0.099",
+        "type": "Hexalith.Folders.EventStore.Tests.CommitWorkspaceIdempotencyIntentAdapterTests",
+        "method": "EquivalentPayloadsShouldProduceTheSameCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.CommitWorkspaceIdempotencyIntentAdapterTests.DifferentBranchRefTargetShouldChangeCanonicalIntent",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.CommitWorkspaceIdempotencyIntentAdapterTests",
+        "method": "DifferentBranchRefTargetShouldChangeCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.CreateFolderIdempotencyIntentAdapterTests.DifferentDisplayNameShouldChangeCanonicalIntent",
+        "result": "Pass",
+        "time": "0.089",
+        "type": "Hexalith.Folders.EventStore.Tests.CreateFolderIdempotencyIntentAdapterTests",
+        "method": "DifferentDisplayNameShouldChangeCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.CreateFolderIdempotencyIntentAdapterTests.EquivalentPayloadsShouldProduceTheSameCanonicalIntent",
+        "result": "Pass",
+        "time": "0.009",
+        "type": "Hexalith.Folders.EventStore.Tests.CreateFolderIdempotencyIntentAdapterTests",
+        "method": "EquivalentPayloadsShouldProduceTheSameCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.DeclaredFoldersIntentCompatibilityTests.DeclaredAdaptersPreserveAllLegacyCanonicalBytesAndScopes",
+        "result": "Pass",
+        "time": "1.499",
+        "type": "Hexalith.Folders.EventStore.Tests.DeclaredFoldersIntentCompatibilityTests",
+        "method": "DeclaredAdaptersPreserveAllLegacyCanonicalBytesAndScopes"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.DeclaredFoldersIntentCompatibilityTests.DeclarationsCoverEveryExistingCommandConstantAndActualPayloadDeserializer",
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.EventStore.Tests.DeclaredFoldersIntentCompatibilityTests",
+        "method": "DeclarationsCoverEveryExistingCommandConstantAndActualPayloadDeserializer"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.NonStringTaskScopeShouldBeRejected(task: \\\"42\\\")",
+        "result": "Pass",
+        "time": "0.061",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "NonStringTaskScopeShouldBeRejected"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.NonStringTaskScopeShouldBeRejected(task: \\\"true\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "NonStringTaskScopeShouldBeRejected"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.NonStringTaskScopeShouldBeRejected(task: \\\"{}\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "NonStringTaskScopeShouldBeRejected"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.NonStringTaskScopeShouldBeRejected(task: \\\"[]\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "NonStringTaskScopeShouldBeRejected"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.DifferentFileOperationKindShouldChangeCanonicalIntent",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "DifferentFileOperationKindShouldChangeCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.BatchItemsAreOrderedSemanticIntentAndExcludePhysicalReceipts",
+        "result": "Pass",
+        "time": "0.008",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "BatchItemsAreOrderedSemanticIntentAndExcludePhysicalReceipts"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.ExtensionOnlyTaskScopeShouldBeRejected",
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "ExtensionOnlyTaskScopeShouldBeRejected"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.NullAndOmissionRemainDistinctWhileTransportChangesDoNot",
+        "result": "Pass",
+        "time": "0.01",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "NullAndOmissionRemainDistinctWhileTransportChangesDoNot"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.ConflictingExtensionTaskScopeShouldBeRejected",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "ConflictingExtensionTaskScopeShouldBeRejected"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.DuplicateJsonPropertiesShouldBeRejectedBeforeCanonicalIntent(payload: \\\"{\\\\\\\"taskId\\\\\\\":\\\\\\\"task-a\\\\\\\",\\\\\\\"TaskId\\\\\\\":\\\\\\\"task-b\\\\\\\"}\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "DuplicateJsonPropertiesShouldBeRejectedBeforeCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.DuplicateJsonPropertiesShouldBeRejectedBeforeCanonicalIntent(payload: \\\"{\\\\\\\"taskId\\\\\\\":\\\\\\\"task-a\\\\\\\",\\\\\\\"pathMetadata\\\\\\\":{\\\\\\\"normalizedPath\\\"\u00b7\u00b7\u00b7)",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "DuplicateJsonPropertiesShouldBeRejectedBeforeCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.DuplicateJsonPropertiesShouldBeRejectedBeforeCanonicalIntent(payload: \\\"{\\\\\\\"taskId\\\\\\\":\\\\\\\"task-a\\\\\\\",\\\\\\\"pathMetadata\\\\\\\":[{\\\\\\\"normalizedPat\\\"\u00b7\u00b7\u00b7)",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "DuplicateJsonPropertiesShouldBeRejectedBeforeCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.SameSemanticFileMutationWithDifferentRetryTransportHasEquivalentIntent",
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "SameSemanticFileMutationWithDifferentRetryTransportHasEquivalentIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.ExplicitVersionAndLockFencesBelongToCanonicalIntent(field: \\\"expectedFileVersion\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "ExplicitVersionAndLockFencesBelongToCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.ExplicitVersionAndLockFencesBelongToCanonicalIntent(field: \\\"expectedLockFence\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "ExplicitVersionAndLockFencesBelongToCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests.EquivalentPathMetadataShouldProduceTheSameCanonicalIntent",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.EventStore.Tests.MutateFilesIdempotencyIntentAdapterTests",
+        "method": "EquivalentPathMetadataShouldProduceTheSameCanonicalIntent"
+      },
+      {
+        "name": "Hexalith.Folders.EventStore.Tests.ReleaseWorkspaceLockIdempotencyIntentAdapterTests.ChangedReleaseReasonCannotReplayAsEquivalent",
+        "result": "Pass",
+        "time": "0.098",
+        "type": "Hexalith.Folders.EventStore.Tests.ReleaseWorkspaceLockIdempotencyIntentAdapterTests",
+        "method": "ChangedReleaseReasonCannotReplayAsEquivalent"
+      }
+    ]
+  },
+  "source_or_head_drift": [],
+  "working_tree_status_changes": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 0
+  },
+  "runtime_module_observations": 235,
+  "fixture_module_observations": 0
+}

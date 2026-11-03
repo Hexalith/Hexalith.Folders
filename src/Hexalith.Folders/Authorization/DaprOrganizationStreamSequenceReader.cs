@@ -1,12 +1,10 @@
-using System.Globalization;
-using System.Net.Http.Headers;
-
-using Microsoft.Extensions.Configuration;
+using Hexalith.EventStore.Client.Streams;
+using Hexalith.EventStore.Contracts.Identity;
 
 namespace Hexalith.Folders.Authorization;
 
-/// <summary>Reads only the actor's sequence metadata through the local Dapr sidecar.</summary>
-public sealed class DaprOrganizationStreamSequenceReader(HttpClient httpClient, IConfiguration? configuration = null)
+/// <summary>Reads only validated source-head metadata through the independently enrolled public SDK reader.</summary>
+public sealed class DaprOrganizationStreamSequenceReader(INativeSourceMetadataReader source)
     : IOrganizationStreamSequenceReader
 {
     public async Task<long> GetCurrentSequenceAsync(string tenantId, string organizationId,
@@ -14,6 +12,7 @@ public sealed class DaprOrganizationStreamSequenceReader(HttpClient httpClient, 
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
         ArgumentException.ThrowIfNullOrWhiteSpace(organizationId);
+        cancellationToken.ThrowIfCancellationRequested();
         // Organization ACL commands are already inside this same EventStore actor.
         // Calling it through Dapr here would wait for the actor to release itself.
         if (OrganizationActorSequenceScope.TryGet(tenantId, organizationId, out long currentSequence))
@@ -26,49 +25,18 @@ public sealed class DaprOrganizationStreamSequenceReader(HttpClient httpClient, 
             return currentSequence;
         }
 
-        string endpoint = Environment.GetEnvironmentVariable("DAPR_HTTP_ENDPOINT")
-            ?? $"http://localhost:{Environment.GetEnvironmentVariable("DAPR_HTTP_PORT") ?? "3500"}";
-        if (!Uri.TryCreate(endpoint, UriKind.Absolute, out Uri? baseAddress)
-            || baseAddress.Scheme != Uri.UriSchemeHttp)
-        {
-            throw new InvalidOperationException("The local Dapr HTTP endpoint is unavailable.");
-        }
-
-        string actorId = Uri.EscapeDataString($"{tenantId}:folders:{organizationId}");
-        Uri requestUri = new(baseAddress,
-            $"/v1.0/actors/AggregateActor/{actorId}/method/GetCurrentSequenceAsync");
-        using HttpRequestMessage request = new(HttpMethod.Post, requestUri)
-        {
-            Content = new StringContent("{}"),
-        };
-        request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        string? apiToken = configuration?["DAPR_API_TOKEN"]
-            ?? Environment.GetEnvironmentVariable("DAPR_API_TOKEN");
-        if (!string.IsNullOrWhiteSpace(apiToken))
-        {
-            request.Headers.Add("dapr-api-token", apiToken);
-        }
+        var identity = new AggregateIdentity(tenantId, "folders", organizationId);
         using CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeout.CancelAfter(TimeSpan.FromSeconds(3));
         try
         {
-            using HttpResponseMessage response = await httpClient.SendAsync(request,
-                HttpCompletionOption.ResponseHeadersRead, timeout.Token).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-            if (response.Content.Headers.ContentLength is > 32)
+            var observation = await source.ReadAsync(identity, timeout.Token).WaitAsync(timeout.Token).ConfigureAwait(false);
+            if (observation?.Proof is not { Erased: false } proof
+                || !NativeSourceProofCodec.IsValid(proof, identity, proof.HeadSequence, proof.RetainedFloor))
             {
-                throw new InvalidOperationException("The organization actor sequence response is oversized.");
+                throw new InvalidOperationException("The independently observed source head is unavailable.");
             }
-
-            string value = await response.Content.ReadAsStringAsync(timeout.Token).ConfigureAwait(false);
-            if (value.Length > 32
-                || !long.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out long sequence)
-                || sequence < 0)
-            {
-                throw new InvalidOperationException("The organization actor sequence response is malformed.");
-            }
-
-            return sequence;
+            return proof.HeadSequence;
         }
         catch (OperationCanceledException ex) when (!cancellationToken.IsCancellationRequested)
         {

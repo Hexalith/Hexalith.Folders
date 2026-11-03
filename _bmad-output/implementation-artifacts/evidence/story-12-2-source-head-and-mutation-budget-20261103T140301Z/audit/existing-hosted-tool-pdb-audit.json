@@ -1,0 +1,81 @@
+[
+  {
+    "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+    "sha256": "8D5E6D31009556B70AB72205D408499C71658F0373A2B1D475DF3AC88AEB0D7E",
+    "assemblyName": "Task36FoldObserver",
+    "version": "1.0.0.0",
+    "mvid": "816304f1-c7c4-4b52-9a62-cc125275ffcb",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.pdb",
+    "pdbGuidMatches": true,
+    "mismatches": [],
+    "missingOrdinarySource": [],
+    "documents": [
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/ContentQualificationClock.cs",
+        "expected": "48237EC74801BAE0EEAC63EDED945E4752C9F0CB191871493413C2EA584055FA",
+        "actual": "48237EC74801BAE0EEAC63EDED945E4752C9F0CB191871493413C2EA584055FA",
+        "match": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/ExistingHostedServiceObservation.cs",
+        "expected": "0BCF9B215348196B5189D273FE30676E2E307582E4C33566E033CF9EAF386589",
+        "actual": "0BCF9B215348196B5189D273FE30676E2E307582E4C33566E033CF9EAF386589",
+        "match": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/FoldDiagnosticEventObserver.cs",
+        "expected": "75A51DF7FA7C770B3CA21C97D20972D20045A7E28D200F98683C9BE77E3813B9",
+        "actual": "75A51DF7FA7C770B3CA21C97D20972D20045A7E28D200F98683C9BE77E3813B9",
+        "match": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/FoldDiagnosticObserver.cs",
+        "expected": "C84687D7FE5AE66B441DA83F6578A65900C259BC8D0E025BFC94C0F0CDB82790",
+        "actual": "C84687D7FE5AE66B441DA83F6578A65900C259BC8D0E025BFC94C0F0CDB82790",
+        "match": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/FoldObservationSink.cs",
+        "expected": "0C4C69E6980BD21B94DAE9F23897E576A4954BAB6D07B27C344C794E4F9A367F",
+        "actual": "0C4C69E6980BD21B94DAE9F23897E576A4954BAB6D07B27C344C794E4F9A367F",
+        "match": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs",
+        "expected": "E6E17BC7929230D73B3EC5B5F8785326EDE03B90D1EBD12860C565B064BCAB6E",
+        "actual": "E6E17BC7929230D73B3EC5B5F8785326EDE03B90D1EBD12860C565B064BCAB6E",
+        "match": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/StartupHook.cs",
+        "expected": "ED92F9451F3E5A27121C4717410F44CB3E1338E1F64DB3CA381B5E391D80081B",
+        "actual": "ED92F9451F3E5A27121C4717410F44CB3E1338E1F64DB3CA381B5E391D80081B",
+        "match": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/Task36HostingStartup.cs",
+        "expected": "133CB9462288A4D6B0F6F35A7D8010E07549D4D6091D04972CBDF7AC536EA3C4",
+        "actual": "133CB9462288A4D6B0F6F35A7D8010E07549D4D6091D04972CBDF7AC536EA3C4",
+        "match": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/obj/Debug/net10.0/Task36FoldObserver.GlobalUsings.g.cs",
+        "expected": "8F86A2CBF00FF3EEE0BDA2BC0EB5E1FC19C8544D5DC650C53D0132325956B592",
+        "actual": "8F86A2CBF00FF3EEE0BDA2BC0EB5E1FC19C8544D5DC650C53D0132325956B592",
+        "match": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+        "expected": "F79C1AD9A9FC76110B3655F5BFB5FF4E3168E9ADDCEFF05B937C0796F0EC34EB",
+        "actual": "F79C1AD9A9FC76110B3655F5BFB5FF4E3168E9ADDCEFF05B937C0796F0EC34EB",
+        "match": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/obj/Debug/net10.0/Task36FoldObserver.AssemblyInfo.cs",
+        "expected": "7EFEE41D8BF5C931897E7E2B77DA1DFE4FA3D19B6661092DA57EA2B2F835BFCC",
+        "actual": "7EFEE41D8BF5C931897E7E2B77DA1DFE4FA3D19B6661092DA57EA2B2F835BFCC",
+        "match": true
+      }
+    ]
+  }
+]

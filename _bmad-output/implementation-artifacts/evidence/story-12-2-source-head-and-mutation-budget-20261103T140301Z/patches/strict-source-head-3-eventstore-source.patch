@@ -1,0 +1,1895 @@
+diff --git a/docs/reference/stream-replay-api.md b/docs/reference/stream-replay-api.md
+index 869975fa3..3c7b9c8bf 100644
+--- a/docs/reference/stream-replay-api.md
++++ b/docs/reference/stream-replay-api.md
+@@ -159,3 +159,30 @@ Downstream rebuild implementations must not use:
+ - DAPR sidecar addresses, connection strings, or state-store index records.
+ 
+ Use `Hexalith.EventStore.Contracts.Streams`, `IEventStoreGatewayClient.ReadStreamAsync`, and test fakes/builders from `Hexalith.EventStore.Testing` instead.
++
++## Independently enrolled native metadata readers
++
++Domain hosts can register `services.AddEventStoreGatewayNativeSourceMetadataReader("your-domain")`
++from the public DomainService SDK. It exposes only `INativeSourceMetadataReader`, uses a separate
++HTTP client/options/proof source, and preserves the default human-command gateway. Configure the
++host's own `Authentication:WorkloadIssuer` client and workload, its independently provisioned
++`Authentication:BoundStreamRead:PrivateKey`, the exact configured `DAPR_HTTP_ENDPOINT` (or existing
++port/default), and optional physical `EventStore:Gateway:AppId` (default `eventstore`). The logical
++assertion audience remains `eventstore`. No registration grants issuer or resource authority.
++
++The receiving gateway must independently enroll the actual caller in its workload allowlist, set
++`Authentication:BoundStreamRead:PublicKeys:<caller>` and exact `AllowedDomains:<caller>`, and set
++`Authentication:BoundStreamRead:MetadataOnlyCallers:<caller>=true`. This last trusted receiver
++setting requires an actual valid resource proof even for JWTs carrying tenant/domain bindings. It
++admits only `FromSequence=0`, `ToSequence=0`, `PageSize=1`, `RequireNativeProof=true`, without
++checkpoint, continuation or projection context. Other shapes are refused before actor observation.
++A present malformed/false restriction is refused; omission retains existing generic stream-reader
++behavior. A request header or body flag cannot waive enrollment. These settings participate in the
++independent Development catalog's authentication observation. Keep issuer grants stream-read-only;
++allowlist membership by itself grants no operation and never substitutes for credentials/proof.
++
++A valid existing native proof at head zero establishes an empty stream. Missing/unactivated metadata,
++unsupported legacy proof, erasure, corruption, denial and unavailable evidence return no observation.
++The read never creates a seed or bootstraps proof and never converts 404/null/503 into zero. Existing
++native reader cancellation and its two-second deadline remain unchanged; cold actor activation may
++still perform the SDK's existing recovery. Keys and issuer secrets belong in protected configuration.
+diff --git a/src/Hexalith.EventStore.Contracts/Routing/RouteCatalogCodec.cs b/src/Hexalith.EventStore.Contracts/Routing/RouteCatalogCodec.cs
+index 219056abd..cd6dae307 100644
+--- a/src/Hexalith.EventStore.Contracts/Routing/RouteCatalogCodec.cs
++++ b/src/Hexalith.EventStore.Contracts/Routing/RouteCatalogCodec.cs
+@@ -22,6 +22,8 @@ public static class RouteCatalogCodec
+     /// <summary>Maximum accepted catalog or construction-input byte length.</summary>
+     public const int MaximumByteLength = 4 * 1024 * 1024;
+ 
++    private static ValidatedRouteCatalogEncoding? _validatedEncoding;
++
+     private static readonly JsonSerializerOptions Options = new()
+     {
+         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+@@ -51,14 +53,30 @@ public static class RouteCatalogCodec
+     /// <summary>Rejects malformed, duplicate, unknown, unsupported, invalid, or noncanonical input.</summary>
+     public static RouteCatalogEnvelope Decode(ReadOnlyMemory<byte> bytes, string? expectedRootDigest = null)
+     {
++        // Capture mutable caller buffers before parsing or comparing them. Every invocation still
++        // parses the closed document into an independent model, so callers cannot mutate a model
++        // retained for another dispatch. Only deterministic validation of identical bytes is reused.
++        if (bytes.Length is 0 or > MaximumByteLength)
++        {
++            throw Failure("$", "size-limit");
++        }
++        bytes = bytes.ToArray();
+         RouteCatalogEnvelope envelope = ReadClosedDocument<RouteCatalogEnvelope>(bytes);
+-        byte[] canonical = Encode(envelope);
+-        if (!bytes.Span.SequenceEqual(canonical))
++        ValidatedRouteCatalogEncoding? validated = Volatile.Read(ref _validatedEncoding);
++        if (validated is null || !validated.Matches(bytes.Span))
+         {
+-            throw Failure("$", "noncanonical-encoding");
++            byte[] canonical = Encode(envelope);
++            if (!bytes.Span.SequenceEqual(canonical))
++            {
++                throw Failure("$", "noncanonical-encoding");
++            }
++            validated = new ValidatedRouteCatalogEncoding(canonical);
++            // One immutable entry bounds retention to the existing maximum catalog size. Concurrent
++            // different catalogs can replace it without accepting a partially validated document.
++            Volatile.Write(ref _validatedEncoding, validated);
+         }
+ 
+-        if (expectedRootDigest is not null && expectedRootDigest != Convert.ToHexStringLower(SHA256.HashData(bytes.Span)))
++        if (expectedRootDigest is not null && expectedRootDigest != validated.RootDigest)
+         {
+             throw Failure("$", "root-digest-mismatch");
+         }
+diff --git a/src/Hexalith.EventStore.DomainService/EventStoreGatewayWorkloadTransportExtensions.cs b/src/Hexalith.EventStore.DomainService/EventStoreGatewayWorkloadTransportExtensions.cs
+index 2eaa59b64..8dbebb705 100644
+--- a/src/Hexalith.EventStore.DomainService/EventStoreGatewayWorkloadTransportExtensions.cs
++++ b/src/Hexalith.EventStore.DomainService/EventStoreGatewayWorkloadTransportExtensions.cs
+@@ -1,16 +1,64 @@
+ using System.Security.Cryptography;
+ 
+ using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Client.Registration;
++using Hexalith.EventStore.Client.Streams;
+ using Hexalith.EventStore.ServiceDefaults.Authentication;
+ 
++using Microsoft.Extensions.Configuration;
+ using Microsoft.Extensions.DependencyInjection;
+ using Microsoft.Extensions.DependencyInjection.Extensions;
++using Microsoft.Extensions.Options;
+ 
+ namespace Hexalith.EventStore.DomainService;
+ 
+ /// <summary>Composes the SDK gateway client's workload command and stream transport for a domain host.</summary>
+ public static class EventStoreGatewayWorkloadTransportExtensions
+ {
++    /// <summary>Registers an independent metadata-only workload client without replacing the host's human-command gateway.</summary>
++    /// <remarks>The receiver must explicitly enroll this caller in Authentication:BoundStreamRead:MetadataOnlyCallers.
++    /// The host's own workload issuer and independently provisioned BoundStreamRead private key are required;
++    /// missing credentials fail closed. No source proof is created and no command/status client is exposed.</remarks>
++    /// <param name="services">The host services.</param>
++    /// <param name="domain">The one exact managed source domain.</param>
++    /// <param name="gatewayAudience">The logical workload audience, independent of its selected Dapr application id.</param>
++    /// <returns>The independent HTTP builder, for supported transport customization.</returns>
++    public static IHttpClientBuilder AddEventStoreGatewayNativeSourceMetadataReader(
++        this IServiceCollection services, string domain,
++        string gatewayAudience = EventStoreTrustedEffectSubmissionExtensions.DefaultGatewayAudience)
++    {
++        ArgumentNullException.ThrowIfNull(services);
++        ArgumentException.ThrowIfNullOrWhiteSpace(domain);
++        ArgumentException.ThrowIfNullOrWhiteSpace(gatewayAudience);
++        if (domain != domain.Trim() || domain.Length > 64 || domain.Contains('*', StringComparison.Ordinal)
++            || gatewayAudience != gatewayAudience.Trim())
++            throw new ArgumentException("Configure one exact source domain and gateway audience.");
++        services.TryAddSingleton(TimeProvider.System);
++        services.AddEventStoreWorkloadAssertionIssuer();
++        return services.AddHttpClient("Hexalith.EventStore.NativeSourceMetadata", (provider, client) =>
++        {
++            IConfiguration configuration = provider.GetRequiredService<IConfiguration>();
++            string endpoint = configuration["DAPR_HTTP_ENDPOINT"]
++                ?? $"http://localhost:{configuration["DAPR_HTTP_PORT"] ?? "3500"}";
++            if (!Uri.TryCreate(endpoint, UriKind.Absolute, out Uri? address) || address.Scheme != Uri.UriSchemeHttp
++                || !string.IsNullOrEmpty(address.UserInfo) || !string.IsNullOrEmpty(address.Query)
++                || !string.IsNullOrEmpty(address.Fragment) || address.AbsolutePath != "/")
++                throw new InvalidOperationException("The configured local Dapr HTTP endpoint is unavailable.");
++            client.BaseAddress = address;
++        }).AddEventStoreDaprServiceInvocation(provider => provider.GetRequiredService<IConfiguration>(),
++            configuration => configuration["EventStore:Gateway:AppId"] ?? "eventstore",
++            configuration => configuration["DAPR_API_TOKEN"])
++          .AddTypedClient<INativeSourceMetadataReader>((client, provider) =>
++          {
++              var clock = provider.GetRequiredService<TimeProvider>();
++              var credentials = new DomainServiceNativeSourceCredentials(provider.GetRequiredService<IWorkloadAssertionIssuer>(),
++                  provider.GetRequiredService<IConfiguration>(), domain, gatewayAudience, clock);
++              var gateway = new EventStoreGatewayClient(client, Options.Create(new EventStoreGatewayClientOptions
++                  { UseWorkloadTransport = true, MaxStreamReadResponseBytes = 8192 }), credentials, credentials);
++              return new GatewayNativeSourceMetadataReader(gateway, clock);
++          });
++    }
++
+     /// <summary>
+     /// Uses workload-only command and stream endpoints with assertions from the host's independently configured
+     /// issuer. Each assertion grants exactly one operation, receiving audience, tenant and configured domain.
+diff --git a/src/Hexalith.EventStore.Server/Routing/RunScopedRouteCatalogGateway.cs b/src/Hexalith.EventStore.Server/Routing/RunScopedRouteCatalogGateway.cs
+index cfed870a6..cbfb532de 100644
+--- a/src/Hexalith.EventStore.Server/Routing/RunScopedRouteCatalogGateway.cs
++++ b/src/Hexalith.EventStore.Server/Routing/RunScopedRouteCatalogGateway.cs
+@@ -67,6 +67,12 @@ public static class RunScopedRouteCatalogGateway
+                 throw new RouteCatalogUnavailableException($"The owner adapter factory {factory.SourceType.FullName} is unavailable.");
+             foreach (var adapter in declared) services.AddSingleton<IIdempotencyIntentAdapter>(adapter);
+         }
++        // As in the domain host, compiled declarations belong to these exact loaded
++        // assemblies. Each capture below still observes current runtime registrations,
++        // receiver policies, executable images, configuration, component and ACL inputs.
++        var compiled = new Lazy<(IReadOnlyList<RouteContractDeclaration> Declarations,
++            IReadOnlyList<RouteOperationContract> Operations)>(() =>
++            (CompiledRouteCatalogDeclarations.Read(owners), CompiledRouteCatalogDeclarations.ReadOperations(owners)));
+         return services.AddEventStoreDevelopmentRouteCatalogBootstrap(configuration, async (provider, token) =>
+         {
+             RouteCatalogReceiverSurface receiver;
+@@ -83,12 +89,12 @@ public static class RunScopedRouteCatalogGateway
+                 receiver = finite.Observe();
+             }
+             using var scope = provider.CreateScope();
+-            var declarations = CompiledRouteCatalogDeclarations.Read(owners);
++            var (declarations, operations) = compiled.Value;
+             var actual = await DevelopmentRouteCatalogInputs.CaptureAsync(configuration, appId,
+-                declarations, ActorQueryTargets(scope.ServiceProvider, owners, appId),
++                declarations, ActorQueryTargets(scope.ServiceProvider, owners, declarations, appId),
+                 await RouteCatalogAdmissionObservation.CaptureAsync(provider, appId, token).ConfigureAwait(false), [],
+                 DevelopmentTechnicalHttpTransport.Auxiliary(receiver, appId, "gateway"), token).ConfigureAwait(false);
+-            return actual with { ReceiverSurface = receiver, Operations = CompiledRouteCatalogDeclarations.ReadOperations(owners) };
++            return actual with { ReceiverSurface = receiver, Operations = operations };
+         }, _ => RouteCatalogCodec.Decode(File.ReadAllBytes(section["CatalogPath"]!), section["RootDigest"]));
+     }
+ 
+@@ -121,10 +127,15 @@ public static class RunScopedRouteCatalogGateway
+ 
+     /// <summary>Compares an owned typed query to the actual existing SDK actor registration, independently of a proposal.</summary>
+     internal static IReadOnlyList<RouteCatalogEntry> ActorQueryTargets(IServiceProvider services, IReadOnlyList<Assembly> owners, string actualAppId)
++        => ActorQueryTargets(services, owners, CompiledRouteCatalogDeclarations.Read(owners), actualAppId);
++
++    /// <summary>Rechecks actual query registrations against the owning host's frozen compiled inventory.</summary>
++    internal static IReadOnlyList<RouteCatalogEntry> ActorQueryTargets(IServiceProvider services, IReadOnlyList<Assembly> owners,
++        IReadOnlyList<RouteContractDeclaration> declarations, string actualAppId)
+     {
+-        var queries = CompiledRouteCatalogDeclarations.Read(owners).Where(declaration => declaration.Execution?.TargetKind == "projection-actor").ToArray();
++        var queries = declarations.Where(declaration => declaration.Execution?.TargetKind == "projection-actor").ToArray();
+         if (queries.Length == 0) return [];
+-        var actual = ProjectionTargets(services, actualAppId, CompiledRouteCatalogDeclarations.Read(owners));
++        var actual = ProjectionTargets(services, actualAppId, declarations);
+         var assemblies = owners.SelectMany(owner => owner.GetReferencedAssemblies().Select(Assembly.Load).Prepend(owner)).Distinct().ToArray();
+         foreach (var query in queries)
+         {
+diff --git a/src/Hexalith.EventStore.ServiceDefaults/Diagnostics/DispatchStageName.cs b/src/Hexalith.EventStore.ServiceDefaults/Diagnostics/DispatchStageName.cs
+index 55a41622b..831ebeff7 100644
+--- a/src/Hexalith.EventStore.ServiceDefaults/Diagnostics/DispatchStageName.cs
++++ b/src/Hexalith.EventStore.ServiceDefaults/Diagnostics/DispatchStageName.cs
+@@ -63,4 +63,26 @@ internal enum DispatchStageName
+     RecoveryPersistence,
+     /// <summary>Disposing the submission handler lease.</summary>
+     SubmitRelease,
++    /// <summary>Obtaining or revalidating the outgoing invocation's existing catalog lease.</summary>
++    InvocationAcquire,
++    /// <summary>Checking the existing committed target and binding the outgoing headers.</summary>
++    InvocationValidation,
++    /// <summary>Entering and awaiting the actual owned outgoing invocation transport.</summary>
++    InvocationTransport,
++    /// <summary>Disposing only the outgoing invocation's owned lease.</summary>
++    InvocationRelease,
++    /// <summary>Waiting for the existing local catalog admission semaphore.</summary>
++    CatalogAdmissionWait,
++    /// <summary>Reading the existing durable catalog state.</summary>
++    CatalogStateRead,
++    /// <summary>Comparing and exchanging the existing durable catalog state.</summary>
++    CatalogCompareExchange,
++    /// <summary>Computing the complete existing activation binding.</summary>
++    CatalogActivationDigest,
++    /// <summary>Capturing and verifying fresh independent host observations.</summary>
++    CatalogHostCapture,
++    /// <summary>Validating the existing owner trust proof.</summary>
++    CatalogTrust,
++    /// <summary>Constructing the immutable snapshot after durable acquisition.</summary>
++    CatalogSnapshot,
+ }
+diff --git a/src/Hexalith.EventStore.ServiceDefaults/Routing/DevelopmentRouteCatalogInputs.cs b/src/Hexalith.EventStore.ServiceDefaults/Routing/DevelopmentRouteCatalogInputs.cs
+index aa17f3af9..af44d8e04 100644
+--- a/src/Hexalith.EventStore.ServiceDefaults/Routing/DevelopmentRouteCatalogInputs.cs
++++ b/src/Hexalith.EventStore.ServiceDefaults/Routing/DevelopmentRouteCatalogInputs.cs
+@@ -63,7 +63,7 @@ public static class DevelopmentRouteCatalogInputs
+         string[] segments = key.Split(':');
+         if (segments.Any(segment => segment.Contains("Key", StringComparison.OrdinalIgnoreCase)
+             || segment.Contains("Token", StringComparison.OrdinalIgnoreCase) || segment.Contains("Secret", StringComparison.OrdinalIgnoreCase))) return false;
+-        string[] names = ["Issuer", "Audience", "Algorithm", "Algorithms", "AllowedDomains", "AllowedOperations", "AllowedCallers",
++        string[] names = ["Issuer", "Audience", "Algorithm", "Algorithms", "AllowedDomains", "AllowedOperations", "AllowedCallers", "MetadataOnlyCallers",
+             "ValidateIssuer", "ValidateAudience", "ValidateLifetime", "RequireHttpsMetadata", "Authority"];
+         return segments.Any(segment => names.Contains(segment, StringComparer.OrdinalIgnoreCase));
+     }
+diff --git a/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs b/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs
+index 9640ea3de..c73e8a5be 100644
+--- a/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs
++++ b/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs
+@@ -1,5 +1,7 @@
+ using Hexalith.EventStore.Contracts.Routing;
++using Hexalith.EventStore.ServiceDefaults.Diagnostics;
+ 
++using Microsoft.Extensions.Logging;
+ using Microsoft.Extensions.Options;
+ 
+ namespace Hexalith.EventStore.ServiceDefaults.Routing;
+@@ -11,6 +13,13 @@ public sealed class RouteCatalogAuthority(IRouteCatalogStateStore store, IRouteC
+     // Admission is locally queued only until its fence is recorded. Remote dispatch and all
+     // lifecycle/verifier work run outside this gate and retain their independent CAS checks.
+     private readonly SemaphoreSlim _localAdmission = new(1, 1);
++    private readonly ILogger<RouteCatalogAuthority>? _logger;
++
++    /// <summary>Uses optional host logging without changing the existing public constructor or acquisition authority.</summary>
++    internal RouteCatalogAuthority(IRouteCatalogStateStore store, IRouteCatalogTrustValidator trust,
++        IOptions<RouteCatalogHostOptions> options, IRouteCatalogHostObserver? observer,
++        IRouteCatalogQuiescenceVerifier? quiescenceVerifier, ILogger<RouteCatalogAuthority>? logger)
++        : this(store, trust, options, observer, quiescenceVerifier) => _logger = logger;
+ 
+     /// <inheritdoc/>
+     public async Task PrepareAsync(RouteCatalogActivation candidate, CancellationToken cancellationToken = default)
+@@ -139,12 +148,17 @@ public sealed class RouteCatalogAuthority(IRouteCatalogStateStore store, IRouteC
+     /// <inheritdoc/>
+     public async Task<RouteCatalogDispatchLease> AcquireAsync(CancellationToken cancellationToken = default)
+     {
+-        await _localAdmission.WaitAsync(cancellationToken).ConfigureAwait(false);
+-        try { return await AcquireCoreAsync(cancellationToken).ConfigureAwait(false); }
++        DispatchDiagnostics? diagnostics = DispatchDiagnostics.Create(_logger, cancellationToken);
++        using (var stage = diagnostics?.Start(DispatchStageName.CatalogAdmissionWait))
++        {
++            await _localAdmission.WaitAsync(cancellationToken).ConfigureAwait(false);
++            stage?.Complete();
++        }
++        try { return await AcquireCoreAsync(cancellationToken, diagnostics).ConfigureAwait(false); }
+         finally { _localAdmission.Release(); }
+     }
+ 
+-    private async Task<RouteCatalogDispatchLease> AcquireCoreAsync(CancellationToken cancellationToken)
++    private async Task<RouteCatalogDispatchLease> AcquireCoreAsync(CancellationToken cancellationToken, DispatchDiagnostics? diagnostics)
+     {
+         RequireLocalIdentity();
+         RouteCatalogActivation? captured = null;
+@@ -154,24 +168,27 @@ public sealed class RouteCatalogAuthority(IRouteCatalogStateStore store, IRouteC
+         {
+             if (state.Leases.Any(l => l.LeaseId == leaseId) && state.Committed is { } retained)
+             {
+-                await ValidateAsync(retained, cancellationToken).ConfigureAwait(false);
++                await ValidateAsync(retained, cancellationToken, diagnostics).ConfigureAwait(false);
+                 captured = retained;
+                 epoch = state.Epoch;
+                 return state;
+             }
+             if (state.Pending is not null || state.Committed is null)
+                 throw new RouteCatalogUnavailableException("No complete catalog generation is serving.");
+-            await ValidateAsync(state.Committed, cancellationToken).ConfigureAwait(false);
++            await ValidateAsync(state.Committed, cancellationToken, diagnostics).ConfigureAwait(false);
+             captured = state.Committed;
+             epoch = state.Epoch;
+             long sequence = checked(state.LastLease + 1);
+             if (state.Leases.Count >= 4096) throw new RouteCatalogUnavailableException("The durable dispatch lease inventory requires draining.");
+             return state with { LastLease = sequence, Leases = [.. state.Leases, new RouteCatalogDispatchFence(sequence, leaseId, options.Value.Identity!.HostId, state.Committed.RootDigest, state.Epoch)] };
+-        }, cancellationToken).ConfigureAwait(false);
+-        return new(new(captured!, epoch, options.Value.Identity!.AppId, store.Coordinates), () => ReleaseAsync(leaseId))
++        }, cancellationToken, diagnostics).ConfigureAwait(false);
++        using var snapshotStage = diagnostics?.Start(DispatchStageName.CatalogSnapshot);
++        var lease = new RouteCatalogDispatchLease(new(captured!, epoch, options.Value.Identity!.AppId, store.Coordinates), () => ReleaseAsync(leaseId))
+         {
+             Activation = captured,
+         };
++        snapshotStage?.Complete();
++        return lease;
+     }
+ 
+     /// <summary>Rechecks independently observed local facts for a native read under its existing durable lease.</summary>
+@@ -218,18 +235,31 @@ public sealed class RouteCatalogAuthority(IRouteCatalogStateStore store, IRouteC
+         }
+     }
+ 
+-    private async Task ValidateAsync(RouteCatalogActivation activation, CancellationToken cancellationToken)
++    private async Task ValidateAsync(RouteCatalogActivation activation, CancellationToken cancellationToken, DispatchDiagnostics? diagnostics = null)
+     {
+         RequireLocalIdentity();
+-        string binding = RouteCatalogActivationBinding.ComputeDigest(activation);
++        string binding;
++        using (var stage = diagnostics?.Start(DispatchStageName.CatalogActivationDigest))
++        {
++            binding = RouteCatalogActivationBinding.ComputeDigest(activation);
++            stage?.Complete();
++        }
+         RouteCatalogHostOptions local = options.Value;
+         if (local.Identity is null || Catalog(activation).Profile != local.Profile
+             || !activation.RequiredHosts.Contains(local.Identity))
+             throw new RouteCatalogUnavailableException("Local host inventory, topology, authentication or profile disagrees with the exact required host set.");
+-        if (store.Coordinates is not { } coordinates || observer is null
+-            || await observer.ObserveAsync(activation, coordinates, cancellationToken).ConfigureAwait(false) != local.Identity)
+-            throw new RouteCatalogUnavailableException("Configured host identity lacks matching independent registration, topology and authentication observations.", RouteCatalogRefusalReason.Inventory);
+-        await trust.ValidateAsync(activation, binding, cancellationToken).ConfigureAwait(false);
++        using (var stage = diagnostics?.Start(DispatchStageName.CatalogHostCapture))
++        {
++            if (store.Coordinates is not { } coordinates || observer is null
++                || await observer.ObserveAsync(activation, coordinates, cancellationToken).ConfigureAwait(false) != local.Identity)
++                throw new RouteCatalogUnavailableException("Configured host identity lacks matching independent registration, topology and authentication observations.", RouteCatalogRefusalReason.Inventory);
++            stage?.Complete();
++        }
++        using (var stage = diagnostics?.Start(DispatchStageName.CatalogTrust))
++        {
++            await trust.ValidateAsync(activation, binding, cancellationToken).ConfigureAwait(false);
++            stage?.Complete();
++        }
+     }
+ 
+     private void RequireLocalIdentity()
+@@ -241,13 +271,26 @@ public sealed class RouteCatalogAuthority(IRouteCatalogStateStore store, IRouteC
+     private Task UpdateAsync(Func<RouteCatalogActivationState, RouteCatalogActivationState> update, CancellationToken cancellationToken)
+         => UpdateAsync(state => Task.FromResult(update(state)), cancellationToken);
+ 
+-    private async Task UpdateAsync(Func<RouteCatalogActivationState, Task<RouteCatalogActivationState>> update, CancellationToken cancellationToken)
++    private async Task UpdateAsync(Func<RouteCatalogActivationState, Task<RouteCatalogActivationState>> update, CancellationToken cancellationToken, DispatchDiagnostics? diagnostics = null)
+     {
+         for (int attempt = 0; attempt < 32; attempt++)
+         {
+-            (RouteCatalogActivationState state, string etag) = await store.ReadAsync(cancellationToken).ConfigureAwait(false);
++            RouteCatalogActivationState state;
++            string etag;
++            using (var stage = diagnostics?.Start(DispatchStageName.CatalogStateRead))
++            {
++                (state, etag) = await store.ReadAsync(cancellationToken).ConfigureAwait(false);
++                stage?.Complete();
++            }
+             RouteCatalogActivationState next = await update(state).ConfigureAwait(false);
+-            if (ReferenceEquals(state, next) || await store.CompareExchangeAsync(next, etag, cancellationToken).ConfigureAwait(false)) return;
++            if (ReferenceEquals(state, next)) return;
++            bool exchanged;
++            using (var stage = diagnostics?.Start(DispatchStageName.CatalogCompareExchange))
++            {
++                exchanged = await store.CompareExchangeAsync(next, etag, cancellationToken).ConfigureAwait(false);
++                stage?.Complete();
++            }
++            if (exchanged) return;
+             // Bound conflict scheduling like completed-lease release, desynchronizing competing
+             // writers without locking across an awaited owner verifier. Every retry revalidates fresh
+             // state within the same 32-attempt bound; randomness supplies no identity or authority.
+diff --git a/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs b/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs
+index d7dd0ee94..3aa787c88 100644
+--- a/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs
++++ b/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs
+@@ -1,6 +1,7 @@
+ using System.Net;
+ using System.Reflection;
+ using Hexalith.EventStore.Contracts.Routing;
++using Hexalith.EventStore.ServiceDefaults.Diagnostics;
+ 
+ namespace Hexalith.EventStore.ServiceDefaults.Routing;
+ 
+@@ -22,6 +23,7 @@ public sealed class RouteCatalogInvocationHandler : HttpMessageHandler
+     private readonly bool _followOrdinaryRedirects;
+     private readonly int _maxAutomaticRedirections;
+     private readonly bool _disableRedirectAuthentication;
++    private readonly IServiceProvider? _diagnosticServices;
+     internal HttpMessageHandler Transport { get; }
+ 
+     /// <summary>Creates the guard with independently owned ordinary and invocation primary transports.</summary>
+@@ -32,12 +34,13 @@ public sealed class RouteCatalogInvocationHandler : HttpMessageHandler
+     /// <summary>Also isolates this SDK's authoritative state client from redirects.</summary>
+     internal RouteCatalogInvocationHandler(IRouteCatalogAuthority authority, HttpMessageHandler transport,
+         Microsoft.Extensions.Options.IOptions<RouteCatalogHostOptions>? options, bool authorityStateClient,
+-        RouteCatalogInvocationScope? nativeReadScope = null)
++        RouteCatalogInvocationScope? nativeReadScope = null, IServiceProvider? diagnosticServices = null)
+     {
+         ArgumentNullException.ThrowIfNull(authority);
+         ArgumentNullException.ThrowIfNull(transport);
+         _authority = authority;
+         _nativeReadScope = nativeReadScope;
++        _diagnosticServices = diagnosticServices;
+         _options = options;
+         Transport = transport;
+         _transport = new(transport);
+@@ -158,46 +161,78 @@ public sealed class RouteCatalogInvocationHandler : HttpMessageHandler
+             return await InvocationTransport().SendAsync(request, cancellationToken).ConfigureAwait(false);
+         }
+         HttpMessageInvoker invocation = InvocationTransport();
++        DispatchDiagnostics? diagnostics = _diagnosticServices is null ? null
++            : DispatchDiagnostics.Create<RouteCatalogInvocationHandler>(_diagnosticServices, cancellationToken);
+         RouteCatalogDispatchLease? borrowed = _nativeReadScope?.LeaseFor(_authority, appId, method, request.Method);
+         if (borrowed is not null)
+         {
+             if (_authority is not RouteCatalogAuthority catalogAuthority)
+                 throw new RouteCatalogUnavailableException("The native source read scope has no owning catalog authority.");
+-            await catalogAuthority.ValidateNativeReadLeaseAsync(borrowed, cancellationToken).ConfigureAwait(false);
+-            return await SendLeasedAsync(request, appId, method, rawMethod, invocation, borrowed, cancellationToken).ConfigureAwait(false);
++            using (var stage = diagnostics?.Start(DispatchStageName.InvocationAcquire))
++            {
++                await catalogAuthority.ValidateNativeReadLeaseAsync(borrowed, cancellationToken).ConfigureAwait(false);
++                stage?.Complete();
++            }
++            return await SendLeasedAsync(request, appId, method, rawMethod, invocation, borrowed, cancellationToken, diagnostics).ConfigureAwait(false);
++        }
++        RouteCatalogDispatchLease lease;
++        using (var stage = diagnostics?.Start(DispatchStageName.InvocationAcquire))
++        {
++            lease = await _authority.AcquireAsync(cancellationToken).ConfigureAwait(false);
++            stage?.Complete();
++        }
++        try
++        {
++            return await SendLeasedAsync(request, appId, method, rawMethod, invocation, lease, cancellationToken, diagnostics).ConfigureAwait(false);
++        }
++        finally
++        {
++            using var stage = diagnostics?.Start(DispatchStageName.InvocationRelease, CancellationToken.None);
++            await lease.DisposeAsync().ConfigureAwait(false);
++            stage?.Complete();
+         }
+-        RouteCatalogDispatchLease lease = await _authority.AcquireAsync(cancellationToken).ConfigureAwait(false);
+-        await using var release = lease.ConfigureAwait(false);
+-        return await SendLeasedAsync(request, appId, method, rawMethod, invocation, lease, cancellationToken).ConfigureAwait(false);
+     }
+ 
+     private static async Task<HttpResponseMessage> SendLeasedAsync(HttpRequestMessage request, string appId, string method,
+-        string rawMethod, HttpMessageInvoker invocation, RouteCatalogDispatchLease lease, CancellationToken cancellationToken)
++        string rawMethod, HttpMessageInvoker invocation, RouteCatalogDispatchLease lease, CancellationToken cancellationToken,
++        DispatchDiagnostics? diagnostics)
+     {
+-        if (lease.Snapshot.TechnicalHttpReceivers.Count > 0 && (!OwnedEndpoint(lease.Snapshot, request.RequestUri!)
+-            || !DevelopmentTechnicalHttpTransport.CanonicalPath(rawMethod)))
+-            throw new RouteCatalogUnavailableException("The v2 invocation uses a different Dapr runtime endpoint.", RouteCatalogRefusalReason.Configuration);
+-        if (!lease.Snapshot.Envelope.Routes.Any(r => r.AppId == appId && r.Method == method)
+-            && !lease.Snapshot.AuxiliaryOperations.Any(auxiliary => auxiliary.NativeActor is null && auxiliary.DaprCallback is null && auxiliary.Sidecar is null && auxiliary.Http is null
+-                && auxiliary.AppId == appId && auxiliary.Method == method)
+-            && !(lease.Snapshot.TechnicalHttpReceivers.All(receiver => receiver.AppId != appId)
+-                && lease.Snapshot.AuxiliaryOperations.Any(auxiliary => auxiliary.NativeActor is null && auxiliary.DaprCallback is null && auxiliary.Sidecar is null
+-                    && auxiliary.AppId == appId && auxiliary.Http is not null
+-                    && DevelopmentTechnicalHttpTransport.Matches(auxiliary, rawMethod, request.Method.Method)))
+-            && !TechnicalHttpCatalogBinding.Matches(lease.Snapshot.TechnicalHttpReceivers, appId, method, request.Method.Method, lease.Snapshot.LocalAppId))
+-            throw new RouteCatalogUnavailableException("The Dapr invocation target is outside the committed catalog and auxiliary inventory.");
+-        request.Headers.Remove(RootHeader);
+-        request.Headers.Remove(EpochHeader);
+-        request.Headers.Remove(BindingHeader);
+-        request.Headers.Remove(ProcessBindingHeader);
+-        if (lease.Snapshot.TechnicalHttpReceivers.Count > 0)
+-            request.Headers.TryAddWithoutValidation(BindingHeader, lease.Snapshot.ActivationBindingDigest);
+-        if (method == "process" && lease.Snapshot.Envelope.SchemaVersion == 3
+-            && lease.Snapshot.CompleteActivationBindingDigest is { } processBinding)
+-            request.Headers.TryAddWithoutValidation(ProcessBindingHeader, processBinding);
+-        request.Headers.TryAddWithoutValidation(RootHeader, lease.Snapshot.RootDigest);
+-        request.Headers.TryAddWithoutValidation(EpochHeader, lease.Snapshot.Epoch.ToString(System.Globalization.CultureInfo.InvariantCulture));
+-        return await lease.InvokeRemoteAsync(() => invocation.SendAsync(request, cancellationToken), cancellationToken).ConfigureAwait(false);
++        using (var stage = diagnostics?.Start(DispatchStageName.InvocationValidation))
++        {
++            if (lease.Snapshot.TechnicalHttpReceivers.Count > 0 && (!OwnedEndpoint(lease.Snapshot, request.RequestUri!)
++                || !DevelopmentTechnicalHttpTransport.CanonicalPath(rawMethod)))
++                throw new RouteCatalogUnavailableException("The v2 invocation uses a different Dapr runtime endpoint.", RouteCatalogRefusalReason.Configuration);
++            if (!lease.Snapshot.Envelope.Routes.Any(r => r.AppId == appId && r.Method == method)
++                && !lease.Snapshot.AuxiliaryOperations.Any(auxiliary => auxiliary.NativeActor is null && auxiliary.DaprCallback is null && auxiliary.Sidecar is null && auxiliary.Http is null
++                    && auxiliary.AppId == appId && auxiliary.Method == method)
++                && !(lease.Snapshot.TechnicalHttpReceivers.All(receiver => receiver.AppId != appId)
++                    && lease.Snapshot.AuxiliaryOperations.Any(auxiliary => auxiliary.NativeActor is null && auxiliary.DaprCallback is null && auxiliary.Sidecar is null
++                        && auxiliary.AppId == appId && auxiliary.Http is not null
++                        && DevelopmentTechnicalHttpTransport.Matches(auxiliary, rawMethod, request.Method.Method)))
++                && !TechnicalHttpCatalogBinding.Matches(lease.Snapshot.TechnicalHttpReceivers, appId, method, request.Method.Method, lease.Snapshot.LocalAppId))
++                throw new RouteCatalogUnavailableException("The Dapr invocation target is outside the committed catalog and auxiliary inventory.");
++            request.Headers.Remove(RootHeader);
++            request.Headers.Remove(EpochHeader);
++            request.Headers.Remove(BindingHeader);
++            request.Headers.Remove(ProcessBindingHeader);
++            if (lease.Snapshot.TechnicalHttpReceivers.Count > 0)
++                request.Headers.TryAddWithoutValidation(BindingHeader, lease.Snapshot.ActivationBindingDigest);
++            if (method == "process" && lease.Snapshot.Envelope.SchemaVersion == 3
++                && lease.Snapshot.CompleteActivationBindingDigest is { } processBinding)
++                request.Headers.TryAddWithoutValidation(ProcessBindingHeader, processBinding);
++            request.Headers.TryAddWithoutValidation(RootHeader, lease.Snapshot.RootDigest);
++            request.Headers.TryAddWithoutValidation(EpochHeader, lease.Snapshot.Epoch.ToString(System.Globalization.CultureInfo.InvariantCulture));
++            stage?.Complete();
++        }
++        if (diagnostics is null)
++            return await lease.InvokeRemoteAsync(() => invocation.SendAsync(request, cancellationToken), cancellationToken).ConfigureAwait(false);
++        return await lease.InvokeRemoteAsync(async () =>
++        {
++            using var stage = diagnostics.Start(DispatchStageName.InvocationTransport);
++            HttpResponseMessage response = await invocation.SendAsync(request, cancellationToken).ConfigureAwait(false);
++            stage.Complete();
++            return response;
++        }, cancellationToken).ConfigureAwait(false);
+     }
+ 
+ 
+diff --git a/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogServiceCollectionExtensions.cs b/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogServiceCollectionExtensions.cs
+index 468412214..9dcc73be3 100644
+--- a/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogServiceCollectionExtensions.cs
++++ b/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogServiceCollectionExtensions.cs
+@@ -46,7 +46,11 @@ public static class RouteCatalogServiceCollectionExtensions
+         services.TryAddEnumerable(ServiceDescriptor.Singleton<Microsoft.Extensions.Http.IHttpMessageHandlerBuilderFilter, RouteCatalogStateHttpClientFilter>());
+         services.TryAddSingleton<IRouteCatalogStateStore, DaprRouteCatalogStateStore>();
+         services.TryAddSingleton<IRouteCatalogTrustValidator, DevelopmentRouteCatalogTrustValidator>();
+-        services.TryAddSingleton<IRouteCatalogAuthority, RouteCatalogAuthority>();
++        services.TryAddSingleton<IRouteCatalogAuthority>(provider => new RouteCatalogAuthority(
++            provider.GetRequiredService<IRouteCatalogStateStore>(), provider.GetRequiredService<IRouteCatalogTrustValidator>(),
++            provider.GetRequiredService<Microsoft.Extensions.Options.IOptions<RouteCatalogHostOptions>>(),
++            provider.GetService<IRouteCatalogHostObserver>(), provider.GetService<IRouteCatalogQuiescenceVerifier>(),
++            OptionalAuthorityLogger(provider)));
+         services.TryAddSingleton<RouteCatalogInvocationScope>();
+         services.TryAddScoped<GeneratedRouteCatalogFilter>();
+         services.Configure<Microsoft.AspNetCore.Mvc.MvcOptions>(mvc => mvc.Filters.AddService<GeneratedRouteCatalogFilter>());
+@@ -59,4 +63,10 @@ public static class RouteCatalogServiceCollectionExtensions
+         services.AddHealthChecks().AddCheck<RouteCatalogReadinessCheck>("route-catalog", tags: ["ready"]);
+         return services;
+     }
++
++    private static Microsoft.Extensions.Logging.ILogger<RouteCatalogAuthority>? OptionalAuthorityLogger(IServiceProvider provider)
++    {
++        try { return provider.GetService<Microsoft.Extensions.Logging.ILogger<RouteCatalogAuthority>>(); }
++        catch { return null; }
++    }
+ }
+diff --git a/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogStateHttpClientFilter.cs b/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogStateHttpClientFilter.cs
+index 7f7601bda..75bf197d0 100644
+--- a/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogStateHttpClientFilter.cs
++++ b/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogStateHttpClientFilter.cs
+@@ -18,7 +18,7 @@ internal sealed class RouteCatalogStateHttpClientFilter : IHttpMessageHandlerBui
+             // delegating handler and this transport sees only its final owned target/credential.
+             builder.PrimaryHandler = new RouteCatalogInvocationHandler(builder.Services.GetRequiredService<IRouteCatalogAuthority>(), builder.PrimaryHandler,
+                 builder.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<RouteCatalogHostOptions>>(), builder.Name == "route-catalog-state",
+-                builder.Services.GetService<RouteCatalogInvocationScope>());
++                builder.Services.GetService<RouteCatalogInvocationScope>(), builder.Services);
+             if (builder.Name != "route-catalog-state") return;
+             for (int index = builder.AdditionalHandlers.Count - 1; index >= 0; index--)
+                 if (builder.AdditionalHandlers[index] is ResilienceHandler) builder.AdditionalHandlers.RemoveAt(index);
+diff --git a/src/Hexalith.EventStore/Controllers/StreamsController.cs b/src/Hexalith.EventStore/Controllers/StreamsController.cs
+index bc8c27450..f09be02b8 100644
+--- a/src/Hexalith.EventStore/Controllers/StreamsController.cs
++++ b/src/Hexalith.EventStore/Controllers/StreamsController.cs
+@@ -135,6 +135,16 @@ public sealed partial class StreamsController(
+             bool proofBound = hasProof && proofHeader.Count == 1 && caller is not null && domainAllowed
+                 && BoundStreamReadProof.Verify(proofHeader[0], proofRequest, caller,
+                     configuration?[$"Authentication:BoundStreamRead:PublicKeys:{caller}"], DateTimeOffset.UtcNow);
++            // Explicit source-only enrollment is receiver authority. It cannot be waived by
++            // a resource-bound JWT or a caller-supplied request flag. Generic stream readers
++            // retain their existing grant; enrolled metadata callers never enter a range read.
++            string? metadataOnly = caller is null ? null
++                : configuration?[$"Authentication:BoundStreamRead:MetadataOnlyCallers:{caller}"];
++            if (metadataOnly is not null && (!string.Equals(metadataOnly, "true", StringComparison.OrdinalIgnoreCase)
++                || !proofBound || request.FromSequence != 0 || request.ToSequence != 0 || request.PageSize != 1
++                || !request.RequireNativeProof || request.Checkpoint is not null || request.ContinuationToken is not null
++                || request.ProjectionName is not null))
++                return Forbid();
+             if (string.IsNullOrWhiteSpace(caller) || hasProof && !proofBound || !jwtBound && !proofBound) {
+                 return Forbid();
+             }
+diff --git a/src/Hexalith.EventStore/Validation/SubmitCommandRequestValidator.cs b/src/Hexalith.EventStore/Validation/SubmitCommandRequestValidator.cs
+index 41866ad90..d66e004da 100644
+--- a/src/Hexalith.EventStore/Validation/SubmitCommandRequestValidator.cs
++++ b/src/Hexalith.EventStore/Validation/SubmitCommandRequestValidator.cs
+@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
+ using FluentValidation;
+ 
+ using Hexalith.EventStore.Contracts.Commands;
++using Hexalith.EventStore.Contracts.Identity;
+ 
+ namespace Hexalith.EventStore.Validation;
+ 
+@@ -44,7 +45,10 @@ public partial class SubmitCommandRequestValidator : AbstractValidator<SubmitCom
+             .NotNull().WithMessage("Tenant is required")
+             .NotEmpty().WithMessage("Tenant cannot be empty")
+             .MaximumLength(MaxTenantDomainLength).WithMessage($"Tenant cannot exceed {MaxTenantDomainLength} characters")
+-            .Matches(_tenantDomainRegex).WithMessage("Tenant must contain only lowercase alphanumeric characters and hyphens")
++            // Namespace syntax grants no authority: the controller still requires the exact
++            // committed operation, human permission and ingress before mapping retained storage.
++            .Must(scope => TenantCanonicalizer.IsPlatformScope(scope) || _tenantDomainRegex.IsMatch(scope))
++            .WithMessage("Tenant must be a lowercase tenant identifier or an explicit canonical platform namespace")
+             .When(x => !string.IsNullOrEmpty(x.Tenant), ApplyConditionTo.CurrentValidator);
+ 
+         _ = RuleFor(x => x.Domain)
+diff --git a/tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogV3Tests.cs b/tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogV3Tests.cs
+index d21b94b07..26cb215fa 100644
+--- a/tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogV3Tests.cs
++++ b/tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogV3Tests.cs
+@@ -85,6 +85,23 @@ public class RouteCatalogV3Tests
+         first.Routes.All(r => r.OperationContractDigest != r.DeclarationDigest).ShouldBeTrue();
+     }
+ 
++    [Fact]
++    public void RepeatedDecodeKeepsIndependentOwnerSchemasAndCanonicalBytes()
++    {
++        byte[] bytes = RouteCatalogCodec.Encode(VersionedRouteCatalogBuilder.Build(Input(8)));
++        RouteCatalogEnvelope first = RouteCatalogCodec.Decode(bytes);
++        var operations = (IList<RouteOperationContract>)first.Operations!;
++        operations[0] = operations[0] with
++        {
++            RequestSchema = JsonSerializer.SerializeToElement(new { type = "object", title = "changed" }),
++            Eligibility = "UI-only",
++        };
++        RouteCatalogEnvelope second = RouteCatalogCodec.Decode(bytes);
++        second.Operations.ShouldNotBeSameAs(first.Operations);
++        RouteCatalogCodec.Encode(second).ShouldBe(bytes);
++        Should.Throw<RouteCatalogValidationException>(() => RouteCatalogCodec.Encode(first));
++    }
++
+     [Theory]
+     [InlineData("eligibility")]
+     [InlineData("schema")]
+diff --git a/tests/Hexalith.EventStore.Server.Tests/Pipeline/SubmitCommandRequestValidatorTests.cs b/tests/Hexalith.EventStore.Server.Tests/Pipeline/SubmitCommandRequestValidatorTests.cs
+index 020119daf..a7f65c7b9 100644
+--- a/tests/Hexalith.EventStore.Server.Tests/Pipeline/SubmitCommandRequestValidatorTests.cs
++++ b/tests/Hexalith.EventStore.Server.Tests/Pipeline/SubmitCommandRequestValidatorTests.cs
+@@ -254,6 +254,25 @@ public class SubmitCommandRequestValidatorTests {
+         result.Errors.ShouldContain(e => e.PropertyName == "Tenant" && e.ErrorMessage.Contains("lowercase"));
+     }
+ 
++    [Theory]
++    [InlineData("platform:tenants", true)]
++    [InlineData("platform:global-administrators", true)]
++    [InlineData("platform:unknown-owner", true)]
++    [InlineData("platform:", false)]
++    [InlineData("platform:tenants--invalid", false)]
++    [InlineData("platform:Tenants", false)]
++    [InlineData("platform:tenants ", false)]
++    [InlineData("platform:tenants/other", false)]
++    [InlineData("platform:tenants,tenant-a", false)]
++    public void SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization(string scope, bool valid)
++    {
++        var request = new SubmitCommandRequest("platform-model-control", scope, "tenants", "managed-tenant",
++            "CreateTenant", JsonSerializer.SerializeToElement(new { tenantId = "managed-tenant" }));
++        FluentValidation.Results.ValidationResult result = _validator.Validate(request);
++        result.IsValid.ShouldBe(valid);
++        if (!valid) result.Errors.ShouldContain(error => error.PropertyName == "Tenant");
++    }
++
+     [Fact]
+     public void SubmitCommandRequestValidator_ValidRequest_Passes() {
+         // Arrange
+diff --git a/tests/Hexalith.EventStore.Server.Tests/Routing/DevelopmentProjectionActorObservationTests.cs b/tests/Hexalith.EventStore.Server.Tests/Routing/DevelopmentProjectionActorObservationTests.cs
+index 9a164f9fa..65c493652 100644
+--- a/tests/Hexalith.EventStore.Server.Tests/Routing/DevelopmentProjectionActorObservationTests.cs
++++ b/tests/Hexalith.EventStore.Server.Tests/Routing/DevelopmentProjectionActorObservationTests.cs
+@@ -24,6 +24,39 @@ namespace Hexalith.EventStore.Server.Tests.Routing;
+ /// <summary>Independently observes the existing SDK actor registration and exercises the real router against complete Sample schemas.</summary>
+ public sealed class DevelopmentProjectionActorObservationTests
+ {
++    /// <summary>Reusing compiled schemas cannot reuse a previous runtime registration decision.</summary>
++    [Theory]
++    [InlineData("unchanged")]
++    [InlineData("missing")]
++    [InlineData("different-implementation")]
++    [InlineData("different-invoker")]
++    public void FrozenCompiledInventoryStillRechecksCurrentActorAndInvoker(string change)
++    {
++        ArgumentNullException.ThrowIfNull(change);
++        var services = new ServiceCollection(); services.AddLogging(); services.AddEventStoreServer(new ConfigurationBuilder().Build());
++        using var provider = services.BuildServiceProvider();
++        var owners = new[] { typeof(SampleCatalog).Assembly };
++        var declarations = CompiledRouteCatalogDeclarations.Read(owners);
++        var first = RunScopedRouteCatalogGateway.ActorQueryTargets(provider, owners, declarations, "gateway-owned");
++        first.ShouldHaveSingleItem();
++        var options = provider.GetRequiredService<IOptions<ActorRuntimeOptions>>().Value;
++        if (change is "missing" or "different-implementation")
++            options.Actors.Remove(options.Actors.Single(actor => actor.Type.ActorTypeName == RouteCatalogProjectionActorPolicy.ActorType).Type);
++        if (change == "different-implementation") options.Actors.RegisterActor<GlobalPositionActor>(RouteCatalogProjectionActorPolicy.ActorType);
++        if (change == "different-invoker")
++        {
++            var replaced = new ServiceCollection();
++            replaced.AddSingleton<IOptions<ActorRuntimeOptions>>(Options.Create(options));
++            replaced.AddSingleton(Substitute.For<IProjectionActorInvoker>());
++            using var changed = replaced.BuildServiceProvider();
++            Should.Throw<RouteCatalogUnavailableException>(() => RunScopedRouteCatalogGateway.ActorQueryTargets(changed, owners, declarations, "gateway-owned"));
++        }
++        else if (change == "unchanged")
++            RunScopedRouteCatalogGateway.ActorQueryTargets(provider, owners, declarations, "gateway-owned").ShouldBe(first);
++        else
++            Should.Throw<RouteCatalogUnavailableException>(() => RunScopedRouteCatalogGateway.ActorQueryTargets(provider, owners, declarations, "gateway-owned"));
++    }
++
+     /// <summary>A name alone cannot substitute a missing or different SDK actor implementation.</summary>
+     [Theory]
+     [InlineData("valid")]
+diff --git a/src/Hexalith.EventStore.Contracts/Routing/ValidatedRouteCatalogEncoding.cs b/src/Hexalith.EventStore.Contracts/Routing/ValidatedRouteCatalogEncoding.cs
+new file mode 100644
+index 000000000..7ee44ee3d
+--- /dev/null
++++ b/src/Hexalith.EventStore.Contracts/Routing/ValidatedRouteCatalogEncoding.cs
+@@ -0,0 +1,14 @@
++using System.Security.Cryptography;
++
++namespace Hexalith.EventStore.Contracts.Routing;
++
++/// <summary>Retains private canonical bytes after complete deterministic catalog validation.</summary>
++/// <param name="canonicalBytes">The codec-owned canonical encoding, never exposed to callers.</param>
++internal sealed class ValidatedRouteCatalogEncoding(byte[] canonicalBytes)
++{
++    /// <summary>Gets the root bound to these exact validated bytes.</summary>
++    internal string RootDigest { get; } = Convert.ToHexStringLower(SHA256.HashData(canonicalBytes));
++
++    /// <summary>Requires equality of the entire freshly captured document, without trusting a supplied digest.</summary>
++    internal bool Matches(ReadOnlySpan<byte> bytes) => bytes.SequenceEqual(canonicalBytes);
++}
+diff --git a/src/Hexalith.EventStore.DomainService/DomainServiceNativeSourceCredentials.cs b/src/Hexalith.EventStore.DomainService/DomainServiceNativeSourceCredentials.cs
+new file mode 100644
+index 000000000..6cd66aba1
+--- /dev/null
++++ b/src/Hexalith.EventStore.DomainService/DomainServiceNativeSourceCredentials.cs
+@@ -0,0 +1,52 @@
++using System.Security.Cryptography;
++
++using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Contracts.Identity;
++using Hexalith.EventStore.Contracts.Streams;
++using Hexalith.EventStore.ServiceDefaults.Authentication;
++
++using Microsoft.Extensions.Configuration;
++
++namespace Hexalith.EventStore.DomainService;
++
++/// <summary>Issues only the configured host's exact metadata-read credentials; it exposes no command client.</summary>
++internal sealed class DomainServiceNativeSourceCredentials(
++    IWorkloadAssertionIssuer issuer, IConfiguration configuration, string domain, string audience, TimeProvider clock)
++    : IEventStoreGatewayWorkloadAssertionSource, IEventStoreGatewayStreamReadProofSource
++{
++    /// <inheritdoc/>
++    public ValueTask<string?> IssueAsync(string operation, string tenant, CancellationToken cancellationToken = default)
++        => IssueAsync(operation, tenant, domain, cancellationToken);
++
++    /// <inheritdoc/>
++    public ValueTask<string?> IssueAsync(string operation, string tenant, string requestedDomain, CancellationToken cancellationToken = default)
++    {
++        cancellationToken.ThrowIfCancellationRequested();
++        return operation == EventStoreGatewayWorkloadOperations.StreamRead && requestedDomain == domain
++            && TenantCanonicalizer.TryCanonicalize(tenant, out string canonical) && canonical == tenant
++            ? issuer.IssueAsync(new WorkloadAssertionRequest(audience, EventStoreGatewayWorkloadOperations.StreamRead), cancellationToken)
++            : ValueTask.FromResult<string?>(null);
++    }
++
++    /// <inheritdoc/>
++    public ValueTask<string?> IssueAsync(StreamReadRequest request, CancellationToken cancellationToken)
++    {
++        ArgumentNullException.ThrowIfNull(request);
++        cancellationToken.ThrowIfCancellationRequested();
++        if (request.Domain != domain || request.FromSequence != 0 || request.ToSequence != 0 || request.PageSize != 1
++            || !request.RequireNativeProof || request.Checkpoint is not null || request.ContinuationToken is not null
++            || request.ProjectionName is not null
++            || !TenantCanonicalizer.TryCanonicalize(request.Tenant, out string canonical) || canonical != request.Tenant
++            || configuration["Authentication:WorkloadIssuer:Workload"] is not { Length: > 0 } caller
++            || configuration["Authentication:BoundStreamRead:PrivateKey"] is not { Length: > 0 } key)
++            return ValueTask.FromResult<string?>(null);
++        try
++        {
++            return ValueTask.FromResult<string?>(BoundStreamReadProof.Issue(request, caller, key, clock.GetUtcNow()));
++        }
++        catch (Exception exception) when (exception is ArgumentException or FormatException or CryptographicException)
++        {
++            return ValueTask.FromResult<string?>(null);
++        }
++    }
++}
+diff --git a/tests/Hexalith.EventStore.Client.Tests/Streams/NativeSourceMetadataScopeContractTests.cs b/tests/Hexalith.EventStore.Client.Tests/Streams/NativeSourceMetadataScopeContractTests.cs
+new file mode 100644
+index 000000000..bf5d16afd
+--- /dev/null
++++ b/tests/Hexalith.EventStore.Client.Tests/Streams/NativeSourceMetadataScopeContractTests.cs
+@@ -0,0 +1,39 @@
++using System.Security.Cryptography;
++
++using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Contracts.Streams;
++
++using Shouldly;
++
++namespace Hexalith.EventStore.Client.Tests.Streams;
++
++/// <summary>Records which authority the existing resource proof can and cannot restrict.</summary>
++public sealed class NativeSourceMetadataScopeContractTests
++{
++    /// <summary>The existing proof authorizes one stream, rather than a metadata-only observation of that stream.</summary>
++    [Theory]
++    [InlineData("range")]
++    [InlineData("page-size")]
++    [InlineData("native-proof")]
++    public void ExistingResourceProofCannotEstablishMetadataOnlyEnrollment(string change)
++    {
++        var metadata = new StreamReadRequest("tenant-a", "folders", "organization-a",
++            FromSequence: 0, ToSequence: 0, PageSize: 1) { RequireNativeProof = true };
++        StreamReadRequest changed = change switch
++        {
++            "range" => metadata with { ToSequence = 10 },
++            "page-size" => metadata with { PageSize = 100 },
++            _ => metadata with { RequireNativeProof = false },
++        };
++        using RSA key = RSA.Create(2048);
++        DateTimeOffset now = DateTimeOffset.UtcNow;
++        string proof = BoundStreamReadProof.Issue(metadata, "folders-source",
++            Convert.ToBase64String(key.ExportPkcs8PrivateKey()), now);
++        string publicKey = Convert.ToBase64String(key.ExportSubjectPublicKeyInfo());
++
++        BoundStreamReadProof.Verify(proof, changed, "folders-source", publicKey, now).ShouldBeTrue();
++        BoundStreamReadProof.Verify(proof, changed with { AggregateId = "other-aggregate" },
++            "folders-source", publicKey, now).ShouldBeFalse();
++        BoundStreamReadProof.Verify(proof, changed, "other-caller", publicKey, now).ShouldBeFalse();
++    }
++}
+diff --git a/tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogDecodeIsolationTests.cs b/tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogDecodeIsolationTests.cs
+new file mode 100644
+index 000000000..53c8084ec
+--- /dev/null
++++ b/tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogDecodeIsolationTests.cs
+@@ -0,0 +1,86 @@
++using System.Security.Cryptography;
++using System.Text;
++
++using Hexalith.EventStore.Contracts.Routing;
++
++namespace Hexalith.EventStore.Contracts.Tests.Routing;
++
++/// <summary>Repeated canonical reads retain exact validation and independent caller-owned models.</summary>
++public sealed class RouteCatalogDecodeIsolationTests
++{
++    /// <summary>A caller may mutate its returned model without changing a later decode of retained bytes.</summary>
++    [Theory]
++    [InlineData("CanonicalCatalog.json")]
++    [InlineData("V2CanonicalCatalog.json")]
++    public void ReturnedModelMutationCannotChangeLaterDecodedAuthority(string fixture)
++    {
++        byte[] bytes = FixtureBytes(fixture);
++        string root = Root(bytes);
++        RouteCatalogEnvelope first = RouteCatalogCodec.Decode(bytes, root);
++        var declarations = (IList<RouteContractDeclaration>)first.Declarations;
++        declarations[0] = declarations[0] with { Domain = "changed" };
++        var descriptorFields = (IList<IdempotencyDescriptorField>)first.Idempotency[0].DescriptorSchema.Fields;
++        descriptorFields.Clear();
++
++        RouteCatalogEnvelope second = RouteCatalogCodec.Decode(bytes, root);
++        second.ShouldNotBeSameAs(first);
++        second.Declarations.ShouldNotBeSameAs(first.Declarations);
++        second.Idempotency[0].DescriptorSchema.Fields.ShouldNotBeSameAs(first.Idempotency[0].DescriptorSchema.Fields);
++        RouteCatalogCodec.Encode(second).ShouldBe(bytes);
++    }
++
++    /// <summary>Changing the original buffer cannot substitute new authority under prior validation.</summary>
++    [Theory]
++    [InlineData("CanonicalCatalog.json")]
++    [InlineData("V2CanonicalCatalog.json")]
++    public void CallerBufferMutationRequiresCompleteValidationAgain(string fixture)
++    {
++        byte[] bytes = FixtureBytes(fixture);
++        byte[] retained = bytes.ToArray();
++        string root = Root(bytes);
++        RouteCatalogCodec.Decode(bytes, root);
++        const string marker = "\"generation\":";
++        int generation = Encoding.UTF8.GetString(bytes).IndexOf(marker, StringComparison.Ordinal);
++        generation.ShouldBeGreaterThanOrEqualTo(0);
++        generation += marker.Length;
++        bytes[generation] = bytes[generation] == (byte)'9' ? (byte)'8' : (byte)'9';
++
++        Should.Throw<RouteCatalogValidationException>(() => RouteCatalogCodec.Decode(bytes));
++        RouteCatalogCodec.Encode(RouteCatalogCodec.Decode(retained, root)).ShouldBe(retained);
++    }
++
++    /// <summary>The exact expected root is checked even after successful validation without one.</summary>
++    [Theory]
++    [InlineData("CanonicalCatalog.json")]
++    [InlineData("V2CanonicalCatalog.json")]
++    public void EveryExpectedRootMustMatchTheCurrentExactBytes(string fixture)
++    {
++        byte[] bytes = FixtureBytes(fixture);
++        RouteCatalogCodec.Decode(bytes);
++        Should.Throw<RouteCatalogValidationException>(() => RouteCatalogCodec.Decode(bytes, new string('0', 64)))
++            .Diagnostics.Single().Code.ShouldBe("root-digest-mismatch");
++        RouteCatalogCodec.Encode(RouteCatalogCodec.Decode(bytes, Root(bytes))).ShouldBe(bytes);
++    }
++
++    /// <summary>Concurrent independent catalogs, invalid documents and roots cannot share partial authority.</summary>
++    [Fact]
++    public async Task ConcurrentCatalogReadsKeepCompleteByteAndRootValidation()
++    {
++        byte[][] catalogs = [FixtureBytes("CanonicalCatalog.json"), FixtureBytes("V2CanonicalCatalog.json")];
++        await Task.WhenAll(Enumerable.Range(0, 64).Select(index => Task.Run(() =>
++        {
++            byte[] bytes = catalogs[index % catalogs.Length].ToArray();
++            string root = Root(bytes);
++            RouteCatalogCodec.Encode(RouteCatalogCodec.Decode(bytes, root)).ShouldBe(bytes);
++            byte[] invalid = [.. bytes, (byte)' '];
++            Should.Throw<RouteCatalogValidationException>(() => RouteCatalogCodec.Decode(invalid));
++            Should.Throw<RouteCatalogValidationException>(() => RouteCatalogCodec.Decode(bytes, new string('0', 64)))
++                .Diagnostics.Single().Code.ShouldBe("root-digest-mismatch");
++            RouteCatalogCodec.Encode(RouteCatalogCodec.Decode(bytes, root)).ShouldBe(bytes);
++        }, TestContext.Current.CancellationToken)));
++    }
++
++    private static byte[] FixtureBytes(string name) => File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Routing", "Fixtures", name));
++
++    private static string Root(byte[] bytes) => Convert.ToHexStringLower(SHA256.HashData(bytes));
++}
+diff --git a/tests/Hexalith.EventStore.DomainService.Tests/NativeSourceMetadataCompositionTests.cs b/tests/Hexalith.EventStore.DomainService.Tests/NativeSourceMetadataCompositionTests.cs
+new file mode 100644
+index 000000000..e237a8008
+--- /dev/null
++++ b/tests/Hexalith.EventStore.DomainService.Tests/NativeSourceMetadataCompositionTests.cs
+@@ -0,0 +1,102 @@
++using System.Net;
++using System.Net.Http.Json;
++using System.Text.Json;
++using System.Security.Cryptography;
++
++using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Client.Registration;
++using Hexalith.EventStore.Client.Streams;
++using Hexalith.EventStore.Contracts.Identity;
++using Hexalith.EventStore.Contracts.Streams;
++using Hexalith.EventStore.ServiceDefaults.Authentication;
++using Hexalith.EventStore.Testing.Http;
++
++using Microsoft.Extensions.Configuration;
++using Microsoft.Extensions.DependencyInjection;
++using Microsoft.Extensions.Options;
++
++using NSubstitute;
++
++using Shouldly;
++
++namespace Hexalith.EventStore.DomainService.Tests;
++
++/// <summary>Qualifies independent public registration without changing the ordinary gateway's identity or options.</summary>
++public sealed class NativeSourceMetadataCompositionTests
++{
++    /// <summary>The native-only client signs its own exact source request while the default human client stays separate.</summary>
++    [Theory]
++    [InlineData("valid")]
++    [InlineData("missing-key")]
++    [InlineData("bad-key")]
++    [InlineData("foreign-domain")]
++    public async Task SeparateMetadataClientPreservesDefaultGatewayAndRefusesUnprovableScope(string scenario)
++    {
++        using RSA key = RSA.Create(2048);
++        var identity = new AggregateIdentity("tenant-a", scenario == "foreign-domain" ? "other-domain" : "folders", "organization-a");
++        var proof = NativeSourceProofCodec.CreateSeed(identity, "01ARZ3NDEKTSV4RRFFQ69G5FAV");
++        var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
++        {
++            ["DAPR_HTTP_ENDPOINT"] = "http://localhost:3500",
++            ["DAPR_API_TOKEN"] = "component-sidecar-token",
++            ["EventStore:Gateway:AppId"] = "eventstore-isolated",
++            ["Authentication:WorkloadIssuer:Workload"] = "folders-isolated",
++            ["Authentication:BoundStreamRead:PrivateKey"] = scenario == "missing-key" ? null
++                : scenario == "bad-key" ? "invalid" : Convert.ToBase64String(key.ExportPkcs8PrivateKey()),
++        }).Build();
++        using var metadataTransport = new MockHttpMessageHandler(request =>
++        {
++            request.RequestUri!.AbsoluteUri.ShouldBe("http://localhost:3500/api/v1/streams/read/workload");
++            request.Headers.GetValues("dapr-app-id").Single().ShouldBe("eventstore-isolated");
++            request.Headers.GetValues("dapr-api-token").Single().ShouldBe("component-sidecar-token");
++            request.Headers.Authorization.ShouldBeNull();
++            request.Headers.GetValues(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName).Single().ShouldBe("component-workload-assertion");
++            var sent = JsonSerializer.Deserialize<StreamReadRequest>(request.Content!.ReadAsStringAsync().GetAwaiter().GetResult(), JsonSerializerOptions.Web)!;
++            sent.ShouldBe(new StreamReadRequest(identity.TenantId, "folders", identity.AggregateId,
++                FromSequence: 0, ToSequence: 0, PageSize: 1) { RequireNativeProof = true });
++            BoundStreamReadProof.Verify(request.Headers.GetValues(BoundStreamReadProof.HeaderName).Single(), sent,
++                "folders-isolated", Convert.ToBase64String(key.ExportSubjectPublicKeyInfo()), DateTimeOffset.UtcNow).ShouldBeTrue();
++            return new HttpResponseMessage(HttpStatusCode.OK)
++            {
++                Content = JsonContent.Create(new StreamReadPage(identity.TenantId, identity.Domain, identity.AggregateId, [],
++                    new StreamReadMetadata(0, 0, null, 0, 0, false, null) { NativeProof = proof })),
++            };
++        });
++        using var humanTransport = new MockHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.NotFound));
++        IWorkloadAssertionIssuer issuer = Substitute.For<IWorkloadAssertionIssuer>();
++        issuer.IssueAsync(Arg.Any<WorkloadAssertionRequest>(), Arg.Any<CancellationToken>())
++            .Returns(ValueTask.FromResult<string?>("component-workload-assertion"));
++        var services = new ServiceCollection();
++        services.AddLogging();
++        services.AddSingleton<IConfiguration>(configuration);
++        services.AddSingleton(issuer);
++        services.AddEventStoreGatewayClient().ConfigureHttpClient(client => client.BaseAddress = new Uri("http://human-gateway/"))
++            .ConfigurePrimaryHttpMessageHandler(() => humanTransport);
++        services.AddEventStoreGatewayNativeSourceMetadataReader("folders")
++            .ConfigurePrimaryHttpMessageHandler(() => metadataTransport);
++        await using ServiceProvider provider = services.BuildServiceProvider();
++
++        NativeSourceObservation? observation = await provider.GetRequiredService<INativeSourceMetadataReader>()
++            .ReadAsync(identity, TestContext.Current.CancellationToken);
++
++        provider.GetRequiredService<IOptions<EventStoreGatewayClientOptions>>().Value.UseWorkloadTransport.ShouldBeFalse();
++        provider.GetService<IEventStoreGatewayWorkloadAssertionSource>().ShouldBeNull();
++        provider.GetService<IEventStoreGatewayStreamReadProofSource>().ShouldBeNull();
++        humanTransport.CallCount.ShouldBe(0);
++        if (scenario == "valid")
++        {
++            observation.ShouldNotBeNull().Proof.ShouldBe(proof);
++            metadataTransport.CallCount.ShouldBe(1);
++            await issuer.Received(1).IssueAsync(Arg.Is<WorkloadAssertionRequest>(request => request.Audience == "eventstore"
++                && request.Operation == EventStoreWorkloadOperations.GatewayStreamRead && request.Bindings == null), Arg.Any<CancellationToken>());
++        }
++        else
++        {
++            observation.ShouldBeNull();
++            metadataTransport.CallCount.ShouldBe(0);
++            issuer.ReceivedCalls().ShouldBeEmpty();
++        }
++        (await provider.GetRequiredService<IEventStoreGatewayClient>().GetCommandStatusAsync("message", TestContext.Current.CancellationToken)).ShouldBeNull();
++        humanTransport.CallCount.ShouldBe(1);
++    }
++}
+diff --git a/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAcquisitionDiagnosticsTests.cs b/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAcquisitionDiagnosticsTests.cs
+new file mode 100644
+index 000000000..1afe8f5c8
+--- /dev/null
++++ b/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAcquisitionDiagnosticsTests.cs
+@@ -0,0 +1,124 @@
++using Hexalith.EventStore.ServiceDefaults.Routing;
++
++using Microsoft.Extensions.Configuration;
++using Microsoft.Extensions.DependencyInjection;
++using Microsoft.Extensions.Logging;
++using Microsoft.Extensions.Options;
++
++using NSubstitute;
++using Shouldly;
++
++namespace Hexalith.EventStore.Server.Tests.Routing;
++
++/// <summary>Separates the existing local queue, durable work and fresh validation without granting authority.</summary>
++public sealed class CatalogAcquisitionDiagnosticsTests
++{
++    [Theory]
++    [InlineData(false)]
++    [InlineData(true)]
++    public async Task SupportedRegistrationKeepsOptionalLoggerResolutionAdvisory(bool loggerResolutionThrows)
++    {
++        var fixture = new RouteCatalogTestFixture();
++        await fixture.ActivateAsync(fixture.Candidate());
++        var log = new DispatchDiagnosticLog();
++        using var logging = LoggerFactory.Create(builder => builder.SetMinimumLevel(LogLevel.Debug).AddProvider(log));
++        var services = new ServiceCollection();
++        services.AddSingleton<ILogger<RouteCatalogAuthority>>(_ => loggerResolutionThrows
++            ? throw new InvalidOperationException("private-optional-logger-resolution") : logging.CreateLogger<RouteCatalogAuthority>());
++        services.AddSingleton<IRouteCatalogStateStore>(fixture.Store);
++        services.AddSingleton<IRouteCatalogTrustValidator>(Trust());
++        services.AddSingleton<IRouteCatalogHostObserver>(new ObservedRouteCatalogHost(_ => Task.FromResult(fixture.Observations[0])));
++        services.AddSingleton(Options.Create(new RouteCatalogHostOptions { Identity = fixture.Hosts[0], Profile = "Development" }));
++        services.AddEventStoreRouteCatalog(new ConfigurationBuilder().Build());
++        using var provider = services.BuildServiceProvider();
++
++        await using (await provider.GetRequiredService<IRouteCatalogAuthority>().AcquireAsync(TestContext.Current.CancellationToken))
++        {
++            if (loggerResolutionThrows) log.Records.ShouldBeEmpty();
++            else
++                foreach (string stage in new[] { "CatalogAdmissionWait", "CatalogStateRead", "CatalogActivationDigest", "CatalogHostCapture", "CatalogTrust", "CatalogCompareExchange", "CatalogSnapshot" })
++                    CommandDispatchDiagnosticsTests.AssertClosed(log, stage, "Completed");
++        }
++        (await fixture.Store.ReadAsync(default)).State.Leases.ShouldBeEmpty();
++        CommandDispatchDiagnosticsTests.AssertPrivate(log);
++    }
++
++    [Fact]
++    public async Task QueueCancellationDoesNotReadOrRetainAnAdditionalFence()
++    {
++        var fixture = new RouteCatalogTestFixture();
++        await fixture.ActivateAsync(fixture.Candidate());
++        var log = new DispatchDiagnosticLog();
++        using var logging = LoggerFactory.Create(builder => builder.SetMinimumLevel(LogLevel.Debug).AddProvider(log));
++        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
++        var continueCapture = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
++        var observer = Substitute.For<IRouteCatalogHostObserver>();
++        observer.ObserveAsync(Arg.Any<Hexalith.EventStore.Contracts.Routing.RouteCatalogActivation>(), Arg.Any<RouteCatalogStateCoordinates>(), Arg.Any<CancellationToken>())
++            .Returns(async _ => { entered.SetResult(); await continueCapture.Task; return fixture.Hosts[0]; });
++        var authority = Authority(fixture, observer, Trust(), logging);
++        Task<RouteCatalogDispatchLease> first = authority.AcquireAsync(default);
++        await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
++        using var canceled = new CancellationTokenSource();
++        Task<RouteCatalogDispatchLease> queued = authority.AcquireAsync(canceled.Token);
++        canceled.Cancel();
++        await Should.ThrowAsync<OperationCanceledException>(() => queued);
++        log.Records.Count(record => Equals(record["Stage"], "CatalogStateRead") && Equals(record["Status"], "Started")).ShouldBe(1);
++        log.Records.ShouldContain(record => Equals(record["Stage"], "CatalogAdmissionWait") && Equals(record["Status"], "Failed") && Equals(record["OperationCanceled"], true));
++        continueCapture.SetResult();
++        await using (await first) { }
++        (await fixture.Store.ReadAsync(default)).State.Leases.ShouldBeEmpty();
++        CommandDispatchDiagnosticsTests.AssertPrivate(log);
++    }
++
++    [Theory]
++    [InlineData("capture")]
++    [InlineData("trust")]
++    public async Task OriginalValidationFailureRetainsItsBoundaryAndNoFence(string boundary)
++    {
++        var fixture = new RouteCatalogTestFixture();
++        await fixture.ActivateAsync(fixture.Candidate());
++        var log = new DispatchDiagnosticLog();
++        using var logging = LoggerFactory.Create(builder => builder.SetMinimumLevel(LogLevel.Debug).AddProvider(log));
++        var original = new InvalidOperationException("private-authority-failure");
++        var observer = Substitute.For<IRouteCatalogHostObserver>();
++        observer.ObserveAsync(Arg.Any<Hexalith.EventStore.Contracts.Routing.RouteCatalogActivation>(), Arg.Any<RouteCatalogStateCoordinates>(), Arg.Any<CancellationToken>())
++            .Returns(_ => boundary == "capture" ? Task.FromException<Hexalith.EventStore.Contracts.Routing.RouteCatalogHostIdentity>(original) : Task.FromResult(fixture.Hosts[0]));
++        var trust = Trust();
++        if (boundary == "trust") trust.ValidateAsync(Arg.Any<Hexalith.EventStore.Contracts.Routing.RouteCatalogActivation>(), Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(Task.FromException(original));
++        var authority = Authority(fixture, observer, trust, logging);
++
++        (await Should.ThrowAsync<InvalidOperationException>(() => authority.AcquireAsync(default))).ShouldBeSameAs(original);
++
++        CommandDispatchDiagnosticsTests.AssertClosed(log, boundary == "capture" ? "CatalogHostCapture" : "CatalogTrust", "Failed");
++        log.Records.ShouldNotContain(record => Equals(record["Stage"], "CatalogCompareExchange") || Equals(record["Stage"], "CatalogSnapshot"));
++        (await fixture.Store.ReadAsync(default)).State.Leases.ShouldBeEmpty();
++        CommandDispatchDiagnosticsTests.AssertPrivate(log);
++    }
++
++    [Theory]
++    [InlineData(false)]
++    [InlineData(true)]
++    public async Task DisabledOrThrowingLoggingRemainsAdvisory(bool throwing)
++    {
++        var fixture = new RouteCatalogTestFixture();
++        await fixture.ActivateAsync(fixture.Candidate());
++        var log = new DispatchDiagnosticLog(enabled: throwing, throwOnWrite: throwing);
++        using var logging = LoggerFactory.Create(builder => builder.SetMinimumLevel(LogLevel.Debug).AddProvider(log));
++        var authority = Authority(fixture, new ObservedRouteCatalogHost(_ => Task.FromResult(fixture.Observations[0])), Trust(), logging);
++        await using (await authority.AcquireAsync(default)) { }
++        log.Records.ShouldBeEmpty();
++        (await fixture.Store.ReadAsync(default)).State.Leases.ShouldBeEmpty();
++    }
++
++    private static IRouteCatalogTrustValidator Trust()
++    {
++        var trust = Substitute.For<IRouteCatalogTrustValidator>();
++        trust.ValidateAsync(Arg.Any<Hexalith.EventStore.Contracts.Routing.RouteCatalogActivation>(), Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(Task.CompletedTask);
++        return trust;
++    }
++
++    private static RouteCatalogAuthority Authority(RouteCatalogTestFixture fixture, IRouteCatalogHostObserver observer,
++        IRouteCatalogTrustValidator trust, ILoggerFactory logging) => new(fixture.Store, trust,
++            Options.Create(new RouteCatalogHostOptions { Identity = fixture.Hosts[0], Profile = "Development" }), observer, null,
++            logging.CreateLogger<RouteCatalogAuthority>());
++}
+diff --git a/tests/Hexalith.EventStore.Server.Tests/Routing/OutgoingInvocationDiagnosticsTests.cs b/tests/Hexalith.EventStore.Server.Tests/Routing/OutgoingInvocationDiagnosticsTests.cs
+new file mode 100644
+index 000000000..b045a9c0b
+--- /dev/null
++++ b/tests/Hexalith.EventStore.Server.Tests/Routing/OutgoingInvocationDiagnosticsTests.cs
+@@ -0,0 +1,153 @@
++using System.Net;
++
++using Hexalith.EventStore.ServiceDefaults.Routing;
++using Hexalith.EventStore.Testing.Http;
++
++using Microsoft.Extensions.Configuration;
++using Microsoft.Extensions.DependencyInjection;
++using Microsoft.Extensions.Logging;
++
++using NSubstitute;
++using Shouldly;
++
++namespace Hexalith.EventStore.Server.Tests.Routing;
++
++/// <summary>Distinguishes outgoing catalog work from actual egress without changing cancellation or lease ownership.</summary>
++public sealed class OutgoingInvocationDiagnosticsTests
++{
++    /// <summary>A caller canceled during acquisition never reaches either request validation or the network.</summary>
++    [Fact]
++    public async Task CanceledAcquisitionRecordsNoTransportOrOwnedRelease()
++    {
++        var log = new DispatchDiagnosticLog();
++        var acquisition = new TaskCompletionSource<RouteCatalogDispatchLease>(TaskCreationOptions.RunContinuationsAsynchronously);
++        IRouteCatalogAuthority authority = Substitute.For<IRouteCatalogAuthority>();
++        authority.AcquireAsync(Arg.Any<CancellationToken>()).Returns(call => acquisition.Task.WaitAsync(call.Arg<CancellationToken>()));
++        using var transport = new MockHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK));
++        using ServiceProvider provider = Provider(authority, log, transport);
++        using HttpClient client = provider.GetRequiredService<IHttpClientFactory>().CreateClient("outgoing-diagnostic");
++        using var canceled = new CancellationTokenSource();
++
++        Task<HttpResponseMessage> pending = client.PostAsync("/v1.0/invoke/enrolled/method/query", null, canceled.Token);
++        await log.WaitForAsync("InvocationAcquire", "Started");
++        canceled.Cancel();
++        await Should.ThrowAsync<OperationCanceledException>(() => pending);
++
++        CommandDispatchDiagnosticsTests.AssertClosed(log, "InvocationAcquire", "Failed");
++        log.Records.ShouldNotContain(record => Equals(record["Stage"], "InvocationTransport")
++            || Equals(record["Stage"], "InvocationValidation") || Equals(record["Stage"], "InvocationRelease"));
++        transport.CallCount.ShouldBe(0);
++        log.Records.Last()["OperationCanceled"].ShouldBe(true);
++        CommandDispatchDiagnosticsTests.AssertPrivate(log);
++    }
++
++    /// <summary>Real transport entry and uninterruptible owned release are separate observable stages.</summary>
++    [Fact]
++    public async Task ActualTransportAndOwnedReleaseRemainDistinctWhileCallerCancels()
++    {
++        var fixture = new RouteCatalogTestFixture();
++        await fixture.ActivateAsync(fixture.Candidate());
++        await using var captured = await fixture.Authorities[0].AcquireAsync(default);
++        var response = new TaskCompletionSource<HttpResponseMessage>(TaskCreationOptions.RunContinuationsAsynchronously);
++        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
++        int releases = 0;
++        var lease = new RouteCatalogDispatchLease(captured.Snapshot, () => { releases++; return release.Task; });
++        var authority = Substitute.For<IRouteCatalogAuthority>();
++        authority.AcquireAsync(Arg.Any<CancellationToken>()).Returns(lease);
++        var log = new DispatchDiagnosticLog();
++        using var transport = new MockHttpMessageHandler((_, _) => response.Task);
++        using ServiceProvider provider = Provider(authority, log, transport);
++        using HttpClient client = provider.GetRequiredService<IHttpClientFactory>().CreateClient("outgoing-diagnostic");
++        using var cancellation = new CancellationTokenSource();
++        var target = fixture.Envelope.Routes.First(route => route.Method == "query");
++        Task<HttpResponseMessage> pending = client.PostAsync($"/v1.0/invoke/{target.AppId}/method/query", null, cancellation.Token);
++        await log.WaitForAsync("InvocationTransport", "Started");
++        transport.CallCount.ShouldBe(1);
++        CommandDispatchDiagnosticsTests.AssertClosed(log, "InvocationValidation", "Completed");
++        log.Records.ShouldNotContain(record => Equals(record["Stage"], "InvocationRelease"));
++        response.SetResult(new HttpResponseMessage(HttpStatusCode.NoContent));
++        await log.WaitForAsync("InvocationRelease", "Started");
++        pending.IsCompleted.ShouldBeFalse();
++        cancellation.Cancel();
++        release.SetResult();
++        // HttpClient itself may translate a canceled caller after the owned handler returns;
++        // the existing catalog release still runs independently and exactly once.
++        try { using HttpResponseMessage result = await pending; result.StatusCode.ShouldBe(HttpStatusCode.NoContent); }
++        catch (OperationCanceledException) { cancellation.IsCancellationRequested.ShouldBeTrue(); }
++        releases.ShouldBe(1);
++        CommandDispatchDiagnosticsTests.AssertClosed(log, "InvocationRelease", "Completed");
++        log.Records.Last()["OperationCanBeCanceled"].ShouldBe(false);
++        CommandDispatchDiagnosticsTests.AssertPrivate(log);
++    }
++
++    /// <summary>Original acquisition/transport/release exceptions and retained fences are unchanged.</summary>
++    [Theory]
++    [InlineData("acquire")]
++    [InlineData("transport")]
++    [InlineData("release")]
++    public async Task OriginalFailureAndItsLeaseOwnershipArePreserved(string failure)
++    {
++        var fixture = new RouteCatalogTestFixture();
++        await fixture.ActivateAsync(fixture.Candidate());
++        await using var captured = await fixture.Authorities[0].AcquireAsync(default);
++        var original = new InvalidOperationException("private-source-and-key");
++        int releases = 0;
++        var lease = new RouteCatalogDispatchLease(captured.Snapshot, () =>
++        {
++            releases++;
++            return failure == "release" ? Task.FromException(original) : Task.CompletedTask;
++        });
++        var authority = Substitute.For<IRouteCatalogAuthority>();
++        authority.AcquireAsync(Arg.Any<CancellationToken>()).Returns(_ => failure == "acquire"
++            ? Task.FromException<RouteCatalogDispatchLease>(original) : Task.FromResult(lease));
++        var log = new DispatchDiagnosticLog();
++        using var transport = new MockHttpMessageHandler(_ => failure == "transport" ? throw original : new HttpResponseMessage(HttpStatusCode.OK));
++        using ServiceProvider provider = Provider(authority, log, transport);
++        using HttpClient client = provider.GetRequiredService<IHttpClientFactory>().CreateClient("outgoing-diagnostic");
++        var target = fixture.Envelope.Routes.First(route => route.Method == "query");
++
++        (await Should.ThrowAsync<InvalidOperationException>(() => client.PostAsync(
++            $"/v1.0/invoke/{target.AppId}/method/query", new StringContent("private-payload")))).ShouldBeSameAs(original);
++
++        releases.ShouldBe(failure == "release" ? 1 : 0);
++        transport.CallCount.ShouldBe(failure == "acquire" ? 0 : 1);
++        CommandDispatchDiagnosticsTests.AssertClosed(log, failure switch
++        { "acquire" => "InvocationAcquire", "transport" => "InvocationTransport", _ => "InvocationRelease" }, "Failed");
++        CommandDispatchDiagnosticsTests.AssertPrivate(log);
++    }
++
++    /// <summary>Disabled or failing optional logging never replaces normal execution.</summary>
++    [Theory]
++    [InlineData(false)]
++    [InlineData(true)]
++    public async Task DisabledOrThrowingDiagnosticsDoNotChangeDispatch(bool throwing)
++    {
++        var fixture = new RouteCatalogTestFixture();
++        await fixture.ActivateAsync(fixture.Candidate());
++        var log = new DispatchDiagnosticLog(enabled: throwing, throwOnWrite: throwing);
++        using var transport = new MockHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.NoContent));
++        using ServiceProvider provider = Provider(fixture.Authorities[0], log, transport);
++        using HttpClient client = provider.GetRequiredService<IHttpClientFactory>().CreateClient("outgoing-diagnostic");
++        var target = fixture.Envelope.Routes.First(route => route.Method == "query");
++
++        using HttpResponseMessage result = await client.PostAsync($"/v1.0/invoke/{target.AppId}/method/query", null);
++
++        result.StatusCode.ShouldBe(HttpStatusCode.NoContent);
++        transport.CallCount.ShouldBe(1);
++        log.Records.ShouldBeEmpty();
++        (await fixture.Store.ReadAsync(default)).State.Leases.ShouldBeEmpty();
++    }
++
++    private static ServiceProvider Provider(IRouteCatalogAuthority authority, DispatchDiagnosticLog log, HttpMessageHandler transport)
++    {
++        var services = new ServiceCollection();
++        services.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Debug)
++            .AddFilter((string? category, LogLevel _) => category == typeof(RouteCatalogInvocationHandler).FullName).AddProvider(log));
++        services.AddSingleton(authority);
++        services.AddEventStoreRouteCatalog(new ConfigurationBuilder().Build());
++        services.Configure<RouteCatalogHostOptions>(options => options.InvocationTransportFactory = _ => transport);
++        services.AddHttpClient("outgoing-diagnostic", client => client.BaseAddress = new Uri("http://localhost:3500"))
++            .ConfigurePrimaryHttpMessageHandler(() => new MockHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.BadGateway)));
++        return services.BuildServiceProvider();
++    }
++}
+diff --git a/tests/Hexalith.EventStore.Server.Tests/Routing/PlatformCommandModelValidationTests.cs b/tests/Hexalith.EventStore.Server.Tests/Routing/PlatformCommandModelValidationTests.cs
+new file mode 100644
+index 000000000..6426448f0
+--- /dev/null
++++ b/tests/Hexalith.EventStore.Server.Tests/Routing/PlatformCommandModelValidationTests.cs
+@@ -0,0 +1,166 @@
++using System.Net;
++using System.Net.Http.Headers;
++using System.Net.Http.Json;
++using System.Security.Claims;
++using System.Text;
++using System.Text.Json;
++
++using Hexalith.EventStore.Authorization;
++using Hexalith.EventStore.Client.Routing;
++using Hexalith.EventStore.Contracts.Commands;
++using Hexalith.EventStore.Contracts.Routing;
++using Hexalith.EventStore.ErrorHandling;
++using Hexalith.EventStore.Extensions;
++using Hexalith.EventStore.Server.Pipeline.Commands;
++using Hexalith.EventStore.ServiceDefaults.Authentication;
++using Hexalith.EventStore.ServiceDefaults.Routing;
++using Hexalith.Tenants.Contracts.Routing;
++
++using MediatR;
++
++using Microsoft.AspNetCore.Authentication.JwtBearer;
++using Microsoft.AspNetCore.Builder;
++using Microsoft.AspNetCore.Hosting;
++using Microsoft.AspNetCore.TestHost;
++using Microsoft.Extensions.Configuration;
++using Microsoft.Extensions.DependencyInjection;
++using Microsoft.Extensions.DependencyInjection.Extensions;
++using Microsoft.Extensions.Hosting;
++using Microsoft.Extensions.Logging;
++using Microsoft.IdentityModel.JsonWebTokens;
++using Microsoft.IdentityModel.Tokens;
++
++using NSubstitute;
++using Shouldly;
++
++namespace Hexalith.EventStore.Server.Tests.Routing;
++
++/// <summary>Exercises production MVC validation, signed bearer authentication and catalog ingress before a counted component terminal.</summary>
++public sealed class PlatformCommandModelValidationTests
++{
++    [Theory]
++    [InlineData("bootstrap", 403)]
++    [InlineData("public-create", 202)]
++    [InlineData("missing-permission", 403)]
++    [InlineData("wrong-scope", 403)]
++    [InlineData("unknown-scope", 403)]
++    [InlineData("mixed-scopes", 400)]
++    [InlineData("malformed-scope", 400)]
++    [InlineData("reserved-storage", 403)]
++    [InlineData("wrong-kind", 403)]
++    [InlineData("missing-credential", 401)]
++    public async Task StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority(string scenario, int expectedStatus)
++    {
++        ArgumentNullException.ThrowIfNull(scenario);
++        var original = new RouteCatalogTestFixture().Envelope;
++        RouteOperationContract[] operations = original.Declarations.Select(declaration =>
++            TenantCatalogDeclarations.Operations.SingleOrDefault(operation => operation.RouteId == declaration.RouteId)
++            ?? new RouteOperationContract(declaration.RouteId, declaration.ContractVersion,
++                declaration.Kind == "projection" || declaration.Execution!.RequiresDelegatedContext ? "internal" : "public", "agent-eligible",
++                JsonSerializer.SerializeToElement(new { type = "object" }), JsonSerializer.SerializeToElement(new { type = "object" }), string.Empty,
++                declaration.Kind, declaration.Domain, declaration.MessageType ?? declaration.ProjectionType))
++            .Select(operation => operation with { Digest = RouteCatalogCodec.ComputeOperationContractDigest(operation) }).ToArray();
++        var envelope = VersionedRouteCatalogBuilder.Build(new(1, "Development", original.Declarations, operations,
++            original.Routes.Select(route => new RouteCompositionBinding(route.RouteId, route.AppId, route.Method,
++                route.ContractVersion, false, route.ResolverTenantPattern)).ToArray(), original.Idempotency));
++        var snapshot = new CommittedRouteCatalogSnapshot(RouteCatalogCodec.Encode(envelope), RouteCatalogCodec.ComputeRootDigest(envelope), 1);
++        var authority = Substitute.For<IRouteCatalogAuthority>();
++        int leases = 0;
++        authority.AcquireAsync(Arg.Any<CancellationToken>()).Returns(_ =>
++        {
++            leases++;
++            return new RouteCatalogDispatchLease(snapshot, () => { leases--; return Task.CompletedTask; });
++        });
++        int effects = 0;
++        var terminal = Substitute.For<IRequestHandler<SubmitCommand, SubmitCommandResult>>();
++        SubmitCommand? captured = null;
++        terminal.Handle(Arg.Any<SubmitCommand>(), Arg.Any<CancellationToken>()).Returns(call =>
++        {
++            leases.ShouldBeGreaterThan(0);
++            captured = call.Arg<SubmitCommand>();
++            effects++;
++            return new SubmitCommandResult(captured.CorrelationId);
++        });
++        var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = "Development" });
++        builder.WebHost.UseTestServer();
++        builder.Logging.ClearProviders();
++        builder.Host.UseDefaultServiceProvider(options => options.ValidateOnBuild = false);
++        const string signingText = "canonical-platform-model-validation-0123456789abcdef";
++        builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
++        {
++            ["Authentication:JwtBearer:Issuer"] = "platform-validation-test",
++            ["Authentication:JwtBearer:Audience"] = "platform-validation-test",
++            ["Authentication:JwtBearer:SigningKey"] = signingText,
++        });
++        builder.Services.AddEventStore();
++        // Only unrelated background infrastructure and the mutation terminal are replaced in this
++        // HTTP component host. Real MVC validation, bearer, human-kind, scope and ingress guards run.
++        builder.Services.RemoveAll<IHostedService>();
++        builder.Services.RemoveAll<IRequestHandler<SubmitCommand, SubmitCommandResult>>();
++        builder.Services.AddSingleton(terminal);
++        builder.Services.AddSingleton(authority);
++        builder.Services.AddSingleton(Substitute.For<ITenantValidator>());
++        builder.Services.AddSingleton(Substitute.For<IRbacValidator>());
++        builder.Services.AddControllers().AddApplicationPart(typeof(Hexalith.EventStore.Controllers.CommandsController).Assembly)
++            .ConfigureApplicationPartManager(parts => parts.FeatureProviders.Add(new CatalogV3MvcFeature()));
++        byte[] signing = Encoding.UTF8.GetBytes(signingText);
++        builder.Services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
++        {
++            options.MapInboundClaims = false;
++            options.TokenValidationParameters = new()
++            {
++                ValidateIssuer = true, ValidIssuer = "platform-validation-test", ValidateAudience = true,
++                ValidAudience = "platform-validation-test", ValidateLifetime = true, IssuerSigningKey = new SymmetricSecurityKey(signing),
++            };
++        });
++        await using var app = builder.Build();
++        app.Use(async (context, next) =>
++        {
++            try { await next(context); }
++            catch (CommandAuthorizationException) { context.Response.StatusCode = 403; }
++        });
++        app.UseAuthentication(); app.UseAuthorization(); app.MapControllers(); await app.StartAsync();
++        using var client = app.GetTestClient();
++        bool bootstrap = scenario == "bootstrap";
++        string scope = bootstrap ? "platform:global-administrators" : "platform:tenants";
++        if (scenario == "wrong-scope") scope = "platform:global-administrators";
++        if (scenario == "unknown-scope") scope = "platform:unknown-owner";
++        if (scenario == "malformed-scope") scope = "platform:tenants--bad";
++        if (scenario == "reserved-storage") scope = "system";
++        var claims = new List<Claim>
++        {
++            new("sub", "administrator"), new("eventstore:tenant", "tenant-a"), new("global_admin", "true"),
++            new(RouteCatalogSurfacePolicy.ClaimType, "ui"),
++        };
++        if (scenario != "missing-permission") claims.Add(new("eventstore:permission", bootstrap ? "global-administrators:bootstrap" : "tenants:create"));
++        if (scenario == "wrong-kind") claims.Add(new(EventStoreWorkloadAuthenticationDefaults.WorkloadClaimType, "workload-test"));
++        string bearer = new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
++        {
++            Issuer = "platform-validation-test", Audience = "platform-validation-test", Expires = DateTime.UtcNow.AddMinutes(5),
++            SigningCredentials = new(new SymmetricSecurityKey(signing), SecurityAlgorithms.HmacSha256), Subject = new ClaimsIdentity(claims),
++        });
++        if (scenario != "missing-credential") client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearer);
++        using var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/commands")
++        {
++            Content = JsonContent.Create(new SubmitCommandRequest("01JAAAAAAAAAAAAAAAAAAAAAAA", scope,
++                bootstrap ? "global-administrators" : "tenants", bootstrap ? "global-administrators" : "managed-tenant",
++                bootstrap ? "BootstrapGlobalAdmin" : "CreateTenant", bootstrap
++                    ? JsonSerializer.SerializeToElement(new { userId = "administrator" })
++                    : JsonSerializer.SerializeToElement(new { tenantId = "managed-tenant", name = "component" }))),
++        };
++        if (scope != "system") request.Headers.Add("X-Hexalith-Scope", scope);
++        if (scenario == "mixed-scopes") request.Headers.Add("X-Hexalith-Tenant", "tenant-a");
++        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
++        ((int)response.StatusCode).ShouldBe(expectedStatus);
++        effects.ShouldBe(scenario == "public-create" ? 1 : 0);
++        leases.ShouldBe(0);
++        if (captured is not null)
++        {
++            captured.Tenant.ShouldBe("system");
++            captured.UserId.ShouldBe("administrator");
++            captured.AuthenticatedSubject.ShouldBe("administrator");
++        }
++        if (response.StatusCode == HttpStatusCode.BadRequest && scenario == "malformed-scope")
++            (await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)).ShouldContain("tenant");
++    }
++}
+diff --git a/tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceHeadEvidenceContractTests.cs b/tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceHeadEvidenceContractTests.cs
+new file mode 100644
+index 000000000..3b4cb1ed7
+--- /dev/null
++++ b/tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceHeadEvidenceContractTests.cs
+@@ -0,0 +1,329 @@
++using System.Net;
++using System.Net.Http.Json;
++using System.Security.Cryptography;
++using System.Text.Json;
++
++using Dapr.Actors;
++using Dapr.Actors.Client;
++
++using Hexalith.EventStore.Authentication;
++using Hexalith.EventStore.Authorization;
++using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Client.Streams;
++using Hexalith.EventStore.Contracts.Identity;
++using Hexalith.EventStore.Contracts.Security;
++using Hexalith.EventStore.Contracts.Streams;
++using Hexalith.EventStore.Controllers;
++using Hexalith.EventStore.Server.Actors;
++using Hexalith.EventStore.Server.Events;
++using Hexalith.EventStore.Server.Tests.Actors;
++using Hexalith.EventStore.Server.Tests.TestUtilities;
++using Hexalith.EventStore.ServiceDefaults.Authentication;
++using Hexalith.EventStore.Testing.Security;
++
++using Microsoft.AspNetCore.Builder;
++using Microsoft.AspNetCore.Hosting;
++using Microsoft.AspNetCore.TestHost;
++using Microsoft.Extensions.Configuration;
++using Microsoft.Extensions.DependencyInjection;
++using Microsoft.Extensions.Hosting;
++using Microsoft.Extensions.Logging;
++using Microsoft.Extensions.Options;
++
++using NSubstitute;
++
++using Shouldly;
++
++namespace Hexalith.EventStore.Server.Tests.Streams;
++
++/// <summary>Qualifies persisted positive/zero evidence and unavailable absence through the existing authenticated route.</summary>
++public sealed class NativeSourceHeadEvidenceContractTests
++{
++    private static readonly AggregateIdentity Identity = new("test-tenant", "test-domain", "agg-001");
++    private const string Caller = "folders-source";
++    private const string Channel = "source-contract-test-channel";
++
++    /// <summary>Reads never create proof: existing valid zero differs from missing, legacy, erased and invalid state.</summary>
++    [Theory]
++    [InlineData("native-positive", 200, true, true, false, 1)]
++    [InlineData("native-zero", 200, true, true, false, 0)]
++    [InlineData("missing", 503, false, false, false, 0)]
++    [InlineData("legacy-empty", 503, false, true, false, 0)]
++    [InlineData("legacy-positive", 503, false, true, false, 1)]
++    [InlineData("erased-complete", 503, false, false, true, 0)]
++    [InlineData("erased-pending", 503, false, false, true, 0)]
++    [InlineData("invalid-native", 503, false, true, false, 0)]
++    public async Task ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence(
++        string scenario, int status, bool available, bool exists, bool erased, long head)
++    {
++        ArgumentNullException.ThrowIfNull(scenario);
++        SourceProof seed = SourceProofCodec.CreateSeed(Identity, "01ARZ3NDEKTSV4RRFFQ69G5FAV");
++        var storedEvent = new EventEnvelope("original-message", Identity.AggregateId, "Aggregate", Identity.TenantId,
++            Identity.Domain, 1, 1, DateTimeOffset.UnixEpoch, "correlation", "cause", "actor", "v1", "Event", 1,
++            "json", "{}"u8.ToArray(), null);
++        SourceProof proof = head == 0 ? seed : SourceProofCodec.Extend(seed, storedEvent);
++        Dictionary<string, object> persisted = [];
++        if (exists)
++        {
++            persisted[Identity.MetadataKey] = new AggregateMetadata(head, DateTimeOffset.UnixEpoch, null)
++            {
++                SourceProof = scenario.StartsWith("legacy", StringComparison.Ordinal) ? null
++                    : scenario == "invalid-native" ? proof with { CumulativeDigest = "invalid" } : proof,
++            };
++            if (head > 0) persisted[Identity.EventStreamKeyPrefix + "1"] = storedEvent;
++        }
++        if (erased)
++            persisted[TrustedEffectErasureProgress.StateName] = new TrustedEffectErasureProgress(1, 2,
++                scenario == "erased-complete", "erasure-capability");
++        var state = new FaultInjectingActorStateManager();
++        await state.SeedCommittedStateAsync(persisted);
++        AggregateActor actor = AggregateActorTestHelper.CreateActor(stateManager: state).Actor;
++        string before = JsonSerializer.Serialize(state.CommittedState);
++
++        SourceProofInspection inspection = await actor.InspectSourceProofAsync();
++        inspection.Exists.ShouldBe(exists);
++        inspection.Erased.ShouldBe(erased);
++        inspection.CurrentSequence.ShouldBe(head);
++        inspection.Status.ShouldBe(available ? SourceProofInspectionStatus.Available
++            : scenario is "invalid-native" or "erased-pending" ? SourceProofInspectionStatus.Invalid : SourceProofInspectionStatus.Unsupported);
++        inspection.Proof.ShouldBe(available ? proof : null);
++
++        using RSA key = RSA.Create(2048);
++        IActorProxyFactory proxies = Substitute.For<IActorProxyFactory>();
++        proxies.CreateActorProxy<IAggregateActor>(Arg.Is<ActorId>(id => id.GetId() == Identity.ActorId),
++            "AggregateActor", Arg.Any<ActorProxyOptions?>()).Returns(actor);
++        IEventPayloadProtectionService protection = Substitute.For<IEventPayloadProtectionService>();
++        await using WebApplication app = await StartAsync(proxies, protection, key);
++        using HttpClient http = app.GetTestClient();
++        http.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, Channel);
++        var request = new StreamReadRequest(Identity.TenantId, Identity.Domain, Identity.AggregateId,
++            FromSequence: 0, ToSequence: 0, PageSize: 1) { RequireNativeProof = true };
++        using var message = new HttpRequestMessage(HttpMethod.Post, "/api/v1/streams/read/workload")
++        { Content = JsonContent.Create(request) };
++        string assertion = WorkloadAssertionTestTokens.Create(DaprInternalAuthenticationOptions.DefaultAudience, Caller,
++            [EventStoreWorkloadOperations.GatewayStreamRead]);
++        message.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, assertion);
++        message.Headers.Add(BoundStreamReadProof.HeaderName, BoundStreamReadProof.Issue(request, Caller,
++            Convert.ToBase64String(key.ExportPkcs8PrivateKey()), DateTimeOffset.UtcNow));
++        using HttpResponseMessage response = await http.SendAsync(message, TestContext.Current.CancellationToken);
++        ((int)response.StatusCode).ShouldBe(status);
++        if (available)
++        {
++            StreamReadPage? page = await response.Content.ReadFromJsonAsync<StreamReadPage>(TestContext.Current.CancellationToken);
++            page.ShouldNotBeNull().Metadata.NativeProof.ShouldBe(SourceProofCodec.ToNative(proof));
++            page.Events.ShouldBeEmpty();
++        }
++
++        var assertions = Substitute.For<IEventStoreGatewayWorkloadAssertionSource>();
++        assertions.IssueAsync(EventStoreGatewayWorkloadOperations.StreamRead, Identity.TenantId, Identity.Domain,
++            Arg.Any<CancellationToken>()).Returns(ValueTask.FromResult<string?>(assertion));
++        var proofs = Substitute.For<IEventStoreGatewayStreamReadProofSource>();
++        proofs.IssueAsync(Arg.Any<StreamReadRequest>(), Arg.Any<CancellationToken>()).Returns(call =>
++            ValueTask.FromResult<string?>(BoundStreamReadProof.Issue(call.Arg<StreamReadRequest>(), Caller,
++                Convert.ToBase64String(key.ExportPkcs8PrivateKey()), DateTimeOffset.UtcNow)));
++        using HttpClient gatewayHttp = app.GetTestClient();
++        gatewayHttp.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, Channel);
++        var gateway = new EventStoreGatewayClient(gatewayHttp, Options.Create(new EventStoreGatewayClientOptions
++            { UseWorkloadTransport = true }), assertions, proofs);
++        NativeSourceObservation? observed = await new GatewayNativeSourceMetadataReader(gateway, TimeProvider.System)
++            .ReadAsync(Identity, TestContext.Current.CancellationToken);
++        if (available) observed.ShouldNotBeNull().Proof.ShouldBe(SourceProofCodec.ToNative(proof));
++        else observed.ShouldBeNull();
++
++        JsonSerializer.Serialize(state.CommittedState).ShouldBe(before);
++        state.CommittedSnapshots.ShouldBeEmpty();
++        state.Trace.ShouldNotContain(entry => entry.StartsWith("SaveState", StringComparison.Ordinal)
++            || entry.StartsWith("SetState", StringComparison.Ordinal) || entry.StartsWith("AddState", StringComparison.Ordinal)
++            || entry.StartsWith("RemoveState", StringComparison.Ordinal));
++        state.Trace.ShouldNotContain(entry => entry.StartsWith("TryGetState:" + Identity.EventStreamKeyPrefix, StringComparison.Ordinal));
++        protection.ReceivedCalls().ShouldBeEmpty();
++        proxies.ReceivedCalls().Count().ShouldBe(2);
++    }
++
++    /// <summary>Records the remaining capability boundary: the existing stream grant also admits event pages.</summary>
++    [Theory]
++    [InlineData(false)]
++    [InlineData(true)]
++    public async Task ExistingStreamReadGrantDoesNotEnforceMetadataOnlyAuthority(bool jwtBindings)
++    {
++        var storedEvent = new EventEnvelope("original-message", Identity.AggregateId, "Aggregate", Identity.TenantId,
++            Identity.Domain, 1, 1, DateTimeOffset.UnixEpoch, "correlation", "cause", "actor", "v1", "Event", 1,
++            "json", "{}"u8.ToArray(), null);
++        SourceProof proof = SourceProofCodec.Extend(SourceProofCodec.CreateSeed(Identity,
++            "01ARZ3NDEKTSV4RRFFQ69G5FAV"), storedEvent);
++        var state = new FaultInjectingActorStateManager();
++        await state.SeedCommittedStateAsync(new Dictionary<string, object>
++        {
++            [Identity.MetadataKey] = new AggregateMetadata(1, DateTimeOffset.UnixEpoch, null) { SourceProof = proof },
++            [Identity.EventStreamKeyPrefix + "1"] = storedEvent,
++        });
++        AggregateActor actor = AggregateActorTestHelper.CreateActor(stateManager: state).Actor;
++        string before = JsonSerializer.Serialize(state.CommittedState);
++        IActorProxyFactory proxies = Substitute.For<IActorProxyFactory>();
++        proxies.CreateActorProxy<IAggregateActor>(Arg.Is<ActorId>(id => id.GetId() == Identity.ActorId),
++            "AggregateActor", Arg.Any<ActorProxyOptions?>()).Returns(actor);
++        using RSA key = RSA.Create(2048);
++        await using WebApplication app = await StartAsync(proxies, new NoOpEventPayloadProtectionService(), key);
++        using HttpClient http = app.GetTestClient();
++        http.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, Channel);
++        var metadata = new StreamReadRequest(Identity.TenantId, Identity.Domain, Identity.AggregateId,
++            FromSequence: 0, ToSequence: 0, PageSize: 1) { RequireNativeProof = true };
++        StreamReadRequest eventPage = metadata with { ToSequence = 1 };
++        IReadOnlyDictionary<string, string>? bindings = jwtBindings ? new Dictionary<string, string>
++        {
++            [EventStoreWorkloadAuthenticationDefaults.TenantBindingClaimType] = Identity.TenantId,
++            [EventStoreWorkloadAuthenticationDefaults.DomainBindingClaimType] = Identity.Domain,
++        } : null;
++        using var message = new HttpRequestMessage(HttpMethod.Post, "/api/v1/streams/read/workload")
++        { Content = JsonContent.Create(eventPage) };
++        message.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName,
++            WorkloadAssertionTestTokens.Create(DaprInternalAuthenticationOptions.DefaultAudience, Caller,
++                [EventStoreWorkloadOperations.GatewayStreamRead], bindings: bindings));
++        if (!jwtBindings)
++        {
++            string metadataProof = BoundStreamReadProof.Issue(metadata, Caller,
++                Convert.ToBase64String(key.ExportPkcs8PrivateKey()), DateTimeOffset.UtcNow);
++            BoundStreamReadProof.Verify(metadataProof, eventPage, Caller,
++                Convert.ToBase64String(key.ExportSubjectPublicKeyInfo()), DateTimeOffset.UtcNow).ShouldBeTrue();
++            message.Headers.Add(BoundStreamReadProof.HeaderName, metadataProof);
++        }
++
++        using HttpResponseMessage response = await http.SendAsync(message, TestContext.Current.CancellationToken);
++
++        response.StatusCode.ShouldBe(HttpStatusCode.OK);
++        StreamReadPage? page = await response.Content.ReadFromJsonAsync<StreamReadPage>(TestContext.Current.CancellationToken);
++        page.ShouldNotBeNull().Events.Count.ShouldBe(1);
++        page.Events[0].MessageId.ShouldBe(storedEvent.MessageId);
++        page.Events[0].Payload.ShouldBe(storedEvent.Payload);
++        JsonSerializer.Serialize(state.CommittedState).ShouldBe(before);
++        state.CommittedSnapshots.ShouldBeEmpty();
++        state.Trace.ShouldNotContain(entry => entry.StartsWith("SaveState", StringComparison.Ordinal)
++            || entry.StartsWith("SetState", StringComparison.Ordinal) || entry.StartsWith("AddState", StringComparison.Ordinal));
++    }
++
++    /// <summary>Receiver-owned enrollment restricts even resource-bound JWTs before actor creation.</summary>
++    [Theory]
++    [InlineData("valid")]
++    [InlineData("range")]
++    [InlineData("from")]
++    [InlineData("page-size")]
++    [InlineData("native-proof")]
++    [InlineData("projection")]
++    [InlineData("missing-proof")]
++    [InlineData("bad-proof")]
++    [InlineData("expired-proof")]
++    [InlineData("tenant")]
++    [InlineData("domain")]
++    [InlineData("aggregate")]
++    [InlineData("caller")]
++    [InlineData("operation")]
++    [InlineData("missing-assertion")]
++    [InlineData("mixed-human")]
++    [InlineData("bound-jwt-no-proof")]
++    [InlineData("bound-jwt-range")]
++    [InlineData("malformed-enrollment")]
++    public async Task SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation(string scenario)
++    {
++        ArgumentNullException.ThrowIfNull(scenario);
++        var state = new FaultInjectingActorStateManager();
++        var seed = SourceProofCodec.CreateSeed(Identity, "01ARZ3NDEKTSV4RRFFQ69G5FAV");
++        await state.SeedCommittedStateAsync(new Dictionary<string, object>
++        {
++            [Identity.MetadataKey] = new AggregateMetadata(0, DateTimeOffset.UnixEpoch, null) { SourceProof = seed },
++        });
++        AggregateActor actor = AggregateActorTestHelper.CreateActor(stateManager: state).Actor;
++        IActorProxyFactory proxies = Substitute.For<IActorProxyFactory>();
++        proxies.CreateActorProxy<IAggregateActor>(Arg.Any<ActorId>(), "AggregateActor", Arg.Any<ActorProxyOptions?>()).Returns(actor);
++        using RSA key = RSA.Create(2048);
++        await using WebApplication app = await StartAsync(proxies, new NoOpEventPayloadProtectionService(), key,
++            scenario == "malformed-enrollment" ? "false" : "true");
++        using HttpClient http = app.GetTestClient();
++        http.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, Channel);
++        var metadata = new StreamReadRequest(Identity.TenantId, Identity.Domain, Identity.AggregateId,
++            FromSequence: 0, ToSequence: 0, PageSize: 1) { RequireNativeProof = true };
++        StreamReadRequest request = scenario switch
++        {
++            "range" or "bound-jwt-range" => metadata with { ToSequence = 1 },
++            "from" => metadata with { FromSequence = 1, ToSequence = 1 },
++            "page-size" => metadata with { PageSize = 100 },
++            "native-proof" => metadata with { RequireNativeProof = false },
++            "projection" => metadata with { ProjectionName = "operational-status" },
++            "tenant" => metadata with { Tenant = "other-tenant" },
++            "domain" => metadata with { Domain = "other-domain" },
++            "aggregate" => metadata with { AggregateId = "other-aggregate" },
++            _ => metadata,
++        };
++        using var message = new HttpRequestMessage(HttpMethod.Post, "/api/v1/streams/read/workload")
++        { Content = JsonContent.Create(request) };
++        IReadOnlyDictionary<string, string>? bindings = scenario.StartsWith("bound-jwt", StringComparison.Ordinal)
++            ? new Dictionary<string, string>
++            {
++                [EventStoreWorkloadAuthenticationDefaults.TenantBindingClaimType] = Identity.TenantId,
++                [EventStoreWorkloadAuthenticationDefaults.DomainBindingClaimType] = Identity.Domain,
++            } : null;
++        string assertion = WorkloadAssertionTestTokens.Create(DaprInternalAuthenticationOptions.DefaultAudience,
++            scenario == "caller" ? "unenrolled" : Caller,
++            [scenario == "operation" ? EventStoreWorkloadOperations.GatewayCommandSubmit : EventStoreWorkloadOperations.GatewayStreamRead],
++            bindings: bindings);
++        if (scenario != "missing-assertion") message.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, assertion);
++        if (scenario == "mixed-human") message.Headers.Authorization = new("Bearer", assertion);
++        if (scenario is not ("missing-proof" or "bound-jwt-no-proof"))
++        {
++            string boundProof = BoundStreamReadProof.Issue(metadata, Caller, Convert.ToBase64String(key.ExportPkcs8PrivateKey()),
++                scenario == "expired-proof" ? DateTimeOffset.UtcNow.AddMinutes(-1) : DateTimeOffset.UtcNow);
++            message.Headers.Add(BoundStreamReadProof.HeaderName, scenario == "bad-proof" ? boundProof + "tampered" : boundProof);
++        }
++
++        using HttpResponseMessage response = await http.SendAsync(message, TestContext.Current.CancellationToken);
++
++        if (scenario == "valid")
++        {
++            response.StatusCode.ShouldBe(HttpStatusCode.OK);
++            proxies.ReceivedCalls().Count().ShouldBe(1);
++        }
++        else
++        {
++            response.StatusCode.ShouldBe(scenario is "caller" or "missing-assertion" or "mixed-human"
++                ? HttpStatusCode.Unauthorized : HttpStatusCode.Forbidden);
++            proxies.ReceivedCalls().ShouldBeEmpty();
++            state.Trace.ShouldBeEmpty();
++        }
++        state.CommittedSnapshots.ShouldBeEmpty();
++    }
++
++    private static async Task<WebApplication> StartAsync(IActorProxyFactory proxies,
++        IEventPayloadProtectionService protection, RSA key, string? metadataOnly = null)
++    {
++        WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = Environments.Development });
++        builder.WebHost.UseTestServer();
++        builder.Logging.ClearProviders();
++        builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
++        {
++            [DaprAppChannelToken.ConfigurationKey] = Channel,
++            ["Authentication:JwtBearer:Authority"] = null,
++            ["Authentication:JwtBearer:Issuer"] = WorkloadAssertionTestTokens.Issuer,
++            ["Authentication:JwtBearer:Audience"] = DaprInternalAuthenticationOptions.DefaultAudience,
++            ["Authentication:JwtBearer:SigningKey"] = AuthenticationTestEnvironment.SigningKey,
++            ["Authentication:JwtBearer:AllowedAlgorithms:0"] = "HS256",
++            [$"Authentication:BoundStreamRead:PublicKeys:{Caller}"] = Convert.ToBase64String(key.ExportSubjectPublicKeyInfo()),
++            [$"Authentication:BoundStreamRead:AllowedDomains:{Caller}"] = Identity.Domain,
++            [$"Authentication:BoundStreamRead:MetadataOnlyCallers:{Caller}"] = metadataOnly,
++        });
++        builder.Services.AddAuthentication(DaprInternalAuthenticationOptions.SchemeName)
++            .AddEventStoreWorkloadScheme(DaprInternalAuthenticationOptions.SchemeName, "Authentication:DaprInternal", (options, _) =>
++            { options.Audience = DaprInternalAuthenticationOptions.DefaultAudience; options.AllowedCallers = [Caller]; });
++        builder.Services.AddEventStoreWorkloadPolicies(DaprInternalAuthenticationOptions.SchemeName,
++            [EventStoreWorkloadOperations.GatewayStreamRead]);
++        builder.Services.AddControllers().AddApplicationPart(typeof(StreamsController).Assembly);
++        builder.Services.AddSingleton(proxies);
++        builder.Services.AddSingleton(Substitute.For<Hexalith.EventStore.Authorization.ITenantValidator>());
++        builder.Services.AddSingleton(Substitute.For<IRbacValidator>());
++        builder.Services.AddSingleton(protection);
++        WebApplication app = builder.Build();
++        app.UseAuthentication();
++        app.UseAuthorization();
++        app.MapControllers();
++        await app.StartAsync(TestContext.Current.CancellationToken);
++        return app;
++    }
++}
+diff --git a/tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceMetadataCatalogObservationTests.cs b/tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceMetadataCatalogObservationTests.cs
+new file mode 100644
+index 000000000..0dfb8bdd0
+--- /dev/null
++++ b/tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceMetadataCatalogObservationTests.cs
+@@ -0,0 +1,44 @@
++using System.Text.Json;
++
++using Hexalith.EventStore.ServiceDefaults.Routing;
++
++using Microsoft.Extensions.Configuration;
++
++using Shouldly;
++
++namespace Hexalith.EventStore.Server.Tests.Streams;
++
++/// <summary>Proves metadata-only enrollment is retained in the real independent authentication observation.</summary>
++public sealed class NativeSourceMetadataCatalogObservationTests
++{
++    /// <summary>Changing receiver authority changes observed authentication bytes without exposing private signing material.</summary>
++    [Fact]
++    public async Task SourceOnlyReceiverEnrollmentIsPartOfTheIndependentCatalogObservation()
++    {
++        string directory = Path.Combine(Path.GetTempPath(), "native-source-catalog-" + Guid.NewGuid().ToString("N"));
++        Directory.CreateDirectory(directory);
++        try
++        {
++            string component = Path.Combine(directory, "component.json"), acl = Path.Combine(directory, "acl.yaml");
++            await File.WriteAllTextAsync(component, "{}", TestContext.Current.CancellationToken);
++            await File.WriteAllTextAsync(acl, "defaultAction: deny", TestContext.Current.CancellationToken);
++            IConfigurationRoot configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
++            {
++                ["EventStore:RouteCatalog:DevelopmentBootstrap:HostId"] = "actual-host",
++                ["EventStore:RouteCatalog:DevelopmentBootstrap:ComponentPath"] = component,
++                ["EventStore:RouteCatalog:DevelopmentBootstrap:AccessControlPath"] = acl,
++                ["Authentication:BoundStreamRead:MetadataOnlyCallers:folders"] = "true",
++                ["Authentication:BoundStreamRead:PrivateKey"] = "private-sentinel",
++            }).Build();
++            var before = await DevelopmentRouteCatalogInputs.CaptureAsync(configuration, "eventstore", [], [], [], [], [], TestContext.Current.CancellationToken);
++            using JsonDocument observed = JsonDocument.Parse(before.AuthenticationProfile);
++            observed.RootElement.GetProperty("settings").GetProperty("Authentication:BoundStreamRead:MetadataOnlyCallers:folders")
++                .GetString().ShouldBe("true");
++            System.Text.Encoding.UTF8.GetString(before.AuthenticationProfile).ShouldNotContain("private-sentinel");
++            configuration["Authentication:BoundStreamRead:MetadataOnlyCallers:folders"] = null;
++            var after = await DevelopmentRouteCatalogInputs.CaptureAsync(configuration, "eventstore", [], [], [], [], [], TestContext.Current.CancellationToken);
++            before.AuthenticationProfile.SequenceEqual(after.AuthenticationProfile).ShouldBeFalse();
++        }
++        finally { Directory.Delete(directory, recursive: true); }
++    }
++}

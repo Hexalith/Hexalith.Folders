@@ -1,0 +1,40 @@
+{
+  "heads": {
+    "folders": "313f0f32bd31622fdd4f2f0bcb716e496ec301d0",
+    "eventstore": "a9317e4b228adfbcdd6686a2f86171b464f34c06"
+  },
+  "changes": {
+    "folders": {
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml": "77c69b02fbeb0672f8877c095cc47d1c7b7565642c048158c2708e46bce80663",
+      "_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-source-head-transport.md": "a18d52dc059b5a7ad339f6a1e7dc5c4354629175e2ee8314f1a163627e961410",
+      "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md": "c3fca89016764d4743ded34e315ca3569710790ab8062af5a06dd02b3d53ff13",
+      "scripts/pd10-v2-story-owned-paths.txt": "ef6b0a61cb3876b982d96f76ae0be80e0d064307f1a548038132a547c2984c84",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "23255ddb2a00150e54e332ef82155816c8e845e81e400b2e0ca5f1dbf601b4d3",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs": "424998a063b51661db1352d60d4b80e330d67710ca60f662d37ed42338f78e03",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs": "c0ab82b3a90354050942431c5e8e0f5fcf8eadefe58727a6c2f2498534bacd21",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs": "07c5ffa71acc3decc395a9a080c3f51ceffb9490acce584968893b06535f07b0",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScopeTests.cs": "4a235d19c8987c6ec73017db647f28b0ce017871e322123b3c09fba298612800",
+      "tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs": "0c0d95f9df990e207e3b6732544fcfabc00611a942066d459fe8dd718c1f33a5",
+      "tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryCollection.cs": "f5f34cf3fb8daa344ac8dcdc1f9fc311af83dd8d011af311e8855d3924a35231",
+      "tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryProxy.cs": "5d2c893221ea7bc64b23fe60026107a9e991b9b6921ef95ed86c9f1c38aaca20"
+    },
+    "eventstore": {
+      "src/Hexalith.EventStore.Contracts/Routing/RouteCatalogCodec.cs": "a3371dbdb8bed4f4170af18650b8b9f3c9daf74d83696a26c5c6c53b3c35f36e",
+      "src/Hexalith.EventStore.Contracts/Routing/ValidatedRouteCatalogEncoding.cs": "26c078167a51a75185cde3dc30222c539365d606968b041466962544a98d0f07",
+      "src/Hexalith.EventStore/Validation/SubmitCommandRequestValidator.cs": "60087bb63f92d8b4a76219cdb5b1a68dc6a572ec098593dd0ece0c7a9c25da42",
+      "tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogDecodeIsolationTests.cs": "620d769c6ede0acc7bbbb1536cb8a6023c6556b122efed5305f9bb52522a5893",
+      "tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogV3Tests.cs": "735c09f41384e6fe7f8c63173afad26da7607cf41b00ca40bc5895428f2b472d",
+      "tests/Hexalith.EventStore.Server.Tests/Pipeline/SubmitCommandRequestValidatorTests.cs": "3d138609111819a154349f6017fa5ec713e69c785008919a32498fdb1bead9d6",
+      "tests/Hexalith.EventStore.Server.Tests/Routing/PlatformCommandModelValidationTests.cs": "8215c6780c63375db63be90db7a6233f40a38a0b7ed50e0f44c7f1a729d9635f"
+    }
+  },
+  "frozen_intent_sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+  "frozen_intent_unchanged": true,
+  "strict_bodies_unchanged": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": true,
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": true,
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs": true
+  },
+  "immutable_historical_conformance_sha256": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+  "pending_inventory_exposure": "disabled"
+}

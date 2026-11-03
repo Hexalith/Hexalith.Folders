@@ -1,0 +1,24 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "20:31:42",
+      "errors": "0",
+      "failed": "1",
+      "passed": "0",
+      "skipped": "0",
+      "time": "0.139",
+      "total": "1"
+    }
+  ],
+  "tests": [
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.ImportedAdministratorHasExactlyTheCanonicalPermissionsNeededByItsExistingWorkflow",
+      "result": "Fail",
+      "time": "0.049",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "ImportedAdministratorHasExactlyTheCanonicalPermissionsNeededByItsExistingWorkflow"
+    }
+  ]
+}

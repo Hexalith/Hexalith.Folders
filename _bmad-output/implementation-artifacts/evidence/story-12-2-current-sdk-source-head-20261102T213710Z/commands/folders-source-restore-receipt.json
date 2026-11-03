@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "dotnet",
+    "restore",
+    "Hexalith.Folders.slnx",
+    "-p:Configuration=Debug",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-m:1",
+    "-nr:false",
+    "-v:quiet"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-02T20:12:46.275978+00:00",
+  "utc_end": "2026-11-02T20:12:55.679343+00:00",
+  "exit_code": 0,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-resume-20261102-1EZDgA/folders-source-restore-private.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "private_xml": null,
+  "summary": null,
+  "source_or_head_drift": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_observed_containers": [],
+    "remaining_observed_directories": []
+  },
+  "runtime_module_observations": 0,
+  "fixture_module_observations": 0
+}

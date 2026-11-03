@@ -1,0 +1,8 @@
+{
+  "initial_seal_sha256": "3579fd8c7b039799428908121bd4f32022525f070459c0fa27d93fc10d3fe978",
+  "initial_verification_exit_code": 1,
+  "failure": "Verifier required exact None while strict3 ownership receipt records None; preserve separate topologies.",
+  "correction": "Verifier admits the two exact recorded no-action strings; all process/container/directory, source, test, hash and gate assertions remain.",
+  "original_packet_preserved_privately": "/tmp/story12-2-source-head-20261103-QnMdfZ/packet-initial-verifier-failure",
+  "receipts_changed": false
+}

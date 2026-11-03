@@ -1,0 +1,500 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "20:39:06",
+      "errors": "0",
+      "failed": "0",
+      "passed": "69",
+      "skipped": "0",
+      "time": "11.933",
+      "total": "69"
+    }
+  ],
+  "tests": [
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.GeneralClientsRetainRetriesAndAttemptDeadlines(bootstrapFirst: False)",
+      "result": "Pass",
+      "time": "2.234",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "GeneralClientsRetainRetriesAndAttemptDeadlines"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.GeneralClientsRetainRetriesAndAttemptDeadlines(bootstrapFirst: True)",
+      "result": "Pass",
+      "time": "2.013",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "GeneralClientsRetainRetriesAndAttemptDeadlines"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: False, scenario: \\\"accepted\\\", boundWorkload: True)",
+      "result": "Pass",
+      "time": "1.581",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: True, scenario: \\\"exception\\\", boundWorkload: False)",
+      "result": "Pass",
+      "time": "0.047",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: False, scenario: \\\"exception\\\", boundWorkload: False)",
+      "result": "Pass",
+      "time": "0.031",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: True, scenario: \\\"unavailable\\\", boundWorkload: False)",
+      "result": "Pass",
+      "time": "0.042",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: False, scenario: \\\"unavailable\\\", boundWorkload: False)",
+      "result": "Pass",
+      "time": "0.049",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: True, scenario: \\\"accepted\\\", boundWorkload: False)",
+      "result": "Pass",
+      "time": "1.521",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: False, scenario: \\\"accepted\\\", boundWorkload: False)",
+      "result": "Pass",
+      "time": "1.522",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: True, scenario: \\\"shutdown\\\", boundWorkload: True)",
+      "result": "Pass",
+      "time": "0.028",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: False, scenario: \\\"shutdown\\\", boundWorkload: True)",
+      "result": "Pass",
+      "time": "0.016",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: True, scenario: \\\"deadline\\\", boundWorkload: True)",
+      "result": "Pass",
+      "time": "0.232",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: False, scenario: \\\"deadline\\\", boundWorkload: True)",
+      "result": "Pass",
+      "time": "0.226",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: True, scenario: \\\"exception\\\", boundWorkload: True)",
+      "result": "Pass",
+      "time": "0.019",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: False, scenario: \\\"exception\\\", boundWorkload: True)",
+      "result": "Pass",
+      "time": "0.013",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: True, scenario: \\\"denied\\\", boundWorkload: True)",
+      "result": "Pass",
+      "time": "0.062",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: False, scenario: \\\"denied\\\", boundWorkload: True)",
+      "result": "Pass",
+      "time": "0.027",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: True, scenario: \\\"unavailable\\\", boundWorkload: True)",
+      "result": "Pass",
+      "time": "0.042",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: False, scenario: \\\"unavailable\\\", boundWorkload: True)",
+      "result": "Pass",
+      "time": "0.016",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: True, scenario: \\\"accepted\\\", boundWorkload: True)",
+      "result": "Pass",
+      "time": "1.511",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: False, scenario: \\\"shutdown\\\", boundWorkload: False)",
+      "result": "Pass",
+      "time": "0.034",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse(bootstrapFirst: True, scenario: \\\"shutdown\\\", boundWorkload: False)",
+      "result": "Pass",
+      "time": "0.082",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "HostedCommandUsesOneAttemptAndRecordsOnlyTheActualResponse"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.RedirectPoliciesDoNotReplayCommandsOrCredentials(bootstrapFirst: False, status: 307, crossOrigin: False)",
+      "result": "Pass",
+      "time": "0.049",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "RedirectPoliciesDoNotReplayCommandsOrCredentials"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.RedirectPoliciesDoNotReplayCommandsOrCredentials(bootstrapFirst: True, status: 307, crossOrigin: False)",
+      "result": "Pass",
+      "time": "0.063",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "RedirectPoliciesDoNotReplayCommandsOrCredentials"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.RedirectPoliciesDoNotReplayCommandsOrCredentials(bootstrapFirst: False, status: 308, crossOrigin: False)",
+      "result": "Pass",
+      "time": "0.073",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "RedirectPoliciesDoNotReplayCommandsOrCredentials"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.RedirectPoliciesDoNotReplayCommandsOrCredentials(bootstrapFirst: True, status: 308, crossOrigin: False)",
+      "result": "Pass",
+      "time": "0.036",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "RedirectPoliciesDoNotReplayCommandsOrCredentials"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.RedirectPoliciesDoNotReplayCommandsOrCredentials(bootstrapFirst: False, status: 307, crossOrigin: True)",
+      "result": "Pass",
+      "time": "0.022",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "RedirectPoliciesDoNotReplayCommandsOrCredentials"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.RedirectPoliciesDoNotReplayCommandsOrCredentials(bootstrapFirst: True, status: 307, crossOrigin: True)",
+      "result": "Pass",
+      "time": "0.061",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "RedirectPoliciesDoNotReplayCommandsOrCredentials"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.RedirectPoliciesDoNotReplayCommandsOrCredentials(bootstrapFirst: False, status: 308, crossOrigin: True)",
+      "result": "Pass",
+      "time": "0.114",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "RedirectPoliciesDoNotReplayCommandsOrCredentials"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.RedirectPoliciesDoNotReplayCommandsOrCredentials(bootstrapFirst: True, status: 308, crossOrigin: True)",
+      "result": "Pass",
+      "time": "0.042",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "RedirectPoliciesDoNotReplayCommandsOrCredentials"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.CallerCancellationReachesTheCommandTransportWithoutReplay(bootstrapFirst: False)",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "CallerCancellationReachesTheCommandTransportWithoutReplay"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests.CallerCancellationReachesTheCommandTransportWithoutReplay(bootstrapFirst: True)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests",
+      "method": "CallerCancellationReachesTheCommandTransportWithoutReplay"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests.ProductionDefaultPipelineProvidesItsActualConfiguredFiniteBudget",
+      "result": "Pass",
+      "time": "0.158",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests",
+      "method": "ProductionDefaultPipelineProvidesItsActualConfiguredFiniteBudget"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests.ConfiguredCatalogReadinessExpiresOrHonorsCancellationBeforeIssuance(cancelCaller: False)",
+      "result": "Pass",
+      "time": "1.133",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests",
+      "method": "ConfiguredCatalogReadinessExpiresOrHonorsCancellationBeforeIssuance"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests.ConfiguredCatalogReadinessExpiresOrHonorsCancellationBeforeIssuance(cancelCaller: True)",
+      "result": "Pass",
+      "time": "0.051",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests",
+      "method": "ConfiguredCatalogReadinessExpiresOrHonorsCancellationBeforeIssuance"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests.InvalidSelectedResilienceBudgetFailsClosed(scenario: \\\"zero\\\")",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests",
+      "method": "InvalidSelectedResilienceBudgetFailsClosed"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests.InvalidSelectedResilienceBudgetFailsClosed(scenario: \\\"negative\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests",
+      "method": "InvalidSelectedResilienceBudgetFailsClosed"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests.InvalidSelectedResilienceBudgetFailsClosed(scenario: \\\"infinite\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests",
+      "method": "InvalidSelectedResilienceBudgetFailsClosed"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests.InvalidSelectedResilienceBudgetFailsClosed(scenario: \\\"dynamic\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests",
+      "method": "InvalidSelectedResilienceBudgetFailsClosed"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests.FiniteClientTimeoutKeepsItsExistingMeaning",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests",
+      "method": "FiniteClientTimeoutKeepsItsExistingMeaning"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.InvalidReadinessTimeoutsAreRefused(milliseconds: 0)",
+      "result": "Pass",
+      "time": "0.052",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "InvalidReadinessTimeoutsAreRefused"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.InvalidReadinessTimeoutsAreRefused(milliseconds: -2)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "InvalidReadinessTimeoutsAreRefused"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.CancelledBootstrapDoesNotBeginAuthentication",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "CancelledBootstrapDoesNotBeginAuthentication"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"valid\\\")",
+      "result": "Pass",
+      "time": "0.263",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"missing-caller\\\")",
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"missing-key\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"payload\\\")",
+      "result": "Pass",
+      "time": "0.027",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"workload\\\")",
+      "result": "Pass",
+      "time": "0.013",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"missing-permission\\\")",
+      "result": "Pass",
+      "time": "0.029",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"not-admin\\\")",
+      "result": "Pass",
+      "time": "0.049",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"subject\\\")",
+      "result": "Pass",
+      "time": "0.093",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"expired\\\")",
+      "result": "Pass",
+      "time": "0.028",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"audience\\\")",
+      "result": "Pass",
+      "time": "0.009",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"issuer\\\")",
+      "result": "Pass",
+      "time": "0.043",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"signature\\\")",
+      "result": "Pass",
+      "time": "0.014",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"infinite-catalog-deadline\\\")",
+      "result": "Pass",
+      "time": "0.074",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"infinite-catalog-cancel\\\")",
+      "result": "Pass",
+      "time": "0.021",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"finite-catalog-timeout\\\")",
+      "result": "Pass",
+      "time": "0.067",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"infinite-catalog-ready\\\")",
+      "result": "Pass",
+      "time": "0.053",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"finite-catalog-ready\\\")",
+      "result": "Pass",
+      "time": "0.032",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"selected-caller\\\")",
+      "result": "Pass",
+      "time": "0.023",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"selected-target\\\")",
+      "result": "Pass",
+      "time": "0.015",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"cancel-before-buffer\\\")",
+      "result": "Pass",
+      "time": "0.06",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"loopback-web\\\")",
+      "result": "Pass",
+      "time": "0.083",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"loopback\\\")",
+      "result": "Pass",
+      "time": "0.048",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"infinite-timeout\\\")",
+      "result": "Pass",
+      "time": "0.06",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"web-payload\\\")",
+      "result": "Pass",
+      "time": "0.07",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"buffer-limit\\\")",
+      "result": "Pass",
+      "time": "0.028",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    },
+    {
+      "name": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests.OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap(scenario: \\\"buffer-cancellation\\\")",
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests",
+      "method": "OnlyTheValidatedAdministratorCanBindTheExactInternalBootstrap"
+    }
+  ]
+}

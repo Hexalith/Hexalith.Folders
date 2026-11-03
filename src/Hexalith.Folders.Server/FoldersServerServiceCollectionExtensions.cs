@@ -64,7 +64,8 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddSingleton<FolderEventReplay>();
         services.TryAddSingleton(static sp => new OperationalStatusProjectionWriter(
             sp.GetRequiredService<SharedProjectionEpochCoordinator>(), sp.GetService<IUtcClock>()));
-        services.AddHttpClient<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
+        services.AddEventStoreGatewayNativeSourceMetadataReader("folders");
+        services.TryAddSingleton<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
         services.TryAddSingleton<DomainProjectionCatalogRegistry>();
         services.AddOptions<Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions>()
             .BindConfiguration("EventStore:ProjectionDispatch");

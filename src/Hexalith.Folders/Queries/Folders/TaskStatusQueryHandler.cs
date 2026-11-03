@@ -78,6 +78,14 @@ public sealed class TaskStatusQueryHandler(
         TaskStatusQuery query,
         CancellationToken cancellationToken = default)
     {
+        TaskStatusQueryResult result = await HandleCoreAsync(query, cancellationToken).ConfigureAwait(false);
+        TaskStatusQueryDiagnostics.Completed(_logger, result);
+        return result;
+    }
+
+    private async Task<TaskStatusQueryResult> HandleCoreAsync(
+        TaskStatusQuery query, CancellationToken cancellationToken)
+    {
         ArgumentNullException.ThrowIfNull(query);
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -116,6 +124,7 @@ public sealed class TaskStatusQueryHandler(
                 cancellationToken)
             .ConfigureAwait(false);
 
+        TaskStatusQueryDiagnostics.TenantObserved(_logger, tenantAccess);
         if (!tenantAccess.IsAllowed)
         {
             return SafeResult(MapTenantAccess(tenantAccess), deniedFreshness, query, tenantAccess);
@@ -159,10 +168,7 @@ public sealed class TaskStatusQueryHandler(
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            _logger.LogWarning(
-                ex,
-                "Task status read-model call failed; returning ReadModelUnavailable. Exception type: {ExceptionType}",
-                ex.GetType().FullName);
+            TaskStatusQueryDiagnostics.ReadModelFailed(_logger, ex);
             return SafeResult(
                 TaskStatusQueryResultCode.ReadModelUnavailable,
                 new FolderLifecycleFreshness(EventuallyConsistent, clock.UtcNow, null, Stale: true, "read_model_unavailable"),

@@ -1,0 +1,25 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "11:38:44",
+      "errors": "0",
+      "failed": "0",
+      "passed": "1",
+      "skipped": "0",
+      "time": "0.112",
+      "total": "1"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.028",
+      "type": "Hexalith.Folders.IntegrationTests.AspireTopologyTests",
+      "method": "LocalRealmShouldGrantEventStoreOnlyScopedDomainServiceAssertions",
+      "display_name_sha256": "d66cbe1f62959f845043cbaa1b31614c5cf468534c74fa0f87b76bad24ced91a",
+      "case_ordinal": 1
+    }
+  ]
+}

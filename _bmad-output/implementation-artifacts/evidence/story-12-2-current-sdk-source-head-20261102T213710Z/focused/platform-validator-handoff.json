@@ -1,0 +1,86 @@
+{
+  "purpose": "Story 12.2 canonical platform command MVC validation compatibility handoff",
+  "ownerRepository": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "rootSpec": {
+    "path": "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+    "sha256": "6bc354aff324ed1c9c13626a3b44333125f1eb78e88200945091e4a2f70180dd"
+  },
+  "finding": "Real owner receipt and terminal delivery passed, then canonical direct-human bootstrap returned 400 before its intended 403. Production MVC AddControllers installs ValidateModelFilter, which resolves SubmitCommandRequestValidator. Its stale tenant-only structural regex rejects the now-required platform namespace before exact committed operation/permission/ingress authorization. Bound bootstrap wraps another DTO and avoids this structural-validator type.",
+  "owningContract": "EventStore spec-2-14 canonical tenant boundary, approved 2026-11-02: cataloged platform commands retain declared scope and permission; historical storage mapping happens only after boundary authorization.",
+  "change": "Only the existing structural Tenant rule accepts TenantCanonicalizer.IsPlatformScope syntax in addition to its prior lowercase tenant grammar; current field bounds and every catalog, exact human permission, credential-kind, internal ingress, mixed-scope and reserved storage guard remain.",
+  "launchedBinaryProbe": {
+    "gatewaySha256": "8b45fa7d0490134171033f30ef450d5b4efb487f9873a2c16c06c24dea449215",
+    "valid": false,
+    "errors": [
+      {
+        "field": "Tenant",
+        "reason": "Tenant must contain only lowercase alphanumeric characters and hyphens"
+      }
+    ]
+  },
+  "candidateProbe": {
+    "gatewaySha256": "e048b13923c92f27fc4d3a278dea0354c2cdbf87497be6c25dd75852ece9267b",
+    "valid": true,
+    "errors": []
+  },
+  "probeSource": {
+    "directory": "/tmp/story12-2-platform-validator-probe",
+    "programSha256": "78ffe265b3b9a2fa4c52f4fbc928cd5325965c3d463801abd8f095d80d247fec",
+    "projectSha256": "38e201f047792df530db8c7d157c2b6b19d1ed2e4134dba5da5c59e97d3b0da2"
+  },
+  "qualification": {
+    "red.xml": {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+      "total": "10",
+      "passed": "5",
+      "failed": "5",
+      "skipped": "0",
+      "errors": "0",
+      "time": "2.980"
+    },
+    "green.xml": {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+      "total": "51",
+      "passed": "51",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "5.410"
+    }
+  },
+  "sourceFiles": {
+    "src/Hexalith.EventStore/Validation/SubmitCommandRequestValidator.cs": "60087bb63f92d8b4a76219cdb5b1a68dc6a572ec098593dd0ece0c7a9c25da42",
+    "tests/Hexalith.EventStore.Server.Tests/Pipeline/SubmitCommandRequestValidatorTests.cs": "3d138609111819a154349f6017fa5ec713e69c785008919a32498fdb1bead9d6",
+    "tests/Hexalith.EventStore.Server.Tests/Routing/PlatformCommandModelValidationTests.cs": "8215c6780c63375db63be90db7a6233f40a38a0b7ed50e0f44c7f1a729d9635f"
+  },
+  "strictBodies": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc"
+  },
+  "commands": [
+    "From references/Hexalith.EventStore: dotnet build tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+    "From references/Hexalith.EventStore: dotnet tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests -result-xml /tmp/story12-2-platform-validator-red.xml",
+    "From references/Hexalith.EventStore: dotnet tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests -class Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests -class Hexalith.EventStore.Server.Tests.Routing.RouteCatalogV3IngressTests -class Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests -result-xml /tmp/story12-2-platform-validator-green.xml",
+    "dotnet /tmp/story12-2-platform-validator-probe/bin/Debug/net10.0/probe.dll /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0",
+    "dotnet /tmp/story12-2-platform-validator-probe/bin/Debug/net10.0/probe.dll /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0"
+  ],
+  "artifacts": {
+    "red-build.log": "f66fff15b5fed1ed9a265ce2eb6c3b4d9cfd31cfcb89a5edf19a1a5997f813b3",
+    "red.log": "757aefc3d1c5b02a22385471f2ff42a73f2c60ca1648c14be9e89a83fce2cce7",
+    "red.xml": "e51a86b780bbaefef4baabfd314e77bc131ea342823e150bfbb15ad5cfc88fc5",
+    "green-build.log": "3b0a798ffc77515af4f7538f8f536378062361604f3abc571c23821623f8806a",
+    "final-build.log": "0e68a006b387cddd0349feccc0733cc5fb607145a292a603451ea2e1fba13942",
+    "green.log": "427b75f1a19bd93930d77b07ecfd1503586aa7639dc8370ae8aec5287fe41e82",
+    "green.xml": "9de7c4cacb2831744795594e3040547aa2f8acb92e285c7662687c87fd41005e",
+    "launched-baseline.log": "e8ac6d9f54de64e07196d3d9483c529dfa9e4474808baf487d04c7a96046e4da",
+    "candidate-probe.log": "84418a6c094607c2685206f1715a8c1b9e7be0ec34d97453d3acd70303cac290"
+  },
+  "limits": [
+    "No live rerun in this implementation turn",
+    "The retained live response body was not captured; exact field/layer is separately reproduced against launched binary and real production MVC component registrations",
+    "Component command terminal is a counted test double, not real-domain/sidecar/provider acceptance",
+    "Parent must rebuild linked Gateway runtime consumers before audited strict rerun",
+    "Whole-story live, SM4, broad SDK, Release/package/PD10/governance and independent review gates remain open"
+  ],
+  "status": "Focused implementation and qualification complete; no build/test active; outputs free for parent"
+}

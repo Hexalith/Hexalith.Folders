@@ -1,0 +1,489 @@
+{
+  "date_utc": "2026-11-03T09:40:46.451113+00:00",
+  "status": "approved-source-head-implementation-focused-qualified-parent-final-verification-pending",
+  "outputs_released": true,
+  "active_build_test_topology": false,
+  "no_further_product_test_edits_or_builds": true,
+  "source_heads": {
+    "folders": "313f0f32bd31622fdd4f2f0bcb716e496ec301d0",
+    "eventstore": "a9317e4b228adfbcdd6686a2f86171b464f34c06"
+  },
+  "current_versions": "Current default Debug project references; no historical SDK version override. Parent owns independent final asset/version audits.",
+  "build_flags": "-c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+  "build_projects": [
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/Hexalith.EventStore.Client.Tests.csproj",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/Hexalith.EventStore.DomainService.Tests.csproj",
+    "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+    "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
+    "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj"
+  ],
+  "final_builds": "All final builds succeeded, zero warnings/errors. Client first lacked assets; normal restoring build succeeded without dependency edits.",
+  "results": [
+    {
+      "name": "owner-server",
+      "result": {
+        "total": "131",
+        "passed": "131",
+        "failed": "0",
+        "errors": "0",
+        "skipped": "0",
+        "not-run": "0",
+        "time": "3.135"
+      },
+      "xml": "/tmp/story12-2-source-head-owner-final.xml",
+      "command": "dotnet tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests -class Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataCatalogObservationTests -class Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests -class Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests -class Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests -result-xml /tmp/story12-2-source-head-owner-final.xml",
+      "assembly_sha256_at_handoff": "6e0bb6d52041bddb96768916575c119330a6b62d0e0e4c295a67bf4fc1ca8fce",
+      "pdb_sha256_at_handoff": "0ce4223f4baa1392ae20cda7180d8fe4b131b118b8a41fdb6bfdb1dd9baebb61",
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore"
+    },
+    {
+      "name": "owner-domainservice",
+      "result": {
+        "total": "15",
+        "passed": "15",
+        "failed": "0",
+        "errors": "0",
+        "skipped": "0",
+        "not-run": "0",
+        "time": "0.491"
+      },
+      "xml": "/tmp/story12-2-source-head-composition.xml",
+      "command": "dotnet tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.dll -class Hexalith.EventStore.DomainService.Tests.NativeSourceMetadataCompositionTests -class Hexalith.EventStore.DomainService.Tests.EventStoreGatewayWorkloadTransportTests -result-xml /tmp/story12-2-source-head-composition.xml",
+      "assembly_sha256_at_handoff": "c13880233e7605fffe2dab6d6e90e052ea5d53b1d30582dc4af3c2ebe67e9f78",
+      "pdb_sha256_at_handoff": "92b01b4c6b3a0dd73ac4b6bfe972327e1c8bb41254e1aed0625ddca59cd81d0d",
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore"
+    },
+    {
+      "name": "owner-client",
+      "result": {
+        "total": "62",
+        "passed": "62",
+        "failed": "0",
+        "errors": "0",
+        "skipped": "0",
+        "not-run": "0",
+        "time": "0.368"
+      },
+      "xml": "/tmp/story12-2-source-head-client-contract.xml",
+      "command": "dotnet tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll -class Hexalith.EventStore.Client.Tests.Streams.NativeSourceMetadataScopeContractTests -class Hexalith.EventStore.Client.Tests.Streams.GatewayNativeSourceMetadataReaderTests -result-xml /tmp/story12-2-source-head-client-contract.xml",
+      "assembly_sha256_at_handoff": "2e52212b9f2045e00e69c6c62e9656734abc2cdc0e76b1119a53104913ea759b",
+      "pdb_sha256_at_handoff": "763ce93e600a794d6b8ecf1b3b97a100742baae5197b5e53b3ab9654e657d82a",
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore"
+    },
+    {
+      "name": "consumer-server",
+      "result": {
+        "total": "84",
+        "passed": "84",
+        "failed": "0",
+        "errors": "0",
+        "skipped": "0",
+        "not-run": "0",
+        "time": "12.768"
+      },
+      "xml": "/tmp/story12-2-source-head-consumer-final.xml",
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests -class Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests -class Hexalith.Folders.Server.Tests.EventStoreOrganizationEffectivePermissionsReadModelTests -class Hexalith.Folders.Server.Tests.ProductionProcessWireEventTests -result-xml /tmp/story12-2-source-head-consumer-final.xml",
+      "assembly_sha256_at_handoff": "0fe37d97ab78989a6573553e2b52eec97ad0da496a8c58f10e5a8df07123820b",
+      "pdb_sha256_at_handoff": "9611248379d4194a267680f845de841437611df4ae300fcff7e5a4cbecabf81b",
+      "working_directory": "/home/administrator/projects/hexalith/folders"
+    },
+    {
+      "name": "consumer-workers",
+      "result": {
+        "total": "1",
+        "passed": "1",
+        "failed": "0",
+        "errors": "0",
+        "skipped": "0",
+        "not-run": "0",
+        "time": "0.579"
+      },
+      "xml": "/tmp/story12-2-source-head-workers.xml",
+      "command": "dotnet tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll -class Hexalith.Folders.Workers.Tests.WorkersHostSecurityEnrollmentTests -result-xml /tmp/story12-2-source-head-workers.xml",
+      "assembly_sha256_at_handoff": "13f040e0cb3cf969a1f785f987832f61630e63a56f42842abdf7f1b2e9dd50bf",
+      "pdb_sha256_at_handoff": "9b2f31593aadc15252ad83ad571b411a2f296654a85407a5e656d00283ff948d",
+      "working_directory": "/home/administrator/projects/hexalith/folders"
+    },
+    {
+      "name": "consumer-apphost",
+      "result": {
+        "total": "41",
+        "passed": "41",
+        "failed": "0",
+        "errors": "0",
+        "skipped": "0",
+        "not-run": "0",
+        "time": "0.381"
+      },
+      "xml": "/tmp/story12-2-source-head-apphost-final.xml",
+      "command": "dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests -result-xml /tmp/story12-2-source-head-apphost-final.xml",
+      "assembly_sha256_at_handoff": "af600315f86dfdb820aa04556c466e95ea708530b9870ec13fae85c8a313d44a",
+      "pdb_sha256_at_handoff": "f48b4d66434b0c30e746208b3e6d05c03c6fdedf56f7b83e9403baf39af6c471",
+      "working_directory": "/home/administrator/projects/hexalith/folders"
+    }
+  ],
+  "unique_final_selected_cases": 334,
+  "earlier_subsets": "8/8 evidence gate before production; 10/10 including generic-range reproduction; 29/29 after restriction. Overlap with final131, not additional cases.",
+  "preserved_failures": [
+    "First new SDK test missed null argument analyzer guard; corrected.",
+    "Client no-restore build lacked project.assets.json; normal restore/build corrected.",
+    "First consumer build identified six old constructor call sites; migrated supported transport fixtures.",
+    "First AppHost build rejected expression-tree pattern syntax; corrected.",
+    "First AppHost group40/41 retained old all-nonowner-clients-are-UI inventory; added explicitly approved source-service identities, preserving human assertions; final41/41."
+  ],
+  "source_evidence_contract": "Only valid existing Available native positive/zero proof is source evidence. Missing/unactivated/legacy/erased/invalid/unavailable stays unavailable. No zero minting/bootstrap.",
+  "scope_restriction": "Authentication:BoundStreamRead:MetadataOnlyCallers:<actual caller>=true requires exact metadata shape and actual resource proof even with bound JWT; captured in independent catalog auth observation; generic readers unchanged.",
+  "transport": "Public SDK AddEventStoreGatewayNativeSourceMetadataReader(domain) creates separate named HTTP/options/credentials; unchanged human gateway; actual configured Dapr endpoint and selected EventStore:Gateway:AppId; own issuer credential and RSA scope key.",
+  "enrollment": "Reachable Server auth/provider/status and Workers semantic-indexing authorization justify both. Distinct actual AppIds get independent client secrets/keys; matching physical replicas share actual workload. Existing caller lists merge through SDK public helper; issuer scopes remain stream-read-only.",
+  "strict_sources": [
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+      "sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs",
+      "sha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc"
+    }
+  ],
+  "frozen_block_sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+  "diff_check": "Root and SDK passed after final product/test edits.",
+  "files": [
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreGatewayWorkloadTransportExtensions.cs",
+      "sha256": "e5c0ac4e6ef69bb03c9d911d4b427716e2ad3bfdb7d201a752036b7d40a109ea"
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/DomainServiceNativeSourceCredentials.cs",
+      "sha256": "afad2fcd2f0079aabfc0825f4a9fbc2e6861bc4d4eab8812c6a5f9a5444ad015"
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore/Controllers/StreamsController.cs",
+      "sha256": "c07f0fc5746e22e730ed7a940df653661eb37b9e47506581712a9ea4d64b1f08"
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/DevelopmentRouteCatalogInputs.cs",
+      "sha256": "5e85827847578384a7dcca9fe448b97f21cdf4a201263c2d9ec9d0f3eda6be4d"
+    },
+    {
+      "path": "references/Hexalith.EventStore/docs/reference/stream-replay-api.md",
+      "sha256": "b39b82430ae807787ccfd85c52ef3b36a745ed0de81894a84ef100ff1e899bd2"
+    },
+    {
+      "path": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/Streams/NativeSourceMetadataScopeContractTests.cs",
+      "sha256": "59f44b00bc2bde9baf756acf61dd850de8d01ee3edfd9c36d2ce1bc0a5d01fbb"
+    },
+    {
+      "path": "references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/NativeSourceMetadataCompositionTests.cs",
+      "sha256": "98d78038a9edb8170f816bed7e880c294f2c5c77dc2e46e0539e1a1d5bf9059c"
+    },
+    {
+      "path": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceHeadEvidenceContractTests.cs",
+      "sha256": "96af7c5690f666ece2caaed16baff7551978ac131f809feb71651f2b1ec4bc4e"
+    },
+    {
+      "path": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceMetadataCatalogObservationTests.cs",
+      "sha256": "b7b865d4d8b2e762bcb2e1cdc0dd2625d570ae990671d35b266baf92828e9f07"
+    },
+    {
+      "path": "src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs",
+      "sha256": "eda00660c00eda83b36349c01dd6c3a93dc72fcb8e1ec0c9454896de35d52093"
+    },
+    {
+      "path": "src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs",
+      "sha256": "d7f8b858f8f00107cdb231812427b463110d40bbb903e7573d21ddc48a7f110f"
+    },
+    {
+      "path": "src/Hexalith.Folders.Workers/FoldersWorkersModule.cs",
+      "sha256": "db9609d9161803f96a8df1776f892efd3206e6665d45b921445a769a9f259bc8"
+    },
+    {
+      "path": "src/Hexalith.Folders.AppHost/Program.cs",
+      "sha256": "6a3ada7f81c48d6b8f0bb4a930a57830e1a6423b96f2191b3ecea52572dfd55c"
+    },
+    {
+      "path": "src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json",
+      "sha256": "4563e417f9bcb3589c68e6c238a729e54300cac28035aba721c3bc4db4caeeb1"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "sha256": "1f426949efcd63355b6d1439438b752a0b13e014f11a87d54400a4fa092e8070"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs",
+      "sha256": "539e9f1266efef4686af2bcb008753a737e5e1e80eb181c21f545b57aee06e10"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs",
+      "sha256": "b4d038aac562fc9ab9bb40bc47d13e2eb5effd944b26599e47bffcc9150acf1a"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfiguration.cs",
+      "sha256": "bb1871d9ae313eef96314ea5f8e812080111a61e494ac60561d7806b96541947"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfigurationTests.cs",
+      "sha256": "15516f0e3bc962501c3933e1ccd10ab12536a2b2a7ecf285a09f749457ed472a"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs",
+      "sha256": "cbfc717a29660f68ea9addda4106eba3d6a631560c773c83aead2e656cc3d431"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/NativeSourceHeadReaderTests.cs",
+      "sha256": "1c890ec1b615fcd38290c5d1dbad360b243de1604f58991f597ef748b8950b87"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/NativeSequenceReaderTestTransport.cs",
+      "sha256": "8063607552ce70f3cdb88191ee86dfbe56c382a4b1a169d7f0dabc7eb5f14cb4"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/EventStoreOrganizationEffectivePermissionsReadModelTests.cs",
+      "sha256": "8ccbc1d70af99455566d42c56c83fe9a23117084a80a21b37ea903e98ed6e097"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/ScopeCheckingFolderPermissionEvidenceProvider.cs",
+      "sha256": "9ec01367d8bf04224bce7e788c9a056cbbbf9d70ed762f43e9db058b5cf3c38f"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-source-head-transport.md",
+      "sha256": "f4938bc9c07649a135ff0d6cd67d760b66615b457b6aabe560e5d2d5b74632ec"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+      "sha256": "ec2e1707fe0469900069ea7b62e308d68282e8404e52c6790ffcd653164ba64f"
+    }
+  ],
+  "phase_logs": [
+    {
+      "original": "/tmp/story12-2-source-head-apphost-build-2.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-apphost-build-2.log",
+      "sha256": "ca000e6e21936acbf93565a2be8f6203c1fdf14a802886c9c8011c6f0a8514d1"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-apphost-build.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-apphost-build.log",
+      "sha256": "9a6437b68e20e204110c0257938b309dabfc743ae26a9f4e6a4f51b98e7ac060"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-apphost-final-build.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-apphost-final-build.log",
+      "sha256": "9d1cd78a1decbbbf6dae5c0f63b71cc70559dbfe39fea6b126e2985995fbba96"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-apphost-final.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-apphost-final.log",
+      "sha256": "3eb5dd1ed440c5fe3ddb8cdf3db7db82c3481460d290e326681479fa3ff976c9"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-apphost-final.xml",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-apphost-final.xml",
+      "sha256": "41867a93eab052d25c643a4c4409bc027c1b5185075b2fa8f45924423c9af7b1"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-apphost.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-apphost.log",
+      "sha256": "4cf5d296d930285a594737d549d33445035969f5fda29e2a22d19efb9127ac0b"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-apphost.xml",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-apphost.xml",
+      "sha256": "fe2d3818ea8fa8b24fe4bf937a1e83e5932f1712af541d4c1e5e1bb926ab62e0"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-boundary-build-2.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-boundary-build-2.log",
+      "sha256": "3d683fc6ec0b43dfdd427fe358131ca9dd90912a3b1fc47310f29c03e94bcf1b"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-boundary-build.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-boundary-build.log",
+      "sha256": "d0aa1098f64db9d5262415ea7b8895ccf9fb23e9bcd001caecb090d67a4eca4b"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-boundary-tests.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-boundary-tests.log",
+      "sha256": "f684ad78014ab939a425f5858bece6f90a8e7ba0f695cf6d109bb7c4bc7b90b1"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-boundary-tests.xml",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-boundary-tests.xml",
+      "sha256": "0e9a18ae24b48b0312e6e269affeed80336291e5a3c13d7e148338e23e6a88fd"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-client-before-build-2.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-client-before-build-2.log",
+      "sha256": "21323f65b0067530a213adb190d1a25aafbcef303363b1a37f005046ff2af16b"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-client-before-build.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-client-before-build.log",
+      "sha256": "f765c4a7d1365d1bd7190445a56957614db4138f2b84fb388a38a9729b1c3c58"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-client-contract-build.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-client-contract-build.log",
+      "sha256": "afecb39a9547bb596d6f719824868910756481de4cf7eabf20808ad25b121b41"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-client-contract.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-client-contract.log",
+      "sha256": "62a573a933c3121ab6a1847d06557fd9db42aa002274448513f00c249bf1d927"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-client-contract.xml",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-client-contract.xml",
+      "sha256": "279cf1189ff37c639d1cb455ba1f0240e01621d045b69b0fab0b06e0300af0dd"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-composition-build.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-composition-build.log",
+      "sha256": "81cd3028792da0e629c5c101d4f28b9fdade4ea0048809204d41c449f564367f"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-composition.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-composition.log",
+      "sha256": "991672a7367f74787b61cbaf1dcb44b77df0cf24eed7f4be3bda6fa20fa2a589"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-composition.xml",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-composition.xml",
+      "sha256": "f2818d05fa61a42bc7582ff370f32445c5c85e099d559753d49ed0ad081acb27"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-consumer-build-2.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-consumer-build-2.log",
+      "sha256": "0acafbb90eadce251cbbbfe73da590ff8aacc39401fde7ecf6af790037ed1ddb"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-consumer-build.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-consumer-build.log",
+      "sha256": "d9818972a31078af6be4cafad09cdabd004837d613969dc701e324969a544d12"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-consumer-final-build.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-consumer-final-build.log",
+      "sha256": "e4e3e6047aa1f4988e9f7b0a73005a2b2e4078da45c371f2e666b267a99cf477"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-consumer-final.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-consumer-final.log",
+      "sha256": "8c9314fe48c72ed6f0bf131a637053839e07e2cb9e8e531a7cd2d4e3cfb8e6c1"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-consumer-final.xml",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-consumer-final.xml",
+      "sha256": "4372e0105839479b32c273bbe3d88e7ffa15eea9c80e5ce43b983409e8c4d94d"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-consumer.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-consumer.log",
+      "sha256": "c88d8135ff3b0a0724ea4353bd222020ed0be77fbd9f2b348b39a00dde32e841"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-consumer.xml",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-consumer.xml",
+      "sha256": "5cadb2160ee869cc5cd1e5343b9638dc8bacdcfe9e9f673a806978a7a50eba2a"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-owner-build-2.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-owner-build-2.log",
+      "sha256": "75b994ce5aa525b38e893459a292ca2c421384e408170bf4ebf94645aac9c087"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-owner-build-3.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-owner-build-3.log",
+      "sha256": "f52da9eb36f3d57ef814c1f34192c803d0d87f4d3da42f8d7ab8496dd550ce2f"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-owner-build.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-owner-build.log",
+      "sha256": "92f6c45299f9acdf00e6daffb26905a28650fd86d3c0d8f61bb58a935f3af769"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-owner-contract-2.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-owner-contract-2.log",
+      "sha256": "eb78ffe7d9fa881f557da8cddf823b574be127d5a37ad2bea9c98e08ede57b9d"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-owner-contract-2.xml",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-owner-contract-2.xml",
+      "sha256": "bfc3f4f5096e32c12db051137cdb57208bb350594d047e3f5ebe914b53c2112b"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-owner-contract.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-owner-contract.log",
+      "sha256": "16f3eee88c56e1845d8b4a577fa2e2e24ab4c070d3935c7aabe2078aa4bacbb5"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-owner-contract.xml",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-owner-contract.xml",
+      "sha256": "715a038b70f732977d74a9844493fd6e8148ea2e8ed729f6efdbbc773a14e5ce"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-owner-enrollment-build.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-owner-enrollment-build.log",
+      "sha256": "f1e7c1654e92697419db0e70dcb53fec44cb692f95f33bab82e1d6e095dfb86e"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-owner-enrollment.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-owner-enrollment.log",
+      "sha256": "8beabf19d82781d2b4e3f1b30129180d53b88d2cf8c6c63c87bc63a51afcbf39"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-owner-enrollment.xml",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-owner-enrollment.xml",
+      "sha256": "e7c4953e08793ac082016b5137812987b3096d7be9c6681c60cf4e3cfd2e062f"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-owner-final-build.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-owner-final-build.log",
+      "sha256": "713cfcff52b44408c9f98ef4fadc1f53ff2f8ccff94ce4ccc866418b8eeaf342"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-owner-final.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-owner-final.log",
+      "sha256": "c05494c5661356c06c2b0be6a760d4695dd42967a0f1a64d42a11ee59b5ec35e"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-owner-final.xml",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-owner-final.xml",
+      "sha256": "3c1cffbe41b3b7929d6c6c93f464430f3f37b335901c1367912d4d426fb4e3f0"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-workers-build.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-workers-build.log",
+      "sha256": "ef7377eb17103eed8762a7df576f8d1fd5b197219e9f6b9eb2a50780a270b088"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-workers.log",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-workers.log",
+      "sha256": "f105b1c1b3cb1bc9302680289bbd26072b964442f06825f9a1892af2953f61f0"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-workers.xml",
+      "retained": "/tmp/story12-2-source-head-implementation-20261103/story12-2-source-head-workers.xml",
+      "sha256": "a4f5b727ac346a3fbe6d1b3ff9bf0cce03c6e1f755e5e04adfca75bb7c755111"
+    }
+  ],
+  "new_root_compile_inputs": [
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfiguration.cs",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfigurationTests.cs",
+    "tests/Hexalith.Folders.Server.Tests/NativeSourceHeadReaderTests.cs",
+    "tests/Hexalith.Folders.Server.Tests/NativeSequenceReaderTestTransport.cs"
+  ],
+  "parent_handoff": [
+    "Rebuild final complete root and actual runtime owner graph, including Tenants/Memories as fixture requires; no BuildProjectReferences=false fallback.",
+    "Refresh only pending source inventory for new compile inputs, preserving historical conformance and v2 disabled.",
+    "Run broad current consumer and affected owner controls individually; preserve all failed phases.",
+    "Audit exact source/runtime/head identities and SDK copy graph before unchanged isolated strict live class.",
+    "Keep source/zero/proof and all original bootstrap/refusal/assertion/deadline checks; independently diagnose ResponseEnded if it recurs.",
+    "Seal new portable evidence separately; prior packet untouched."
+  ],
+  "open_gates": [
+    "Parent final runtime/broad/live audits",
+    "ResponseEnded independently unresolved",
+    "All six strict durability concerns and SM4",
+    "Release/package/PD10 and broad SDK/capacity identity/whole-story gates as separately recorded"
+  ]
+}

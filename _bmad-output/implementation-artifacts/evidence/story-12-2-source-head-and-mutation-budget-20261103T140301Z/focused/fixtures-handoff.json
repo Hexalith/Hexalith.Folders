@@ -1,0 +1,134 @@
+{
+  "purpose": "Story12.2 current-SDK bare-host and realm inventory fixture corrections only",
+  "changedFiles": {
+    "tests/Hexalith.Folders.Workers.Tests/SemanticIndexingWorkerRegistrationTests.cs": "be15000bb08806627c92bdc3b7db36c1eeb5b7a184753d04b3a8d1f319058829",
+    "tests/Hexalith.Folders.IntegrationTests/AspireTopologyTests.cs": "8647d8e85358a6a27d8f739d1f071602288a737247a4eb17a5f89c82eee0aad6"
+  },
+  "before": "before.json",
+  "commands": [
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+      "exitCode": 0,
+      "log": "workers-build.log"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll -class Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests -result-xml /tmp/story12-2-fixture-corrections-20261103/workers-focused.xml",
+      "exitCode": 0,
+      "log": "workers-focused.log"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll -result-xml /tmp/story12-2-fixture-corrections-20261103/workers-full.xml",
+      "exitCode": 0,
+      "log": "workers-full.log"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+      "exitCode": 0,
+      "log": "integration-build.log"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll -method Hexalith.Folders.IntegrationTests.AspireTopologyTests.LocalRealmShouldGrantEventStoreOnlyScopedDomainServiceAssertions -result-xml /tmp/story12-2-fixture-corrections-20261103/integration-focused.xml",
+      "exitCode": 0,
+      "log": "integration-focused.log"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll -result-xml /tmp/story12-2-fixture-corrections-20261103/integration-full.xml",
+      "exitCode": 0,
+      "log": "integration-full.log"
+    }
+  ],
+  "results": {
+    "workers-focused": {
+      "total": "22",
+      "passed": "22",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "0.394",
+      "start-rtf": "2026-11-03T11:37:48.7195244+00:00",
+      "finish-rtf": "2026-11-03T11:37:49.1132156+00:00"
+    },
+    "workers-full": {
+      "total": "162",
+      "passed": "162",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "4.497",
+      "start-rtf": "2026-11-03T11:37:54.3819064+00:00",
+      "finish-rtf": "2026-11-03T11:37:58.8787785+00:00"
+    },
+    "integration-focused": {
+      "total": "1",
+      "passed": "1",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "0.112",
+      "start-rtf": "2026-11-03T11:38:44.3492239+00:00",
+      "finish-rtf": "2026-11-03T11:38:44.4612152+00:00"
+    },
+    "integration-full": {
+      "total": "854",
+      "passed": "854",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "34.793",
+      "start-rtf": "2026-11-03T11:38:49.3114703+00:00",
+      "finish-rtf": "2026-11-03T11:39:24.1025702+00:00"
+    }
+  },
+  "fullProjectTotalWithoutDoubleCountingFocus": 1016,
+  "failuresThisPhase": [],
+  "parentBeforeFailuresRetainedExternally": {
+    "Workers": {
+      "passed": 158,
+      "failed": 4
+    },
+    "Integration": {
+      "passed": 853,
+      "failed": 1
+    }
+  },
+  "testAssemblies": {
+    "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll": "aa24dde5543ab503ca694bdd03b2af5e59c7f5c82ef0ef7a39c42eccd48d834b",
+    "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll": "a1f2211c1ee3214f03f9d2252f861eb3ed7b11538bc1a46c547d51f463dc4560"
+  },
+  "unchangedBudgetSha256": "2d5b05ebe1b5b818aa9a84747d60edc8d0404b87a0f2a79a927553be34f34eb2",
+  "strictBodies": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc"
+  },
+  "preserved": [
+    "All existing worker validation/assertions and the real SDK issuer",
+    "All original EventStore domain-service and human realm assertions",
+    "Exact source-client only optional scopes and surface, no grant/configuration change",
+    "500 ms mutation evidence budget and every other deadline/guard",
+    "Original strict/capacity bodies and all historical evidence"
+  ],
+  "activeSessions": [],
+  "outputOwnership": "Released to parent; no further source/test edits or builds",
+  "artifacts": {
+    "integration-focused.log": "cf4afcf2006ed08e158a0523b96a07be67876dbaaee1c756c98989ccc5f5637e",
+    "workers-build.log": "cb7b46407249190a77fd44cb908caf1e9f4b13aaeaafcc62a68db343992afa84",
+    "workers-focused.log": "dfea28681812e9e99304603b35fa0e342809c9510f50b67aa813547ff1fda021",
+    "workers-focused.xml": "509fdcd73cc60f9b6d8a20dfadcc5ae3017dc03a734fa0e2816d7028d35bf193",
+    "integration-build.log": "c01f00efd5d7fa7c5681f15c2495d2e2dafd912a92b92a3dd9bf5ca56b463b3a",
+    "workers-full.log": "cc9141604b1bdac7ef6539f7bc8eabb8247ae79d699fe92f818b933b8cfcd9cc",
+    "AspireTopologyTests.cs.before": "59ee4d0b62838d00b0ef1b2fcd587aa74fb91f43adef5b17f330206b34b1c2bf",
+    "before.json": "69e027e63cc2a779e9958f4128352453a0f8fabc155da8890adff7130d15c18f",
+    "integration-full.xml": "394af38280d493c646780d656e6d8d2d9711446ab5f069e42d2b6394d472d9c6",
+    "integration-focused.xml": "6c267e60e7c6bf29d0547a1584af5e764303e5ad53650ac57c0cef87d3d5f0a5",
+    "fixture-corrections.patch": "6e394973ab8e3710a79742989782ad20e211c6295e8bc53326f6e99fb98f73d8",
+    "SemanticIndexingWorkerRegistrationTests.cs.before": "55d668ea7ab35b8ca3de3824a4b6748c9ef8a80fa8f507fa5606ff65504223c5",
+    "workers-full.xml": "883214062c7d3063c86aec29e47b98e55cabae297e9d56662ef152e18fafd72c",
+    "integration-full.log": "c2a5cdcae6768e557d82b3af4d6af6fb8c174bb93c0e0485b8cba00abf4a0d8c"
+  }
+}

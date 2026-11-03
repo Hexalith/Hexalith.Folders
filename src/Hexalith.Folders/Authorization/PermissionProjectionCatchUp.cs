@@ -5,7 +5,7 @@ namespace Hexalith.Folders.Authorization;
 /// <summary>Waits briefly for committed events to reach permission projections before mutation denial.</summary>
 internal static class PermissionProjectionCatchUp
 {
-    private static readonly TimeSpan Budget = TimeSpan.FromMilliseconds(500);
+    private static readonly TimeSpan Budget = TimeSpan.FromSeconds(2);
     private static readonly TimeSpan PollInterval = TimeSpan.FromMilliseconds(25);
 
     /// <summary>Bounds enabled reads and retries; exhausted deadlines never produce available authority.</summary>

@@ -1,0 +1,39 @@
+[
+  {
+    "repository": "folders",
+    "path": "/tmp/story12-2-source-head-20261103-QnMdfZ/strict-source-head-4-folders-source.patch",
+    "bytes": 160523,
+    "sha256": "8dbadf6c1e991505321e9d7c02061a66669b90da30bb6db108e0b4a41e51a814",
+    "untrackedInputs": [
+      "_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-source-head-transport.md",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScopeTests.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfiguration.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfigurationTests.cs",
+      "tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs",
+      "tests/Hexalith.Folders.Server.Tests/NativeSequenceReaderTestTransport.cs",
+      "tests/Hexalith.Folders.Server.Tests/NativeSourceHeadReaderTests.cs",
+      "tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryCollection.cs",
+      "tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryProxy.cs"
+    ]
+  },
+  {
+    "repository": "eventstore",
+    "path": "/tmp/story12-2-source-head-20261103-QnMdfZ/strict-source-head-4-eventstore-source.patch",
+    "bytes": 131423,
+    "sha256": "2079dffdd80e73c4c048baa651a5e18027bccd38ec991a034822a4031b106e62",
+    "untrackedInputs": [
+      "src/Hexalith.EventStore.Contracts/Routing/ValidatedRouteCatalogEncoding.cs",
+      "src/Hexalith.EventStore.DomainService/DomainServiceNativeSourceCredentials.cs",
+      "tests/Hexalith.EventStore.Client.Tests/Streams/NativeSourceMetadataScopeContractTests.cs",
+      "tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogDecodeIsolationTests.cs",
+      "tests/Hexalith.EventStore.DomainService.Tests/NativeSourceMetadataCompositionTests.cs",
+      "tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAcquisitionDiagnosticsTests.cs",
+      "tests/Hexalith.EventStore.Server.Tests/Routing/OutgoingInvocationDiagnosticsTests.cs",
+      "tests/Hexalith.EventStore.Server.Tests/Routing/PlatformCommandModelValidationTests.cs",
+      "tests/Hexalith.EventStore.Server.Tests/Routing/TechnicalHttpImageObservationTests.cs",
+      "tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceHeadEvidenceContractTests.cs",
+      "tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceMetadataCatalogObservationTests.cs"
+    ]
+  }
+]

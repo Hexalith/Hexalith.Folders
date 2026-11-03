@@ -1,0 +1,203 @@
+{
+  "original_private_sha256": "102d1b74b9f470ffd645e7f1724e33bb4a369247730508a00259334e17bf23b2",
+  "records": [
+    {
+      "phase": "host_configuration",
+      "processId": 80230,
+      "utc": "2026-11-03T13:12:39.7752493+00:00",
+      "stopConcurrently": false,
+      "shutdownTimeoutMilliseconds": 30000,
+      "serviceRegistrationOrder": [
+        "other",
+        "opaque_factory",
+        "telemetry_shutdown",
+        "other",
+        "other",
+        "other",
+        "other",
+        "opaque_factory",
+        "rate_limit_sync",
+        "opaque_factory",
+        "opaque_factory",
+        "snapshot_qualification",
+        "projection_discovery",
+        "opaque_factory",
+        "opaque_factory",
+        "opaque_factory",
+        "opaque_factory",
+        "web_server"
+      ],
+      "serviceRegistrationCount": 18,
+      "serviceOrderTruncated": false,
+      "serverRegisteredLast": true,
+      "factoryRegistrationCount": 8,
+      "nonSingletonRegistrationCount": 0,
+      "knownLifecycleRegistrationCount": 1
+    },
+    {
+      "phase": "observer_registered",
+      "processId": 80230,
+      "utc": "2026-11-03T13:12:39.7816045+00:00",
+      "elapsedMilliseconds": 144.6891,
+      "inFlightRequests": 0,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "host_start",
+      "processId": 80230,
+      "utc": "2026-11-03T13:12:40.3628684+00:00",
+      "elapsedMilliseconds": 725.9528,
+      "inFlightRequests": 0,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "application_stopping",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:18.7444693+00:00",
+      "elapsedMilliseconds": 339121.6147,
+      "inFlightRequests": 2,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "host_stop",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:18.7639599+00:00",
+      "elapsedMilliseconds": 339141.1055,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:19.7450901+00:00",
+      "elapsedMilliseconds": 340122.2358,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:20.7445186+00:00",
+      "elapsedMilliseconds": 341121.6648,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:21.7445747+00:00",
+      "elapsedMilliseconds": 342121.7206,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:22.744682+00:00",
+      "elapsedMilliseconds": 343121.8278,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:23.7449297+00:00",
+      "elapsedMilliseconds": 344122.0754,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:24.7446812+00:00",
+      "elapsedMilliseconds": 345121.8272,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:25.7452015+00:00",
+      "elapsedMilliseconds": 346122.3472,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:26.7454852+00:00",
+      "elapsedMilliseconds": 347122.6312,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:27.7456498+00:00",
+      "elapsedMilliseconds": 348122.7956,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:28.7451527+00:00",
+      "elapsedMilliseconds": 349122.2984,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:29.7438291+00:00",
+      "elapsedMilliseconds": 350120.975,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    }
+  ]
+}

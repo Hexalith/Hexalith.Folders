@@ -1,0 +1,81 @@
+{
+  "scope": "Read-only source/retained-log/official API assessment. No source/config/timeout/stop mechanism changes, builds, tests or live operations.",
+  "established": [
+    "Strict6 fails during EventStore resource stop before postrestart task poll.",
+    "ApplicationStopping12:43:15.412; DCPprocess stop timeout12:43:27.409; resource command error12:43:34.6667491.",
+    "ProjectionActivationWorker ticks continue every~2seconds until12:43:25.613 after ApplicationStopping. No telemetry shutdown6200/6201/6202record exists.",
+    "No observed completed hosted-stop stage or inflight request identity is available in retained logs."
+  ],
+  "source_findings": [
+    "Program uses WebApplicationBuilder.Build after its SDK registrations.",
+    "Default.NET10 sequential reverse stop means GenericWebHostService appended by Build can stop before SDK worker services; its StopAsync awaits Server.StopAsync. Actual effective options/order must be observed before making a runtime conclusion.",
+    "SDK activation StopAsync flips IsRunning then calls base.StopAsync; its ExecuteAsync finalizer awaits owned calls, retaining lease/slot semantics. Retry/poller/cleanup propagate stopping tokens and retain their existing scopes.",
+    "AdminOperationalIndexHostedService cancels its refresh token then waits with host token. Bootstrap worker completes activation once and has no custom StopAsync. Several validators/catalog registration hosted services have no-op stops.",
+    "BoundedTelemetryShutdownService is registered with OTLP exporter, has existing2second/provider budget and observes host cancellation; registered early, can be reached late in sequential reverse stop. No evidence establishes its execution or a telemetry hang in this run.",
+    "Fixture already sets OTLP exporter timeouts1000ms; no further timeout change is recommended."
+  ],
+  "minimal_next_observation": {
+    "owner": "Fixture-only existing Task36FoldObserver test tool; opt-in only EventStore.",
+    "mechanism": "Public EventListener for Microsoft.AspNetCore.Hosting plus IHostApplicationLifetime callbacks; no IServer or hosted-service replacement.",
+    "payload_contract": "Read EventId only. Never read or persist EventWrittenEventArgs.Payload, headers, paths, request objects, credentials, rows or exception messages.",
+    "events": {
+      "1": "HostStart",
+      "2": "HostStop emitted in GenericWebHostService.StopAsync finally after Server.StopAsync returns",
+      "3": "RequestStart: increment primitive in-flight count only",
+      "4": "RequestStop: decrement primitive count only"
+    },
+    "records": [
+      "observer_registered and HostStart completeness markers",
+      "ApplicationStopping and ApplicationStopped",
+      "HostStop",
+      "primitive in-flight count at lifecycle transitions",
+      "UTC and monotonic elapsed time, actual ownedPID",
+      "effective shutdown timeout/stop-concurrency and safe known hosted-service order plus hosted-lifecycle count"
+    ],
+    "lifetime": "Subscribe before server begins, remain active until process/container disposal; sink/provider failures advisory. Do not dispose listener at an early hosted StopAsync.",
+    "interpretation": "With observed sequential order and server-first registration, missing HostStop between stopping and DCPtimeout narrows to server.StopAsync. HostStop before timeout moves investigation to later hosted stop/disposal. Request count alone never proves a particular pending call or cause.",
+    "focused_controls": [
+      "real framework EventSource fixture host emits HostStart/HostStop and lifetime transitions without payload logging",
+      "ignore poison request payloads and retain only counts",
+      "advisory sink/observer/service-resolution failures preserve exact original stop results/cancellation",
+      "no altered startup/stop order, timeout, method, process ownership or strict assertion"
+    ],
+    "explicit_nonchanges": [
+      "No genericPIDkill",
+      "No ignored stop failure",
+      "No retry/new timeout",
+      "No concurrency/worker disable change",
+      "No5minute tenant-policy or2second mutation-budget change",
+      "No source/read/proof/guard changes"
+    ]
+  },
+  "aspire_supported_diagnostics": {
+    "ExecuteCommandResult": "Success,Canceled,Message,Data; ErrorMessage obsolete. Prefer closed Success/Canceled/MessagePresent timing metadata; raw message only in private retained receipt after redaction.",
+    "DCP": "Supported DCP_DIAGNOSTICS_LOG_FOLDER, DCP_DIAGNOSTICS_LOG_LEVEL, DCP_PRESERVE_EXECUTABLE_LOGS; Aspire13.6.4 DcpPublisher DiagnosticsLogFolder/DiagnosticsLogLevel/PreserveExecutableLogs override them. Private diagnostics optional; no need broad SDKDebug restoration or altered stop mechanism.",
+    "CLI": "aspire describe --include-hidden and existing resource logs/OTel views can retain exact resource/command status when runtime exists; current assessment does not launch or stop anything."
+  },
+  "primary_sources": {
+    "framework_stop_order": "https://raw.githubusercontent.com/dotnet/runtime/v10.0.14/src/libraries/Microsoft.Extensions.Hosting/src/Internal/Host.cs",
+    "server_registration": "https://raw.githubusercontent.com/dotnet/aspnetcore/v10.0.14/src/DefaultBuilder/src/WebApplicationBuilder.cs",
+    "server_stop_event_boundary": "https://raw.githubusercontent.com/dotnet/aspnetcore/v10.0.14/src/Hosting/Hosting/src/GenericHost/GenericWebHostService.cs",
+    "event_ids": "https://raw.githubusercontent.com/dotnet/aspnetcore/v10.0.14/src/Hosting/Hosting/src/Internal/HostingEventSource.cs",
+    "aspire_command_results": "https://aspire.dev/reference/api/csharp/aspire.hosting/executecommandresult/properties",
+    "aspire_dcp_config": "https://raw.githubusercontent.com/microsoft/aspire/v13.6.4/src/Aspire.Hosting/Dcp/DcpOptions.cs",
+    "dcp_env_diagnostics": "https://github.com/microsoft/dcp/blob/main/README.md"
+  },
+  "source_sha256": {
+    "src/Hexalith.Folders.EventStore/Program.cs": "4f2e69e1ce58b3b235bbf1fe41251a0757df29d5f2f578961e2c3fa28d954781",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Configuration/ServiceCollectionExtensions.cs": "f5d2a780a4e27dedf464036992831984fd97298ca8b60615ac398804e2a3f0fb",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Projections/ProjectionActivationWorker.cs": "94add172fc336d0a1e46e1931556234d1db7b5ccec82dba1f42bd9cd00dc8769",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Projections/ProjectionPollerService.cs": "f695f2229e67414521966d91cd8d225ad9845385d56ce370167adf6641a54a28",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Projections/ProjectionDeliveryRetryWorker.cs": "a83ac5c7331ee1ccb6913f4f7ae2f34cdf5fc71a56155f6389d54b4da0ebe1bd",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Projections/ActiveRebuildIndexCleanupService.cs": "a8a0bfd208a652795278354836bc0b29264f40ae56dd8e4feae7afb25acf62f8",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore/Indexes/AdminOperationalIndexHostedService.cs": "0bfa0a66e3cf36c4baa225426576b65198cbb2354c76a59a17508a771a067fe5",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/BoundedTelemetryShutdownService.cs": "a9175339c5e51f4d486fb6b7183849a29610ad5a467afe108756a51034effa0e",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Extensions.cs": "ea18a101699f8d1e06592b0b0170c26df6ab4a2b95334fcdeee901fac7b63a8b",
+    "tests/tools/Task36FoldObserver/Task36HostingStartup.cs": "ecb562f6a28479401f777420c1c4692be8250a7609b6d6c0eb1917bab7d34f5a",
+    "tests/tools/Task36FoldObserver/StartupHook.cs": "ed92f9451f3e5a27121c4717410f44cb3e1338e1f64db3ca381b5e391d80081b",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "e3c2621f07914948cec4b8f6f5b4986190470986462b2cd53b5a0b83b5cb9cee"
+  },
+  "conclusion": "No exact pending shutdown work identified; no production/lifecycle correction justified. Recommend minimum closed runtime lifecycle observation before next unchanged strict run."
+}

@@ -1,0 +1,158 @@
+{
+  "scope": "Read-only SDK parity triage; no source/runtime edits, builds or tests",
+  "finalSdkServerResult": {
+    "total": "7439",
+    "passed": "7413",
+    "failed": "1",
+    "skipped": "25",
+    "errors": "0",
+    "time": "366.053"
+  },
+  "expected": {
+    "file": "sdk-parity-historical-observed.json",
+    "bytes": 44075,
+    "sha256": "c156ce0b68bab43f561805db9cd02714d123026d388f65c764d7b6fa4e3b7308",
+    "routes": 29,
+    "queries": 9
+  },
+  "actual": {
+    "file": "sdk-parity-current-owner-observed.json",
+    "bytes": 45317,
+    "sha256": "2579a2d99016508de5ee3102233a4ccf4cad3d951fa84b26c6766fcbf76cc43a",
+    "routes": 30,
+    "queries": 10,
+    "usage": "Observed Encode output extracted byte-for-byte from the failed parity assertion; not an approved replacement or activation"
+  },
+  "newDeclarations": [
+    {
+      "contractVersion": "v1",
+      "credentialKind": "workload",
+      "domain": "tenants",
+      "execution": {
+        "actorType": null,
+        "aliasPolicy": "exact",
+        "aliases": [
+          "get-global-administrator-audit"
+        ],
+        "handlerType": "Hexalith.Tenants.Contracts.Queries.GetGlobalAdministratorAuditQuery",
+        "projectionOutputs": [],
+        "queryKind": "projection",
+        "requiresDelegatedContext": false,
+        "targetKind": "domain-service"
+      },
+      "fallbackTypes": [],
+      "kind": "query",
+      "messageIdVersion": null,
+      "messageType": "get-global-administrator-audit",
+      "operation": "domain-service:query",
+      "platformAdmission": {
+        "namespace": "platform:tenants",
+        "requiredHumanPermission": "tenants:read"
+      },
+      "projectionType": "tenants",
+      "routeId": "tenants-get-global-administrator-audit"
+    }
+  ],
+  "changedAdmissions": [
+    {
+      "route": "global-administrators-get-global-administrators",
+      "before": null,
+      "after": {
+        "namespace": "platform:global-administrators",
+        "requiredHumanPermission": "global-administrators:read"
+      }
+    },
+    {
+      "route": "tenants-get-user-tenants",
+      "before": null,
+      "after": {
+        "namespace": "platform:tenants",
+        "requiredHumanPermission": "tenants:read"
+      }
+    },
+    {
+      "route": "tenants-list-tenants",
+      "before": null,
+      "after": {
+        "namespace": "platform:tenants",
+        "requiredHumanPermission": "tenants:read"
+      }
+    }
+  ],
+  "unchangedIdempotency": true,
+  "unchangedTopLevel": [
+    "allowRuntimeOverrides",
+    "generation",
+    "idempotency",
+    "idempotencyFacetDigest",
+    "profile",
+    "schemaVersion"
+  ],
+  "sourceProvenance": [
+    {
+      "repo": "references/Hexalith.Tenants",
+      "file": "src/Hexalith.Tenants.Contracts/Routing/TenantCatalogDeclarations.cs",
+      "matchesCurrentHead": true,
+      "sha256": "da399b1f9daef460f08fa57388220f0bc0efff2640b82d39956a85c977e0eb0e"
+    },
+    {
+      "repo": "references/Hexalith.Tenants",
+      "file": "src/Hexalith.Tenants.Contracts/Queries/GetGlobalAdministratorAuditQuery.cs",
+      "matchesCurrentHead": true,
+      "sha256": "cf774431e976384e2e5f627fbdf172fc837642ed568e3c629e30598b53a295f0"
+    },
+    {
+      "repo": "references/Hexalith.EventStore",
+      "file": "tools/Hexalith.EventStore.CatalogConstruction/DevelopmentCatalogProfile.cs",
+      "matchesCurrentHead": true,
+      "sha256": "a8c1431f63e3d846eb906d7dd691f41400163bd90ec5aff38ba1fe33e65bd65e"
+    },
+    {
+      "repo": "references/Hexalith.EventStore",
+      "file": "deploy/dapr/eventstore-routing-catalog.json",
+      "matchesCurrentHead": true,
+      "sha256": "c156ce0b68bab43f561805db9cd02714d123026d388f65c764d7b6fa4e3b7308"
+    },
+    {
+      "repo": "references/Hexalith.EventStore",
+      "file": "tests/Hexalith.EventStore.Server.Tests/DomainServices/DevelopmentRouteCatalogParityTests.cs",
+      "matchesCurrentHead": true,
+      "sha256": "531fb61bd14d6c6ab6020dafa549a78e101f10d0f6baf63ea8b40c7fa6418436"
+    }
+  ],
+  "classification": "Existing current-source-cohort/retained-qualification artifact mismatch by unchanged source provenance; not an executed pristine-baseline result",
+  "nextAction": "Preserve historical29-route fixture and its fixed semantic guards. Review and retain current30-route candidate separately, then perform an authorized SDK-owned qualification-artifact/parity alignment preserving exact encoding/root and complete owner inventory. Do not filter owner declarations, remove platform admissions, or update only an asserted hash/count.",
+  "skips": [
+    {
+      "class": "Hexalith.EventStore.Server.Tests.Actors.Dw1DrainHardeningAtddTests",
+      "count": 8,
+      "classification": "Existing static ATDD red-phase specification, not operator prerequisite",
+      "reasons": [
+        "ATDD red phase \u2014 DW1 AC#7 (drain poison disposition). Remove Skip when implementing.",
+        "ATDD red phase \u2014 DW1 AC#8 (drain stable reason codes). Remove Skip when implementing.",
+        "ATDD red phase \u2014 DW1 AC#9 (reminder re-entrancy idempotence). Remove Skip when implementing."
+      ]
+    },
+    {
+      "class": "Hexalith.EventStore.Server.Tests.Projections.Dw1ProjectionDeliveryAtddTests",
+      "count": 13,
+      "classification": "Existing static ATDD red-phase specification, not operator prerequisite",
+      "reasons": [
+        "ATDD red phase \u2014 DW1 AC#1 (checkpoint drift). Remove Skip when implementing.",
+        "ATDD red phase \u2014 DW1 AC#2 (/project failure classification). Remove Skip when implementing.",
+        "ATDD red phase \u2014 DW1 AC#3 (cancellation vs timeout). Remove Skip when implementing.",
+        "ATDD red phase \u2014 DW1 AC#4 (per-aggregate serialization). Remove Skip when implementing."
+      ]
+    },
+    {
+      "class": "Hexalith.EventStore.Server.Tests.Projections.Dw1PollerCorruptionAtddTests",
+      "count": 4,
+      "classification": "Existing static ATDD red-phase specification, not operator prerequisite",
+      "reasons": [
+        "ATDD red phase \u2014 DW1 AC#5 (tracker corruption boundedness). Remove Skip when implementing."
+      ]
+    }
+  ],
+  "budget500msUnchanged": true,
+  "activeSessionsOwnedByAgent": []
+}

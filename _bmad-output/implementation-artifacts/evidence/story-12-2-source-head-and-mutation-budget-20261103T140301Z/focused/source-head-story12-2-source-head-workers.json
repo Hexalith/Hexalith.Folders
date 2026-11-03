@@ -1,0 +1,25 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "09:34:31",
+      "errors": "0",
+      "failed": "0",
+      "passed": "1",
+      "skipped": "0",
+      "time": "0.579",
+      "total": "1"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.493",
+      "type": "Hexalith.Folders.Workers.Tests.WorkersHostSecurityEnrollmentTests",
+      "method": "ProductionPipelineHasEmptyInventoriesExactProbesAndAuthenticatedChannelCallbacks",
+      "display_name_sha256": "a5164b5b8d007e4fdd4c728468ef9e0038a9885e56a7cd1ca5df8b290a150d49",
+      "case_ordinal": 1
+    }
+  ]
+}

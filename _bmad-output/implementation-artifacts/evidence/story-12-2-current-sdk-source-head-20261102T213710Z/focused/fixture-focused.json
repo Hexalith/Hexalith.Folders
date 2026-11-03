@@ -1,0 +1,675 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "20:37:20",
+      "errors": "0",
+      "failed": "0",
+      "passed": "94",
+      "skipped": "0",
+      "time": "5.357",
+      "total": "94"
+    }
+  ],
+  "tests": [
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.CallerCancellationStopsWithoutClaimingCompletion",
+      "result": "Pass",
+      "time": "0.375",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+      "method": "CallerCancellationStopsWithoutClaimingCompletion"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.MalformedCompletionCannotAdvanceTheFixture",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+      "method": "MalformedCompletionCannotAdvanceTheFixture"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.UnresolvedActionDeadlineFailsWithLastOutcome",
+      "result": "Pass",
+      "time": "0.252",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+      "method": "UnresolvedActionDeadlineFailsWithLastOutcome"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.TerminalOrUnsupportedOutcomesReturnImmediately(status: Failed, reason: \\\"projection_handler_failure\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+      "method": "TerminalOrUnsupportedOutcomesReturnImmediately"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.TerminalOrUnsupportedOutcomesReturnImmediately(status: Failed, reason: \\\"delivery_identity_conflict\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+      "method": "TerminalOrUnsupportedOutcomesReturnImmediately"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.TerminalOrUnsupportedOutcomesReturnImmediately(status: Indeterminate, reason: \\\"delivery_reconciliation_required\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+      "method": "TerminalOrUnsupportedOutcomesReturnImmediately"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.TerminalOrUnsupportedOutcomesReturnImmediately(status: Indeterminate, reason: \\\"malformed_projection_outcome\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+      "method": "TerminalOrUnsupportedOutcomesReturnImmediately"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.NonretryableHttpFailureStopsTheAction(status: 400)",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+      "method": "NonretryableHttpFailureStopsTheAction"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.NonretryableHttpFailureStopsTheAction(status: 401)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+      "method": "NonretryableHttpFailureStopsTheAction"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.NonretryableHttpFailureStopsTheAction(status: 422)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+      "method": "NonretryableHttpFailureStopsTheAction"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests.UncertainActionResumesWithExactBodySessionAndHeadersUntilCompleted",
+      "result": "Pass",
+      "time": "0.302",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+      "method": "UncertainActionResumesWithExactBodySessionAndHeadersUntilCompleted"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityMtlsCompositionTests.GeneratedNativeModelRetainsActualNamespaceAndPrivateControlPlane(selectedNamespace: null, missingRuntime: False)",
+      "result": "Pass",
+      "time": "0.28",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityMtlsCompositionTests",
+      "method": "GeneratedNativeModelRetainsActualNamespaceAndPrivateControlPlane"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityMtlsCompositionTests.GeneratedNativeModelRetainsActualNamespaceAndPrivateControlPlane(selectedNamespace: \\\"folders-durability-model\\\", missingRuntime: False)",
+      "result": "Pass",
+      "time": "0.008",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityMtlsCompositionTests",
+      "method": "GeneratedNativeModelRetainsActualNamespaceAndPrivateControlPlane"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityMtlsCompositionTests.GeneratedNativeModelRetainsActualNamespaceAndPrivateControlPlane(selectedNamespace: \\\"folders-durability-model\\\", missingRuntime: True)",
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityMtlsCompositionTests",
+      "method": "GeneratedNativeModelRetainsActualNamespaceAndPrivateControlPlane"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityMtlsCompositionTests.MissingNamespaceNeverFallsBackToTheCanonicalNamespace(invalid: \\\"\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityMtlsCompositionTests",
+      "method": "MissingNamespaceNeverFallsBackToTheCanonicalNamespace"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityMtlsCompositionTests.MissingNamespaceNeverFallsBackToTheCanonicalNamespace(invalid: \\\" \\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityMtlsCompositionTests",
+      "method": "MissingNamespaceNeverFallsBackToTheCanonicalNamespace"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests.InitialAndResumedSdkReceiptsRetainTheActualCompleteBinding(resumed: False)",
+      "result": "Pass",
+      "time": "0.113",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests",
+      "method": "InitialAndResumedSdkReceiptsRetainTheActualCompleteBinding"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests.InitialAndResumedSdkReceiptsRetainTheActualCompleteBinding(resumed: True)",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests",
+      "method": "InitialAndResumedSdkReceiptsRetainTheActualCompleteBinding"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests.MissingOrConflictingAuthorityNeverGetsDefaulted(fault: \\\"root\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests",
+      "method": "MissingOrConflictingAuthorityNeverGetsDefaulted"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests.MissingOrConflictingAuthorityNeverGetsDefaulted(fault: \\\"epoch\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests",
+      "method": "MissingOrConflictingAuthorityNeverGetsDefaulted"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests.MissingOrConflictingAuthorityNeverGetsDefaulted(fault: \\\"generation\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests",
+      "method": "MissingOrConflictingAuthorityNeverGetsDefaulted"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests.MissingOrConflictingAuthorityNeverGetsDefaulted(fault: \\\"serving\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests",
+      "method": "MissingOrConflictingAuthorityNeverGetsDefaulted"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests.MissingOrConflictingAuthorityNeverGetsDefaulted(fault: \\\"profile\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests",
+      "method": "MissingOrConflictingAuthorityNeverGetsDefaulted"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests.MissingOrConflictingAuthorityNeverGetsDefaulted(fault: \\\"binding\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests",
+      "method": "MissingOrConflictingAuthorityNeverGetsDefaulted"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap(fault: \\\"valid\\\")",
+      "result": "Pass",
+      "time": "0.095",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap(fault: \\\"principal\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap(fault: \\\"actor\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap(fault: \\\"correlation\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap(fault: \\\"causation\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap(fault: \\\"event\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap(fault: \\\"truncated\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap(fault: \\\"version\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "OnlyTheOriginalPersistedHumanAttributedSourceEstablishesBootstrap"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.IsolatedIssuerImportIsReadyBeforeEitherOwnerOrGatewayStarts",
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "IsolatedIssuerImportIsReadyBeforeEitherOwnerOrGatewayStarts"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.ImportCannotGrantBootstrapToAnotherOrNondesignatedPrincipal(fault: \\\"subject\\\")",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "ImportCannotGrantBootstrapToAnotherOrNondesignatedPrincipal"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.ImportCannotGrantBootstrapToAnotherOrNondesignatedPrincipal(fault: \\\"not-admin\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "ImportCannotGrantBootstrapToAnotherOrNondesignatedPrincipal"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse(fault: \\\"valid\\\")",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse(fault: \\\"attempt\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse(fault: \\\"root\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse(fault: \\\"principal\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse(fault: \\\"phase\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse(fault: \\\"response\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse(fault: \\\"http\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse(fault: \\\"generation\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse(fault: \\\"message\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse(fault: \\\"binding\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryRequiresTheActualCommittedAttemptAndAcceptedHttpResponse"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryAndSourceStillRequirePersistedAdministratorMembership(fault: \\\"valid\\\")",
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryAndSourceStillRequirePersistedAdministratorMembership"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryAndSourceStillRequirePersistedAdministratorMembership(fault: \\\"principal\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryAndSourceStillRequirePersistedAdministratorMembership"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryAndSourceStillRequirePersistedAdministratorMembership(fault: \\\"version\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryAndSourceStillRequirePersistedAdministratorMembership"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.DeliveryAndSourceStillRequirePersistedAdministratorMembership(fault: \\\"time\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "DeliveryAndSourceStillRequirePersistedAdministratorMembership"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.ActualIssuerProfilesPreserveHumansAndKeepTheOwnerServiceAccountSeparate",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "ActualIssuerProfilesPreserveHumansAndKeepTheOwnerServiceAccountSeparate"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.RealKeycloakModelReplacesItsRunModeImportWithoutAMountAssumption",
+      "result": "Pass",
+      "time": "0.085",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "RealKeycloakModelReplacesItsRunModeImportWithoutAMountAssumption"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.ImportedAdministratorHasExactlyTheCanonicalPermissionsNeededByItsExistingWorkflow",
+      "result": "Pass",
+      "time": "0.012",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+      "method": "ImportedAdministratorHasExactlyTheCanonicalPermissionsNeededByItsExistingWorkflow"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.NaturalContentPreservesWireBytesAndExistingRetryRules(status: 403, code: null, category: null, retryable: False, shouldRetry: False)",
+      "result": "Pass",
+      "time": "0.152",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "NaturalContentPreservesWireBytesAndExistingRetryRules"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.NaturalContentPreservesWireBytesAndExistingRetryRules(status: 429, code: null, category: null, retryable: False, shouldRetry: True)",
+      "result": "Pass",
+      "time": "0.124",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "NaturalContentPreservesWireBytesAndExistingRetryRules"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.NaturalContentPreservesWireBytesAndExistingRetryRules(status: 503, code: \\\"idempotency_admission_unavailable\\\", category: \\\"service_unavailable\\\", retryable: True, shouldRetry: True)",
+      "result": "Pass",
+      "time": "0.103",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "NaturalContentPreservesWireBytesAndExistingRetryRules"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.NaturalContentPreservesWireBytesAndExistingRetryRules(status: 503, code: \\\"folder_acl_unavailable\\\", category: \\\"read_model_unavailable\\\", retryable: True, shouldRetry: True)",
+      "result": "Pass",
+      "time": "0.102",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "NaturalContentPreservesWireBytesAndExistingRetryRules"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.NaturalContentPreservesWireBytesAndExistingRetryRules(status: 503, code: \\\"provider_unavailable\\\", category: \\\"provider_unavailable\\\", retryable: True, shouldRetry: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "NaturalContentPreservesWireBytesAndExistingRetryRules"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.NaturalContentPreservesWireBytesAndExistingRetryRules(status: 503, code: \\\"idempotency_admission_unavailable\\\", category: \\\"service_unavailable\\\", retryable: False, shouldRetry: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "NaturalContentPreservesWireBytesAndExistingRetryRules"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.FreshDeniedReadinessStopsBeforeAnyPositiveMutation",
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "FreshDeniedReadinessStopsBeforeAnyPositiveMutation"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.ReadRetriesHonorCallerCancellationWithoutClaimingSuccess",
+      "result": "Pass",
+      "time": "0.252",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "ReadRetriesHonorCallerCancellationWithoutClaimingSuccess"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.TransientAdmissionAndThrottleRetriesPreserveExactRequestIdentity",
+      "result": "Pass",
+      "time": "0.305",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "TransientAdmissionAndThrottleRetriesPreserveExactRequestIdentity"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 503, code: \\\"unknown_provider_outcome\\\", category: \\\"unknown_provider_outcome\\\", retryable: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "BusinessAndPermanentFailuresRemainVisible"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 503, code: \\\"provider_unavailable\\\", category: \\\"provider_unavailable\\\", retryable: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "BusinessAndPermanentFailuresRemainVisible"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 503, code: \\\"idempotency_admission_unavailable\\\", category: \\\"service_unavailable\\\", retryable: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "BusinessAndPermanentFailuresRemainVisible"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 503, code: \\\"folder_acl_stale\\\", category: \\\"read_model_unavailable\\\", retryable: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "BusinessAndPermanentFailuresRemainVisible"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 403, code: \\\"authorization_denied\\\", category: \\\"authorization_denied\\\", retryable: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "BusinessAndPermanentFailuresRemainVisible"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 409, code: \\\"idempotency_conflict\\\", category: \\\"idempotency_conflict\\\", retryable: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "BusinessAndPermanentFailuresRemainVisible"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.BusinessAndPermanentFailuresRemainVisible(status: 500, code: \\\"internal_error\\\", category: \\\"internal_error\\\", retryable: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "BusinessAndPermanentFailuresRemainVisible"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.NaturalContentStopsOnCallerCancellationWithoutAnotherRequest",
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "NaturalContentStopsOnCallerCancellationWithoutAnotherRequest"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests.ReadinessWaitsForFreshAclAndOperationalRowsAtTheRetainedHead",
+      "result": "Pass",
+      "time": "0.305",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "method": "ReadinessWaitsForFreshAclAndOperationalRowsAtTheRetainedHead"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests.StatusNamesExactlyOneOriginalScopeWithoutChangingIdentity(scope: \\\"platform:tenants\\\")",
+      "result": "Pass",
+      "time": "0.066",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+      "method": "StatusNamesExactlyOneOriginalScopeWithoutChangingIdentity"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests.StatusNamesExactlyOneOriginalScopeWithoutChangingIdentity(scope: \\\"platform:global-administrators\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+      "method": "StatusNamesExactlyOneOriginalScopeWithoutChangingIdentity"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests.StatusNamesExactlyOneOriginalScopeWithoutChangingIdentity(scope: \\\"tenant-a\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+      "method": "StatusNamesExactlyOneOriginalScopeWithoutChangingIdentity"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests.OriginalSourceUsesTheRealSelectedOwnerCoordinatesAndExactSdkProofScope",
+      "result": "Pass",
+      "time": "0.074",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+      "method": "OriginalSourceUsesTheRealSelectedOwnerCoordinatesAndExactSdkProofScope"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests.ReservedUnknownOrNoncanonicalScopesCannotBeMappedByTheFixture(scope: \\\"system\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+      "method": "ReservedUnknownOrNoncanonicalScopesCannotBeMappedByTheFixture"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests.ReservedUnknownOrNoncanonicalScopesCannotBeMappedByTheFixture(scope: \\\"System\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+      "method": "ReservedUnknownOrNoncanonicalScopesCannotBeMappedByTheFixture"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests.ReservedUnknownOrNoncanonicalScopesCannotBeMappedByTheFixture(scope: \\\"platform:folders\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+      "method": "ReservedUnknownOrNoncanonicalScopesCannotBeMappedByTheFixture"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests.ReservedUnknownOrNoncanonicalScopesCannotBeMappedByTheFixture(scope: \\\"\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+      "method": "ReservedUnknownOrNoncanonicalScopesCannotBeMappedByTheFixture"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests.ReservedUnknownOrNoncanonicalScopesCannotBeMappedByTheFixture(scope: \\\"tenant_a\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+      "method": "ReservedUnknownOrNoncanonicalScopesCannotBeMappedByTheFixture"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests.ReservedUnknownOrNoncanonicalScopesCannotBeMappedByTheFixture(scope: \\\"Tenant-A\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+      "method": "ReservedUnknownOrNoncanonicalScopesCannotBeMappedByTheFixture"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests.DirectAndBoundBootstrapControlsRetainTheSameOriginalOperationAndHumanTarget",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+      "method": "DirectAndBoundBootstrapControlsRetainTheSameOriginalOperationAndHumanTarget"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests.StorageFailureIsNeverReinterpretedAsAnAbsentProjection",
+      "result": "Pass",
+      "time": "0.066",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+      "method": "StorageFailureIsNeverReinterpretedAsAnAbsentProjection"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests.AbsentAuthorityUsesTheExistingCallerCancellationWithoutInventingCompletion",
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+      "method": "AbsentAuthorityUsesTheExistingCallerCancellationWithoutInventingCompletion"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests.ActualGatewayModelSelectsOnlyTheBootstrapDomainAndPreservesOtherHostsAndModes",
+      "result": "Pass",
+      "time": "0.153",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+      "method": "ActualGatewayModelSelectsOnlyTheBootstrapDomainAndPreservesOtherHostsAndModes"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests.ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority(initiallyAbsent: False, scenario: \\\"valid\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+      "method": "ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests.ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority(initiallyAbsent: True, scenario: \\\"valid\\\")",
+      "result": "Pass",
+      "time": "1",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+      "method": "ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests.ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority(initiallyAbsent: False, scenario: \\\"principal\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+      "method": "ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests.ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority(initiallyAbsent: True, scenario: \\\"principal\\\")",
+      "result": "Pass",
+      "time": "0.999",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+      "method": "ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests.ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority(initiallyAbsent: False, scenario: \\\"version\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+      "method": "ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests.ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority(initiallyAbsent: True, scenario: \\\"version\\\")",
+      "result": "Pass",
+      "time": "1",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+      "method": "ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests.ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority(initiallyAbsent: False, scenario: \\\"time\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+      "method": "ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests.ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority(initiallyAbsent: True, scenario: \\\"time\\\")",
+      "result": "Pass",
+      "time": "1",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+      "method": "ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests.ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority(initiallyAbsent: False, scenario: \\\"malformed\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+      "method": "ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority"
+    },
+    {
+      "name": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests.ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority(initiallyAbsent: True, scenario: \\\"malformed\\\")",
+      "result": "Pass",
+      "time": "1",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+      "method": "ObservationWaitsOnlyForAbsenceAndImmediatelyValidatesEveryPresentAuthority"
+    }
+  ]
+}

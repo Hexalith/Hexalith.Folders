@@ -1,0 +1,1346 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+    "-result-xml",
+    "/tmp/story12-2-source-head-20261103-QnMdfZ/final-workers-tests-private.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-03T13:57:50.129759+00:00",
+  "utc_end": "2026-11-03T13:57:56.108930+00:00",
+  "exit_code": 0,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-source-head-20261103-QnMdfZ/final-workers-tests-private.log",
+    "sha256": "5293909f5113dc989a4511f7d0af9739d8fb1a0a43ec098558f51408ddef8a04"
+  },
+  "private_xml": {
+    "path": "/tmp/story12-2-source-head-20261103-QnMdfZ/final-workers-tests-private.xml",
+    "sha256": "5377a6f1921b7893646cdfe79e525486e95a6f59957bd6d769d618a4490cb4e1"
+  },
+  "summary": {
+    "assemblies": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "13:57:50",
+        "errors": "0",
+        "failed": "0",
+        "passed": "162",
+        "skipped": "0",
+        "time": "4.482",
+        "total": "162"
+      }
+    ],
+    "tests": [
+      {
+        "result": "Pass",
+        "time": "0.578",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser",
+        "display_name_sha256": "f579fe8e1f670d28adc06439c8dba9c5fb66ed32a22fd898c413f125d4f49aeb",
+        "case_ordinal": 1
+      },
+      {
+        "result": "Pass",
+        "time": "0.018",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser",
+        "display_name_sha256": "7b1dbf53179c18513a7d34632a38bbee0a5163d2dd4623876e06092bbd5c29ba",
+        "case_ordinal": 2
+      },
+      {
+        "result": "Pass",
+        "time": "0.017",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser",
+        "display_name_sha256": "553538ab9e432f71afa4b5340ac6f403dfe3f0b13919f87f369e3a39492ebc06",
+        "case_ordinal": 3
+      },
+      {
+        "result": "Pass",
+        "time": "0.015",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser",
+        "display_name_sha256": "8240cbe796cd0f595810978bfd43e013b2a6aa50f9e9688ffd6803cc972b5c3c",
+        "case_ordinal": 4
+      },
+      {
+        "result": "Pass",
+        "time": "0.027",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "OrganizationResetErasesOnlyOrganizationRowAndAuditsMetadata",
+        "display_name_sha256": "468d62184098bb1d77931cda9cc568cc950fd412c350b852468f5fdf53eae507",
+        "case_ordinal": 5
+      },
+      {
+        "result": "Pass",
+        "time": "0.083",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "FolderCallbackRequiresOperationalPersistenceBeforeAcknowledgment",
+        "display_name_sha256": "f786e12a9a4beb89057f55809464553b2eff0ea4eb858ae3cb381c111ebc5247",
+        "case_ordinal": 6
+      },
+      {
+        "result": "Pass",
+        "time": "0.049",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "FolderCallbackRequiresOperationalPersistenceBeforeAcknowledgment",
+        "display_name_sha256": "7b41df2d3075b7bd656a5bfcc0ce6794993d854b3ae334785c0008044df02a51",
+        "case_ordinal": 7
+      },
+      {
+        "result": "Pass",
+        "time": "0.044",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted",
+        "display_name_sha256": "8d87e8aed461ac1730abbe1cfb20d500bdbe4134e86b727bedc3a14bd3fee4c1",
+        "case_ordinal": 8
+      },
+      {
+        "result": "Pass",
+        "time": "0.09",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted",
+        "display_name_sha256": "519d3992be6be6077de53bf98a0491ce1fec3f57f4e0bf7ef60c42e7790521f5",
+        "case_ordinal": 9
+      },
+      {
+        "result": "Pass",
+        "time": "0.021",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited",
+        "display_name_sha256": "e976d0409b8f90cd15cb4f88b5c15b21bf72818cd4e46a22fcf3efa61714734c",
+        "case_ordinal": 10
+      },
+      {
+        "result": "Pass",
+        "time": "0.015",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited",
+        "display_name_sha256": "c6f793351c950addde6f894eaccda5f0e091478d51c25b9c7988779a95e0054d",
+        "case_ordinal": 11
+      },
+      {
+        "result": "Pass",
+        "time": "0.039",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited",
+        "display_name_sha256": "7b406cc8785400d9b84c68cd8c52f56ad4653c06a95a9cdd062910b911d0f84e",
+        "case_ordinal": 12
+      },
+      {
+        "result": "Pass",
+        "time": "0.021",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited",
+        "display_name_sha256": "6de81066a1b2b7e63e86d46a23783f293062178bdbd7abda35e48d7dd733b4df",
+        "case_ordinal": 13
+      },
+      {
+        "result": "Pass",
+        "time": "0.015",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited",
+        "display_name_sha256": "ded659025add569260b07e03c9295f88ede4ef519d3d1309573eb15a4613a3ca",
+        "case_ordinal": 14
+      },
+      {
+        "result": "Pass",
+        "time": "0.024",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "ProjectionFailureLogsOnlyFixedStageCategoryAndRuntimeTypeBeforeRetryableResponse",
+        "display_name_sha256": "ad82936ec735970d2b1b59fcb65f35d8fff2e78f34faa9fcd943a9001ad6d250",
+        "case_ordinal": 15
+      },
+      {
+        "result": "Pass",
+        "time": "1.015",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "UnresolvedConcurrentDeliveryFailsWithinBudgetWithoutAdvancing",
+        "display_name_sha256": "b7b11962e2f132de2ea155b6370f48d9beebd455c67136df0e9a0e996393267e",
+        "case_ordinal": 16
+      },
+      {
+        "result": "Pass",
+        "time": "1.019",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "UnresolvedConcurrentDeliveryFailsWithinBudgetWithoutAdvancing",
+        "display_name_sha256": "e3b915dd2785ed6e3bf0407ee7bd59ab7a16ba09cf1cff084d2745aafc12af00",
+        "case_ordinal": 17
+      },
+      {
+        "result": "Pass",
+        "time": "1.097",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "AuthenticatedBaselineAndGrantShouldReachSharedPermissionState",
+        "display_name_sha256": "d02e088a2b4428f6b73013b7c2dcc4a97a04ae129c28cbc615c9876d5d015727",
+        "case_ordinal": 18
+      },
+      {
+        "result": "Pass",
+        "time": "0.024",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays",
+        "display_name_sha256": "a5367040bed31b1ccfdc81207cbc3b6e4f1fc0ee1f3ac26f57dbdee0390fdcd6",
+        "case_ordinal": 19
+      },
+      {
+        "result": "Pass",
+        "time": "0.019",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays",
+        "display_name_sha256": "8ad1b6632e9cd8e44dfb5f6ce7a9ba7b99a0b7acbf20650000a2acc9138ef5d5",
+        "case_ordinal": 20
+      },
+      {
+        "result": "Pass",
+        "time": "0.019",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays",
+        "display_name_sha256": "f210c46ce971fcdf135eb02eac58ff2f4accf3a23c661c860d548055274f4168",
+        "case_ordinal": 21
+      },
+      {
+        "result": "Pass",
+        "time": "0.019",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays",
+        "display_name_sha256": "0c3b2ca2722017de974885bb97d85abbf8df305a6ad7e07dcd30c1c426dcf3c3",
+        "case_ordinal": 22
+      },
+      {
+        "result": "Pass",
+        "time": "0.018",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays",
+        "display_name_sha256": "743adc1021024eb592ae9d0f4c46bbdd47ea4b5fd1cb623381a180d8201728d4",
+        "case_ordinal": 23
+      },
+      {
+        "result": "Pass",
+        "time": "0.018",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays",
+        "display_name_sha256": "68a305d454adfbe0193ac9d984125a8e9731537ebf2529e649f4bab74d1c9fba",
+        "case_ordinal": 24
+      },
+      {
+        "result": "Pass",
+        "time": "0.014",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedOrganizationStreamLeavesPersistedProjectionUnchanged",
+        "display_name_sha256": "3cfdfcd26d8616473ae494a134b426bf43b4ad0eef2ff30001bbeb599adf236b",
+        "case_ordinal": 25
+      },
+      {
+        "result": "Pass",
+        "time": "0.014",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedOrganizationStreamLeavesPersistedProjectionUnchanged",
+        "display_name_sha256": "c6f533dee7b1a02cbf1362e3eb2edd79ed645f934c13c209e049ccb5baa25c4d",
+        "case_ordinal": 26
+      },
+      {
+        "result": "Pass",
+        "time": "0.017",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedOrganizationStreamLeavesPersistedProjectionUnchanged",
+        "display_name_sha256": "9a7c1755c363180b2ecfbd040698e45e244efd586524ecb89a43ac43aaca10d0",
+        "case_ordinal": 27
+      },
+      {
+        "result": "Pass",
+        "time": "0.329",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersFolderPermissionEventProcessorTests",
+        "method": "RetainedFolderEventsAdvanceDurableAclAndConflictingReplayFailsClosed",
+        "display_name_sha256": "4484c1d949806cd8fc85df3bdae556580a6a0c702508efd7326442c8543ec414",
+        "case_ordinal": 28
+      },
+      {
+        "result": "Pass",
+        "time": "0.011",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersFolderPermissionEventProcessorTests",
+        "method": "ProviderBindingRejectionDoesNotCreateFolderProjection",
+        "display_name_sha256": "fcde51bd287dd562228c0c7d29c45f759a5d43ca264df14ca5d387ec5061d945",
+        "case_ordinal": 29
+      },
+      {
+        "result": "Pass",
+        "time": "0.323",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment",
+        "display_name_sha256": "6b798c192aaabf4f7ce4e4ea42b5fb96f6f3fc22719a00f1aeec99a4fc1b2b3e",
+        "case_ordinal": 30
+      },
+      {
+        "result": "Pass",
+        "time": "0.008",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment",
+        "display_name_sha256": "b46ef59bcae85cc2461632c3d9834cf9ced3d3023650a48c3d33210f7a78c21d",
+        "case_ordinal": 31
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment",
+        "display_name_sha256": "3ee9bdd9d09f7dd6e4e4f1d82438541940a5e9e46ddaf37b0961892498129324",
+        "case_ordinal": 32
+      },
+      {
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment",
+        "display_name_sha256": "74de6913b263841080fd0ae753b01dd0e95f084b663bb56b762f9ff51812870e",
+        "case_ordinal": 33
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment",
+        "display_name_sha256": "de7d81f5c7065d061c247ccc5fbb14b67a928c72297f93a5e22eb2e0690c8c90",
+        "case_ordinal": 34
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment",
+        "display_name_sha256": "a8b04145fe80b94c15cb7fa45433ac7f8143acd6025fff999cf5eff9e69e0ebd",
+        "case_ordinal": 35
+      },
+      {
+        "result": "Pass",
+        "time": "0.056",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment",
+        "display_name_sha256": "4b36d3cd8da90e65147f4e945632bfe065a49f105213224ead689edf971e25d0",
+        "case_ordinal": 36
+      },
+      {
+        "result": "Pass",
+        "time": "0.008",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment",
+        "display_name_sha256": "e30838a485d522541c23a0d2aecfa7e7053471d4aac5f53c05bf67ef822c9d8b",
+        "case_ordinal": 37
+      },
+      {
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment",
+        "display_name_sha256": "07df75f11635de53829a23f25089e6f97dffa19bf233ad653c18549bc6af9834",
+        "case_ordinal": 38
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment",
+        "display_name_sha256": "8edf0dad7e04c176464cc3f29378ce1137fd24dad9bea4ea038bc1bf7831d1c1",
+        "case_ordinal": 39
+      },
+      {
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment",
+        "display_name_sha256": "b2051690e981f533286625c0b2f3b5b4e2e7f679ebcbdd48a12ee007233da69e",
+        "case_ordinal": 40
+      },
+      {
+        "result": "Pass",
+        "time": "0.741",
+        "type": "Hexalith.Folders.Workers.Tests.ProviderBindingDeliveryRepairTests",
+        "method": "WorkerBindingBytesEqualProviderProjectRebuildAndMalformedRejectionsNeverAdvanceAsync",
+        "display_name_sha256": "068d206932b0df54129407a913ee403472bcc116b5b49349f9e83e8928c070d6",
+        "case_ordinal": 41
+      },
+      {
+        "result": "Pass",
+        "time": "0.633",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersHostSecurityEnrollmentTests",
+        "method": "ProductionPipelineHasEmptyInventoriesExactProbesAndAuthenticatedChannelCallbacks",
+        "display_name_sha256": "a5164b5b8d007e4fdd4c728468ef9e0038a9885e56a7cd1ca5df8b290a150d49",
+        "case_ordinal": 42
+      },
+      {
+        "result": "Pass",
+        "time": "0.135",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "ApplyFolderEventsAsyncShouldPersistTenantPrefixedFileVersionAndFolderIndexKeys",
+        "display_name_sha256": "3edc28a1c1bf3323688fee770294cb8c9a12ee97b8933cb48eea10c3d309fbe4",
+        "case_ordinal": 43
+      },
+      {
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "RecordRemovalEvidenceAsyncShouldRecordOutcomeOnTombstonedEntryWithoutStatusRegression",
+        "display_name_sha256": "5c8587eb4c85e70bfd37b06c0cbbb37f7410e8523109bb94deaf7474ee9e9ddd",
+        "case_ordinal": 44
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "GetFileVersionByIdAsyncShouldReturnNullWhenStoredIdentityDoesNotMatchLookup",
+        "display_name_sha256": "05a6ffd5e907001c807620f7af717e1e6c2adcf0fc44378aa39b3f2eb4f55a07",
+        "case_ordinal": 45
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "ApplyFolderEventsAsyncShouldBeEquivalentUnderDuplicateDelivery",
+        "display_name_sha256": "1d4fed609eac759fc530e50dbb71454aa340191279b1c27ef514b738cd670d23",
+        "case_ordinal": 46
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "RecordIndexingResultAsyncShouldProtectNewerPersistedFileVersionFromStaleResult",
+        "display_name_sha256": "a2c31a65a62895c96dca530ef59b01b492bfb4a572f167b4aeb30df407735bcf",
+        "case_ordinal": 47
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "ApplyFolderEventsAsyncShouldDropTenantMismatchedFileEventsWithoutWriting",
+        "display_name_sha256": "10143ce13215996e733cd0e7a2d03f8079ea245a2970eed2c8a4d9042ebb4437",
+        "case_ordinal": 48
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "GetFileVersionAsyncShouldReturnNullWhenStoredIdentityReadModelKeyDoesNotMatchLookup",
+        "display_name_sha256": "f75b97d6f9aafc517c0e7ae4733fc2ad8746f48f43db178953e3dceda231a20b",
+        "case_ordinal": 49
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "ApplyFolderEventsAsyncShouldApplyFolderScopedArchiveThroughPersistedIndex",
+        "display_name_sha256": "5112a36e28bbfe6b5e2faa1e0c4d007f6f45144ca7813a65f97d7b2982a3910d",
+        "case_ordinal": 50
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "ApplyFolderEventsAsyncShouldReloadVersionStatusAndRemovalOnNewInstanceOverSameStore",
+        "display_name_sha256": "b7cc08fddc48f05a5352464141a7bd722cfe8b4da207009fd33539b221bc31a4",
+        "case_ordinal": 51
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "ApplyFolderEventsAsyncShouldTombstoneKnownFileVersionWhenRemoveHasNoContentHash",
+        "display_name_sha256": "2c955502382f8158a4db02386a055b28cd40589f9e7ccb5fd25f7483a878b57c",
+        "case_ordinal": 52
+      },
+      {
+        "result": "Pass",
+        "time": "0.126",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldRecordRetryableFailureWhenRemovalPublishFails",
+        "display_name_sha256": "358e20262b1b20d248be4d72862b94f59a5fa35a0fdfc360b03b34b2f2b45b04",
+        "case_ordinal": 53
+      },
+      {
+        "result": "Pass",
+        "time": "0.009",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldRecordNoOpForNeverIndexedArchivedTombstoneWithoutCallingMemories",
+        "display_name_sha256": "19ccdbd54cee539b16544d5c01f8e5e845a099965f05755beeba4caac180eb3f",
+        "case_ordinal": 54
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldNotReadContentWhenPolicyDenies",
+        "display_name_sha256": "5c86c69465203e1f3b9859ff983b57f51b26140f010514e969450c61329c70ee",
+        "case_ordinal": 55
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldRecordFailedWhenContentIsUnavailable",
+        "display_name_sha256": "c6e470532a64668b706592d06ff599875e9a25a422b4d734a04af33feebd73e5",
+        "case_ordinal": 56
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldSoftDeletePreviouslyIndexedArchivedFolderWithFullDocumentReSend",
+        "display_name_sha256": "403acf4bb29752c0e4570f222f27f5355fddc1d88f744b648a0127d816958d4e",
+        "case_ordinal": 57
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldSkipUnsupportedContentTypeBeforeMemories",
+        "display_name_sha256": "9e4fdef6d784e47e0dbbf55ff02c02c07735dfb17d8293839c2ba04fc33d256f",
+        "case_ordinal": 58
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldRecordNoOpForNeverIndexedTombstoneWithoutCallingMemories",
+        "display_name_sha256": "cafd86699c31c295b006dbfca494427c0042aed0bdb415e5a1907b870d901d3a",
+        "case_ordinal": 59
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldSkipRedactedSensitivityBeforeReadingContent",
+        "display_name_sha256": "3ca23df3b81de54c83bd7e9015e7c60d0fe7ec2d52b90c5713040e86e408eadb",
+        "case_ordinal": 60
+      },
+      {
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldApplyEventsThenIndexEligibleStaleEntry",
+        "display_name_sha256": "5d4b21922bad1973359936367c51845222080a5bc846f65c31350a9f399ae798",
+        "case_ordinal": 61
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldSkipOversizedContentBeforeMemories",
+        "display_name_sha256": "1a855b7cff65fa9c14b8a00435bd20e6470832cf20af9699430eb5a4713ce77d",
+        "case_ordinal": 62
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldFailClosedWhenTenantAccessIsUnavailableBeforeReadingContent",
+        "display_name_sha256": "bd0f51dcd398a38ca16db648b387950a0d03af8f9fa0a976eb029781194c612c",
+        "case_ordinal": 63
+      },
+      {
+        "result": "Pass",
+        "time": "0.05",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "EventProcessorShouldNotReindexRedeliveredEventBecauseTheBridgeOwnsIdempotency",
+        "display_name_sha256": "0bbf42a8158313bfff88348e8872bb4b24b0fa17bda4b096e3ae9122dda0af92",
+        "case_ordinal": 64
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldIndexWithRealMetadataDerivedMaterializer",
+        "display_name_sha256": "e78ea1082f3262f0109e70810ee96502b42d9ae8fc11fcb653c0c918a47439d8",
+        "case_ordinal": 65
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldHardDeletePreviouslyIndexedRemovedFileVersion",
+        "display_name_sha256": "ce488d43294ce9c4f29f9a131a29aa883955b43d07791443da26c860ed5b8be4",
+        "case_ordinal": 66
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldFailClosedWhenFolderAclDoesNotAuthorizeBeforeReadingContent",
+        "display_name_sha256": "55817f350842c01a511661c034f57f597e137f3f4fd32cc33b9cd91d47bf4344",
+        "case_ordinal": 67
+      },
+      {
+        "result": "Pass",
+        "time": "0.12",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "AmbiguousProviderOutcomesShouldAppendUnknownOutcome",
+        "display_name_sha256": "43ba98e99783b8d06a77f6968bb4a7d466f23c7d5828c8da6158d14e0ccce9c6",
+        "case_ordinal": 68
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "AmbiguousProviderOutcomesShouldAppendUnknownOutcome",
+        "display_name_sha256": "a8440867b55dcc69b4f4322504d8c97596c46ae4496b5134f4cded35ef574b87",
+        "case_ordinal": 69
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "ContextMismatchShouldNotResolveProviderOrAppendOutcome",
+        "display_name_sha256": "fc549ec9d55f9715c289f2488c057b718de2151c2a24e930b3ee677b963737e3",
+        "case_ordinal": 70
+      },
+      {
+        "result": "Pass",
+        "time": "0.008",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "RequestedEventShouldCreateProviderRepositoryAndAppendBoundOutcome",
+        "display_name_sha256": "df19dba76d79cafa78810d330e7b961fa8672b144561a8223f5156dc52d393a7",
+        "case_ordinal": 71
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "FreshMatchingAdmissionShouldReturnContextMismatchWithoutProviderCalls",
+        "display_name_sha256": "2703a77aa107d06373177278496427b15e26bc2517e38476cf93355337d91098",
+        "case_ordinal": 72
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "ProviderExceptionDuringCreationShouldAppendUnknownOutcome",
+        "display_name_sha256": "0a99f25059329c215597705d28a7b80b7d8c2cb92425fb6f696cb9a1abf0b897",
+        "case_ordinal": 73
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "EquivalentExistingReplayAfterRestartShouldNotCallProviderAgain",
+        "display_name_sha256": "39234ea91e5574b06e59b0aba9ce89401890d77f0d3fdcec1553ecc02affae3a",
+        "case_ordinal": 74
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "AmbiguousOutcomeReplayAfterRestartShouldNotCallProviderAgain",
+        "display_name_sha256": "6dcfae1b8990ff9d64af56272a281250989addc738a750666018f663d1acb91e",
+        "case_ordinal": 75
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "StateUnavailableShouldNotResolveProviderOrAppendOutcome",
+        "display_name_sha256": "7bf83ca70fb526c1487b5de642efb5e9ab23d7cc0eee8aab96c75a26f2625a87",
+        "case_ordinal": 76
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "AlreadyProcessedRequestedEventShouldNotCallProviderAgain",
+        "display_name_sha256": "b641ffb47030c30e732136d2abbb11147cf0aecdb8b82e8a69c8eedd9317293b",
+        "case_ordinal": 77
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "NullIdempotencyAdmissionShouldReturnContextMismatchWithoutProviderCalls",
+        "display_name_sha256": "134599c0a1a51f54b65228719e3d8c233bb008154b20a46ff27ace2d4f9ddff5",
+        "case_ordinal": 78
+      },
+      {
+        "result": "Pass",
+        "time": "0.048",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "ProviderNeutralResultShouldRoundTripWithoutProviderOrSecretEvidence",
+        "display_name_sha256": "e7f8d8314e30e510b5e6d0a0270e5560592cee654fc81936baaf59c714911421",
+        "case_ordinal": 79
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "ProviderNeutralResultShouldRoundTripWithoutProviderOrSecretEvidence",
+        "display_name_sha256": "f4547ab8a9e935138ac5e8b5c77a4191337d888944f9bdf802498f205b5f5502",
+        "case_ordinal": 80
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "ProviderNeutralResultShouldRoundTripWithoutProviderOrSecretEvidence",
+        "display_name_sha256": "90e31f343f944b98a500ee3850d0e0033eb4b4684e2b61a9848141919191b518",
+        "case_ordinal": 81
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "FingerprintMismatchShouldReturnContextMismatchWithoutProviderCalls",
+        "display_name_sha256": "9828bd40658caf9b8566363383a14894e065badf3b0eb2f484ef5447fe45c646",
+        "case_ordinal": 82
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "KnownProviderFailureShouldAppendRepositoryBindingFailed",
+        "display_name_sha256": "aaabd48eaea489f69e6ddbfe1e41c572d087dedb11157dd7ffbabf908100b89c",
+        "case_ordinal": 83
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "RequestedEventShouldForwardTheCallerSuppliedIdempotencyAdmission",
+        "display_name_sha256": "2ae64b1a5b68c524a34bffd7ffe61439d4698285137458a118aebe3cb2bf7993",
+        "case_ordinal": 84
+      },
+      {
+        "result": "Pass",
+        "time": "0.485",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "IndeterminatePersistenceIsRetryableAndOriginalManifestRecovers",
+        "display_name_sha256": "dfcdb99d135cc185a321e9a5e163802daee16a0931099be8f5f095fa05eec788",
+        "case_ordinal": 85
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "UnsupportedStoredVersionCannotAdvanceCheckpoint",
+        "display_name_sha256": "78486908cecfc80153d72fbd481a7e6bd7f70dfee46cbe7906978fcc63e6a16a",
+        "case_ordinal": 86
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "UnsupportedStoredVersionCannotAdvanceCheckpoint",
+        "display_name_sha256": "66f842db08565cc32a885fb27a0227aeda06e4b711710f6b32fb45c9e20b4d6f",
+        "case_ordinal": 87
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "UnsupportedStoredVersionCannotAdvanceCheckpoint",
+        "display_name_sha256": "1002d0f13c4c4dcdf054b571e942f071115a6b988d8f45f4574d08a527357d92",
+        "case_ordinal": 88
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "InvalidProviderRejectionNeverCreatesSourceReceipts",
+        "display_name_sha256": "79e193a883c7e8950c76f7bee9a941b40493137d7b007c3e13b40e7e5b7b6c41",
+        "case_ordinal": 89
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "InvalidProviderRejectionNeverCreatesSourceReceipts",
+        "display_name_sha256": "f4ea326833df08ad8921f494fd27ea641e01c2b15afb370220bffe3552c6425e",
+        "case_ordinal": 90
+      },
+      {
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "DurableCheckpointPrecedesSuccessfulProcessingAndDuplicateAcknowledgment",
+        "display_name_sha256": "4bbc0de6d8ffed0dfbac3be3e1ec130a449096484015b0217e7f0820805b04e1",
+        "case_ordinal": 91
+      },
+      {
+        "result": "Pass",
+        "time": "0.096",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "MalformedWorkspaceOrLeaseNeverAdvancesWorkerCompletion",
+        "display_name_sha256": "1238d6cf7b296d499ee3d34dc4a5689dc85c9e29122e6324b73428b8b370037e",
+        "case_ordinal": 92
+      },
+      {
+        "result": "Pass",
+        "time": "0.022",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "MalformedWorkspaceOrLeaseNeverAdvancesWorkerCompletion",
+        "display_name_sha256": "eea5927f1e4f4f8995764da153c8bab6b37f1c4fb10baddd4066e8b837f93f8f",
+        "case_ordinal": 93
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "WorkerRejectsReusedMessagePositionsAndUndefinedRejectionCodes",
+        "display_name_sha256": "572e075a23f5dc8c02a12ce60978f36c9b3f3f5bbb3eebc7cbd1124becf4d1e5",
+        "case_ordinal": 94
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "WorkerRejectsReusedMessagePositionsAndUndefinedRejectionCodes",
+        "display_name_sha256": "194c5018e31c8b2d041c0158498438a6aa4e6062ab1cec2f7806b196ecd9bcc6",
+        "case_ordinal": 95
+      },
+      {
+        "result": "Pass",
+        "time": "0.368",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "MapFoldersTenantEventWorkerEndpointsShouldExposeSeparateSemanticIndexingSubscription",
+        "display_name_sha256": "8b6c8a33948acb219ae77fab603ed32e545bd64bf473cd81d55dd49a42dfe0e1",
+        "case_ordinal": 96
+      },
+      {
+        "result": "Pass",
+        "time": "0.01",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "MapFoldersTenantEventWorkerEndpointsShouldExposeSeparateSemanticIndexingSubscription",
+        "display_name_sha256": "d90d3b9931169a08db518d067c286e0079a69ff9203283fc6d1cfa88db8aa033",
+        "case_ordinal": 97
+      },
+      {
+        "result": "Pass",
+        "time": "0.425",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "OperationalFailureStillIndexesAndRedeliveryDoesNotRepeatIndexingAsync",
+        "display_name_sha256": "52efef44e87303e62e3110acaff2903ca56a97962b5c64f17623be81e47a36f4",
+        "case_ordinal": 98
+      },
+      {
+        "result": "Pass",
+        "time": "0.075",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "SemanticIndexingSubscriptionEndpointShouldIndexAuthorizedFileMutationEndToEnd",
+        "display_name_sha256": "a734cb84a51e8a1e53847be88a95b3fc7f5ec23b20dd31fe8e909ed04f1aeadc",
+        "case_ordinal": 99
+      },
+      {
+        "result": "Pass",
+        "time": "0.049",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "SemanticIndexingSubscriptionEndpointShouldRetryEnvelopeMissingTypeOrPayload",
+        "display_name_sha256": "b8ded47357565a0adfacebb73b76420e7e250eb15bd2753402d7822a3a30ff95",
+        "case_ordinal": 100
+      },
+      {
+        "result": "Pass",
+        "time": "0.076",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "SemanticIndexingSubscriptionEndpointShouldRetryUnknownEventTypesWithoutSideEffects",
+        "display_name_sha256": "fa559183f04452f404af99c20a0c5ec269572900bedd8e9bf58b8b3f0018fa00",
+        "case_ordinal": 101
+      },
+      {
+        "result": "Pass",
+        "time": "0.058",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "SemanticIndexingSubscriptionEndpointShouldNotReadContentWhenPolicyDenies",
+        "display_name_sha256": "82d54b58924517a39d4e6456c647ac2721d301b08d1ef39dc44878e23655971b",
+        "case_ordinal": 102
+      },
+      {
+        "result": "Pass",
+        "time": "0.05",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "SemanticIndexingSubscriptionEndpointShouldRetryInvalidPayloadWithoutEchoingContent",
+        "display_name_sha256": "4e548fa6b0f0eba6b16756410b9e8bb1d8869c670e89b7245d662db38d98c3b7",
+        "case_ordinal": 103
+      },
+      {
+        "result": "Pass",
+        "time": "0.583",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "TenantSubscriptionEndpointShouldAcknowledgeUnknownEventTypesWithoutMutatingProjection",
+        "display_name_sha256": "a8da423347bd37e00d1ecef8a730c988834ccbd7bd7df1744c7cabad1f91479b",
+        "case_ordinal": 104
+      },
+      {
+        "result": "Pass",
+        "time": "0.016",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "WorkerAndServerHandlersShouldProduceSameProjectionWhenEachOwnsWrites",
+        "display_name_sha256": "e459a064327291e37658fcac026422ef9660cbc3a4469fbf5f22b83b5d06bacb",
+        "case_ordinal": 105
+      },
+      {
+        "result": "Pass",
+        "time": "0.008",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "MapFoldersTenantEventWorkerEndpointsShouldRegisterOnlyTrustedSubscriptionRoute",
+        "display_name_sha256": "072eead661ee75b188ce95a84e420b9f3b89a479d103ff9b37df165db5e77031",
+        "case_ordinal": 106
+      },
+      {
+        "result": "Pass",
+        "time": "0.025",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "TenantSubscriptionEndpointShouldRejectInvalidPayloadWithoutMutatingProjectionOrEchoingPayload",
+        "display_name_sha256": "483cacbd82691a95cd1a708ce36007cab19499cc1e2c9f6c577f1a0c1dca7a10",
+        "case_ordinal": 107
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "InvalidProjectionWriterOptionsShouldFailValidation",
+        "display_name_sha256": "eab48f0f3a2a1b10526c39a46d0f13a1ddc541d4fb735c0b95b62a3e03752185",
+        "case_ordinal": 108
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "TenantEventProcessorShouldSkipUnsupportedEventTypeWithoutMutatingProjection",
+        "display_name_sha256": "9b5aa112528d58e130ccc8fdddb1d43f1d932b521dfe5a6f61891cad97697f8c",
+        "case_ordinal": 109
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "WorkersModuleShouldExposeStableTenantSubscriptionMetadata",
+        "display_name_sha256": "ce25b661ea35bbdbb75a3f34ecd0ec225022527c8d76fdaa35d94d7dcde81cca",
+        "case_ordinal": 110
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "AddFoldersTenantEventWorkersShouldRegisterSupportedTenantHandlersAndOptions",
+        "display_name_sha256": "9b5eb29a48dce8aac44d6a3ca4b3e90f8cfa9772bf1598e64f6da14369ed4ac6",
+        "case_ordinal": 111
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "WorkerHandlerShouldProjectLifecycleMembershipAndFoldersConfiguration",
+        "display_name_sha256": "597b66cc4044f522e58d5c6042a0b025716bbfab6d99eb2dfab64193a9b797af",
+        "case_ordinal": 112
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "DomainOwnerAuthorizationUsesTheTenantsOwnerRoleToken",
+        "display_name_sha256": "3e8eba8532887db20503cf2c2b74e06cf734cea9afeb77c4ea7d0818873f9db9",
+        "case_ordinal": 113
+      },
+      {
+        "result": "Pass",
+        "time": "0.032",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "TenantSubscriptionEndpointShouldProcessKnownEventsEndToEnd",
+        "display_name_sha256": "c0cc69a97ddb0e7039481b551f34cbcf42e7d8e59231fa2ec9697a504ac2bfe6",
+        "case_ordinal": 114
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "ProjectionWriterOptionShouldDisableTheNonOwningHostBeforeMutation",
+        "display_name_sha256": "8d531934ad2f56ea846a3e41ef7b5eca69eb4b482594dcbcae6a581dcc9b9484",
+        "case_ordinal": 115
+      },
+      {
+        "result": "Pass",
+        "time": "0.021",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "TenantCallbackRequiresConfiguredSidecarTokenBeforeProjectionWrites",
+        "display_name_sha256": "c9b0c3e44dc54ef3ac6a1287c546def3699ea5d67fc279ed61df6fe04a1edb92",
+        "case_ordinal": 116
+      },
+      {
+        "result": "Pass",
+        "time": "0.14",
+        "type": "Hexalith.Folders.Workers.Tests.PermissionProjectionDeliveryTests",
+        "method": "AlreadyCancelledCallerNeverEntersProjection",
+        "display_name_sha256": "75dc4e865b56c3d78fe7789be1c9a27eec888ff53ebcee0eb9736fcdba7ac77f",
+        "case_ordinal": 117
+      },
+      {
+        "result": "Pass",
+        "time": "0.009",
+        "type": "Hexalith.Folders.Workers.Tests.PermissionProjectionDeliveryTests",
+        "method": "CallerCancellationStopsInFlightDelivery",
+        "display_name_sha256": "09654fcb77e0f0e2e37b9eaf919ec52ece5dcee08873a20c87e4858ab4a8c3d4",
+        "case_ordinal": 118
+      },
+      {
+        "result": "Pass",
+        "time": "0.292",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortShouldPublishCuratedSearchIndexEntryChangedCloudEvent",
+        "display_name_sha256": "279acb875b9a14bfc55d0578ff9a2b5b65eea2947d86d5dacdcca4ee5e6ee689",
+        "case_ordinal": 119
+      },
+      {
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortShouldHonorCancelledTokenBeforePublishing",
+        "display_name_sha256": "78a4d1c54a5c728526171b41e29c029c5e190906d56a1739696669aaf86f7855",
+        "case_ordinal": 120
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "WorkerLocalMemoriesRoutingDefaultsShouldMatchAspireConstants",
+        "display_name_sha256": "5e35def984e6cb79358e328e5b27d8024101ccc082bca410dd56cd672dfd685b",
+        "case_ordinal": 121
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingRequestShouldRejectBlankPublicBoundaryIdentifiers",
+        "display_name_sha256": "2588d5691ddcc72366625bf49882bc10e37ef6ebfaa0685321080820b4bf3884",
+        "case_ordinal": 122
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortShouldPublishSearchIndexEntryRemovedForHardDelete",
+        "display_name_sha256": "4366a0ee6ebead5e1757278a5dbbf013c066d01cd7ddb34c275230f8fe9fd04c",
+        "case_ordinal": 123
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingRequestShouldRejectMissingNestedBoundaryRecords",
+        "display_name_sha256": "e993601a9b9f56fa76fd513e454bb2bae6feab4a4ab36e8024e9d43fea2fd453",
+        "case_ordinal": 124
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortRemovalShouldHonorCancelledTokenBeforePublishing",
+        "display_name_sha256": "ed1703f61dc07d05f73b34905727e7dde96ce747507824515c5541676a606378",
+        "case_ordinal": 125
+      },
+      {
+        "result": "Pass",
+        "time": "0.07",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "AddFoldersSemanticIndexingWorkersShouldRegisterEventStoreBackedBridge",
+        "display_name_sha256": "240457f6daec2bd643d6b2095da546f7e62f991b2e31952eedab6a240d5d0584",
+        "case_ordinal": 126
+      },
+      {
+        "result": "Pass",
+        "time": "0.014",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortShouldMapDaprPublishFailureToRetryableFailure",
+        "display_name_sha256": "af35536ee898d3e799f61ee96d974936d01197aead37e54debe5216df4d5c0ee",
+        "case_ordinal": 127
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "AddFoldersSemanticIndexingWorkersShouldRegisterMetadataDerivedMaterializerWithoutContentStoreDependency",
+        "display_name_sha256": "1fcfe04890ab88a1e82adaf0420aaac5bb40cea6705848ba02de139583fc1c15",
+        "case_ordinal": 128
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "AddFoldersSemanticIndexingWorkersShouldRegisterPortAndDaprClient",
+        "display_name_sha256": "a353f1ee699087fde28cebbbce3a5b5ac65ed9dca1ac4d4e5838322741f626a6",
+        "case_ordinal": 129
+      },
+      {
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPublicContractShouldNotExposeMemoriesDtoTypes",
+        "display_name_sha256": "c207910f003d844686d16ab59846584c9126b7a08fc20f9a86e729dc16e12585",
+        "case_ordinal": 130
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingSourceIdentityShouldCreateStableNonFileUri",
+        "display_name_sha256": "4f3377b6a3cc0a66da9ca024405398b2e116488f78535d72d687fc82d96e9078",
+        "case_ordinal": 131
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortRemovalShouldMapDaprPublishFailureToRetryableFailure",
+        "display_name_sha256": "6bc5db96c77ffe6455c07132819a616e7ac0c12792728e0c0dcb493dabcbe990",
+        "case_ordinal": 132
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingContentAndPolicyRecordsShouldRejectInvalidDescriptorData",
+        "display_name_sha256": "1d27024506eb7a7aac2f4fefc9dcf726c7aca486827fe5cf2156535385c1bfa7",
+        "case_ordinal": 133
+      },
+      {
+        "result": "Pass",
+        "time": "0.1",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "ActualWorkersHostUsesDurableTenantAndPermissionStores",
+        "display_name_sha256": "13cb3cd1ef8c3f608a4df3e6961a2bedd02185cb7c4a633df3eea011a67739b9",
+        "case_ordinal": 134
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortShouldReSendFullArchivedDocumentForSoftDelete",
+        "display_name_sha256": "a5ea89cb8e222a99e7b8f586461616ee8da39fafd03bc0f6ecb24dff278b0ad2",
+        "case_ordinal": 135
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "RegisteredContentMaterializerShouldStayMetadataDerivedAndRequestShouldOmitBodyByteMembers",
+        "display_name_sha256": "8bcd5aa455e0ce1868a372667be8b7eb8491b0aec6f4d20adf0f332f6f552479",
+        "case_ordinal": 136
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "RemoveAndUpsertShouldTargetByteIdenticalIdentityForTheSameFileVersion",
+        "display_name_sha256": "78a7a309a6b64244b8455aef724cd85d424b9c1c0bc99bebdd530c83d4509f5c",
+        "case_ordinal": 137
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortShouldFallBackToDescriptorTextWhenArchiveEvidenceIsAbsent",
+        "display_name_sha256": "9c6d934c7232440989edefc7edbf597d38204477b8ea012ec9fad1ac501dd05c",
+        "case_ordinal": 138
+      },
+      {
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "AddFoldersTenantEventWorkersShouldIncludeSemanticIndexingRegistration",
+        "display_name_sha256": "d746e3599ebba1c61426727e9e92a436adfb5a0113cadf50e80f900a7ed4f865",
+        "case_ordinal": 139
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingSourceIdentityShouldRejectRawFilesystemIdentity",
+        "display_name_sha256": "274680218257208cd268f41070fc3d3043298d663aecebc1bca22647815d0169",
+        "case_ordinal": 140
+      },
+      {
+        "result": "Pass",
+        "time": "0.352",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationGapLeavesAuthorityUnchangedAndOrderedReplayRemovesTheRevokedGrant",
+        "display_name_sha256": "d87f36241f643bc9871b45782b5d6b736fc779c69ec73a0aa6b226b741e26427",
+        "case_ordinal": 141
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority",
+        "display_name_sha256": "59dba2343ab6a35fad37bcb1673954a680d5584dfaa93db8868f53cc203336bc",
+        "case_ordinal": 142
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority",
+        "display_name_sha256": "c55ac153d1aa032a58071eef2aeedc6ffb155c61551789a161fb19389f2c9ba2",
+        "case_ordinal": 143
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority",
+        "display_name_sha256": "bcc05d14a1ae3f33ed8bdcde68c7c376ed5c95b1cc57cf21c6a3ccee997e0ee3",
+        "case_ordinal": 144
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority",
+        "display_name_sha256": "aa1afb37ad3336d4c42edd82bd3f711b503cf066bd5bc50f4de5c09ae4e76740",
+        "case_ordinal": 145
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority",
+        "display_name_sha256": "f7e775104e8ed7a3201e458c19ad95fe815b5bc3ab1a2446e6852d44edafd23b",
+        "case_ordinal": 146
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority",
+        "display_name_sha256": "e7320884d2ff39f8bf669ec693281f4c60a2181013583fceccebfb69a00a87c5",
+        "case_ordinal": 147
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority",
+        "display_name_sha256": "4dddb3a4627c1ec5a93acd75a24d77a67c0884825ccc2317aa6b8c87f5f49cf0",
+        "case_ordinal": 148
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority",
+        "display_name_sha256": "991090812a0cc4ea486d1c183bd33e2735e3284eb127e5f838ca502665c4e8a5",
+        "case_ordinal": 149
+      },
+      {
+        "result": "Pass",
+        "time": "0.038",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "RejectionInventoryAndOrganizationScopeEvidenceMatchPublishedCommandMapper",
+        "display_name_sha256": "7e92aebe1f001e43b2ae256d3d643b57e95a2ba87acd0ede33d8fa20284cf3f5",
+        "case_ordinal": 150
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationRejectionAdvancesWatermarkAndFolderRejectionFailsWithoutChangingIt",
+        "display_name_sha256": "b697b87596e6421d3830219640f51223dbd020bf9cd089c171b9eb3e0b0b6b6a",
+        "case_ordinal": 151
+      },
+      {
+        "result": "Pass",
+        "time": "0.095",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "FailClosedFallbackShouldRemainExplicitlyConstructible",
+        "display_name_sha256": "7bbc03173a9827e9a20df059c82c5538f98d8f0b130457c994e1687d14cb3985",
+        "case_ordinal": 152
+      },
+      {
+        "result": "Pass",
+        "time": "0.017",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldUseObservedLengthAndClassifyDeclaredMediaType",
+        "display_name_sha256": "3910c9a8b3e8b0e675a9a8e3b1005138868c6ecff2732e97deafb86c79082b3e",
+        "case_ordinal": 153
+      },
+      {
+        "result": "Pass",
+        "time": "0.151",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "RealMaterializerAndPortShouldPublishFacadeDiscoverableMetadataOnlyEntry",
+        "display_name_sha256": "a8f9ff03528081e1b845e5225c0c4a75398db59bbb95a4879310ff6d0b05a2a0",
+        "case_ordinal": 154
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldReturnAvailableWithFacadeSecurityTrimAttributes",
+        "display_name_sha256": "dd449f5914e10bcf334edfc82bb04ad56b333bfd14903d0b0230cf0997249ec3",
+        "case_ordinal": 155
+      },
+      {
+        "result": "Pass",
+        "time": "0.008",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldGuardRequestAndCancellation",
+        "display_name_sha256": "78d94a537c55d63c8b57fe334151027dbc39782f8ac9e89365607d75e3f557af",
+        "case_ordinal": 156
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldReportUnavailableWhenMediaTypeIsMissing",
+        "display_name_sha256": "7cc0fc7f6ff84f5646f12d7feef0972a69c0bd66a75ef5cd018376ded8871f67",
+        "case_ordinal": 157
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldUseInclusiveSmallContentBoundary",
+        "display_name_sha256": "10976184f95331d47a9c251951d10465fb31613bf5e8f3eda128c28c7721ef2b",
+        "case_ordinal": 158
+      },
+      {
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldIgnoreBodyShapedFixtureAndEmitMetadataTokensOnly",
+        "display_name_sha256": "ff8b4db4594a865189fb2e7bbaa6c581bb931a4be3155bf5883a8f200dcdd24b",
+        "case_ordinal": 159
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldClassifyEverySupportedApplicationMediaType",
+        "display_name_sha256": "a8832d00da78e5d0282a0fdccbe06fe48e00bb4cfcf32056827faa81ffb73712",
+        "case_ordinal": 160
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldReturnReplayStableOrdinalOutput",
+        "display_name_sha256": "b16df13c17a453d0385540e68cd08c745db5584212d9d4f4a0cda6d96f032e37",
+        "case_ordinal": 161
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldNotExposeSensitiveMutationContext",
+        "display_name_sha256": "b8d5b31db4e0cb39d61be591fec404631c63c470307136484e597c7ca8843c35",
+        "case_ordinal": 162
+      }
+    ]
+  },
+  "source_or_head_drift": [],
+  "working_tree_status_changes": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 0
+  },
+  "runtime_module_observations": 202,
+  "fixture_module_observations": 0,
+  "original_private_receipt_sha256": "8bd0f9cc1ad12481a446cb6cf8f7fc065317cf3e0112754f56179b7862c99185"
+}

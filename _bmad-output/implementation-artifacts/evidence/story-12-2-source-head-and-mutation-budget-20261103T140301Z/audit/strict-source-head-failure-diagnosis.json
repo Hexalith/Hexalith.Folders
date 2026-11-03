@@ -1,0 +1,172 @@
+{
+  "strict-source-head-1": {
+    "scope": "Final coherent runtime with independent source metadata composition, before outgoing dispatch diagnostics",
+    "bootstrap_verified": true,
+    "strict_body_entered": true,
+    "six_concerns_qualified": false,
+    "sm4_measured": false,
+    "failure": {
+      "operation": "Unknown provider profile safe denial",
+      "command": "ConfigureProviderBinding",
+      "expected_http": 403,
+      "observed_http": 503,
+      "safe_code": "provider_unavailable",
+      "test_location": "OperationalStatusDurabilityAcceptanceTests.RequireRealTaskClosureAsync"
+    },
+    "observed": {
+      "source_issuer_discovery_jwks_and_token_http": 200,
+      "metadata_client_send_begin_utc": "2026-11-03T09:45:16.974Z",
+      "domain_endpoint_execution_begin_utc": "2026-11-03T09:45:16.561Z",
+      "domain_endpoint_execution_end_utc": "2026-11-03T09:45:17.428Z",
+      "fenced_actor_rpc_end_canceled_utc": "2026-11-03T09:45:17.460Z",
+      "human_gateway_total_timeout_utc": "2026-11-03T09:45:33.745Z",
+      "raw_actor_refusal_observed": false,
+      "source_receiver_response_observed": false,
+      "ResponseEnded_recurred": false
+    },
+    "limits": "Existing source/domain/HTTP budgets retained; no source transport correction or ResponseEnded resolution established",
+    "receipt_path": "strict-source-head-1-receipt.json",
+    "result": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "09:40:55",
+        "errors": "0",
+        "failed": "1",
+        "passed": "0",
+        "skipped": "0",
+        "time": "286.598",
+        "total": "1"
+      }
+    ],
+    "source_or_head_drift": [],
+    "runtime_file_drift": [],
+    "cleanup": {
+      "remaining_observed_descendants": [],
+      "remaining_owned_containers": [],
+      "remaining_unattributed_containers": [],
+      "remaining_observed_directories": []
+    }
+  },
+  "strict-source-head-2": {
+    "scope": "Final coherent runtime with opt-in payload-free outgoing and receiver dispatch diagnostics",
+    "bootstrap_verified": true,
+    "strict_body_entered": false,
+    "six_concerns_qualified": false,
+    "sm4_measured": false,
+    "failure": {
+      "operation": "Authenticated CreateTenant",
+      "expected_http": 202,
+      "observed_http": 500,
+      "safe_code": "unavailable",
+      "test_location": "FolderDurabilityAcceptanceFixture.BootstrapAsync"
+    },
+    "observed": {
+      "folders_independent_source_reader_reached": false,
+      "native_transport_completed_ms": [
+        604,
+        2127,
+        1362
+      ],
+      "native_transport_fourth_canceled_ms": 590,
+      "native_outgoing_reused_lease_acquire_ms": [
+        12,
+        14,
+        16,
+        32
+      ],
+      "native_receiver_acquire_ms": [
+        168,
+        401,
+        691,
+        367
+      ],
+      "domain_outgoing_transport_canceled_ms": 4933,
+      "domain_outgoing_transport_canceled_utc": "2026-11-03T10:14:22.857Z",
+      "raw_actor_refusal_observed": false,
+      "ResponseEnded_recurred": false
+    },
+    "limits": "Existing five-second domain budget retained; receiver/actor acquisition cost measured, deterministic-validation cost remains a hypothesis until isolated benchmark",
+    "receipt_path": "strict-source-head-2-receipt.json",
+    "result": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "10:13:21",
+        "errors": "0",
+        "failed": "1",
+        "passed": "0",
+        "skipped": "0",
+        "time": "69.617",
+        "total": "1"
+      }
+    ],
+    "source_or_head_drift": [],
+    "runtime_file_drift": [],
+    "cleanup": {
+      "remaining_observed_descendants": [],
+      "remaining_owned_containers": [],
+      "remaining_unattributed_containers": [],
+      "remaining_observed_directories": []
+    }
+  },
+  "strict-source-head-3": {
+    "scope": "Current gateway frozen compiled inventory plus closed Catalog acquisition diagnostics",
+    "bootstrap_verified": true,
+    "strict_body_entered": true,
+    "six_concerns_qualified": false,
+    "sm4_measured": false,
+    "failure": {
+      "operation": "Unknown provider profile safe denial",
+      "command": "ConfigureProviderBinding",
+      "expected_http": 403,
+      "observed_http": 503,
+      "safe_code": "provider_unavailable",
+      "test_location": "OperationalStatusDurabilityAcceptanceTests.RequireRealTaskClosureAsync:182"
+    },
+    "observed": {
+      "endpoint_begin_utc": "2026-11-03T10:49:32.022Z",
+      "human_gateway_begin_utc": "2026-11-03T10:49:32.060Z",
+      "first_attempt_submit_acquire_ms": 680,
+      "first_attempt_admission_ms": 6125,
+      "first_attempt_execution_capability_ms": 582,
+      "first_attempt_execution_begin_canceled_ms": 1869,
+      "first_attempt_timeout_utc": "2026-11-03T10:49:42.137Z",
+      "second_attempt_submit_acquire_ms": 2250,
+      "second_attempt_admission_canceled_ms": 7158,
+      "second_attempt_timeout_utc": "2026-11-03T10:49:54.159Z",
+      "third_attempt_submit_acquire_ms": 1883,
+      "total_timeout_utc": "2026-11-03T10:50:02.162Z",
+      "endpoint_end_utc": "2026-11-03T10:50:02.182Z",
+      "domain_dispatch_observed": false,
+      "source_reader_outcome": "Unqualified; not reached by established pipeline flow before cancellation",
+      "ResponseEnded_recurred": false,
+      "raw_actor_refusal_observed": false
+    },
+    "partial_acquisition_distribution": {
+      "admission_wait_median_ms": 230,
+      "admission_wait_p90_ms": 518,
+      "fresh_capture_median_ms": 65,
+      "fresh_capture_p90_ms": 155,
+      "read_cas_digest_trust_snapshot_median_ms": "1-3",
+      "basis": "Partial complete-stage snapshot 10:43:45-10:46:25 UTC; not whole-run percentiles"
+    },
+    "result": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "10:43:07",
+        "errors": "0",
+        "failed": "1",
+        "passed": "0",
+        "skipped": "0",
+        "time": "423.991",
+        "total": "1"
+      }
+    ],
+    "source_or_head_drift": [],
+    "runtime_file_drift": [],
+    "owned_cleanup_audit": "strict-source-head-3-owned-cleanup-audit.json",
+    "limits": "Existing 10s attempt,30s gateway total,5s domain,source and40s outer limits unchanged. No new source-transport or domain-timeout conclusion follows."
+  }
+}

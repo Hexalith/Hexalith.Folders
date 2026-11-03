@@ -1,0 +1,46 @@
+[
+  {
+    "attempt": "strict-operational-1-private.log",
+    "runDirectory": {
+      "path": "/tmp/hexalith-dapr/e8317b9e529b4de495e0b155bcfc4c50",
+      "exists": false
+    },
+    "certificateDirectory": {
+      "path": "/tmp/hexalith-dapr/e8317b9e529b4de495e0b155bcfc4c50/dapr-credentials-70B6F469D19E8EFF93FA365B9D90E955",
+      "exists": false
+    }
+  },
+  {
+    "attempt": "strict-operational-2-private.log",
+    "runDirectory": {
+      "path": "/tmp/hexalith-dapr/81f034b4c58246c6bfd3cbc1338c0821",
+      "exists": false
+    },
+    "certificateDirectory": {
+      "path": "/tmp/hexalith-dapr/81f034b4c58246c6bfd3cbc1338c0821/dapr-credentials-A7456460018D1E0D197AB8B3F9325CCC",
+      "exists": false
+    }
+  },
+  {
+    "attempt": "strict-operational-3-private.log",
+    "runDirectory": {
+      "path": "/tmp/hexalith-dapr/9fb8293aa64247c5a41b186500c8b936",
+      "exists": false
+    },
+    "certificateDirectory": {
+      "path": "/tmp/hexalith-dapr/9fb8293aa64247c5a41b186500c8b936/dapr-credentials-9FC1DA2E59A9C4F180B3512F673A8DA7",
+      "exists": false
+    }
+  },
+  {
+    "attempt": "strict-operational-4-private.log",
+    "runDirectory": {
+      "path": "/tmp/hexalith-dapr/cea4acc353dc4df4a405558dd3766314",
+      "exists": false
+    },
+    "certificateDirectory": {
+      "path": "/tmp/hexalith-dapr/cea4acc353dc4df4a405558dd3766314/dapr-credentials-20446D47068A94DE78855A72FC158915",
+      "exists": false
+    }
+  }
+]

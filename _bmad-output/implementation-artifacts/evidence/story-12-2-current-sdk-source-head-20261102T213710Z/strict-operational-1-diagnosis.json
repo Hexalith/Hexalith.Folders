@@ -1,0 +1,22 @@
+{
+  "attempt": "strict-operational-1",
+  "disposition": "terminated by SIGKILL during startup; no xUnit result or acceptance assertion; cause not established",
+  "kernel_oom_records": [],
+  "init_scope_memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "exact_cleanup": [
+    {
+      "path": "/tmp/folders-durability-4tkp0t5s.oyw",
+      "existed": true,
+      "remains": false
+    },
+    {
+      "path": "/tmp/hexalith-dapr/e8317b9e529b4de495e0b155bcfc4c50",
+      "existed": true,
+      "remains": false
+    }
+  ],
+  "removed_container_ids": [
+    "6693573256db7547be21b23398b2eb2afd54bd8e97211049b7ab9068d343ef51",
+    "1cff76348c0406fb8145df68b137fe65a560d06beee3eb611b269fd41b2adb07"
+  ]
+}

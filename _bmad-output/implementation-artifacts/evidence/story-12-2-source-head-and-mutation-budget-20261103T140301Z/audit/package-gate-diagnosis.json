@@ -1,0 +1,22 @@
+{
+  "command": "pwsh -NoLogo -NoProfile -File tests/tools/run-contract-spine-gates.ps1",
+  "exit_code": 1,
+  "classification": "NU1109 package dependency downgrade at unchanged centrally pinned versions",
+  "downgrades": [
+    {
+      "package": "Hexalith.EventStore.Client",
+      "required_minimum": "4.0.4",
+      "centrally_pinned": "4.0.0"
+    },
+    {
+      "package": "Hexalith.EventStore.Contracts",
+      "required_minimum": "4.0.4",
+      "centrally_pinned": "4.0.0"
+    }
+  ],
+  "dependency_origin": "Hexalith.Tenants.Client/7.0.0",
+  "private_log_sha256": "9a93bf0fbaf334e6508f7c76bc7c6b298e21c19c38280c5ab61c385e8a26d089",
+  "no_pin_or_gitlink_change": true,
+  "later_debug_source_graph_restore_exit_code": 0,
+  "supersedes_previous_gate_failure": "Prior Nov2 NU1102 package-unavailable result remains historical; current gate reaches NU1109."
+}

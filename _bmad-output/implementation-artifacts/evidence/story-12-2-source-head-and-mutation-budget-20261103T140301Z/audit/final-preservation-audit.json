@@ -1,0 +1,7 @@
+{
+  "historical_pd10_sha256": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+  "root_diff_check_exit_code": 0,
+  "sdk_diff_check_exit_code": 0,
+  "pending_grant_applied": false,
+  "no_owned_topology_remaining": true
+}

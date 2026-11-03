@@ -1,0 +1,73 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "21:18:54",
+      "errors": "0",
+      "failed": "0",
+      "passed": "7",
+      "skipped": "0",
+      "time": "0.184",
+      "total": "7"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.056",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "SdkRawMetadataAdapterAlsoFailsClosedWithoutSendingAnActorRequest",
+      "display_name_sha256": "89c457c653809b8633d0d39185fe3cf5f5f1ddc46a41a8dfdcf0991fc77f16d0",
+      "case_ordinal": 1
+    },
+    {
+      "result": "Pass",
+      "time": "0.016",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "LegacySourceHeadIsRefusedBeforeAuthorityAcquisitionOrTransport",
+      "display_name_sha256": "12f06b984c770863cda9314f92514cef728df198123153c490a909368e882994",
+      "case_ordinal": 2
+    },
+    {
+      "result": "Pass",
+      "time": "0.006",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "ProvenZeroSourceHeadRetainsItsExistingSafeNotFoundOutcome",
+      "display_name_sha256": "7bc265120609b4df255e64c1c6b6fb73aec1866830e41f5390c4f257c0d5fe65",
+      "case_ordinal": 3
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "RefusedIndependentReadDoesNotTurnMissingProjectionIntoAProvenZeroHead",
+      "display_name_sha256": "b7009052884213d5aa24dc4305e9362d60eba6b8f8c8e6669897aaf9391ad97b",
+      "case_ordinal": 4
+    },
+    {
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "NativeGatewayMissingUnsupportedAndUnavailableEvidenceDoesNotInventAZeroObservation",
+      "display_name_sha256": "19f57c504124a96d70cef2ab04c231b76bbcc806cc284103c412c0bcdf0de624",
+      "case_ordinal": 5
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "NativeGatewayMissingUnsupportedAndUnavailableEvidenceDoesNotInventAZeroObservation",
+      "display_name_sha256": "9c42a48273a3d1aadd4489409176a141904bbac90853def40400db9e71d6073d",
+      "case_ordinal": 6
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "NativeGatewayMissingUnsupportedAndUnavailableEvidenceDoesNotInventAZeroObservation",
+      "display_name_sha256": "12d3fe0fb01f7197e9aa7e4d002caa718f6376a6349919a896cd7193a3d6d7bc",
+      "case_ordinal": 7
+    }
+  ]
+}

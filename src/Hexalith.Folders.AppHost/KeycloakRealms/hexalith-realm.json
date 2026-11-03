@@ -249,6 +249,55 @@
           }
         }
       ]
+    },
+    {
+      "name": "eventstore-audience.eventstore",
+      "description": "Audience for independently enrolled source readers.",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "workload-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "eventstore",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "eventstore-operation.eventstore.stream-read",
+      "description": "Read-only source metadata enrollment; the receiver restricts these callers to the exact native metadata shape.",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "workload-operation",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-claim-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "eventstore:operation",
+            "claim.value": "eventstore:stream-read",
+            "jsonType.label": "String",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "false",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
     }
   ],
   "clients": [
@@ -459,6 +508,82 @@
         "eventstore-operation.domain-service.query",
         "eventstore-operation.domain-service.project",
         "eventstore-operation.domain-service.metadata"
+      ]
+    },
+    {
+      "clientId": "folders",
+      "name": "folders source metadata workload",
+      "description": "Own read-only source identity; no command, human or administrative permission.",
+      "enabled": true,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${HEXALITH_FOLDERS_SOURCE_CLIENT_SECRET}",
+      "directAccessGrantsEnabled": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": true,
+      "fullScopeAllowed": false,
+      "attributes": {
+        "access.token.lifespan": "300"
+      },
+      "defaultClientScopes": [],
+      "optionalClientScopes": [
+        "eventstore-audience.eventstore",
+        "eventstore-operation.eventstore.stream-read"
+      ],
+      "protocolMappers": [
+        {
+          "name": "authenticated-surface",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-claim-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "eventstore:surface",
+            "claim.value": "service",
+            "jsonType.label": "String",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "userinfo.token.claim": "false"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "folders-workers",
+      "name": "folders-workers source metadata workload",
+      "description": "Own read-only source identity; no command, human or administrative permission.",
+      "enabled": true,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${HEXALITH_FOLDERS_WORKERS_SOURCE_CLIENT_SECRET}",
+      "directAccessGrantsEnabled": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": true,
+      "fullScopeAllowed": false,
+      "attributes": {
+        "access.token.lifespan": "300"
+      },
+      "defaultClientScopes": [],
+      "optionalClientScopes": [
+        "eventstore-audience.eventstore",
+        "eventstore-operation.eventstore.stream-read"
+      ],
+      "protocolMappers": [
+        {
+          "name": "authenticated-surface",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-claim-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "eventstore:surface",
+            "claim.value": "service",
+            "jsonType.label": "String",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "userinfo.token.claim": "false"
+          }
+        }
       ]
     }
   ],

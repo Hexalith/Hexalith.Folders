@@ -935,6 +935,7 @@ src/Hexalith.Folders/Queries/Folders/InMemoryWorkspaceLockStatusReadModel.cs
 src/Hexalith.Folders/Queries/Folders/InMemoryWorkspaceStatusReadModel.cs
 src/Hexalith.Folders/Queries/Folders/InMemoryWorkspaceTransitionEvidenceReadModel.cs
 src/Hexalith.Folders/Queries/Folders/TaskStatusQuery.cs
+src/Hexalith.Folders/Queries/Folders/TaskStatusQueryDiagnostics.cs
 src/Hexalith.Folders/Queries/Folders/TaskStatusQueryHandler.cs
 src/Hexalith.Folders/Queries/Folders/TaskStatusQueryResult.cs
 src/Hexalith.Folders/Queries/Folders/TaskStatusQueryResultCode.cs
@@ -1047,6 +1048,8 @@ src/shared/AdapterCore/QuerySourcing.cs
 src/shared/AdapterCore/RequestBodyParser.cs
 src/shared/AdapterCore/SafeBearerTokenHandler.cs
 src/shared/AdapterCore/UnsafeBearerTransportException.cs
+tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfiguration.cs
+tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfigurationTests.cs
 tests/Hexalith.Folders.Cli.Tests/CommandOptionsFreshnessTests.cs
 tests/Hexalith.Folders.Cli.Tests/CommandSurfaceE2ETests.cs
 tests/Hexalith.Folders.Cli.Tests/ErrorProjectionTests.cs
@@ -1151,6 +1154,7 @@ tests/Hexalith.Folders.Server.Tests/ChangingTenantAccessProjectionStore.cs
 tests/Hexalith.Folders.Server.Tests/CommitWorkspaceProcessEndpointTests.cs
 tests/Hexalith.Folders.Server.Tests/ConfigureProviderBindingEndpointTests.cs
 tests/Hexalith.Folders.Server.Tests/CreateFolderEndpointTests.cs
+tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs
 tests/Hexalith.Folders.Server.Tests/DeniedTenantAccessProjectionStore.cs
 tests/Hexalith.Folders.Server.Tests/EffectivePermissionsEndpointTests.cs
 tests/Hexalith.Folders.Server.Tests/EventStoreFolderTenantAccessProjectionStoreTests.cs
@@ -1209,10 +1213,15 @@ tests/Hexalith.Folders.Server.Tests/HttpContextEventStoreClaimTransformEvidenceA
 tests/Hexalith.Folders.Server.Tests/HttpContextTenantContextAccessorTests.cs
 tests/Hexalith.Folders.Server.Tests/HumanAuthorityReceiptVerifierTests.cs
 tests/Hexalith.Folders.Server.Tests/LayeredAuthBackedFolderArchiveAclEvidenceProviderTests.cs
+tests/Hexalith.Folders.Server.Tests/LifecycleDiagnosticBackgroundService.cs
+tests/Hexalith.Folders.Server.Tests/LifecycleDiagnosticTestService.cs
+tests/Hexalith.Folders.Server.Tests/LifecycleUnsupportedProvider.cs
 tests/Hexalith.Folders.Server.Tests/LockedActorSequenceHandler.cs
 tests/Hexalith.Folders.Server.Tests/MemoriesFolderSearchSourceTests.cs
 tests/Hexalith.Folders.Server.Tests/MutationEnvelopeEndpointMatrixTests.cs
 tests/Hexalith.Folders.Server.Tests/MutationSubmitEnvelopeAssertions.cs
+tests/Hexalith.Folders.Server.Tests/NativeSequenceReaderTestTransport.cs
+tests/Hexalith.Folders.Server.Tests/NativeSourceHeadReaderTests.cs
 tests/Hexalith.Folders.Server.Tests/OperationalStatusDeniedValidator.cs
 tests/Hexalith.Folders.Server.Tests/OperationalStatusPartitionCursor.cs
 tests/Hexalith.Folders.Server.Tests/OperationalStatusPermissionEvidence.cs
@@ -1239,8 +1248,12 @@ tests/Hexalith.Folders.Server.Tests/ScopeCheckingFolderPermissionEvidenceProvide
 tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs
 tests/Hexalith.Folders.Server.Tests/ServerSmokeTests.cs
 tests/Hexalith.Folders.Server.Tests/ServiceDefaultsHealthEndpointTests.cs
+tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryCollection.cs
+tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryProxy.cs
+tests/Hexalith.Folders.Server.Tests/Task36ExistingHostedServiceObservationTests.cs
 tests/Hexalith.Folders.Server.Tests/Task36FoldDiagnosticObserverTests.cs
 tests/Hexalith.Folders.Server.Tests/Task36FoldObservationCollection.cs
+tests/Hexalith.Folders.Server.Tests/Task36LifecycleDiagnosticObserverTests.cs
 tests/Hexalith.Folders.Server.Tests/TransportParityConformanceTests.cs
 tests/Hexalith.Folders.Server.Tests/VerifiedReceiptEventStoreAuthorizationValidatorTests.cs
 tests/Hexalith.Folders.Server.Tests/WorkspaceCleanupStatusEndpointTests.cs
@@ -1430,6 +1443,7 @@ tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusMetadataLeakag
 tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusNoFallbackTests.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusTestSupport.cs
+tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusDiagnosticLogger.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusQueryHandlerTests.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/ThrowingLifecycleStatusReadModel.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/WorkspaceCleanupStatusQueryHandlerTests.cs
@@ -1449,6 +1463,7 @@ tests/Hexalith.Folders.UI.Tests/ProviderPageTests.cs
 tests/Hexalith.Folders.UI.Tests/ProviderSupportPageTests.cs
 tests/Hexalith.Folders.UI.Tests/UiOperationFreshnessConformanceTests.cs
 tests/Hexalith.Folders.UI.Tests/WorkspacePageTests.cs
+tests/Hexalith.Folders.Workers.Tests/SemanticIndexingWorkerRegistrationTests.cs
 tests/fixtures/parity-contract.schema.json
 tests/fixtures/parity-contract.yaml
 tests/fixtures/previous-spine.yaml
@@ -1471,9 +1486,11 @@ tests/shared/Parity/MixedSurfaceScenario.cs
 tests/shared/Parity/ParityOracle.cs
 tests/shared/Parity/ParityScenarios.cs
 tests/tools/Task36FoldObserver/ContentQualificationClock.cs
+tests/tools/Task36FoldObserver/ExistingHostedServiceObservation.cs
 tests/tools/Task36FoldObserver/FoldDiagnosticEventObserver.cs
 tests/tools/Task36FoldObserver/FoldDiagnosticObserver.cs
 tests/tools/Task36FoldObserver/FoldObservationSink.cs
+tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs
 tests/tools/Task36FoldObserver/StartupHook.cs
 tests/tools/Task36FoldObserver/Task36FoldObserver.csproj
 tests/tools/Task36FoldObserver/Task36HostingStartup.cs

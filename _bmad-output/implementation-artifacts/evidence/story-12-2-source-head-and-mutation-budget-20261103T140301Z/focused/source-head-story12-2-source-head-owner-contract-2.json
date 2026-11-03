@@ -1,0 +1,97 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "09:05:15",
+      "errors": "0",
+      "failed": "0",
+      "passed": "10",
+      "skipped": "0",
+      "time": "1.193",
+      "total": "10"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.51",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "b61e26244e4fc4bd0fbfa4cdd43588e5d90dd84005731e1b9ec3f366f56ff5b2",
+      "case_ordinal": 1
+    },
+    {
+      "result": "Pass",
+      "time": "0.07",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "84a19851b2f65187dc2b16cf22ef7ecf40b6b7c9f6c691c4afc528eacf779bd7",
+      "case_ordinal": 2
+    },
+    {
+      "result": "Pass",
+      "time": "0.069",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "d99d8f64c632fe6f5d954a385b6e175cc8d79db23342a1f934883158a4cadd4a",
+      "case_ordinal": 3
+    },
+    {
+      "result": "Pass",
+      "time": "0.053",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "a654f31ec40d9cce177722fb99dbd533daf47578ac67db7177206c767930d9db",
+      "case_ordinal": 4
+    },
+    {
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "d85cf4d271ecebcb909f5f05a1e77febdf24407ca32f16b767726992465718e1",
+      "case_ordinal": 5
+    },
+    {
+      "result": "Pass",
+      "time": "0.084",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "0133b1c25d454f2b333177b6020c694c03cca3acf470ad63f2905264bc526fa9",
+      "case_ordinal": 6
+    },
+    {
+      "result": "Pass",
+      "time": "0.073",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "041fc644d0cb1ce75529b54ff83e2cfee0b665cd53e1809e8b99d888d56eadc5",
+      "case_ordinal": 7
+    },
+    {
+      "result": "Pass",
+      "time": "0.063",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "00eee45aa1890ba2a67f9116072d1223ddbe9314a1d1ab25e5ddbd9aedac1cda",
+      "case_ordinal": 8
+    },
+    {
+      "result": "Pass",
+      "time": "0.072",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingStreamReadGrantDoesNotEnforceMetadataOnlyAuthority",
+      "display_name_sha256": "61738977351cd7777f6628398efc372efd80bff460de66f6e9f81f9d3a3b4546",
+      "case_ordinal": 9
+    },
+    {
+      "result": "Pass",
+      "time": "0.054",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingStreamReadGrantDoesNotEnforceMetadataOnlyAuthority",
+      "display_name_sha256": "50f53f58d14ca447bbab6ae45f8cf21518b4b3fb7ba0c1b1e999743e92e79e9e",
+      "case_ordinal": 10
+    }
+  ]
+}

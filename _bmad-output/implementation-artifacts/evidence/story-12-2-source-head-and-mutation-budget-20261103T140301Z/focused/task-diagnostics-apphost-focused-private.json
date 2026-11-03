@@ -1,0 +1,33 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "12:34:14",
+      "errors": "0",
+      "failed": "0",
+      "passed": "2",
+      "skipped": "0",
+      "time": "0.308",
+      "total": "2"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.205",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests",
+      "method": "ActualAppHostUsesOwnSecretParametersAndPreservesExistingCallerEnrollment",
+      "display_name_sha256": "7535f2d75909f63ae479502f5083454cb605bfa46cbd1e351611c7cca4c28c98",
+      "case_ordinal": 1
+    },
+    {
+      "result": "Pass",
+      "time": "0.018",
+      "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests",
+      "method": "ActualSourceRealmHasOnlyIndependentServiceCredentialsAndMetadataScopes",
+      "display_name_sha256": "8e593c13adb735a3f88485b2861ea9808e742c51fbee5059b5d9fef3cc104465",
+      "case_ordinal": 2
+    }
+  ]
+}

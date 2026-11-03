@@ -1,0 +1,39 @@
+{
+  "classification": "Both CLI fixture failures are exact same retained/current-owner pair as SDKServer; not an executed pristine-baseline claim.",
+  "failures": [
+    {
+      "name": "Hexalith.EventStore.Client.Tests.Routing.DevelopmentRouteCatalogBuilderTests.FileToolGeneratesAndValidatesFixturesAndRefusesIncompleteInputs",
+      "message_sha256": "4f2076ce319ec15256d3e2b182115701d5266047180b064e1a3ceec474a4bf80",
+      "byte_arrays": [],
+      "root_literals": [
+        "c156ce0b68bab43f561805db9cd02714d123026d388f65c764d7b6fa4e3b7308",
+        "2579a2d99016508de5ee3102233a4ccf4cad3d951fa84b26c6766fcbf76cc43a"
+      ]
+    },
+    {
+      "name": "Hexalith.EventStore.Client.Tests.Routing.DevelopmentRouteCatalogBuilderTests.FileToolResolvesParentAliasesBeforeCheckingDevelopmentInputOverlap",
+      "message_sha256": "b814a69bcde9b696b051a77209926a8a4907be4176607c846fa2ae60c3eed598",
+      "byte_arrays": [
+        {
+          "length": 44075,
+          "sha256": "c156ce0b68bab43f561805db9cd02714d123026d388f65c764d7b6fa4e3b7308"
+        },
+        {
+          "length": 45317,
+          "sha256": "2579a2d99016508de5ee3102233a4ccf4cad3d951fa84b26c6766fcbf76cc43a"
+        }
+      ],
+      "root_literals": []
+    }
+  ],
+  "skips": {
+    "count": 2,
+    "class": "Projections.PendingBatchRecoveryLiveTests",
+    "variants": [
+      "committed:false",
+      "committed:true"
+    ],
+    "reason": "Requires isolated STORY61_DAPR_HTTP_ENDPOINT and STORY61_DAPR_GRPC_ENDPOINT; opt-in live-environment controls, not static red-phase specs."
+  },
+  "xml_sha256": "1b7995d1ee43511ac75e7609767f7676f7bbf97aeaa287732e5760c3c7550396"
+}

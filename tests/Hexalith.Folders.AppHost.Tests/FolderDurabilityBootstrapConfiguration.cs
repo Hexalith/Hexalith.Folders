@@ -20,21 +20,35 @@ internal static class FolderDurabilityBootstrapConfiguration
         security.WithRealmImport(directory);
     }
 
-    /// <summary>Extends the imported realm with the exact owner workload scopes, without a human grant.</summary>
+    /// <summary>Aligns the disposable designated administrator and owner workload with their existing operations.</summary>
     internal static JsonObject Realm(JsonObject original, string eventStoreAppId = "eventstore", string tenantsAppId = "tenants", string foldersAppId = "folders")
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(eventStoreAppId);
         ArgumentException.ThrowIfNullOrWhiteSpace(tenantsAppId);
         ArgumentException.ThrowIfNullOrWhiteSpace(foldersAppId);
         JsonObject realm = original.DeepClone().AsObject();
+        JsonObject administrator = realm["users"]!.AsArray().Single(user => user!["id"]!.GetValue<string>() == "admin-user"
+            && user["username"]!.GetValue<string>() == "admin-user")!.AsObject();
+        if (!administrator["attributes"]!["global_admin"]!.AsArray().Any(value => value!.GetValue<string>() == "true"))
+            throw new InvalidOperationException("The disposable bootstrap principal is not the designated administrator.");
+        JsonArray permissions = administrator["attributes"]!["permissions"]!.AsArray();
+        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" })
+            if (!permissions.Any(value => value!.GetValue<string>() == permission)) permissions.Add(permission);
+        JsonArray tenantGrants = administrator["attributes"]!["tenants"]!.AsArray();
+        for (int index = tenantGrants.Count - 1; index >= 0; index--)
+            if (tenantGrants[index]!.GetValue<string>() == "system") tenantGrants.RemoveAt(index);
         JsonArray clients = realm["clients"]!.AsArray();
         JsonArray scopes = realm["clientScopes"]!.AsArray();
-        JsonObject audience = scopes.Single(node => node!["name"]!.GetValue<string>() == "eventstore-audience.tenants")!.DeepClone().AsObject();
-        audience["name"] = "eventstore-audience.eventstore";
-        audience["protocolMappers"]!.AsArray().Single()!["config"]!["included.custom.audience"] = "eventstore";
-        scopes.Add(audience);
+        if (!scopes.Any(node => node!["name"]!.GetValue<string>() == "eventstore-audience.eventstore"))
+        {
+            JsonObject audience = scopes.Single(node => node!["name"]!.GetValue<string>() == "eventstore-audience.tenants")!.DeepClone().AsObject();
+            audience["name"] = "eventstore-audience.eventstore";
+            audience["protocolMappers"]!.AsArray().Single()!["config"]!["included.custom.audience"] = "eventstore";
+            scopes.Add(audience);
+        }
         foreach (string operation in new[] { "eventstore:command-submit", "eventstore:stream-read" })
         {
+            if (scopes.Any(node => node!["name"]!.GetValue<string>() == "eventstore-operation." + operation.Replace(':', '.'))) continue;
             JsonObject scope = scopes.Single(node => node!["name"]!.GetValue<string>() == "eventstore-operation.domain-service.process")!.DeepClone().AsObject();
             scope["name"] = "eventstore-operation." + operation.Replace(':', '.');
             scope["protocolMappers"]!.AsArray().Single()!["config"]!["claim.value"] = operation;

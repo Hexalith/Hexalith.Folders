@@ -17,6 +17,7 @@ public sealed class AspireTopologyTests
 {
     private const string DaprConfigPath = "DaprComponents/accesscontrol.yaml";
 
+    /// <summary>Retains domain-service and human scopes while admitting only the two enrolled source readers' exact grant.</summary>
     [Fact]
     public void LocalRealmShouldGrantEventStoreOnlyScopedDomainServiceAssertions()
     {
@@ -61,8 +62,35 @@ public sealed class AspireTopologyTests
             {
                 mapper.GetProperty("protocolMapper").GetString().ShouldBe("oidc-hardcoded-claim-mapper");
                 config.GetProperty("claim.name").GetString().ShouldBe("eventstore:operation");
-                config.GetProperty("claim.value").GetString().ShouldBe("domain-service:" + name["eventstore-operation.domain-service.".Length..]);
+                if (name == "eventstore-operation.eventstore.stream-read")
+                    config.GetProperty("claim.value").GetString().ShouldBe("eventstore:stream-read");
+                else
+                {
+                    name.StartsWith("eventstore-operation.domain-service.", StringComparison.Ordinal).ShouldBeTrue();
+                    config.GetProperty("claim.value").GetString().ShouldBe("domain-service:" + name["eventstore-operation.domain-service.".Length..]);
+                }
             }
+        }
+        optional.ShouldNotContain("eventstore-operation.eventstore.stream-read");
+        foreach (string sourceClientId in new[] { "folders", "folders-workers" })
+        {
+            JsonElement sourceClient = root.GetProperty("clients").EnumerateArray().Single(item =>
+                item.GetProperty("clientId").GetString() == sourceClientId);
+            sourceClient.GetProperty("publicClient").GetBoolean().ShouldBeFalse();
+            sourceClient.GetProperty("serviceAccountsEnabled").GetBoolean().ShouldBeTrue();
+            sourceClient.GetProperty("fullScopeAllowed").GetBoolean().ShouldBeFalse();
+            sourceClient.GetProperty("directAccessGrantsEnabled").GetBoolean().ShouldBeFalse();
+            sourceClient.GetProperty("standardFlowEnabled").GetBoolean().ShouldBeFalse();
+            sourceClient.GetProperty("implicitFlowEnabled").GetBoolean().ShouldBeFalse();
+            sourceClient.GetProperty("secret").GetString().ShouldBe(sourceClientId == "folders"
+                ? "${HEXALITH_FOLDERS_SOURCE_CLIENT_SECRET}" : "${HEXALITH_FOLDERS_WORKERS_SOURCE_CLIENT_SECRET}");
+            sourceClient.GetProperty("defaultClientScopes").GetArrayLength().ShouldBe(0);
+            sourceClient.GetProperty("optionalClientScopes").EnumerateArray().Select(item => item.GetString()!)
+                .Order(StringComparer.Ordinal).ShouldBe(new[] { "eventstore-audience.eventstore", "eventstore-operation.eventstore.stream-read" });
+            JsonElement surface = sourceClient.GetProperty("protocolMappers").EnumerateArray().ShouldHaveSingleItem();
+            surface.GetProperty("protocolMapper").GetString().ShouldBe("oidc-hardcoded-claim-mapper");
+            surface.GetProperty("config").GetProperty("claim.name").GetString().ShouldBe("eventstore:surface");
+            surface.GetProperty("config").GetProperty("claim.value").GetString().ShouldBe("service");
         }
         JsonElement profile = root.GetProperty("clientScopes").EnumerateArray()
             .Single(item => item.GetProperty("name").GetString() == "profile");

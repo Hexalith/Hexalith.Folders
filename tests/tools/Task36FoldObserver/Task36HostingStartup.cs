@@ -18,13 +18,18 @@ public sealed class Task36HostingStartup : IHostingStartup
         ArgumentNullException.ThrowIfNull(builder);
         builder.ConfigureServices(services =>
         {
+            string? shutdownPath = Environment.GetEnvironmentVariable("FOLDERS_TASK36_SHUTDOWN_LOG");
+            if (!string.IsNullOrWhiteSpace(shutdownPath))
+                services.AddHostedService(provider => LifecycleDiagnosticObserver.Create(provider, services, shutdownPath));
             if (Environment.GetEnvironmentVariable("FOLDERS_CONTENT_QUALIFICATION_CLOCK") is { Length: > 0 } clockPath)
                 services.AddScoped<IAuthoritativeContentStore>(provider => new DaprAuthoritativeContentStore(
                     provider.GetRequiredService<DaprClient>(), provider.GetRequiredService<IContentAuthority>(),
                     provider.GetRequiredService<IOptions<AuthoritativeContentOptions>>(), new ContentQualificationClock(clockPath)));
-            services.AddHostedService(_ => new FoldDiagnosticObserver(
-                Environment.GetEnvironmentVariable("FOLDERS_TASK36_FOLD_LOG")
-                    ?? throw new InvalidOperationException("Qualification fold sink is required.")));
+            if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FOLDERS_TASK36_FOLD_LOG"))
+                || string.IsNullOrWhiteSpace(shutdownPath))
+                services.AddHostedService(_ => new FoldDiagnosticObserver(
+                    Environment.GetEnvironmentVariable("FOLDERS_TASK36_FOLD_LOG")
+                        ?? throw new InvalidOperationException("Qualification fold sink is required.")));
         });
     }
 }

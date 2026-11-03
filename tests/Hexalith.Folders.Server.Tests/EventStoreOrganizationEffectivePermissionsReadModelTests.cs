@@ -1,7 +1,11 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Net;
+using System.Net.Http.Json;
 
+using Hexalith.EventStore.Client.Streams;
+using Hexalith.EventStore.Contracts.Identity;
+using Hexalith.EventStore.Contracts.Streams;
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Aggregates.Folder;
@@ -17,10 +21,14 @@ namespace Hexalith.Folders.Server.Tests;
 
 public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
 {
+    /// <summary>Both mutation scopes require fresh authority, including a valid observation delayed beyond the former budget.</summary>
     [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task MutationEvidenceProviderWaitsForDurableAuthorityAndReturnsCaughtUpWatermark(bool organizationScope)
+    [InlineData(false, 0)]
+    [InlineData(true, 0)]
+    [InlineData(false, 750)]
+    [InlineData(true, 750)]
+    public async Task MutationEvidenceProviderWaitsForDurableAuthorityAndReturnsCaughtUpWatermark(bool organizationScope,
+        int authoritativeReadDelayMilliseconds)
     {
         MemoryReadModels store = new();
         TestClock clock = new();
@@ -44,6 +52,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
         {
             if (projected || actor != (organizationScope ? "tenant-a" : "folder-a")) return;
             projected = true;
+            await Task.Delay(authoritativeReadDelayMilliseconds, ct).ConfigureAwait(false);
             if (organizationScope)
             {
                 await organization.ApplyAsync("tenant-a", "tenant-a", "granted", 2,
@@ -60,6 +69,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
         };
         // Exercise policy propagation through the actual evidence provider: no model wait flag is supplied here.
         IEffectivePermissionsReadModel model = organizationScope ? organization : folder;
+        var elapsed = System.Diagnostics.Stopwatch.StartNew();
         FolderPermissionEvidenceResult result = await new EffectivePermissionsFolderPermissionEvidenceProvider(model, clock)
             .GetEvidenceAsync(new("tenant-a", "user-a", "user-a", organizationScope ? "create_folder" : "read_metadata",
                 organizationScope ? "organization_baseline" : "folder-a", "corr", null,
@@ -67,35 +77,50 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
         result.Status.ShouldBe(FolderPermissionEvidenceStatus.Allowed);
         result.FreshnessWatermark.ShouldBe("2");
         result.FreshnessClass.ShouldBe("fresh");
+        if (authoritativeReadDelayMilliseconds > 0)
+            elapsed.Elapsed.ShouldBeGreaterThan(TimeSpan.FromMilliseconds(500));
     }
 
-    [Fact]
-    public async Task SlowReadCannotOutliveEnabledCatchUpBudgetAndImmediateReadRetainsItsBehavior()
+    /// <summary>Neither scope admits noncooperative late authority; immediate reads retain their independent lifetime.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SlowReadCannotOutliveEnabledCatchUpBudgetAndImmediateReadRetainsItsBehavior(bool organizationScope)
     {
         MemoryReadModels store = new();
         TestClock clock = new();
         TestSequenceReader heads = new() { CurrentSequence = 1 };
-        EventStoreOrganizationEffectivePermissionsReadModel model = new(store, clock, heads);
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
+        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization);
         CancellationToken ct = TestContext.Current.CancellationToken;
-        await model.ApplyAsync("tenant-a", "tenant-a", "baseline", 1,
+        await organization.ApplyAsync("tenant-a", "tenant-a", "baseline", 1,
             new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint"), ct);
-        EffectivePermissionsReadModelRequest request = new("tenant-a", "organization_baseline", [], null, null,
+        if (!organizationScope)
+            await folder.ApplyAsync("tenant-a", "folder-a", "created", 1, "created-digest",
+                new FolderCreated("tenant-a", "tenant-a", "folder-a", "Folder", null, null, [],
+                    FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound,
+                    "user-a", "corr", "task", "key", "fingerprint", clock.UtcNow), ct);
+        IEffectivePermissionsReadModel model = organizationScope ? organization : folder;
+        EffectivePermissionsReadModelRequest request = new("tenant-a", organizationScope ? "organization_baseline" : "folder-a", [], null, null,
             "read_your_writes", WaitForCatchUp: true);
         TaskCompletionSource release = new(TaskCreationOptions.RunContinuationsAsynchronously);
         heads.OnReadAsync = _ => release.Task; // Deliberately ignores the supplied cancellation token.
         try
         {
             var elapsed = System.Diagnostics.Stopwatch.StartNew();
-            var result = await model.GetAsync(request, ct).WaitAsync(TimeSpan.FromSeconds(2), ct);
-            elapsed.Elapsed.ShouldBeLessThan(TimeSpan.FromSeconds(1));
+            var result = await model.GetAsync(request, ct).WaitAsync(TimeSpan.FromSeconds(4), ct);
+            elapsed.Elapsed.ShouldBeGreaterThan(TimeSpan.FromSeconds(1));
+            elapsed.Elapsed.ShouldBeLessThan(TimeSpan.FromSeconds(3));
             result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
             result.Snapshot.ShouldBeNull();
             result.Freshness.ReasonCode.ShouldBe("permission_projection_catch_up_timeout");
             Task<EffectivePermissionsReadModelResult> immediate = model.GetAsync(request with { WaitForCatchUp = false }, ct);
-            await Task.Delay(600, ct);
+            await Task.Delay(2200, ct);
             immediate.IsCompleted.ShouldBeFalse();
             release.SetResult();
             (await immediate.ConfigureAwait(true)).Status.ShouldBe(EffectivePermissionsReadModelStatus.Available);
+            result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
+            result.Snapshot.ShouldBeNull();
         }
         finally
         {
@@ -147,20 +172,24 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
         result.Snapshot!.Freshness.ProjectionWatermark.ShouldBe(wait ? "2" : "1");
     }
 
-    [Fact]
-    public async Task CatchUpTimeoutAndCancellationNeverExposeStaleAuthority()
+    /// <summary>Exhaustion stays stale and caller cancellation retains its original token in either mutation scope.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CatchUpTimeoutAndCancellationNeverExposeStaleAuthority(bool organizationScope)
     {
         MemoryReadModels store = new();
         TestClock clock = new();
         TestSequenceReader heads = new() { CurrentSequence = 1 };
-        EventStoreOrganizationEffectivePermissionsReadModel model = new(store, clock, heads);
-        EffectivePermissionsReadModelRequest request = new("tenant-a", "organization_baseline",
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
+        IEffectivePermissionsReadModel model = organizationScope ? organization : new EventStoreFolderEffectivePermissionsReadModel(store, clock, heads, organization);
+        EffectivePermissionsReadModelRequest request = new("tenant-a", organizationScope ? "organization_baseline" : "folder-a",
             [EffectivePermissionPrincipal.User("user-a")], null, null, "read_your_writes", WaitForCatchUp: true);
         var started = System.Diagnostics.Stopwatch.StartNew();
         var result = await model.GetAsync(request, TestContext.Current.CancellationToken);
         result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Stale);
         result.Snapshot!.EvidenceRows.ShouldBeEmpty();
-        started.Elapsed.ShouldBeLessThan(TimeSpan.FromSeconds(2));
+        started.Elapsed.ShouldBeLessThan(TimeSpan.FromSeconds(3));
         using CancellationTokenSource cancellation = new(TimeSpan.FromMilliseconds(50));
         (await Should.ThrowAsync<OperationCanceledException>(() => model.GetAsync(request, cancellation.Token)))
             .CancellationToken.ShouldBe(cancellation.Token);
@@ -248,10 +277,11 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
     public async Task IndependentSequenceReadUsesOnlyTheConfiguredDaprApiToken(string token)
     {
         CaptureSequenceHandler handler = new();
-        using HttpClient client = new(handler);
+        using var transport = new NativeSequenceReaderTestTransport(handler, token);
+        HttpClient client = transport.Client;
         IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(
             new Dictionary<string, string?> { ["DAPR_API_TOKEN"] = token }).Build();
-        DaprOrganizationStreamSequenceReader reader = new(client, configuration);
+        DaprOrganizationStreamSequenceReader reader = new(NativeSequenceReaderTestTransport.Reader(client));
         (await reader.GetCurrentSequenceAsync("tenant-a", "folder-a", TestContext.Current.CancellationToken))
             .ShouldBe(7);
         handler.ApiToken.ShouldBe(string.IsNullOrEmpty(token) ? null : token);
@@ -355,25 +385,25 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
     }
 
     [Fact]
-    public async Task IndependentSequenceReadUsesTheAggregateActorMethodAndParsesItsNumericHead()
+    public async Task IndependentSequenceReadUsesTheSupportedMetadataRouteAndValidatesItsNativeHead()
     {
         CaptureSequenceHandler handler = new();
-        using HttpClient client = new(handler);
-        DaprOrganizationStreamSequenceReader reader = new(client);
+        using var transport = new NativeSequenceReaderTestTransport(handler);
+        HttpClient client = transport.Client;
+        DaprOrganizationStreamSequenceReader reader = new(NativeSequenceReaderTestTransport.Reader(client));
 
         (await reader.GetCurrentSequenceAsync("tenant-a", "folder-a",
             TestContext.Current.CancellationToken)).ShouldBe(7);
         handler.Method.ShouldBe(HttpMethod.Post);
-        handler.Path.ShouldContain("/v1.0/actors/AggregateActor/");
-        handler.Path.ShouldContain("tenant-a%3Afolders%3Afolder-a");
-        handler.Path.ShouldEndWith("/method/GetCurrentSequenceAsync");
+        handler.Path.ShouldEndWith("/api/v1/streams/read/workload");
+        handler.SourceIdentity.ShouldBe(new AggregateIdentity("tenant-a", "folders", "folder-a"));
     }
 
     [Fact]
     public async Task FolderActorInvocationUsesItsSuppliedHeadWithoutCallingTheLockedActor()
     {
         using HttpClient client = new(new ThrowOnSendHandler());
-        DaprOrganizationStreamSequenceReader reader = new(client);
+        DaprOrganizationStreamSequenceReader reader = new(NativeSequenceReaderTestTransport.Reader(client));
         using (FolderActorSequenceScope.Enter("tenant-a", "folder-a", 7))
         {
             (await reader.GetCurrentSequenceAsync("tenant-a", "folder-a",
@@ -719,7 +749,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
     public async Task OrganizationActorInvocationUsesItsSuppliedHeadWithoutCallingTheLockedActor()
     {
         using HttpClient client = new(new ThrowOnSendHandler());
-        DaprOrganizationStreamSequenceReader reader = new(client);
+        DaprOrganizationStreamSequenceReader reader = new(NativeSequenceReaderTestTransport.Reader(client));
 
         using (OrganizationActorSequenceScope.Enter("tenant-a", "tenant-a", 4))
         {
@@ -732,13 +762,16 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
     }
 
     [Fact]
-    public async Task SequenceRequestTimeoutIsAnUnavailableAuthorizationSource()
+    public async Task SequenceDependencyCancellationIsAnUnavailableAuthorizationSource()
     {
-        using HttpClient client = new(new CancelOnSendHandler());
-        DaprOrganizationStreamSequenceReader reader = new(client);
+        CancelOnSendHandler handler = new();
+        using var transport = new NativeSequenceReaderTestTransport(handler);
+        HttpClient client = transport.Client;
+        DaprOrganizationStreamSequenceReader reader = new(NativeSequenceReaderTestTransport.Reader(client));
 
-        await Should.ThrowAsync<TimeoutException>(() => reader.GetCurrentSequenceAsync(
+        await Should.ThrowAsync<InvalidOperationException>(() => reader.GetCurrentSequenceAsync(
             "tenant-a", "tenant-a", TestContext.Current.CancellationToken));
+        handler.Calls.ShouldBe(1);
     }
 
     [Fact]
@@ -996,6 +1029,8 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
 
         public string? ApiToken { get; private set; }
 
+        public AggregateIdentity? SourceIdentity { get; private set; }
+
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
@@ -1003,18 +1038,33 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
             Path = request.RequestUri?.AbsoluteUri ?? string.Empty;
             ApiToken = request.Headers.TryGetValues("dapr-api-token", out IEnumerable<string>? values)
                 ? values.Single() : null;
+            var selected = JsonSerializer.Deserialize<StreamReadRequest>(request.Content!.ReadAsStringAsync(cancellationToken).GetAwaiter().GetResult(), JsonSerializerOptions.Web)!;
+            selected.FromSequence.ShouldBe(0);
+            selected.ToSequence.ShouldBe(0);
+            selected.PageSize.ShouldBe(1);
+            selected.RequireNativeProof.ShouldBeTrue();
+            SourceIdentity = new(selected.Tenant, selected.Domain, selected.AggregateId!);
+            NativeSourceProof proof = NativeSourceProofCodec.CreateSeed(SourceIdentity, "01ARZ3NDEKTSV4RRFFQ69G5FAV");
+            for (int sequence = 1; sequence <= 7; sequence++)
+                proof = NativeSourceProofCodec.ExtendDigest(proof, SourceIdentity, sequence, "original-message-" + sequence, new string('a', 64));
             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new StringContent("7"),
+                Content = JsonContent.Create(new StreamReadPage(selected.Tenant, selected.Domain, selected.AggregateId!, [],
+                    new StreamReadMetadata(0, 0, null, 7, 0, false, null) { NativeProof = proof })),
             });
         }
     }
 
     private sealed class CancelOnSendHandler : HttpMessageHandler
     {
+        public int Calls { get; private set; }
+
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)
-            => throw new TaskCanceledException("The sidecar did not reply.");
+        {
+            Calls++;
+            throw new TaskCanceledException("The sidecar did not reply.");
+        }
     }
 
     private sealed class TestSequenceReader : IOrganizationStreamSequenceReader

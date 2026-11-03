@@ -1,0 +1,374 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "20:51:13",
+      "errors": "0",
+      "failed": "0",
+      "passed": "51",
+      "skipped": "0",
+      "time": "5.410",
+      "total": "51"
+    }
+  ],
+  "tests": [
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogV3IngressTests.ActualHttpCommandQueryAndGeneratedIngressRefuseAgentBeforeEffectsAndMetadataExcludesHistory",
+      "result": "Pass",
+      "time": "0.255",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogV3IngressTests",
+      "method": "ActualHttpCommandQueryAndGeneratedIngressRefuseAgentBeforeEffectsAndMetadataExcludesHistory"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogV3IngressTests.BootstrapRefusesAValidCatalogBoundToAnotherRunBeforeRegisteringAuthority",
+      "result": "Pass",
+      "time": "0.081",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogV3IngressTests",
+      "method": "BootstrapRefusesAValidCatalogBoundToAnotherRunBeforeRegisteringAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogV3IngressTests.RegisteredPipelineRefusesNonHttpSchemaThreeCommandsAndQueriesBeforeTerminalEffects",
+      "result": "Pass",
+      "time": "0.065",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogV3IngressTests",
+      "method": "RegisteredPipelineRefusesNonHttpSchemaThreeCommandsAndQueriesBeforeTerminalEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogV3IngressTests.MetadataWithoutRegisteredAuthorityReturnsUnavailable",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogV3IngressTests",
+      "method": "MetadataWithoutRegisteredAuthorityReturnsUnavailable"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests.Stream_read_requires_bound_tenant_and_skips_human_tenant_and_rbac_checks",
+      "result": "Pass",
+      "time": "0.101",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests",
+      "method": "Stream_read_requires_bound_tenant_and_skips_human_tenant_and_rbac_checks"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests.Submit_stamps_verified_workload_and_bound_actor",
+      "result": "Pass",
+      "time": "0.052",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests",
+      "method": "Submit_stamps_verified_workload_and_bound_actor"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests.Status_uses_bound_tenant_and_message_primary_record_only",
+      "result": "Pass",
+      "time": "0.014",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests",
+      "method": "Status_uses_bound_tenant_and_message_primary_record_only"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests.WorkloadActorBindingReachesDeclaredIntentAndActorlessCallsReject",
+      "result": "Pass",
+      "time": "0.075",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests",
+      "method": "WorkloadActorBindingReachesDeclaredIntentAndActorlessCallsReject"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests.Bound_command_requires_exact_signed_requester_and_domain",
+      "result": "Pass",
+      "time": "0.073",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests",
+      "method": "Bound_command_requires_exact_signed_requester_and_domain"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests.SignedBoundPrincipalReachesDeclaredIntentAndChangesItsIdentity",
+      "result": "Pass",
+      "time": "0.013",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests",
+      "method": "SignedBoundPrincipalReachesDeclaredIntentAndChangesItsIdentity"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests.Workload_routes_require_distinct_signed_operation_policies",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests",
+      "method": "Workload_routes_require_distinct_signed_operation_policies"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests.Stream_read_accepts_only_signed_exact_second_proof_when_oidc_cannot_bind_resources",
+      "result": "Pass",
+      "time": "0.018",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests",
+      "method": "Stream_read_accepts_only_signed_exact_second_proof_when_oidc_cannot_bind_resources"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests.Submit_rejects_cross_tenant_or_caller_supplied_origin_before_dispatch",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.WorkloadGatewayControllerTests",
+      "method": "Submit_rejects_cross_tenant_or_caller_supplied_origin_before_dispatch"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests.StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority(scenario: \\\"bootstrap\\\", expectedStatus: 403)",
+      "result": "Pass",
+      "time": "0.961",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests",
+      "method": "StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests.StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority(scenario: \\\"public-create\\\", expectedStatus: 202)",
+      "result": "Pass",
+      "time": "0.362",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests",
+      "method": "StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests.StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority(scenario: \\\"missing-permission\\\", expectedStatus: 403)",
+      "result": "Pass",
+      "time": "0.501",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests",
+      "method": "StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests.StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority(scenario: \\\"wrong-scope\\\", expectedStatus: 403)",
+      "result": "Pass",
+      "time": "0.404",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests",
+      "method": "StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests.StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority(scenario: \\\"unknown-scope\\\", expectedStatus: 403)",
+      "result": "Pass",
+      "time": "0.397",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests",
+      "method": "StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests.StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority(scenario: \\\"mixed-scopes\\\", expectedStatus: 400)",
+      "result": "Pass",
+      "time": "0.316",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests",
+      "method": "StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests.StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority(scenario: \\\"malformed-scope\\\", expectedStatus: 400)",
+      "result": "Pass",
+      "time": "0.354",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests",
+      "method": "StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests.StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority(scenario: \\\"reserved-storage\\\", expectedStatus: 403)",
+      "result": "Pass",
+      "time": "0.358",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests",
+      "method": "StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests.StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority(scenario: \\\"wrong-kind\\\", expectedStatus: 403)",
+      "result": "Pass",
+      "time": "0.396",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests",
+      "method": "StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests.StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority(scenario: \\\"missing-credential\\\", expectedStatus: 401)",
+      "result": "Pass",
+      "time": "0.375",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests",
+      "method": "StructuralValidationReachesExistingScopeAndIngressGuardsWithoutGrantingAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_OpaqueIdempotencyKey_PassesWithoutInterpretingItsFormat",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_OpaqueIdempotencyKey_PassesWithoutInterpretingItsFormat"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_ExtensionCountExceedsLimit_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_ExtensionCountExceedsLimit_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_DangerousCommandType_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_DangerousCommandType_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_MissingTenant_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_MissingTenant_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization(scope: \\\"platform:tenants\\\", valid: True)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization(scope: \\\"platform:global-administrators\\\", valid: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization(scope: \\\"platform:unknown-owner\\\", valid: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization(scope: \\\"platform:\\\", valid: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization(scope: \\\"platform:tenants--invalid\\\", valid: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization(scope: \\\"platform:Tenants\\\", valid: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization(scope: \\\"platform:tenants \\\", valid: False)",
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization(scope: \\\"platform:tenants/other\\\", valid: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization(scope: \\\"platform:tenants,tenant-a\\\", valid: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_AllowsOnlyPlatformSyntaxForSubsequentCatalogAuthorization"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_EmptyMessageId_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_EmptyMessageId_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_ExtensionTotalSizeExceedsLimit_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_ExtensionTotalSizeExceedsLimit_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_MultibyteOpaqueIdempotencyKeyAtExactByteBound_Passes",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_MultibyteOpaqueIdempotencyKeyAtExactByteBound_Passes"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_JavascriptInjection_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_JavascriptInjection_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_OpaqueIdempotencyKeyExceedsBound_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_OpaqueIdempotencyKeyExceedsBound_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_ValidRequest_Passes",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_ValidRequest_Passes"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_MultibyteOpaqueIdempotencyKeyAboveByteBound_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_MultibyteOpaqueIdempotencyKeyAboveByteBound_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_FieldLengthLimits_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_FieldLengthLimits_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_InjectionCharacters_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_InjectionCharacters_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_AmpersandInExtensions_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_AmpersandInExtensions_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_InvalidTenantCharacters_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_InvalidTenantCharacters_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_ScriptPatternInCommandType_ReturnsValidationError(commandType: \\\"javascript:alert(1)\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_ScriptPatternInCommandType_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_ScriptPatternInCommandType_ReturnsValidationError(commandType: \\\"onclick=alert(1)\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_ScriptPatternInCommandType_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_EmptyOpaqueIdempotencyKey_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_EmptyOpaqueIdempotencyKey_ReturnsValidationError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests.SubmitCommandRequestValidator_NullMessageId_ReturnsValidationError",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Pipeline.SubmitCommandRequestValidatorTests",
+      "method": "SubmitCommandRequestValidator_NullMessageId_ReturnsValidationError"
+    }
+  ]
+}

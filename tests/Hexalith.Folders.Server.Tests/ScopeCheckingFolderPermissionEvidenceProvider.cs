@@ -1,4 +1,5 @@
 using Hexalith.Folders.Authorization;
+using Hexalith.EventStore.Client.Streams;
 
 namespace Hexalith.Folders.Server.Tests;
 
@@ -6,7 +7,8 @@ namespace Hexalith.Folders.Server.Tests;
 internal sealed class ScopeCheckingFolderPermissionEvidenceProvider(IFolderPermissionEvidenceProvider inner)
     : IFolderPermissionEvidenceProvider
 {
-    private readonly DaprOrganizationStreamSequenceReader _reader = new(new HttpClient(new LockedActorSequenceHandler()));
+    private readonly DaprOrganizationStreamSequenceReader _reader = new(
+        SourceHeadBoundaryProxy.Create<INativeSourceMetadataReader>((_, _) => throw new InvalidOperationException("The sequence reader called the locked actor.")));
 
     /// <summary>Gets the heads supplied by the request handler's invocation scopes.</summary>
     internal List<long> ObservedHeads { get; } = [];

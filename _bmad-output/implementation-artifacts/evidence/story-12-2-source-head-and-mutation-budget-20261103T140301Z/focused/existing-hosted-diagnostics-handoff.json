@@ -1,0 +1,96 @@
+{
+  "phase": "Gated fixture-only existing-singleton and public BackgroundService task observation",
+  "ownership": "Source/outputs released; no active command and no further source edits.",
+  "changed_source_sha256": {
+    "tests/tools/Task36FoldObserver/ExistingHostedServiceObservation.cs": "0bcf9b215348196b5189d273fe30676e2e307582e4c33566e033cf9eaf386589",
+    "tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs": "e6e17bc7929230d73b3ec5b5f8785326ede03b90d1ebd12860c565b064bcab6e",
+    "tests/Hexalith.Folders.Server.Tests/Task36ExistingHostedServiceObservationTests.cs": "ae3d2c5b732772cec63bf67e06aff9a77360de9ef1d549cba9f8bd63ef3bef34",
+    "tests/Hexalith.Folders.Server.Tests/LifecycleDiagnosticBackgroundService.cs": "18da87cccc53800b4752d2aa50197edb014f7ab37719217813cefe105e4325e7",
+    "tests/Hexalith.Folders.Server.Tests/LifecycleUnsupportedProvider.cs": "5facfdcd0e5bd242b2c100bdfa8b3e36925977113f7784d7faf3a1f559647976"
+  },
+  "commands": [
+    "dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+    "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests -class Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests -class Hexalith.Folders.Server.Tests.Task36FoldDiagnosticObserverTests -xml /tmp/story12-2-existing-hosted-observer-20261103/server-focused-private.xml -nocolor",
+    "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet"
+  ],
+  "build_results": {
+    "first_server": "Failed1test-onlyCS1929: concrete ServiceCollection.Add unavailable; corrected test variable to IServiceCollection.",
+    "final_server": {
+      "warnings": 0,
+      "errors": 0,
+      "seconds": 5.03
+    },
+    "final_apphost": {
+      "warnings": 0,
+      "errors": 0,
+      "seconds": 44.49
+    }
+  },
+  "focused_results": {
+    "total": "16",
+    "passed": "16",
+    "failed": "0",
+    "skipped": "0",
+    "errors": "0",
+    "time": "5.024"
+  },
+  "focused_by_class": {
+    "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests": 9,
+    "Hexalith.Folders.Server.Tests.Task36FoldDiagnosticObserverTests": 2,
+    "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests": 5
+  },
+  "count_scope": "16this-phase selected cases =9new existing-instance controls+7retained lifecycle/fold controls; no aggregation with overlapping prior selections.",
+  "gates_executed": [
+    "Capture invoked only by actual ApplicationStarted callback in real-host positive test.",
+    "Canonical Microsoft DI provider assembly and exact provider type; unsupported provider refused with0GetServicecalls.",
+    "All unkeyed IHostedService descriptors Singleton; mixedTransient/Scoped refused before any factory invocation.",
+    "Explicit IEnumerable<IHostedService> override refused before any factory invocation.",
+    "Registration count/referenceorder must match startup descriptor snapshot; replacement refused even at unchanged count.",
+    "Inventory over128 refused without instantiation; disposed provider captured as advisory unavailable.",
+    "Pre-start observation refused without any factory call.",
+    "Real started Singleton factory count stays1 through capture and repeated stopping snapshots; original pending background task releases and final snapshot observes the same task completion."
+  ],
+  "runtime_records": {
+    "new_phase": "existing_hosted_services, onceafterApplicationStarted, with capture.status/reason and actual static type/assembly/ordinal/background/lifecycle metadata.",
+    "existing_snapshots": "hostedServiceStates byordinal; nonbackground,notstarted,observed or taskunavailable. Public taskStatus(enum numeric),completed,canceled,faulted only. No Exception/AsyncState/taskresult or request/domain object reads.",
+    "gating_failure": "Unavailable andnullstates; never invent empty list/completed0 or bypass a refusal.",
+    "factory_limit": "All gates execute before enumerable lookup. Host already resolved allIHostedServices beforeApplicationStarted; defaultMSDIcache reuses thoseSingletons. Unknown/wrapped providers,customenumerable ornonSingleton inventories are not supported.",
+    "interpretation": "Actual types/order and publicExecuteTask flags identify candidate hosted waits; taskstatus alone doesnotname exact downstreamawait or prove stop invocation. Correlate with existingHostStop/lifetime/healthyzero-drop snapshots and known sequential-stop source."
+  },
+  "preserved": {
+    "queue_capacity": 64,
+    "snapshot_period_ms": 1000,
+    "stop_behavior": "No service replacement, start/stop/dispose invocation, timer/timeout/concurrency/forcekill/ignored-result change.",
+    "strict_body_sha256": {
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc"
+    },
+    "mutation_budget_source_sha256": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+    "tenant_budget_source_sha256": "39e40ecb2914a1a075c03101a4c12177a98adaff61d6ecde0bfb9c1462ce28e7",
+    "fixture_source_sha256": "acca2fc55fa9aecb3925544c34a12ddd59a3eba86bd0df29a783bc08a2ef42a2",
+    "source_scope": "Only testtool andServer test/helper sources; production/fixture wiring/authority/retention/proof/packagepins/fixedcatalog unchanged thisphase."
+  },
+  "selected_output_sha256": {
+    "tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll": "8d5e6d31009556b70ab72205d408499c71658f0373a2b1d475df3ac88aeb0d7e",
+    "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll": "062614a82ae24a001e822276fca8d039768313c77d965afe6a9fec17fad27205",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll": "d2ac018861818e2743e9020c05e4d370f3ab2e067dbf3b83ab582cc069b62e18"
+  },
+  "parent_handoff": [
+    "AddnewToolcompile helper ExistingHostedServiceObservation.cs to pending sourceinventory; preservefrozeninventoryintent.",
+    "Parent runtime/Memories rebuild+92module/source/assets audit before strict8.",
+    "Existing FOLDERS_TASK36_SHUTDOWN_LOG per-run private sink wiring unchanged; all richer records use that sink.",
+    "No actual18runtime names captured yet; no pendingowner/fix/acceptance/SM4 claim.",
+    "Separate fixedSDKcatalog andNU1109 packagecohort gates remain unchanged."
+  ],
+  "receipt_sha256": {
+    "apphost-build-private.log": "a66e35aabf8c0a549db627b5b50cf68d853af15800fa289d697cdeba887ebe83",
+    "server-build-private.log": "7788d2d0281de647430e6260ade65593532dadcc40bf0d1150bd6b84d146e9ff",
+    "server-focused-private.log": "c0777ffec0acd150c51f5261c5e7c3077202b9aa1357a18ac5f87da07ddca993",
+    "before.json": "613aa7ac6e71aa2bf64142f3365a203404a5712c0f8b5fd1ac7ddff938cb4173",
+    "server-focused-private.xml": "921a6959066c2dad161c9e270114c7cfb5724b35362ed2f869f77a1729b3e997",
+    "Task36LifecycleDiagnosticObserverTests.cs.before": "5f0ad8f632034e302efd2a444eaafa7046a116fc43adc88c63b36232843ca9b4",
+    "LifecycleDiagnosticObserver.cs.before": "ef3276f4b27f1e4c7ed5904565fa54cffa37ed9f498756c8c4439a1af3a65aa9",
+    "phase.patch": "c21add8825bb3fbdf442546bb12d65878caf20857fb1a072b61a2a0ffa015634",
+    "server-build-2-private.log": "5e4c82e994ec4b3e2b2125529570387524f6dd721da1fcc78d87db3b8563e0b9"
+  }
+}

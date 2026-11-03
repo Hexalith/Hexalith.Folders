@@ -1,0 +1,348 @@
+{
+  "purpose": "Story 12.2 bounded private fresh-image allocation implementation; parent owns final runtime/live",
+  "sourceFiles": {
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/TechnicalHttpActionObservation.cs": "7f9bf1dc7263d27698507c4bfa5e474b40882b175b5e3d7b6f1a5f968ebc80d0",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Routing/TechnicalHttpImageObservationTests.cs": "d73d5627cd456eabdce8a7947b0b13b95fef0cf351d84ecbe759ecf719db3fed",
+    "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md": "e9ec67ed393b5024bfed1189253a7136198ba7dd960435027abafc8c3c4ccaa7"
+  },
+  "qualification": {
+    "total": "83",
+    "passed": "83",
+    "failed": "0",
+    "skipped": "0",
+    "errors": "0",
+    "time": "16.911"
+  },
+  "benchmark": {
+    "kind": "20-pass actual full Gateway Observe local paired component probe, no live/SM4 claim",
+    "baseline": [
+      {
+        "kind": "owner-options",
+        "IsReadOnly": false
+      },
+      {
+        "label": "actual-gateway-full",
+        "operation": "observe",
+        "iterations": 20,
+        "milliseconds": 698.0801,
+        "cpuMilliseconds": 902.214,
+        "allocatedBytes": 358009888
+      },
+      {
+        "kind": "actual-activation",
+        "encodedBytes": 56162,
+        "catalogBytes": 18636,
+        "receivers": 1,
+        "endpoints": 33
+      },
+      {
+        "label": "actual-gateway-captured",
+        "operation": "digest",
+        "iterations": 20,
+        "milliseconds": 22.4371,
+        "cpuMilliseconds": 20.452,
+        "allocatedBytes": 6656888
+      },
+      {
+        "kind": "schema-corpus",
+        "types": 41,
+        "assemblies": 7
+      },
+      {
+        "label": "actual-gateway-schema-corpus",
+        "operation": "schema-and-complete",
+        "iterations": 20,
+        "milliseconds": 76.2723,
+        "cpuMilliseconds": 60.683,
+        "allocatedBytes": 29413240
+      },
+      {
+        "label": "actual-gateway-assembly-corpus",
+        "operation": "hash-images-twice",
+        "iterations": 20,
+        "milliseconds": 262.4347,
+        "cpuMilliseconds": 438.834,
+        "allocatedBytes": 280691496
+      },
+      {
+        "label": "actual-gateway-full-readonly",
+        "operation": "observe",
+        "iterations": 20,
+        "milliseconds": 714.3548,
+        "cpuMilliseconds": 985.005,
+        "allocatedBytes": 358048552
+      },
+      {
+        "label": "readonly-owner",
+        "operation": "copy-options",
+        "iterations": 20,
+        "milliseconds": 0.0071,
+        "cpuMilliseconds": 0.011,
+        "allocatedBytes": 4728
+      }
+    ],
+    "candidate": [
+      {
+        "kind": "owner-options",
+        "IsReadOnly": false
+      },
+      {
+        "label": "actual-gateway-full",
+        "operation": "observe",
+        "iterations": 20,
+        "milliseconds": 410.4968,
+        "cpuMilliseconds": 497.902,
+        "allocatedBytes": 77996048
+      },
+      {
+        "kind": "actual-activation",
+        "encodedBytes": 56162,
+        "catalogBytes": 18636,
+        "receivers": 1,
+        "endpoints": 33
+      },
+      {
+        "label": "actual-gateway-captured",
+        "operation": "digest",
+        "iterations": 20,
+        "milliseconds": 14.343,
+        "cpuMilliseconds": 14.428,
+        "allocatedBytes": 6656888
+      },
+      {
+        "kind": "schema-corpus",
+        "types": 41,
+        "assemblies": 7
+      },
+      {
+        "label": "actual-gateway-schema-corpus",
+        "operation": "schema-and-complete",
+        "iterations": 20,
+        "milliseconds": 41.0591,
+        "cpuMilliseconds": 41.088,
+        "allocatedBytes": 29409472
+      },
+      {
+        "label": "actual-gateway-assembly-corpus",
+        "operation": "hash-images-twice",
+        "iterations": 20,
+        "milliseconds": 188.8422,
+        "cpuMilliseconds": 258.563,
+        "allocatedBytes": 1599448
+      },
+      {
+        "label": "actual-gateway-full-readonly",
+        "operation": "observe",
+        "iterations": 20,
+        "milliseconds": 499.5155,
+        "cpuMilliseconds": 520.176,
+        "allocatedBytes": 77994744
+      },
+      {
+        "label": "readonly-owner",
+        "operation": "copy-options",
+        "iterations": 20,
+        "milliseconds": 0.0244,
+        "cpuMilliseconds": 0.029,
+        "allocatedBytes": 4728
+      }
+    ],
+    "initialBaseline": [
+      {
+        "kind": "owner-options",
+        "IsReadOnly": false
+      },
+      {
+        "label": "actual-gateway-full",
+        "operation": "observe",
+        "iterations": 20,
+        "milliseconds": 1430.2693,
+        "cpuMilliseconds": 1165.391,
+        "allocatedBytes": 358028352
+      },
+      {
+        "kind": "actual-activation",
+        "encodedBytes": 56162,
+        "catalogBytes": 18636,
+        "receivers": 1,
+        "endpoints": 33
+      },
+      {
+        "label": "actual-gateway-captured",
+        "operation": "digest",
+        "iterations": 20,
+        "milliseconds": 97.3358,
+        "cpuMilliseconds": 25.991,
+        "allocatedBytes": 6656888
+      },
+      {
+        "kind": "schema-corpus",
+        "types": 41,
+        "assemblies": 7
+      },
+      {
+        "label": "actual-gateway-schema-corpus",
+        "operation": "schema-and-complete",
+        "iterations": 20,
+        "milliseconds": 95.531,
+        "cpuMilliseconds": 64.34,
+        "allocatedBytes": 29416624
+      },
+      {
+        "label": "actual-gateway-assembly-corpus",
+        "operation": "hash-images-twice",
+        "iterations": 20,
+        "milliseconds": 558.6758,
+        "cpuMilliseconds": 531.634,
+        "allocatedBytes": 280699424
+      },
+      {
+        "label": "actual-gateway-full-readonly",
+        "operation": "observe",
+        "iterations": 20,
+        "milliseconds": 1312.4761,
+        "cpuMilliseconds": 1078.21,
+        "allocatedBytes": 357990480
+      },
+      {
+        "label": "readonly-owner",
+        "operation": "copy-options",
+        "iterations": 20,
+        "milliseconds": 0.0094,
+        "cpuMilliseconds": 0.015,
+        "allocatedBytes": 4728
+      }
+    ],
+    "initialCandidate": [
+      {
+        "kind": "owner-options",
+        "IsReadOnly": false
+      },
+      {
+        "label": "actual-gateway-full",
+        "operation": "observe",
+        "iterations": 20,
+        "milliseconds": 406.2174,
+        "cpuMilliseconds": 474.204,
+        "allocatedBytes": 77996048
+      },
+      {
+        "kind": "actual-activation",
+        "encodedBytes": 56162,
+        "catalogBytes": 18636,
+        "receivers": 1,
+        "endpoints": 33
+      },
+      {
+        "label": "actual-gateway-captured",
+        "operation": "digest",
+        "iterations": 20,
+        "milliseconds": 13.4689,
+        "cpuMilliseconds": 13.521,
+        "allocatedBytes": 6656888
+      },
+      {
+        "kind": "schema-corpus",
+        "types": 41,
+        "assemblies": 7
+      },
+      {
+        "label": "actual-gateway-schema-corpus",
+        "operation": "schema-and-complete",
+        "iterations": 20,
+        "milliseconds": 28.6362,
+        "cpuMilliseconds": 28.673,
+        "allocatedBytes": 29409472
+      },
+      {
+        "label": "actual-gateway-assembly-corpus",
+        "operation": "hash-images-twice",
+        "iterations": 20,
+        "milliseconds": 156.4284,
+        "cpuMilliseconds": 192.269,
+        "allocatedBytes": 1599448
+      },
+      {
+        "label": "actual-gateway-full-readonly",
+        "operation": "observe",
+        "iterations": 20,
+        "milliseconds": 440.6031,
+        "cpuMilliseconds": 478.523,
+        "allocatedBytes": 77986440
+      },
+      {
+        "label": "readonly-owner",
+        "operation": "copy-options",
+        "iterations": 20,
+        "milliseconds": 0.0224,
+        "cpuMilliseconds": 0.029,
+        "allocatedBytes": 4728
+      }
+    ]
+  },
+  "poolBound": {
+    "maximumRetainedBuffer": 16777216,
+    "maxBuffersPerBucket": 1,
+    "totalRetainedBytesLessThan": 33554432,
+    "largerImages": "Existing File.ReadAllBytes path; no added image size limit"
+  },
+  "commands": [
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "command": "dotnet build tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+      "log": "image-pool-build.log"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "command": "dotnet tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpImageObservationTests -class Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests -class Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpInvocationTests -class Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests -class Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests -class Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests -result-xml /tmp/story12-2-activation-perf/image-pool-tests.xml",
+      "log": "image-pool-tests.log"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet /tmp/story12-2-activation-perf/probe/bin/Debug/net10.0/probe.dll /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0 /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/deploy/dapr/eventstore-routing-catalog.json observe /tmp/story12-2-activation-perf/baseline/Hexalith.EventStore.ServiceDefaults.dll",
+      "log": "observe-pool-paired-baseline.log"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet /tmp/story12-2-activation-perf/probe/bin/Debug/net10.0/probe.dll /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0 /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/deploy/dapr/eventstore-routing-catalog.json observe",
+      "log": "observe-pool-paired-candidate.log"
+    }
+  ],
+  "baselineAssembly": {
+    "path": "/tmp/story12-2-activation-perf/baseline/Hexalith.EventStore.ServiceDefaults.dll",
+    "sha256": "4b9070cde5ee8c7791f1a919dbfd0e6618cbc2884b055f013d3516cc253db975",
+    "origin": "Untouched AppHost test output from parent audited strict3 full build; copied before parent next rebuild"
+  },
+  "candidateAssembly": {
+    "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "sha256": "f42131168b894daf00358178c8e614fb82bdfac7447150a25526d0b276e429d9"
+  },
+  "diagnosis": "strict3-diagnosis.json",
+  "newCompileInput": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Routing/TechnicalHttpImageObservationTests.cs",
+  "postBuildChange": "Required XML summary on forwarding overload only; parent final rebuild required for source/PDB audit",
+  "preserved": [
+    "Every fresh image read, exact loaded MVID and SHA, Complete recheck",
+    "All source/backend/CAS/identity/observation/trust/actor/transport/proof/final checks",
+    "Original deadlines, retries, queue/control behavior and refusal schemas",
+    "Original strict/capacity bodies, frozen intent, disabled v2 and previous packets"
+  ],
+  "pending": [
+    "Parent full runtime and Memories builds with synchronized SDK copies",
+    "Parent source/PDB/module and SDK-only compile-input audit",
+    "Parent unchanged isolated strict live and broader owner/consumer gates",
+    "All separate broad SDK, Release/package, PD10/governance/review/live/capacity/SM4 gates"
+  ],
+  "activeSessions": [],
+  "artifacts": {
+    "observe-pool-candidate.log": "af234e6683f772504d7c0f87cac0504d7eea277a7691d5ccebc6daae7592f33e",
+    "observe-pool-paired-candidate.log": "9685ec41fd189b3ae78d4c98ec2a17bdbd4c8bc51ba83da8111efa611b6116a9",
+    "image-pool-build.log": "f1b07c17b4dfb22dd9a8623f839a718fe603217ae87523a27eef5ffe83d148b6",
+    "observe-pool-paired-baseline.log": "c699de124e048194f6278097b97f00799010a566c149e17eaab91097699c14f4",
+    "image-pool-paired-probe-build.log": "409e3fcf7118a2409991c487b87c8b55dd694caf57dc47acc1b31d9ca6d256da",
+    "strict3-diagnosis.json": "f851255f4e9db0a9770399bb6cbd195fdb676b906b9769add8e4f6efde4388ba",
+    "image-pool-tests.log": "fbfdaeeb8e42200c4a369a7760ce65b3b33637b874718afeffcb5bd1446ee373",
+    "image-pool-tests.xml": "5bfa0f7d2757508cb888749e316b5c285a1d1ef63638844fe512d1ffd8a326b7",
+    "image-pool-probe-build.log": "51c686a556422a9167f4a4b8d4ad801ebdffcc950e70bcd4cef6614e7b1b8994",
+    "observe-pool-baseline.log": "084db3fc67953821f08f1cd93fcf59100b4584ae912446bdd55c5e556852bf75"
+  }
+}

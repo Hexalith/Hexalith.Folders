@@ -1,0 +1,86 @@
+{
+  "purpose": "Story 12.2 current SDK canonical verified-bootstrap fixture compatibility handoff",
+  "baseRootHead": "313f0f32bd31622fdd4f2f0bcb716e496ec301d0",
+  "reproduction": "The actual imported admin-user has zero copies of the current owner-required global-administrators:bootstrap permission; the focused real-import check failed before fixture changes. Private live logging had no credential/auth failure or dispatch. Production guard is unchanged.",
+  "changes": [
+    "Only designated existing admin-user gains the five exact existing-workflow operation permissions; its retired public system tenant grant is removed. All nonadmin imported users and checked-in realm remain unchanged.",
+    "CreateTenant/AddUserToTenant and bootstrap refusal controls use explicit supported platform scopes. Status requests carry exact platform or managed-tenant headers.",
+    "Original retained administrator source is read via existing native owner workload route through the real isolated owner sidecar, using its actual configured scope key, issued stream-read assertion and committed generation binding. Original retained source/response assertions remain.",
+    "Original proof refusals keep exact 401/403 assertions and natural framing; invalid proof probes retain real human bearer beside the admitted workload assertion."
+  ],
+  "sourceFiles": {
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "23255ddb2a00150e54e332ef82155816c8e845e81e400b2e0ca5f1dbf601b4d3",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs": "424998a063b51661db1352d60d4b80e330d67710ca60f662d37ed42338f78e03",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs": "c0ab82b3a90354050942431c5e8e0f5fcf8eadefe58727a6c2f2498534bacd21",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs": "07c5ffa71acc3decc395a9a080c3f51ceffb9490acce584968893b06535f07b0",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScopeTests.cs": "4a235d19c8987c6ec73017db647f28b0ce017871e322123b3c09fba298612800",
+    "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md": "feccb4f7093da12be251fa49b17dc42f9dc8d6e049397f95eb6441da4677e958"
+  },
+  "strictBodies": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc"
+  },
+  "qualification": {
+    "red.xml": {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "total": "1",
+      "passed": "0",
+      "failed": "1",
+      "skipped": "0",
+      "errors": "0",
+      "time": "0.139"
+    },
+    "focused.xml": {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "total": "94",
+      "passed": "94",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "5.357"
+    },
+    "owner.xml": {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll",
+      "total": "69",
+      "passed": "69",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "11.933"
+    }
+  },
+  "commands": [
+    "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+    "dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -method Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests.ImportedAdministratorHasExactlyTheCanonicalPermissionsNeededByItsExistingWorkflow -result-xml /tmp/story12-2-canonical-fixture-red.xml",
+    "dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityCatalogBindingTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityMtlsCompositionTests -result-xml /tmp/story12-2-canonical-fixture-focused.xml",
+    "From references/Hexalith.Tenants: dotnet build tests/Hexalith.Tenants.Server.Tests/Hexalith.Tenants.Server.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+    "From references/Hexalith.Tenants: dotnet tests/Hexalith.Tenants.Server.Tests/bin/Debug/net10.0/Hexalith.Tenants.Server.Tests.dll -class Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapBoundCommandTests -class Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapReadinessBudgetTests -class Hexalith.Tenants.Server.Tests.Bootstrap.TenantBootstrapCommandTransportTests -result-xml /tmp/story12-2-canonical-fixture-owner.xml"
+  ],
+  "builds": {
+    "initial-red": "passed, zero warnings/errors",
+    "initial-candidate": "failed CA1062 on new test null parameter check; retained",
+    "corrected-candidate": "passed, zero warnings/errors",
+    "final": "passed, zero warnings/errors",
+    "owner": "passed, zero warnings/errors"
+  },
+  "artifacts": {
+    "red-build.log": "ef25e573b089ebe9138f3eb3e89a56f336514777ad0a60fc8025b29be3190bb3",
+    "red.log": "58ae0da95b9ae148be36c438fa29ac2e7616ecd69465051e54cf9449233169fe",
+    "red.xml": "9051b6107626c3e9e54b064fed3e8679f3212bf64d4c553ebe71802e82f5bbb9",
+    "green-build.log": "79ff488b245a38a896865b506924707f20fb4dae98badc67acd561ac4ca6d4da",
+    "green-build-2.log": "b11d65aac332d1032f0ef805ebbe09dbd83745cdbdde4fb343e92a5a12ae7600",
+    "final-build.log": "9b7a8040ef5e2053a1d15fb596ffa47ef1fa1dc5cb5ed3a0cc6fdddd41209543",
+    "focused.log": "78b9979aa6674e8054a9b67d2508e23af87ab7d4fa20509e916d13510a37d794",
+    "focused.xml": "d63b2db29078893fe0f5908359a52432c37892a55bcf96c5ab5d381c8f8f040b",
+    "owner-build.log": "4a80db222753824241429bedc452f34813e7b46b142b7388a7113afc97107234",
+    "owner.log": "a4f8a06ef89f3cb4146511c122a79195748647c8730a5fb8cef00d6456792a78",
+    "owner.xml": "310d5891dbdf383e28dfe0e747f1a39941150756c73eb62f3c1adb342d0d621c"
+  },
+  "status": "Focused implementation complete; no build/test/topology active; no live qualification claimed; parent owns final audited runtime rebuild/run/seal",
+  "preserved": [
+    "No production auth/proof/admission/permission guard edit",
+    "No SDK/Tenants runtime source edit in this fixture continuation",
+    "No original strict/capacity body, assertion, deadline or retry weakening",
+    "No dependency pin/Git/remote/deployment/publication/v2 change"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "scope": "All exported file bytes; no raw logs/XML exported; test parameter display names excluded",
+  "encoded_bearer_jwt_matches": 0,
+  "private_key_material_matches": 0,
+  "dashboard_login_token_matches": 0,
+  "limitations": "Pattern checks supplement closed-metadata export; no general production confidentiality qualification is claimed."
+}

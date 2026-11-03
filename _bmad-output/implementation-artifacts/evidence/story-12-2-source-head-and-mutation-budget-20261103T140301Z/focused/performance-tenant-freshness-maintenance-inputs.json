@@ -1,0 +1,44 @@
+{
+  "disposition": "Read-only inputs for bounded owner decision; no implementation/build/test/live.",
+  "proposal": "_bmad-output/implementation-artifacts/proposal-12-2-live-tenant-freshness-prerequisite.md",
+  "admission_boundary": "UpdateTenant requires exacttenants:update. Originalrealadmin onlyhascommand:submit/replay/query; disposablebootstrap addsbootstrap/create/add-user/readonly. LegacyTenantStorageScopeAdapter requires one exacthumanpermission,noadministratorbypass. One fixture-onlypermissionmapping requires ownerexception to no-grant-expansion.",
+  "normal_command": "ExistingSubmitAsync(TenantPlatformScopes.Tenants,tenants,TenantId,nameof(UpdateTenant),sameNameDescription,_adminToken), normalgateway/catalog/realglobaladminchecks. NewMessageId per genuineoperation,stablethroughHTTP retries. SameName Durability acceptance/Description Disposable local acceptance tenant. Authorizedactiveaggregate always emitsTenantUpdated; ApplychangesName/Descriptiononly,notStatus/Users.",
+  "no_alternative": "ExistingAddUserToTenant rejectsduplicateUserAlreadyInTenant; neitherrejection,replay norread creates genuine newerTenantUpdated. No role/membership churn, rawactor/event insertion, inventedzero,proofminting or projectedtimestampwrite.",
+  "hook_choices": [
+    "Before positiveWaitForCurrentFolderEvidenceAsync when verifiedtenant evidence ageexceedsconservative2minthreshold.",
+    "Before andafterRestartHostsAsync,afteractualhostreadiness; afterhookneededbecauseunchangedrestartbounds canconsume freshness.",
+    "No backgroundtimer/globalHttpHandler/CreateFoldersClientmaintenance; keepforeign/revoked/negativecases untouched."
+  ],
+  "barrier": [
+    "Require normal202andterminalCompleted via existingSubmitAsync; acceptancealoneinsufficient.",
+    "Authenticatedsupportedplatformtenant streamread with existingtenants:read mustselectoriginalmatchingTenantUpdated sourceMessageId/sequence/nativeTimestamp andsamepayload; no rawactor.",
+    "Wait normalWorkersTenantUpdated handler/projection ProcessedMessages record +watermark/LastEventTimestamp matching actualsource. Never write/rebuild/restamp oldevents asfreshness.",
+    "Verify currentTenantId,sameName/Description,enabledstate,principals/roles/configuration unchanged; missing/stale/mismatched/malformed/conflicting evidence failsclosed.",
+    "Bound the wholemaintenance/barrier undercaller cancellation and existing-sizedfixturebudget; no original protectedread/retry/source/domain deadline expansion."
+  ],
+  "minimal_scope": [
+    "FolderDurabilityBootstrapConfiguration.cs adds exacttenants:update onceonlytoalreadydesignatedrealglobaladmin; no productionrealm or nonadmin change.",
+    "FolderDurabilityAcceptanceFixture.cs adds positivebarrier/restarthooks and existingpublicSubmit/source-read composition; helper/testfilesasneeded,one-type/file.",
+    "Productionauth,5minfreshness,approved2smutationbudget,otherdeadlines,retention/proof,strict/capacitybodies,folderretainedprefix,pins/fixedcatalogremainunchanged."
+  ],
+  "controls": [
+    "Realrealmtransform exactadminpermissioncount1/nonadmincount0,allotherclaims/rolesunchanged.",
+    "NormalUpdateTenant sourceevent withsame metadata leavesStatus/Usersunchanged; missingpermission403,unknown/disabled/unauthorizedremainrejected.",
+    "Barrierrejectsold,replayed,mismatchedidentity/sequence/timestamp,conflict,failedcommand,unavailable,cancellation/exhaustion; never fakefreshness.",
+    "Boundthreshold/concurrency/no backgroundtimer; no renewalforforeign/revokednegativeflows.",
+    "Keepall original stalenessdenialcontrols and frozenbodyhashes/sourcefolderprefix assertions; parentlive mustverify realissuer\u2192command\u2192source\u2192projection path."
+  ],
+  "qualification_limit": "Active/fresh disposabletenantmaintenance only,notlong-idle freshnessqualification or newproductionpolicy.",
+  "performance_alternative": "Existingapprovednative/bootstrapperformance remainspossible withoutnewpermission, but mustmeasurably keepwholefixture relevantreads before5min underactual load. Strict8firstpostreadage309 and442.310sfullbody supplyno deterministicheadroom; no additionalperformancecorrection inferred.",
+  "source_sha256": {
+    "references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Commands/UpdateTenant.cs": "c301b681ff9cc849a1d5f18cb8672338e5e8035bfc062b7afa8af97c74be037d",
+    "references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Routing/TenantCatalogDeclarations.cs": "da399b1f9daef460f08fa57388220f0bc0efff2640b82d39956a85c977e0eb0e",
+    "references/Hexalith.Tenants/src/Hexalith.Tenants.Server/Aggregates/TenantAggregate.cs": "65a066ea4d073a80608b4a63858bf8c2b8696edf31d4bffd164fb7f6cd9ac12d",
+    "references/Hexalith.Tenants/src/Hexalith.Tenants.Server/Aggregates/TenantState.cs": "be46e8c64bbd61dece201f832f1ecf5855cf1f45dc04375d9b850040b3f77091",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore/Authorization/LegacyTenantStorageScopeAdapter.cs": "862cbe5727aae88022740107aae0f9ce888c5f58af9de21fef044f869c80aae4",
+    "src/Hexalith.Folders.Workers/Tenants/TenantEventHandlers/FoldersTenantEventHandler.cs": "d20fea13bb21e1a162fe62b72aabda7d22652014a5e5c2c3bad5fd41abd50e40",
+    "src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessHandler.cs": "0318e0f286f0b6626f5dd37ab6ed8dd0b80fc674532c10cdd7b1bb30d840a980",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs": "539e9f1266efef4686af2bcb008753a737e5e1e80eb181c21f545b57aee06e10",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "acca2fc55fa9aecb3925544c34a12ddd59a3eba86bd0df29a783bc08a2ef42a2"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "purpose": "Story 12.2 exact-byte catalog validation performance implementation handoff",
+  "ownerRepository": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "baseHead": "a9317e4b228adfbcdd6686a2f86171b464f34c06",
+  "sourceFiles": {
+    "src/Hexalith.EventStore.Contracts/Routing/RouteCatalogCodec.cs": "a3371dbdb8bed4f4170af18650b8b9f3c9daf74d83696a26c5c6c53b3c35f36e",
+    "src/Hexalith.EventStore.Contracts/Routing/ValidatedRouteCatalogEncoding.cs": "26c078167a51a75185cde3dc30222c539365d606968b041466962544a98d0f07",
+    "tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogDecodeIsolationTests.cs": "620d769c6ede0acc7bbbb1536cb8a6023c6556b122efed5305f9bb52522a5893",
+    "tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogV3Tests.cs": "735c09f41384e6fe7f8c63173afad26da7607cf41b00ca40bc5895428f2b472d"
+  },
+  "qualification": {
+    "routing-tests.xml": {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.Tests.dll",
+      "total": "202",
+      "passed": "202",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "0.365"
+    },
+    "sdk-tests.xml": {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+      "total": "151",
+      "passed": "151",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "23.937"
+    }
+  },
+  "benchmark": {
+    "kind": "local warm codec microbenchmark; no live-budget claim",
+    "catalog": {
+      "path": "deploy/dapr/eventstore-routing-catalog.json",
+      "sha256": "c156ce0b68bab43f561805db9cd02714d123026d388f65c764d7b6fa4e3b7308"
+    },
+    "baseline": {
+      "bytes": 44075,
+      "iterations": 500,
+      "milliseconds": 2184.5451,
+      "allocatedBytes": 1497387160
+    },
+    "candidate": {
+      "bytes": 44075,
+      "iterations": 500,
+      "milliseconds": 381.1215,
+      "allocatedBytes": 169244040
+    },
+    "speedup": 5.731886288230918,
+    "allocatedBytesReduction": 0.8869737603466561
+  },
+  "baselineAssembly": {
+    "path": "/tmp/story12-2-codec-validation/baseline/Hexalith.EventStore.Contracts.dll",
+    "sha256": "28198cbdd76bde58fe9b705cfc3b9c0eb24da9e0d2338b44cbd1b3c7f5d25f05"
+  },
+  "candidateAssembly": {
+    "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+    "sha256": "b4e636bf1f9b893f2e657a40bfc98c5398c1cbab995aaf8daeb051da1bbed316"
+  },
+  "artifacts": {
+    "baseline-build.log": "37ffd5e459cf004dbad83b7dab3f9fd6bbc2a9363328487258d31493087d1376",
+    "baseline-perf.log": "758828b951bd0b8826e890bfa0933a71bc6dd0ab3b7c2a8a5756719b6499d606",
+    "candidate-build.log": "70a9707c3cc90e6e094716798a9bb40a265afbd3254336591c711291c46224f7",
+    "candidate-perf.log": "d96e3b11f324be1b393229698c2ee541d7e3f3c1019f7b4a137f284f8b39ba00",
+    "routing-tests.log": "52398643194f785cb3842e81d4de6ca0e5e6e2c9b70cef1ce57a5ca8adc8f65e",
+    "routing-tests.xml": "d7ab7c7016c4f2f86dcf247ddf92a82e60f58f1408dde64523079adf406011dd",
+    "server-build.log": "766b4574f4884c8e098e51eb28d7f5fab76bb82533235e02f1182053aa3dee77",
+    "sdk-tests.log": "82e721a9083da3bed438a3f44ac379281355133d488d20a9479d1f8d79158b55",
+    "sdk-tests.xml": "8cd94453bc26937ef6ea48ffbad6c1d10fa01c26421f42b12e488e92b63b4839"
+  },
+  "buildFlags": "-c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet; current catalog default EventStore 4.0.0; no version override",
+  "commands": [
+    "dotnet build tests/Hexalith.EventStore.Contracts.Tests/Hexalith.EventStore.Contracts.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+    "dotnet build tests/Hexalith.EventStore.Contracts.Tests/Hexalith.EventStore.Contracts.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+    "dotnet tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.Tests.dll -class 'Hexalith.EventStore.Contracts.Tests.Routing.*' -xml /tmp/story12-2-codec-routing-tests.xml",
+    "dotnet build tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+    "dotnet tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests -class Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests -class Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests -class Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests -class Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests -class Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests -class Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests -class Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests -result-xml /tmp/story12-2-codec-sdk-tests.xml",
+    "dotnet /tmp/story12-2-codec-validation/probe/bin/Debug/net10.0/probe.dll /tmp/story12-2-codec-validation/baseline deploy/dapr/eventstore-routing-catalog.json",
+    "dotnet /tmp/story12-2-codec-validation/probe/bin/Debug/net10.0/probe.dll tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0 deploy/dapr/eventstore-routing-catalog.json"
+  ],
+  "preserved": [
+    "No backend/source reads, host observations, trust checks, leases, CAS guards, native proofs, final observations, assertions or deadlines removed",
+    "No package/gitlink/Git mutation, public v2, publication or deployment"
+  ],
+  "leftOpen": [
+    "Parent full runtime graph builds and broad consumer regressions",
+    "Unchanged OperationalStatusDurabilityAcceptanceTests strict real-provider live execution and SM4",
+    "Whole-story SDK broad, Release/package/PD10/governance and independent review gates"
+  ]
+}

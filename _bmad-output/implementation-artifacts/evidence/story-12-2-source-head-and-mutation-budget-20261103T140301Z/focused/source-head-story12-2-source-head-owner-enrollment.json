@@ -1,0 +1,249 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "09:11:08",
+      "errors": "0",
+      "failed": "0",
+      "passed": "29",
+      "skipped": "0",
+      "time": "2.296",
+      "total": "29"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.512",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "b61e26244e4fc4bd0fbfa4cdd43588e5d90dd84005731e1b9ec3f366f56ff5b2",
+      "case_ordinal": 1
+    },
+    {
+      "result": "Pass",
+      "time": "0.065",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "84a19851b2f65187dc2b16cf22ef7ecf40b6b7c9f6c691c4afc528eacf779bd7",
+      "case_ordinal": 2
+    },
+    {
+      "result": "Pass",
+      "time": "0.065",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "d99d8f64c632fe6f5d954a385b6e175cc8d79db23342a1f934883158a4cadd4a",
+      "case_ordinal": 3
+    },
+    {
+      "result": "Pass",
+      "time": "0.047",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "a654f31ec40d9cce177722fb99dbd533daf47578ac67db7177206c767930d9db",
+      "case_ordinal": 4
+    },
+    {
+      "result": "Pass",
+      "time": "0.05",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "d85cf4d271ecebcb909f5f05a1e77febdf24407ca32f16b767726992465718e1",
+      "case_ordinal": 5
+    },
+    {
+      "result": "Pass",
+      "time": "0.081",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "0133b1c25d454f2b333177b6020c694c03cca3acf470ad63f2905264bc526fa9",
+      "case_ordinal": 6
+    },
+    {
+      "result": "Pass",
+      "time": "0.081",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "041fc644d0cb1ce75529b54ff83e2cfee0b665cd53e1809e8b99d888d56eadc5",
+      "case_ordinal": 7
+    },
+    {
+      "result": "Pass",
+      "time": "0.043",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "00eee45aa1890ba2a67f9116072d1223ddbe9314a1d1ab25e5ddbd9aedac1cda",
+      "case_ordinal": 8
+    },
+    {
+      "result": "Pass",
+      "time": "0.051",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingStreamReadGrantDoesNotEnforceMetadataOnlyAuthority",
+      "display_name_sha256": "61738977351cd7777f6628398efc372efd80bff460de66f6e9f81f9d3a3b4546",
+      "case_ordinal": 9
+    },
+    {
+      "result": "Pass",
+      "time": "0.042",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingStreamReadGrantDoesNotEnforceMetadataOnlyAuthority",
+      "display_name_sha256": "50f53f58d14ca447bbab6ae45f8cf21518b4b3fb7ba0c1b1e999743e92e79e9e",
+      "case_ordinal": 10
+    },
+    {
+      "result": "Pass",
+      "time": "0.086",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "a5a8a0418c726c1c8b4944942dc9b54d29afdd6b9ae45491d4a29ec1e864a3a5",
+      "case_ordinal": 11
+    },
+    {
+      "result": "Pass",
+      "time": "0.095",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "5263c70cdcc9becae914c04126cff153253b9be57b19967535843bb602ce6fa2",
+      "case_ordinal": 12
+    },
+    {
+      "result": "Pass",
+      "time": "0.08",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "4ffd88bd3332d910d328df33c35c0e22c4ce094e73ec5f55c94ff699559cc081",
+      "case_ordinal": 13
+    },
+    {
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "6ce49bcee124ceaba20661eb46ee2b6df0a4708cbc13318116f56e9c52ee7aab",
+      "case_ordinal": 14
+    },
+    {
+      "result": "Pass",
+      "time": "0.037",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "717291b62539bdda577e4674927b9e14c03299bcf21c089633d34500cea72364",
+      "case_ordinal": 15
+    },
+    {
+      "result": "Pass",
+      "time": "0.037",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "74afc71e90940500855a4da0045fed1d1159b1dc871d4bd24c366dca28b68262",
+      "case_ordinal": 16
+    },
+    {
+      "result": "Pass",
+      "time": "0.043",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "ec95344b117732326e453690486f5795cbfd5d4e534b1be984127fabd1886088",
+      "case_ordinal": 17
+    },
+    {
+      "result": "Pass",
+      "time": "0.06",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "a8c2559fd48f298655dda4f13938031160fe9efdaa03b893b66ef45b6fb8ef63",
+      "case_ordinal": 18
+    },
+    {
+      "result": "Pass",
+      "time": "0.042",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "de3c095f7dfd23ddd7a808f1ae5e282bd01f59ec368e577002ac196023d7fb58",
+      "case_ordinal": 19
+    },
+    {
+      "result": "Pass",
+      "time": "0.077",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "20e85a89baff3a4ccbb9931a225f39b7c751b0123e93c9939e8da0ec1d8582d4",
+      "case_ordinal": 20
+    },
+    {
+      "result": "Pass",
+      "time": "0.062",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "bb4a7d8126f16ab1796a30c4ccd5bee0e92a916dc4eebb54ef0452c6a9b125f6",
+      "case_ordinal": 21
+    },
+    {
+      "result": "Pass",
+      "time": "0.069",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "c0473f1bfc606c556eb03b3c954e9bc35fa3dce745267a8556d5f6decc838fd1",
+      "case_ordinal": 22
+    },
+    {
+      "result": "Pass",
+      "time": "0.076",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "81c0f359c0ff219e1e6c594b93909038d04f3bb34f3246b4a83e758f1c0ebde0",
+      "case_ordinal": 23
+    },
+    {
+      "result": "Pass",
+      "time": "0.045",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "9a18edb954f5c3d1625e0a6ae71ef5d03e3f6faa9e8220fe0d2815d33f1ed82d",
+      "case_ordinal": 24
+    },
+    {
+      "result": "Pass",
+      "time": "0.064",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "d24c19314ff93b702c00e5de514f5bb1862acf5e6992f32a48233f78e0c662da",
+      "case_ordinal": 25
+    },
+    {
+      "result": "Pass",
+      "time": "0.061",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "4d58ff8573589814b9138a8baccc0977ec5a5847788c0389de5abd76c1f2bfbc",
+      "case_ordinal": 26
+    },
+    {
+      "result": "Pass",
+      "time": "0.068",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "c86ceb68a4fe16ce875c42cca042538830abf34995cc5d50b7247576eeb81aad",
+      "case_ordinal": 27
+    },
+    {
+      "result": "Pass",
+      "time": "0.05",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "bf1f8129f5f7316618a80065cb3ced0c6d32a21637760d52df84de81048e5884",
+      "case_ordinal": 28
+    },
+    {
+      "result": "Pass",
+      "time": "0.049",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "6cbb66804bc6dd05e42364bd88c02308c69c33676f1152c6e569f27cbff48aa5",
+      "case_ordinal": 29
+    }
+  ]
+}

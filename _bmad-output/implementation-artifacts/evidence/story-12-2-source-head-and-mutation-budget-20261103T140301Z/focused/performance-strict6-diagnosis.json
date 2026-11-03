@@ -1,0 +1,88 @@
+{
+  "scope": "Read-only strict6 diagnosis; no source/build/test/topology mutation. No acceptance or correction claim.",
+  "result": {
+    "total": "1",
+    "passed": "0",
+    "failed": "1",
+    "skipped": "0",
+    "errors": "0",
+    "time": "393.364"
+  },
+  "failure": {
+    "exception": "InvalidOperationException",
+    "message": "Task-owned resource eventstore command stop failed.",
+    "site": "ResourceCommandAsync552 -> RestartHostsAsync516 -> RequireRealTaskClosureAsync341",
+    "postrestart_task_read_reached": false
+  },
+  "partial_pass_assertions": [
+    "six concerns/integrity/rebuild",
+    "SDK interrupted generation",
+    "two concurrent Workers"
+  ],
+  "task_diagnostics": {
+    "deduplication": "Exact timestamp+serializedJSON; Aspire replays historical host records.",
+    "records": [
+      {
+        "utc": "2026-11-03T12:42:08.011Z",
+        "event_id": 1220,
+        "outcome": "Allowed",
+        "freshness": "Fresh",
+        "projection_age_seconds": 254
+      },
+      {
+        "utc": "2026-11-03T12:42:10.380Z",
+        "event_id": 1221,
+        "result_code": "Allowed",
+        "folder_denial_layer": null,
+        "folder_denial_outcome": "none",
+        "folder_denial_freshness": "none"
+      },
+      {
+        "utc": "2026-11-03T12:42:24.624Z",
+        "event_id": 1220,
+        "outcome": "Allowed",
+        "freshness": "Fresh",
+        "projection_age_seconds": 271
+      },
+      {
+        "utc": "2026-11-03T12:42:25.903Z",
+        "event_id": 1221,
+        "result_code": "ProjectionUnavailable",
+        "folder_denial_layer": null,
+        "folder_denial_outcome": "none",
+        "folder_denial_freshness": "none"
+      }
+    ],
+    "interpretation": "The271second result is an intentional pre-restart unavailable probe. No postrestart result was observed; no5minute tenant-freshness denial established."
+  },
+  "native_http": {
+    "unique_clienthandler_completed": 119,
+    "statuses": {
+      "200": 119
+    },
+    "latest_utc": "2026-11-03T12:42:25.902Z"
+  },
+  "stop_timeline": [
+    {
+      "utc": "2026-11-03T12:43:15.3429005Z",
+      "event": "Aspire executing eventstore stop command"
+    },
+    {
+      "utc": "2026-11-03T12:43:15.412Z",
+      "event": "EventStore Application is shutting down"
+    },
+    {
+      "utc": "2026-11-03T12:43:27.409Z",
+      "event": "DCP Failed to stop run / Could not stop Executable: timed out waiting for process to stop"
+    },
+    {
+      "utc": "2026-11-03T12:43:34.6667491Z",
+      "event": "ResourceCommandService Error executing stop; DcpExecutor.StopResourceAsync failed to stop resource"
+    }
+  ],
+  "bounded_conclusion": "Lifecycle stop timeout positively established. The underlying remaining shutdown work/cause is not established. No source/profile transport, guard, deadline, freshness or lifecycle correction justified from unrelated warnings.",
+  "input_sha256": {
+    "/tmp/story12-2-source-head-20261103-QnMdfZ/strict-source-head-6-private.log": "8b1244cf81eb6b994614e8a2149c22dd366bd13dcfbc46c83d0f4bfa38ac6b74",
+    "/tmp/story12-2-source-head-20261103-QnMdfZ/strict-source-head-6-private.xml": "3ccf37d29fc353fec069e541f734fbd65ad325613f89d60680193d26945acd55"
+  }
+}

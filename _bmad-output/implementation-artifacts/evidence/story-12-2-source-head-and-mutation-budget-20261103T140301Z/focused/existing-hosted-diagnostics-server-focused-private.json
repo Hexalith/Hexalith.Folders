@@ -1,0 +1,145 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "13:42:42",
+      "errors": "0",
+      "failed": "0",
+      "passed": "16",
+      "skipped": "0",
+      "time": "5.024",
+      "total": "16"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.029",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "display_name_sha256": "e3478d0c0a3f32ced52bd4deae65ca88a9b278e843de08f63b03db0cbd0ee8d4",
+      "case_ordinal": 1
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "display_name_sha256": "00255b56f0dde924c8a9f185bc7eeb0b4dde5f1cbcfbf38596180988d8c1e06a",
+      "case_ordinal": 2
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "display_name_sha256": "fd8d28dac1866eb84df24628430afbc280a1eea939f9b65fc3381421a7993253",
+      "case_ordinal": 3
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "display_name_sha256": "de7fa14b6907b8b3da87f72897c75757b0b3a21a0fdd8bb551a9c23df9327523",
+      "case_ordinal": 4
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "display_name_sha256": "a03ce144f469ddcbd760918ac73aa97594984fdbf0253f32c3ac26d2b8a9a3ea",
+      "case_ordinal": 5
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "display_name_sha256": "972d9f70e48829d4e546d6f0ad8d3dfcab5cfcd297f93b9e3e6318bd53494dfd",
+      "case_ordinal": 6
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "display_name_sha256": "732d1a1afb814b54ffdacdbbbd3f8ec45eee76a2c36e844ca11c7f7885c6b87a",
+      "case_ordinal": 7
+    },
+    {
+      "result": "Pass",
+      "time": "1.131",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "StartedCaptureShouldReuseExistingSingletonsAndObserveTheOriginalPendingTask",
+      "display_name_sha256": "e45318b44c7f81fe50edb4749fec80967cc06d7b179c558aa6b44bd5e7915de6",
+      "case_ordinal": 8
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnknownProviderShouldBeRefusedWithoutCallingIt",
+      "display_name_sha256": "a307c2f93b33c07fba4460acee705bd16be271a5f0cfd48116985e7957aff32f",
+      "case_ordinal": 9
+    },
+    {
+      "result": "Pass",
+      "time": "0.31",
+      "type": "Hexalith.Folders.Server.Tests.Task36FoldDiagnosticObserverTests",
+      "method": "ObserverCountsOnlyActualSdkHandlerEntryAndPreservesReplayAndConflictOutcomes",
+      "display_name_sha256": "dd0e59d81184e4698b51a256eb1623d5f6b177d484ae5722f979436898d23f4d",
+      "case_ordinal": 10
+    },
+    {
+      "result": "Pass",
+      "time": "2.369",
+      "type": "Hexalith.Folders.Server.Tests.Task36FoldDiagnosticObserverTests",
+      "method": "HostingStartupPreservesTheRealHandlerAndItsSdkReceiverMatch",
+      "display_name_sha256": "d8a74b33e56040632c7991f17606fe84e3b61c53d6b9406a3b7c48fb1cc0ca60",
+      "case_ordinal": 11
+    },
+    {
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests",
+      "method": "RealFrameworkLifecycleShouldRetainOnlyClosedMetadataWithoutResolvingTransientServices",
+      "display_name_sha256": "2cd34877b3528c742bc9154e531d6ea260684827db5ba7ff566e7038df09390f",
+      "case_ordinal": 12
+    },
+    {
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests",
+      "method": "RealFrameworkLifecycleShouldRetainOnlyClosedMetadataWithoutResolvingTransientServices",
+      "display_name_sha256": "c9633bcc77697d07c0aaa542364d6cf959ac1522cf0a54500bf91b3e6ecb748b",
+      "case_ordinal": 13
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests",
+      "method": "SinkAndOptionalResolutionFailuresShouldRemainAdvisoryWithClosedEventIds",
+      "display_name_sha256": "03967a2e01690d224e4225e929bc7c9b981d1696a4d1d2615fb0f7ef169b5acb",
+      "case_ordinal": 14
+    },
+    {
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests",
+      "method": "SinkAndOptionalResolutionFailuresShouldRemainAdvisoryWithClosedEventIds",
+      "display_name_sha256": "fa56cd20ffe871ab675ca2fec7851a655436f5124787000f1e224ac97c6ae701",
+      "case_ordinal": 15
+    },
+    {
+      "result": "Pass",
+      "time": "1.012",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests",
+      "method": "ObserverShouldStayActiveAfterItsStopAndDistinguishServerStopFromLaterHostedStop",
+      "display_name_sha256": "265ad9cf200e6bd7f08c82a8deb3a54764cc7b9a26f5f49af0505283062ee0e1",
+      "case_ordinal": 16
+    }
+  ]
+}

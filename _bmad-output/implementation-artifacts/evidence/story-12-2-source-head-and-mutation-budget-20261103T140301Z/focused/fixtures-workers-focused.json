@@ -1,0 +1,193 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "11:37:48",
+      "errors": "0",
+      "failed": "0",
+      "passed": "22",
+      "skipped": "0",
+      "time": "0.394",
+      "total": "22"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.061",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingPortShouldPublishCuratedSearchIndexEntryChangedCloudEvent",
+      "display_name_sha256": "279acb875b9a14bfc55d0578ff9a2b5b65eea2947d86d5dacdcca4ee5e6ee689",
+      "case_ordinal": 1
+    },
+    {
+      "result": "Pass",
+      "time": "0.041",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingPortShouldHonorCancelledTokenBeforePublishing",
+      "display_name_sha256": "78a4d1c54a5c728526171b41e29c029c5e190906d56a1739696669aaf86f7855",
+      "case_ordinal": 2
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "WorkerLocalMemoriesRoutingDefaultsShouldMatchAspireConstants",
+      "display_name_sha256": "5e35def984e6cb79358e328e5b27d8024101ccc082bca410dd56cd672dfd685b",
+      "case_ordinal": 3
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingRequestShouldRejectBlankPublicBoundaryIdentifiers",
+      "display_name_sha256": "2588d5691ddcc72366625bf49882bc10e37ef6ebfaa0685321080820b4bf3884",
+      "case_ordinal": 4
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingPortShouldPublishSearchIndexEntryRemovedForHardDelete",
+      "display_name_sha256": "4366a0ee6ebead5e1757278a5dbbf013c066d01cd7ddb34c275230f8fe9fd04c",
+      "case_ordinal": 5
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingRequestShouldRejectMissingNestedBoundaryRecords",
+      "display_name_sha256": "e993601a9b9f56fa76fd513e454bb2bae6feab4a4ab36e8024e9d43fea2fd453",
+      "case_ordinal": 6
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingPortRemovalShouldHonorCancelledTokenBeforePublishing",
+      "display_name_sha256": "ed1703f61dc07d05f73b34905727e7dde96ce747507824515c5541676a606378",
+      "case_ordinal": 7
+    },
+    {
+      "result": "Pass",
+      "time": "0.041",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "AddFoldersSemanticIndexingWorkersShouldRegisterEventStoreBackedBridge",
+      "display_name_sha256": "240457f6daec2bd643d6b2095da546f7e62f991b2e31952eedab6a240d5d0584",
+      "case_ordinal": 8
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingPortShouldMapDaprPublishFailureToRetryableFailure",
+      "display_name_sha256": "af35536ee898d3e799f61ee96d974936d01197aead37e54debe5216df4d5c0ee",
+      "case_ordinal": 9
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "AddFoldersSemanticIndexingWorkersShouldRegisterMetadataDerivedMaterializerWithoutContentStoreDependency",
+      "display_name_sha256": "1fcfe04890ab88a1e82adaf0420aaac5bb40cea6705848ba02de139583fc1c15",
+      "case_ordinal": 10
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "AddFoldersSemanticIndexingWorkersShouldRegisterPortAndDaprClient",
+      "display_name_sha256": "a353f1ee699087fde28cebbbce3a5b5ac65ed9dca1ac4d4e5838322741f626a6",
+      "case_ordinal": 11
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingPublicContractShouldNotExposeMemoriesDtoTypes",
+      "display_name_sha256": "c207910f003d844686d16ab59846584c9126b7a08fc20f9a86e729dc16e12585",
+      "case_ordinal": 12
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingSourceIdentityShouldCreateStableNonFileUri",
+      "display_name_sha256": "4f3377b6a3cc0a66da9ca024405398b2e116488f78535d72d687fc82d96e9078",
+      "case_ordinal": 13
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingPortRemovalShouldMapDaprPublishFailureToRetryableFailure",
+      "display_name_sha256": "6bc5db96c77ffe6455c07132819a616e7ac0c12792728e0c0dcb493dabcbe990",
+      "case_ordinal": 14
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingContentAndPolicyRecordsShouldRejectInvalidDescriptorData",
+      "display_name_sha256": "1d27024506eb7a7aac2f4fefc9dcf726c7aca486827fe5cf2156535385c1bfa7",
+      "case_ordinal": 15
+    },
+    {
+      "result": "Pass",
+      "time": "0.126",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "ActualWorkersHostUsesDurableTenantAndPermissionStores",
+      "display_name_sha256": "13cb3cd1ef8c3f608a4df3e6961a2bedd02185cb7c4a633df3eea011a67739b9",
+      "case_ordinal": 16
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingPortShouldReSendFullArchivedDocumentForSoftDelete",
+      "display_name_sha256": "a5ea89cb8e222a99e7b8f586461616ee8da39fafd03bc0f6ecb24dff278b0ad2",
+      "case_ordinal": 17
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "RegisteredContentMaterializerShouldStayMetadataDerivedAndRequestShouldOmitBodyByteMembers",
+      "display_name_sha256": "8bcd5aa455e0ce1868a372667be8b7eb8491b0aec6f4d20adf0f332f6f552479",
+      "case_ordinal": 18
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "RemoveAndUpsertShouldTargetByteIdenticalIdentityForTheSameFileVersion",
+      "display_name_sha256": "78a7a309a6b64244b8455aef724cd85d424b9c1c0bc99bebdd530c83d4509f5c",
+      "case_ordinal": 19
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingPortShouldFallBackToDescriptorTextWhenArchiveEvidenceIsAbsent",
+      "display_name_sha256": "9c6d934c7232440989edefc7edbf597d38204477b8ea012ec9fad1ac501dd05c",
+      "case_ordinal": 20
+    },
+    {
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "AddFoldersTenantEventWorkersShouldIncludeSemanticIndexingRegistration",
+      "display_name_sha256": "d746e3599ebba1c61426727e9e92a436adfb5a0113cadf50e80f900a7ed4f865",
+      "case_ordinal": 21
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+      "method": "SemanticIndexingSourceIdentityShouldRejectRawFilesystemIdentity",
+      "display_name_sha256": "274680218257208cd268f41070fc3d3043298d663aecebc1bca22647815d0169",
+      "case_ordinal": 22
+    }
+  ]
+}

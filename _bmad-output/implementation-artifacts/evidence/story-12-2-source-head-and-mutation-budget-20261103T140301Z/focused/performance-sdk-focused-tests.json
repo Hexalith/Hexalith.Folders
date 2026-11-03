@@ -1,0 +1,457 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "10:36:00",
+      "errors": "0",
+      "failed": "0",
+      "passed": "55",
+      "skipped": "0",
+      "time": "5.260",
+      "total": "55"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.013",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.DevelopmentProjectionActorObservationTests",
+      "method": "FrozenCompiledInventoryStillRechecksCurrentActorAndInvoker",
+      "display_name_sha256": "2173723dc0e4b78be0598e186f1cbccd9600abd35e5c459c8ae058d3e062257b",
+      "case_ordinal": 1
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.DevelopmentProjectionActorObservationTests",
+      "method": "FrozenCompiledInventoryStillRechecksCurrentActorAndInvoker",
+      "display_name_sha256": "1830bbfc50bb1627d21d72da39123fb496f3f4b0c70448a42e7584f97f2bb324",
+      "case_ordinal": 2
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.DevelopmentProjectionActorObservationTests",
+      "method": "FrozenCompiledInventoryStillRechecksCurrentActorAndInvoker",
+      "display_name_sha256": "1fa80472f0c5122b6fcd1471e302cd1e7037b5423a12ca3f7f5df8f24fb31c5b",
+      "case_ordinal": 3
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.DevelopmentProjectionActorObservationTests",
+      "method": "FrozenCompiledInventoryStillRechecksCurrentActorAndInvoker",
+      "display_name_sha256": "952310a2914a3d7134ca118386cd8abcbcd90b42d7cc191918119d9ee99c2d76",
+      "case_ordinal": 4
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.DevelopmentProjectionActorObservationTests",
+      "method": "ActorTargetsRequireTheActualSdkRegistration",
+      "display_name_sha256": "64faf844373b01f94f2cb4c1a2c5783653f8a200a3d42ea0b47da4b08729c7a1",
+      "case_ordinal": 5
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.DevelopmentProjectionActorObservationTests",
+      "method": "ActorTargetsRequireTheActualSdkRegistration",
+      "display_name_sha256": "e361661b982d58f00de815f1b23354da06dfa5af1241fc360a92b9998507bf32",
+      "case_ordinal": 6
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.DevelopmentProjectionActorObservationTests",
+      "method": "ActorTargetsRequireTheActualSdkRegistration",
+      "display_name_sha256": "33050a08dd7ecfe4a892c1f5f2dc49f5977d6594008f5ca0a54939ab55fcde18",
+      "case_ordinal": 7
+    },
+    {
+      "result": "Pass",
+      "time": "0.062",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.DevelopmentProjectionActorObservationTests",
+      "method": "SampleActorQueryUsesCommittedObservedTargetBeforeEffects",
+      "display_name_sha256": "1892b92df3ce25e0441d19b7187c7c1add20e3121dccad5cc386a64109ac85f7",
+      "case_ordinal": 8
+    },
+    {
+      "result": "Pass",
+      "time": "0.018",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.DevelopmentProjectionActorObservationTests",
+      "method": "SampleActorQueryUsesCommittedObservedTargetBeforeEffects",
+      "display_name_sha256": "630c87a95de79d9f5a88e6a50b63458a9d84fc8d785636b19adc1033f2671827",
+      "case_ordinal": 9
+    },
+    {
+      "result": "Pass",
+      "time": "0.019",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.DevelopmentProjectionActorObservationTests",
+      "method": "SampleActorQueryUsesCommittedObservedTargetBeforeEffects",
+      "display_name_sha256": "e38cfb13de8ef3ba5d821c388023bc0c8cdce25e0d4f1fbb30f17a788e8611a3",
+      "case_ordinal": 10
+    },
+    {
+      "result": "Pass",
+      "time": "0.019",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.DevelopmentProjectionActorObservationTests",
+      "method": "SampleActorQueryUsesCommittedObservedTargetBeforeEffects",
+      "display_name_sha256": "3a2ee45956ae45beaa0896fedf29729e6c95cda1dd23cc4bf59376ec0d072859",
+      "case_ordinal": 11
+    },
+    {
+      "result": "Pass",
+      "time": "0.016",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.DevelopmentProjectionActorObservationTests",
+      "method": "SampleActorQueryUsesCommittedObservedTargetBeforeEffects",
+      "display_name_sha256": "f9cdb17f0f37ffbb611ff6dee51dba5d0e51cfafbb75ced67507c6f3ef1be610",
+      "case_ordinal": 12
+    },
+    {
+      "result": "Pass",
+      "time": "0.378",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority",
+      "display_name_sha256": "34444fd0dd6ddbfe7792468e97b2b74508e01867a082fb29e577b218794fb811",
+      "case_ordinal": 13
+    },
+    {
+      "result": "Pass",
+      "time": "0.218",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority",
+      "display_name_sha256": "5e59f3505d0abe000438bab1e8d8df6a1974ab7d34f8d09e41c69ffb26575149",
+      "case_ordinal": 14
+    },
+    {
+      "result": "Pass",
+      "time": "0.251",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority",
+      "display_name_sha256": "6a58fde8ddae793f64a9e7f329f73e48f6e0ceb02155ef8c0683cc55bb1c8c53",
+      "case_ordinal": 15
+    },
+    {
+      "result": "Pass",
+      "time": "0.307",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority",
+      "display_name_sha256": "25febd1358f78a685407d758634c65a4f47766c1bf95fe0f7b98c2da277c4f93",
+      "case_ordinal": 16
+    },
+    {
+      "result": "Pass",
+      "time": "0.573",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "AcquisitionRefusesAfter32ConflictsWithoutLeakingAndLaterSucceeds",
+      "display_name_sha256": "c3df9aea103bca46a7cdf039bfbb4434a8858c57d6e797d68b447d4157d1f5da",
+      "case_ordinal": 17
+    },
+    {
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "MissingIndependentPolicyFactsCannotProduceAHostIdentity",
+      "display_name_sha256": "fd4806376ad8d3116897750f3be33585a1b049ba519f3f229349bf366c898bd2",
+      "case_ordinal": 18
+    },
+    {
+      "result": "Pass",
+      "time": "0.032",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "ReusedStructuralValidationStillRecapturesAndRefusesChangedExecutableTarget",
+      "display_name_sha256": "c8b391502f285ddb82965cba2eac1f3a376e9668cd93a0ca0bc4c2a28a6e59ab",
+      "case_ordinal": 19
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "InstalledAdmissionObservationRefusesDisabledPolicyOrUnavailableKeyGeneration",
+      "display_name_sha256": "0fd6991b9447773cf77bd055d2d3a5cb441394fbd7a61f58c7d003cbca046d90",
+      "case_ordinal": 20
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "InstalledAdmissionObservationRefusesDisabledPolicyOrUnavailableKeyGeneration",
+      "display_name_sha256": "dc133221c96d6bb5f8f5a103429a7d3594aac6c40d46a256f6e9f4da97d4f444",
+      "case_ordinal": 21
+    },
+    {
+      "result": "Pass",
+      "time": "1.709",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "QuiescentOwnLeaseReleaseMakesProgressPast32ConflictsAndConcurrentDispatchDrains",
+      "display_name_sha256": "5bcde2aa123e58c9cf777a4a8d9fd828b4dcf2a8cd2d4dbc23fd7e8b5bf2001c",
+      "case_ordinal": 22
+    },
+    {
+      "result": "Pass",
+      "time": "0.035",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "ExactNativeRequestsShareOneLeaseUntilCallbackReturns",
+      "display_name_sha256": "ee7bcce930af31ba80f6725002c80775d2c377872df872e4bb22b835ab683574",
+      "case_ordinal": 23
+    },
+    {
+      "result": "Pass",
+      "time": "0.032",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "DetachedNativeReadCannotBorrowAReleasedLease",
+      "display_name_sha256": "c07131fd2902eefa9b7e97646413093d5a7a42e2c240f0a0dce46cb4dfafdd24",
+      "case_ordinal": 24
+    },
+    {
+      "result": "Pass",
+      "time": "0.034",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "LocalObservationDriftStillRefusesEachScopedNativeRequest",
+      "display_name_sha256": "1d536e171329b9334cff13e266003c775453231fe50fdbb1d5ca5add86ef1cd5",
+      "case_ordinal": 25
+    },
+    {
+      "result": "Pass",
+      "time": "0.031",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "FailedNativeReadClosesTheScopeAndReleasesItsLease",
+      "display_name_sha256": "a53bf31aadf8f04767d53da3f5a02914367cc3996ccdd6b26992b25c8bd04512",
+      "case_ordinal": 26
+    },
+    {
+      "result": "Pass",
+      "time": "0.034",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "GuardedNativeHttpReadsReuseOneLeaseWithoutSkippingPerRequestValidation",
+      "display_name_sha256": "9ac663b4f907aee886e98db4b678ed585037d96af313530965f5b0407f07e959",
+      "case_ordinal": 27
+    },
+    {
+      "result": "Pass",
+      "time": "0.043",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "OriginalValidationFailureRetainsItsBoundaryAndNoFence",
+      "display_name_sha256": "5ac39d4cb06bc106eee3877620ff05bb773185a12359a0f0d8e15b9c8db568ca",
+      "case_ordinal": 28
+    },
+    {
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "OriginalValidationFailureRetainsItsBoundaryAndNoFence",
+      "display_name_sha256": "d7d1d72b69990b1ebe8b437452debc999eab90c8e5b500a3ee51617f91e608af",
+      "case_ordinal": 29
+    },
+    {
+      "result": "Pass",
+      "time": "0.043",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "SupportedRegistrationRecordsEveryExistingAcquisitionBoundary",
+      "display_name_sha256": "669ffccbe4edda5b0796f816ef193966c8b7c130ab56ba00e387829ed2126a72",
+      "case_ordinal": 30
+    },
+    {
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "QueueCancellationDoesNotReadOrRetainAnAdditionalFence",
+      "display_name_sha256": "1bed198847ee4c8d88b8c86217a6558a597f7cdd3d36ce5be3932ca0f3df8146",
+      "case_ordinal": 31
+    },
+    {
+      "result": "Pass",
+      "time": "0.042",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "DisabledOrThrowingLoggingRemainsAdvisory",
+      "display_name_sha256": "26dddcc51a25eea74c96514b809ae4f620698f6df8482c761788bb5585339093",
+      "case_ordinal": 32
+    },
+    {
+      "result": "Pass",
+      "time": "0.042",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "DisabledOrThrowingLoggingRemainsAdvisory",
+      "display_name_sha256": "223f8198d62877863eab0a29b86d78e20179c9720f566ac2d350d86372f441e2",
+      "case_ordinal": 33
+    },
+    {
+      "result": "Pass",
+      "time": "0.013",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RunScopedProjectionCatalogTests",
+      "method": "GatewayDoesNotClaimDomainServiceCommands",
+      "display_name_sha256": "65f11ad269403c2e5e881bdfec620804b136ff7a67e8a9f97198d03150de1985",
+      "case_ordinal": 34
+    },
+    {
+      "result": "Pass",
+      "time": "0.071",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RunScopedProjectionCatalogTests",
+      "method": "GatewayClaimsOnlyItsActualCanonicalActorAndInvocationPath",
+      "display_name_sha256": "debc773f1241c9e170e2052ad3bfe84e5ebd3f5bd9a033f881230551831de144",
+      "case_ordinal": 35
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RunScopedProjectionCatalogTests",
+      "method": "GatewayClaimsOnlyItsActualCanonicalActorAndInvocationPath",
+      "display_name_sha256": "5d9cc8b0104afb68c8d024855e3a5c49de01e20b02a8a5e4824e840af390c6ed",
+      "case_ordinal": 36
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RunScopedProjectionCatalogTests",
+      "method": "GatewayClaimsOnlyItsActualCanonicalActorAndInvocationPath",
+      "display_name_sha256": "3cb722a07bb6ac37aa4b75329ee7cb202331e66770bc4d4bf9eca1f5be1430d7",
+      "case_ordinal": 37
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RunScopedProjectionCatalogTests",
+      "method": "GatewayClaimsOnlyItsActualCanonicalActorAndInvocationPath",
+      "display_name_sha256": "2d93b62fa7d484e12e9a8f33f44eb280307d417cc03dbbd90956178fd8abeccc",
+      "case_ordinal": 38
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RunScopedProjectionCatalogTests",
+      "method": "GatewayClaimsOnlyItsActualCanonicalActorAndInvocationPath",
+      "display_name_sha256": "fa31249e5e81ae44553a3aaac001a77099d9be8b9184f8df332e7890b897a899",
+      "case_ordinal": 39
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RunScopedProjectionCatalogTests",
+      "method": "GatewayClaimsOnlyItsActualCanonicalActorAndInvocationPath",
+      "display_name_sha256": "d0eec964530e335701bd8efbe065e13a5038c37c1adc04e603c83c12bc86b938",
+      "case_ordinal": 40
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RunScopedProjectionCatalogTests",
+      "method": "GatewayClaimsOnlyItsActualCanonicalActorAndInvocationPath",
+      "display_name_sha256": "b7ff9c139542179f183aaecfc5c06927abdca73718b3e60ebac24f303c5f5b8e",
+      "case_ordinal": 41
+    },
+    {
+      "result": "Pass",
+      "time": "0.065",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.OutgoingInvocationDiagnosticsTests",
+      "method": "DisabledOrThrowingDiagnosticsDoNotChangeDispatch",
+      "display_name_sha256": "6d9a4cd8df4df971f099744a41088416b8d1334e7279477cf34dcca0ffc5c091",
+      "case_ordinal": 42
+    },
+    {
+      "result": "Pass",
+      "time": "0.05",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.OutgoingInvocationDiagnosticsTests",
+      "method": "DisabledOrThrowingDiagnosticsDoNotChangeDispatch",
+      "display_name_sha256": "e12c95c8a13784bb15a13a31bd89f7eddd4d0214d1e70074ebf46d5f96329291",
+      "case_ordinal": 43
+    },
+    {
+      "result": "Pass",
+      "time": "0.053",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.OutgoingInvocationDiagnosticsTests",
+      "method": "OriginalFailureAndItsLeaseOwnershipArePreserved",
+      "display_name_sha256": "a491fffde5dbafee24c03ac95d251ee3c826d40350ac6b5d2d0a12c3798f1ee6",
+      "case_ordinal": 44
+    },
+    {
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.OutgoingInvocationDiagnosticsTests",
+      "method": "OriginalFailureAndItsLeaseOwnershipArePreserved",
+      "display_name_sha256": "f49ff48d39be4e1bba07365a29054b0678542bb4749f4b32bbe9148964992c0b",
+      "case_ordinal": 45
+    },
+    {
+      "result": "Pass",
+      "time": "0.04",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.OutgoingInvocationDiagnosticsTests",
+      "method": "OriginalFailureAndItsLeaseOwnershipArePreserved",
+      "display_name_sha256": "d10bad2dbd7f8ae5e90c38645a28a9593c1ac9cd5d93b2cd9eebd0333d6bcf39",
+      "case_ordinal": 46
+    },
+    {
+      "result": "Pass",
+      "time": "0.045",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.OutgoingInvocationDiagnosticsTests",
+      "method": "ActualTransportAndOwnedReleaseRemainDistinctWhileCallerCancels",
+      "display_name_sha256": "5ec2d1af062864f5f96d970c736920c4100daa4d40bd7e71a1e8f4830fbb29bb",
+      "case_ordinal": 47
+    },
+    {
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.OutgoingInvocationDiagnosticsTests",
+      "method": "CanceledAcquisitionRecordsNoTransportOrOwnedRelease",
+      "display_name_sha256": "8c9a957ca9b3b85e57d64e64312c902d5ca184c95314600964d3877ac38161e8",
+      "case_ordinal": 48
+    },
+    {
+      "result": "Pass",
+      "time": "0.077",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "QueuedAdmissionCanCancelWhileSameAuthorityControlStillAdvancesAndInvalidatesTheHeldRead",
+      "display_name_sha256": "d20a127db9a8542b153bd99e305e921e0e5ef5191dcb11b96e6b98b664452492",
+      "case_ordinal": 49
+    },
+    {
+      "result": "Pass",
+      "time": "0.104",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "AwaitedAcquireLetsTheIndependentContentionOwnerFinishBeforeTheBoundIsExhausted",
+      "display_name_sha256": "cd71a874eca6eae0582c058e0721a2c382605e3e5c0a0ecb759362ce7bce2cc6",
+      "case_ordinal": 50
+    },
+    {
+      "result": "Pass",
+      "time": "0.353",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "PermanentContentionRetainsExactlyThirtyTwoFreshAttemptsAndNoDispatchFence",
+      "display_name_sha256": "cad3c4e8e1283a7c0136d871d75aa19c058fed84dbc1cfc41a3a5609800265c8",
+      "case_ordinal": 51
+    },
+    {
+      "result": "Pass",
+      "time": "0.048",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "EveryRetryRevalidatesTheCurrentStateAndIndependentObservation",
+      "display_name_sha256": "b567b9b222ef829f82c583d320ed48c8e6f74164ef6d29d46220d9c003e44073",
+      "case_ordinal": 52
+    },
+    {
+      "result": "Pass",
+      "time": "0.036",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "EveryRetryRevalidatesTheCurrentStateAndIndependentObservation",
+      "display_name_sha256": "50d80db8e3d4e7b06ea8028611e8f42629dce65bc8fb76ec4265d46f0144a7b8",
+      "case_ordinal": 53
+    },
+    {
+      "result": "Pass",
+      "time": "0.029",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "PreCancelledAcquireNeverTouchesTheProvider",
+      "display_name_sha256": "f1e0c8cc8fb325234eaabeb880d54a95ad7fd33dabd0e39c91b0cc73295ed290",
+      "case_ordinal": 54
+    },
+    {
+      "result": "Pass",
+      "time": "0.029",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "CancellationAfterAConflictStopsBeforeAnotherProviderReadOrExchange",
+      "display_name_sha256": "2bbf431cf860fedb29c20fc3545209f979a4fb287b21fea50255d7e8568b0115",
+      "case_ordinal": 55
+    }
+  ]
+}

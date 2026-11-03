@@ -1,0 +1,137 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "09:13:33",
+      "errors": "0",
+      "failed": "0",
+      "passed": "15",
+      "skipped": "0",
+      "time": "0.491",
+      "total": "15"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.257",
+      "type": "Hexalith.EventStore.DomainService.Tests.EventStoreGatewayWorkloadTransportTests",
+      "method": "ExistingStringRegistrationPreservesWhitespaceNormalizationAndNullGuard",
+      "display_name_sha256": "852a93347541730a4de02b04f22eb0fbdf68311dbbbe52457c70b31895e42d31",
+      "case_ordinal": 1
+    },
+    {
+      "result": "Pass",
+      "time": "0.02",
+      "type": "Hexalith.EventStore.DomainService.Tests.EventStoreGatewayWorkloadTransportTests",
+      "method": "MultipleDomainsAreBoundToEachRequestWithoutGrantingTheWholeAllowlist",
+      "display_name_sha256": "755668048f2ae70f4232f32f76ebd6571e58d8676e27acbe88e6b0c86b03af25",
+      "case_ordinal": 2
+    },
+    {
+      "result": "Pass",
+      "time": "0.034",
+      "type": "Hexalith.EventStore.DomainService.Tests.EventStoreGatewayWorkloadTransportTests",
+      "method": "BoundCommandRejectsAReceiptForAnotherMessage",
+      "display_name_sha256": "9f830d12cd82040850d76fa250222bd5f2451e5799ba07a5017826b0f8df80d2",
+      "case_ordinal": 3
+    },
+    {
+      "result": "Pass",
+      "time": "0.006",
+      "type": "Hexalith.EventStore.DomainService.Tests.EventStoreGatewayWorkloadTransportTests",
+      "method": "StatusGrantsUseTheRealIssuerAndOneDeclaredDomain",
+      "display_name_sha256": "5f40340741b6c08c543f644383f187cecc8a876ffd493e5bb5baf084d743f6fd",
+      "case_ordinal": 4
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.DomainService.Tests.EventStoreGatewayWorkloadTransportTests",
+      "method": "StatusGrantsUseTheRealIssuerAndOneDeclaredDomain",
+      "display_name_sha256": "ba4a0ba0c7558c23bb212c26f6b184d8d6368e15c2adae74040e894c4b253ce0",
+      "case_ordinal": 5
+    },
+    {
+      "result": "Pass",
+      "time": "0.033",
+      "type": "Hexalith.EventStore.DomainService.Tests.EventStoreGatewayWorkloadTransportTests",
+      "method": "BoundCommandRetainsExactPrincipalPayloadMetadataAndIndependentDomainGrant",
+      "display_name_sha256": "43df5590720a470503be51053033924399fcfc80d19fd63ef683b8ec0ef341c0",
+      "case_ordinal": 6
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.DomainService.Tests.EventStoreGatewayWorkloadTransportTests",
+      "method": "BoundCommandCannotSendWithoutItsIndependentWorkloadCredential",
+      "display_name_sha256": "3cf595e157f112e78c50b138ede5dfb0ff8996c92aefd08a7c8755e40c4c9401",
+      "case_ordinal": 7
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.DomainService.Tests.EventStoreGatewayWorkloadTransportTests",
+      "method": "ExistingClientCallsUseWorkloadRoutesWithExactIndependentGrants",
+      "display_name_sha256": "ecd2f6a80eca89c0f9667a8dae0c8ef95b7450c45c1b1457ed2ff7ccc73eee93",
+      "case_ordinal": 8
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.DomainService.Tests.EventStoreGatewayWorkloadTransportTests",
+      "method": "ExistingClientCallsUseWorkloadRoutesWithExactIndependentGrants",
+      "display_name_sha256": "9d0c78502c708faf32378b1d9713eeb3acfe8277c943019e4906246bf028173b",
+      "case_ordinal": 9
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.DomainService.Tests.EventStoreGatewayWorkloadTransportTests",
+      "method": "MissingIssuerAndUnrelatedOperationsCannotFallBackToHumanTransport",
+      "display_name_sha256": "0b5ef64322f25942e0286997befa695490f9461bd538492b460586c1e7327312",
+      "case_ordinal": 10
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.DomainService.Tests.EventStoreGatewayWorkloadTransportTests",
+      "method": "StatusGrantsRequireIndependentIssuerCredentials",
+      "display_name_sha256": "769671a81faf4e165f56a54d16f49a4c5fa1c30a34e783566e186daa9ac9aab0",
+      "case_ordinal": 11
+    },
+    {
+      "result": "Pass",
+      "time": "0.28",
+      "type": "Hexalith.EventStore.DomainService.Tests.NativeSourceMetadataCompositionTests",
+      "method": "SeparateMetadataClientPreservesDefaultGatewayAndRefusesUnprovableScope",
+      "display_name_sha256": "eaeb26b81e7117902064931de02c39dfe5a314e7d4f54dde810789d428b3065f",
+      "case_ordinal": 12
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.DomainService.Tests.NativeSourceMetadataCompositionTests",
+      "method": "SeparateMetadataClientPreservesDefaultGatewayAndRefusesUnprovableScope",
+      "display_name_sha256": "5ec3eeb3519d27b8c9b6a0258ead004f2134284f3b7d36014f0f0b000383969f",
+      "case_ordinal": 13
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.DomainService.Tests.NativeSourceMetadataCompositionTests",
+      "method": "SeparateMetadataClientPreservesDefaultGatewayAndRefusesUnprovableScope",
+      "display_name_sha256": "1bb9f118e9cf80ce7f209047fbce6310181bfc45f5afe3ddd2df7fc168975e46",
+      "case_ordinal": 14
+    },
+    {
+      "result": "Pass",
+      "time": "0.035",
+      "type": "Hexalith.EventStore.DomainService.Tests.NativeSourceMetadataCompositionTests",
+      "method": "SeparateMetadataClientPreservesDefaultGatewayAndRefusesUnprovableScope",
+      "display_name_sha256": "29f68703b78c828df165df2754b0387d47a3a73a9b77327db94ec543ec7c6db7",
+      "case_ordinal": 15
+    }
+  ]
+}

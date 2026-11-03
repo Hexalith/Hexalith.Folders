@@ -1,0 +1,2332 @@
+diff --git a/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml b/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
+index 7dc4aaf2..337af4bf 100644
+--- a/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
++++ b/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
+@@ -16,8 +16,8 @@ story_closure_claimed: false
+ governance_status: candidate-awaiting-a6b
+ production_routed: false
+ hash_algorithm: SHA-256
+-candidate_set_sha256: 02dfa7c3c14804867e19313d519e925645aec85f869b3559731b5c563b5f4f65
+-artifact_count: 1490
++candidate_set_sha256: 526ca7dc6ea2f41008e57fe8f99537955a8ae0809c37d6e1cbb99ce569fd3532
++artifact_count: 1497
+ artifacts:
+   - path: ".github/workflows/ci.yml"
+     kind: file
+@@ -113,8 +113,8 @@ artifacts:
+     sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
+   - path: "scripts/pd10-v2-story-owned-paths.txt"
+     kind: file
+-    bytes: 106600
+-    sha256: 0c4c5d08758f32ac9c79d336b46411cd805ed78a0b9e20a84d227807a664d470
++    bytes: 107109
++    sha256: c1dcd38bc5b70edd08cda7a120a4f4c79a2fed37d4f9cfd41ac949d542abdace
+   - path: "scripts/prepare-ci-topology-projects.sh"
+     kind: file
+     bytes: 8110
+@@ -957,8 +957,8 @@ artifacts:
+     sha256: a3d7aa98e67d42f95b2803c35ebd5a5ab754038d2e491dd1063c96f673ca2b4f
+   - path: "src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs"
+     kind: file
+-    bytes: 13845
+-    sha256: bca3089001d64f8aa38493f49f600db1ddc03539ac1ae98070cbc390675a00ae
++    bytes: 13923
++    sha256: d7f8b858f8f00107cdb231812427b463110d40bbb903e7573d21ddc48a7f110f
+   - path: "src/Hexalith.Folders.Server/FoldersTenantEventHandler.cs"
+     kind: file
+     bytes: 6965
+@@ -2029,8 +2029,8 @@ artifacts:
+     sha256: c75fd49ad39b99a83ffcb81792a392a3e910883be20c13cdbaefc5221d5b3131
+   - path: "src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs"
+     kind: file
+-    bytes: 3614
+-    sha256: 4877d7aadf8bed3d9615c0b3fe63b7c8f93f18fc127889a208cfb397f7251efd
++    bytes: 2189
++    sha256: eda00660c00eda83b36349c01dd6c3a93dc72fcb8e1ec0c9454896de35d52093
+   - path: "src/Hexalith.Folders/Authorization/DaprPolicyEvidenceOptions.cs"
+     kind: file
+     bytes: 454
+@@ -4215,6 +4215,14 @@ artifacts:
+     kind: file
+     bytes: 391
+     sha256: 7e9486ef74f99ab9e555ef1e4bc7cb987453ccc06da9997d56228244ca515b5e
++  - path: "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfiguration.cs"
++    kind: file
++    bytes: 1993
++    sha256: bb1871d9ae313eef96314ea5f8e812080111a61e494ac60561d7806b96541947
++  - path: "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfigurationTests.cs"
++    kind: file
++    bytes: 7227
++    sha256: 15516f0e3bc962501c3933e1ccd10ab12536a2b2a7ecf285a09f749457ed472a
+   - path: "tests/Hexalith.Folders.Cli.Tests/CommandOptionsFreshnessTests.cs"
+     kind: file
+     bytes: 1486
+@@ -4631,6 +4639,10 @@ artifacts:
+     kind: file
+     bytes: 12471
+     sha256: a355c92a64164d9f341afdf2f8bbba7e66e3e0baa314313a5135198b53ae1153
++  - path: "tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs"
++    kind: file
++    bytes: 8161
++    sha256: cbfc717a29660f68ea9addda4106eba3d6a631560c773c83aead2e656cc3d431
+   - path: "tests/Hexalith.Folders.Server.Tests/DeniedTenantAccessProjectionStore.cs"
+     kind: file
+     bytes: 967
+@@ -4645,8 +4657,8 @@ artifacts:
+     sha256: c188e26d26d5e1f4f6a1d6a75d22fe5d5a420acf9614f4423ce49b237eea4e3b
+   - path: "tests/Hexalith.Folders.Server.Tests/EventStoreOrganizationEffectivePermissionsReadModelTests.cs"
+     kind: file
+-    bytes: 66136
+-    sha256: 4d3d1cec60ebe71d3bf96a55bfc9f79db0e4d90d60ff550fe1028bb443c38a92
++    bytes: 67896
++    sha256: 8ccbc1d70af99455566d42c56c83fe9a23117084a80a21b37ea903e98ed6e097
+   - path: "tests/Hexalith.Folders.Server.Tests/FileContextEndpointTests.cs"
+     kind: file
+     bytes: 28273
+@@ -4879,6 +4891,14 @@ artifacts:
+     kind: file
+     bytes: 683
+     sha256: 97bd27b940344be09eb128250b55d9c543823d0fd28c2efd6ea25ad946d567da
++  - path: "tests/Hexalith.Folders.Server.Tests/NativeSequenceReaderTestTransport.cs"
++    kind: file
++    bytes: 2187
++    sha256: 8063607552ce70f3cdb88191ee86dfbe56c382a4b1a169d7f0dabc7eb5f14cb4
++  - path: "tests/Hexalith.Folders.Server.Tests/NativeSourceHeadReaderTests.cs"
++    kind: file
++    bytes: 5617
++    sha256: 1c890ec1b615fcd38290c5d1dbad360b243de1604f58991f597ef748b8950b87
+   - path: "tests/Hexalith.Folders.Server.Tests/OperationalStatusDeniedValidator.cs"
+     kind: file
+     bytes: 430
+@@ -4969,8 +4989,8 @@ artifacts:
+     sha256: 774419ff1396d76b69e8e140b7153663c68cdee5cd61048ac8b0378f8cc58746
+   - path: "tests/Hexalith.Folders.Server.Tests/ScopeCheckingFolderPermissionEvidenceProvider.cs"
+     kind: file
+-    bytes: 1320
+-    sha256: b4e4dcf725730626b66bdf53eeca8bb9c46c82f782a505f9b64c7de193cc99c8
++    bytes: 1477
++    sha256: 9ec01367d8bf04224bce7e788c9a056cbbbf9d70ed762f43e9db058b5cf3c38f
+   - path: "tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs"
+     kind: file
+     bytes: 13111
+@@ -4983,6 +5003,14 @@ artifacts:
+     kind: file
+     bytes: 7120
+     sha256: a0d6406be85d01293b5cfe28c515f19de7a9c5002b9c0a6c52de4546b5188de0
++  - path: "tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryCollection.cs"
++    kind: file
++    bytes: 299
++    sha256: f5f34cf3fb8daa344ac8dcdc1f9fc311af83dd8d011af311e8855d3924a35231
++  - path: "tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryProxy.cs"
++    kind: file
++    bytes: 1037
++    sha256: 5d2c893221ea7bc64b23fe60026107a9e991b9b6921ef95ed86c9f1c38aaca20
+   - path: "tests/Hexalith.Folders.Server.Tests/Task36FoldDiagnosticObserverTests.cs"
+     kind: file
+     bytes: 7644
+diff --git a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+index de330838..b0866078 100644
+--- a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
++++ b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+@@ -13,6 +13,7 @@ context:
+   - '_bmad-output/implementation-artifacts/proposal-12-2-acceptance-prerequisites.md'
+   - 'docs/contract/authorization-matrix.md'
+   - '_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-security-enrollment.md'
++  - '_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-source-head-transport.md'
+ ---
+ 
+ <frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
+@@ -1307,3 +1308,326 @@ log hashes and cleanup are in the [evidence packet](evidence/story-12-2-native-r
+ The shared merged checkout's targeted EventStore test build is separately blocked by 11 existing
+ `CS0246 PlatformScope` errors from its pinned Tenants/EventStore graph. The unchanged strict six
+ durability concerns and SM4 measurement remain unqualified; Story and sprint remain in-progress.
++
++
++## Exact-byte catalog validation continuation — 2026-11-02
++
++Within the approved native-read and broader command/projection performance scope, reduce repeated
++deterministic canonical catalog validation in the owning EventStore codec. Retain one private bounded
++validated encoding and reuse semantic/canonical validation only for exact copied-byte equality. Parse
++each call into a fresh independent model; compare every supplied expected root. Changed buffers,
++returned-model mutation, malformed alternate documents, all supported schema generations and concurrent
++callers must preserve existing refusal/encoding semantics. Backend reads, fresh independent host capture,
++trust checks, durable lease/CAS transitions and every native proof/final observation remain unchanged.
++This is an implementation continuation, with focused and live qualification still pending; all prior
++evidence packets, strict/capacity test bodies, deadlines and separate whole-story gates remain unchanged.
++
++
++## Current canonical bootstrap fixture continuation — 2026-11-02
++
++The audited current-SDK strict run reached ready sidecars and committed catalog hosts, then timed out
++waiting for the owner bootstrap receipt. The current owner requires the exact signed human permission
++`global-administrators:bootstrap`; the disposable imported administrator has only the legacy generic
++command permissions. Align only that already-designated real administrator's disposable issuer claims
++with the exact existing bootstrap/create/add-user and platform-status read operations, preserving its
++subject/admin marker, other users and workload separation. Remove its retired public `system` grant;
++retained source/actor/projection storage identities stay unchanged.
++
++Use the supported explicit platform namespaces for the existing fixture tenant commands, bootstrap
++refusal controls and status reads; tenant status reads name the exact managed tenant. Observe the
++original retained administrator source through the existing owner-bound workload stream-read route,
++using the actual isolated owner sidecar, real issued assertion, existing configured RSA scope key and
++committed catalog binding. Preserve all original acceptance/denial assertions, strict/capacity bodies,
++source checks, deadlines/retries, business effects and production authentication/proof guards. Qualify
++the actual realm transformation and request construction seams before the parent's next audited live
++run. This fixture compatibility work adds no production grant, admission path or storage protocol.
++
++Focused qualification reproduces the original missing signed permission from the actual realm import
++(one expected failing control), then passes 94/94 fixture realm/scope/native-proof/HTTP/rebuild/catalog/
++mTLS cases and 69/69 unchanged current-source Tenants bound-bootstrap/readiness/command-transport
++cases, with zero errors or skips. Final Debug/source builds pass with zero warnings/errors. The earlier
++new-test null-check analyzer failure is retained separately. No runtime product source or strict/capacity
++body changed in this fixture continuation, and no live topology was started. The parent still owns the
++audited real-provider strict rerun, SM4 and final evidence sealing; the live acceptance row stays open.
++
++
++### Current canonical command model validation compatibility
++
++The third audited strict run observed the real owner receipt and terminal delivery, but the unchanged direct-human refusal
++probe received 400 before its required 403. The production MVC model filter resolves the existing
++`SubmitCommandRequestValidator`, whose tenant-only regex rejects the now-required `platform:`
++namespace before committed catalog/ingress authorization. Bound bootstrap wraps a different DTO and
++did not traverse that validator. The owning SDK's approved canonical-scope migration explicitly
++retains cataloged platform commands. Align only this structural rule with the supported canonical
++platform namespace grammar, preserving existing field bounds, tenant/domain validation and every
++subsequent catalog/permission/credential/ingress guard. Reproduce the actual model-filter path and
++qualify direct-human internal refusal, public platform-command controls, missing/wrong permissions,
++unknown/malformed/mixed scopes and reserved storage refusal with zero denied command effects. No
++fixture assertion, production authorization policy, original intent or deadline changes are permitted.
++
++The exact launched Gateway binary independently reproduces a single structural failure on `Tenant`
++for that canonical bootstrap DTO; the candidate accepts its structure. The unchanged authorization
++pipeline then produces the required human-bootstrap 403. Before correction, the production MVC/JWT/
++catalog component matrix had five scope-related 400 failures in ten cases. Final affected SDK checks
++pass 51/51, zero failures/errors/skips, including permitted public platform command controls and all
++credential/permission/scope refusals with zero denied command effects. Final source builds pass with
++zero warnings/errors. Component terminals are counted test doubles; no live domain acceptance is
++inferred. The parent still owns rebuilt-runtime strict execution and every original source assertion.
++
++
++## Nonfrozen independent source-head resume checkpoint — 2026-11-02
++
++The fourth audited current-source strict operational attempt passed genuine owner bootstrap (202,
++terminal Completed, all four original refusals, retained native source and projected authority), tenant
++creation/membership and organization baseline/grant commands. It entered the unchanged body and failed
++at the first unknown-profile `ConfigureProviderBinding` PUT's required 403 control, with outer
++`HttpRequestException` / `HttpIOException: ResponseEnded`. This was not folder creation. The attempt
++finished with one failure, zero errors/skips in 233.011 seconds; no SM4 measurement was reached. The
++parent retains exact private logs/XML, runtime/source/head no-drift receipts and empty owned cleanup.
++
++Read-only diagnosis separately established that the Folders independent organization source-head
++reader makes a raw `GetCurrentSequenceAsync` actor invocation. The mandatory current SDK catalog
++handler refuses it before authority acquisition/transport because it has no proven typed catalog
++scope. The source trace contains one structured refusal event with the phrase repeated in three
++fields. Domain `/process` then returns 503 and the actor records Rejected. The retained observations
++do not connect that refusal to the outer response ending prematurely; `ResponseEnded` remains an
++independent unresolved cause. No speculative framing, retry or timeout repair is justified.
++
++The [source-head prerequisite proposal](proposal-12-2-current-sdk-source-head-transport.md) requests
++an owner decision for a public independently configured read-only SDK composition, actual Folders
++workload/key/grant enrollment and authoritative-zero/absence distinctions. Existing public workload
++stream/proof components are available, but the current raw metadata registration also fails closed,
++and the gateway adapter's null result cannot establish zero. Changing the default human gateway or
++reusing another host's identity would change authority. This capability is distinct from the listed
++approved security-enrollment/registration compatibility scope; it has not been implemented or
++approved. SDK/catalog/authentication guards and all Folders product code remain unchanged in this
++diagnostic phase.
++
++Seven focused component controls now pass (zero failures/errors/skips): actual raw-adapter guard
++refusal before transport/authority, missing-projection/unavailable preservation, explicit zero input's
++existing safe not-found result, and gateway missing/unsupported/backend evidence remaining null with
++the exact metadata-only native-proof request. These controls deliberately provide component
++dependencies; they prove neither successful live workload transport nor authoritative absence nor a
++fixed outer EOF. The Server.Tests source build passes with zero warnings/errors and `git diff --check`
++is clean. The initial diagnostic build failure on an undeclared mocking-library using is retained;
++the final controls use a local counted proxy with no package change.
++
++Product/test outputs were handed back to the parent after focused qualification, with no further
++product/test edits or builds. The parent owns remaining broad current-output checks and a portable
++evidence packet before presenting the concrete owner decision. No live topology was started in this
++diagnostic phase. Original strict/capacity bodies, all source/proof/final observations, authentication,
++denials, deadlines and retries remain unchanged. The original live acceptance row, six-concern
++qualification and SM4 stay open; Story and sprint remain in-progress, alongside the separate SDK,
++Release/package/PD10 and whole-story review gates.
++
++
++## Parent current-source verification and owner decision — 2026-11-02
++
++The [new sealed packet](evidence/story-12-2-current-sdk-source-head-20261102T213710Z/README.md) records the codec optimization, current-issuer/canonical-scope fixture migration and platform-command validation repair. The local warm codec probe was 5.73× faster with 88.7% fewer allocations; no SM4 result follows. Current consumer runs passed 5,545 tests across Domain, Server, Workers, Integration, Gateway, Contracts and client generation, with the two existing Domain operator skips. The initial three diagnostic-inventory failures were corrected by adding the new compile inputs and regenerating only the pending source inventory; Contracts then passed 636/636. Historical conformance/spine bytes and disabled v2 exposure are preserved.
++
++Four audited runs of the unchanged strict operational class are retained. The final run passed genuine bootstrap (202, Completed, all four refusals, original source and projected authority), tenant creation/enrollment and organization grants. The unknown-profile provider-binding PUT then ended with premature HTTP EOF. One structured event independently proves the organization source-head raw actor invocation was refused, followed by /process 503 and actor rejection. It does not prove the outer EOF cause. No six-concern live pass or SM4 measurement exists.
++
++The [source-head proposal](proposal-12-2-current-sdk-source-head-transport.md) remains unapproved. Its independent source-only SDK composition, own workload/key/grant enrollment and authoritative zero/absence contract exceed the approved host-enrollment exception. No such production capability or enrollment was added. The seven refusal/distinction controls pass; no null, unsupported proof, 404 or projection became source authority.
++
++The required Release conformance command failed restore with NU1102 for Hexalith.Tenants.Client >= 7.0.0 (nearest published 6.0.0). Debug source fallback checks passed and the source graph was restored; no package/CI gate was weakened. The packet binds unchanged full repository heads, strict/capacity bodies, frozen intent, actual mappings and exact owned cleanup. Original acceptance rows, Story/sprint in-progress status and separate broad SDK, Release/package, live capacity identity, SM4 and independent-review gates remain open. No Git mutation, publication, deployment, dependency pin/gitlink update or public v2 exposure occurred.
++
++
++## Approved independent source-head continuation — 2026-11-03
++
++The user replied **approve** to the [source-head prerequisite](proposal-12-2-current-sdk-source-head-transport.md). Its bounded SDK-owned read-only composition, actual Folders workload/key/grant enrollment and consumer migration are now authorized. This extends only the previously recorded SDK/host-enrollment boundary as described in that proposal. Prior sealed packets, original baseline, strict bodies and every existing guard, source/proof/final observation, deadline and excluded operation remain unchanged.
++
++Implement this continuation over the preserved working tree; do not redo historical completed tasks. Load the newly approved proposal from frontmatter context. Establish its evidence contract before changing production code: positively proved zero/absence must remain distinct from unsupported, missing proof, erased, malformed, denied or unavailable source. If the existing authenticated metadata route cannot establish that contract within the approved no-new-persistence/no-actor-schema bounds, retain executable evidence and return the precise remaining SDK prerequisite before production implementation. Do not manufacture zero to make the legacy Task<long> seam fit.
++
++- [x] In proposal-12-2-current-sdk-source-head-transport.md and focused owner tests under references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/Streams/ and ...Server.Tests/Streams/, specify and qualify the supported positive/zero/absence/refusal evidence contract. Bind every conclusion to current source and executed controls; distinguish a missing actor from erased or unsupported evidence.
++- [x] If that first gate succeeds, implement the smallest independent read-only public SDK composition in references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Streams/, ...Client/Registration/NativeSourceMetadataServiceCollectionExtensions.cs and/or ...DomainService/EventStoreGatewayWorkloadTransportExtensions.cs. Reuse supported authenticated metadata/proof protocols, preserve the default human-command client, and add focused registration/credential/catalog/proof/result controls. No domain-local platform protocol or internal SDK registration.
++- [x] Inventory reachable Server/Workers source-head consumers, then wire the authorized actual Folders caller's own issuer identity/signing material and least-privilege metadata grant through supported host/catalog configuration. Update src/Hexalith.Folders.AppHost/ and the disposable fixture only as required; do not enroll both hosts by default or borrow another host's identity.
++- [x] Migrate src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs and its Server/Workers registrations through the approved SDK seam. Preserve exact own-actor shortcuts, different-aggregate freshness, existing canonical missing/stale/unavailable outcomes, cancellation and the three-/five-/forty-second ceilings. Add production-path positive and denial controls without relaxing the original strict/capacity assertions.
++- [ ] Sequentially build current Debug project-reference runtime, run affected owner/consumer checks individually, and execute unchanged strict real-provider acceptance with audited identities and exact owned cleanup. Diagnose ResponseEnded independently if it recurs. Refresh only the pending source inventory for new compile inputs; preserve historical evidence and disabled v2. Retain all failed attempts and separate SDK broad, Release/package, live capacity, SM4 and independent-review gates.
++
++The implementation agent owns source changes and focused checks, then returns selected outputs free of active builds/tests. The parent owns final runtime rebuild/audit, broader checks, unchanged strict live execution and a new evidence packet. No simultaneous builds may mutate selected outputs.
++
++### Nonfrozen source-head implementation handoff — 2026-11-03
++
++The approved evidence gate passed before production implementation: real actor inspection through
++the existing signed workload/RSA-proof HTTP route returns existing valid native positive/zero evidence;
++missing/unactivated, unsupported legacy, erased and invalid evidence stays unavailable. Reads mint no
++source anchor. The supported contract deliberately does not treat every physical absence as zero.
++The proposal records the exact existing-zero support limit and retained component evidence.
++
++The generic stream grant was separately reproduced accepting an event range with a metadata request's
++resource proof or a resource-bound JWT alone. Implement the approved least-privilege metadata grant
++with explicit trusted receiver enrollment, exact metadata-only shape and mandatory actual resource
++proof for those new callers. The restriction participates in independent catalog authentication capture.
++Generic readers, current route/proof/JWT/actor/persistence schemas and all catalog guards are preserved.
++The new public SDK client is separately named and configured; the ordinary human gateway is unchanged.
++
++Both Server and Workers have reachable fresh source reads, including Workers' semantic-indexing
++authorization. Each distinct actual caller has its own issuer secret and RSA key, stream-read-only
++issuer scopes and `folders` metadata-only receiver enrollment. Replicas sharing a physical AppId use
++that actual workload; distinct proof Workers receive independent identities. Caller allowlists merge
++through the existing public SDK composition without replacing original/Tenants membership. Aspire
++secrets remain parameters; no keys/tokens enter tracked source or evidence. The consumer retains exact
++own-actor shortcuts, proof/identity validation, unavailable/zero distinctions and all existing ceilings.
++
++Final focused selections pass 334 cases, zero errors/failures/skips: SDK Server 131, DomainService 15,
++Client 62, Folders Server 84, Workers production host security 1, and actual AppHost realm/model/
++bootstrap/scope controls 41. All final builds have zero warnings/errors; both diff checks pass.
++Overlapping earlier subsets are separate history, not additional final cases. Intermediate compile/
++assets and profile-inventory failures are retained in the continuation handoff.
++
++Implementation released selected outputs with no active build/test/topology and no subsequent product/
++test edits or builds. Parent qualification remains required: final runtime rebuild/audit, broad suites,
++pending inventory refresh and the unchanged real-provider strict class. No new live pass or SM4 result
++is claimed. The earlier outer `ResponseEnded` cause remains independently unresolved. Prior sealed
++packets, original strict/capacity bodies, source/proof/final observations, authentication/denial guards,
++deadlines/retries, frozen intent and every separate open gate remain unchanged; Story/sprint stay
++in-progress and the original live acceptance row remains unchecked.
++
++### Nonfrozen outgoing-dispatch diagnostic handoff — 2026-11-03
++
++The parent's audited source-head strict run passed full genuine bootstrap, then the same first
++unknown-profile provider-binding PUT returned 503 `provider_unavailable`, rather than the required
++403. It failed once, zero errors/skips, in 286.598 seconds. The earlier premature EOF and raw-actor
++refusal did not recur. No transport fix or six-concern/SM4 pass follows from that difference.
++
++The retained trace proves source issuer discovery/JWKS/token requests returned 200 immediately before
++the named native metadata POST began at 09:45:16.974 UTC. No source response/receiver action is recorded.
++The public human gateway's existing ten-second attempt timeout fired twice, then its thirty-second
++total timeout fired at 09:45:33.745, when the endpoint returned `provider_unavailable`. The command actor
++records Rejected; the original profile-validation result is not established. A later issuer 400 names
++the unrelated unhosted sample's `domain-service:metadata` operation, not the source request. Source
++cancellation is consistent with the enclosing canceled invocation; the prior log does not identify
++whether source catalog acquisition, transport or release was pending. No issuer/DI/physical-target/
++enrollment correction is demonstrated by these observations.
++
++Within the authorized safe diagnostics, the existing opt-in payload-free SDK recorder now distinguishes
++outgoing `InvocationAcquire`, `InvocationValidation`, `InvocationTransport` and `InvocationRelease`.
++The owning HTTP filter supplies optional logging; existing public construction and default logging
++behavior remain available. Original guards, request/response bytes, lease ownership/retention,
++cancellation and independent owned release are preserved. The fixture alone enables the relevant
++outgoing/technical-receiver/domain-invoker Debug categories. No new read, prewarming, retry, deadline,
++source proof or business behavior is added. Transport entry proves entry into the owned transport;
++it does not itself prove that the receiving application observed a request.
++
++Focused controls pass 48/48 across new outgoing diagnostics and existing native-scope/transport/
++receiver controls; fixture realm/model checks pass 2/2, all zero failures/errors/skips. They prove
++canceled acquisition has zero transport calls, actual transport and release remain distinct, original
++exceptions and retained fences survive, and disabled/throwing logging is advisory. Final builds pass
++with zero warnings/errors and both diff checks are clean; the initial new-test logging-filter compile
++failure is retained. Selected outputs were released without active builds/tests/topology and without
++further product/test edits or builds. Parent owns the next final rebuild/audit and unchanged strict
++run to classify the actual pending stage; the live acceptance row and all separate gates remain open.
++
++
++### Nonfrozen catalog acquisition performance handoff — 2026-11-03
++
++The next audited strict run passed genuine bootstrap but failed authenticated CreateTenant with
++500/unavailable before the strict body or new Folders source call. The retained trace shows the
++existing domain five-second timeout expiring during the fourth actual Tenants native transport.
++The first three native transports took 604/2127/1362 ms; the fourth was canceled after 590 ms.
++Outgoing native lease revalidations took 12/14/16/32 ms, while receiver/native newly constructed
++leases included 168–900 ms acquisition spans. The proof callbacks themselves took 1–4 ms.
++This establishes an enclosing native-authority deadline failure, not a source enrollment refusal;
++it does not yet distinguish queue, backend/CAS, capture, trust or snapshot cost inside acquisition.
++The earlier ResponseEnded cause remains separately unresolved and did not recur.
++
++Pure component probes rejected an activation-cache or serializer-options change on the present
++evidence. A real captured SDK Gateway activation had 18,636 catalog bytes and 33 technical actions:
++ComputeDigest was about 2.77 ms per call. A bounded four-receiver technical cohort was about 3.04 ms
++for ComputeDigest and 4.51 ms for snapshot construction. Options cloning was below 0.001 ms.
++Fresh full Gateway receiver observation was 31–50 ms in these short local batches; image observation
++accounted for about 18.85 ms and 14.03 MB of allocation, while 41-type schema generation plus Complete
++accounted for about 3.55 ms. These microbenchmarks do not prove the live bottleneck or a capacity pass.
++
++The actual Folders/Tenants owner corpus has 46 declarations. The gateway now applies the domain
++host's existing lazy frozen compiled-inventory pattern to its exact loaded owner assemblies and
++passes those declarations into ActorQueryTargets. It retains fresh actual actor/invoker/query checks,
++receiver/image/schema/policy observations, configuration/component/ACL capture, identity, owner trust,
++backend reads, CAS, source proofs, final observations, and all existing bounds. The cohort has no
++projection-actor declaration; an early provisional four-read measurement overcounted its branch.
++The retained final probe invokes the actual cohort branch rather than using that provisional estimate.
++
++Opt-in payload-free acquisition diagnostics now separate local admission wait, durable state read,
++CAS, activation digest, fresh host capture, trust and immutable snapshot construction. Logging lookup,
++creation and writing are advisory; the original public authority constructor and lease/control/token
++semantics are preserved. Only the fixture enables the new Debug category. There is no new cache,
++prewarming, backend/source read, retry, deadline, topology or guard exception.
++
++This phase's final focused SDK selection passes 56/56, and fixture realm/model checks pass 2/2,
++zero errors/failures/skips. These counts are separate from the earlier 334 source-head and 48 outgoing
++diagnostic selections. They include actual runtime registration/invoker drift after frozen inventory,
++queue cancellation, original capture/trust exceptions, advisory disabled/throwing logging and real DI
++logger-resolution failure. Final SDK and fixture builds have zero warnings/errors. Prior probe setup
++failures, the superseded 55-case selection and provisional component estimates remain retained.
++
++Selected outputs are released after final focused checks, with no active build/test/topology. Parent
++owns the full runtime rebuild (including all SDK copies), source/module audit, remaining broader checks,
++and unchanged isolated strict execution. The new SDK diagnostic test is a pending compile-inventory
++input. Original strict/capacity body hashes, frozen intent, historical packets, disabled v2 and all
++open SDK broad/Release/package/PD10/governance/review/live/SM4 gates are preserved; no live acceptance
++or story-completion claim is made.
++
++### Parent acquisition-diagnostic runtime result — 2026-11-03
++
++The rebuilt current-source solution and Memories runtime passed; all 92 selected modules matched
++their PDB/source checksums, selected SDK identities had one variant and selected Hexalith assets were
++project references. The unchanged strict class on isolated port 36023 failed once, zero errors/skips,
++in 423.991 seconds. Genuine bootstrap, tenant creation/membership and organization baseline/grants
++completed. The first unknown-profile ConfigureProviderBinding PUT again required 403 but returned
++503/provider_unavailable. Neither ResponseEnded nor the raw-actor refusal appeared.
++
++This attempt stopped before domain dispatch: its first gateway attempt spent 680 ms in SubmitAcquire,
++6125 ms in Admission and 582 ms in ExecutionCapability before ExecutionBegin was canceled at the
++existing ten-second attempt limit. The second attempt expired during Admission; the third was still
++in Admission when the existing thirty-second gateway total limit produced 503. No source-reader
++transport/authentication result or domain five-second timeout is established by this trace. Its
++partial acquisition sample shows local admission wait at median 230/p90 518 ms and fresh capture at
++median 65/p90 155 ms; read/CAS/digest/trust/snapshot medians were 1–3 ms. These are partial diagnostic
++distributions, not SM4 results.
++
++Source/head/runtime drift was zero. Observed owned descendants/containers were gone and the exact
++fixture Dapr directory was removed. Four separately observed unattributed containers and one new
++unattributed Dapr directory were preserved; the original global-observation receipt and separate
++owned-cleanup audit retain that distinction. Exact private logs/XML, closed timing metadata, source
++patches and audit receipts remain retained for the new continuation packet. The original sealed
++packet is unchanged and its verifier still passes. Live acceptance and all separate gates remain open.
++
++
++### Nonfrozen fresh image allocation handoff — 2026-11-03
++
++The completed strict-3 diagnostic trace establishes the existing human gateway's ten-second attempt
++and thirty-second total timeout path before domain dispatch. Its first attempt reaches ExecutionBegin;
++the second and third stop in Admission. It establishes neither a new source-reader transport/auth
++result nor a domain five-second timeout. Final acquisition distributions show local admission wait
++median 331/p90 718 ms and fresh capture median 76/p90 176 ms; backend read/CAS, digest, trust and
++snapshot medians remain 1–4 ms. These timing records are diagnostic evidence, not a live acceptance pass.
++
++The approved bounded allocation correction changes only TechnicalHttpActionObservation.AssemblyIdentity:
++a private pool retains at most one buffer per bucket up to 16 MiB (less than 32 MiB total retained).
++Every invocation still opens and reads a fresh privately owned image snapshot. PE/MVID validation and
++SHA-256 use only its exact observed-length bytes; the buffer returns after the PE reader is disposed,
++including refusal paths. Larger images keep the existing unpooled read without a new size limit.
++Complete still rereads and compares the current image, including changed bytes with an unchanged MVID.
++No image/digest cache, stat shortcut, observer omission, queue, authority, protocol, timeout or retry
++change is introduced. All original source/proof/final observations and authentication guards remain.
++
++The short paired real full-Gateway Observe probe (20 fresh passes) measured baseline 698.08 ms wall,
++902.21 ms process CPU and 358.01 MB allocated versus pooled 410.50 ms, 497.90 ms and 78.00 MB.
++That is 78.2% less allocation and 44.8% less process CPU in this local component batch. The separate
++read-only-owner-options batch retained the same allocation reduction. The seven-image corpus alone
++reduced allocation by 99.43%. The earlier baseline and first candidate batches are also retained;
++changing host load is not asserted to explain previous failures. These results establish a bounded
++component benefit, not a complete acquisition/deadline fix, live provider result, capacity or SM4 pass.
++
++This phase's SDK selection passes 83/83 in 16.911 seconds, zero failures/errors/skips, with a clean
++18.34-second build and zero warnings/errors. Six added controls compare exact hashes, poisoned pool
++tails and returned buffers, changed module identity, malformed/missing images, larger-image fallback,
++file cleanup and the unchanged Complete refusal. Existing real MVC transport/receiver, acquisition,
++native-source and installed-observation controls also pass. These 83 cases are separate from earlier
++56/2, 48 and 334 selections. Only the required forwarding-method XML summary changed after the build.
++
++Selected outputs are released with no active build/test/topology and no further product/test/spec
++edits or builds. Parent owns the current full runtime/SDK-copy rebuild, source/module audit and next
++unchanged strict execution. TechnicalHttpImageObservationTests.cs is a new SDK-only pending compile
++input; no root pending inventory change is required for it. Prior packets, failed attempts, original
++strict/capacity bodies, frozen intent, disabled v2 and all separate open gates remain preserved.
+Submodule references/Hexalith.EventStore contains modified content
+diff --git a/scripts/pd10-v2-story-owned-paths.txt b/scripts/pd10-v2-story-owned-paths.txt
+index e276cdbc..e263984f 100644
+--- a/scripts/pd10-v2-story-owned-paths.txt
++++ b/scripts/pd10-v2-story-owned-paths.txt
+@@ -1047,6 +1047,8 @@ src/shared/AdapterCore/QuerySourcing.cs
+ src/shared/AdapterCore/RequestBodyParser.cs
+ src/shared/AdapterCore/SafeBearerTokenHandler.cs
+ src/shared/AdapterCore/UnsafeBearerTransportException.cs
++tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfiguration.cs
++tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfigurationTests.cs
+ tests/Hexalith.Folders.Cli.Tests/CommandOptionsFreshnessTests.cs
+ tests/Hexalith.Folders.Cli.Tests/CommandSurfaceE2ETests.cs
+ tests/Hexalith.Folders.Cli.Tests/ErrorProjectionTests.cs
+@@ -1151,6 +1153,7 @@ tests/Hexalith.Folders.Server.Tests/ChangingTenantAccessProjectionStore.cs
+ tests/Hexalith.Folders.Server.Tests/CommitWorkspaceProcessEndpointTests.cs
+ tests/Hexalith.Folders.Server.Tests/ConfigureProviderBindingEndpointTests.cs
+ tests/Hexalith.Folders.Server.Tests/CreateFolderEndpointTests.cs
++tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs
+ tests/Hexalith.Folders.Server.Tests/DeniedTenantAccessProjectionStore.cs
+ tests/Hexalith.Folders.Server.Tests/EffectivePermissionsEndpointTests.cs
+ tests/Hexalith.Folders.Server.Tests/EventStoreFolderTenantAccessProjectionStoreTests.cs
+@@ -1213,6 +1216,8 @@ tests/Hexalith.Folders.Server.Tests/LockedActorSequenceHandler.cs
+ tests/Hexalith.Folders.Server.Tests/MemoriesFolderSearchSourceTests.cs
+ tests/Hexalith.Folders.Server.Tests/MutationEnvelopeEndpointMatrixTests.cs
+ tests/Hexalith.Folders.Server.Tests/MutationSubmitEnvelopeAssertions.cs
++tests/Hexalith.Folders.Server.Tests/NativeSequenceReaderTestTransport.cs
++tests/Hexalith.Folders.Server.Tests/NativeSourceHeadReaderTests.cs
+ tests/Hexalith.Folders.Server.Tests/OperationalStatusDeniedValidator.cs
+ tests/Hexalith.Folders.Server.Tests/OperationalStatusPartitionCursor.cs
+ tests/Hexalith.Folders.Server.Tests/OperationalStatusPermissionEvidence.cs
+@@ -1239,6 +1244,8 @@ tests/Hexalith.Folders.Server.Tests/ScopeCheckingFolderPermissionEvidenceProvide
+ tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs
+ tests/Hexalith.Folders.Server.Tests/ServerSmokeTests.cs
+ tests/Hexalith.Folders.Server.Tests/ServiceDefaultsHealthEndpointTests.cs
++tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryCollection.cs
++tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryProxy.cs
+ tests/Hexalith.Folders.Server.Tests/Task36FoldDiagnosticObserverTests.cs
+ tests/Hexalith.Folders.Server.Tests/Task36FoldObservationCollection.cs
+ tests/Hexalith.Folders.Server.Tests/TransportParityConformanceTests.cs
+diff --git a/src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json b/src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json
+index ce48a3da..91d47d01 100644
+--- a/src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json
++++ b/src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json
+@@ -249,6 +249,55 @@
+           }
+         }
+       ]
++    },
++    {
++      "name": "eventstore-audience.eventstore",
++      "description": "Audience for independently enrolled source readers.",
++      "protocol": "openid-connect",
++      "attributes": {
++        "include.in.token.scope": "true",
++        "display.on.consent.screen": "false"
++      },
++      "protocolMappers": [
++        {
++          "name": "workload-audience",
++          "protocol": "openid-connect",
++          "protocolMapper": "oidc-audience-mapper",
++          "consentRequired": false,
++          "config": {
++            "included.custom.audience": "eventstore",
++            "id.token.claim": "false",
++            "access.token.claim": "true",
++            "introspection.token.claim": "true"
++          }
++        }
++      ]
++    },
++    {
++      "name": "eventstore-operation.eventstore.stream-read",
++      "description": "Read-only source metadata enrollment; the receiver restricts these callers to the exact native metadata shape.",
++      "protocol": "openid-connect",
++      "attributes": {
++        "include.in.token.scope": "true",
++        "display.on.consent.screen": "false"
++      },
++      "protocolMappers": [
++        {
++          "name": "workload-operation",
++          "protocol": "openid-connect",
++          "protocolMapper": "oidc-hardcoded-claim-mapper",
++          "consentRequired": false,
++          "config": {
++            "claim.name": "eventstore:operation",
++            "claim.value": "eventstore:stream-read",
++            "jsonType.label": "String",
++            "id.token.claim": "false",
++            "access.token.claim": "true",
++            "userinfo.token.claim": "false",
++            "introspection.token.claim": "true"
++          }
++        }
++      ]
+     }
+   ],
+   "clients": [
+@@ -460,6 +509,82 @@
+         "eventstore-operation.domain-service.project",
+         "eventstore-operation.domain-service.metadata"
+       ]
++    },
++    {
++      "clientId": "folders",
++      "name": "folders source metadata workload",
++      "description": "Own read-only source identity; no command, human or administrative permission.",
++      "enabled": true,
++      "publicClient": false,
++      "clientAuthenticatorType": "client-secret",
++      "secret": "${HEXALITH_FOLDERS_SOURCE_CLIENT_SECRET}",
++      "directAccessGrantsEnabled": false,
++      "standardFlowEnabled": false,
++      "implicitFlowEnabled": false,
++      "serviceAccountsEnabled": true,
++      "fullScopeAllowed": false,
++      "attributes": {
++        "access.token.lifespan": "300"
++      },
++      "defaultClientScopes": [],
++      "optionalClientScopes": [
++        "eventstore-audience.eventstore",
++        "eventstore-operation.eventstore.stream-read"
++      ],
++      "protocolMappers": [
++        {
++          "name": "authenticated-surface",
++          "protocol": "openid-connect",
++          "protocolMapper": "oidc-hardcoded-claim-mapper",
++          "consentRequired": false,
++          "config": {
++            "claim.name": "eventstore:surface",
++            "claim.value": "service",
++            "jsonType.label": "String",
++            "access.token.claim": "true",
++            "id.token.claim": "false",
++            "userinfo.token.claim": "false"
++          }
++        }
++      ]
++    },
++    {
++      "clientId": "folders-workers",
++      "name": "folders-workers source metadata workload",
++      "description": "Own read-only source identity; no command, human or administrative permission.",
++      "enabled": true,
++      "publicClient": false,
++      "clientAuthenticatorType": "client-secret",
++      "secret": "${HEXALITH_FOLDERS_WORKERS_SOURCE_CLIENT_SECRET}",
++      "directAccessGrantsEnabled": false,
++      "standardFlowEnabled": false,
++      "implicitFlowEnabled": false,
++      "serviceAccountsEnabled": true,
++      "fullScopeAllowed": false,
++      "attributes": {
++        "access.token.lifespan": "300"
++      },
++      "defaultClientScopes": [],
++      "optionalClientScopes": [
++        "eventstore-audience.eventstore",
++        "eventstore-operation.eventstore.stream-read"
++      ],
++      "protocolMappers": [
++        {
++          "name": "authenticated-surface",
++          "protocol": "openid-connect",
++          "protocolMapper": "oidc-hardcoded-claim-mapper",
++          "consentRequired": false,
++          "config": {
++            "claim.name": "eventstore:surface",
++            "claim.value": "service",
++            "jsonType.label": "String",
++            "access.token.claim": "true",
++            "id.token.claim": "false",
++            "userinfo.token.claim": "false"
++          }
++        }
++      ]
+     }
+   ],
+   "users": [
+diff --git a/src/Hexalith.Folders.AppHost/Program.cs b/src/Hexalith.Folders.AppHost/Program.cs
+index df5f2507..79109c2a 100644
+--- a/src/Hexalith.Folders.AppHost/Program.cs
++++ b/src/Hexalith.Folders.AppHost/Program.cs
+@@ -5,6 +5,7 @@ using Hexalith.Folders.Aspire;
+ using Hexalith.Memories.Aspire;
+ using Hexalith.Tenants.Aspire;
+ using Microsoft.Extensions.Configuration;
++using System.Security.Cryptography;
+ 
+ IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
+ 
+@@ -175,6 +176,31 @@ if (security is not null)
+     _ = folders.WithJwtBearerSecurity(security);
+     _ = foldersWorkers.WithJwtBearerSecurity(security);
+ 
++    // These existing hosts both reach fresh folder/organization source heads. Each has
++    // its own issuer credential and RSA resource key, and only metadata-read enrollment.
++    foreach ((IResourceBuilder<ProjectResource> host, string name, string secretVariable) in new[]
++    {
++        (folders, "folders", "HEXALITH_FOLDERS_SOURCE_CLIENT_SECRET"),
++        (foldersWorkers, "folders-workers", "HEXALITH_FOLDERS_WORKERS_SOURCE_CLIENT_SECRET"),
++    })
++    {
++        var sourceSecret = builder.AddParameter(name + "-source-client-secret", new GenerateParameterDefault
++        {
++            MinLength = 32, Lower = true, MinLower = 1, Upper = true, MinUpper = 1, Numeric = true, MinNumeric = 1, Special = false,
++        }, secret: true, persist: persistWorkloadSecret);
++        using RSA sourceKey = RSA.Create(2048);
++        string privateKey = Convert.ToBase64String(sourceKey.ExportPkcs8PrivateKey());
++        var sourcePrivateKey = builder.AddParameter(name + "-source-proof-key", () => privateKey, secret: true);
++        security.Keycloak.WithEnvironment(secretVariable, sourceSecret);
++        host.WithEventStoreWorkloadClientCredentials(name, sourceSecret)
++            .WithEnvironment("Authentication__WorkloadIssuer__Workload", name)
++            .WithEnvironment("Authentication__BoundStreamRead__PrivateKey", sourcePrivateKey);
++        eventStore.WithEnvironment("Authentication__BoundStreamRead__PublicKeys__" + name, Convert.ToBase64String(sourceKey.ExportSubjectPublicKeyInfo()))
++            .WithEnvironment("Authentication__BoundStreamRead__AllowedDomains__" + name, "folders")
++            .WithEnvironment("Authentication__BoundStreamRead__MetadataOnlyCallers__" + name, "true")
++            .WithEventStoreTrustedEffectSubmitter(name);
++    }
++
+     _ = foldersUi
+         .WithSecurityDependency(security)
+         .WithEnvironment("Folders__Authentication__Authority", security.RealmUrl)
+diff --git a/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs b/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
+index 0f8c29ba..e2b97916 100644
+--- a/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
++++ b/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
+@@ -64,7 +64,8 @@ public static class FoldersServerServiceCollectionExtensions
+         services.TryAddSingleton<FolderEventReplay>();
+         services.TryAddSingleton(static sp => new OperationalStatusProjectionWriter(
+             sp.GetRequiredService<SharedProjectionEpochCoordinator>(), sp.GetService<IUtcClock>()));
+-        services.AddHttpClient<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
++        services.AddEventStoreGatewayNativeSourceMetadataReader("folders");
++        services.TryAddSingleton<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
+         services.TryAddSingleton<DomainProjectionCatalogRegistry>();
+         services.AddOptions<Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions>()
+             .BindConfiguration("EventStore:ProjectionDispatch");
+diff --git a/src/Hexalith.Folders.Workers/FoldersWorkersModule.cs b/src/Hexalith.Folders.Workers/FoldersWorkersModule.cs
+index dcd9c1ed..b21ef73d 100644
+--- a/src/Hexalith.Folders.Workers/FoldersWorkersModule.cs
++++ b/src/Hexalith.Folders.Workers/FoldersWorkersModule.cs
+@@ -1,6 +1,7 @@
+ using Dapr;
+ using Hexalith.EventStore.Client.Registration;
+ using Hexalith.EventStore.Client.Subscriptions;
++using Hexalith.EventStore.DomainService;
+ using Hexalith.EventStore.ServiceDefaults.Authentication;
+ using Hexalith.Folders;
+ using Hexalith.Folders.Aggregates.Folder;
+@@ -83,7 +84,8 @@ public static partial class FoldersWorkersModule
+         // authorization projections must be resolvable even when this registration is used standalone.
+         services.AddFoldersLayeredAuthorization();
+         services.AddEventStoreReadModelStore();
+-        services.AddHttpClient<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
++        services.AddEventStoreGatewayNativeSourceMetadataReader("folders");
++        services.TryAddSingleton<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
+         services.RemoveAll<IEffectivePermissionsReadModel>();
+         services.TryAddSingleton<EventStoreOrganizationEffectivePermissionsReadModel>();
+         services.TryAddSingleton<EventStoreFolderEffectivePermissionsReadModel>();
+diff --git a/src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs b/src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs
+index c2fc1740..ee2a94b9 100644
+--- a/src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs
++++ b/src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs
+@@ -1,12 +1,10 @@
+-using System.Globalization;
+-using System.Net.Http.Headers;
+-
+-using Microsoft.Extensions.Configuration;
++using Hexalith.EventStore.Client.Streams;
++using Hexalith.EventStore.Contracts.Identity;
+ 
+ namespace Hexalith.Folders.Authorization;
+ 
+-/// <summary>Reads only the actor's sequence metadata through the local Dapr sidecar.</summary>
+-public sealed class DaprOrganizationStreamSequenceReader(HttpClient httpClient, IConfiguration? configuration = null)
++/// <summary>Reads only validated source-head metadata through the independently enrolled public SDK reader.</summary>
++public sealed class DaprOrganizationStreamSequenceReader(INativeSourceMetadataReader source)
+     : IOrganizationStreamSequenceReader
+ {
+     public async Task<long> GetCurrentSequenceAsync(string tenantId, string organizationId,
+@@ -14,6 +12,7 @@ public sealed class DaprOrganizationStreamSequenceReader(HttpClient httpClient,
+     {
+         ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
+         ArgumentException.ThrowIfNullOrWhiteSpace(organizationId);
++        cancellationToken.ThrowIfCancellationRequested();
+         // Organization ACL commands are already inside this same EventStore actor.
+         // Calling it through Dapr here would wait for the actor to release itself.
+         if (OrganizationActorSequenceScope.TryGet(tenantId, organizationId, out long currentSequence))
+@@ -26,49 +25,18 @@ public sealed class DaprOrganizationStreamSequenceReader(HttpClient httpClient,
+             return currentSequence;
+         }
+ 
+-        string endpoint = Environment.GetEnvironmentVariable("DAPR_HTTP_ENDPOINT")
+-            ?? $"http://localhost:{Environment.GetEnvironmentVariable("DAPR_HTTP_PORT") ?? "3500"}";
+-        if (!Uri.TryCreate(endpoint, UriKind.Absolute, out Uri? baseAddress)
+-            || baseAddress.Scheme != Uri.UriSchemeHttp)
+-        {
+-            throw new InvalidOperationException("The local Dapr HTTP endpoint is unavailable.");
+-        }
+-
+-        string actorId = Uri.EscapeDataString($"{tenantId}:folders:{organizationId}");
+-        Uri requestUri = new(baseAddress,
+-            $"/v1.0/actors/AggregateActor/{actorId}/method/GetCurrentSequenceAsync");
+-        using HttpRequestMessage request = new(HttpMethod.Post, requestUri)
+-        {
+-            Content = new StringContent("{}"),
+-        };
+-        request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+-        string? apiToken = configuration?["DAPR_API_TOKEN"]
+-            ?? Environment.GetEnvironmentVariable("DAPR_API_TOKEN");
+-        if (!string.IsNullOrWhiteSpace(apiToken))
+-        {
+-            request.Headers.Add("dapr-api-token", apiToken);
+-        }
++        var identity = new AggregateIdentity(tenantId, "folders", organizationId);
+         using CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+         timeout.CancelAfter(TimeSpan.FromSeconds(3));
+         try
+         {
+-            using HttpResponseMessage response = await httpClient.SendAsync(request,
+-                HttpCompletionOption.ResponseHeadersRead, timeout.Token).ConfigureAwait(false);
+-            response.EnsureSuccessStatusCode();
+-            if (response.Content.Headers.ContentLength is > 32)
++            var observation = await source.ReadAsync(identity, timeout.Token).WaitAsync(timeout.Token).ConfigureAwait(false);
++            if (observation?.Proof is not { Erased: false } proof
++                || !NativeSourceProofCodec.IsValid(proof, identity, proof.HeadSequence, proof.RetainedFloor))
+             {
+-                throw new InvalidOperationException("The organization actor sequence response is oversized.");
++                throw new InvalidOperationException("The independently observed source head is unavailable.");
+             }
+-
+-            string value = await response.Content.ReadAsStringAsync(timeout.Token).ConfigureAwait(false);
+-            if (value.Length > 32
+-                || !long.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out long sequence)
+-                || sequence < 0)
+-            {
+-                throw new InvalidOperationException("The organization actor sequence response is malformed.");
+-            }
+-
+-            return sequence;
++            return proof.HeadSequence;
+         }
+         catch (OperationCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+         {
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+index 7b36e4be..0e87e550 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+@@ -23,6 +23,7 @@ using Hexalith.EventStore.DomainService;
+ using Hexalith.EventStore.ServiceDefaults.Authentication;
+ using Hexalith.Folders.Authorization;
+ using Hexalith.Folders.Projections.OperationalStatus;
++using Hexalith.Tenants.Contracts.Identity;
+ using Microsoft.Extensions.DependencyInjection;
+ using Microsoft.IdentityModel.JsonWebTokens;
+ using Xunit;
+@@ -294,6 +295,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         using HttpClient client = App.CreateHttpClient("eventstore", "http");
+         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _humanToken);
+         using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/commands/status/" + correlationId);
++        FolderDurabilityGatewayScope.Apply(request, TenantId);
+         using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, true, cancellationToken).ConfigureAwait(false);
+         if (response.StatusCode == HttpStatusCode.NotFound) return null;
+         await RequireStatusAsync(response, HttpStatusCode.OK, "Authenticated diagnostic command status").ConfigureAwait(false);
+@@ -783,8 +785,11 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         Directory.CreateDirectory(realmDirectory);
+         JsonObject importedRealm = JsonNode.Parse(await File.ReadAllTextAsync(Path.Combine(_builder.AppHostDirectory,
+             "KeycloakRealms", "hexalith-realm.json"), timeout.Token).ConfigureAwait(false))!.AsObject();
++        string[] sourceHostNames = ["folders", "folders-workers", "folders-workers-proof-a", "folders-workers-proof-b"];
++        string[] sourceCallers = [.. sourceHostNames.Select(AppId)];
+         await File.WriteAllTextAsync(Path.Combine(realmDirectory, "hexalith-realm.json"),
+-            FolderDurabilityBootstrapConfiguration.Realm(importedRealm, AppId("eventstore"), AppId("tenants"), AppId("folders")).ToJsonString(), timeout.Token).ConfigureAwait(false);
++            FolderDurabilitySourceReadConfiguration.Realm(FolderDurabilityBootstrapConfiguration.Realm(importedRealm,
++                AppId("eventstore"), AppId("tenants"), AppId("folders")), sourceCallers).ToJsonString(), timeout.Token).ConfigureAwait(false);
+         FolderDurabilityBootstrapConfiguration.RealmImport(_builder.CreateResourceBuilder(security), realmDirectory);
+         string tenantsSecret = _bootstrapWorkloadSecret = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+         var tenantsCredential = _builder.AddParameter("durability-tenants-workload-secret", () => tenantsSecret, secret: true);
+@@ -811,7 +816,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+             .WithEnvironment("Authentication__BoundStreamRead__PublicKeys__" + AppId("tenants"), bootstrapPublicKey)
+             .WithEnvironment("Authentication__BoundStreamRead__AllowedDomains__" + AppId("tenants"), "tenants,global-administrators")
+             .WithEnvironment("Authentication__BoundCommand__AllowedDomains__" + AppId("tenants"), "global-administrators")
+-            .WithEnvironment("Authentication__DaprInternal__AllowedCallers__0", AppId("tenants"));
++            .WithEventStoreTrustedEffectSubmitter(AppId("tenants"));
+         ProjectResource originalWorker = _builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders-workers");
+         DaprSidecarOptions originalOptions = originalWorker.Annotations.OfType<DaprSidecarAnnotation>().Single()
+             .Sidecar.Annotations.OfType<DaprSidecarOptionsAnnotation>().Single().Options;
+@@ -880,6 +885,19 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+             .WithEnvironment("Logging__LogLevel__Microsoft.AspNetCore.Hosting.Diagnostics", "Information")
+             .WithEnvironment("Logging__LogLevel__Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker", "Information")
+             .WithEnvironment("Logging__LogLevel__Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor", "Information");
++        // Payload-free SDK await records distinguish catalog acquisition/validation, actual
++        // egress and lease release; they do not change a deadline, cold read or retry policy.
++        foreach (string diagnosticHost in new[] { "eventstore", "folders", "tenants" })
++        {
++            _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == diagnosticHost))
++                .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler", "Debug")
++                .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority", "Debug")
++                .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.ServiceDefaults.Routing.TechnicalHttpRouteCatalogReceiver", "Debug")
++                .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.Server.DomainServices.DaprDomainServiceInvoker", "Debug");
++        }
++        // Retain standard request/status timing for the independent Folders metadata client.
++        _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
++            .WithEnvironment("Logging__LogLevel__System.Net.Http.HttpClient.Hexalith.EventStore.NativeSourceMetadata", "Information");
+         if (_provider is not null)
+         {
+             string secretComponent = Path.Combine(componentDirectory, "provider-secretstore.yaml");
+@@ -1047,6 +1065,31 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+                 .WithEnvironment("DOTNET_ENVIRONMENT", "Development");
+         }
+ 
++        // Inventory: Server authorization/provider/status readers and Workers' semantic-indexing
++        // authorization both perform independent source-head reads. Replicas sharing a physical
++        // AppId share that workload; proof Workers with different AppIds receive their own identity/key.
++        for (int index = 0; index < sourceCallers.Length; index++)
++        {
++            string caller = sourceCallers[index];
++            string sourceSecretValue = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
++            var sourceSecret = _builder.AddParameter("durability-source-secret-" + index, () => sourceSecretValue, secret: true);
++            _builder.CreateResourceBuilder(security).WithEnvironment("HEXALITH_FOLDERS_SOURCE_" + index + "_CLIENT_SECRET", sourceSecret);
++            using RSA sourceKey = RSA.Create(2048);
++            string sourcePrivateValue = Convert.ToBase64String(sourceKey.ExportPkcs8PrivateKey());
++            var sourcePrivateKey = _builder.AddParameter("durability-source-key-" + index, () => sourcePrivateValue, secret: true);
++            foreach (ProjectResource sourceHost in _builder.Resources.OfType<ProjectResource>().Where(project => AppId(project.Name) == caller))
++            {
++                _builder.CreateResourceBuilder(sourceHost).WithEventStoreWorkloadClientCredentials(caller, sourceSecret)
++                    .WithEnvironment("Authentication__WorkloadIssuer__Workload", caller)
++                    .WithEnvironment("Authentication__BoundStreamRead__PrivateKey", sourcePrivateKey)
++                    .WithEnvironment("EventStore__Gateway__AppId", AppId("eventstore"));
++            }
++            gateway.WithEnvironment("Authentication__BoundStreamRead__PublicKeys__" + caller, Convert.ToBase64String(sourceKey.ExportSubjectPublicKeyInfo()))
++                .WithEnvironment("Authentication__BoundStreamRead__AllowedDomains__" + caller, "folders")
++                .WithEnvironment("Authentication__BoundStreamRead__MetadataOnlyCallers__" + caller, "true")
++                .WithEventStoreTrustedEffectSubmitter(caller);
++        }
++
+         IResource[] composedResources = [.. _builder.Resources,
+             .. _builder.Resources.OfType<ProjectResource>().SelectMany(project => project.Annotations.OfType<DaprSidecarAnnotation>().Select(annotation => annotation.Sidecar))];
+         foreach (IResource resource in composedResources)
+@@ -1143,7 +1186,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         _foreignToken = await TokenAsync("hexalith-eventstore", "tenant-a-user", "tenant-a-pass").ConfigureAwait(false);
+         await ConfigureIdentityAsync().ConfigureAwait(false);
+         await ObserveOwnerBootstrapAsync().ConfigureAwait(false);
+-        await SubmitAsync("system", "tenants", TenantId, "CreateTenant", new { tenantId = TenantId, name = "Durability acceptance", description = "Disposable local acceptance tenant" }, _adminToken).ConfigureAwait(false);
++        await SubmitAsync(TenantPlatformScopes.Tenants, "tenants", TenantId, "CreateTenant", new { tenantId = TenantId, name = "Durability acceptance", description = "Disposable local acceptance tenant" }, _adminToken).ConfigureAwait(false);
+         _humanToken = await TokenAsync("hexalith-eventstore", "tenant-a-user", "tenant-a-pass").ConfigureAwait(false);
+         JsonWebToken human = new(_humanToken);
+         if (!human.Claims.Any(claim => claim.Type == "eventstore:tenant" && claim.Value == TenantId)
+@@ -1152,7 +1195,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+             throw new InvalidOperationException("The real identity provider did not issue the required fresh-tenant/action claims.");
+         }
+ 
+-        await SubmitAsync("system", "tenants", TenantId, "AddUserToTenant", new { tenantId = TenantId, userId = PrincipalId, role = "TenantOwner" }, _adminToken).ConfigureAwait(false);
++        await SubmitAsync(TenantPlatformScopes.Tenants, "tenants", TenantId, "AddUserToTenant", new { tenantId = TenantId, userId = PrincipalId, role = "TenantOwner" }, _adminToken).ConfigureAwait(false);
+         _projectWorkloadToken = await IssueWorkloadAsync("project", EventStoreWorkloadOperations.DomainServiceProject).ConfigureAwait(false);
+         _metadataWorkloadToken = await IssueWorkloadAsync("metadata", EventStoreWorkloadOperations.DomainServiceMetadata).ConfigureAwait(false);
+     }
+@@ -1199,6 +1242,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         while (true)
+         {
+             using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/commands/status/" + messageId);
++            FolderDurabilityGatewayScope.Apply(request, TenantPlatformScopes.GlobalAdministrators);
+             using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, true, deadline.Token).ConfigureAwait(false);
+             if (response.IsSuccessStatusCode)
+             {
+@@ -1218,23 +1262,16 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         // Public human bootstrap remains forbidden; its refusal cannot append another administrator event.
+         using (HttpRequestMessage direct = new(HttpMethod.Post, "/api/v1/commands")
+         {
+-            Content = JsonContent.Create(new SubmitCommandRequest(NewId(), "system", "global-administrators", "global-administrators",
+-                "BootstrapGlobalAdmin", JsonSerializer.SerializeToElement(new { userId = principal }))),
++            Content = JsonContent.Create(FolderDurabilityGatewayScope.BootstrapCommand(NewId(), principal)),
+         })
+-        using (HttpResponseMessage denied = await FolderDurabilityHttp.SendAsync(client, direct, false, deadline.Token).ConfigureAwait(false))
++        {
++            FolderDurabilityGatewayScope.Apply(direct, TenantPlatformScopes.GlobalAdministrators);
++            using HttpResponseMessage denied = await FolderDurabilityHttp.SendAsync(client, direct, false, deadline.Token).ConfigureAwait(false);
+             await RequireStatusAsync(denied, HttpStatusCode.Forbidden, "Original direct human bootstrap refusal").ConfigureAwait(false);
++        }
+         using (HttpClient issuer = App.CreateHttpClient("security", "http"))
+         {
+-            using HttpResponseMessage issued = await issuer.PostAsync("/realms/hexalith/protocol/openid-connect/token",
+-                new FormUrlEncodedContent(new Dictionary<string, string>
+-                {
+-                    ["grant_type"] = "client_credentials",
+-                    ["client_id"] = AppId("tenants"),
+-                    ["client_secret"] = _bootstrapWorkloadSecret,
+-                    ["scope"] = "eventstore-audience.eventstore eventstore-operation.eventstore.command-submit",
+-                }), deadline.Token).ConfigureAwait(false);
+-            await RequireStatusAsync(issued, HttpStatusCode.OK, "Real owner bootstrap refusal-control assertion").ConfigureAwait(false);
+-            string assertion = (await issued.Content.ReadFromJsonAsync<JsonElement>(deadline.Token).ConfigureAwait(false)).GetProperty("access_token").GetString()!;
++            string assertion = await IssueBootstrapOwnerAssertionAsync(issuer, EventStoreWorkloadOperations.GatewayCommandSubmit, deadline.Token).ConfigureAwait(false);
+             string ownerSidecarName = _builder!.Resources.OfType<ProjectResource>().Single(project => project.Name == "tenants")
+                 .Annotations.OfType<DaprSidecarAnnotation>().Single().Sidecar.Name + "-cli";
+             using DaprClient ownerSidecar = new DaprClientBuilder().UseHttpEndpoint(App.GetEndpoint(ownerSidecarName, "http").ToString()).Build();
+@@ -1246,12 +1283,12 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+                     : new(HttpMethod.Post, "/api/v1/commands/bound/workload");
+                 var refusalBody = new
+                 {
+-                    command = new SubmitCommandRequest(NewId(), "system", "global-administrators", "global-administrators",
+-                        "BootstrapGlobalAdmin", JsonSerializer.SerializeToElement(new { userId = principal })),
++                    command = FolderDurabilityGatewayScope.BootstrapCommand(NewId(), principal),
+                     principalId = principal,
+                 };
+                 invalid.Content = JsonContent.Create(refusalBody);
+-                if (credential == "human") invalid.Headers.Authorization = new("Bearer", _adminToken);
++                FolderDurabilityGatewayScope.Apply(invalid, TenantPlatformScopes.GlobalAdministrators);
++                if (credential == "human" || proofControl) invalid.Headers.Authorization = new("Bearer", _adminToken);
+                 if (proofControl)
+                 {
+                     invalid.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, assertion);
+@@ -1266,18 +1303,40 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+                 await RequireStatusAsync(denied, credential is "missing" or "human" ? HttpStatusCode.Unauthorized : HttpStatusCode.Forbidden,
+                     "Actual owner bootstrap " + credential + " refusal").ConfigureAwait(false);
+             }
++            string sourceAssertion = await IssueBootstrapOwnerAssertionAsync(issuer, EventStoreWorkloadOperations.GatewayStreamRead, deadline.Token).ConfigureAwait(false);
++            using HttpRequestMessage source = FolderDurabilityGatewayScope.BootstrapSource(ownerSidecar, AppId("eventstore"), AppId("tenants"),
++                sourceAssertion, await ParameterAsync("durability-tenants-bootstrap-proof").ConfigureAwait(false), DateTimeOffset.UtcNow);
++            BindCommittedCatalog(source, "tenants");
++            using HttpClient sourceBoundary = new();
++            using HttpResponseMessage retained = await FolderDurabilityHttp.SendAsync(sourceBoundary, source, true, deadline.Token).ConfigureAwait(false);
++            await RequireStatusAsync(retained, HttpStatusCode.OK, "Original persisted administrator source").ConfigureAwait(false);
++            FolderDurabilityBootstrapEvidence.Source((await retained.Content.ReadFromJsonAsync<StreamReadPage>(Json, deadline.Token).ConfigureAwait(false))!, messageId, receipt.GetProperty("CorrelationId").GetString()!, principal);
+         }
+-        using HttpRequestMessage source = new(HttpMethod.Post, "/api/v1/streams/read")
+-        { Content = JsonContent.Create(new StreamReadRequest("system", "global-administrators", "global-administrators")) };
+-        using HttpResponseMessage retained = await FolderDurabilityHttp.SendAsync(client, source, true, deadline.Token).ConfigureAwait(false);
+-        await RequireStatusAsync(retained, HttpStatusCode.OK, "Original persisted administrator source").ConfigureAwait(false);
+-        FolderDurabilityBootstrapEvidence.Source((await retained.Content.ReadFromJsonAsync<StreamReadPage>(Json, deadline.Token).ConfigureAwait(false))!, messageId, receipt.GetProperty("CorrelationId").GetString()!, principal);
+         await FolderDurabilityBootstrapEvidence.WaitForAuthorityAsync(async token =>
+             (await RawStore.GetAsync<JsonObject>("statestore", "projection:global-administrators:singleton", token).ConfigureAwait(false)).Value,
+             principal, deadline.Token).ConfigureAwait(false);
+         Console.WriteLine("BOOTSTRAP_VERIFIED accepted=202 terminal=Completed originalSource=1 humanAttributed=true catalogGenerationBound=true");
+     }
+ 
++    private async Task<string> IssueBootstrapOwnerAssertionAsync(HttpClient issuer, string operation, CancellationToken cancellationToken)
++    {
++        if (operation is not (EventStoreWorkloadOperations.GatewayCommandSubmit or EventStoreWorkloadOperations.GatewayStreamRead))
++            throw new InvalidOperationException("The bootstrap owner assertion names an unsupported operation.");
++        using HttpResponseMessage issued = await issuer.PostAsync("/realms/hexalith/protocol/openid-connect/token",
++            new FormUrlEncodedContent(new Dictionary<string, string>
++            {
++                ["grant_type"] = "client_credentials",
++                ["client_id"] = AppId("tenants"),
++                ["client_secret"] = _bootstrapWorkloadSecret,
++                ["scope"] = "eventstore-audience.eventstore eventstore-operation." + operation.Replace(':', '.'),
++            }), cancellationToken).ConfigureAwait(false);
++        await RequireStatusAsync(issued, HttpStatusCode.OK, "Real owner bootstrap operation assertion").ConfigureAwait(false);
++        string assertion = (await issued.Content.ReadFromJsonAsync<JsonElement>(cancellationToken).ConfigureAwait(false)).GetProperty("access_token").GetString()!;
++        if (JwtWorkloadAssertionIssuer.GetTokenScopeFailure(assertion, "eventstore", operation) is not null)
++            throw new InvalidOperationException("The real owner issuer did not return the requested exact audience and operation.");
++        return assertion;
++    }
++
+     private async Task RefreshCapacityWorkloadTokensAsync()
+     {
+         DateTime refreshBefore = DateTime.UtcNow.AddMinutes(1);
+@@ -1387,6 +1446,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+                 IdempotencyKey: domain == "folders" ? NewId() : null)),
+         };
+         request.Headers.Add("X-Correlation-Id", NewId());
++        FolderDurabilityGatewayScope.Apply(request, tenant);
+         using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, false, TestContext.Current.CancellationToken).ConfigureAwait(false);
+         await RequireStatusAsync(response, HttpStatusCode.Accepted, "Authenticated " + command).ConfigureAwait(false);
+         JsonElement accepted = await response.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(false);
+@@ -1396,6 +1456,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         while (true)
+         {
+             using HttpRequestMessage statusRequest = new(HttpMethod.Get, "/api/v1/commands/status/" + statusKey);
++            FolderDurabilityGatewayScope.Apply(statusRequest, tenant);
+             using HttpResponseMessage status = await FolderDurabilityHttp.SendAsync(client, statusRequest, true, deadline.Token).ConfigureAwait(false);
+             if (status.IsSuccessStatusCode)
+             {
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs
+index 36c0d3f9..cef72a4d 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs
+@@ -20,21 +20,35 @@ internal static class FolderDurabilityBootstrapConfiguration
+         security.WithRealmImport(directory);
+     }
+ 
+-    /// <summary>Extends the imported realm with the exact owner workload scopes, without a human grant.</summary>
++    /// <summary>Aligns the disposable designated administrator and owner workload with their existing operations.</summary>
+     internal static JsonObject Realm(JsonObject original, string eventStoreAppId = "eventstore", string tenantsAppId = "tenants", string foldersAppId = "folders")
+     {
+         ArgumentException.ThrowIfNullOrWhiteSpace(eventStoreAppId);
+         ArgumentException.ThrowIfNullOrWhiteSpace(tenantsAppId);
+         ArgumentException.ThrowIfNullOrWhiteSpace(foldersAppId);
+         JsonObject realm = original.DeepClone().AsObject();
++        JsonObject administrator = realm["users"]!.AsArray().Single(user => user!["id"]!.GetValue<string>() == "admin-user"
++            && user["username"]!.GetValue<string>() == "admin-user")!.AsObject();
++        if (!administrator["attributes"]!["global_admin"]!.AsArray().Any(value => value!.GetValue<string>() == "true"))
++            throw new InvalidOperationException("The disposable bootstrap principal is not the designated administrator.");
++        JsonArray permissions = administrator["attributes"]!["permissions"]!.AsArray();
++        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" })
++            if (!permissions.Any(value => value!.GetValue<string>() == permission)) permissions.Add(permission);
++        JsonArray tenantGrants = administrator["attributes"]!["tenants"]!.AsArray();
++        for (int index = tenantGrants.Count - 1; index >= 0; index--)
++            if (tenantGrants[index]!.GetValue<string>() == "system") tenantGrants.RemoveAt(index);
+         JsonArray clients = realm["clients"]!.AsArray();
+         JsonArray scopes = realm["clientScopes"]!.AsArray();
+-        JsonObject audience = scopes.Single(node => node!["name"]!.GetValue<string>() == "eventstore-audience.tenants")!.DeepClone().AsObject();
+-        audience["name"] = "eventstore-audience.eventstore";
+-        audience["protocolMappers"]!.AsArray().Single()!["config"]!["included.custom.audience"] = "eventstore";
+-        scopes.Add(audience);
++        if (!scopes.Any(node => node!["name"]!.GetValue<string>() == "eventstore-audience.eventstore"))
++        {
++            JsonObject audience = scopes.Single(node => node!["name"]!.GetValue<string>() == "eventstore-audience.tenants")!.DeepClone().AsObject();
++            audience["name"] = "eventstore-audience.eventstore";
++            audience["protocolMappers"]!.AsArray().Single()!["config"]!["included.custom.audience"] = "eventstore";
++            scopes.Add(audience);
++        }
+         foreach (string operation in new[] { "eventstore:command-submit", "eventstore:stream-read" })
+         {
++            if (scopes.Any(node => node!["name"]!.GetValue<string>() == "eventstore-operation." + operation.Replace(':', '.'))) continue;
+             JsonObject scope = scopes.Single(node => node!["name"]!.GetValue<string>() == "eventstore-operation.domain-service.process")!.DeepClone().AsObject();
+             scope["name"] = "eventstore-operation." + operation.Replace(':', '.');
+             scope["protocolMappers"]!.AsArray().Single()!["config"]!["claim.value"] = operation;
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs
+index ff04df2b..1c4e93cd 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs
+@@ -4,6 +4,9 @@ using Aspire.Hosting;
+ using Aspire.Hosting.ApplicationModel;
+ using Aspire.Hosting.Testing;
+ using Hexalith.EventStore.Contracts.Routing;
++using Hexalith.EventStore.Contracts.Identity;
++using Hexalith.Tenants.Contracts.Commands;
++using Hexalith.Tenants.Contracts.Routing;
+ using Hexalith.EventStore.Contracts.Streams;
+ using Shouldly;
+ using Xunit;
+@@ -99,14 +102,14 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
+         else Should.Throw<InvalidOperationException>(() => FolderDurabilityBootstrapEvidence.Authority(authority, "administrator"));
+     }
+ 
+-    /// <summary>Provisions actual physical peer identities before startup while retaining existing users, secrets and operation scopes.</summary>
++    /// <summary>Provisions actual peer identities and equivalent canonical administrator scopes before startup.</summary>
+     [Fact]
+     public void IsolatedIssuerImportIsReadyBeforeEitherOwnerOrGatewayStarts()
+     {
+         string source = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json"));
+         JsonObject original = JsonNode.Parse(File.ReadAllText(source))!.AsObject();
+         JsonObject realm = FolderDurabilityBootstrapConfiguration.Realm(original, "eventstore-selected", "tenants-selected", "folders-selected");
+-        realm["users"]!.ToJsonString().ShouldBe(original["users"]!.ToJsonString());
++        AssertOnlyExistingAdministratorScopeChanges(original, realm);
+         JsonArray clients = realm["clients"]!.AsArray();
+         clients.ShouldNotContain(client => client!["clientId"]!.GetValue<string>() == "eventstore" || client["clientId"]!.GetValue<string>() == "tenants");
+         JsonObject gateway = clients.Single(client => client!["clientId"]!.GetValue<string>() == "eventstore-selected")!.AsObject();
+@@ -123,6 +126,58 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
+         owner["protocolMappers"]!.AsArray().Single(mapper => mapper!["name"]!.GetValue<string>() == "authenticated-surface")!["config"]!["claim.value"]!.GetValue<string>().ShouldBe("service");
+     }
+ 
++    [Fact]
++    public void ImportedAdministratorHasExactlyTheCanonicalPermissionsNeededByItsExistingWorkflow()
++    {
++        string source = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json"));
++        JsonObject original = JsonNode.Parse(File.ReadAllText(source))!.AsObject();
++        string before = original.ToJsonString();
++        JsonObject realm = FolderDurabilityBootstrapConfiguration.Realm(original);
++        string[] required =
++        [
++            TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == BootstrapGlobalAdmin.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
++            TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == CreateTenant.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
++            TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == AddUserToTenant.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
++            TenantCatalogDeclarations.Queries.Single(query => query.MessageType == "get-global-administrators").PlatformAdmission!.RequiredHumanPermission,
++            TenantCatalogDeclarations.Queries.Single(query => query.MessageType == "list-tenants").PlatformAdmission!.RequiredHumanPermission,
++        ];
++        required.ShouldBe(new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" });
++        TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == BootstrapGlobalAdmin.CommandType)
++            .Route.PlatformAdmission!.Namespace.ShouldBe("platform:global-administrators");
++        foreach (string operation in new[] { CreateTenant.CommandType, AddUserToTenant.CommandType })
++            TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == operation)
++                .Route.PlatformAdmission!.Namespace.ShouldBe("platform:tenants");
++        JsonObject administrator = realm["users"]!.AsArray().Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
++        foreach (string permission in required)
++            administrator["attributes"]!["permissions"]!.AsArray().Count(item => item!.GetValue<string>() == permission).ShouldBe(1);
++        administrator["username"]!.GetValue<string>().ShouldBe("admin-user");
++        administrator["attributes"]!["global_admin"]!.AsArray().ShouldHaveSingleItem()!.GetValue<string>().ShouldBe("true");
++        string[] grants = administrator["attributes"]!["tenants"]!.AsArray().Select(item => item!.GetValue<string>()).ToArray();
++        grants.ShouldBe(new[] { "tenant-a", "tenant-b" });
++        TenantCanonicalizer.TryCanonicalizeGrants(grants, out _).ShouldBeTrue();
++        foreach (JsonNode? user in realm["users"]!.AsArray().Where(user => user!["id"]!.GetValue<string>() != "admin-user"))
++        {
++            user!["attributes"]!["permissions"]!.AsArray().ShouldNotContain(permission => required.Contains(permission!.GetValue<string>(), StringComparer.Ordinal));
++            user.ToJsonString().ShouldBe(original["users"]!.AsArray().Single(candidate => candidate!["id"]!.GetValue<string>() == user["id"]!.GetValue<string>())!.ToJsonString());
++        }
++        original.ToJsonString().ShouldBe(before);
++    }
++
++    [Theory]
++    [InlineData("subject")]
++    [InlineData("not-admin")]
++    public void ImportCannotGrantBootstrapToAnotherOrNondesignatedPrincipal(string fault)
++    {
++        string source = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json"));
++        JsonObject original = JsonNode.Parse(File.ReadAllText(source))!.AsObject();
++        JsonObject administrator = original["users"]!.AsArray().Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
++        if (fault == "subject") administrator["id"] = "another-principal";
++        else administrator["attributes"]!["global_admin"] = new JsonArray("false");
++        string before = original.ToJsonString();
++        Should.Throw<InvalidOperationException>(() => FolderDurabilityBootstrapConfiguration.Realm(original));
++        original.ToJsonString().ShouldBe(before);
++    }
++
+     [Fact]
+     public void ActualIssuerProfilesPreserveHumansAndKeepTheOwnerServiceAccountSeparate()
+     {
+@@ -131,7 +186,7 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
+         string before = original.ToJsonString();
+         JsonObject realm = FolderDurabilityBootstrapConfiguration.Realm(original);
+         original.ToJsonString().ShouldBe(before);
+-        realm["users"]!.ToJsonString().ShouldBe(original["users"]!.ToJsonString());
++        AssertOnlyExistingAdministratorScopeChanges(original, realm);
+         JsonObject owner = realm["clients"]!.AsArray().Single(client => client!["clientId"]!.GetValue<string>() == "tenants")!.AsObject();
+         owner["publicClient"]!.GetValue<bool>().ShouldBeFalse(); owner["serviceAccountsEnabled"]!.GetValue<bool>().ShouldBeTrue();
+         owner["defaultClientScopes"]!.AsArray().ShouldBeEmpty();
+@@ -141,8 +196,20 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
+         {
+             string id = client!["clientId"]!.GetValue<string>();
+             JsonObject mapper = client["protocolMappers"]!.AsArray().Single(node => node!["name"]!.GetValue<string>() == "authenticated-surface")!.AsObject();
+-            mapper["config"]!["claim.value"]!.GetValue<string>().ShouldBe(id is "eventstore" or "tenants" ? "service" : "ui");
++            mapper["config"]!["claim.value"]!.GetValue<string>().ShouldBe(id is "eventstore" or "tenants" or "folders" or "folders-workers" ? "service" : "ui");
+             if (id == "tenants") mapper.ToJsonString().ShouldNotContain("global_admin");
+         }
+     }
++
++    private static void AssertOnlyExistingAdministratorScopeChanges(JsonObject original, JsonObject realm)
++    {
++        JsonArray expected = original["users"]!.DeepClone().AsArray();
++        JsonObject administrator = expected.Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
++        JsonArray permissions = administrator["attributes"]!["permissions"]!.AsArray();
++        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" })
++            permissions.Add(permission);
++        JsonArray grants = administrator["attributes"]!["tenants"]!.AsArray();
++        grants.Remove(grants.Single(grant => grant!.GetValue<string>() == "system"));
++        realm["users"]!.ToJsonString().ShouldBe(expected.ToJsonString());
++    }
+ }
+diff --git a/tests/Hexalith.Folders.Server.Tests/EventStoreOrganizationEffectivePermissionsReadModelTests.cs b/tests/Hexalith.Folders.Server.Tests/EventStoreOrganizationEffectivePermissionsReadModelTests.cs
+index ddb6af49..02dc8271 100644
+--- a/tests/Hexalith.Folders.Server.Tests/EventStoreOrganizationEffectivePermissionsReadModelTests.cs
++++ b/tests/Hexalith.Folders.Server.Tests/EventStoreOrganizationEffectivePermissionsReadModelTests.cs
+@@ -1,7 +1,11 @@
+ using System.Text.Json;
+ using System.Text.Json.Nodes;
+ using System.Net;
++using System.Net.Http.Json;
+ 
++using Hexalith.EventStore.Client.Streams;
++using Hexalith.EventStore.Contracts.Identity;
++using Hexalith.EventStore.Contracts.Streams;
+ using Hexalith.EventStore.Client.Projections;
+ using Hexalith.Folders.Aggregates.Organization;
+ using Hexalith.Folders.Aggregates.Folder;
+@@ -248,10 +252,11 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
+     public async Task IndependentSequenceReadUsesOnlyTheConfiguredDaprApiToken(string token)
+     {
+         CaptureSequenceHandler handler = new();
+-        using HttpClient client = new(handler);
++        using var transport = new NativeSequenceReaderTestTransport(handler, token);
++        HttpClient client = transport.Client;
+         IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(
+             new Dictionary<string, string?> { ["DAPR_API_TOKEN"] = token }).Build();
+-        DaprOrganizationStreamSequenceReader reader = new(client, configuration);
++        DaprOrganizationStreamSequenceReader reader = new(NativeSequenceReaderTestTransport.Reader(client));
+         (await reader.GetCurrentSequenceAsync("tenant-a", "folder-a", TestContext.Current.CancellationToken))
+             .ShouldBe(7);
+         handler.ApiToken.ShouldBe(string.IsNullOrEmpty(token) ? null : token);
+@@ -355,25 +360,25 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
+     }
+ 
+     [Fact]
+-    public async Task IndependentSequenceReadUsesTheAggregateActorMethodAndParsesItsNumericHead()
++    public async Task IndependentSequenceReadUsesTheSupportedMetadataRouteAndValidatesItsNativeHead()
+     {
+         CaptureSequenceHandler handler = new();
+-        using HttpClient client = new(handler);
+-        DaprOrganizationStreamSequenceReader reader = new(client);
++        using var transport = new NativeSequenceReaderTestTransport(handler);
++        HttpClient client = transport.Client;
++        DaprOrganizationStreamSequenceReader reader = new(NativeSequenceReaderTestTransport.Reader(client));
+ 
+         (await reader.GetCurrentSequenceAsync("tenant-a", "folder-a",
+             TestContext.Current.CancellationToken)).ShouldBe(7);
+         handler.Method.ShouldBe(HttpMethod.Post);
+-        handler.Path.ShouldContain("/v1.0/actors/AggregateActor/");
+-        handler.Path.ShouldContain("tenant-a%3Afolders%3Afolder-a");
+-        handler.Path.ShouldEndWith("/method/GetCurrentSequenceAsync");
++        handler.Path.ShouldEndWith("/api/v1/streams/read/workload");
++        handler.SourceIdentity.ShouldBe(new AggregateIdentity("tenant-a", "folders", "folder-a"));
+     }
+ 
+     [Fact]
+     public async Task FolderActorInvocationUsesItsSuppliedHeadWithoutCallingTheLockedActor()
+     {
+         using HttpClient client = new(new ThrowOnSendHandler());
+-        DaprOrganizationStreamSequenceReader reader = new(client);
++        DaprOrganizationStreamSequenceReader reader = new(NativeSequenceReaderTestTransport.Reader(client));
+         using (FolderActorSequenceScope.Enter("tenant-a", "folder-a", 7))
+         {
+             (await reader.GetCurrentSequenceAsync("tenant-a", "folder-a",
+@@ -719,7 +724,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
+     public async Task OrganizationActorInvocationUsesItsSuppliedHeadWithoutCallingTheLockedActor()
+     {
+         using HttpClient client = new(new ThrowOnSendHandler());
+-        DaprOrganizationStreamSequenceReader reader = new(client);
++        DaprOrganizationStreamSequenceReader reader = new(NativeSequenceReaderTestTransport.Reader(client));
+ 
+         using (OrganizationActorSequenceScope.Enter("tenant-a", "tenant-a", 4))
+         {
+@@ -732,13 +737,16 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
+     }
+ 
+     [Fact]
+-    public async Task SequenceRequestTimeoutIsAnUnavailableAuthorizationSource()
++    public async Task SequenceDependencyCancellationIsAnUnavailableAuthorizationSource()
+     {
+-        using HttpClient client = new(new CancelOnSendHandler());
+-        DaprOrganizationStreamSequenceReader reader = new(client);
++        CancelOnSendHandler handler = new();
++        using var transport = new NativeSequenceReaderTestTransport(handler);
++        HttpClient client = transport.Client;
++        DaprOrganizationStreamSequenceReader reader = new(NativeSequenceReaderTestTransport.Reader(client));
+ 
+-        await Should.ThrowAsync<TimeoutException>(() => reader.GetCurrentSequenceAsync(
++        await Should.ThrowAsync<InvalidOperationException>(() => reader.GetCurrentSequenceAsync(
+             "tenant-a", "tenant-a", TestContext.Current.CancellationToken));
++        handler.Calls.ShouldBe(1);
+     }
+ 
+     [Fact]
+@@ -996,6 +1004,8 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
+ 
+         public string? ApiToken { get; private set; }
+ 
++        public AggregateIdentity? SourceIdentity { get; private set; }
++
+         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+             CancellationToken cancellationToken)
+         {
+@@ -1003,18 +1013,33 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
+             Path = request.RequestUri?.AbsoluteUri ?? string.Empty;
+             ApiToken = request.Headers.TryGetValues("dapr-api-token", out IEnumerable<string>? values)
+                 ? values.Single() : null;
++            var selected = JsonSerializer.Deserialize<StreamReadRequest>(request.Content!.ReadAsStringAsync(cancellationToken).GetAwaiter().GetResult(), JsonSerializerOptions.Web)!;
++            selected.FromSequence.ShouldBe(0);
++            selected.ToSequence.ShouldBe(0);
++            selected.PageSize.ShouldBe(1);
++            selected.RequireNativeProof.ShouldBeTrue();
++            SourceIdentity = new(selected.Tenant, selected.Domain, selected.AggregateId!);
++            NativeSourceProof proof = NativeSourceProofCodec.CreateSeed(SourceIdentity, "01ARZ3NDEKTSV4RRFFQ69G5FAV");
++            for (int sequence = 1; sequence <= 7; sequence++)
++                proof = NativeSourceProofCodec.ExtendDigest(proof, SourceIdentity, sequence, "original-message-" + sequence, new string('a', 64));
+             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+             {
+-                Content = new StringContent("7"),
++                Content = JsonContent.Create(new StreamReadPage(selected.Tenant, selected.Domain, selected.AggregateId!, [],
++                    new StreamReadMetadata(0, 0, null, 7, 0, false, null) { NativeProof = proof })),
+             });
+         }
+     }
+ 
+     private sealed class CancelOnSendHandler : HttpMessageHandler
+     {
++        public int Calls { get; private set; }
++
+         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+             CancellationToken cancellationToken)
+-            => throw new TaskCanceledException("The sidecar did not reply.");
++        {
++            Calls++;
++            throw new TaskCanceledException("The sidecar did not reply.");
++        }
+     }
+ 
+     private sealed class TestSequenceReader : IOrganizationStreamSequenceReader
+diff --git a/tests/Hexalith.Folders.Server.Tests/ScopeCheckingFolderPermissionEvidenceProvider.cs b/tests/Hexalith.Folders.Server.Tests/ScopeCheckingFolderPermissionEvidenceProvider.cs
+index ff229f09..54877b7d 100644
+--- a/tests/Hexalith.Folders.Server.Tests/ScopeCheckingFolderPermissionEvidenceProvider.cs
++++ b/tests/Hexalith.Folders.Server.Tests/ScopeCheckingFolderPermissionEvidenceProvider.cs
+@@ -1,4 +1,5 @@
+ using Hexalith.Folders.Authorization;
++using Hexalith.EventStore.Client.Streams;
+ 
+ namespace Hexalith.Folders.Server.Tests;
+ 
+@@ -6,7 +7,8 @@ namespace Hexalith.Folders.Server.Tests;
+ internal sealed class ScopeCheckingFolderPermissionEvidenceProvider(IFolderPermissionEvidenceProvider inner)
+     : IFolderPermissionEvidenceProvider
+ {
+-    private readonly DaprOrganizationStreamSequenceReader _reader = new(new HttpClient(new LockedActorSequenceHandler()));
++    private readonly DaprOrganizationStreamSequenceReader _reader = new(
++        SourceHeadBoundaryProxy.Create<INativeSourceMetadataReader>((_, _) => throw new InvalidOperationException("The sequence reader called the locked actor.")));
+ 
+     /// <summary>Gets the heads supplied by the request handler's invocation scopes.</summary>
+     internal List<long> ObservedHeads { get; } = [];
+diff --git a/_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-source-head-transport.md b/_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-source-head-transport.md
+new file mode 100644
+index 00000000..f7585453
+--- /dev/null
++++ b/_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-source-head-transport.md
+@@ -0,0 +1,302 @@
++---
++title: 'Story 12.2 independent source-head transport prerequisite'
++status: 'approved-in-progress'
++created: '2026-11-02'
++parent_spec: 'spec-12-2-durable-projections-and-task-completion-pipeline.md'
++---
++
++# Owner decision
++
++2026-11-03: The user replied **approve** to this proposal. This authorizes the bounded SDK-owned
++read-only source-head composition, actual Folders source-only workload/key/grant enrollment and
++consumer migration described below. First establish the authoritative-zero/absence evidence contract
++through the supported authenticated metadata route. If that contract cannot be established within
++the proposed bounds, return the precise remaining SDK prerequisite before production implementation.
++All listed exclusions, existing source/proof checks, human-command identity semantics and deadlines
++remain in force. Prior sealed evidence remains unchanged.
++
++## Supported evidence contract established before production implementation — 2026-11-03
++
++The supported zero observation is an **existing**, valid `Available` native proof with `Exists=true`,
++head zero, the canonical seed digest, no head message, and the exact tenant/domain/aggregate binding.
++This is authoritative empty-stream evidence, not physical nonexistence inferred from a missing row.
++The read-only operation never creates or bootstraps an anchor. A never-created/unactivated aggregate
++without supported native evidence remains unavailable. The approved evidence table does not require
++turning every physically absent aggregate into safe not-found; it requires preserving valid zero
++separately from unsafe or unavailable evidence.
++
++Before any production change in this continuation, eight owner component cases executed the real
++`AggregateActor`, production workload authentication with a signed JWT and exact RSA resource proof,
++the existing `/api/v1/streams/read/workload` controller and public gateway/native reader. Existing
++positive and zero native proofs returned 200 with exact content-free evidence. Missing metadata,
++legacy empty/nonempty metadata without proof, completed/pending erasure and malformed native proof
++returned 503 and null native observations. Actor inspection still distinguishes their actual
++`Exists`, `Erased` and `Unsupported`/`Invalid` states; the safe HTTP outcome does not grant absence
++authority. No actor-state write, source event read or payload-readability call occurred; persisted
++state serialized identically before/after. These are component credentials and in-memory committed
++state through real implementations, not live enrollment/catalog acceptance.
++
++The final owner build passed with zero warnings/errors; the eight cases passed with zero
++failures/errors/skips in 1.126 seconds. The initial new-test build's missing null-argument guard is
++retained. The narrow supported contract requires no new persistence protocol, actor schema,
++proof-bootstrap grant or raw-actor guard exception, so the approved independent composition and
++consumer enrollment may proceed with unsupported absence remaining unavailable.
++
++## Metadata-only enrollment enforcement within the approved scope
++
++Executed current-source controls additionally show that the existing generic stream grant permits an
++event range using the same resource proof as a metadata request, or using JWT tenant/domain bindings
++without that proof. This is established existing generic behavior, not a new vulnerability claim:
++the current grant is a stream-read grant. A client wrapper alone cannot enforce the approved
++metadata-only authority at the receiver.
++
++The approved least-privilege source-reader capability therefore includes one explicit trusted
++receiver enrollment setting for the new source-only callers. For those callers the existing route
++must require exactly `FromSequence=0`, `ToSequence=0`, `PageSize=1`, `RequireNativeProof=true`, no
++checkpoint/continuation/projection context, and an actual valid exact resource proof even when JWT
++tenant/domain claims could otherwise authorize. The setting belongs to supported host/catalog
++configuration, never a request flag. Generic readers retain their existing behavior; route, proof,
++JWT, actor and persistence schemas remain unchanged. Ranges, altered shapes, missing/invalid proof,
++mixed/wrong credentials and bypass attempts must deny before actor/source observation. This is the
++necessary implementation of the already-approved metadata-only enrollment, not an additional grant,
++raw-actor exception or authority expansion. Record its binding in the independent catalog observation.
++
++Before that correction, both real actor/workload HTTP range controls passed with 200 and one original
++event returned (two cases), and three public proof controls verified that range/page-size/native-proof
++shape is not part of the existing resource signature while changed caller/aggregate still refuses.
++The complete new owner matrix passed 10/10; current client native-reader/proof controls passed as
++recorded in the continuation evidence. No production source was changed before these reproductions.
++
++# Approved bounded scope
++
++Authorize the EventStore owner to qualify a public, independently enrolled, read-only source-head
++composition, then migrate the existing Folders independent source-head reader to that composition.
++The operation must preserve authoritative zero/absence separately from unsupported, missing-proof,
++erased, malformed and unavailable evidence. The owner must first define which supported source
++evidence can establish zero for a never-created aggregate. If that distinction cannot be established
++through the existing authenticated metadata route, return the remaining precise SDK prerequisite
++before implementation. Do not infer zero from a 404, 503, null proof or missing projection.
++
++This proposal supplements the approved
++[security enrollment](proposal-12-2-current-sdk-security-enrollment.md) covers its listed endpoint,
++catalog, authentication and probe changes and a selective public registration compatibility repair.
++A separately keyed source reader, workload/key/grant enrollment and authoritative absence semantics
++are a distinct capability now authorized by the owner decision above. No production implementation
++or enrollment existed at approval. The mandatory raw actor/catalog guard remains intact.
++
++# Established current-source boundary
++
++The parent's fourth audited strict operational attempt passed genuine bound bootstrap: actual 202,
++terminal Completed, all four original credential/proof refusals, original retained source and
++projected administrator authority. Tenant creation, tenant membership and organization baseline/grant
++commands completed. The unchanged body then issued its first unknown-profile
++`ConfigureProviderBinding` PUT, which requires 403. The client instead observed
++`HttpRequestException` / `HttpIOException: ResponseEnded` at
++`OperationalStatusDurabilityAcceptanceTests.RequireRealTaskClosureAsync` line 173. This was the
++provider-binding refusal control; it was not folder creation. The attempt finished with one failure,
++zero errors/skips in 233.011 seconds. SM4 was not reached.
++
++The retained log independently demonstrates the following source-read failure during that command:
++
++1. Folders invokes `DaprOrganizationStreamSequenceReader` for the organization aggregate while
++   processing the different provider-binding aggregate.
++2. The reader constructs a raw Dapr `AggregateActor/.../GetCurrentSequenceAsync` invocation.
++3. The current mandatory `RouteCatalogInvocationHandler` refuses it with
++   `Raw actor invocation has no proven typed catalog scope.` before catalog authority acquisition or
++   network transport.
++4. The domain `/process` path returns 503; the actor records the command as Rejected.
++
++The phrase occurs in three fields of **one structured refusal event**, not three established
++requests. `/process` completes its 503 response and the actor records Rejected, but the retained
++log has no corresponding completed outer public PUT response before the client's premature EOF.
++No retained stack or response-framing observation connects that EOF to this refusal. The source-read
++incompatibility is proven; the separate `ResponseEnded` cause remains unresolved. No timeout,
++retry, response-framing or assertion change is justified by this evidence.
++
++The owner packet retains exact private logs/XML, audited runtime/source/head identities and empty
++owned-resource cleanup for `strict-operational-4`. No further live run was made for this proposal.
++
++# Existing public capabilities and limits
++
++The Folders reader is registered in both Server and Workers. It supplies fresh organization/folder
++heads to authorization, provider-binding and operational readers. Its exact own-actor sequence scopes
++avoid self-invocation deadlock only when tenant and aggregate match; a provider-binding actor's head
++cannot stand in for the different organization's head. A projection watermark cannot replace that
++fresh source observation either.
++
++The current SDK exposes workload stream reads, `BoundStreamReadProof`, workload assertion sources
++and `GatewayNativeSourceMetadataReader`. The latter requests content-free metadata (`FromSequence=0`,
++`ToSequence=0`, `PageSize=1`, `RequireNativeProof=true`) and validates native proof, but returns null
++for missing, unsupported and unavailable evidence. The current missing-actor proof inspection does
++not establish authoritative zero: it reports unsupported/missing proof, and required-proof gateway
++reads fail closed. These outcomes cannot satisfy the existing `Task<long>` reader's zero contract by
++conversion.
++
++`AddEventStoreNativeSourceMetadataReader` currently selects the SDK's raw Dapr metadata adapter; that
++adapter is refused by the same mandatory catalog guard. Globally selecting
++`AddEventStoreGatewayWorkloadTransport` changes the default gateway transport and assertion source.
++Folders' current default gateway forwards the real human caller for commands and deliberately rejects
++background/domain-service human forwarding. Changing that default would alter existing command
++identity semantics. Public constructors permit explicit composition, so this is not a claim that no
++client can be constructed. The missing approved contract is a supported, independently configured
++source-only composition, real enrollment and preservation of the required source distinctions.
++
++The present AppHost/fixture has no independently enrolled Folders source-reader workload, signing key
++and least-privilege grant. Reusing or relabeling EventStore or Tenants' existing identity/key would not
++establish Folders authority and is excluded.
++
++# Proposed bounded implementation after approval
++
++The EventStore owner should prefer the existing authenticated workload metadata route and public
++proof types if they can meet the source contract. Add only the smallest public SDK registration or
++client helper needed to select an independently configured read-only client without changing the
++default human-command gateway. Specify the result contract and distinguish valid positive head and
++authoritative zero/absence from unsupported or unsafe evidence before writing the consumer adapter.
++No new persistence protocol, actor schema, generic raw actor permission or internal registration in
++Folders is proposed.
++
++Enroll the actual Folders caller with its own issuer client and signing material through the supported
++SDK/issuer/catalog configuration. Bind every request to its exact caller, managed tenant, `folders`
++domain, aggregate resource, stream-read operation, expiry and current committed catalog. Permit only
++the metadata observation required by the existing reader; do not add command-submit or broader domain
++grants. Inventory actual Server/Workers consumers before selecting host enrollments. Give Workers an
++independent grant only if its existing reachable reads require it; do not grant both hosts by default.
++Keep secrets in disposable/private configuration and record only safe identities and hashes.
++
++In Folders, adapt the existing independent source-head seam through that public SDK composition.
++Preserve the exact own-actor shortcuts, every fresh observation, cancellation and the existing
++three-second reader ceiling and all enclosing five-/forty-second limits. A stricter SDK bound may
++remain stricter; no deadline may be increased. Preserve current authorization outcomes:
++
++| Evidence | Required existing consumer disposition |
++| --- | --- |
++| Valid independently observed positive head with missing projection | Stale/unavailable; never authorize from absent projection |
++| Positively established zero head/authoritative absence with missing projection | Existing safe not-found outcome |
++| Unsupported, missing proof, malformed/corrupt, erased, denied, catalog mismatch or unavailable source | Unavailable/refused; never invent zero or authorize |
++| Exact current own-actor tenant/aggregate scope | Existing scoped actor head; no independent self-call |
++| Different tenant or aggregate | Fresh independently authorized observation required |
++
++No direct state-store reads, fabricated scopes, caller impersonation, projected-head substitution,
++guard bypass, weakened human/workload separation, relaxed denial, changed deadline, changed strict
++body, public v2 exposure, provider execution, package/gitlink update, publication, deployment or Git
++mutation is included.
++
++# Executed refusal and distinction controls
++
++`CurrentSdkSourceHeadBoundaryTests` contains seven passing component cases using the actual public
++SDK catalog handler and actual Folders/SDK reader implementations. They establish:
++
++- The Folders raw source-head adapter is refused before either transport or catalog authority is used.
++- The SDK's registered raw metadata adapter also fails closed with zero transport/authority calls.
++- A missing organization projection plus that refused source read remains unavailable with
++  `organization_stream_unavailable`; it never becomes a zero-head/not-found observation.
++- An explicitly supplied zero source observation retains the existing safe
++  `organization_projection_missing` not-found outcome.
++- A gateway missing response, unsupported zero without native proof and backend unavailability all
++  remain null observations; each request retains the exact metadata-only native-proof shape.
++
++Component dependencies deliberately supply these source/gateway outcomes. They are not live proof of
++authoritative absence, workload enrollment, successful metadata transport or a fixed outer EOF.
++Environment mutation is isolated in a nonparallel test collection. No product guard is replaced.
++
++Exact focused commands (Debug, current default versions, source project references):
++
++```text
++dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet
++dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests -result-xml /tmp/story12-2-source-head-boundary-tests.xml
++git diff --check
++```
++
++The build passed with zero warnings/errors; tests passed 7/7, zero failures/errors/skips, 0.184 seconds;
++diff checking passed. The initial diagnostic-only build failed on an undeclared mocking-library using;
++the tests were corrected to use a local counted `DispatchProxy` without adding a package. Both build
++logs are retained. This phase added only diagnostic tests and this proposal/checkpoint.
++
++# Qualification required after owner approval
++
++1. Exercise production public registration with the existing human-command gateway intact. Qualify
++   real issuer credentials, exact source proof and committed catalog binding; deny wrong caller,
++   tenant, domain, resource, operation, mixed credential, missing/expired/revoked assertion, bad proof
++   and stale/mismatched catalog before source observation/effects.
++2. Prove positive head and authoritative zero/absence through the selected supported source route.
++   Preserve separate unsupported, missing-proof, erased, corrupt, denied and backend-failure results.
++   Test missing projections and retained/legacy empty histories without synthesizing authority. Assert
++   no source/event mutation, resurrection or authorization on refusal.
++3. Qualify exact own-actor shortcuts and different-aggregate reads, including provider-binding to
++   organization reads, without self-deadlock, guard bypass or projected-head substitution. Preserve
++   fresh final observations, cancellation and every existing deadline.
++4. Run focused owner SDK and consumer tests, then the affected current-source Server, Workers,
++   Integration, Gateway and Contracts/conformance checks individually with audited project references.
++5. Execute the unchanged strict authenticated real-provider class on final rebuilt/audited outputs,
++   retaining all bootstrap/source/refusal assertions and every prior failure. Independently resolve
++   the outer `ResponseEnded` cause if it recurs; a source-read repair alone is not proof of that fix.
++   All six durability concerns and SM4 require their original evidence.
++
++Story/sprint remain in-progress and the original live acceptance row stays unchecked. Broad SDK,
++Release/package/PD10, capacity identity validity and independent whole-story review retain their
++separate open dispositions. Earlier accepted compatibility fixes remain bounded by their own focused
++and audited live evidence; no whole-story acceptance follows from them or from these seven controls.
++
++# Approved implementation and focused handoff — 2026-11-03
++
++The SDK now exposes `AddEventStoreGatewayNativeSourceMetadataReader(domain)` as an independent
++named metadata client. It composes the existing workload route and RSA resource proof with the
++host's own configured issuer identity/key, exact Dapr endpoint and selected physical gateway AppId.
++It does not change the default gateway's options, human forwarding or registered credential sources.
++Only the configured managed domain can be observed; no command/status client is exposed by the seam.
++The existing native-reader two-second bound and the consumer's three-second bound remain intact.
++
++For explicitly configured `Authentication:BoundStreamRead:MetadataOnlyCallers:<caller>`, the receiver
++now requires the exact metadata shape and actual valid resource proof before creating an actor proxy.
++Resource-bound JWTs cannot waive that proof. The restriction is retained in the independently captured
++authentication profile; existing generic stream readers retain their prior behavior. No route, JWT,
++proof, actor or persistence schema changed. No raw invocation exception, source-proof bootstrap or
++source seed is added. Existing supported native zero is still distinct from unsupported physical absence.
++
++The reachable consumer inventory justified both host enrollments:
++
++| Host | Reachable independent source-head reads | Enrollment |
++| --- | --- | --- |
++| Folders Server | Organization/folder authorization; provider binding/readiness validation and rebuild; lifecycle/workspace/lock/cleanup/task readers | Own issuer client and RSA key; `folders` metadata only |
++| Folders Workers | Semantic-indexing policy's tenant/folder permission evidence reaches the same organization/folder authorization readers | Separate own issuer client and RSA key; `folders` metadata only |
++| Disposable replicas | Same physical AppId replicas share that actual workload; proof Workers with distinct physical AppIds reach the same policy | Each distinct actual caller gets its own client secret and key |
++
++The ordinary AppHost realm declares only stream-read scopes for the new service clients, without
++human/admin/command permissions. Secrets and signing keys are secret Aspire parameters. The disposable
++fixture imports the exact actual caller IDs, selects the isolated gateway, and configures matching
++public keys, domain restriction and metadata-only enrollment before catalog capture/startup. Existing
++caller membership, including Tenants bootstrap, is merged using the public SDK allowlist helper; its
++historical trusted-effect name grants no operation. No numeric-slot replacement discards an existing
++caller. The real realm/model controls retain human identities and assert source-service separation.
++An already-persistent local Keycloak realm needs the usual explicit issuer enrollment/update; this
++source change does not overwrite an existing realm or claim production deployment.
++
++The Folders adapter now consumes the public native metadata reader. It retains exact own-actor scope
++shortcuts, validates returned proof identity/erasure/digest, never converts null into zero, propagates
++caller cancellation and bounds noncooperative asynchronous reads by the existing ceiling. Existing
++transport-specific unit fixtures were migrated to the supported SDK HTTP route; the prior raw SDK
++adapter refusal control remains. Strict/capacity test bodies and all domain denial assertions remain.
++
++Final focused results, each run individually on Debug/source references with current default versions:
++
++| Selection | Passed | Errors / failed / skipped |
++| --- | ---: | --- |
++| SDK Server native evidence, metadata-only enrollment, catalog capture, existing stream controller/metadata/prefix controls | 131 | 0 / 0 / 0 |
++| SDK DomainService independent metadata composition and existing workload transport | 15 | 0 / 0 / 0 |
++| SDK Client native reader and existing resource-proof scope contract | 62 | 0 / 0 / 0 |
++| Folders Server source-head, authority-reader and production command-wire controls | 84 | 0 / 0 / 0 |
++| Folders Workers production host security control | 1 | 0 / 0 / 0 |
++| AppHost actual realm/model, bootstrap evidence and scope controls | 41 | 0 / 0 / 0 |
++
++All final builds passed with zero warnings/errors; both repository diff checks passed. Intermediate
++diagnostic compile/assets failures and the AppHost profile-inventory failure remain retained. That
++inventory was corrected for the newly approved source-service clients while retaining human UI and
++owner service separation; the final 41-case group passed. Earlier successful overlapping subsets are
++not additional cases in the 334-case final selection.
++
++Outputs were released to the parent with no active builds/tests/topology, followed by no further
++product/test edits or builds. Exact commands, phase logs/XML, source/output hashes and changed-file
++inventory are in the new continuation handoff. The parent owns final runtime rebuilding, broader
++regressions, source/runtime audits, pending source-inventory refresh, unchanged live acceptance and
++new packet sealing. No live run was executed by this implementation continuation. `ResponseEnded`
++remains independently unresolved; source transport correction alone does not establish its cause.
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs
+new file mode 100644
+index 00000000..d14c56d6
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs
+@@ -0,0 +1,58 @@
++using System.Net.Http.Json;
++using System.Text.Json;
++
++using Dapr.Client;
++
++using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Contracts.Commands;
++using Hexalith.EventStore.Contracts.Identity;
++using Hexalith.EventStore.Contracts.Streams;
++using Hexalith.EventStore.ServiceDefaults.Authentication;
++using Hexalith.Tenants.Contracts.Commands;
++using Hexalith.Tenants.Contracts.Identity;
++
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Uses explicit public scopes while leaving retained storage identities to their owning SDK adapter.</summary>
++internal static class FolderDurabilityGatewayScope
++{
++    /// <summary>Binds one exact supported scope without accepting the reserved storage tenant.</summary>
++    internal static void Apply(HttpRequestMessage request, string scope)
++    {
++        ArgumentNullException.ThrowIfNull(request);
++        if (request.Headers.Contains("X-Hexalith-Scope") || request.Headers.Contains("X-Hexalith-Tenant"))
++            throw new InvalidOperationException("A durability request already has an explicit scope.");
++        if (scope is TenantPlatformScopes.Tenants or TenantPlatformScopes.GlobalAdministrators)
++            request.Headers.Add("X-Hexalith-Scope", scope);
++        else if (TenantCanonicalizer.TryCanonicalize(scope, out string canonical) && scope == canonical)
++            request.Headers.Add("X-Hexalith-Tenant", canonical);
++        else throw new InvalidOperationException("A durability request requires its exact canonical public scope.");
++    }
++
++    /// <summary>Constructs the same internal bootstrap operation under its current public namespace.</summary>
++    internal static SubmitCommandRequest BootstrapCommand(string messageId, string principal)
++        => new(messageId, TenantPlatformScopes.GlobalAdministrators, TenantIdentity.GlobalAdministratorsDomain,
++            TenantIdentity.GlobalAdministratorsAggregateId, nameof(BootstrapGlobalAdmin), JsonSerializer.SerializeToElement(new { userId = principal }));
++
++    /// <summary>Reads the original owner source using the configured scope key and real isolated owner sidecar.</summary>
++    internal static HttpRequestMessage BootstrapSource(DaprClient sidecar, string gatewayAppId, string callerAppId,
++        string assertion, string privateKey, DateTimeOffset now)
++    {
++        var source = new StreamReadRequest(TenantPlatformScopes.GlobalAdministrators, TenantIdentity.GlobalAdministratorsDomain,
++            TenantIdentity.GlobalAdministratorsAggregateId) { RequireNativeProof = true };
++        HttpRequestMessage request = sidecar.CreateInvokeMethodRequest(HttpMethod.Post, gatewayAppId, "api/v1/streams/read/workload");
++        try
++        {
++            request.Content = JsonContent.Create(source);
++            Apply(request, source.Tenant);
++            request.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, assertion);
++            request.Headers.Add(BoundStreamReadProof.HeaderName, BoundStreamReadProof.Issue(source, callerAppId, privateKey, now));
++            return request;
++        }
++        catch
++        {
++            request.Dispose();
++            throw;
++        }
++    }
++}
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScopeTests.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScopeTests.cs
+new file mode 100644
+index 00000000..78683f2f
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScopeTests.cs
+@@ -0,0 +1,102 @@
++using System.Net.Http.Headers;
++using System.Net.Http.Json;
++using System.Security.Cryptography;
++
++using Dapr.Client;
++
++using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Contracts.Streams;
++using Hexalith.EventStore.ServiceDefaults.Authentication;
++using Hexalith.Tenants.Contracts.Identity;
++
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Checks actual fixture request construction against supported explicit scopes and native proof APIs.</summary>
++public sealed class FolderDurabilityGatewayScopeTests
++{
++    [Theory]
++    [InlineData(TenantPlatformScopes.Tenants)]
++    [InlineData(TenantPlatformScopes.GlobalAdministrators)]
++    [InlineData("tenant-a")]
++    public void StatusNamesExactlyOneOriginalScopeWithoutChangingIdentity(string scope)
++    {
++        ArgumentNullException.ThrowIfNull(scope);
++        using var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1/commands/status/original-message");
++        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "unchanged-human-credential");
++        FolderDurabilityGatewayScope.Apply(request, scope);
++        string header = scope.StartsWith("platform:", StringComparison.Ordinal) ? "X-Hexalith-Scope" : "X-Hexalith-Tenant";
++        request.Headers.GetValues(header).ShouldBe(new[] { scope });
++        request.Headers.Contains(header == "X-Hexalith-Scope" ? "X-Hexalith-Tenant" : "X-Hexalith-Scope").ShouldBeFalse();
++        request.Headers.Authorization.Parameter.ShouldBe("unchanged-human-credential");
++        request.RequestUri!.OriginalString.ShouldBe("/api/v1/commands/status/original-message");
++        Should.Throw<InvalidOperationException>(() => FolderDurabilityGatewayScope.Apply(request, scope));
++        request.Headers.GetValues(header).ShouldBe(new[] { scope });
++    }
++
++    [Theory]
++    [InlineData("system")]
++    [InlineData("System")]
++    [InlineData("platform:folders")]
++    [InlineData("")]
++    [InlineData("tenant_a")]
++    [InlineData("Tenant-A")]
++    public void ReservedUnknownOrNoncanonicalScopesCannotBeMappedByTheFixture(string scope)
++    {
++        using var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1/commands/status/original-message");
++        Should.Throw<InvalidOperationException>(() => FolderDurabilityGatewayScope.Apply(request, scope));
++        request.Headers.ShouldBeEmpty();
++    }
++
++    [Fact]
++    public void DirectAndBoundBootstrapControlsRetainTheSameOriginalOperationAndHumanTarget()
++    {
++        var command = FolderDurabilityGatewayScope.BootstrapCommand("original-message", "admin-user");
++        command.MessageId.ShouldBe("original-message");
++        command.Tenant.ShouldBe(TenantPlatformScopes.GlobalAdministrators);
++        command.Domain.ShouldBe(TenantIdentity.GlobalAdministratorsDomain);
++        command.AggregateId.ShouldBe(TenantIdentity.GlobalAdministratorsAggregateId);
++        command.CommandType.ShouldBe("BootstrapGlobalAdmin");
++        command.Payload.GetProperty("userId").GetString().ShouldBe("admin-user");
++        command.Extensions.ShouldBeNull();
++        command.IdempotencyKey.ShouldBeNull();
++        foreach (string path in new[] { "/api/v1/commands", "/api/v1/commands/bound/workload" })
++        {
++            using var request = new HttpRequestMessage(HttpMethod.Post, path);
++            FolderDurabilityGatewayScope.Apply(request, command.Tenant);
++            request.Headers.GetValues("X-Hexalith-Scope").ShouldBe(new[] { command.Tenant });
++        }
++    }
++
++    [Fact]
++    public async Task OriginalSourceUsesTheRealSelectedOwnerCoordinatesAndExactSdkProofScope()
++    {
++        using RSA key = RSA.Create(2048);
++        string privateKey = Convert.ToBase64String(key.ExportPkcs8PrivateKey());
++        string publicKey = Convert.ToBase64String(key.ExportSubjectPublicKeyInfo());
++        DateTimeOffset now = DateTimeOffset.UtcNow;
++        using DaprClient sidecar = new DaprClientBuilder().UseHttpEndpoint("http://localhost:3500").Build();
++        using HttpRequestMessage request = FolderDurabilityGatewayScope.BootstrapSource(sidecar,
++            "eventstore-isolated", "tenants-isolated", "unchanged-issued-assertion", privateKey, now);
++        request.Method.ShouldBe(HttpMethod.Post);
++        request.RequestUri!.ToString().ShouldBe("http://localhost:3500/v1.0/invoke/eventstore-isolated/method/api/v1/streams/read/workload");
++        request.Headers.Authorization.ShouldBeNull();
++        request.Headers.GetValues(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName).ShouldBe(new[] { "unchanged-issued-assertion" });
++        request.Headers.GetValues("X-Hexalith-Scope").ShouldBe(new[] { TenantPlatformScopes.GlobalAdministrators });
++        request.Headers.Contains("X-Hexalith-Tenant").ShouldBeFalse();
++        StreamReadRequest source = (await request.Content!.ReadFromJsonAsync<StreamReadRequest>(TestContext.Current.CancellationToken)).ShouldNotBeNull();
++        source.Tenant.ShouldBe(TenantPlatformScopes.GlobalAdministrators);
++        source.Domain.ShouldBe("global-administrators");
++        source.AggregateId.ShouldBe("global-administrators");
++        source.RequireNativeProof.ShouldBeTrue();
++        source.FromSequence.ShouldBe(0);
++        source.ToSequence.ShouldBeNull();
++        string proof = request.Headers.GetValues(BoundStreamReadProof.HeaderName).ShouldHaveSingleItem();
++        BoundStreamReadProof.Verify(proof, source, "tenants-isolated", publicKey, now).ShouldBeTrue();
++        BoundStreamReadProof.Verify(proof, source with { Tenant = "system" }, "tenants-isolated", publicKey, now).ShouldBeFalse();
++        BoundStreamReadProof.Verify(proof, source, "tenants", publicKey, now).ShouldBeFalse();
++        BoundStreamReadProof.Verify(proof, source, "tenants-isolated", publicKey, now.AddSeconds(30)).ShouldBeFalse();
++    }
++}
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfiguration.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfiguration.cs
+new file mode 100644
+index 00000000..b721e146
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfiguration.cs
+@@ -0,0 +1,33 @@
++using System.Text.Json.Nodes;
++
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Selects only the actual disposable source-reader identities, preserving their metadata-only issuer scopes.</summary>
++internal static class FolderDurabilitySourceReadConfiguration
++{
++    /// <summary>Replaces canonical source clients with each independently credentialed actual physical caller.</summary>
++    internal static JsonObject Realm(JsonObject original, IReadOnlyList<string> callers)
++    {
++        ArgumentNullException.ThrowIfNull(original);
++        ArgumentNullException.ThrowIfNull(callers);
++        if (callers.Count is < 1 or > 8 || callers.Distinct(StringComparer.Ordinal).Count() != callers.Count
++            || callers.Any(caller => string.IsNullOrWhiteSpace(caller) || caller != caller.Trim()))
++            throw new ArgumentException("Select one bounded unique set of actual source callers.", nameof(callers));
++        JsonObject realm = original.DeepClone().AsObject();
++        JsonArray clients = realm["clients"]!.AsArray();
++        JsonObject template = clients.Single(client => client!["clientId"]!.GetValue<string>() == "folders")!.DeepClone().AsObject();
++        for (int index = clients.Count - 1; index >= 0; index--)
++            if (clients[index]!["clientId"]!.GetValue<string>() is "folders" or "folders-workers") clients.RemoveAt(index);
++        for (int index = 0; index < callers.Count; index++)
++        {
++            if (clients.Any(client => client!["clientId"]!.GetValue<string>() == callers[index]))
++                throw new ArgumentException("A source caller collides with another issuer identity.", nameof(callers));
++            JsonObject client = template.DeepClone().AsObject();
++            client["clientId"] = callers[index];
++            client["name"] = "Isolated source metadata reader " + index;
++            client["secret"] = "${HEXALITH_FOLDERS_SOURCE_" + index + "_CLIENT_SECRET}";
++            clients.Add(client);
++        }
++        return realm;
++    }
++}
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfigurationTests.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfigurationTests.cs
+new file mode 100644
+index 00000000..82da9f79
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfigurationTests.cs
+@@ -0,0 +1,100 @@
++using System.Text.Json.Nodes;
++
++using Aspire.Hosting;
++using Aspire.Hosting.ApplicationModel;
++using Aspire.Hosting.Testing;
++
++using Hexalith.EventStore.Aspire;
++
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Qualifies actual realm enrollment and supported caller-list composition without starting a topology.</summary>
++public sealed class FolderDurabilitySourceReadConfigurationTests
++{
++    /// <summary>The real issuer grants only stream-read to each own service identity and never changes a human.</summary>
++    [Fact]
++    public void ActualSourceRealmHasOnlyIndependentServiceCredentialsAndMetadataScopes()
++    {
++        string path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
++            "../../../../../src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json"));
++        JsonObject original = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
++        JsonObject bootstrapped = FolderDurabilityBootstrapConfiguration.Realm(original,
++            "eventstore-isolated", "tenants-isolated", "folders-isolated");
++        string[] callers = ["folders-isolated", "folders-workers-isolated", "folders-proof-a", "folders-proof-b"];
++        JsonObject realm = FolderDurabilitySourceReadConfiguration.Realm(bootstrapped, callers);
++        JsonNode.DeepEquals(bootstrapped["users"], realm["users"]).ShouldBeTrue();
++        JsonArray clients = realm["clients"]!.AsArray();
++        clients.ShouldNotContain(client => client!["clientId"]!.GetValue<string>() == "folders"
++            || client["clientId"]!.GetValue<string>() == "folders-workers");
++        for (int index = 0; index < callers.Length; index++)
++        {
++            JsonObject client = clients.Single(client => client!["clientId"]!.GetValue<string>() == callers[index])!.AsObject();
++            client["publicClient"]!.GetValue<bool>().ShouldBeFalse();
++            client["serviceAccountsEnabled"]!.GetValue<bool>().ShouldBeTrue();
++            client["standardFlowEnabled"]!.GetValue<bool>().ShouldBeFalse();
++            client["directAccessGrantsEnabled"]!.GetValue<bool>().ShouldBeFalse();
++            client["fullScopeAllowed"]!.GetValue<bool>().ShouldBeFalse();
++            client["defaultClientScopes"]!.AsArray().ShouldBeEmpty();
++            client["optionalClientScopes"]!.AsArray().Select(scope => scope!.GetValue<string>()).ShouldBe(new[]
++                { "eventstore-audience.eventstore", "eventstore-operation.eventstore.stream-read" });
++            client["secret"]!.GetValue<string>().ShouldBe("${HEXALITH_FOLDERS_SOURCE_" + index + "_CLIENT_SECRET}");
++            client["protocolMappers"]!.AsArray().Single()!["config"]!["claim.value"]!.GetValue<string>().ShouldBe("service");
++        }
++        realm["clientScopes"]!.AsArray().Select(scope => scope!["name"]!.GetValue<string>()).Distinct(StringComparer.Ordinal).Count()
++            .ShouldBe(realm["clientScopes"]!.AsArray().Count);
++        Should.Throw<ArgumentException>(() => FolderDurabilitySourceReadConfiguration.Realm(bootstrapped, ["tenants-isolated"]));
++    }
++
++    /// <summary>The actual model keeps distinct source secrets and merges all original/bootstrap/source callers.</summary>
++    [Fact]
++    public async Task ActualAppHostUsesOwnSecretParametersAndPreservesExistingCallerEnrollment()
++    {
++        IDistributedApplicationTestingBuilder builder = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Hexalith_Folders_AppHost>(
++            ["--EnableKeycloak=true", "--KeycloakPersistent=false"], TestContext.Current.CancellationToken).ConfigureAwait(true);
++        await using var scope = builder.ConfigureAwait(true);
++        ProjectResource gateway = builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "eventstore");
++        ProjectResource server = builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders");
++        ProjectResource worker = builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders-workers");
++        Dictionary<string, object> receiver = await EnvironmentAsync(builder, gateway);
++        Dictionary<string, object> serverEnvironment = await EnvironmentAsync(builder, server);
++        Dictionary<string, object> workerEnvironment = await EnvironmentAsync(builder, worker);
++        foreach (string caller in new[] { "folders", "folders-workers" })
++        {
++            receiver["Authentication__BoundStreamRead__MetadataOnlyCallers__" + caller].ShouldBe("true");
++            receiver["Authentication__BoundStreamRead__AllowedDomains__" + caller].ShouldBe("folders");
++        }
++        serverEnvironment["Authentication__WorkloadIssuer__Workload"].ShouldBe("folders");
++        workerEnvironment["Authentication__WorkloadIssuer__Workload"].ShouldBe("folders-workers");
++        ReferenceEquals(serverEnvironment["Authentication__WorkloadIssuer__ClientSecret"],
++            workerEnvironment["Authentication__WorkloadIssuer__ClientSecret"]).ShouldBeFalse();
++        ReferenceEquals(serverEnvironment["Authentication__BoundStreamRead__PrivateKey"],
++            workerEnvironment["Authentication__BoundStreamRead__PrivateKey"]).ShouldBeFalse();
++        builder.Resources.OfType<ParameterResource>().Where(parameter => parameter.Name.EndsWith("-source-client-secret", StringComparison.Ordinal)
++            || parameter.Name.EndsWith("-source-proof-key", StringComparison.Ordinal)).Count().ShouldBe(4);
++        builder.Resources.OfType<ParameterResource>().Where(parameter => parameter.Name.EndsWith("-source-client-secret", StringComparison.Ordinal)
++            || parameter.Name.EndsWith("-source-proof-key", StringComparison.Ordinal)).ShouldAllBe(parameter => parameter.Secret);
++
++        string[] before = Callers(receiver);
++        string[] actual = ["tenants-isolated", "folders-isolated", "folders-workers-isolated", "folders-proof-a", "folders-proof-b"];
++        foreach (string caller in actual) builder.CreateResourceBuilder(gateway).WithEventStoreTrustedEffectSubmitter(caller);
++        string[] after = Callers(await EnvironmentAsync(builder, gateway));
++        after.ShouldBe(before.Concat(actual).Distinct(StringComparer.Ordinal).ToArray());
++    }
++
++    private static string[] Callers(Dictionary<string, object> environment) => environment
++        .Where(setting => setting.Key.StartsWith(HexalithEventStoreTrustedEffectExtensions.AllowedCallersVariablePrefix, StringComparison.Ordinal))
++        .OrderBy(setting => int.Parse(setting.Key[HexalithEventStoreTrustedEffectExtensions.AllowedCallersVariablePrefix.Length..],
++            System.Globalization.CultureInfo.InvariantCulture)).Select(setting => (string)setting.Value).ToArray();
++
++    private static async Task<Dictionary<string, object>> EnvironmentAsync(IDistributedApplicationTestingBuilder builder, ProjectResource project)
++    {
++        Dictionary<string, object> values = new(StringComparer.Ordinal);
++        foreach (EnvironmentCallbackAnnotation annotation in project.Annotations.OfType<EnvironmentCallbackAnnotation>())
++            await annotation.Callback(new EnvironmentCallbackContext(builder.ExecutionContext, project, values,
++                TestContext.Current.CancellationToken)).ConfigureAwait(true);
++        return values;
++    }
++}
+diff --git a/tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs b/tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs
+new file mode 100644
+index 00000000..dbbcd1b8
+--- /dev/null
++++ b/tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs
+@@ -0,0 +1,130 @@
++using System.Net;
++
++using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Client.Projections;
++using Hexalith.EventStore.Client.Streams;
++using Hexalith.EventStore.Contracts.Identity;
++using Hexalith.EventStore.Contracts.Streams;
++using Hexalith.EventStore.ServiceDefaults.Routing;
++using Hexalith.EventStore.Testing.Http;
++using Hexalith.Folders.Aggregates.Folder;
++using Hexalith.Folders.Authorization;
++using Hexalith.Folders.Projections.TenantAccess;
++
++using Microsoft.Extensions.Configuration;
++using Microsoft.Extensions.Options;
++
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Server.Tests;
++
++/// <summary>Records the blocked public transport and preserves unavailable versus proven-zero consumer semantics.</summary>
++[Collection("Source head boundary")]
++public sealed class CurrentSdkSourceHeadBoundaryTests
++{
++    /// <summary>The migrated head adapter refuses an unavailable independent observation instead of inventing zero.</summary>
++    [Fact]
++    public async Task UnavailableIndependentSourceObservationNeverInventsZero()
++    {
++        var source = SourceHeadBoundaryProxy.Create<INativeSourceMetadataReader>((_, _) => Task.FromResult<NativeSourceObservation?>(null));
++        var reader = new DaprOrganizationStreamSequenceReader(source);
++        var failure = await Should.ThrowAsync<InvalidOperationException>(() => reader.GetCurrentSequenceAsync(
++            "tenant-a", "tenant-a", TestContext.Current.CancellationToken));
++        failure.Message.ShouldBe("The independently observed source head is unavailable.");
++        ((SourceHeadBoundaryProxy)(object)source).Calls.ShouldBe(1);
++    }
++
++    /// <summary>The SDK's registered raw metadata adapter does not supply an independent source observation under this guard.</summary>
++    [Fact]
++    public async Task SdkRawMetadataAdapterAlsoFailsClosedWithoutSendingAnActorRequest()
++    {
++        var authority = SourceHeadBoundaryProxy.Create<IRouteCatalogAuthority>((_, _) => throw new InvalidOperationException("Raw reads cannot acquire catalog authority."));
++        using var primary = new MockHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.OK));
++        using var invocation = new MockHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.OK));
++        using HttpClient client = GuardedClient(authority, primary, invocation);
++        IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
++            { ["DAPR_HTTP_ENDPOINT"] = "http://localhost:3500" }).Build();
++        var reader = new DaprNativeSourceMetadataReader(client, configuration, TimeProvider.System);
++        (await reader.ReadAsync(new AggregateIdentity("tenant-a", "folders", "tenant-a"), TestContext.Current.CancellationToken)).ShouldBeNull();
++        primary.CallCount.ShouldBe(0);
++        invocation.CallCount.ShouldBe(0);
++        ((SourceHeadBoundaryProxy)(object)authority).Calls.ShouldBe(0);
++    }
++
++    /// <summary>A missing projection plus a refused independent source read remains unavailable, never authoritative absence.</summary>
++    [Fact]
++    public async Task RefusedIndependentReadDoesNotTurnMissingProjectionIntoAProvenZeroHead()
++    {
++        var authority = SourceHeadBoundaryProxy.Create<IRouteCatalogAuthority>((_, _) => throw new InvalidOperationException("Raw reads cannot acquire catalog authority."));
++        using var primary = new MockHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("0") });
++        using var invocation = new MockHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("0") });
++        using HttpClient client = GuardedClient(authority, primary, invocation);
++        IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
++            { ["DAPR_HTTP_ENDPOINT"] = "http://localhost:3500" }).Build();
++        EffectivePermissionsReadModelResult result = await MissingOrganizationAsync(new DaprOrganizationStreamSequenceReader(
++            new DaprNativeSourceMetadataReader(client, configuration, TimeProvider.System)));
++        result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
++        result.Snapshot.ShouldBeNull();
++        result.Freshness.ReasonCode.ShouldBe("organization_stream_unavailable");
++        result.Freshness.ProjectionWatermark.ShouldBeNull();
++        invocation.CallCount.ShouldBe(0);
++        primary.CallCount.ShouldBe(0);
++        ((SourceHeadBoundaryProxy)(object)authority).Calls.ShouldBe(0);
++    }
++
++    /// <summary>A positively supplied zero observation remains a distinct consumer input and safe not-found result.</summary>
++    [Fact]
++    public async Task ProvenZeroSourceHeadRetainsItsExistingSafeNotFoundOutcome()
++    {
++        var reader = SourceHeadBoundaryProxy.Create<IOrganizationStreamSequenceReader>((_, _) => Task.FromResult(0L));
++        EffectivePermissionsReadModelResult result = await MissingOrganizationAsync(reader);
++        result.Status.ShouldBe(EffectivePermissionsReadModelStatus.NotFound);
++        result.Freshness.ReasonCode.ShouldBe("organization_projection_missing");
++        result.Snapshot.ShouldBeNull();
++    }
++
++    /// <summary>The gateway's native proof adapter cannot supply the consumer's absent/zero distinction from unsupported evidence or failures.</summary>
++    [Theory]
++    [InlineData("missing")]
++    [InlineData("unsupported-zero")]
++    [InlineData("backend")]
++    public async Task NativeGatewayMissingUnsupportedAndUnavailableEvidenceDoesNotInventAZeroObservation(string scenario)
++    {
++        StreamReadRequest? requested = null;
++        var gateway = SourceHeadBoundaryProxy.Create<IEventStoreGatewayClient>((method, args) =>
++        {
++            method.Name.ShouldBe(nameof(IEventStoreGatewayClient.ReadStreamAsync));
++            requested = (StreamReadRequest)args![0]!;
++            return scenario == "unsupported-zero"
++                ? Task.FromResult(new StreamReadPage("tenant-a", "folders", "tenant-a", [], new StreamReadMetadata(0, 0, null, 0, 0, false, null)))
++                : Task.FromException<StreamReadPage>(new EventStoreGatewayException(scenario == "missing" ? 404 : 503, "component-unavailable"));
++        });
++        var reader = new GatewayNativeSourceMetadataReader(gateway, TimeProvider.System);
++        (await reader.ReadAsync(new AggregateIdentity("tenant-a", "folders", "tenant-a"), TestContext.Current.CancellationToken)).ShouldBeNull();
++        ((SourceHeadBoundaryProxy)(object)gateway).Calls.ShouldBe(1);
++        requested.ShouldNotBeNull();
++        requested.Tenant.ShouldBe("tenant-a");
++        requested.Domain.ShouldBe("folders");
++        requested.AggregateId.ShouldBe("tenant-a");
++        requested.RequireNativeProof.ShouldBeTrue();
++        requested.FromSequence.ShouldBe(0);
++        requested.ToSequence.ShouldBe(0);
++        requested.PageSize.ShouldBe(1);
++    }
++
++    private static HttpClient GuardedClient(IRouteCatalogAuthority authority, HttpMessageHandler primary, HttpMessageHandler invocation)
++        => new(new RouteCatalogInvocationHandler(authority, primary, Options.Create(new RouteCatalogHostOptions
++            { InvocationTransportFactory = _ => invocation })));
++
++    private static Task<EffectivePermissionsReadModelResult> MissingOrganizationAsync(IOrganizationStreamSequenceReader reader)
++    {
++        var store = SourceHeadBoundaryProxy.Create<IReadModelStore>((method, _) => method.Name == nameof(IReadModelStore.GetAsync)
++            ? Task.FromResult(new ReadModelEntry<OrganizationPermissionProjection>(null, null))
++            : throw new InvalidOperationException("Read-only component cannot write state."));
++        var clock = SourceHeadBoundaryProxy.Create<IUtcClock>((_, _) => DateTimeOffset.UtcNow);
++        var model = new EventStoreOrganizationEffectivePermissionsReadModel(store, clock, reader);
++        return model.GetAsync(new EffectivePermissionsReadModelRequest("tenant-a", FolderStreamName.ReservedOrganizationPermissionScope,
++            [EffectivePermissionPrincipal.User("principal")], null, null, "read_your_writes"), TestContext.Current.CancellationToken);
++    }
++}
+diff --git a/tests/Hexalith.Folders.Server.Tests/NativeSequenceReaderTestTransport.cs b/tests/Hexalith.Folders.Server.Tests/NativeSequenceReaderTestTransport.cs
+new file mode 100644
+index 00000000..ce415696
+--- /dev/null
++++ b/tests/Hexalith.Folders.Server.Tests/NativeSequenceReaderTestTransport.cs
+@@ -0,0 +1,40 @@
++using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Client.Registration;
++using Hexalith.EventStore.Client.Streams;
++
++using Microsoft.Extensions.Options;
++using Microsoft.Extensions.DependencyInjection;
++
++namespace Hexalith.Folders.Server.Tests;
++
++/// <summary>Composes real public SDK transports around the existing counted component HTTP terminal.</summary>
++internal sealed class NativeSequenceReaderTestTransport : IDisposable
++{
++    private readonly ServiceProvider _provider;
++
++    /// <summary>Creates the SDK-owned Dapr routing handler with its exact configured API token.</summary>
++    internal NativeSequenceReaderTestTransport(HttpMessageHandler terminal, string? token = null)
++    {
++        var services = new ServiceCollection();
++        services.AddLogging();
++        services.AddHttpClient("native-reader-component", client => client.BaseAddress = new Uri("http://localhost:3500"))
++            .AddEventStoreDaprServiceInvocation("eventstore", token).ConfigurePrimaryHttpMessageHandler(() => terminal);
++        _provider = services.BuildServiceProvider();
++        Client = _provider.GetRequiredService<IHttpClientFactory>().CreateClient("native-reader-component");
++    }
++
++    /// <summary>Gets the isolated client configured through the supported public SDK.</summary>
++    internal HttpClient Client { get; }
++
++    /// <inheritdoc/>
++    public void Dispose() { Client.Dispose(); _provider.Dispose(); }
++
++    /// <summary>Creates the real metadata reader; credentials are explicit component transport inputs only.</summary>
++    internal static INativeSourceMetadataReader Reader(HttpClient client)
++    {
++        var assertions = SourceHeadBoundaryProxy.Create<IEventStoreGatewayWorkloadAssertionSource>((_, _) => ValueTask.FromResult<string?>("component-assertion"));
++        var proofs = SourceHeadBoundaryProxy.Create<IEventStoreGatewayStreamReadProofSource>((_, _) => ValueTask.FromResult<string?>("component-resource-proof"));
++        return new GatewayNativeSourceMetadataReader(new EventStoreGatewayClient(client,
++            Options.Create(new EventStoreGatewayClientOptions { UseWorkloadTransport = true }), assertions, proofs), TimeProvider.System);
++    }
++}
+diff --git a/tests/Hexalith.Folders.Server.Tests/NativeSourceHeadReaderTests.cs b/tests/Hexalith.Folders.Server.Tests/NativeSourceHeadReaderTests.cs
+new file mode 100644
+index 00000000..d984e1a9
+--- /dev/null
++++ b/tests/Hexalith.Folders.Server.Tests/NativeSourceHeadReaderTests.cs
+@@ -0,0 +1,107 @@
++using Hexalith.EventStore.Client.Streams;
++using Hexalith.EventStore.Contracts.Identity;
++using Hexalith.EventStore.Contracts.Streams;
++using Hexalith.Folders.Authorization;
++
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Server.Tests;
++
++/// <summary>Qualifies the production head adapter's native evidence, exact own-actor scopes and existing deadline.</summary>
++public sealed class NativeSourceHeadReaderTests
++{
++    /// <summary>Only valid exact-source proof yields a head; missing, erased and foreign evidence never becomes zero.</summary>
++    [Theory]
++    [InlineData("zero")]
++    [InlineData("positive")]
++    [InlineData("missing")]
++    [InlineData("foreign")]
++    [InlineData("erased")]
++    [InlineData("malformed")]
++    public async Task ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(string scenario)
++    {
++        var identity = new AggregateIdentity("tenant-a", "folders", "organization-a");
++        NativeSourceProof proof = NativeSourceProofCodec.CreateSeed(identity, "01ARZ3NDEKTSV4RRFFQ69G5FAV");
++        if (scenario == "positive") proof = NativeSourceProofCodec.ExtendDigest(proof, identity, 1, "original-message", new string('a', 64));
++        proof = scenario switch
++        {
++            "foreign" => proof with { AggregateId = "other-aggregate" },
++            "erased" => proof with { Erased = true },
++            "malformed" => proof with { CumulativeDigest = "invalid" },
++            _ => proof,
++        };
++        var source = SourceHeadBoundaryProxy.Create<INativeSourceMetadataReader>((_, args) =>
++        {
++            args![0].ShouldBe(identity);
++            return Task.FromResult(scenario == "missing" ? null : new NativeSourceObservation(proof, DateTimeOffset.UtcNow));
++        });
++        var reader = new DaprOrganizationStreamSequenceReader(source);
++
++        if (scenario is "zero" or "positive")
++            (await reader.GetCurrentSequenceAsync(identity.TenantId, identity.AggregateId, TestContext.Current.CancellationToken))
++                .ShouldBe(scenario == "zero" ? 0 : 1);
++        else await Should.ThrowAsync<InvalidOperationException>(() => reader.GetCurrentSequenceAsync(
++            identity.TenantId, identity.AggregateId, TestContext.Current.CancellationToken));
++        ((SourceHeadBoundaryProxy)(object)source).Calls.ShouldBe(1);
++    }
++
++    /// <summary>The retained own-actor shortcut avoids self-calls only for both exact identity segments.</summary>
++    [Theory]
++    [InlineData(true, "exact")]
++    [InlineData(false, "exact")]
++    [InlineData(true, "tenant")]
++    [InlineData(false, "tenant")]
++    [InlineData(true, "aggregate")]
++    [InlineData(false, "aggregate")]
++    public async Task ExactOwnActorScopesNeverStandInForAnotherSource(bool organization, string scope)
++    {
++        var source = SourceHeadBoundaryProxy.Create<INativeSourceMetadataReader>((_, _) => Task.FromResult<NativeSourceObservation?>(null));
++        using IDisposable entered = organization ? OrganizationActorSequenceScope.Enter("tenant-a", "source-a", 7)
++            : FolderActorSequenceScope.Enter("tenant-a", "source-a", 7);
++        var reader = new DaprOrganizationStreamSequenceReader(source);
++        string tenant = scope == "tenant" ? "tenant-b" : "tenant-a";
++        string aggregate = scope == "aggregate" ? "source-b" : "source-a";
++
++        if (scope == "exact")
++            (await reader.GetCurrentSequenceAsync(tenant, aggregate, TestContext.Current.CancellationToken)).ShouldBe(7);
++        else await Should.ThrowAsync<InvalidOperationException>(() => reader.GetCurrentSequenceAsync(tenant, aggregate, TestContext.Current.CancellationToken));
++        ((SourceHeadBoundaryProxy)(object)source).Calls.ShouldBe(scope == "exact" ? 0 : 1);
++    }
++
++    /// <summary>Caller cancellation takes precedence and prevents independent observation.</summary>
++    [Fact]
++    public async Task CanceledCallerDoesNotObserveSourceEvenInsideOwnActorScope()
++    {
++        using var canceled = new CancellationTokenSource();
++        canceled.Cancel();
++        var source = SourceHeadBoundaryProxy.Create<INativeSourceMetadataReader>((_, _) => throw new InvalidOperationException("No read permitted."));
++        using IDisposable scope = OrganizationActorSequenceScope.Enter("tenant-a", "source-a", 7);
++        var reader = new DaprOrganizationStreamSequenceReader(source);
++
++        await Should.ThrowAsync<OperationCanceledException>(() => reader.GetCurrentSequenceAsync("tenant-a", "source-a", canceled.Token));
++
++        ((SourceHeadBoundaryProxy)(object)source).Calls.ShouldBe(0);
++    }
++
++    /// <summary>A noncooperative dependency cannot exceed the existing three-second source-reader ceiling.</summary>
++    [Fact]
++    public async Task NoncooperativeSourceCannotOutliveExistingThreeSecondCeiling()
++    {
++        var pending = new TaskCompletionSource<NativeSourceObservation?>(TaskCreationOptions.RunContinuationsAsynchronously);
++        CancellationToken sourceToken = default;
++        var source = SourceHeadBoundaryProxy.Create<INativeSourceMetadataReader>((_, args) =>
++        {
++            sourceToken = (CancellationToken)args![1]!;
++            return pending.Task;
++        });
++        var reader = new DaprOrganizationStreamSequenceReader(source);
++        try
++        {
++            await Should.ThrowAsync<TimeoutException>(() => reader.GetCurrentSequenceAsync("tenant-a", "source-a",
++                TestContext.Current.CancellationToken).WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken));
++            sourceToken.IsCancellationRequested.ShouldBeTrue();
++        }
++        finally { pending.TrySetResult(null); }
++    }
++}
+diff --git a/tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryCollection.cs b/tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryCollection.cs
+new file mode 100644
+index 00000000..622ac550
+--- /dev/null
++++ b/tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryCollection.cs
+@@ -0,0 +1,7 @@
++using Xunit;
++
++namespace Hexalith.Folders.Server.Tests;
++
++/// <summary>Isolates the legacy reader's process-wide sidecar environment during refusal qualification.</summary>
++[CollectionDefinition("Source head boundary", DisableParallelization = true)]
++public sealed class SourceHeadBoundaryCollection;
+diff --git a/tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryProxy.cs b/tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryProxy.cs
+new file mode 100644
+index 00000000..dd645cd0
+--- /dev/null
++++ b/tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryProxy.cs
+@@ -0,0 +1,28 @@
++using System.Reflection;
++
++namespace Hexalith.Folders.Server.Tests;
++
++/// <summary>Counts component dependency calls without adding mocking or transport dependencies.</summary>
++public class SourceHeadBoundaryProxy : DispatchProxy
++{
++    private Func<MethodInfo, object?[]?, object?>? _invoke;
++
++    /// <summary>Gets the dependency call count.</summary>
++    public int Calls { get; private set; }
++
++    /// <summary>Creates one component dependency with an explicit bounded response.</summary>
++    public static T Create<T>(Func<MethodInfo, object?[]?, object?> invoke) where T : class
++    {
++        ArgumentNullException.ThrowIfNull(invoke);
++        T proxy = Create<T, SourceHeadBoundaryProxy>();
++        ((SourceHeadBoundaryProxy)(object)proxy)._invoke = invoke;
++        return proxy;
++    }
++
++    /// <inheritdoc/>
++    protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
++    {
++        Calls++;
++        return _invoke!(targetMethod ?? throw new InvalidOperationException("Missing component method."), args);
++    }
++}

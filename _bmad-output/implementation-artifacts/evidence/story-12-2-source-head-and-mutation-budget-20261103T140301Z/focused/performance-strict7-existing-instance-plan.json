@@ -1,0 +1,75 @@
+{
+  "scope": "Read-only source/tool assessment; no source edit, build, test, install, host launch or dump.",
+  "current_evidence": "Strict7serverStopexited19.4906ms afterstopping; healthy snapshots retain0requests andnoApplicationStopped untilDCPstop failure. Exact laterhosted owner is not proven.",
+  "poller_token_findings": {
+    "propagated": [
+      "ProjectionPollerService.GetSmallestPositiveInterval ->tickSource Task.Delay receives stoppingToken.",
+      "EnumerateTrackedIdentitiesAsync passes token to state reads and checks it across pages;100identity cap remains.",
+      "DeliverProjectionAsync passes token to catalog Acquire, sourceguard/current delivery helpers, checkpoint reads and HTTPSend path."
+    ],
+    "not_caller_cancelable": [
+      "Aggregate actor GetStreamMetadataAsync/ReadEventsRangeAsync/GetEventsAsync and projection actor UpdateProjectionAsync await typed actor methods without cancellation argument.",
+      "Durable lifecycle CompleteDeliveryWriteAsync and activation outbox CompleteAsync use CancellationToken.None.",
+      "RouteCatalog lease disposal awaits release; RouteCatalogAuthority.ReleaseAsync reads/CAS/delays with CancellationToken.None and loops on conflicts. These preserve current durable fence semantics."
+    ],
+    "limit": "Source demonstrates potential non-caller-cancelable await boundaries, not which exact branch/wait ran at strict7failure. No deadline/cancellation/retry/proof change justified."
+  },
+  "log_finding": {
+    "last_projection_update_started": "2026-11-03T13:18:18.015Z domain global-administrators",
+    "application_stopping": "2026-11-03T13:18:18.7444693Z",
+    "later_projection_update_started": "none observed",
+    "other_registration_activation_ticks": "continue~2seconds until13:18:30.397Z",
+    "classification": "Consistent with first-poller stop waiting; not owner proof from order/correlation alone."
+  },
+  "next_minimum": {
+    "choice": "Extend the existing fixture lifecycle observer with one gated ApplicationStarted capture of existing singleton instances and Task status only.",
+    "why_supported": [
+      ".NET10.0.14 Host resolves IEnumerable<IHostedService> before invokingStartAsync orApplicationStarted.",
+      "Default Microsoft DI root cache reuses alreadyresolvedSingleton objects.",
+      "BackgroundService.ExecuteTask is public; no SDK server/default BackgroundService override was found."
+    ],
+    "gates": [
+      "ApplicationStarted observed true before capture; never capture from observerconstructor orStartAsync.",
+      "Canonical Microsoft DI provider assembly/type only; unknown/wrapped provider returnsdiagnostic unavailable.",
+      "All unkeyed IHostedService descriptors Singleton; anyTransient/Scoped refusal before collection resolution.",
+      "No explicit registered IEnumerable<IHostedService> descriptor overriding built-in enumerable behavior.",
+      "Descriptors unchanged count/reference-order from original captured registration snapshot.",
+      "Capture once with public GetServices<IHostedService>; verify count matches and then retain onlyexisting references. No factory/Start/Stop/Dispose invocation."
+    ],
+    "records": [
+      "actual admitted static type/assembly metadata+ordinal andIHostedLifecycleService boolean, onceafterstarted",
+      "on existing stopping snapshots: service ordinal andpublicBackgroundService.ExecuteTask null/status/isCompleted/isCanceled/isFaulted only",
+      "no Task.Exception/AsyncState or request/object payload; no additional remote/backend/domain read",
+      "unknownprovider/getter/shape failures unavailable/advisory, no zero fabrication"
+    ],
+    "tests": [
+      "Actual Microsoft DI allSingleton hosted factories construct exactlyonce beforeApplicationStarted; repeated observation and snapshots do not increment constructioncounts or replace references.",
+      "MixedTransient/Scoped/custom enumerable/provider gate refuses without any extra factory resolution.",
+      "Real host with first stoppedBackgroundService waiting on controlled tokenobserved as pending while lower servicescontinue, then originalrelease/cancellation unmodified.",
+      "ActualIHostedLifecycleService labels and perBackgroundService states preserved as closed metadata; no exception/state/payload leakage."
+    ],
+    "interpretation": "Existing runtime types/order plus completed/pending BackgroundService states discriminate first eligible hosted wait. Taskstatus alone doesnotname downstream IO; if needed subsequently addonly measured await-stage diagnostics for the identified owner. No broad observer or production replacement."
+  },
+  "reflection_alternative": "Read-only Host._hostedServices field could avoidresolution but is internal/version-coupled; failclosed field/type gates required. Publicsingleton-started path ispreferred.",
+  "tool_inventory": {
+    "dotnet_dump": "Available9.0.661903; no dumpcollected; compatibility with.NET10notexecuted.",
+    "dotnet_stack": "Not onPATH/notgloballyinstalled.",
+    "dotnet_trace": "Not onPATH/notgloballyinstalled.",
+    "ilspycmd": "Available10.1.0.8386; readonly metadata/decompilation confirms installed OpenTelemetry TelemetryHostedService.StopAsync and framework HealthCheckPublisherHostedService.StopAsync returncompletedTasks. No toolupgradeperformed.",
+    "limitation": "Synchronous managedstack report maynotshow the owningasync await; no credential-bearing heap capture or install recommended as next step."
+  },
+  "primary_source_links": {
+    "host_started_enumerable": "https://raw.githubusercontent.com/dotnet/runtime/v10.0.14/src/libraries/Microsoft.Extensions.Hosting/src/Internal/Host.cs",
+    "di_root_cache": "https://raw.githubusercontent.com/dotnet/runtime/v10.0.14/src/libraries/Microsoft.Extensions.DependencyInjection/src/ServiceLookup/CallSiteRuntimeResolver.cs",
+    "background_execute_task": "https://raw.githubusercontent.com/dotnet/runtime/v10.0.14/src/libraries/Microsoft.Extensions.Hosting.Abstractions/src/BackgroundService.cs"
+  },
+  "source_sha256": {
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Projections/ProjectionPollerService.cs": "f695f2229e67414521966d91cd8d225ad9845385d56ce370167adf6641a54a28",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Projections/ProjectionCheckpointTracker.cs": "34084f196c6e04ca041952a91a432f3fda3e558058e78a3cfc962bd10017af35",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Projections/ProjectionUpdateOrchestrator.cs": "728bf5627df5d116e8943bf8dae7ee921f12c989200a561a76c48571a393b92e",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Configuration/ServiceCollectionExtensions.cs": "f5d2a780a4e27dedf464036992831984fd97298ca8b60615ac398804e2a3f0fb",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogDispatchLease.cs": "2e978a07badad659cae246f34298bf1969f0df0ca69829907bb8550272d1f8a7",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs": "03702c158be77788643a4baaa68ccad3918e19a5279e2774e9323e02a71f4fc4"
+  },
+  "status": "Preparedconcretegatedplan only; parent source/output ownership retained, no activeanalysis command afterhandoff."
+}

@@ -5,6 +5,7 @@ using Hexalith.Folders.Aspire;
 using Hexalith.Memories.Aspire;
 using Hexalith.Tenants.Aspire;
 using Microsoft.Extensions.Configuration;
+using System.Security.Cryptography;
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
@@ -174,6 +175,31 @@ if (security is not null)
     _ = tenants.WithJwtBearerSecurity(security);
     _ = folders.WithJwtBearerSecurity(security);
     _ = foldersWorkers.WithJwtBearerSecurity(security);
+
+    // These existing hosts both reach fresh folder/organization source heads. Each has
+    // its own issuer credential and RSA resource key, and only metadata-read enrollment.
+    foreach ((IResourceBuilder<ProjectResource> host, string name, string secretVariable) in new[]
+    {
+        (folders, "folders", "HEXALITH_FOLDERS_SOURCE_CLIENT_SECRET"),
+        (foldersWorkers, "folders-workers", "HEXALITH_FOLDERS_WORKERS_SOURCE_CLIENT_SECRET"),
+    })
+    {
+        var sourceSecret = builder.AddParameter(name + "-source-client-secret", new GenerateParameterDefault
+        {
+            MinLength = 32, Lower = true, MinLower = 1, Upper = true, MinUpper = 1, Numeric = true, MinNumeric = 1, Special = false,
+        }, secret: true, persist: persistWorkloadSecret);
+        using RSA sourceKey = RSA.Create(2048);
+        string privateKey = Convert.ToBase64String(sourceKey.ExportPkcs8PrivateKey());
+        var sourcePrivateKey = builder.AddParameter(name + "-source-proof-key", () => privateKey, secret: true);
+        security.Keycloak.WithEnvironment(secretVariable, sourceSecret);
+        host.WithEventStoreWorkloadClientCredentials(name, sourceSecret)
+            .WithEnvironment("Authentication__WorkloadIssuer__Workload", name)
+            .WithEnvironment("Authentication__BoundStreamRead__PrivateKey", sourcePrivateKey);
+        eventStore.WithEnvironment("Authentication__BoundStreamRead__PublicKeys__" + name, Convert.ToBase64String(sourceKey.ExportSubjectPublicKeyInfo()))
+            .WithEnvironment("Authentication__BoundStreamRead__AllowedDomains__" + name, "folders")
+            .WithEnvironment("Authentication__BoundStreamRead__MetadataOnlyCallers__" + name, "true")
+            .WithEventStoreTrustedEffectSubmitter(name);
+    }
 
     _ = foldersUi
         .WithSecurityDependency(security)

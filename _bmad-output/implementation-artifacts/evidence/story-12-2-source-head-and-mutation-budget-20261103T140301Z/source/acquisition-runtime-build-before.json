@@ -1,0 +1,148 @@
+{
+  "utc": "2026-11-03T10:41:26.524037+00:00",
+  "repos": [
+    {
+      "root": "/home/administrator/projects/hexalith/folders",
+      "head": "313f0f32bd31622fdd4f2f0bcb716e496ec301d0",
+      "branch": "main",
+      "status": "M _bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml\n M _bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md\n M references/Hexalith.EventStore\n M scripts/pd10-v2-story-owned-paths.txt\n M src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json\n M src/Hexalith.Folders.AppHost/Program.cs\n M src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs\n M src/Hexalith.Folders.Workers/FoldersWorkersModule.cs\n M src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs\n M tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs\n M tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs\n M tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs\n M tests/Hexalith.Folders.Server.Tests/EventStoreOrganizationEffectivePermissionsReadModelTests.cs\n M tests/Hexalith.Folders.Server.Tests/ScopeCheckingFolderPermissionEvidenceProvider.cs\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-current-sdk-source-head-20261102T213710Z/\n?? _bmad-output/implementation-artifacts/proposal-12-2-current-sdk-source-head-transport.md\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScopeTests.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfiguration.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfigurationTests.cs\n?? tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs\n?? tests/Hexalith.Folders.Server.Tests/NativeSequenceReaderTestTransport.cs\n?? tests/Hexalith.Folders.Server.Tests/NativeSourceHeadReaderTests.cs\n?? tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryCollection.cs\n?? tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryProxy.cs",
+      "source_tree": {
+        "path": "source/trees/25578520cf51016f69af75c8aa249e628da3f06ef75eeb83f04c800792810852.json",
+        "canonical_sha256": "25578520cf51016f69af75c8aa249e628da3f06ef75eeb83f04c800792810852",
+        "file_count": 2074
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.AI.Tools",
+      "head": "1745b6663ad32bb1288167135ed0f979366c53a0",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/9980ad28f07965657bfc8a7116a72d7086a7f50dd967ba05a0c17043a56f16bc.json",
+        "canonical_sha256": "9980ad28f07965657bfc8a7116a72d7086a7f50dd967ba05a0c17043a56f16bc",
+        "file_count": 11
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "head": "aed2f87a469d57c7033b5a944f9fb83301bb4859",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/185bc4cd6767bf707be1d7294f2691779b141b79a9e0a47aeea20a62147eb620.json",
+        "canonical_sha256": "185bc4cd6767bf707be1d7294f2691779b141b79a9e0a47aeea20a62147eb620",
+        "file_count": 1592
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons",
+      "head": "11555ace9efcae2928a00122dcba91243e5a8a1a",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/cb796c63e5a14aa8269df209e23c1bcb47ee11a9f3dee1dc32835dbec4ccd427.json",
+        "canonical_sha256": "cb796c63e5a14aa8269df209e23c1bcb47ee11a9f3dee1dc32835dbec4ccd427",
+        "file_count": 206
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "head": "a9317e4b228adfbcdd6686a2f86171b464f34c06",
+      "branch": "main",
+      "status": "M docs/reference/stream-replay-api.md\n M src/Hexalith.EventStore.Contracts/Routing/RouteCatalogCodec.cs\n M src/Hexalith.EventStore.DomainService/EventStoreGatewayWorkloadTransportExtensions.cs\n M src/Hexalith.EventStore.Server/Routing/RunScopedRouteCatalogGateway.cs\n M src/Hexalith.EventStore.ServiceDefaults/Diagnostics/DispatchStageName.cs\n M src/Hexalith.EventStore.ServiceDefaults/Routing/DevelopmentRouteCatalogInputs.cs\n M src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs\n M src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs\n M src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogServiceCollectionExtensions.cs\n M src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogStateHttpClientFilter.cs\n M src/Hexalith.EventStore/Controllers/StreamsController.cs\n M src/Hexalith.EventStore/Validation/SubmitCommandRequestValidator.cs\n M tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogV3Tests.cs\n M tests/Hexalith.EventStore.Server.Tests/Pipeline/SubmitCommandRequestValidatorTests.cs\n M tests/Hexalith.EventStore.Server.Tests/Routing/DevelopmentProjectionActorObservationTests.cs\n?? src/Hexalith.EventStore.Contracts/Routing/ValidatedRouteCatalogEncoding.cs\n?? src/Hexalith.EventStore.DomainService/DomainServiceNativeSourceCredentials.cs\n?? tests/Hexalith.EventStore.Client.Tests/Streams/NativeSourceMetadataScopeContractTests.cs\n?? tests/Hexalith.EventStore.Contracts.Tests/Routing/RouteCatalogDecodeIsolationTests.cs\n?? tests/Hexalith.EventStore.DomainService.Tests/NativeSourceMetadataCompositionTests.cs\n?? tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAcquisitionDiagnosticsTests.cs\n?? tests/Hexalith.EventStore.Server.Tests/Routing/OutgoingInvocationDiagnosticsTests.cs\n?? tests/Hexalith.EventStore.Server.Tests/Routing/PlatformCommandModelValidationTests.cs\n?? tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceHeadEvidenceContractTests.cs\n?? tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceMetadataCatalogObservationTests.cs",
+      "source_tree": {
+        "path": "source/trees/3d25ec946899309134035093428d2f82ce70bbcbc5905c9313e7e4d34110785d.json",
+        "canonical_sha256": "3d25ec946899309134035093428d2f82ce70bbcbc5905c9313e7e4d34110785d",
+        "file_count": 6380
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "head": "9cb085b926f45b5d494c67e3f57be48aa2644bcc",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/f317ad832eb19c3dcd8fd70505e92f4968cd1f7c6cb5ca4c96fe67219c6a0ab5.json",
+        "canonical_sha256": "f317ad832eb19c3dcd8fd70505e92f4968cd1f7c6cb5ca4c96fe67219c6a0ab5",
+        "file_count": 2906
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "head": "4052803e86461dc2b9ba9d2343d0eabf59ce18fa",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/70104d34192ab3ef68efb342e65ac30ad6e4408dd5aae5ab9f88399de227ba7b.json",
+        "canonical_sha256": "70104d34192ab3ef68efb342e65ac30ad6e4408dd5aae5ab9f88399de227ba7b",
+        "file_count": 1415
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+      "head": "46667b0d25c707bcdc961d59895bfe5a064bfd12",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/80fe287c0941daf9355a71b92c91bb35683276f9edd3abae76207d8161706f5f.json",
+        "canonical_sha256": "80fe287c0941daf9355a71b92c91bb35683276f9edd3abae76207d8161706f5f",
+        "file_count": 2885
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties",
+      "head": "d06c316fd57cbfaa0b80cf8622ec0b8ec571c6a0",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/83e40c4d806787aadb06bee22b3636be482b92deb0faa7c7f3f6326c9bbbf4be.json",
+        "canonical_sha256": "83e40c4d806787aadb06bee22b3636be482b92deb0faa7c7f3f6326c9bbbf4be",
+        "file_count": 2036
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "head": "759bb89753de7e70cb0b0db61c7142e96ec5bac0",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/18eb209dd4dcecc6e1550747227cd8024ec1f651755db3a64550e50284735e62.json",
+        "canonical_sha256": "18eb209dd4dcecc6e1550747227cd8024ec1f651755db3a64550e50284735e62",
+        "file_count": 2769
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations",
+      "head": "bce4eb9f45c6b131b960ab4fa39e50ff01e51960",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/09ee63779d3983826275fe286d19b58b235e7b5766b9f7856e99f51df781e959.json",
+        "canonical_sha256": "09ee63779d3983826275fe286d19b58b235e7b5766b9f7856e99f51df781e959",
+        "file_count": 55
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "head": "47a1ffd02cb3e1cde80bd7697ac1b46fdefda8cc",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/79ea79f950bddbbd7ed7f1592bd034a82484e96212a80e39d28c31f3071e284c.json",
+        "canonical_sha256": "79ea79f950bddbbd7ed7f1592bd034a82484e96212a80e39d28c31f3071e284c",
+        "file_count": 1701
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "head": "743c417664cf1313864978076522f50998abcf14",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/70ff89ccbb1a84f08637a96443a56f4fd7e701874244ae192fc89b3ce5ea5737.json",
+        "canonical_sha256": "70ff89ccbb1a84f08637a96443a56f4fd7e701874244ae192fc89b3ce5ea5737",
+        "file_count": 896
+      }
+    }
+  ]
+}

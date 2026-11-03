@@ -1,0 +1,177 @@
+{
+  "status": "owner-prerequisite-proposed-not-implemented",
+  "date": "2026-11-02",
+  "source_heads": {
+    "folders": "313f0f32bd31622fdd4f2f0bcb716e496ec301d0",
+    "eventstore": "a9317e4b228adfbcdd6686a2f86171b464f34c06",
+    "tenants": "743c417664cf1313864978076522f50998abcf14"
+  },
+  "scope": "Diagnostic tests and proposed SDK-owned source-only enrollment/metadata distinction prerequisite; no product/guard/enrollment implementation in this phase.",
+  "outputs_released": true,
+  "no_further_product_test_edits_or_builds": true,
+  "parent_owns": "Remaining broad current-output checks, runtime/source audit, live execution if authorized and portable evidence sealing.",
+  "build_command": "dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+  "build_result": "Final build succeeded: 0 warnings, 0 errors, 4.96 sec. Initial diagnostic build failed on undeclared NSubstitute namespace and was corrected using a local counted DispatchProxy without adding dependencies.",
+  "test_command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests -result-xml /tmp/story12-2-source-head-boundary-tests.xml",
+  "test_exit_code": 0,
+  "test_summary": {
+    "total": "7",
+    "passed": "7",
+    "failed": "0",
+    "errors": "0",
+    "skipped": "0",
+    "not-run": "0",
+    "time": "0.184"
+  },
+  "test_boundary": "Seven component tests. Actual catalog handler and readers; explicit dependency doubles. No successful source workload/live/absence qualification implied.",
+  "diff_check": "git diff --check passed after final source edits; final documentation check delegated with packet preparation.",
+  "evidence": [
+    {
+      "original": "/tmp/story12-2-source-head-boundary-build.log",
+      "retained": "/tmp/story12-2-source-head-boundary-handoff/story12-2-source-head-boundary-build.log",
+      "sha256": "d0aa1098f64db9d5262415ea7b8895ccf9fb23e9bcd001caecb090d67a4eca4b"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-boundary-build-2.log",
+      "retained": "/tmp/story12-2-source-head-boundary-handoff/story12-2-source-head-boundary-build-2.log",
+      "sha256": "3d683fc6ec0b43dfdd427fe358131ca9dd90912a3b1fc47310f29c03e94bcf1b"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-boundary-tests.log",
+      "retained": "/tmp/story12-2-source-head-boundary-handoff/story12-2-source-head-boundary-tests.log",
+      "sha256": "f684ad78014ab939a425f5858bece6f90a8e7ba0f695cf6d109bb7c4bc7b90b1"
+    },
+    {
+      "original": "/tmp/story12-2-source-head-boundary-tests.xml",
+      "retained": "/tmp/story12-2-source-head-boundary-handoff/story12-2-source-head-boundary-tests.xml",
+      "sha256": "0e9a18ae24b48b0312e6e269affeed80336291e5a3c13d7e148338e23e6a88fd"
+    }
+  ],
+  "files": [
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs",
+      "exists": true,
+      "sha256": "0c0d95f9df990e207e3b6732544fcfabc00611a942066d459fe8dd718c1f33a5"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryCollection.cs",
+      "exists": true,
+      "sha256": "f5f34cf3fb8daa344ac8dcdc1f9fc311af83dd8d011af311e8855d3924a35231"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryProxy.cs",
+      "exists": true,
+      "sha256": "5d2c893221ea7bc64b23fe60026107a9e991b9b6921ef95ed86c9f1c38aaca20"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-source-head-transport.md",
+      "exists": true,
+      "sha256": "a18d52dc059b5a7ad339f6a1e7dc5c4354629175e2ee8314f1a163627e961410"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+      "exists": true,
+      "sha256": "76fb5c518ae2b6dd5d52e3ff096146c6ff166fa14bfc8035f65a1e92143db67d"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+      "exists": true,
+      "sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs",
+      "exists": true,
+      "sha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "exists": true,
+      "sha256": "617125ac3a7db40efb922c1e38778403aec9816f74f98f6c3f26bb40b9bf923b"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.pdb",
+      "exists": true,
+      "sha256": "d37cb6d51cf3b8eb7ecb1f1a68861aa16087823e299da8b22ca75715c9330a6b"
+    },
+    {
+      "path": "src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs",
+      "exists": true,
+      "sha256": "4877d7aadf8bed3d9615c0b3fe63b7c8f93f18fc127889a208cfb397f7251efd"
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs",
+      "exists": true,
+      "sha256": "9e52394206d95b5ef5eb66900cc81532c5ecf1687a754d13a6b53b809e66fc4f"
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Streams/DaprNativeSourceMetadataReader.cs",
+      "exists": true,
+      "sha256": "69570ece967cc221662b1a132991dd0af7fcfc9b5381e228679819a627feb1da"
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Streams/GatewayNativeSourceMetadataReader.cs",
+      "exists": true,
+      "sha256": "9c7fab948df8ff3ecd7c49468bc8daedd5a1017e6ea74979020b4d5542cf4a79"
+    }
+  ],
+  "private_parent_attempt_receipts": [
+    {
+      "path": "/tmp/story12-2-resume-20261102-1EZDgA/strict-operational-4-after.json",
+      "sha256": "230e130ec8654ac505ca2b670295bd14bd2795bbf921f667d1b6fabdbff1d8eb"
+    },
+    {
+      "path": "/tmp/story12-2-resume-20261102-1EZDgA/strict-operational-4-before.json",
+      "sha256": "86b6ce9313e94e875dececc988519b450fada3050fcc45563272dd8430adbc2a"
+    },
+    {
+      "path": "/tmp/story12-2-resume-20261102-1EZDgA/strict-operational-4-observations.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "/tmp/story12-2-resume-20261102-1EZDgA/strict-operational-4-private.log",
+      "sha256": "6c3daa2373d1db436bae7cc9d1d67c71c3de8a477322b6a0899b1157aa6aa4f7"
+    },
+    {
+      "path": "/tmp/story12-2-resume-20261102-1EZDgA/strict-operational-4-private.xml",
+      "sha256": "96b234095f8540fb060a36fbae0c4d56d5087c3779ddeae7687a39cb21004817"
+    },
+    {
+      "path": "/tmp/story12-2-resume-20261102-1EZDgA/strict-operational-4-receipt.json",
+      "sha256": "805b7872b615b465875eff03faeeb4ac545c1976cafcd0f60bb3d83c0cc6b4a6"
+    },
+    {
+      "path": "/tmp/story12-2-resume-20261102-1EZDgA/strict-operational-4-runtime.json",
+      "sha256": "aa6216a61df1324077999f14c107a5fac8ad35e17b6f346d8ea14871582a003f"
+    }
+  ],
+  "strict4": {
+    "result": "1 failure, 0 errors/skips, 233.011 seconds; unchanged body reached, no SM4.",
+    "successful_before_failure": "Genuine bootstrap202/Completed, all4 refusal controls, original retained native source, projected authority; CreateTenant/AddUserToTenant; organization baseline/grants.",
+    "actual_failure_operation": "First unknown-profile ConfigureProviderBinding PUT at RequireRealTaskClosureAsync line173, expected403, observed HttpRequestException inner HttpIOException ResponseEnded. Not folder creation.",
+    "source_refusal": "One structured raw actor/catalog refusal event (phrase in3 fields), followed by process503 and actorRejected.",
+    "outer_eof_causation": "Unproven. No corresponding completed outer public PUT response in retained trace; no safe production framing/timeout correction established.",
+    "safe_timeline": [
+      "20:59:21.612 public provider-binding PUT executes",
+      "20:59:21.974 gateway ConfigureProviderBinding mediation",
+      "20:59:22.290 command received",
+      "20:59:26.679 route actor",
+      "20:59:27.351 actorProcessing",
+      "20:59:28.315 domain process start",
+      "20:59:28.429 one raw actor/catalog guard refusal (before transport)",
+      "20:59:28.435 process status503",
+      "20:59:28.437 ProblemDetails written",
+      "20:59:28.446 process endpoint done",
+      "20:59:28.463 actorRejected",
+      "20:59:28.465 command summaryRejected",
+      "approximately20:59:29 outer clientResponseEnded (request about8.4seconds)"
+    ]
+  },
+  "owner_decision": "Approve only a supported independently configured/enrolled read-only Folders source-head composition with provenzero/absence semantics distinct from missing/unsupported/corrupt/erased/unavailable. Preserve default human gateway, exact proof/catalog guards, no raw bypass/direct state/projection substitution, all deadlines/assertions. If existing metadata route cannot establish absence, return precise SDK prerequisite before implementation.",
+  "open_gates": [
+    "Source-only SDK/enrollment/zero contract owner approval and implementation",
+    "Separate outer ResponseEnded diagnosis",
+    "All six strict durability concerns andSM4",
+    "Original live acceptance row",
+    "Broad/Release/package/PD10/capacity identity and independent whole-story review as separately recorded"
+  ]
+}

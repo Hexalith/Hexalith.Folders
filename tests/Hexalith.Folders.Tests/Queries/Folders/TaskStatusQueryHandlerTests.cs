@@ -2,6 +2,8 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Folders;
 
+using Microsoft.Extensions.Logging;
+
 using Shouldly;
 using Xunit;
 
@@ -272,6 +274,129 @@ public sealed class TaskStatusQueryHandlerTests
         readModel.Requests.ShouldBe(1);
     }
 
+    [Theory]
+    [InlineData(299, TaskStatusQueryResultCode.Allowed, null)]
+    [InlineData(300, TaskStatusQueryResultCode.Allowed, null)]
+    [InlineData(301, TaskStatusQueryResultCode.ReadModelUnavailable, "tenant_projection_stale")]
+    [InlineData(1801, TaskStatusQueryResultCode.ProjectionStale, null)]
+    public async Task DiagnosticsShouldDistinguishInitialTenantAndNestedStrictFreshnessWithoutExtraReads(
+        int ageSeconds, TaskStatusQueryResultCode expected, string? folderOutcome)
+    {
+        FolderTenantAccessProjection projection = FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]);
+        projection.LastEventTimestamp = Now.AddSeconds(-ageSeconds);
+        CountingTenantAccessProjectionStore tenant = new(projection);
+        CountingTaskStatusReadModel model = new(TaskStatusReadModelResult.Available(Snapshot()));
+        TaskStatusDiagnosticLogger logger = new();
+
+        TaskStatusQueryResult result = await Handler(tenant, model, logger).HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(expected);
+        tenant.Gets.ShouldBe(ageSeconds > 1800 ? 1 : 2);
+        model.Requests.ShouldBe(expected == TaskStatusQueryResultCode.Allowed ? 1 : 0);
+        logger.Entries.Count.ShouldBe(2);
+        logger.Entries[0]["Outcome"].ShouldBe(ageSeconds > 1800 ? TenantAccessOutcome.StaleProjection : TenantAccessOutcome.Allowed);
+        logger.Entries[0]["Freshness"].ShouldBe(ageSeconds > 300 ? TenantProjectionFreshnessStatus.Stale : TenantProjectionFreshnessStatus.Fresh);
+        logger.Entries[0]["ProjectionAgeSeconds"].ShouldBe(ageSeconds);
+        logger.Entries[1]["ResultCode"].ShouldBe(expected);
+        logger.Entries[1]["FolderDenialOutcome"].ShouldBe(folderOutcome ?? "none");
+        if (folderOutcome is not null)
+        {
+            logger.Entries[1]["FolderDenialLayer"].ShouldBe(AuthorizationLayer.TenantAccessFreshness);
+            logger.Entries[1]["FolderDenialFreshness"].ShouldBe("stale");
+        }
+        string fields = string.Join("|", logger.Entries.SelectMany(entry => entry.Values));
+        foreach (string identity in new[] { "tenant-a", "user-a", "task-a", "folder-a", "corr-a", FolderLifecycleStatusTestSupport.TenantWatermark })
+            fields.ShouldNotContain(identity);
+        logger.ExceptionObjects.ShouldBe(0);
+    }
+
+    [Theory]
+    [InlineData("disabled", false)]
+    [InlineData("disabled", true)]
+    [InlineData("throw_is_enabled", false)]
+    [InlineData("throw_is_enabled", true)]
+    [InlineData("throw_log", false)]
+    [InlineData("throw_log", true)]
+    public async Task OptionalDiagnosticProviderFailuresShouldPreserveResultsAndObservations(string mode, bool stale)
+    {
+        FolderTenantAccessProjection projection = FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]);
+        if (stale) projection.LastEventTimestamp = Now.AddSeconds(-301);
+        CountingTenantAccessProjectionStore tenant = new(projection);
+        CountingTaskStatusReadModel model = new(TaskStatusReadModelResult.Available(Snapshot()));
+        TaskStatusDiagnosticLogger logger = new(mode);
+
+        TaskStatusQueryResult result = await Handler(tenant, model, logger).HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(stale ? TaskStatusQueryResultCode.ReadModelUnavailable : TaskStatusQueryResultCode.Allowed);
+        tenant.Gets.ShouldBe(2);
+        model.Requests.ShouldBe(stale ? 0 : 1);
+        logger.Entries.ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData("enabled")]
+    [InlineData("throw_is_enabled")]
+    [InlineData("throw_log")]
+    public async Task ExceptionDiagnosticShouldPreserveFailClosedOutcomeWithoutExceptionObject(string mode)
+    {
+        CountingTenantAccessProjectionStore tenant = new(FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
+        ThrowingTaskStatusReadModel model = new();
+        TaskStatusDiagnosticLogger logger = new(mode);
+
+        TaskStatusQueryResult result = await Handler(tenant, model, logger).HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(TaskStatusQueryResultCode.ReadModelUnavailable);
+        tenant.Gets.ShouldBe(2);
+        model.Requests.ShouldBe(1);
+        logger.ExceptionObjects.ShouldBe(0);
+        if (mode == "enabled")
+            logger.Entries.Single(entry => entry.ContainsKey("ExceptionClass"))["ExceptionClass"].ShouldBe("invalid_operation");
+    }
+
+    [Fact]
+    public async Task DiagnosticProviderShouldNotObservePreCanceledRequestsOrChangeTheirToken()
+    {
+        CountingTenantAccessProjectionStore tenant = new();
+        CountingTaskStatusReadModel model = new(TaskStatusReadModelResult.Unavailable("unavailable", Now));
+        TaskStatusDiagnosticLogger logger = new("throw_is_enabled");
+        using CancellationTokenSource canceled = new();
+        canceled.Cancel();
+
+        OperationCanceledException failure = await Should.ThrowAsync<OperationCanceledException>(
+            () => Handler(tenant, model, logger).HandleAsync(Query(), canceled.Token));
+
+        failure.CancellationToken.ShouldBe(canceled.Token);
+        tenant.Gets.ShouldBe(0);
+        model.Requests.ShouldBe(0);
+        logger.Entries.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void DiagnosticFieldsShouldClampAgeAndReplaceUnrecognizedStrings()
+    {
+        TaskStatusDiagnosticLogger logger = new();
+        TaskStatusQueryDiagnostics.TenantObserved(logger, new TenantAccessAuthorizationResult(
+            TenantAccessOutcome.Allowed, "private-code", "private-tenant", "private-watermark", Now,
+            TimeSpan.MaxValue, TenantProjectionFreshnessStatus.Stale, "private-source"));
+        TaskStatusQueryResult result = new(TaskStatusQueryResultCode.ReadModelUnavailable,
+            "private-task", "private-state", null, null, null, new(false, "private-reason"), null,
+            FolderLifecycleStatusTestSupport.Freshness(), "private-correlation", null)
+        {
+            FolderAuthorizationDenial = LayeredFolderAuthorizationResult.Denied(new(
+                AuthorizationLayer.FolderAcl, "private-outcome", true, "private-freshness", "private-watermark",
+                "private-correlation", "private-task", "private-actor", "private-policy", "private-timing", Now)),
+        };
+        TaskStatusQueryDiagnostics.Completed(logger, result);
+        TaskStatusQueryDiagnostics.ReadModelFailed(logger, new Exception("private-exception-message"));
+
+        logger.Entries[0]["ProjectionAgeSeconds"].ShouldBe(86400);
+        logger.Entries[1]["FolderDenialOutcome"].ShouldBe("other");
+        logger.Entries[1]["FolderDenialFreshness"].ShouldBe("other");
+        logger.Entries[2]["ExceptionClass"].ShouldBe("other");
+        string.Join("|", logger.Entries.SelectMany(entry => entry.Values)).ShouldNotContain("private-");
+        logger.ExceptionObjects.ShouldBe(0);
+    }
+
     private static async Task<TaskStatusQueryResult> ExecuteAsync(TaskStatusReadModelResult readModelResult)
     {
         CountingTenantAccessProjectionStore tenantStore = new(
@@ -283,11 +408,13 @@ public sealed class TaskStatusQueryHandlerTests
 
     private static TaskStatusQueryHandler Handler(
         IFolderTenantAccessProjectionStore tenantStore,
-        ITaskStatusReadModel readModel)
+        ITaskStatusReadModel readModel,
+        ILogger<TaskStatusQueryHandler>? logger = null)
         => new(
             new TenantAccessAuthorizer(tenantStore, new FixedUtcClock(Now), new TenantAccessOptions()),
             readModel,
             new FixedUtcClock(Now),
+            logger,
             folderAuthorization: new LayeredFolderAuthorizationService(
                 new TenantAccessAuthorizer(tenantStore, new FixedUtcClock(Now), new TenantAccessOptions()),
                 new RecordingFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult.Allowed(FolderLifecycleStatusTestSupport.AuthorizationWatermark)),

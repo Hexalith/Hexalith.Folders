@@ -1,0 +1,149 @@
+{
+  "purpose": "Story 12.2 measured compiled-inventory reuse and advisory catalog acquisition diagnostics; parent-owned final live",
+  "sourceFiles": {
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Routing/RunScopedRouteCatalogGateway.cs": "3e71be04faccaf524e03fc1fac8265afaaf8250e60dab20bd5bd4e43c60a7ffb",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs": "03702c158be77788643a4baaa68ccad3918e19a5279e2774e9323e02a71f4fc4",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogServiceCollectionExtensions.cs": "abc5a3d3a3975f4dd786439c850340e8ef73627c18bf087ff1e61a4bd7265391",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Diagnostics/DispatchStageName.cs": "7c45d854109de51915676c21203aa1ff55214f92dc5002830f77defe4918b8bb",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Routing/DevelopmentProjectionActorObservationTests.cs": "cd42ff71ee73d1429b8f2d877ceb70cad7b2a4fc5f6e69affc00d424eee68a21",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAcquisitionDiagnosticsTests.cs": "9189c95c027117ad6e1424a224323c08122f25c98473bbb73bd9f26be109b821",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "4c4831356cf91153c33e13ef92de0cf530cca03e4e5d677c26e1b663dad6dbaf",
+    "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md": "674860340961aff3df777ea617767597455f8ae72bf8779b56a6a29e9c7b79e8"
+  },
+  "qualification": {
+    "sdk-focused-tests-2.xml": {
+      "total": "56",
+      "passed": "56",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "5.482"
+    },
+    "fixture-model-tests.xml": {
+      "total": "2",
+      "passed": "2",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "0.375"
+    }
+  },
+  "componentPerf": [
+    {
+      "kind": "compiled-owners",
+      "owners": [
+        "Hexalith.Folders.Server",
+        "Hexalith.Tenants.Contracts"
+      ],
+      "routes": 46
+    },
+    {
+      "label": "actual-folders-tenants-candidate",
+      "operation": "frozen-inventory-plus-fresh-actor-query-checks",
+      "iterations": 20,
+      "milliseconds": 0.0203,
+      "cpuMilliseconds": 0.037,
+      "allocatedBytes": 3448
+    },
+    {
+      "label": "actual-folders-tenants",
+      "operation": "Read",
+      "iterations": 20,
+      "milliseconds": 23.0417,
+      "cpuMilliseconds": 23.114,
+      "allocatedBytes": 15873528
+    },
+    {
+      "label": "actual-folders-tenants",
+      "operation": "ReadOperations-includes-Read",
+      "iterations": 20,
+      "milliseconds": 257.9341,
+      "cpuMilliseconds": 260.64,
+      "allocatedBytes": 116297912
+    },
+    {
+      "label": "actual-folders-tenants",
+      "operation": "current-cohort-capture-compiled-work",
+      "iterations": 20,
+      "milliseconds": 385.9892,
+      "cpuMilliseconds": 402.898,
+      "allocatedBytes": 146176776
+    }
+  ],
+  "componentLimits": [
+    "20 iterations; wall/process CPU and allocation included",
+    "Frozen inventory component only; the actual corpus has no projection-actor query",
+    "Not complete capture/acquisition/transport/SM4/live performance",
+    "Early four-read estimate superseded by final actual-helper branch measurement"
+  ],
+  "preserved": [
+    "Original public authority constructor",
+    "Fresh backend reads, CAS, identity/capture/trust and actor/invoker checks",
+    "All source proof/final observations and 2/3/5/40 second deadlines",
+    "Original strict and capacity assertions; frozen intent and prior packets"
+  ],
+  "pending": [
+    "Parent full current-source runtime and Memories builds; SDK copies must be synchronized after final ServiceDefaults logger-lookup fix",
+    "Source/module and pending compile input inventory audit",
+    "Broader owner/consumer checks and unchanged isolated strict run",
+    "All separate SDK broad, Release/package, PD10/governance/review/live/SM4 gates"
+  ],
+  "newCompileInput": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAcquisitionDiagnosticsTests.cs",
+  "activeSessions": [],
+  "artifacts": {
+    "sdk-focused-tests.log": "f25a158f79033d9b5bcbab1b164a336feaabbf10f0c9144a723a9d6cbcb1d594",
+    "observe-baseline.log": "0840f46caf5da8750b3abb73436907e3b3c88ebb5be4a7eacdef80437eaa911f",
+    "probe-build-5.log": "45210ae41b31aef5193664564fb6adbe26be4d26371c35e44d3715c76da4e3a8",
+    "probe-build.log": "f32abf7e89b33bbbfe469d3068594f839a50b975cc63be6715be4acc379040cf",
+    "baseline-perf-2.log": "6d186362cec7b6ec03dc4d634061490ab26ac60174758c4f3a3ace1453966ce8",
+    "probe-build-7.log": "6664f8e790a2de5a0b431e86e5849c0322ce5597551dbc884ed46d87e8b4c92d",
+    "fixture-focused-build.log": "7de40c5ee1ce5710314f8c3839e51c1aece5f8b7cbea1636c9d455679fb6234e",
+    "probe-build-2.log": "cd59f37155eef59be6d5d18f94066f7cca8ee269daf3491a0d7fbb97596efef6",
+    "compiled-candidate.log": "97edb5d46201ea2be3cc13f5103c0b030aad9dc3feef61548730e7aec23d8229",
+    "baseline-perf.log": "82a66aa5b286a62cd44258f74062a4c90399074e5c67148c92420919c41879a3",
+    "observe-baseline-2.log": "66c04285c74c64fb6d6ee9459796f212d447b3f3a66d05eecbb1883e01b8ccc3",
+    "sdk-focused-build-2.log": "20c9700f70f55862942f72f50ef096b89a2c1b2917aed57247ff341edd0642eb",
+    "sdk-focused-tests-2.log": "1164d6e2c06249dda1dac72ea9ecc72d36f57e2878ec1651e011670654f54ba7",
+    "sdk-focused-build.log": "b05ca6cf1c606dd02f36b70879f1accfda807273c536bed2f3ab8c52d4d6e15a",
+    "probe-build-8.log": "4aa1f32f8c959a5623c78f4da2acddd23c736cbd48d875bfbbd16e5cfce693e6",
+    "compiled-final.log": "d5d53dededc75eaf05b302486a72753731e509f0bcf858a7d2630df637ecbc53",
+    "compiled-candidate-2.log": "b72245f7022a9b512a61c0b19fbcb9221a512cc3b136800e58ec781f180e3f6e",
+    "sdk-focused-tests-2.xml": "65ad08aa5bd5190cdd7de0a7d78318e4486cb1085cf7a956d57961bd9ea7c8b0",
+    "fixture-model-tests.xml": "91319853cea747da26be25caaa08b2d34ddef0180746728f03138e3e1a77b3cf",
+    "fixture-model-tests.log": "832806f48f209d6534aab0b511d6b1fe74a2fcf12078d73fd2eda5a8677617ab",
+    "probe-build-4.log": "eb8f7fec35a7827e87a87b0a1e542856c82306ba799068cf4aa7078b8d1f3ffa",
+    "probe-build-3.log": "41a34e252e6533d7aa5934ef9724f1b37273cf5ae85653995299f5e3b6126694",
+    "probe-build-6.log": "ce18fed708c79b50e8c0d7e3f172d1ba0f8897146af0a351d0b8b35b23269676",
+    "sdk-focused-tests.xml": "30337798648872cd453d8557a9ae6bdb023cbb25386b9ed8f70541aca84b6728",
+    "compiled-baseline.log": "f5adf170c46dd218e28aefe8704fd43679b061e9e642cd676d35b47fc309886f"
+  },
+  "productEditsAfterRelease": "None; only /tmp handoff metadata may be finalized",
+  "postVerificationDocumentationOnly": "Added the required XML summary to the internal diagnostic constructor after focused checks; parent must rebuild for final source/PDB audit.",
+  "commands": [
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "command": "dotnet build tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+      "log": "sdk-focused-build-2.log"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "command": "dotnet tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests -class Hexalith.EventStore.Server.Tests.Routing.DevelopmentProjectionActorObservationTests -class Hexalith.EventStore.Server.Tests.Routing.RunScopedProjectionCatalogTests -class Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests -class Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests -class Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests -class Hexalith.EventStore.Server.Tests.Routing.OutgoingInvocationDiagnosticsTests -result-xml /tmp/story12-2-activation-perf/sdk-focused-tests-2.xml",
+      "log": "sdk-focused-tests-2.log"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+      "log": "fixture-focused-build.log"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests -result-xml /tmp/story12-2-activation-perf/fixture-model-tests.xml",
+      "log": "fixture-model-tests.log"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet /tmp/story12-2-activation-perf/probe/bin/Debug/net10.0/probe.dll /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0 /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/deploy/dapr/eventstore-routing-catalog.json compiled",
+      "log": "compiled-final.log"
+    }
+  ]
+}

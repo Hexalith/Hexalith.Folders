@@ -1,0 +1,23 @@
+{
+  "command": "pwsh -NoLogo -NoProfile -File tests/tools/run-contract-spine-gates.ps1",
+  "exit_code": 1,
+  "diagnostics": [
+    "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj : error NU1102: Unable to find package Hexalith.Tenants.Client with version (>= 7.0.0) [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj : error NU1102:   - Found 40 version(s) in nuget.org [ Nearest version: 6.0.0 ] [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj : error NU1102: Unable to find package Hexalith.Tenants.Client with version (>= 7.0.0) [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj : error NU1102:   - Found 40 version(s) in nuget.org [ Nearest version: 6.0.0 ] [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj : error NU1102: Unable to find package Hexalith.Tenants.Client with version (>= 7.0.0) [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj : error NU1102:   - Found 40 version(s) in nuget.org [ Nearest version: 6.0.0 ] [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj : error NU1102: Unable to find package Hexalith.Tenants.Client with version (>= 7.0.0) [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj : error NU1102:   - Found 40 version(s) in nuget.org [ Nearest version: 6.0.0 ] [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj : error NU1102: Unable to find package Hexalith.Tenants.Client with version (>= 7.0.0) [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj : error NU1102:   - Found 40 version(s) in nuget.org [ Nearest version: 6.0.0 ] [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj : error NU1102: Unable to find package Hexalith.Tenants.Client with version (>= 7.0.0) [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj : error NU1102:   - Found 40 version(s) in nuget.org [ Nearest version: 6.0.0 ] [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj : error NU1102: Unable to find package Hexalith.Tenants.Client with version (>= 7.0.0) [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj : error NU1102:   - Found 40 version(s) in nuget.org [ Nearest version: 6.0.0 ] [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj : error NU1102: Unable to find package Hexalith.Tenants.Client with version (>= 7.0.0) [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]",
+    "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj : error NU1102:   - Found 40 version(s) in nuget.org [ Nearest version: 6.0.0 ] [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]"
+  ],
+  "debug_source_graph_restored": true
+}

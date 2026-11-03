@@ -551,6 +551,9 @@ public sealed class SemanticIndexingWorkerRegistrationTests
     {
         ServiceCollection services = new();
         services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
+        IHostEnvironment environment = Substitute.For<IHostEnvironment>();
+        environment.EnvironmentName.Returns(Environments.Development);
+        services.AddSingleton(environment);
         services.AddLogging();
         return services;
     }

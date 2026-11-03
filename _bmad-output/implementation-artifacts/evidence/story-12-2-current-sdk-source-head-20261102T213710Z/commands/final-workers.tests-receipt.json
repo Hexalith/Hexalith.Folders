@@ -1,0 +1,1183 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+    "-result-xml",
+    "/tmp/story12-2-resume-20261102-1EZDgA/final-workers.tests-private.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-02T21:23:59.768069+00:00",
+  "utc_end": "2026-11-02T21:24:05.504946+00:00",
+  "exit_code": 0,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-resume-20261102-1EZDgA/final-workers.tests-private.log",
+    "sha256": "c2a8003dceca1c26cf0108568cfc3b0c546b21fbb64927153444d704ec351534"
+  },
+  "private_xml": {
+    "path": "/tmp/story12-2-resume-20261102-1EZDgA/final-workers.tests-private.xml",
+    "sha256": "6520b3c77c86c2aa6da93a47eab156f35f8f913cd6f5e4a2a328f1dd6003fc8d"
+  },
+  "summary": {
+    "assemblies": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+        "run-date": "2026-11-02",
+        "run-time": "21:23:59",
+        "errors": "0",
+        "failed": "0",
+        "passed": "162",
+        "skipped": "0",
+        "time": "4.348",
+        "total": "162"
+      }
+    ],
+    "tests": [
+      {
+        "name": "Hexalith.Folders.Workers.Tests.PermissionProjectionDeliveryTests.AlreadyCancelledCallerNeverEntersProjection",
+        "result": "Pass",
+        "time": "0.126",
+        "type": "Hexalith.Folders.Workers.Tests.PermissionProjectionDeliveryTests",
+        "method": "AlreadyCancelledCallerNeverEntersProjection"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.PermissionProjectionDeliveryTests.CallerCancellationStopsInFlightDelivery",
+        "result": "Pass",
+        "time": "0.019",
+        "type": "Hexalith.Folders.Workers.Tests.PermissionProjectionDeliveryTests",
+        "method": "CallerCancellationStopsInFlightDelivery"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.FoldersFolderPermissionEventProcessorTests.RetainedFolderEventsAdvanceDurableAclAndConflictingReplayFailsClosed",
+        "result": "Pass",
+        "time": "0.305",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersFolderPermissionEventProcessorTests",
+        "method": "RetainedFolderEventsAdvanceDurableAclAndConflictingReplayFailsClosed"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.FoldersFolderPermissionEventProcessorTests.ProviderBindingRejectionDoesNotCreateFolderProjection",
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersFolderPermissionEventProcessorTests",
+        "method": "ProviderBindingRejectionDoesNotCreateFolderProjection"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests.OrganizationGapLeavesAuthorityUnchangedAndOrderedReplayRemovesTheRevokedGrant",
+        "result": "Pass",
+        "time": "0.317",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationGapLeavesAuthorityUnchangedAndOrderedReplayRemovesTheRevokedGrant"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests.OrganizationMetadataFailureDoesNotAdvancePersistedAuthority(failure: \\\"version\\\")",
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests.OrganizationMetadataFailureDoesNotAdvancePersistedAuthority(failure: \\\"payload-version\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests.OrganizationMetadataFailureDoesNotAdvancePersistedAuthority(failure: \\\"unsupported-version\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests.OrganizationMetadataFailureDoesNotAdvancePersistedAuthority(failure: \\\"contract-type\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests.OrganizationMetadataFailureDoesNotAdvancePersistedAuthority(failure: \\\"format\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests.OrganizationMetadataFailureDoesNotAdvancePersistedAuthority(failure: \\\"payload\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests.OrganizationMetadataFailureDoesNotAdvancePersistedAuthority(failure: \\\"message\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests.OrganizationMetadataFailureDoesNotAdvancePersistedAuthority(failure: \\\"sequence\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationMetadataFailureDoesNotAdvancePersistedAuthority"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests.RejectionInventoryAndOrganizationScopeEvidenceMatchPublishedCommandMapper",
+        "result": "Pass",
+        "time": "0.035",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "RejectionInventoryAndOrganizationScopeEvidenceMatchPublishedCommandMapper"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests.OrganizationRejectionAdvancesWatermarkAndFolderRejectionFailsWithoutChangingIt",
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Workers.Tests.OrganizationDeliveryRegressionTests",
+        "method": "OrganizationRejectionAdvancesWatermarkAndFolderRejectionFailsWithoutChangingIt"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShouldAcknowledgeUnknownEventTypesWithoutMutatingProjection",
+        "result": "Pass",
+        "time": "0.525",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "TenantSubscriptionEndpointShouldAcknowledgeUnknownEventTypesWithoutMutatingProjection"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.WorkerAndServerHandlersShouldProduceSameProjectionWhenEachOwnsWrites",
+        "result": "Pass",
+        "time": "0.013",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "WorkerAndServerHandlersShouldProduceSameProjectionWhenEachOwnsWrites"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.MapFoldersTenantEventWorkerEndpointsShouldRegisterOnlyTrustedSubscriptionRoute",
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "MapFoldersTenantEventWorkerEndpointsShouldRegisterOnlyTrustedSubscriptionRoute"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShouldRejectInvalidPayloadWithoutMutatingProjectionOrEchoingPayload",
+        "result": "Pass",
+        "time": "0.022",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "TenantSubscriptionEndpointShouldRejectInvalidPayloadWithoutMutatingProjectionOrEchoingPayload"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.InvalidProjectionWriterOptionsShouldFailValidation",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "InvalidProjectionWriterOptionsShouldFailValidation"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantEventProcessorShouldSkipUnsupportedEventTypeWithoutMutatingProjection",
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "TenantEventProcessorShouldSkipUnsupportedEventTypeWithoutMutatingProjection"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.WorkersModuleShouldExposeStableTenantSubscriptionMetadata",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "WorkersModuleShouldExposeStableTenantSubscriptionMetadata"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.AddFoldersTenantEventWorkersShouldRegisterSupportedTenantHandlersAndOptions",
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "AddFoldersTenantEventWorkersShouldRegisterSupportedTenantHandlersAndOptions"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.WorkerHandlerShouldProjectLifecycleMembershipAndFoldersConfiguration",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "WorkerHandlerShouldProjectLifecycleMembershipAndFoldersConfiguration"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.DomainOwnerAuthorizationUsesTheTenantsOwnerRoleToken",
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "DomainOwnerAuthorizationUsesTheTenantsOwnerRoleToken"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShouldProcessKnownEventsEndToEnd",
+        "result": "Pass",
+        "time": "0.029",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "TenantSubscriptionEndpointShouldProcessKnownEventsEndToEnd"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.ProjectionWriterOptionShouldDisableTheNonOwningHostBeforeMutation",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "ProjectionWriterOptionShouldDisableTheNonOwningHostBeforeMutation"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantCallbackRequiresConfiguredSidecarTokenBeforeProjectionWrites",
+        "result": "Pass",
+        "time": "0.018",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersTenantEventTests",
+        "method": "TenantCallbackRequiresConfiguredSidecarTokenBeforeProjectionWrites"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests.FailClosedFallbackShouldRemainExplicitlyConstructible",
+        "result": "Pass",
+        "time": "0.085",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "FailClosedFallbackShouldRemainExplicitlyConstructible"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests.MaterializeAsyncShouldUseObservedLengthAndClassifyDeclaredMediaType",
+        "result": "Pass",
+        "time": "0.014",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldUseObservedLengthAndClassifyDeclaredMediaType"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests.RealMaterializerAndPortShouldPublishFacadeDiscoverableMetadataOnlyEntry",
+        "result": "Pass",
+        "time": "0.145",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "RealMaterializerAndPortShouldPublishFacadeDiscoverableMetadataOnlyEntry"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests.MaterializeAsyncShouldReturnAvailableWithFacadeSecurityTrimAttributes",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldReturnAvailableWithFacadeSecurityTrimAttributes"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests.MaterializeAsyncShouldGuardRequestAndCancellation",
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldGuardRequestAndCancellation"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests.MaterializeAsyncShouldReportUnavailableWhenMediaTypeIsMissing",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldReportUnavailableWhenMediaTypeIsMissing"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests.MaterializeAsyncShouldUseInclusiveSmallContentBoundary",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldUseInclusiveSmallContentBoundary"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests.MaterializeAsyncShouldIgnoreBodyShapedFixtureAndEmitMetadataTokensOnly",
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldIgnoreBodyShapedFixtureAndEmitMetadataTokensOnly"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests.MaterializeAsyncShouldClassifyEverySupportedApplicationMediaType",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldClassifyEverySupportedApplicationMediaType"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests.MaterializeAsyncShouldReturnReplayStableOrdinalOutput",
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldReturnReplayStableOrdinalOutput"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests.MaterializeAsyncShouldNotExposeSensitiveMutationContext",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.MetadataDerivedSemanticIndexingContentMaterializerTests",
+        "method": "MaterializeAsyncShouldNotExposeSensitiveMutationContext"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests.MapFoldersTenantEventWorkerEndpointsShouldExposeSeparateSemanticIndexingSubscription(pubsub: \\\"pubsub\\\")",
+        "result": "Pass",
+        "time": "0.328",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "MapFoldersTenantEventWorkerEndpointsShouldExposeSeparateSemanticIndexingSubscription"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests.MapFoldersTenantEventWorkerEndpointsShouldExposeSeparateSemanticIndexingSubscription(pubsub: \\\"folders-workers-pubsub\\\")",
+        "result": "Pass",
+        "time": "0.009",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "MapFoldersTenantEventWorkerEndpointsShouldExposeSeparateSemanticIndexingSubscription"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests.OperationalFailureStillIndexesAndRedeliveryDoesNotRepeatIndexingAsync",
+        "result": "Pass",
+        "time": "0.4",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "OperationalFailureStillIndexesAndRedeliveryDoesNotRepeatIndexingAsync"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests.SemanticIndexingSubscriptionEndpointShouldIndexAuthorizedFileMutationEndToEnd",
+        "result": "Pass",
+        "time": "0.071",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "SemanticIndexingSubscriptionEndpointShouldIndexAuthorizedFileMutationEndToEnd"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests.SemanticIndexingSubscriptionEndpointShouldRetryEnvelopeMissingTypeOrPayload",
+        "result": "Pass",
+        "time": "0.051",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "SemanticIndexingSubscriptionEndpointShouldRetryEnvelopeMissingTypeOrPayload"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests.SemanticIndexingSubscriptionEndpointShouldRetryUnknownEventTypesWithoutSideEffects",
+        "result": "Pass",
+        "time": "0.066",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "SemanticIndexingSubscriptionEndpointShouldRetryUnknownEventTypesWithoutSideEffects"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests.SemanticIndexingSubscriptionEndpointShouldNotReadContentWhenPolicyDenies",
+        "result": "Pass",
+        "time": "0.057",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "SemanticIndexingSubscriptionEndpointShouldNotReadContentWhenPolicyDenies"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests.SemanticIndexingSubscriptionEndpointShouldRetryInvalidPayloadWithoutEchoingContent",
+        "result": "Pass",
+        "time": "0.051",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingEndpointE2ETests",
+        "method": "SemanticIndexingSubscriptionEndpointShouldRetryInvalidPayloadWithoutEchoingContent"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests.StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment(environment: \\\"Production\\\", component: null)",
+        "result": "Pass",
+        "time": "0.288",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests.StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment(environment: \\\"Production\\\", component: \\\"\\\")",
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests.StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment(environment: \\\"Production\\\", component: \\\" \\\")",
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests.StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment(environment: \\\"Production\\\", component: \\\"pubsub\\\")",
+        "result": "Pass",
+        "time": "0.008",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests.StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment(environment: \\\"Staging\\\", component: null)",
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests.StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment(environment: \\\"Staging\\\", component: \\\" \\\")",
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupRejectsMissingBlankOrSharedInboundComponentOutsideDevelopment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests.StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment(environment: \\\"Development\\\", component: null, expected: \\\"pubsub\\\")",
+        "result": "Pass",
+        "time": "0.052",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests.StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment(environment: \\\"Development\\\", component: \\\" \\\", expected: \\\"pubsub\\\")",
+        "result": "Pass",
+        "time": "0.008",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests.StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment(environment: \\\"Development\\\", component: \\\"pubsub\\\", expected: \\\"pubsub\\\")",
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests.StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment(environment: \\\"Production\\\", component: \\\"folders-workers-pubsub\\\", expected: \\\"folders-workers-pubsub\\\")",
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests.StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment(environment: \\\"Staging\\\", component: \\\"isolated-inbound\\\", expected: \\\"isolated-inbound\\\")",
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersSubscriptionConfigurationTests",
+        "method": "StartupUsesExplicitInboundComponentWithSharedFallbackOnlyInDevelopment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldRecordRetryableFailureWhenRemovalPublishFails",
+        "result": "Pass",
+        "time": "0.105",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldRecordRetryableFailureWhenRemovalPublishFails"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldRecordNoOpForNeverIndexedArchivedTombstoneWithoutCallingMemories",
+        "result": "Pass",
+        "time": "0.008",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldRecordNoOpForNeverIndexedArchivedTombstoneWithoutCallingMemories"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldNotReadContentWhenPolicyDenies",
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldNotReadContentWhenPolicyDenies"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldRecordFailedWhenContentIsUnavailable",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldRecordFailedWhenContentIsUnavailable"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldSoftDeletePreviouslyIndexedArchivedFolderWithFullDocumentReSend",
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldSoftDeletePreviouslyIndexedArchivedFolderWithFullDocumentReSend"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldSkipUnsupportedContentTypeBeforeMemories",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldSkipUnsupportedContentTypeBeforeMemories"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldRecordNoOpForNeverIndexedTombstoneWithoutCallingMemories",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldRecordNoOpForNeverIndexedTombstoneWithoutCallingMemories"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldSkipRedactedSensitivityBeforeReadingContent",
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldSkipRedactedSensitivityBeforeReadingContent"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldApplyEventsThenIndexEligibleStaleEntry",
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldApplyEventsThenIndexEligibleStaleEntry"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldSkipOversizedContentBeforeMemories",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldSkipOversizedContentBeforeMemories"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldFailClosedWhenTenantAccessIsUnavailableBeforeReadingContent",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldFailClosedWhenTenantAccessIsUnavailableBeforeReadingContent"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.EventProcessorShouldNotReindexRedeliveredEventBecauseTheBridgeOwnsIdempotency",
+        "result": "Pass",
+        "time": "0.042",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "EventProcessorShouldNotReindexRedeliveredEventBecauseTheBridgeOwnsIdempotency"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldIndexWithRealMetadataDerivedMaterializer",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldIndexWithRealMetadataDerivedMaterializer"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldHardDeletePreviouslyIndexedRemovedFileVersion",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldHardDeletePreviouslyIndexedRemovedFileVersion"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests.ProcessFolderEventsAsyncShouldFailClosedWhenFolderAclDoesNotAuthorizeBeforeReadingContent",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingProcessManagerTests",
+        "method": "ProcessFolderEventsAsyncShouldFailClosedWhenFolderAclDoesNotAuthorizeBeforeReadingContent"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.AmbiguousProviderOutcomesShouldAppendUnknownOutcome(categoryName: \\\"UnknownProviderOutcome\\\", expectedCode: UnknownProviderOutcome, expectedReconciliation: False)",
+        "result": "Pass",
+        "time": "0.106",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "AmbiguousProviderOutcomesShouldAppendUnknownOutcome"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.AmbiguousProviderOutcomesShouldAppendUnknownOutcome(categoryName: \\\"ReconciliationRequired\\\", expectedCode: ReconciliationRequired, expectedReconciliation: True)",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "AmbiguousProviderOutcomesShouldAppendUnknownOutcome"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.ContextMismatchShouldNotResolveProviderOrAppendOutcome",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "ContextMismatchShouldNotResolveProviderOrAppendOutcome"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.RequestedEventShouldCreateProviderRepositoryAndAppendBoundOutcome",
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "RequestedEventShouldCreateProviderRepositoryAndAppendBoundOutcome"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.FreshMatchingAdmissionShouldReturnContextMismatchWithoutProviderCalls",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "FreshMatchingAdmissionShouldReturnContextMismatchWithoutProviderCalls"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.ProviderExceptionDuringCreationShouldAppendUnknownOutcome",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "ProviderExceptionDuringCreationShouldAppendUnknownOutcome"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.EquivalentExistingReplayAfterRestartShouldNotCallProviderAgain",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "EquivalentExistingReplayAfterRestartShouldNotCallProviderAgain"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.AmbiguousOutcomeReplayAfterRestartShouldNotCallProviderAgain",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "AmbiguousOutcomeReplayAfterRestartShouldNotCallProviderAgain"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.StateUnavailableShouldNotResolveProviderOrAppendOutcome",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "StateUnavailableShouldNotResolveProviderOrAppendOutcome"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.AlreadyProcessedRequestedEventShouldNotCallProviderAgain",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "AlreadyProcessedRequestedEventShouldNotCallProviderAgain"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.NullIdempotencyAdmissionShouldReturnContextMismatchWithoutProviderCalls",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "NullIdempotencyAdmissionShouldReturnContextMismatchWithoutProviderCalls"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.ProviderNeutralResultShouldRoundTripWithoutProviderOrSecretEvidence(categoryName: \\\"ProviderConflict\\\", reasonCode: \\\"github_repository_conflict\\\")",
+        "result": "Pass",
+        "time": "0.048",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "ProviderNeutralResultShouldRoundTripWithoutProviderOrSecretEvidence"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.ProviderNeutralResultShouldRoundTripWithoutProviderOrSecretEvidence(categoryName: \\\"UnknownProviderOutcome\\\", reasonCode: \\\"github_mutation_evidence_ambiguous\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "ProviderNeutralResultShouldRoundTripWithoutProviderOrSecretEvidence"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.ProviderNeutralResultShouldRoundTripWithoutProviderOrSecretEvidence(categoryName: \\\"ReconciliationRequired\\\", reasonCode: \\\"reconciliation_required\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "ProviderNeutralResultShouldRoundTripWithoutProviderOrSecretEvidence"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.FingerprintMismatchShouldReturnContextMismatchWithoutProviderCalls",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "FingerprintMismatchShouldReturnContextMismatchWithoutProviderCalls"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.KnownProviderFailureShouldAppendRepositoryBindingFailed",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "KnownProviderFailureShouldAppendRepositoryBindingFailed"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests.RequestedEventShouldForwardTheCallerSuppliedIdempotencyAdmission",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.RepositoryProvisioningProcessManagerTests",
+        "method": "RequestedEventShouldForwardTheCallerSuppliedIdempotencyAdmission"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests.ApplyFolderEventsAsyncShouldPersistTenantPrefixedFileVersionAndFolderIndexKeys",
+        "result": "Pass",
+        "time": "0.112",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "ApplyFolderEventsAsyncShouldPersistTenantPrefixedFileVersionAndFolderIndexKeys"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests.RecordRemovalEvidenceAsyncShouldRecordOutcomeOnTombstonedEntryWithoutStatusRegression",
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "RecordRemovalEvidenceAsyncShouldRecordOutcomeOnTombstonedEntryWithoutStatusRegression"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests.GetFileVersionByIdAsyncShouldReturnNullWhenStoredIdentityDoesNotMatchLookup",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "GetFileVersionByIdAsyncShouldReturnNullWhenStoredIdentityDoesNotMatchLookup"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests.ApplyFolderEventsAsyncShouldBeEquivalentUnderDuplicateDelivery",
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "ApplyFolderEventsAsyncShouldBeEquivalentUnderDuplicateDelivery"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests.RecordIndexingResultAsyncShouldProtectNewerPersistedFileVersionFromStaleResult",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "RecordIndexingResultAsyncShouldProtectNewerPersistedFileVersionFromStaleResult"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests.ApplyFolderEventsAsyncShouldDropTenantMismatchedFileEventsWithoutWriting",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "ApplyFolderEventsAsyncShouldDropTenantMismatchedFileEventsWithoutWriting"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests.GetFileVersionAsyncShouldReturnNullWhenStoredIdentityReadModelKeyDoesNotMatchLookup",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "GetFileVersionAsyncShouldReturnNullWhenStoredIdentityReadModelKeyDoesNotMatchLookup"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests.ApplyFolderEventsAsyncShouldApplyFolderScopedArchiveThroughPersistedIndex",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "ApplyFolderEventsAsyncShouldApplyFolderScopedArchiveThroughPersistedIndex"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests.ApplyFolderEventsAsyncShouldReloadVersionStatusAndRemovalOnNewInstanceOverSameStore",
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "ApplyFolderEventsAsyncShouldReloadVersionStatusAndRemovalOnNewInstanceOverSameStore"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests.ApplyFolderEventsAsyncShouldTombstoneKnownFileVersionWhenRemoveHasNoContentHash",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.EventStoreSemanticIndexingBridgeStoreTests",
+        "method": "ApplyFolderEventsAsyncShouldTombstoneKnownFileVersionWhenRemoveHasNoContentHash"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.ProviderBindingDeliveryRepairTests.WorkerBindingBytesEqualProviderProjectRebuildAndMalformedRejectionsNeverAdvanceAsync",
+        "result": "Pass",
+        "time": "0.631",
+        "type": "Hexalith.Folders.Workers.Tests.ProviderBindingDeliveryRepairTests",
+        "method": "WorkerBindingBytesEqualProviderProjectRebuildAndMalformedRejectionsNeverAdvanceAsync"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser(tenant: \\\"\\\")",
+        "result": "Pass",
+        "time": "0.521",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser(tenant: \\\"tenant:invalid\\\")",
+        "result": "Pass",
+        "time": "0.017",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser(tenant: \\\"system\\\")",
+        "result": "Pass",
+        "time": "0.014",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser(tenant: \\\"provider-binding-0123456789abcdef\\\")",
+        "result": "Pass",
+        "time": "0.013",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.OrganizationResetErasesOnlyOrganizationRowAndAuditsMetadata",
+        "result": "Pass",
+        "time": "0.024",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "OrganizationResetErasesOnlyOrganizationRowAndAuditsMetadata"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.FolderCallbackRequiresOperationalPersistenceBeforeAcknowledgment(operationalUnavailable: False)",
+        "result": "Pass",
+        "time": "0.049",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "FolderCallbackRequiresOperationalPersistenceBeforeAcknowledgment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.FolderCallbackRequiresOperationalPersistenceBeforeAcknowledgment(operationalUnavailable: True)",
+        "result": "Pass",
+        "time": "0.054",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "FolderCallbackRequiresOperationalPersistenceBeforeAcknowledgment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted(writeConflict: False)",
+        "result": "Pass",
+        "time": "0.044",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted(writeConflict: True)",
+        "result": "Pass",
+        "time": "0.079",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited(scenario: \\\"row-remaining\\\", expected: Conflict, outcome: \\\"row_remaining\\\")",
+        "result": "Pass",
+        "time": "0.018",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited(scenario: \\\"etag-conflict\\\", expected: Conflict, outcome: \\\"etag_conflict\\\")",
+        "result": "Pass",
+        "time": "0.015",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited(scenario: \\\"inspect-failure\\\", expected: ServiceUnavailable, outcome: \\\"unavailable\\\")",
+        "result": "Pass",
+        "time": "0.016",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited(scenario: \\\"erase-failure\\\", expected: ServiceUnavailable, outcome: \\\"unavailable\\\")",
+        "result": "Pass",
+        "time": "0.012",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited(scenario: \\\"read-back-failure\\\", expected: ServiceUnavailable, outcome: \\\"unavailable\\\")",
+        "result": "Pass",
+        "time": "0.013",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.ProjectionFailureLogsOnlyFixedStageCategoryAndRuntimeTypeBeforeRetryableResponse",
+        "result": "Pass",
+        "time": "0.047",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "ProjectionFailureLogsOnlyFixedStageCategoryAndRuntimeTypeBeforeRetryableResponse"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.UnresolvedConcurrentDeliveryFailsWithinBudgetWithoutAdvancing(writeConflict: False)",
+        "result": "Pass",
+        "time": "1.014",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "UnresolvedConcurrentDeliveryFailsWithinBudgetWithoutAdvancing"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.UnresolvedConcurrentDeliveryFailsWithinBudgetWithoutAdvancing(writeConflict: True)",
+        "result": "Pass",
+        "time": "1.021",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "UnresolvedConcurrentDeliveryFailsWithinBudgetWithoutAdvancing"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.AuthenticatedBaselineAndGrantShouldReachSharedPermissionState",
+        "result": "Pass",
+        "time": "1.1",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "AuthenticatedBaselineAndGrantShouldReachSharedPermissionState"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays(revoke: False, malformedKind: \\\"missing\\\")",
+        "result": "Pass",
+        "time": "0.023",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays(revoke: True, malformedKind: \\\"missing\\\")",
+        "result": "Pass",
+        "time": "0.017",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays(revoke: False, malformedKind: \\\"-1\\\")",
+        "result": "Pass",
+        "time": "0.02",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays(revoke: True, malformedKind: \\\"-1\\\")",
+        "result": "Pass",
+        "time": "0.018",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays(revoke: False, malformedKind: \\\"4\\\")",
+        "result": "Pass",
+        "time": "0.016",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays(revoke: True, malformedKind: \\\"4\\\")",
+        "result": "Pass",
+        "time": "0.017",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedOrganizationStreamLeavesPersistedProjectionUnchanged(scenario: \\\"grant\\\")",
+        "result": "Pass",
+        "time": "0.013",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedOrganizationStreamLeavesPersistedProjectionUnchanged"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedOrganizationStreamLeavesPersistedProjectionUnchanged(scenario: \\\"revoke\\\")",
+        "result": "Pass",
+        "time": "0.012",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedOrganizationStreamLeavesPersistedProjectionUnchanged"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedOrganizationStreamLeavesPersistedProjectionUnchanged(scenario: \\\"repeated-baseline\\\")",
+        "result": "Pass",
+        "time": "0.016",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+        "method": "MalformedOrganizationStreamLeavesPersistedProjectionUnchanged"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.WorkersHostSecurityEnrollmentTests.ProductionPipelineHasEmptyInventoriesExactProbesAndAuthenticatedChannelCallbacks",
+        "result": "Pass",
+        "time": "0.569",
+        "type": "Hexalith.Folders.Workers.Tests.WorkersHostSecurityEnrollmentTests",
+        "method": "ProductionPipelineHasEmptyInventoriesExactProbesAndAuthenticatedChannelCallbacks"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingPortShouldPublishCuratedSearchIndexEntryChangedCloudEvent",
+        "result": "Pass",
+        "time": "0.274",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortShouldPublishCuratedSearchIndexEntryChangedCloudEvent"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingPortShouldHonorCancelledTokenBeforePublishing",
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortShouldHonorCancelledTokenBeforePublishing"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.WorkerLocalMemoriesRoutingDefaultsShouldMatchAspireConstants",
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "WorkerLocalMemoriesRoutingDefaultsShouldMatchAspireConstants"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingRequestShouldRejectBlankPublicBoundaryIdentifiers",
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingRequestShouldRejectBlankPublicBoundaryIdentifiers"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingPortShouldPublishSearchIndexEntryRemovedForHardDelete",
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortShouldPublishSearchIndexEntryRemovedForHardDelete"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingRequestShouldRejectMissingNestedBoundaryRecords",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingRequestShouldRejectMissingNestedBoundaryRecords"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingPortRemovalShouldHonorCancelledTokenBeforePublishing",
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortRemovalShouldHonorCancelledTokenBeforePublishing"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.AddFoldersSemanticIndexingWorkersShouldRegisterEventStoreBackedBridge",
+        "result": "Pass",
+        "time": "0.05",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "AddFoldersSemanticIndexingWorkersShouldRegisterEventStoreBackedBridge"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingPortShouldMapDaprPublishFailureToRetryableFailure",
+        "result": "Pass",
+        "time": "0.016",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortShouldMapDaprPublishFailureToRetryableFailure"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.AddFoldersSemanticIndexingWorkersShouldRegisterMetadataDerivedMaterializerWithoutContentStoreDependency",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "AddFoldersSemanticIndexingWorkersShouldRegisterMetadataDerivedMaterializerWithoutContentStoreDependency"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.AddFoldersSemanticIndexingWorkersShouldRegisterPortAndDaprClient",
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "AddFoldersSemanticIndexingWorkersShouldRegisterPortAndDaprClient"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingPublicContractShouldNotExposeMemoriesDtoTypes",
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPublicContractShouldNotExposeMemoriesDtoTypes"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingSourceIdentityShouldCreateStableNonFileUri",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingSourceIdentityShouldCreateStableNonFileUri"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingPortRemovalShouldMapDaprPublishFailureToRetryableFailure",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortRemovalShouldMapDaprPublishFailureToRetryableFailure"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingContentAndPolicyRecordsShouldRejectInvalidDescriptorData",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingContentAndPolicyRecordsShouldRejectInvalidDescriptorData"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.ActualWorkersHostUsesDurableTenantAndPermissionStores",
+        "result": "Pass",
+        "time": "0.093",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "ActualWorkersHostUsesDurableTenantAndPermissionStores"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingPortShouldReSendFullArchivedDocumentForSoftDelete",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortShouldReSendFullArchivedDocumentForSoftDelete"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.RegisteredContentMaterializerShouldStayMetadataDerivedAndRequestShouldOmitBodyByteMembers",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "RegisteredContentMaterializerShouldStayMetadataDerivedAndRequestShouldOmitBodyByteMembers"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.RemoveAndUpsertShouldTargetByteIdenticalIdentityForTheSameFileVersion",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "RemoveAndUpsertShouldTargetByteIdenticalIdentityForTheSameFileVersion"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingPortShouldFallBackToDescriptorTextWhenArchiveEvidenceIsAbsent",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingPortShouldFallBackToDescriptorTextWhenArchiveEvidenceIsAbsent"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.AddFoldersTenantEventWorkersShouldIncludeSemanticIndexingRegistration",
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "AddFoldersTenantEventWorkersShouldIncludeSemanticIndexingRegistration"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests.SemanticIndexingSourceIdentityShouldRejectRawFilesystemIdentity",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.SemanticIndexingWorkerRegistrationTests",
+        "method": "SemanticIndexingSourceIdentityShouldRejectRawFilesystemIdentity"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.IndeterminatePersistenceIsRetryableAndOriginalManifestRecovers",
+        "result": "Pass",
+        "time": "0.469",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "IndeterminatePersistenceIsRetryableAndOriginalManifestRecovers"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.UnsupportedStoredVersionCannotAdvanceCheckpoint(version: 0)",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "UnsupportedStoredVersionCannotAdvanceCheckpoint"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.UnsupportedStoredVersionCannotAdvanceCheckpoint(version: 2)",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "UnsupportedStoredVersionCannotAdvanceCheckpoint"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.UnsupportedStoredVersionCannotAdvanceCheckpoint(version: 1025)",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "UnsupportedStoredVersionCannotAdvanceCheckpoint"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.InvalidProviderRejectionNeverCreatesSourceReceipts(code: \\\"Accepted\\\")",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "InvalidProviderRejectionNeverCreatesSourceReceipts"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.InvalidProviderRejectionNeverCreatesSourceReceipts(code: \\\"999\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "InvalidProviderRejectionNeverCreatesSourceReceipts"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.DurableCheckpointPrecedesSuccessfulProcessingAndDuplicateAcknowledgment",
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "DurableCheckpointPrecedesSuccessfulProcessingAndDuplicateAcknowledgment"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.MalformedWorkspaceOrLeaseNeverAdvancesWorkerCompletion(malformedLease: False)",
+        "result": "Pass",
+        "time": "0.084",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "MalformedWorkspaceOrLeaseNeverAdvancesWorkerCompletion"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.MalformedWorkspaceOrLeaseNeverAdvancesWorkerCompletion(malformedLease: True)",
+        "result": "Pass",
+        "time": "0.02",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "MalformedWorkspaceOrLeaseNeverAdvancesWorkerCompletion"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.WorkerRejectsReusedMessagePositionsAndUndefinedRejectionCodes(reusedMessage: True)",
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "WorkerRejectsReusedMessagePositionsAndUndefinedRejectionCodes"
+      },
+      {
+        "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.WorkerRejectsReusedMessagePositionsAndUndefinedRejectionCodes(reusedMessage: False)",
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+        "method": "WorkerRejectsReusedMessagePositionsAndUndefinedRejectionCodes"
+      }
+    ]
+  },
+  "source_or_head_drift": [],
+  "working_tree_status_changes": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 0
+  },
+  "runtime_module_observations": 201,
+  "fixture_module_observations": 0
+}

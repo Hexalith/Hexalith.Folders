@@ -1,0 +1,1065 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "09:29:06",
+      "errors": "0",
+      "failed": "0",
+      "passed": "131",
+      "skipped": "0",
+      "time": "3.135",
+      "total": "131"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "NativeBatchRefusesInvalidProofInFreshRangeMetadataBeforeReadingEvents",
+      "display_name_sha256": "e269293bdae5fb6542cfe6530a01fc8deec12130879a93c3dfba792dd3f05442",
+      "case_ordinal": 1
+    },
+    {
+      "result": "Pass",
+      "time": "0.015",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "AuthenticatedGatewayAndNativeReaderBindTheExactPersistedRawPrefix",
+      "display_name_sha256": "e83bbe29c62247eb7c10831ab0e01170f7334ece2448f43e213311dae7154892",
+      "case_ordinal": 2
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "AuthenticatedGatewayAndNativeReaderBindTheExactPersistedRawPrefix",
+      "display_name_sha256": "359e7f02997b91f0e84d3d4564111040f2adcbbb9df70128d79b873340b2ea3d",
+      "case_ordinal": 3
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "AuthenticatedGatewayAndNativeReaderBindTheExactPersistedRawPrefix",
+      "display_name_sha256": "e294b2c6f713db1fb23df7e0eba63d5e76b28f5153564e4cca9ddaa621b4344d",
+      "case_ordinal": 4
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "AuthenticatedGatewayAndNativeReaderBindTheExactPersistedRawPrefix",
+      "display_name_sha256": "7a5587037ec3301bcc6bf60807a89e63799ec8a99acb296e7896cc7f5978a5b5",
+      "case_ordinal": 5
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "NativeBatchReusesFreshRangeMetadataForItsInsideProof",
+      "display_name_sha256": "22d38009fee58139a33364cfdc4996a3ce1e3b3df2a3755a34d3c8d2893ff588",
+      "case_ordinal": 6
+    },
+    {
+      "result": "Pass",
+      "time": "0.012",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "NativeActorRangeRefusesRecoveryAndPreservesActualPersistedState",
+      "display_name_sha256": "23086fbf075395ea988e3685efd6638accdee24d60877f538471938c2f5e9983",
+      "case_ordinal": 7
+    },
+    {
+      "result": "Pass",
+      "time": "0.013",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "AuthenticatedNativePagingPreservesExactFinalProofAcrossCountAndActorByteBounds",
+      "display_name_sha256": "8b60a33f9ffca816eab337add3e6695a55f21a7af93b48dcb9889441e11d51f6",
+      "case_ordinal": 8
+    },
+    {
+      "result": "Pass",
+      "time": "0.015",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "AuthenticatedNativePagingPreservesExactFinalProofAcrossCountAndActorByteBounds",
+      "display_name_sha256": "4a976b5091a6d0550d2b693b646256be7afbd0abd83969a31d46143eead35e3c",
+      "case_ordinal": 9
+    },
+    {
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "display_name_sha256": "dc4deb84340cdf11cbf4da040b2e2e7d7f19037d7baa333cf18f8e1261e655d1",
+      "case_ordinal": 10
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "display_name_sha256": "9be65ea589bf283850dbfd4bb135a55560901824af17cc22a4cf00121ab944e3",
+      "case_ordinal": 11
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "display_name_sha256": "6e90918eec5d310a4a3c12134dc8aaf231b077846b408eda35f15fed207c2909",
+      "case_ordinal": 12
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "display_name_sha256": "c7fc9f61f3df5b7a23182f6f55753d751dce78cbd42256010c4916f547f9c1d4",
+      "case_ordinal": 13
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "display_name_sha256": "f48fa4a83dd4aba8f34916ed4e16c978e5963d998a2d996f5148a175c975ae7f",
+      "case_ordinal": 14
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "display_name_sha256": "cb98ae596d916e778ee3bb95419817aa1fc341616ae0158a2ab2f15c323451b0",
+      "case_ordinal": 15
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "display_name_sha256": "e7b4183b9a8c7d68872b25003cd8271102aac94f1db1e68bb8bb63da4c6f4346",
+      "case_ordinal": 16
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "display_name_sha256": "9497845cea816a7dd6f060cdaf505661727030d128ace7a6f5e0ce9d358e8477",
+      "case_ordinal": 17
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "display_name_sha256": "971d408b602eb2bf4ee29df930218410463d8ea68d9353823519890e7054cfaf",
+      "case_ordinal": 18
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "ExistingActorWireProofIsReadWithoutEventsOrServerClientDependency",
+      "display_name_sha256": "a4403ce33b6025c421d3045b1f05602a88cc086495d0957141a7a07dda2a4440",
+      "case_ordinal": 19
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "PersistedNativeEmptySeedRemainsDifferentFromMissingMetadata",
+      "display_name_sha256": "931c6a8103a0db499f55861601196eeecf17866627857f947374cec05999d750",
+      "case_ordinal": 20
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "MalformedOrUnsupportedSidecarEndpointFailsClosed",
+      "display_name_sha256": "cda3d5212f6f8f98749ad6d6468e1bcc52627f5429bb663d605787ed918e16f5",
+      "case_ordinal": 21
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "MalformedOrUnsupportedSidecarEndpointFailsClosed",
+      "display_name_sha256": "8929703e28b66d314db10be2ef2d158c57804cf52a82c60aececf51a23f86295",
+      "case_ordinal": 22
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "MalformedOrUnsupportedSidecarEndpointFailsClosed",
+      "display_name_sha256": "d9ab317e72e338f8ea26b43e1905d26e8b28632ac6f23ee4aa1eb7775deaf953",
+      "case_ordinal": 23
+    },
+    {
+      "result": "Pass",
+      "time": "0.01",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionReturnsOnlyStableProofWithoutRangeOrPayloadCalls",
+      "display_name_sha256": "2574351e43cb5382ca0d0d8b4abcaa372b04b280220a5af864a68003ab5ec705",
+      "case_ordinal": 24
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionReturnsOnlyStableProofWithoutRangeOrPayloadCalls",
+      "display_name_sha256": "d1a0dc5843ba0514d61fc9d3d370eb9200293000f0399f16882b15f69283704b",
+      "case_ordinal": 25
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionReturnsOnlyStableProofWithoutRangeOrPayloadCalls",
+      "display_name_sha256": "573c8d545eb5e7da02ada27dbb03d02bfddcc633451714e7bb7b4fc4cc25d136",
+      "case_ordinal": 26
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionReturnsOnlyStableProofWithoutRangeOrPayloadCalls",
+      "display_name_sha256": "f1350ee4121167fc0d9d0bd3cdb1a2c81d196094af0d1406d0718bbb911e1a6e",
+      "case_ordinal": 27
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncExistingZeroEventStreamReturnsEmptyPage",
+      "display_name_sha256": "11937a689aa67600d4872f5e25bc50023d5c4b27a776d58ed4715779a14ba084",
+      "case_ordinal": 28
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "IncompleteNativeBatchFailsClosed",
+      "display_name_sha256": "bd58a3cc0be5d88312427d376c360c15ed7b65e68867749406e8e4e8900e0bd5",
+      "case_ordinal": 29
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "IncompleteNativeBatchFailsClosed",
+      "display_name_sha256": "95cacf8890aec9065e090461a8e357112faea6af91dfc20e913f8ab4488c188b",
+      "case_ordinal": 30
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionNormalizesTransportFailureDuringEitherObservation",
+      "display_name_sha256": "dd4d82b2e0c0b788e1df07473ce97784611aab505201063bc3b6b1ff26eafbd7",
+      "case_ordinal": 31
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionNormalizesTransportFailureDuringEitherObservation",
+      "display_name_sha256": "4baf342e7c83b11163d303029099094e43e94cbfd95e8cda1d32bd91271fe034",
+      "case_ordinal": 32
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithTooLargeFromSequenceRejectsBeforeActorProxy",
+      "display_name_sha256": "0c8fc5da2f486a8ba8d4a8f0e65f689a21711c0cf0bf061c234c4d280006986d",
+      "case_ordinal": 33
+    },
+    {
+      "result": "Pass",
+      "time": "0.029",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRejectsChangedSignedTargetOrWorkloadBeforeActor",
+      "display_name_sha256": "5c210ece837f9a9f2755c8a20498cdc300987e4ab077306fd5ba3ea7eadcfa61",
+      "case_ordinal": 34
+    },
+    {
+      "result": "Pass",
+      "time": "0.014",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRejectsChangedSignedTargetOrWorkloadBeforeActor",
+      "display_name_sha256": "89b07765229789bd80956d50b806e0e2135b3cc0478c4c16c2196228b01427db",
+      "case_ordinal": 35
+    },
+    {
+      "result": "Pass",
+      "time": "0.012",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRejectsChangedSignedTargetOrWorkloadBeforeActor",
+      "display_name_sha256": "3d07bf0aed207da0d41d35a847db9de41605085bbf439f4cdddb2c2ffd0d77b3",
+      "case_ordinal": 36
+    },
+    {
+      "result": "Pass",
+      "time": "0.064",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRejectsChangedSignedTargetOrWorkloadBeforeActor",
+      "display_name_sha256": "23230f3d4968bde71ac61a72b722c4f0f886eace2d4e60e68de8d0169fd06a27",
+      "case_ordinal": 37
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithToSequenceEqualToFromSequenceReturnsEmptyPage",
+      "display_name_sha256": "e51bad83e91029ee839d806d2f985db3e09f4a8a5dccad5f83aa5120c493bdf0",
+      "case_ordinal": 38
+    },
+    {
+      "result": "Pass",
+      "time": "0.065",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadGatewayCrossesRealWorkloadMiddlewareWithJwtBindingsOrExactSignedProof",
+      "display_name_sha256": "4efd423d6e6a6480550fa29df06faccd8bbb20acf27cf88172e2f566b38b7a54",
+      "case_ordinal": 39
+    },
+    {
+      "result": "Pass",
+      "time": "0.085",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadGatewayCrossesRealWorkloadMiddlewareWithJwtBindingsOrExactSignedProof",
+      "display_name_sha256": "fe38eb3cbd4b94a63766c943f1dd30d39e0ddca02d7de6fd3beb2e6ce73912d6",
+      "case_ordinal": 40
+    },
+    {
+      "result": "Pass",
+      "time": "0.063",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadGatewayCrossesRealWorkloadMiddlewareWithJwtBindingsOrExactSignedProof",
+      "display_name_sha256": "5eb9f07caa41394f3b09eb57520d1e1e77e4ec9007a8684dc0a6d56fd1f37987",
+      "case_ordinal": 41
+    },
+    {
+      "result": "Pass",
+      "time": "0.076",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadGatewayCrossesRealWorkloadMiddlewareWithJwtBindingsOrExactSignedProof",
+      "display_name_sha256": "68a45af3732c1105bda4c6ad839df46caaaa7293bd126847f69e596d7a31101e",
+      "case_ordinal": 42
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncAllowsNearBoundaryRangeSupportedByActor",
+      "display_name_sha256": "6cf0e94f4226860aa0e9b9954e2f5534c9d38d1563f0676f3c5f47669d41be79",
+      "case_ordinal": 43
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeEventReadsPreserveBlankUserIdentityWhileOrdinaryReadsNormalizeIt",
+      "display_name_sha256": "75eef5e87adada88057697b602dfc4fa842e35ef6de4c46f46ae0e59d5c7b363",
+      "case_ordinal": 44
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeEventReadsPreserveBlankUserIdentityWhileOrdinaryReadsNormalizeIt",
+      "display_name_sha256": "b854bee7100f2753acee2c0e4a2a3955bbd8223b7ad2151b3be9dc47d5164ab9",
+      "case_ordinal": 45
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithDeniedReplayScopeRejectsBeforeActorProxy",
+      "display_name_sha256": "8fed4bc531eee2f862430038eed0b8b6159fa2a6f529fe402d3534c11864063c",
+      "case_ordinal": 46
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithMissingAggregateReturnsBadRequestBeforeActorProxy",
+      "display_name_sha256": "8944e77509f727466befd50ccb534d3e88c243cacf3745c28b83ff746fcd0a1f",
+      "case_ordinal": 47
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithTooLargeToSequenceRejectsBeforeActorProxy",
+      "display_name_sha256": "8f376ceaa05bf9f983c8e1e42918402fdd593c32cce0c7d022d53103a356fa90",
+      "case_ordinal": 48
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithActorApplicationFailureReturnsInternalError",
+      "display_name_sha256": "eb153ebde5bf24e04f01088c760ea6d0c88847ee4ac218724c25e24bc9d8eaa2",
+      "case_ordinal": 49
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncCanonicalizesTenantBeforeActorLookup",
+      "display_name_sha256": "43c294ec508abdffbca0ba1db140f42ac198bd9f5ffa4ee75b4040901c8b5360",
+      "case_ordinal": 50
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncCanonicalizesTenantBeforeActorLookup",
+      "display_name_sha256": "0d03445b4c3c72c52ec84aea912e432ae9091b468dca075e7f3fa09f542e5690",
+      "case_ordinal": 51
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRejectsAnyChangedSecondObservation",
+      "display_name_sha256": "7b67447d807ea56a9dec81c7c4a2753a112107f4efd5a6c4f7381a74d4e6835c",
+      "case_ordinal": 52
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRejectsAnyChangedSecondObservation",
+      "display_name_sha256": "7065af323cc6dc2ebffa27c3b148e07545cc1904bd72ad8fbcdc4c831a1efbdb",
+      "case_ordinal": 53
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRejectsAnyChangedSecondObservation",
+      "display_name_sha256": "f591a42fde9b3e9f0c37eda7a5552621ba8d1471e4293fbd9a71515782c8be81",
+      "case_ordinal": 54
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRejectsAnyChangedSecondObservation",
+      "display_name_sha256": "929a46152328b2a6a79d082fae004748c246efcd28831617ddce4e52cf6a97fe",
+      "case_ordinal": 55
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRejectsAnyChangedSecondObservation",
+      "display_name_sha256": "ec2487eb74ac28abe44c385f113cce2d61e04ea55c545d2c7389ef183fa3275c",
+      "case_ordinal": 56
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRejectsAnyChangedSecondObservation",
+      "display_name_sha256": "a2591d231fa6a636a8a35a1b267accc84c49b2377e5e7ce736014987beefc7d1",
+      "case_ordinal": 57
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRejectsAnyChangedSecondObservation",
+      "display_name_sha256": "3075fc5bf5e156459f207aa267b520f67011aa5bb1a046c9268c68e91efa0b78",
+      "case_ordinal": 58
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRejectsAnyChangedSecondObservation",
+      "display_name_sha256": "75c34e85579c24a87676e3c8615dc6621c48bb657577a2ab25980d314ce62823",
+      "case_ordinal": 59
+    },
+    {
+      "result": "Pass",
+      "time": "0.008",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionPropagatesCancellationDuringEitherObservation",
+      "display_name_sha256": "f4702ecc08731acc17ed0d13d03e4f8d8f13227c5a7afd2cd4d32ce960206d24",
+      "case_ordinal": 60
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionPropagatesCancellationDuringEitherObservation",
+      "display_name_sha256": "ea0cd8e1761fe8938f908d4641d2ef6e8512915a446dc9f8039305fcc6ab5ba1",
+      "case_ordinal": 61
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithContinuationRejectsBeforeActorProxyUntilTokenSupportExists",
+      "display_name_sha256": "237078b0e39b4d5dd5540bb839a95f8ef4ce349218d19c8230e34899a9b601af",
+      "case_ordinal": 62
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "BatchedNativeHeadRetainsBothProofObservationsWithoutASecondActorCall",
+      "display_name_sha256": "60f8a5add4093412bd84b537f7ffcd6744fd029911d42a859f43081feb08de47",
+      "case_ordinal": 63
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "BatchedNativeHeadWithMissingFirstObservationFailsClosed",
+      "display_name_sha256": "da47adb11787526cb6559f06522d55b8167a732b4952c6e11b4e759329941d86",
+      "case_ordinal": 64
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncMissingStreamReturnsSafeNotFound",
+      "display_name_sha256": "5a94827850ca295be91eceba83b70f7a36d1164e0989520da8f77265f766ea22",
+      "case_ordinal": 65
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncMapsMissingEventToSafeProblem",
+      "display_name_sha256": "37c321422f3b926564b1f1cc79e865145bcebbdadf9ec661dcf7d0af1725b209",
+      "case_ordinal": 66
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncReturnsNullLastSequenceForEmptyPage",
+      "display_name_sha256": "c19144225bcb53fe1fb1c801bc5f23e720207d90399e9ab41a58b708c71fb935",
+      "case_ordinal": 67
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "OrdinaryNativeEventPageStillReadsRangeAndRechecksProof",
+      "display_name_sha256": "22b489778b50b221a569ed46463ad55160adf904e0b011dfc0a5e8511b8f3343",
+      "case_ordinal": 68
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionKeepsOrdinaryInputValidationBeforeActorAccess",
+      "display_name_sha256": "333825c7997b30e0bcda43b72360b8f5774c9e3309c09e62f4c6c9ca4209b786",
+      "case_ordinal": 69
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionKeepsOrdinaryInputValidationBeforeActorAccess",
+      "display_name_sha256": "522fcf6f196fcb3c571750d80e8c34701a13f41022b4b45262233db242cddbba",
+      "case_ordinal": 70
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionKeepsOrdinaryInputValidationBeforeActorAccess",
+      "display_name_sha256": "16547b95abc6dd100ac6e234c485b314177c2301231152ac58dd68c3c41f1565",
+      "case_ordinal": 71
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionKeepsOrdinaryInputValidationBeforeActorAccess",
+      "display_name_sha256": "3ca31e429a0b64e977b3b2e14f1abfd7ce0ca61a7c859659eae0a4a9e87e70b2",
+      "case_ordinal": 72
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncPreservesStoredPayloadVersion",
+      "display_name_sha256": "4d3b9fc9e96398b1d4ff2446ca53ded89598afb59e17673304e873388723048a",
+      "case_ordinal": 73
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncLatestSequenceDoesNotRegressBelowReturnedEvents",
+      "display_name_sha256": "2e6679f9ae5dc472eb1ffe63d194a2806f2dafa765c2bb46108f9e6f0696b8ac",
+      "case_ordinal": 74
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithNestedApplicationFailureDoesNotBecomeServiceUnavailable",
+      "display_name_sha256": "57d385b029122905e478ba103d43aec35259005efabad127a3cafc53cd7b70cc",
+      "case_ordinal": 75
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithUnavailableActorReturnsServiceUnavailable",
+      "display_name_sha256": "f5686a2d40142bb1e55cc648fdeac9d690ab40247506ef95db7601a9f8eafd1f",
+      "case_ordinal": 76
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncRejectsTamperedUnprotectedPayloadWithoutReturningBytes",
+      "display_name_sha256": "0451745a18b25c917b6130deb709f129034717379b9c634d5e8f5f46c9b10a02",
+      "case_ordinal": 77
+    },
+    {
+      "result": "Pass",
+      "time": "0.009",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithUnreadableProtectedPayloadReturnsProblemDetailsInsteadOfPayload",
+      "display_name_sha256": "b8e03eabe403a4cbcf5a08f04afb691d41a660f5eec162b9ec5a27c1b1fffb2f",
+      "case_ordinal": 78
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRefusesUnavailableOrInvalidSourceWithoutReadingEvents",
+      "display_name_sha256": "039306ef6fc5e01df397a38b3570f67823de9d54cfac7dd3825f25f20b8f1b18",
+      "case_ordinal": 79
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRefusesUnavailableOrInvalidSourceWithoutReadingEvents",
+      "display_name_sha256": "0bbc436e0300b3d1b255ee72d9f9e56b414726dde0a271d34e2f7b9762d5cdd5",
+      "case_ordinal": 80
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRefusesUnavailableOrInvalidSourceWithoutReadingEvents",
+      "display_name_sha256": "bec879eeba7c28506dd58e8a1b02129e18a2b4183456078170b747dee6cc7b8a",
+      "case_ordinal": 81
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRefusesUnavailableOrInvalidSourceWithoutReadingEvents",
+      "display_name_sha256": "aaa78f2354a3f7e3b53e3d61954a81e1ac11f3845d0a81256c23e67c765c4148",
+      "case_ordinal": 82
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRefusesUnavailableOrInvalidSourceWithoutReadingEvents",
+      "display_name_sha256": "ec0e846a0b51bfd91bc19db28040f8ae67399ee00925bf604490af234e43a510",
+      "case_ordinal": 83
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRefusesUnavailableOrInvalidSourceWithoutReadingEvents",
+      "display_name_sha256": "79cc9d6ef248e76eccf7cd378399f2298e026518d749a3caf585421b34938f4b",
+      "case_ordinal": 84
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRefusesUnavailableOrInvalidSourceWithoutReadingEvents",
+      "display_name_sha256": "28a09cf1e6f84b287cbc9f86af77883ae4384b79bfa5c95ffd3d0a266af9a9c0",
+      "case_ordinal": 85
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRefusesUnavailableOrInvalidSourceWithoutReadingEvents",
+      "display_name_sha256": "ed16171ca97a56a24e5cad061fa2d804d2afee17c15e3dbbde307bc7865f5b4f",
+      "case_ordinal": 86
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionRefusesUnavailableOrInvalidSourceWithoutReadingEvents",
+      "display_name_sha256": "6a6ab4dffc6de51168a8591976626e5255be3b2384b4ae0dd288d0c217e5f12d",
+      "case_ordinal": 87
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "WorkloadSourceReadMapsOnlyTheDeclaredTenantsPlatformScopeToHistoricalStorage",
+      "display_name_sha256": "4593e43b2bc3d06f3398ecfb3e799f5a073331cace128a4eb219131c75cc01f0",
+      "case_ordinal": 88
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithDeniedTenantRejectsBeforeRbacAndActorProxy",
+      "display_name_sha256": "3e8f8cef30d12e476de351fe1dac5aa07607fbf06fa4e13975dde871658ac85d",
+      "case_ordinal": 89
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithInvalidRangeRejectsBeforeActorProxy",
+      "display_name_sha256": "e078ad3d5a365081dacce8a7c5506ab85860a6658632137d6da06f28c591310d",
+      "case_ordinal": 90
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "AuthorizedLocalMetadataWithForeignEnvelope_DeniesBeforePayloadUnprotect",
+      "display_name_sha256": "e9b790f6055713a421949c2f52d7c1b17a3b421b7832c52c7b63f094e5b2e1b2",
+      "case_ordinal": 91
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "AuthorizedLocalMetadataWithForeignEnvelope_DeniesBeforePayloadUnprotect",
+      "display_name_sha256": "aae775e032d1bc3b2ec2d7dc728bb27e065543310e942502379a10b0c0bd5ec2",
+      "case_ordinal": 92
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "AuthorizedLocalMetadataWithForeignEnvelope_DeniesBeforePayloadUnprotect",
+      "display_name_sha256": "397335bb76e9973bed1c1375f4d119e69c60615c1a9735ecb3bb0589c391a781",
+      "case_ordinal": 93
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncRejectsTamperedDecryptedPayloadWithoutReturningBytes",
+      "display_name_sha256": "2705a3680eac0aaa882cfe9a71f541b91dd91af22571319f9607db0082b3f075",
+      "case_ordinal": 94
+    },
+    {
+      "result": "Pass",
+      "time": "0.016",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "PlainStoredEnvelopeHasTheSamePublishedAndGatewayReadIdentityAndPayload",
+      "display_name_sha256": "b3d981ca110e5c084f791dc7762fc70ad6818539da5ed8c3a0d8495b8770c306",
+      "case_ordinal": 95
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "BatchedNativePageKeepsFinalIndependentProofObservation",
+      "display_name_sha256": "6c6ef8758e47af2017f4fd401fe306f466944572a8268b79176fea2a03b9c1a9",
+      "case_ordinal": 96
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "BatchedNativePageKeepsFinalIndependentProofObservation",
+      "display_name_sha256": "e476e87ea21cd15a9330f7db5744b142e0beebc25c4bb96ae025d3ef4874ea3d",
+      "case_ordinal": 97
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "NativeHeadInspectionPreservesPublicDenialAndNativePageSizeBound",
+      "display_name_sha256": "3da2af849f6fae5669fc42d26ff2b9ec582b664097dba4755d0c2407540ff00d",
+      "case_ordinal": 98
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncReturnsOrderedBoundedAggregatePage",
+      "display_name_sha256": "b2be218e7024a106db75262bcaaf83c25be6504f2fa335f53379fe095c0b1cd2",
+      "case_ordinal": 99
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithInvalidIdentityShapeReturnsDedicatedReasonBeforeActorProxy",
+      "display_name_sha256": "3879887a077362c9fda9719a2c0992fdee87e808132a1ee003fe443f8e99539b",
+      "case_ordinal": 100
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests",
+      "method": "ReadStreamAsyncWithInvalidIdentityShapeReturnsDedicatedReasonBeforeActorProxy",
+      "display_name_sha256": "9dd7f3d4b8f5a882fe40bf96d64cd8143cf93998f4e72f7c2b2007b77b6cf16a",
+      "case_ordinal": 101
+    },
+    {
+      "result": "Pass",
+      "time": "0.515",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "b61e26244e4fc4bd0fbfa4cdd43588e5d90dd84005731e1b9ec3f366f56ff5b2",
+      "case_ordinal": 102
+    },
+    {
+      "result": "Pass",
+      "time": "0.107",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "84a19851b2f65187dc2b16cf22ef7ecf40b6b7c9f6c691c4afc528eacf779bd7",
+      "case_ordinal": 103
+    },
+    {
+      "result": "Pass",
+      "time": "0.071",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "d99d8f64c632fe6f5d954a385b6e175cc8d79db23342a1f934883158a4cadd4a",
+      "case_ordinal": 104
+    },
+    {
+      "result": "Pass",
+      "time": "0.078",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "a654f31ec40d9cce177722fb99dbd533daf47578ac67db7177206c767930d9db",
+      "case_ordinal": 105
+    },
+    {
+      "result": "Pass",
+      "time": "0.069",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "d85cf4d271ecebcb909f5f05a1e77febdf24407ca32f16b767726992465718e1",
+      "case_ordinal": 106
+    },
+    {
+      "result": "Pass",
+      "time": "0.07",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "0133b1c25d454f2b333177b6020c694c03cca3acf470ad63f2905264bc526fa9",
+      "case_ordinal": 107
+    },
+    {
+      "result": "Pass",
+      "time": "0.082",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "041fc644d0cb1ce75529b54ff83e2cfee0b665cd53e1809e8b99d888d56eadc5",
+      "case_ordinal": 108
+    },
+    {
+      "result": "Pass",
+      "time": "0.051",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "display_name_sha256": "00eee45aa1890ba2a67f9116072d1223ddbe9314a1d1ab25e5ddbd9aedac1cda",
+      "case_ordinal": 109
+    },
+    {
+      "result": "Pass",
+      "time": "0.057",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingStreamReadGrantDoesNotEnforceMetadataOnlyAuthority",
+      "display_name_sha256": "61738977351cd7777f6628398efc372efd80bff460de66f6e9f81f9d3a3b4546",
+      "case_ordinal": 110
+    },
+    {
+      "result": "Pass",
+      "time": "0.06",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingStreamReadGrantDoesNotEnforceMetadataOnlyAuthority",
+      "display_name_sha256": "50f53f58d14ca447bbab6ae45f8cf21518b4b3fb7ba0c1b1e999743e92e79e9e",
+      "case_ordinal": 111
+    },
+    {
+      "result": "Pass",
+      "time": "0.074",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "a5a8a0418c726c1c8b4944942dc9b54d29afdd6b9ae45491d4a29ec1e864a3a5",
+      "case_ordinal": 112
+    },
+    {
+      "result": "Pass",
+      "time": "0.065",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "5263c70cdcc9becae914c04126cff153253b9be57b19967535843bb602ce6fa2",
+      "case_ordinal": 113
+    },
+    {
+      "result": "Pass",
+      "time": "0.06",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "4ffd88bd3332d910d328df33c35c0e22c4ce094e73ec5f55c94ff699559cc081",
+      "case_ordinal": 114
+    },
+    {
+      "result": "Pass",
+      "time": "0.081",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "6ce49bcee124ceaba20661eb46ee2b6df0a4708cbc13318116f56e9c52ee7aab",
+      "case_ordinal": 115
+    },
+    {
+      "result": "Pass",
+      "time": "0.04",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "717291b62539bdda577e4674927b9e14c03299bcf21c089633d34500cea72364",
+      "case_ordinal": 116
+    },
+    {
+      "result": "Pass",
+      "time": "0.051",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "74afc71e90940500855a4da0045fed1d1159b1dc871d4bd24c366dca28b68262",
+      "case_ordinal": 117
+    },
+    {
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "ec95344b117732326e453690486f5795cbfd5d4e534b1be984127fabd1886088",
+      "case_ordinal": 118
+    },
+    {
+      "result": "Pass",
+      "time": "0.065",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "a8c2559fd48f298655dda4f13938031160fe9efdaa03b893b66ef45b6fb8ef63",
+      "case_ordinal": 119
+    },
+    {
+      "result": "Pass",
+      "time": "0.086",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "de3c095f7dfd23ddd7a808f1ae5e282bd01f59ec368e577002ac196023d7fb58",
+      "case_ordinal": 120
+    },
+    {
+      "result": "Pass",
+      "time": "0.064",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "20e85a89baff3a4ccbb9931a225f39b7c751b0123e93c9939e8da0ec1d8582d4",
+      "case_ordinal": 121
+    },
+    {
+      "result": "Pass",
+      "time": "0.07",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "bb4a7d8126f16ab1796a30c4ccd5bee0e92a916dc4eebb54ef0452c6a9b125f6",
+      "case_ordinal": 122
+    },
+    {
+      "result": "Pass",
+      "time": "0.047",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "c0473f1bfc606c556eb03b3c954e9bc35fa3dce745267a8556d5f6decc838fd1",
+      "case_ordinal": 123
+    },
+    {
+      "result": "Pass",
+      "time": "0.064",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "81c0f359c0ff219e1e6c594b93909038d04f3bb34f3246b4a83e758f1c0ebde0",
+      "case_ordinal": 124
+    },
+    {
+      "result": "Pass",
+      "time": "0.056",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "9a18edb954f5c3d1625e0a6ae71ef5d03e3f6faa9e8220fe0d2815d33f1ed82d",
+      "case_ordinal": 125
+    },
+    {
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "d24c19314ff93b702c00e5de514f5bb1862acf5e6992f32a48233f78e0c662da",
+      "case_ordinal": 126
+    },
+    {
+      "result": "Pass",
+      "time": "0.089",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "4d58ff8573589814b9138a8baccc0977ec5a5847788c0389de5abd76c1f2bfbc",
+      "case_ordinal": 127
+    },
+    {
+      "result": "Pass",
+      "time": "0.081",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "c86ceb68a4fe16ce875c42cca042538830abf34995cc5d50b7247576eeb81aad",
+      "case_ordinal": 128
+    },
+    {
+      "result": "Pass",
+      "time": "0.061",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "bf1f8129f5f7316618a80065cb3ced0c6d32a21637760d52df84de81048e5884",
+      "case_ordinal": 129
+    },
+    {
+      "result": "Pass",
+      "time": "0.05",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "display_name_sha256": "6cbb66804bc6dd05e42364bd88c02308c69c33676f1152c6e569f27cbff48aa5",
+      "case_ordinal": 130
+    },
+    {
+      "result": "Pass",
+      "time": "0.045",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataCatalogObservationTests",
+      "method": "SourceOnlyReceiverEnrollmentIsPartOfTheIndependentCatalogObservation",
+      "display_name_sha256": "c5d2578e58b605be9a1f65713fc8be9e15d5fdf4c8aaf83bda265de76c6464e6",
+      "case_ordinal": 131
+    }
+  ]
+}

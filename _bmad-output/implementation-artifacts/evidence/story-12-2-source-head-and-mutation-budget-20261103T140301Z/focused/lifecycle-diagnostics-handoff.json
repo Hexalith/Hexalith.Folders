@@ -1,0 +1,91 @@
+{
+  "phase": "Minimum fixture-only lifecycle observer; no production source edit or live execution.",
+  "ownership": "Source/selected outputs released; no active build/test/live or further product/test edits.",
+  "changed_source_sha256": {
+    "tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs": "ef3276f4b27f1e4c7ed5904565fa54cffa37ed9f498756c8c4439a1af3a65aa9",
+    "tests/tools/Task36FoldObserver/Task36HostingStartup.cs": "133cb9462288a4d6b0f6f35a7d8010e07549d4d6091d04972cbdf7ac536ea3c4",
+    "tests/tools/Task36FoldObserver/Task36FoldObserver.csproj": "f4808357bf3f56405926aee24ec02cd67e9c6d4ceba68a5b9fa6bc71f4cd6b74",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "acca2fc55fa9aecb3925544c34a12ddd59a3eba86bd0df29a783bc08a2ef42a2",
+    "tests/Hexalith.Folders.Server.Tests/Task36LifecycleDiagnosticObserverTests.cs": "5f0ad8f632034e302efd2a444eaafa7046a116fc43adc88c63b36232843ca9b4",
+    "tests/Hexalith.Folders.Server.Tests/LifecycleDiagnosticTestService.cs": "f95168f98af81feabfdd7bb6627e140ba3ba15e303eb346e9d51310c1e188521"
+  },
+  "selected_output_sha256": {
+    "tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll": "b40eb7b9956f716068a5ee2be074457cb61fa3b8d5c23e5a2e7567fef0f6d4cd",
+    "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll": "a4d3c3f2885bdda069c49668aa449e84875d6165736457ba7c915b3db43f8433",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll": "136f23b2b1abe3c987e5f47c361a3fe5d609739bd7936511a75269efb475fb18"
+  },
+  "commands": [
+    "dotnet build tests/tools/Task36FoldObserver/Task36FoldObserver.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+    "dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+    "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests -class Hexalith.Folders.Server.Tests.Task36FoldDiagnosticObserverTests -xml /tmp/story12-2-lifecycle-observer-20261103/server-focused-private.xml -nocolor",
+    "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet"
+  ],
+  "build_results": {
+    "initial_tool": "Failed2CA2007 async-disposal analyzer findings; corrected with ConfigureAwait(false).",
+    "initial_server": "Failed1CA2007 test await finding; corrected with ConfigureAwait(true).",
+    "final_server": {
+      "warnings": 0,
+      "errors": 0,
+      "seconds": 6.03
+    },
+    "final_apphost": {
+      "warnings": 0,
+      "errors": 0,
+      "seconds": 60.18
+    }
+  },
+  "focused_results": {
+    "total": "7",
+    "passed": "7",
+    "failed": "0",
+    "skipped": "0",
+    "errors": "0",
+    "time": "3.932"
+  },
+  "count_scope": "This phase7cases =5new lifecycle cases+2existing fold observer controls. Do not sum overlapping prior selections.",
+  "qualification": [
+    "Real framework sequential/concurrent HostOptions and events1/2/lifetime boundaries observed.",
+    "Request path/header poison sent through real TestServer; private observer sink contains neither; only primitive record schema/closed labels.",
+    "Actual host-created transient hosted service construction count stays1; descriptor observation never resolves services or invokes factories.",
+    "HostStop observed before a deliberately blocked later hosted stop; stopping snapshot remains active after observer.StopAsync and reports HostStopSeen=true/ApplicationStoppedSeen=false/droppedRecords0/sinkFailed=false.",
+    "Missing sink path and throwing optional host-lifetime resolution do not change StopAsync; canceled observerStopAsync is immediately complete; no private exception text retained.",
+    "Private sink creationUnix permissions0600; bounded64entryTryWrite queue, asynchronous append/flush; hostStart/Stop/Dispose never await writer completion.",
+    "Original fold observer/real handler and SDK replay/conflict behavior unchanged; previous2controls passed."
+  ],
+  "wire_contract": {
+    "runner_environment": "FOLDERS_TASK36_SHUTDOWN_LOG=<parent-owned private per-run.jsonl>",
+    "default": "Fixture-owned temporary eventstore-lifecycle.jsonl; set external path to retain after fixture cleanup.",
+    "eventstore_only": "Existing test-tool startup hook/hosting-startup assembly opt in on EventStore; inherited fold path explicitly cleared there. Existing Folders fold hook/path preserved; new shutdown path explicitly cleared on Folders.",
+    "payload": "Framework Microsoft.AspNetCore.Hosting IDs1/2/3/4 only; never reads Payload/PayloadNames/Message or request objects. Request3/4 only adjust counter, no per-request output.",
+    "ordering_limit": "ServiceRegistrationOrder is the existing fixed descriptor order; factories remain opaque and counted. No factory type/lifecycle inference from knownLifecycleRegistrationCount alone. Actual canonical HostOptions stop concurrency/timeout values observed without changing them.",
+    "interpretation": "HostStart/observer markers prove listener enabled. Later stopping_snapshot with healthy sink/no drops and HostStopSeen flag distinguishes progress; absence of final line alone never proves blocked server because sink is nonblocking. Actual observed stop order/concurrency/factory-lifecycle limits must inform inference.",
+    "cleanup": "Observer remains active through normal later hosted stops/ApplicationStopped, then unregisters/disposes without draining file IO; background writer never blocks host exit."
+  },
+  "unchanged": {
+    "strict_body_sha256": {
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc"
+    },
+    "mutation_budget_source_sha256": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+    "tenant_budget_source_sha256": "39e40ecb2914a1a075c03101a4c12177a98adaff61d6ecde0bfb9c1462ce28e7",
+    "guards_deadlines": "No authority/source/proof/guard/stop timeout/concurrency/retry/forcekill/ignore-stop changes;5minute tenant freshness and approved2second mutation budget preserved."
+  },
+  "remaining": [
+    "Parent fullruntime/Memories rebuild and92module/source/assets/audit before isolated strict.",
+    "No shutdown blocker/fix, strict6postrestart result or storyacceptance/SM4 claim.",
+    "Separate parentCI NU1109 packagecohort gate remains; no pins changed."
+  ],
+  "receipt_sha256": {
+    "apphost-build-private.log": "4be1f8c2b40e92687c6d67da1c4bb43b6393381cb4cb96fc0fb8baaa7bcbfa09",
+    "server-build-private.log": "c4a0e8615178dac1d8f8675f7111c09452100f3a27f415052bcfd05c4d3f2cd4",
+    "server-focused-private.log": "d5520a2a29ec13235d5084765a3df31db9b592aaa88cf10c421543050d385c79",
+    "before.json": "dfab58777a8cdcf93c94e07232d661b25cee499e4fdeec49f92b9477ffebf119",
+    "server-focused-private.xml": "7bf4e39df63015945521e597ec39bca501bf9ed3fb32809713178297f917fc67",
+    "FolderDurabilityAcceptanceFixture.cs.before": "e3c2621f07914948cec4b8f6f5b4986190470986462b2cd53b5a0b83b5cb9cee",
+    "phase.patch": "9eaec00b5f7ea2374ae8fd0a87b380de4ed7a798ce9ca7d01af11061914ee43d",
+    "server-build-2-private.log": "de9edd2d038b9279a270b7611fd11b1c7391751da8e77c7e45761bc5d77d6beb",
+    "tool-build-private.log": "8c783560d071906d12af14bfc60d44203fb17724f2170ff604dbd62625927464",
+    "Task36HostingStartup.cs.before": "ecb562f6a28479401f777420c1c4692be8250a7609b6d6c0eb1917bab7d34f5a",
+    "Task36FoldObserver.csproj.before": "8d78c6ccf50922364474c96c44b7bc316ad725e94fa2fa8de5727cf2ecf33e77"
+  }
+}

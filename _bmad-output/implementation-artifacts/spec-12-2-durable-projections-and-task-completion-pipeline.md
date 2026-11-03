@@ -13,6 +13,9 @@ context:
   - '_bmad-output/implementation-artifacts/proposal-12-2-acceptance-prerequisites.md'
   - 'docs/contract/authorization-matrix.md'
   - '_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-security-enrollment.md'
+  - '_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-source-head-transport.md'
+  - '_bmad-output/implementation-artifacts/proposal-12-2-mutation-evidence-deadline.md'
+  - '_bmad-output/implementation-artifacts/proposal-12-2-live-tenant-freshness-prerequisite.md'
 ---
 
 <frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
@@ -1307,3 +1310,503 @@ log hashes and cleanup are in the [evidence packet](evidence/story-12-2-native-r
 The shared merged checkout's targeted EventStore test build is separately blocked by 11 existing
 `CS0246 PlatformScope` errors from its pinned Tenants/EventStore graph. The unchanged strict six
 durability concerns and SM4 measurement remain unqualified; Story and sprint remain in-progress.
+
+
+## Exact-byte catalog validation continuation — 2026-11-02
+
+Within the approved native-read and broader command/projection performance scope, reduce repeated
+deterministic canonical catalog validation in the owning EventStore codec. Retain one private bounded
+validated encoding and reuse semantic/canonical validation only for exact copied-byte equality. Parse
+each call into a fresh independent model; compare every supplied expected root. Changed buffers,
+returned-model mutation, malformed alternate documents, all supported schema generations and concurrent
+callers must preserve existing refusal/encoding semantics. Backend reads, fresh independent host capture,
+trust checks, durable lease/CAS transitions and every native proof/final observation remain unchanged.
+This is an implementation continuation, with focused and live qualification still pending; all prior
+evidence packets, strict/capacity test bodies, deadlines and separate whole-story gates remain unchanged.
+
+
+## Current canonical bootstrap fixture continuation — 2026-11-02
+
+The audited current-SDK strict run reached ready sidecars and committed catalog hosts, then timed out
+waiting for the owner bootstrap receipt. The current owner requires the exact signed human permission
+`global-administrators:bootstrap`; the disposable imported administrator has only the legacy generic
+command permissions. Align only that already-designated real administrator's disposable issuer claims
+with the exact existing bootstrap/create/add-user and platform-status read operations, preserving its
+subject/admin marker, other users and workload separation. Remove its retired public `system` grant;
+retained source/actor/projection storage identities stay unchanged.
+
+Use the supported explicit platform namespaces for the existing fixture tenant commands, bootstrap
+refusal controls and status reads; tenant status reads name the exact managed tenant. Observe the
+original retained administrator source through the existing owner-bound workload stream-read route,
+using the actual isolated owner sidecar, real issued assertion, existing configured RSA scope key and
+committed catalog binding. Preserve all original acceptance/denial assertions, strict/capacity bodies,
+source checks, deadlines/retries, business effects and production authentication/proof guards. Qualify
+the actual realm transformation and request construction seams before the parent's next audited live
+run. This fixture compatibility work adds no production grant, admission path or storage protocol.
+
+Focused qualification reproduces the original missing signed permission from the actual realm import
+(one expected failing control), then passes 94/94 fixture realm/scope/native-proof/HTTP/rebuild/catalog/
+mTLS cases and 69/69 unchanged current-source Tenants bound-bootstrap/readiness/command-transport
+cases, with zero errors or skips. Final Debug/source builds pass with zero warnings/errors. The earlier
+new-test null-check analyzer failure is retained separately. No runtime product source or strict/capacity
+body changed in this fixture continuation, and no live topology was started. The parent still owns the
+audited real-provider strict rerun, SM4 and final evidence sealing; the live acceptance row stays open.
+
+
+### Current canonical command model validation compatibility
+
+The third audited strict run observed the real owner receipt and terminal delivery, but the unchanged direct-human refusal
+probe received 400 before its required 403. The production MVC model filter resolves the existing
+`SubmitCommandRequestValidator`, whose tenant-only regex rejects the now-required `platform:`
+namespace before committed catalog/ingress authorization. Bound bootstrap wraps a different DTO and
+did not traverse that validator. The owning SDK's approved canonical-scope migration explicitly
+retains cataloged platform commands. Align only this structural rule with the supported canonical
+platform namespace grammar, preserving existing field bounds, tenant/domain validation and every
+subsequent catalog/permission/credential/ingress guard. Reproduce the actual model-filter path and
+qualify direct-human internal refusal, public platform-command controls, missing/wrong permissions,
+unknown/malformed/mixed scopes and reserved storage refusal with zero denied command effects. No
+fixture assertion, production authorization policy, original intent or deadline changes are permitted.
+
+The exact launched Gateway binary independently reproduces a single structural failure on `Tenant`
+for that canonical bootstrap DTO; the candidate accepts its structure. The unchanged authorization
+pipeline then produces the required human-bootstrap 403. Before correction, the production MVC/JWT/
+catalog component matrix had five scope-related 400 failures in ten cases. Final affected SDK checks
+pass 51/51, zero failures/errors/skips, including permitted public platform command controls and all
+credential/permission/scope refusals with zero denied command effects. Final source builds pass with
+zero warnings/errors. Component terminals are counted test doubles; no live domain acceptance is
+inferred. The parent still owns rebuilt-runtime strict execution and every original source assertion.
+
+
+## Nonfrozen independent source-head resume checkpoint — 2026-11-02
+
+The fourth audited current-source strict operational attempt passed genuine owner bootstrap (202,
+terminal Completed, all four original refusals, retained native source and projected authority), tenant
+creation/membership and organization baseline/grant commands. It entered the unchanged body and failed
+at the first unknown-profile `ConfigureProviderBinding` PUT's required 403 control, with outer
+`HttpRequestException` / `HttpIOException: ResponseEnded`. This was not folder creation. The attempt
+finished with one failure, zero errors/skips in 233.011 seconds; no SM4 measurement was reached. The
+parent retains exact private logs/XML, runtime/source/head no-drift receipts and empty owned cleanup.
+
+Read-only diagnosis separately established that the Folders independent organization source-head
+reader makes a raw `GetCurrentSequenceAsync` actor invocation. The mandatory current SDK catalog
+handler refuses it before authority acquisition/transport because it has no proven typed catalog
+scope. The source trace contains one structured refusal event with the phrase repeated in three
+fields. Domain `/process` then returns 503 and the actor records Rejected. The retained observations
+do not connect that refusal to the outer response ending prematurely; `ResponseEnded` remains an
+independent unresolved cause. No speculative framing, retry or timeout repair is justified.
+
+The [source-head prerequisite proposal](proposal-12-2-current-sdk-source-head-transport.md) requests
+an owner decision for a public independently configured read-only SDK composition, actual Folders
+workload/key/grant enrollment and authoritative-zero/absence distinctions. Existing public workload
+stream/proof components are available, but the current raw metadata registration also fails closed,
+and the gateway adapter's null result cannot establish zero. Changing the default human gateway or
+reusing another host's identity would change authority. This capability is distinct from the listed
+approved security-enrollment/registration compatibility scope; it has not been implemented or
+approved. SDK/catalog/authentication guards and all Folders product code remain unchanged in this
+diagnostic phase.
+
+Seven focused component controls now pass (zero failures/errors/skips): actual raw-adapter guard
+refusal before transport/authority, missing-projection/unavailable preservation, explicit zero input's
+existing safe not-found result, and gateway missing/unsupported/backend evidence remaining null with
+the exact metadata-only native-proof request. These controls deliberately provide component
+dependencies; they prove neither successful live workload transport nor authoritative absence nor a
+fixed outer EOF. The Server.Tests source build passes with zero warnings/errors and `git diff --check`
+is clean. The initial diagnostic build failure on an undeclared mocking-library using is retained;
+the final controls use a local counted proxy with no package change.
+
+Product/test outputs were handed back to the parent after focused qualification, with no further
+product/test edits or builds. The parent owns remaining broad current-output checks and a portable
+evidence packet before presenting the concrete owner decision. No live topology was started in this
+diagnostic phase. Original strict/capacity bodies, all source/proof/final observations, authentication,
+denials, deadlines and retries remain unchanged. The original live acceptance row, six-concern
+qualification and SM4 stay open; Story and sprint remain in-progress, alongside the separate SDK,
+Release/package/PD10 and whole-story review gates.
+
+
+## Parent current-source verification and owner decision — 2026-11-02
+
+The [new sealed packet](evidence/story-12-2-current-sdk-source-head-20261102T213710Z/README.md) records the codec optimization, current-issuer/canonical-scope fixture migration and platform-command validation repair. The local warm codec probe was 5.73× faster with 88.7% fewer allocations; no SM4 result follows. Current consumer runs passed 5,545 tests across Domain, Server, Workers, Integration, Gateway, Contracts and client generation, with the two existing Domain operator skips. The initial three diagnostic-inventory failures were corrected by adding the new compile inputs and regenerating only the pending source inventory; Contracts then passed 636/636. Historical conformance/spine bytes and disabled v2 exposure are preserved.
+
+Four audited runs of the unchanged strict operational class are retained. The final run passed genuine bootstrap (202, Completed, all four refusals, original source and projected authority), tenant creation/enrollment and organization grants. The unknown-profile provider-binding PUT then ended with premature HTTP EOF. One structured event independently proves the organization source-head raw actor invocation was refused, followed by /process 503 and actor rejection. It does not prove the outer EOF cause. No six-concern live pass or SM4 measurement exists.
+
+The [source-head proposal](proposal-12-2-current-sdk-source-head-transport.md) remains unapproved. Its independent source-only SDK composition, own workload/key/grant enrollment and authoritative zero/absence contract exceed the approved host-enrollment exception. No such production capability or enrollment was added. The seven refusal/distinction controls pass; no null, unsupported proof, 404 or projection became source authority.
+
+The required Release conformance command failed restore with NU1102 for Hexalith.Tenants.Client >= 7.0.0 (nearest published 6.0.0). Debug source fallback checks passed and the source graph was restored; no package/CI gate was weakened. The packet binds unchanged full repository heads, strict/capacity bodies, frozen intent, actual mappings and exact owned cleanup. Original acceptance rows, Story/sprint in-progress status and separate broad SDK, Release/package, live capacity identity, SM4 and independent-review gates remain open. No Git mutation, publication, deployment, dependency pin/gitlink update or public v2 exposure occurred.
+
+
+## Approved independent source-head continuation — 2026-11-03
+
+The user replied **approve** to the [source-head prerequisite](proposal-12-2-current-sdk-source-head-transport.md). Its bounded SDK-owned read-only composition, actual Folders workload/key/grant enrollment and consumer migration are now authorized. This extends only the previously recorded SDK/host-enrollment boundary as described in that proposal. Prior sealed packets, original baseline, strict bodies and every existing guard, source/proof/final observation, deadline and excluded operation remain unchanged.
+
+Implement this continuation over the preserved working tree; do not redo historical completed tasks. Load the newly approved proposal from frontmatter context. Establish its evidence contract before changing production code: positively proved zero/absence must remain distinct from unsupported, missing proof, erased, malformed, denied or unavailable source. If the existing authenticated metadata route cannot establish that contract within the approved no-new-persistence/no-actor-schema bounds, retain executable evidence and return the precise remaining SDK prerequisite before production implementation. Do not manufacture zero to make the legacy Task<long> seam fit.
+
+- [x] In proposal-12-2-current-sdk-source-head-transport.md and focused owner tests under references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/Streams/ and ...Server.Tests/Streams/, specify and qualify the supported positive/zero/absence/refusal evidence contract. Bind every conclusion to current source and executed controls; distinguish a missing actor from erased or unsupported evidence.
+- [x] If that first gate succeeds, implement the smallest independent read-only public SDK composition in references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Streams/, ...Client/Registration/NativeSourceMetadataServiceCollectionExtensions.cs and/or ...DomainService/EventStoreGatewayWorkloadTransportExtensions.cs. Reuse supported authenticated metadata/proof protocols, preserve the default human-command client, and add focused registration/credential/catalog/proof/result controls. No domain-local platform protocol or internal SDK registration.
+- [x] Inventory reachable Server/Workers source-head consumers, then wire the authorized actual Folders caller's own issuer identity/signing material and least-privilege metadata grant through supported host/catalog configuration. Update src/Hexalith.Folders.AppHost/ and the disposable fixture only as required; do not enroll both hosts by default or borrow another host's identity.
+- [x] Migrate src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs and its Server/Workers registrations through the approved SDK seam. Preserve exact own-actor shortcuts, different-aggregate freshness, existing canonical missing/stale/unavailable outcomes, cancellation and the three-/five-/forty-second ceilings. Add production-path positive and denial controls without relaxing the original strict/capacity assertions.
+- [ ] Sequentially build current Debug project-reference runtime, run affected owner/consumer checks individually, and execute unchanged strict real-provider acceptance with audited identities and exact owned cleanup. Diagnose ResponseEnded independently if it recurs. Refresh only the pending source inventory for new compile inputs; preserve historical evidence and disabled v2. Retain all failed attempts and separate SDK broad, Release/package, live capacity, SM4 and independent-review gates.
+
+The implementation agent owns source changes and focused checks, then returns selected outputs free of active builds/tests. The parent owns final runtime rebuild/audit, broader checks, unchanged strict live execution and a new evidence packet. No simultaneous builds may mutate selected outputs.
+
+### Nonfrozen source-head implementation handoff — 2026-11-03
+
+The approved evidence gate passed before production implementation: real actor inspection through
+the existing signed workload/RSA-proof HTTP route returns existing valid native positive/zero evidence;
+missing/unactivated, unsupported legacy, erased and invalid evidence stays unavailable. Reads mint no
+source anchor. The supported contract deliberately does not treat every physical absence as zero.
+The proposal records the exact existing-zero support limit and retained component evidence.
+
+The generic stream grant was separately reproduced accepting an event range with a metadata request's
+resource proof or a resource-bound JWT alone. Implement the approved least-privilege metadata grant
+with explicit trusted receiver enrollment, exact metadata-only shape and mandatory actual resource
+proof for those new callers. The restriction participates in independent catalog authentication capture.
+Generic readers, current route/proof/JWT/actor/persistence schemas and all catalog guards are preserved.
+The new public SDK client is separately named and configured; the ordinary human gateway is unchanged.
+
+Both Server and Workers have reachable fresh source reads, including Workers' semantic-indexing
+authorization. Each distinct actual caller has its own issuer secret and RSA key, stream-read-only
+issuer scopes and `folders` metadata-only receiver enrollment. Replicas sharing a physical AppId use
+that actual workload; distinct proof Workers receive independent identities. Caller allowlists merge
+through the existing public SDK composition without replacing original/Tenants membership. Aspire
+secrets remain parameters; no keys/tokens enter tracked source or evidence. The consumer retains exact
+own-actor shortcuts, proof/identity validation, unavailable/zero distinctions and all existing ceilings.
+
+Final focused selections pass 334 cases, zero errors/failures/skips: SDK Server 131, DomainService 15,
+Client 62, Folders Server 84, Workers production host security 1, and actual AppHost realm/model/
+bootstrap/scope controls 41. All final builds have zero warnings/errors; both diff checks pass.
+Overlapping earlier subsets are separate history, not additional final cases. Intermediate compile/
+assets and profile-inventory failures are retained in the continuation handoff.
+
+Implementation released selected outputs with no active build/test/topology and no subsequent product/
+test edits or builds. Parent qualification remains required: final runtime rebuild/audit, broad suites,
+pending inventory refresh and the unchanged real-provider strict class. No new live pass or SM4 result
+is claimed. The earlier outer `ResponseEnded` cause remains independently unresolved. Prior sealed
+packets, original strict/capacity bodies, source/proof/final observations, authentication/denial guards,
+deadlines/retries, frozen intent and every separate open gate remain unchanged; Story/sprint stay
+in-progress and the original live acceptance row remains unchecked.
+
+### Nonfrozen outgoing-dispatch diagnostic handoff — 2026-11-03
+
+The parent's audited source-head strict run passed full genuine bootstrap, then the same first
+unknown-profile provider-binding PUT returned 503 `provider_unavailable`, rather than the required
+403. It failed once, zero errors/skips, in 286.598 seconds. The earlier premature EOF and raw-actor
+refusal did not recur. No transport fix or six-concern/SM4 pass follows from that difference.
+
+The retained trace proves source issuer discovery/JWKS/token requests returned 200 immediately before
+the named native metadata POST began at 09:45:16.974 UTC. No source response/receiver action is recorded.
+The public human gateway's existing ten-second attempt timeout fired twice, then its thirty-second
+total timeout fired at 09:45:33.745, when the endpoint returned `provider_unavailable`. The command actor
+records Rejected; the original profile-validation result is not established. A later issuer 400 names
+the unrelated unhosted sample's `domain-service:metadata` operation, not the source request. Source
+cancellation is consistent with the enclosing canceled invocation; the prior log does not identify
+whether source catalog acquisition, transport or release was pending. No issuer/DI/physical-target/
+enrollment correction is demonstrated by these observations.
+
+Within the authorized safe diagnostics, the existing opt-in payload-free SDK recorder now distinguishes
+outgoing `InvocationAcquire`, `InvocationValidation`, `InvocationTransport` and `InvocationRelease`.
+The owning HTTP filter supplies optional logging; existing public construction and default logging
+behavior remain available. Original guards, request/response bytes, lease ownership/retention,
+cancellation and independent owned release are preserved. The fixture alone enables the relevant
+outgoing/technical-receiver/domain-invoker Debug categories. No new read, prewarming, retry, deadline,
+source proof or business behavior is added. Transport entry proves entry into the owned transport;
+it does not itself prove that the receiving application observed a request.
+
+Focused controls pass 48/48 across new outgoing diagnostics and existing native-scope/transport/
+receiver controls; fixture realm/model checks pass 2/2, all zero failures/errors/skips. They prove
+canceled acquisition has zero transport calls, actual transport and release remain distinct, original
+exceptions and retained fences survive, and disabled/throwing logging is advisory. Final builds pass
+with zero warnings/errors and both diff checks are clean; the initial new-test logging-filter compile
+failure is retained. Selected outputs were released without active builds/tests/topology and without
+further product/test edits or builds. Parent owns the next final rebuild/audit and unchanged strict
+run to classify the actual pending stage; the live acceptance row and all separate gates remain open.
+
+
+### Nonfrozen catalog acquisition performance handoff — 2026-11-03
+
+The next audited strict run passed genuine bootstrap but failed authenticated CreateTenant with
+500/unavailable before the strict body or new Folders source call. The retained trace shows the
+existing domain five-second timeout expiring during the fourth actual Tenants native transport.
+The first three native transports took 604/2127/1362 ms; the fourth was canceled after 590 ms.
+Outgoing native lease revalidations took 12/14/16/32 ms, while receiver/native newly constructed
+leases included 168–900 ms acquisition spans. The proof callbacks themselves took 1–4 ms.
+This establishes an enclosing native-authority deadline failure, not a source enrollment refusal;
+it does not yet distinguish queue, backend/CAS, capture, trust or snapshot cost inside acquisition.
+The earlier ResponseEnded cause remains separately unresolved and did not recur.
+
+Pure component probes rejected an activation-cache or serializer-options change on the present
+evidence. A real captured SDK Gateway activation had 18,636 catalog bytes and 33 technical actions:
+ComputeDigest was about 2.77 ms per call. A bounded four-receiver technical cohort was about 3.04 ms
+for ComputeDigest and 4.51 ms for snapshot construction. Options cloning was below 0.001 ms.
+Fresh full Gateway receiver observation was 31–50 ms in these short local batches; image observation
+accounted for about 18.85 ms and 14.03 MB of allocation, while 41-type schema generation plus Complete
+accounted for about 3.55 ms. These microbenchmarks do not prove the live bottleneck or a capacity pass.
+
+The actual Folders/Tenants owner corpus has 46 declarations. The gateway now applies the domain
+host's existing lazy frozen compiled-inventory pattern to its exact loaded owner assemblies and
+passes those declarations into ActorQueryTargets. It retains fresh actual actor/invoker/query checks,
+receiver/image/schema/policy observations, configuration/component/ACL capture, identity, owner trust,
+backend reads, CAS, source proofs, final observations, and all existing bounds. The cohort has no
+projection-actor declaration; an early provisional four-read measurement overcounted its branch.
+The retained final probe invokes the actual cohort branch rather than using that provisional estimate.
+
+Opt-in payload-free acquisition diagnostics now separate local admission wait, durable state read,
+CAS, activation digest, fresh host capture, trust and immutable snapshot construction. Logging lookup,
+creation and writing are advisory; the original public authority constructor and lease/control/token
+semantics are preserved. Only the fixture enables the new Debug category. There is no new cache,
+prewarming, backend/source read, retry, deadline, topology or guard exception.
+
+This phase's final focused SDK selection passes 56/56, and fixture realm/model checks pass 2/2,
+zero errors/failures/skips. These counts are separate from the earlier 334 source-head and 48 outgoing
+diagnostic selections. They include actual runtime registration/invoker drift after frozen inventory,
+queue cancellation, original capture/trust exceptions, advisory disabled/throwing logging and real DI
+logger-resolution failure. Final SDK and fixture builds have zero warnings/errors. Prior probe setup
+failures, the superseded 55-case selection and provisional component estimates remain retained.
+
+Selected outputs are released after final focused checks, with no active build/test/topology. Parent
+owns the full runtime rebuild (including all SDK copies), source/module audit, remaining broader checks,
+and unchanged isolated strict execution. The new SDK diagnostic test is a pending compile-inventory
+input. Original strict/capacity body hashes, frozen intent, historical packets, disabled v2 and all
+open SDK broad/Release/package/PD10/governance/review/live/SM4 gates are preserved; no live acceptance
+or story-completion claim is made.
+
+### Parent acquisition-diagnostic runtime result — 2026-11-03
+
+The rebuilt current-source solution and Memories runtime passed; all 92 selected modules matched
+their PDB/source checksums, selected SDK identities had one variant and selected Hexalith assets were
+project references. The unchanged strict class on isolated port 36023 failed once, zero errors/skips,
+in 423.991 seconds. Genuine bootstrap, tenant creation/membership and organization baseline/grants
+completed. The first unknown-profile ConfigureProviderBinding PUT again required 403 but returned
+503/provider_unavailable. Neither ResponseEnded nor the raw-actor refusal appeared.
+
+This attempt stopped before domain dispatch: its first gateway attempt spent 680 ms in SubmitAcquire,
+6125 ms in Admission and 582 ms in ExecutionCapability before ExecutionBegin was canceled at the
+existing ten-second attempt limit. The second attempt expired during Admission; the third was still
+in Admission when the existing thirty-second gateway total limit produced 503. No source-reader
+transport/authentication result or domain five-second timeout is established by this trace. Its
+partial acquisition sample shows local admission wait at median 230/p90 518 ms and fresh capture at
+median 65/p90 155 ms; read/CAS/digest/trust/snapshot medians were 1–3 ms. These are partial diagnostic
+distributions, not SM4 results.
+
+Source/head/runtime drift was zero. Observed owned descendants/containers were gone and the exact
+fixture Dapr directory was removed. Four separately observed unattributed containers and one new
+unattributed Dapr directory were preserved; the original global-observation receipt and separate
+owned-cleanup audit retain that distinction. Exact private logs/XML, closed timing metadata, source
+patches and audit receipts remain retained for the new continuation packet. The original sealed
+packet is unchanged and its verifier still passes. Live acceptance and all separate gates remain open.
+
+
+### Nonfrozen fresh image allocation handoff — 2026-11-03
+
+The completed strict-3 diagnostic trace establishes the existing human gateway's ten-second attempt
+and thirty-second total timeout path before domain dispatch. Its first attempt reaches ExecutionBegin;
+the second and third stop in Admission. It establishes neither a new source-reader transport/auth
+result nor a domain five-second timeout. Final acquisition distributions show local admission wait
+median 331/p90 718 ms and fresh capture median 76/p90 176 ms; backend read/CAS, digest, trust and
+snapshot medians remain 1–4 ms. These timing records are diagnostic evidence, not a live acceptance pass.
+
+The approved bounded allocation correction changes only TechnicalHttpActionObservation.AssemblyIdentity:
+a private pool retains at most one buffer per bucket up to 16 MiB (less than 32 MiB total retained).
+Every invocation still opens and reads a fresh privately owned image snapshot. PE/MVID validation and
+SHA-256 use only its exact observed-length bytes; the buffer returns after the PE reader is disposed,
+including refusal paths. Larger images keep the existing unpooled read without a new size limit.
+Complete still rereads and compares the current image, including changed bytes with an unchanged MVID.
+No image/digest cache, stat shortcut, observer omission, queue, authority, protocol, timeout or retry
+change is introduced. All original source/proof/final observations and authentication guards remain.
+
+The short paired real full-Gateway Observe probe (20 fresh passes) measured baseline 698.08 ms wall,
+902.21 ms process CPU and 358.01 MB allocated versus pooled 410.50 ms, 497.90 ms and 78.00 MB.
+That is 78.2% less allocation and 44.8% less process CPU in this local component batch. The separate
+read-only-owner-options batch retained the same allocation reduction. The seven-image corpus alone
+reduced allocation by 99.43%. The earlier baseline and first candidate batches are also retained;
+changing host load is not asserted to explain previous failures. These results establish a bounded
+component benefit, not a complete acquisition/deadline fix, live provider result, capacity or SM4 pass.
+
+This phase's SDK selection passes 83/83 in 16.911 seconds, zero failures/errors/skips, with a clean
+18.34-second build and zero warnings/errors. Six added controls compare exact hashes, poisoned pool
+tails and returned buffers, changed module identity, malformed/missing images, larger-image fallback,
+file cleanup and the unchanged Complete refusal. Existing real MVC transport/receiver, acquisition,
+native-source and installed-observation controls also pass. These 83 cases are separate from earlier
+56/2, 48 and 334 selections. Only the required forwarding-method XML summary changed after the build.
+
+Selected outputs are released with no active build/test/topology and no further product/test/spec
+edits or builds. Parent owns the current full runtime/SDK-copy rebuild, source/module audit and next
+unchanged strict execution. TechnicalHttpImageObservationTests.cs is a new SDK-only pending compile
+input; no root pending inventory change is required for it. Prior packets, failed attempts, original
+strict/capacity bodies, frozen intent, disabled v2 and all separate open gates remain preserved.
+
+### Parent pooled runtime result and pending deadline decision — 2026-11-03
+
+The pooled runtime and Memories builds and 92-module source/PDB/project-reference audit passed.
+The unchanged strict class on isolated port 36024 failed once, zero errors/skips, in 212.395 seconds
+at the original unknown-profile provider-binding PUT. The final exception was TaskCanceledException
+after the existing 75-second overall retry budget; the separate per-request HTTP limit remains
+40 seconds. Returned 503s preceded that exception. Neither ResponseEnded nor the raw-actor refusal
+appeared. Source/head/runtime drift was zero; owned processes/containers and the exact Dapr directory
+were gone. One separately observed unattributed container was preserved.
+
+The actual independent source POST acquired/validated the caller catalog and entered transport.
+The receiving gateway canceled during its second fresh catalog capture, before ReceiverNext or
+source actor observation. The enclosing **500 ms mutation-evidence catch-up budget** expired; the
+SDK two-second, reader three-second, domain five-second and gateway ten-/thirty-second limits did
+not expire on this path. The process returned a trusted 503 normally. A completed source proof or
+metadata response is still unqualified; DI, physical target, authentication or deadlock correction
+is not established by this failure.
+
+The [bounded deadline proposal](proposal-12-2-mutation-evidence-deadline.md) requests an explicit
+500 ms→two-second exception for the enabled mutation-evidence read/retry budget. Its exact one-line
+production change, affected scopes, focused controls, preserved limits and contention risk are
+reviewable. Approval was requested asynchronously; no approval or production deadline change is
+assumed. The existing 500 ms constant and late-authority refusal remain unchanged while independent
+checks continue. Current full domain tests passed 2364 with two operator skips and Server tests
+passed 1345; the Workers selection exposed four bare-container host-environment fixture failures
+(158 passed), retained separately for authorized correction. Story/sprint and the live row stay open.
+
+### Approved mutation-evidence deadline continuation — 2026-11-03
+
+The user explicitly selected **Approve 2-second mutation budget (Recommended)** for the
+[deadline proposal](proposal-12-2-mutation-evidence-deadline.md). This is the sole exception to the
+previous deadline-preservation constraint: the whole enabled mutation-evidence read/retry budget
+changes from 500 ms to two seconds. SDK two-second, reader three-second, domain five-second,
+per-request HTTP forty-second and fixture seventy-five-second limits remain unchanged, along with
+all proofs, fresh observations, poll interval, fail-closed exhaustion and original strict bodies.
+
+- [x] `src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs`: apply the exact approved
+  Budget constant change; retain all control flow, cancellation, stale/unavailable outcomes,
+  late-result rejection, 25 ms polling and immediate-read behavior.
+- [x] `tests/Hexalith.Folders.Server.Tests/EventStoreOrganizationEffectivePermissionsReadModelTests.cs`
+  and adjacent focused tests: cover organization/folder scopes with valid delayed authority between
+  500 ms and two seconds, exhausted/noncooperative late authority, stale evidence, caller cancellation
+  and unchanged immediate reads. Update only corresponding old unit deadline expectations.
+- [x] Build/run focused current-source controls, then hand back without active output mutations for
+  parent full runtime rebuilding/audit, affected broader checks and unchanged strict real-provider
+  acceptance. Preserve every failed run and keep SDK fixed-catalog parity/25 red-phase skips,
+  Release/package, capacity, PD10/governance, SM4 and whole-story review dispositions separate.
+
+The independent source-head task's final qualification row and the original live acceptance remain
+unchecked. Worker and Integration fixture corrections have since passed their full suites (162/854);
+they introduce no production, grant or deadline change. No additional deadline exception is implied.
+
+
+### Nonfrozen approved mutation-evidence implementation handoff — 2026-11-03
+
+The exact approved production change is implemented: PermissionProjectionCatchUp's enabled-read
+Budget is two seconds. Its control flow, monotonic accounting, 25 ms poll interval, cancellation,
+late-result refusal, stale/unavailable classifications and immediate-read behavior are unchanged.
+Every other source/SDK/domain/HTTP deadline and all authentication/proof/fresh-observation checks
+remain unchanged. The historical 500 ms failures remain retained and are not reclassified as success.
+
+The focused Folders Server selection passes 83/83 in 56.662 seconds with zero failures/errors/skips;
+its current Debug/project-reference build passes with zero warnings/errors. Existing fast positive
+cases remain, and both organization and folder mutation scopes now also qualify a valid750 ms source
+observation followed by current projected authority. Both scopes reject noncooperative authority at
+the enabled deadline; later available completion cannot change that returned unavailable result.
+Immediate reads remain pending beyond two seconds until their dependency completes. Both stale
+exhaustion and caller cancellation retain their safe original outcomes and token. Existing native
+proof, own-actor scope, raw-guard and source-boundary controls also pass. Only the corresponding old
+unit timing expectations changed; no strict/capacity assertion was edited.
+
+Selected outputs are released without active builds/tests/topology and without further product/test
+edits or builds. The parent owns the full runtime/SDK-copy rebuild, source/PDB/module audit, affected
+broader checks and unchanged strict real-provider run. No new compile input was introduced. The
+current-source source-head qualification row and original live acceptance remain open; no completed
+live native proof, provider/task/durability or SM4 result follows from these component passes. The
+separate SDK fixed-catalog parity mismatch and25 existing red-phase skips, Release/package, capacity,
+PD10/governance and independent-review gates retain their dispositions. Prior packets and failed
+attempts, original strict/capacity hashes, frozen intent and disabled public v2 remain preserved.
+
+### Parent source-head and approved mutation-budget qualification — 2026-11-03
+
+The approved two-second enabled mutation-evidence budget is implemented and component-qualified.
+Its focused 83-case selection passes; all other deadlines, the 25 ms poll interval, late-authority
+refusal and source/proof/final-observation checks remain unchanged. Current full consumer selections
+pass 5,583 cases with two operator skips: Domain 2,379, Server 1,354, Workers 162, Integration 854,
+Gateway 123, Contracts 636 and client generation 75. These are phase-attributed full selections,
+not a sum of overlapping focused runs. The later fixture-only existing-service observer adds nine
+new passing controls within a 16-case focused rerun; it does not change production behavior.
+
+Final Debug/project-reference runtime and Memories builds pass. Ninety-two selected assemblies and
+the fixture observer match current source/PDB hashes; selected SDK copies have one hash/MVID variant
+per assembly and selected Hexalith assets are project references. Both repository diff checks pass.
+All three original strict/capacity body hashes, frozen intent and the historical PD10 manifest remain
+unchanged. Only the pending source inventory was refreshed for new compile inputs. A first inventory
+attempt omitted two new test helpers; that failure and the successful correction are retained.
+
+Eight unchanged strict live attempts are retained. Attempt eight fails once, zero errors/skips,
+in 442.310 seconds at the post-restart task read (`RequireRealTaskClosureAsync:346`). Before that it
+passes genuine bootstrap, provider profile/target refusals and real preparation, clean task release,
+exact six-concern rebuild and TTL checks, interrupted-generation recovery after process replacement,
+two concurrent Workers and every main-restart PID assertion. Both EventStore stop cycles reach
+`ApplicationStopped`; a shutdown blocker is not reproduced in this attempt. Earlier stop failures
+remain failures with their exact pending downstream owner unproven; no speculative shutdown fix,
+force stop, ignored command result or stop-timeout change was introduced.
+
+Payload-free task diagnostics establish the latest failure: bounded diagnostic tenant access allows
+stale evidence, then nested strict authorization denies at `TenantAccessFreshness` with
+`tenant_projection_stale` before reading the protected task model. The first denial records age 309 seconds; 17 actual 503 replies continue through age
+379 seconds. This is the unchanged five-minute policy, not proof of lost durable task state.
+Every parent command has zero source/head/runtime drift; all observed owned processes, containers
+and exact Dapr directories are removed. Unattributed resources were preserved.
+
+Current SDK full selections pass 12,599 cases, fail three retained-catalog parity tests and skip 30
+cases. The parity mismatch is tied to clean current Tenants owners adding one query and explicit
+platform admissions against the retained SDK catalog; no pristine-baseline execution is claimed.
+The 30 skips comprise 25 existing DW1 red-phase server specs, two isolated-Dapr recovery cases, one
+content-live case and two package-contract cases without a supplied release inventory. Fixed catalog
+bytes, admission declarations, test expectations and dependency pins were preserved. The exact
+Release conformance command now fails with NU1109: Tenants.Client 7.0.0 requires EventStore Client
+and Contracts >= 4.0.4 while central pins remain 4.0.0. Debug source restore subsequently passes.
+
+[The sealed continuation packet](evidence/story-12-2-source-head-and-mutation-budget-20261103T140301Z/README.md)
+retains safe receipts, phase source trees, source patches, actual runtime identities, source/PDB/assets
+audits, executed matrix coverage, focused handoffs, lifecycle records and all failure dispositions.
+Raw logs/XML and disposable credentials remain private. The earlier sealed packet is unchanged.
+
+The existing fixture administrator lacks `tenants:update`. The approved scope excludes grant
+expansion, and repeating an existing member addition is rejected. The
+[fixture freshness proposal](proposal-12-2-live-tenant-freshness-prerequisite.md) therefore requests one
+explicit fixture-only permission exception and genuine authenticated tenant metadata activity,
+with normal source/projection verification and unchanged authority semantics. No such grant,
+maintenance command, direct state write or freshness-policy change has been applied.
+
+- [x] Owner decision on the fixture-only `tenants:update` exception: the user replied **approve**
+  on 2026-11-03. This supersedes only that fixture permission exclusion.
+
+The strict qualification rows and Story/sprint stay in-progress. Current-cohort live capacity, SDK
+parity/red-phase/optional lanes, Release/package, PD10/governance, SM4 and independent whole-story
+review remain separate open gates. No staging, commit, push, package/gitlink update, publication,
+deployment or public v2 exposure occurred.
+
+
+### Approved foreground fixture tenant maintenance — 2026-11-03
+
+The user approved [the exact fixture freshness proposal](proposal-12-2-live-tenant-freshness-prerequisite.md).
+Implement this bounded exception without changing frozen intent. The prior sealed packet and its
+pending-decision snapshot remain immutable. Production five-minute freshness, approved two-second
+mutation evidence, all other grants/deadlines, original strict/capacity bodies and folder retained
+prefix assertions remain unchanged. No other SDK, production or dependency change is included.
+
+- [ ] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs`: add exactly
+  `tenants:update` once to the existing disposable administrator, retaining all other realm semantics.
+- [ ] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs` and focused single-type
+  helpers: maintain only the fixture's own tenant through the existing canonical authenticated
+  `UpdateTenant`, with its original name/description and administrator. Use bounded foreground
+  positive-evidence/restart hooks, a conservative two-minute trigger, and caller cancellation.
+  Require terminal Completed, the actual matching original TenantUpdated source event, and normal
+  Workers delivery reaching that source sequence/timestamp with identical enabled state, principals,
+  roles and configuration. Missing/malformed/conflicting/failed/undelivered evidence fails the fixture;
+  no background heartbeat, global client hook, direct source/derived write, old-event restamp, grant
+  churn or stale authorization is permitted. Reuse existing source/catalog/issuer guards.
+- [ ] Adjacent AppHost fixture-policy/realm tests: qualify the exact added permission and unchanged
+  other identities/grants; no command when sufficiently fresh; own-tenant canonical command shape;
+  rejected/failed or unobserved source/projection cannot establish freshness; unchanged authority;
+  bounded cancellation. Preserve existing production stale-denial controls and all original bodies.
+- [ ] Build/run focused current-source controls only and hand source/outputs back without an active
+  command. Parent then refreshes only pending compile-input inventory, rebuilds/audits runtime, and
+  reruns the unchanged strict class with private traces and exact owned cleanup. Retain every failed
+  attempt; keep SDK parity/red-phase/optional lanes, Release/package, capacity, PD10/governance, SM4
+  and whole-story review dispositions separate. No publication, Git mutation or v2 exposure.
+
+Source inspection established that normal UpdateTenant always emits TenantUpdated for an authorized
+active tenant and changes only name/description. Its exact `tenants:update` admission has no admin
+bypass. Repeating AddUserToTenant for an existing member is rejected. This exception qualifies an
+actively maintained disposable tenant and does not qualify indefinite idle-tenant access.

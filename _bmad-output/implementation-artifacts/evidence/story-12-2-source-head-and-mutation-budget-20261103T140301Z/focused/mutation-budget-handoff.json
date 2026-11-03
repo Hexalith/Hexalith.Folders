@@ -1,0 +1,79 @@
+{
+  "purpose": "Approved exact2-second mutation-evidence enabled-read budget implementation; parent owns final runtime/live",
+  "approval": {
+    "path": "_bmad-output/implementation-artifacts/proposal-12-2-mutation-evidence-deadline.md",
+    "sha256": "aec735df930fe8ff874619cbae97973d465224f439a7efa66af0651a76b106c9"
+  },
+  "sourceFiles": {
+    "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+    "tests/Hexalith.Folders.Server.Tests/EventStoreOrganizationEffectivePermissionsReadModelTests.cs": "32438bb21c387aafadfd02c42104df07367d1840f1680baeb919e468e9a9cb89"
+  },
+  "specSha256": "6bcf27cc9a5008670667a296dceb145327efe2a137d523829d3edb37c5c4bfd5",
+  "contextHashes": {
+    "_bmad-output/implementation-artifacts/epic-12-context.md": "8143470c995803b6be2c1dcc5cff24c0a8ac7f88db68170dab5b6a5f77886c5d",
+    "docs/exit-criteria/c3-retention.md": "16518dc5f7215a454b5642fcf57a2f6995492326c890233c6cfc1b412d1c9a3d",
+    "_bmad-output/implementation-artifacts/proposal-12-2-acceptance-prerequisites.md": "29426d91e34509ba1b9f4029671cff85161b34c072f3ce66c1a58cd2208d563e",
+    "docs/contract/authorization-matrix.md": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420",
+    "_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-security-enrollment.md": "5838a2d97ab01bdaf82a52be98e6e462ca63ebf828a0b68b9c7b30b0dfb784ed",
+    "_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-source-head-transport.md": "f4938bc9c07649a135ff0d6cd67d760b66615b457b6aabe560e5d2d5b74632ec",
+    "_bmad-output/implementation-artifacts/proposal-12-2-mutation-evidence-deadline.md": "aec735df930fe8ff874619cbae97973d465224f439a7efa66af0651a76b106c9"
+  },
+  "before": "before.json",
+  "phasePatch": "mutation-budget.patch",
+  "productionDiff": "Only Budget TimeSpan.FromMilliseconds(500) to TimeSpan.FromSeconds(2); no control-flow or other limit changes",
+  "qualification": {
+    "total": "83",
+    "passed": "83",
+    "failed": "0",
+    "skipped": "0",
+    "errors": "0",
+    "time": "56.662",
+    "start-rtf": "2026-11-03T12:01:13.5871009+00:00",
+    "finish-rtf": "2026-11-03T12:02:10.2464396+00:00"
+  },
+  "casesByClass": {
+    "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests": 7,
+    "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests": 14,
+    "Hexalith.Folders.Server.Tests.EventStoreOrganizationEffectivePermissionsReadModelTests": 62
+  },
+  "commands": [
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+      "exitCode": 0,
+      "log": "server-build.log"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.EventStoreOrganizationEffectivePermissionsReadModelTests -class Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests -class Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests -result-xml /tmp/story12-2-mutation-budget-20261103/server-focused.xml",
+      "exitCode": 0,
+      "log": "server-focused.log"
+    }
+  ],
+  "artifacts": {
+    "server-build.log": "bbb77006cb07a4318a5f9af5b5fb622e83ec3dc8b0ff8c7e0643130c5ec597f4",
+    "server-focused.xml": "bb7a4f4a0955082c9ed24ff3a7e33c4444c31caf02abd355040392601566ccc4",
+    "EventStoreOrganizationEffectivePermissionsReadModelTests.cs.before": "8ccbc1d70af99455566d42c56c83fe9a23117084a80a21b37ea903e98ed6e097",
+    "before.json": "1f628ff5ca0a1121c04208f5f6da38e0e4fb9c9a3109926cd0c5595a80d6c562",
+    "server-focused.log": "aa2f14f0ff80fe6fa8ebd4fafb6225db7fa174f50cc01df40ce268e199e91c44",
+    "PermissionProjectionCatchUp.cs.before": "2d5b05ebe1b5b818aa9a84747d60edc8d0404b87a0f2a79a927553be34f34eb2",
+    "mutation-budget.patch": "d8900c1d087cf3c846d9c8d1fd293f5e08b97c2baa61160bdd09117a8da09b78"
+  },
+  "testAssemblySha256": "7f79a6acc83f823edcf238053ad463db4d0c71d0a8addb4b1c7268edcec303be",
+  "domainAssemblySha256": "834f8b1de7b28bd31050f7db74e30208158e50693d44b00d964ac6756e5b9846",
+  "preserved": [
+    "Immediate reads,25ms poll, monotonic total budget and late-authority refusal",
+    "Exact fresh source/proof, actor scopes, all authorization/enrollment and raw guards",
+    "SDK2s/source3s/domain5s/HTTP40s/helper75s budgets",
+    "Original strict/capacity test body hashes; disabledv2; frozen intent and previous packets"
+  ],
+  "pending": [
+    "Parent final current-source full runtime and Memories rebuild with synchronized copies",
+    "Parent source/PDB/module audit and affected broader checks",
+    "Parent unchanged strict authenticated real-provider acceptance",
+    "Separate SDK parity mismatch/25red-phase skips, Release/package, capacity, PD10/governance, SM4 and independent review gates"
+  ],
+  "newCompileInputs": [],
+  "activeSessions": [],
+  "outputOwnership": "Released; no further source/product/test/spec edits or builds"
+}

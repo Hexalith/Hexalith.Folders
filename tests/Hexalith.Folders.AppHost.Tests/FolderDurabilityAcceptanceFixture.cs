@@ -23,6 +23,7 @@ using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.OperationalStatus;
+using Hexalith.Tenants.Contracts.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Xunit;
@@ -294,6 +295,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         using HttpClient client = App.CreateHttpClient("eventstore", "http");
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _humanToken);
         using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/commands/status/" + correlationId);
+        FolderDurabilityGatewayScope.Apply(request, TenantId);
         using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, true, cancellationToken).ConfigureAwait(false);
         if (response.StatusCode == HttpStatusCode.NotFound) return null;
         await RequireStatusAsync(response, HttpStatusCode.OK, "Authenticated diagnostic command status").ConfigureAwait(false);
@@ -783,8 +785,11 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         Directory.CreateDirectory(realmDirectory);
         JsonObject importedRealm = JsonNode.Parse(await File.ReadAllTextAsync(Path.Combine(_builder.AppHostDirectory,
             "KeycloakRealms", "hexalith-realm.json"), timeout.Token).ConfigureAwait(false))!.AsObject();
+        string[] sourceHostNames = ["folders", "folders-workers", "folders-workers-proof-a", "folders-workers-proof-b"];
+        string[] sourceCallers = [.. sourceHostNames.Select(AppId)];
         await File.WriteAllTextAsync(Path.Combine(realmDirectory, "hexalith-realm.json"),
-            FolderDurabilityBootstrapConfiguration.Realm(importedRealm, AppId("eventstore"), AppId("tenants"), AppId("folders")).ToJsonString(), timeout.Token).ConfigureAwait(false);
+            FolderDurabilitySourceReadConfiguration.Realm(FolderDurabilityBootstrapConfiguration.Realm(importedRealm,
+                AppId("eventstore"), AppId("tenants"), AppId("folders")), sourceCallers).ToJsonString(), timeout.Token).ConfigureAwait(false);
         FolderDurabilityBootstrapConfiguration.RealmImport(_builder.CreateResourceBuilder(security), realmDirectory);
         string tenantsSecret = _bootstrapWorkloadSecret = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
         var tenantsCredential = _builder.AddParameter("durability-tenants-workload-secret", () => tenantsSecret, secret: true);
@@ -811,7 +816,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             .WithEnvironment("Authentication__BoundStreamRead__PublicKeys__" + AppId("tenants"), bootstrapPublicKey)
             .WithEnvironment("Authentication__BoundStreamRead__AllowedDomains__" + AppId("tenants"), "tenants,global-administrators")
             .WithEnvironment("Authentication__BoundCommand__AllowedDomains__" + AppId("tenants"), "global-administrators")
-            .WithEnvironment("Authentication__DaprInternal__AllowedCallers__0", AppId("tenants"));
+            .WithEventStoreTrustedEffectSubmitter(AppId("tenants"));
         ProjectResource originalWorker = _builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders-workers");
         DaprSidecarOptions originalOptions = originalWorker.Annotations.OfType<DaprSidecarAnnotation>().Single()
             .Sidecar.Annotations.OfType<DaprSidecarOptionsAnnotation>().Single().Options;
@@ -867,7 +872,14 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
             .WithEnvironment("DOTNET_STARTUP_HOOKS", observer)
             .WithEnvironment("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES", "Task36FoldObserver")
-            .WithEnvironment("FOLDERS_TASK36_FOLD_LOG", FoldObservationPath);
+            .WithEnvironment("FOLDERS_TASK36_FOLD_LOG", FoldObservationPath)
+            .WithEnvironment("FOLDERS_TASK36_SHUTDOWN_LOG", "");
+        _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "eventstore"))
+            .WithEnvironment("DOTNET_STARTUP_HOOKS", observer)
+            .WithEnvironment("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES", "Task36FoldObserver")
+            .WithEnvironment("FOLDERS_TASK36_FOLD_LOG", "")
+            .WithEnvironment("FOLDERS_TASK36_SHUTDOWN_LOG", Environment.GetEnvironmentVariable("FOLDERS_TASK36_SHUTDOWN_LOG")
+                ?? Path.Combine(_temporaryDirectory, "eventstore-lifecycle.jsonl"));
         if (QualifyContentReplica)
             _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
                 .WithEnvironment("FOLDERS_CONTENT_QUALIFICATION_CLOCK", Path.Combine(_temporaryDirectory, "content-clock-days"));
@@ -880,6 +892,10 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             .WithEnvironment("Logging__LogLevel__Microsoft.AspNetCore.Hosting.Diagnostics", "Information")
             .WithEnvironment("Logging__LogLevel__Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker", "Information")
             .WithEnvironment("Logging__LogLevel__Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor", "Information");
+        // Retain standard request/status timing for the independent Folders metadata client.
+        _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
+            .WithEnvironment("Logging__LogLevel__System.Net.Http.HttpClient.Hexalith.EventStore.NativeSourceMetadata", "Information")
+            .WithEnvironment("Logging__LogLevel__Hexalith.Folders.Queries.Folders.TaskStatusQueryHandler", "Debug");
         if (_provider is not null)
         {
             string secretComponent = Path.Combine(componentDirectory, "provider-secretstore.yaml");
@@ -1047,6 +1063,31 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
                 .WithEnvironment("DOTNET_ENVIRONMENT", "Development");
         }
 
+        // Inventory: Server authorization/provider/status readers and Workers' semantic-indexing
+        // authorization both perform independent source-head reads. Replicas sharing a physical
+        // AppId share that workload; proof Workers with different AppIds receive their own identity/key.
+        for (int index = 0; index < sourceCallers.Length; index++)
+        {
+            string caller = sourceCallers[index];
+            string sourceSecretValue = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+            var sourceSecret = _builder.AddParameter("durability-source-secret-" + index, () => sourceSecretValue, secret: true);
+            _builder.CreateResourceBuilder(security).WithEnvironment("HEXALITH_FOLDERS_SOURCE_" + index + "_CLIENT_SECRET", sourceSecret);
+            using RSA sourceKey = RSA.Create(2048);
+            string sourcePrivateValue = Convert.ToBase64String(sourceKey.ExportPkcs8PrivateKey());
+            var sourcePrivateKey = _builder.AddParameter("durability-source-key-" + index, () => sourcePrivateValue, secret: true);
+            foreach (ProjectResource sourceHost in _builder.Resources.OfType<ProjectResource>().Where(project => AppId(project.Name) == caller))
+            {
+                _builder.CreateResourceBuilder(sourceHost).WithEventStoreWorkloadClientCredentials(caller, sourceSecret)
+                    .WithEnvironment("Authentication__WorkloadIssuer__Workload", caller)
+                    .WithEnvironment("Authentication__BoundStreamRead__PrivateKey", sourcePrivateKey)
+                    .WithEnvironment("EventStore__Gateway__AppId", AppId("eventstore"));
+            }
+            gateway.WithEnvironment("Authentication__BoundStreamRead__PublicKeys__" + caller, Convert.ToBase64String(sourceKey.ExportSubjectPublicKeyInfo()))
+                .WithEnvironment("Authentication__BoundStreamRead__AllowedDomains__" + caller, "folders")
+                .WithEnvironment("Authentication__BoundStreamRead__MetadataOnlyCallers__" + caller, "true")
+                .WithEventStoreTrustedEffectSubmitter(caller);
+        }
+
         IResource[] composedResources = [.. _builder.Resources,
             .. _builder.Resources.OfType<ProjectResource>().SelectMany(project => project.Annotations.OfType<DaprSidecarAnnotation>().Select(annotation => annotation.Sidecar))];
         foreach (IResource resource in composedResources)
@@ -1143,7 +1184,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         _foreignToken = await TokenAsync("hexalith-eventstore", "tenant-a-user", "tenant-a-pass").ConfigureAwait(false);
         await ConfigureIdentityAsync().ConfigureAwait(false);
         await ObserveOwnerBootstrapAsync().ConfigureAwait(false);
-        await SubmitAsync("system", "tenants", TenantId, "CreateTenant", new { tenantId = TenantId, name = "Durability acceptance", description = "Disposable local acceptance tenant" }, _adminToken).ConfigureAwait(false);
+        await SubmitAsync(TenantPlatformScopes.Tenants, "tenants", TenantId, "CreateTenant", new { tenantId = TenantId, name = "Durability acceptance", description = "Disposable local acceptance tenant" }, _adminToken).ConfigureAwait(false);
         _humanToken = await TokenAsync("hexalith-eventstore", "tenant-a-user", "tenant-a-pass").ConfigureAwait(false);
         JsonWebToken human = new(_humanToken);
         if (!human.Claims.Any(claim => claim.Type == "eventstore:tenant" && claim.Value == TenantId)
@@ -1152,7 +1193,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             throw new InvalidOperationException("The real identity provider did not issue the required fresh-tenant/action claims.");
         }
 
-        await SubmitAsync("system", "tenants", TenantId, "AddUserToTenant", new { tenantId = TenantId, userId = PrincipalId, role = "TenantOwner" }, _adminToken).ConfigureAwait(false);
+        await SubmitAsync(TenantPlatformScopes.Tenants, "tenants", TenantId, "AddUserToTenant", new { tenantId = TenantId, userId = PrincipalId, role = "TenantOwner" }, _adminToken).ConfigureAwait(false);
         _projectWorkloadToken = await IssueWorkloadAsync("project", EventStoreWorkloadOperations.DomainServiceProject).ConfigureAwait(false);
         _metadataWorkloadToken = await IssueWorkloadAsync("metadata", EventStoreWorkloadOperations.DomainServiceMetadata).ConfigureAwait(false);
     }
@@ -1199,6 +1240,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         while (true)
         {
             using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/commands/status/" + messageId);
+            FolderDurabilityGatewayScope.Apply(request, TenantPlatformScopes.GlobalAdministrators);
             using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, true, deadline.Token).ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
@@ -1218,23 +1260,16 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         // Public human bootstrap remains forbidden; its refusal cannot append another administrator event.
         using (HttpRequestMessage direct = new(HttpMethod.Post, "/api/v1/commands")
         {
-            Content = JsonContent.Create(new SubmitCommandRequest(NewId(), "system", "global-administrators", "global-administrators",
-                "BootstrapGlobalAdmin", JsonSerializer.SerializeToElement(new { userId = principal }))),
+            Content = JsonContent.Create(FolderDurabilityGatewayScope.BootstrapCommand(NewId(), principal)),
         })
-        using (HttpResponseMessage denied = await FolderDurabilityHttp.SendAsync(client, direct, false, deadline.Token).ConfigureAwait(false))
+        {
+            FolderDurabilityGatewayScope.Apply(direct, TenantPlatformScopes.GlobalAdministrators);
+            using HttpResponseMessage denied = await FolderDurabilityHttp.SendAsync(client, direct, false, deadline.Token).ConfigureAwait(false);
             await RequireStatusAsync(denied, HttpStatusCode.Forbidden, "Original direct human bootstrap refusal").ConfigureAwait(false);
+        }
         using (HttpClient issuer = App.CreateHttpClient("security", "http"))
         {
-            using HttpResponseMessage issued = await issuer.PostAsync("/realms/hexalith/protocol/openid-connect/token",
-                new FormUrlEncodedContent(new Dictionary<string, string>
-                {
-                    ["grant_type"] = "client_credentials",
-                    ["client_id"] = AppId("tenants"),
-                    ["client_secret"] = _bootstrapWorkloadSecret,
-                    ["scope"] = "eventstore-audience.eventstore eventstore-operation.eventstore.command-submit",
-                }), deadline.Token).ConfigureAwait(false);
-            await RequireStatusAsync(issued, HttpStatusCode.OK, "Real owner bootstrap refusal-control assertion").ConfigureAwait(false);
-            string assertion = (await issued.Content.ReadFromJsonAsync<JsonElement>(deadline.Token).ConfigureAwait(false)).GetProperty("access_token").GetString()!;
+            string assertion = await IssueBootstrapOwnerAssertionAsync(issuer, EventStoreWorkloadOperations.GatewayCommandSubmit, deadline.Token).ConfigureAwait(false);
             string ownerSidecarName = _builder!.Resources.OfType<ProjectResource>().Single(project => project.Name == "tenants")
                 .Annotations.OfType<DaprSidecarAnnotation>().Single().Sidecar.Name + "-cli";
             using DaprClient ownerSidecar = new DaprClientBuilder().UseHttpEndpoint(App.GetEndpoint(ownerSidecarName, "http").ToString()).Build();
@@ -1246,12 +1281,12 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
                     : new(HttpMethod.Post, "/api/v1/commands/bound/workload");
                 var refusalBody = new
                 {
-                    command = new SubmitCommandRequest(NewId(), "system", "global-administrators", "global-administrators",
-                        "BootstrapGlobalAdmin", JsonSerializer.SerializeToElement(new { userId = principal })),
+                    command = FolderDurabilityGatewayScope.BootstrapCommand(NewId(), principal),
                     principalId = principal,
                 };
                 invalid.Content = JsonContent.Create(refusalBody);
-                if (credential == "human") invalid.Headers.Authorization = new("Bearer", _adminToken);
+                FolderDurabilityGatewayScope.Apply(invalid, TenantPlatformScopes.GlobalAdministrators);
+                if (credential == "human" || proofControl) invalid.Headers.Authorization = new("Bearer", _adminToken);
                 if (proofControl)
                 {
                     invalid.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, assertion);
@@ -1266,16 +1301,38 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
                 await RequireStatusAsync(denied, credential is "missing" or "human" ? HttpStatusCode.Unauthorized : HttpStatusCode.Forbidden,
                     "Actual owner bootstrap " + credential + " refusal").ConfigureAwait(false);
             }
+            string sourceAssertion = await IssueBootstrapOwnerAssertionAsync(issuer, EventStoreWorkloadOperations.GatewayStreamRead, deadline.Token).ConfigureAwait(false);
+            using HttpRequestMessage source = FolderDurabilityGatewayScope.BootstrapSource(ownerSidecar, AppId("eventstore"), AppId("tenants"),
+                sourceAssertion, await ParameterAsync("durability-tenants-bootstrap-proof").ConfigureAwait(false), DateTimeOffset.UtcNow);
+            BindCommittedCatalog(source, "tenants");
+            using HttpClient sourceBoundary = new();
+            using HttpResponseMessage retained = await FolderDurabilityHttp.SendAsync(sourceBoundary, source, true, deadline.Token).ConfigureAwait(false);
+            await RequireStatusAsync(retained, HttpStatusCode.OK, "Original persisted administrator source").ConfigureAwait(false);
+            FolderDurabilityBootstrapEvidence.Source((await retained.Content.ReadFromJsonAsync<StreamReadPage>(Json, deadline.Token).ConfigureAwait(false))!, messageId, receipt.GetProperty("CorrelationId").GetString()!, principal);
         }
-        using HttpRequestMessage source = new(HttpMethod.Post, "/api/v1/streams/read")
-        { Content = JsonContent.Create(new StreamReadRequest("system", "global-administrators", "global-administrators")) };
-        using HttpResponseMessage retained = await FolderDurabilityHttp.SendAsync(client, source, true, deadline.Token).ConfigureAwait(false);
-        await RequireStatusAsync(retained, HttpStatusCode.OK, "Original persisted administrator source").ConfigureAwait(false);
-        FolderDurabilityBootstrapEvidence.Source((await retained.Content.ReadFromJsonAsync<StreamReadPage>(Json, deadline.Token).ConfigureAwait(false))!, messageId, receipt.GetProperty("CorrelationId").GetString()!, principal);
         await FolderDurabilityBootstrapEvidence.WaitForAuthorityAsync(async token =>
             (await RawStore.GetAsync<JsonObject>("statestore", "projection:global-administrators:singleton", token).ConfigureAwait(false)).Value,
             principal, deadline.Token).ConfigureAwait(false);
         Console.WriteLine("BOOTSTRAP_VERIFIED accepted=202 terminal=Completed originalSource=1 humanAttributed=true catalogGenerationBound=true");
+    }
+
+    private async Task<string> IssueBootstrapOwnerAssertionAsync(HttpClient issuer, string operation, CancellationToken cancellationToken)
+    {
+        if (operation is not (EventStoreWorkloadOperations.GatewayCommandSubmit or EventStoreWorkloadOperations.GatewayStreamRead))
+            throw new InvalidOperationException("The bootstrap owner assertion names an unsupported operation.");
+        using HttpResponseMessage issued = await issuer.PostAsync("/realms/hexalith/protocol/openid-connect/token",
+            new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["grant_type"] = "client_credentials",
+                ["client_id"] = AppId("tenants"),
+                ["client_secret"] = _bootstrapWorkloadSecret,
+                ["scope"] = "eventstore-audience.eventstore eventstore-operation." + operation.Replace(':', '.'),
+            }), cancellationToken).ConfigureAwait(false);
+        await RequireStatusAsync(issued, HttpStatusCode.OK, "Real owner bootstrap operation assertion").ConfigureAwait(false);
+        string assertion = (await issued.Content.ReadFromJsonAsync<JsonElement>(cancellationToken).ConfigureAwait(false)).GetProperty("access_token").GetString()!;
+        if (JwtWorkloadAssertionIssuer.GetTokenScopeFailure(assertion, "eventstore", operation) is not null)
+            throw new InvalidOperationException("The real owner issuer did not return the requested exact audience and operation.");
+        return assertion;
     }
 
     private async Task RefreshCapacityWorkloadTokensAsync()
@@ -1387,6 +1444,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
                 IdempotencyKey: domain == "folders" ? NewId() : null)),
         };
         request.Headers.Add("X-Correlation-Id", NewId());
+        FolderDurabilityGatewayScope.Apply(request, tenant);
         using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, false, TestContext.Current.CancellationToken).ConfigureAwait(false);
         await RequireStatusAsync(response, HttpStatusCode.Accepted, "Authenticated " + command).ConfigureAwait(false);
         JsonElement accepted = await response.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(false);
@@ -1396,6 +1454,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         while (true)
         {
             using HttpRequestMessage statusRequest = new(HttpMethod.Get, "/api/v1/commands/status/" + statusKey);
+            FolderDurabilityGatewayScope.Apply(statusRequest, tenant);
             using HttpResponseMessage status = await FolderDurabilityHttp.SendAsync(client, statusRequest, true, deadline.Token).ConfigureAwait(false);
             if (status.IsSuccessStatusCode)
             {

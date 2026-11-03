@@ -1,0 +1,1431 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "20:10:54",
+      "errors": "0",
+      "failed": "0",
+      "passed": "202",
+      "skipped": "0",
+      "time": "0.365",
+      "total": "202"
+    }
+  ],
+  "tests": [
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.HistoricalGoldenBytesRemainExact(fixture: \\\"CanonicalCatalog.json\\\")",
+      "result": "Pass",
+      "time": "0.104",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "HistoricalGoldenBytesRemainExact"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.HistoricalGoldenBytesRemainExact(fixture: \\\"V2CanonicalCatalog.json\\\")",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "HistoricalGoldenBytesRemainExact"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.TamperedCommittedHistoryIsNeverRepaired",
+      "result": "Pass",
+      "time": "0.06",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "TamperedCommittedHistoryIsNeverRepaired"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.SuppliedOwnerTamperingIsRejectedBeforeGeneration(change: \\\"eligibility\\\")",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "SuppliedOwnerTamperingIsRejectedBeforeGeneration"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.SuppliedOwnerTamperingIsRejectedBeforeGeneration(change: \\\"schema\\\")",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "SuppliedOwnerTamperingIsRejectedBeforeGeneration"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.SuppliedOwnerTamperingIsRejectedBeforeGeneration(change: \\\"digest\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "SuppliedOwnerTamperingIsRejectedBeforeGeneration"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.RepeatedDecodeKeepsIndependentOwnerSchemasAndCanonicalBytes",
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "RepeatedDecodeKeepsIndependentOwnerSchemasAndCanonicalBytes"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.InternalOperationsCannotBeExposedPubliclyEvenWithFreshDigests(kind: \\\"projection\\\")",
+      "result": "Pass",
+      "time": "0.01",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "InternalOperationsCannotBeExposedPubliclyEvenWithFreshDigests"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.InternalOperationsCannotBeExposedPubliclyEvenWithFreshDigests(kind: \\\"delegated-query\\\")",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "InternalOperationsCannotBeExposedPubliclyEvenWithFreshDigests"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.SchemaThreeIsCanonicalAndOperationDigestIsIndependentOfDeclaration",
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "SchemaThreeIsCanonicalAndOperationDigestIsIndependentOfDeclaration"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.RevisedAndRemovedPoliciesSurviveWithOriginalGenerationsDigestsAndKeys",
+      "result": "Pass",
+      "time": "0.018",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "RevisedAndRemovedPoliciesSurviveWithOriginalGenerationsDigestsAndKeys"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.SuppliedCommittedRootMustMatchTheExactHistoryBytes",
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "SuppliedCommittedRootMustMatchTheExactHistoryBytes"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.DuplicateOwnerDiagnosticIdentifiesTheRoute(operation: False)",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "DuplicateOwnerDiagnosticIdentifiesTheRoute"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.DuplicateOwnerDiagnosticIdentifiesTheRoute(operation: True)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "DuplicateOwnerDiagnosticIdentifiesTheRoute"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.IncompleteOrAmbiguousOwnerInputsRefuse(fault: \\\"missing-operation\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "IncompleteOrAmbiguousOwnerInputsRefuse"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.IncompleteOrAmbiguousOwnerInputsRefuse(fault: \\\"missing-eligibility\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "IncompleteOrAmbiguousOwnerInputsRefuse"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.IncompleteOrAmbiguousOwnerInputsRefuse(fault: \\\"missing-schema\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "IncompleteOrAmbiguousOwnerInputsRefuse"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.IncompleteOrAmbiguousOwnerInputsRefuse(fault: \\\"duplicate-operation\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "IncompleteOrAmbiguousOwnerInputsRefuse"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.IncompleteOrAmbiguousOwnerInputsRefuse(fault: \\\"conflicting-operation\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "IncompleteOrAmbiguousOwnerInputsRefuse"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests.IncompleteOrAmbiguousOwnerInputsRefuse(fault: \\\"duplicate-declaration\\\")",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV3Tests",
+      "method": "IncompleteOrAmbiguousOwnerInputsRefuse"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.ExplicitDevelopmentOverrideAndLegacyMessageVersionAreAccepted",
+      "result": "Pass",
+      "time": "0.097",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "ExplicitDevelopmentOverrideAndLegacyMessageVersionAreAccepted"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.TargetAndConsumerAppIdsAcceptInternalHyphensOnly(appId: \\\"billing--orders\\\", valid: True)",
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "TargetAndConsumerAppIdsAcceptInternalHyphensOnly"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.TargetAndConsumerAppIdsAcceptInternalHyphensOnly(appId: \\\"-billing\\\", valid: False)",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "TargetAndConsumerAppIdsAcceptInternalHyphensOnly"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.TargetAndConsumerAppIdsAcceptInternalHyphensOnly(appId: \\\"billing-\\\", valid: False)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "TargetAndConsumerAppIdsAcceptInternalHyphensOnly"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.TargetAndConsumerAppIdsAcceptInternalHyphensOnly(appId: \\\"Billing\\\", valid: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "TargetAndConsumerAppIdsAcceptInternalHyphensOnly"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.TargetAndConsumerAppIdsAcceptInternalHyphensOnly(appId: \\\"billing/orders\\\", valid: False)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "TargetAndConsumerAppIdsAcceptInternalHyphensOnly"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SharedGenerationUsesOneMapKeyAcrossCommands(difference: \\\"same-reference\\\", accepted: False)",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SharedGenerationUsesOneMapKeyAcrossCommands"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SharedGenerationUsesOneMapKeyAcrossCommands(difference: \\\"same-key\\\", accepted: True)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SharedGenerationUsesOneMapKeyAcrossCommands"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SharedGenerationUsesOneMapKeyAcrossCommands(difference: \\\"consumer\\\", accepted: True)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SharedGenerationUsesOneMapKeyAcrossCommands"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SharedGenerationUsesOneMapKeyAcrossCommands(difference: \\\"store\\\", accepted: True)",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SharedGenerationUsesOneMapKeyAcrossCommands"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SharedGenerationUsesOneMapKeyAcrossCommands(difference: \\\"name\\\", accepted: True)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SharedGenerationUsesOneMapKeyAcrossCommands"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.DomainLengthMatchesRuntimeDeclarationsAndIdempotencyMetadata(length: 64, valid: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "DomainLengthMatchesRuntimeDeclarationsAndIdempotencyMetadata"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.DomainLengthMatchesRuntimeDeclarationsAndIdempotencyMetadata(length: 65, valid: False)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "DomainLengthMatchesRuntimeDeclarationsAndIdempotencyMetadata"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.DomainGrammarDoesNotRelaxOtherIdentifiers",
+      "result": "Pass",
+      "time": "0.012",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "DomainGrammarDoesNotRelaxOtherIdentifiers"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"duplicate-id\\\", code: \\\"duplicate-route-id\\\")",
+      "result": "Pass",
+      "time": "0.006",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-adapter\\\", code: \\\"missing-or-invalid-token\\\")",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-policy\\\", code: \\\"missing-or-invalid-token\\\")",
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-retention\\\", code: \\\"invalid-retention-tier\\\")",
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-readers\\\", code: \\\"missing-or-invalid-list\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"active-not-reader\\\", code: \\\"active-generation-not-readable\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"duplicate-generation\\\", code: \\\"duplicate-generation\\\")",
+      "result": "Pass",
+      "time": "0.008",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-key-map\\\", code: \\\"reader-generation-map-mismatch\\\")",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"duplicate-key-map\\\", code: \\\"duplicate-key-reference\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-consumer\\\", code: \\\"missing-or-invalid-name\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-map-generation\\\", code: \\\"missing-or-invalid-token\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"unbounded-fallback\\\", code: \\\"undeclared-or-unbounded-fallback\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"ambiguous-fallback\\\", code: \\\"ambiguous-fallback\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"production-override\\\", code: \\\"override-outside-development\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"undeclared-override\\\", code: \\\"undeclared-override\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-target\\\", code: \\\"missing-or-invalid-name\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"invalid-method\\\", code: \\\"invalid-method\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-schema\\\", code: \\\"missing-descriptor-schema\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"duplicate-schema-field\\\", code: \\\"duplicate-descriptor-field\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"unknown-schema-type\\\", code: \\\"unsupported-descriptor-type\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-secret-store\\\", code: \\\"missing-or-invalid-name\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"command-fallback\\\", code: \\\"command-requires-exact-declaration\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"workload-human-permission\\\", code: \\\"workload-permission-is-not-human-admission\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"zero-generation\\\", code: \\\"invalid-generation\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"wildcard-human-permission\\\", code: \\\"missing-or-invalid-human-permission\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"platform-tenant-grammar\\\", code: \\\"invalid-platform-namespace\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"duplicate-key\\\", code: \\\"duplicate-route-key\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-declaration\\\", code: \\\"missing-declaration\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-binding\\\", code: \\\"missing-binding\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-idempotency\\\", code: \\\"missing-command-idempotency\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"wrong-command\\\", code: \\\"command-join-mismatch\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"query-idempotency\\\", code: \\\"invalid-command-join\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"duplicate-idempotency\\\", code: \\\"duplicate-idempotency-entry\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"route-generation\\\", code: \\\"generation-mismatch\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"policy-generation\\\", code: \\\"generation-mismatch\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"declaration-digest\\\", code: \\\"declaration-digest-mismatch\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"descriptor-digest\\\", code: \\\"descriptor-digest-mismatch\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"entry-content-digest\\\", code: \\\"idempotency-content-digest-mismatch\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"entry-policy-tamper\\\", code: \\\"idempotency-content-digest-mismatch\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"route-facet\\\", code: \\\"digest-mismatch\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"idempotency-facet\\\", code: \\\"digest-mismatch\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-message-version\\\", code: \\\"invalid-message-id-version\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"unknown-message-version\\\", code: \\\"invalid-message-id-version\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"target-credential\\\", code: \\\"invalid-target-credential\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"target-operation\\\", code: \\\"invalid-target-operation\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"entry-operation\\\", code: \\\"declaration-mismatch\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"target-version\\\", code: \\\"declaration-mismatch\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"missing-human-permission\\\", code: \\\"missing-or-invalid-human-permission\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.InvalidSemanticsFailBesidePassingControl(scenario: \\\"null-declarations\\\", code: \\\"missing-or-invalid-list\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "InvalidSemanticsFailBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"reader-token\\\", path: \\\"$.idempotency[0].readerDigestKeyGenerations[1]\\\", code: \\\"missing-or-invalid-token\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"reader-duplicate\\\", path: \\\"$.idempotency[0].readerDigestKeyGenerations[1]\\\", code: \\\"duplicate-generation\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"reader-null\\\", path: \\\"$.idempotency[0].readerDigestKeyGenerations[1]\\\", code: \\\"null-entry\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"key-token\\\", path: \\\"$.idempotency[0].keyMap[1].mapKey\\\", code: \\\"missing-or-invalid-token\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"key-generation\\\", path: \\\"$.idempotency[0].keyMap[1].generation\\\", code: \\\"missing-or-invalid-token\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"key-duplicate\\\", path: \\\"$.idempotency[0].keyMap[1].mapKey\\\", code: \\\"duplicate-key-reference\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"key-null\\\", path: \\\"$.idempotency[0].keyMap[1]\\\", code: \\\"null-entry\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"reserved-key\\\", path: \\\"$.idempotency[0].keyMap[1].mapKey\\\", code: \\\"reserved-generation-map-key\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"fallback-token\\\", path: \\\"$.declarations[4].fallbackTypes[1]\\\", code: \\\"missing-or-invalid-name\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"fallback-duplicate\\\", path: \\\"$.declarations[4].fallbackTypes[1]\\\", code: \\\"duplicate-fallback-type\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"fallback-ambiguous\\\", path: \\\"$.declarations[5].fallbackTypes[0]\\\", code: \\\"ambiguous-fallback\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"fallback-null\\\", path: \\\"$.declarations[4].fallbackTypes[1]\\\", code: \\\"null-entry\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"field-name\\\", path: \\\"$.idempotency[0].descriptorSchema.fields[1].name\\\", code: \\\"missing-or-invalid-name\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"field-type\\\", path: \\\"$.idempotency[0].descriptorSchema.fields[1].type\\\", code: \\\"unsupported-descriptor-type\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"field-duplicate\\\", path: \\\"$.idempotency[0].descriptorSchema.fields[1].name\\\", code: \\\"duplicate-descriptor-field\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.NestedSemanticFailuresLocateTheExactElementWithoutValues(scenario: \\\"field-null\\\", path: \\\"$.idempotency[0].descriptorSchema.fields[1]\\\", code: \\\"null-entry\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "NestedSemanticFailuresLocateTheExactElementWithoutValues"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.DomainSyntaxMatchesRuntimeDeclarationsAndIdempotencyMetadata(domain: \\\"billing--orders\\\", valid: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "DomainSyntaxMatchesRuntimeDeclarationsAndIdempotencyMetadata"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.DomainSyntaxMatchesRuntimeDeclarationsAndIdempotencyMetadata(domain: \\\"-billing\\\", valid: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "DomainSyntaxMatchesRuntimeDeclarationsAndIdempotencyMetadata"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.DomainSyntaxMatchesRuntimeDeclarationsAndIdempotencyMetadata(domain: \\\"billing-\\\", valid: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "DomainSyntaxMatchesRuntimeDeclarationsAndIdempotencyMetadata"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.DomainSyntaxMatchesRuntimeDeclarationsAndIdempotencyMetadata(domain: \\\"Billing\\\", valid: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "DomainSyntaxMatchesRuntimeDeclarationsAndIdempotencyMetadata"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.TargetAndConsumerAppIdsPreserveLengthBounds(length: 128, valid: True)",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "TargetAndConsumerAppIdsPreserveLengthBounds"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.TargetAndConsumerAppIdsPreserveLengthBounds(length: 129, valid: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "TargetAndConsumerAppIdsPreserveLengthBounds"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SharedMapKeyUsesOneGenerationAcrossCommands(difference: \\\"same-reference\\\", accepted: False)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SharedMapKeyUsesOneGenerationAcrossCommands"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SharedMapKeyUsesOneGenerationAcrossCommands(difference: \\\"same-generation\\\", accepted: True)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SharedMapKeyUsesOneGenerationAcrossCommands"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SharedMapKeyUsesOneGenerationAcrossCommands(difference: \\\"consumer\\\", accepted: True)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SharedMapKeyUsesOneGenerationAcrossCommands"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SharedMapKeyUsesOneGenerationAcrossCommands(difference: \\\"store\\\", accepted: True)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SharedMapKeyUsesOneGenerationAcrossCommands"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SharedMapKeyUsesOneGenerationAcrossCommands(difference: \\\"name\\\", accepted: True)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SharedMapKeyUsesOneGenerationAcrossCommands"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SecretGenerationMarkersAgreeForEachConsumerReference(difference: \\\"same-reference\\\", accepted: False)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SecretGenerationMarkersAgreeForEachConsumerReference"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SecretGenerationMarkersAgreeForEachConsumerReference(difference: \\\"consumer\\\", accepted: True)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SecretGenerationMarkersAgreeForEachConsumerReference"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SecretGenerationMarkersAgreeForEachConsumerReference(difference: \\\"store\\\", accepted: True)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SecretGenerationMarkersAgreeForEachConsumerReference"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests.SecretGenerationMarkersAgreeForEachConsumerReference(difference: \\\"name\\\", accepted: True)",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogValidatorTests",
+      "method": "SecretGenerationMarkersAgreeForEachConsumerReference"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.ExpectedRootDigestBindsRetainedBytes",
+      "result": "Pass",
+      "time": "0.097",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "ExpectedRootDigestBindsRetainedBytes"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.ConstructionOrderDoesNotAffectBytesOrDigests",
+      "result": "Pass",
+      "time": "0.006",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "ConstructionOrderDoesNotAffectBytesOrDigests"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidPropertyNameEncodingHasOnlyASafeDiagnostic(scenario: \\\"invalid-utf8\\\")",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidPropertyNameEncodingHasOnlyASafeDiagnostic"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidPropertyNameEncodingHasOnlyASafeDiagnostic(scenario: \\\"unpaired-high\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidPropertyNameEncodingHasOnlyASafeDiagnostic"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidPropertyNameEncodingHasOnlyASafeDiagnostic(scenario: \\\"unpaired-low\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidPropertyNameEncodingHasOnlyASafeDiagnostic"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.ReaderLookupOrderIsPreservedAndBound",
+      "result": "Pass",
+      "time": "0.012",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "ReaderLookupOrderIsPreservedAndBound"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidEncodingFailsBesidePassingControl(scenario: \\\"whitespace\\\")",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidEncodingFailsBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidEncodingFailsBesidePassingControl(scenario: \\\"duplicate-root\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidEncodingFailsBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidEncodingFailsBesidePassingControl(scenario: \\\"duplicate-nested\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidEncodingFailsBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidEncodingFailsBesidePassingControl(scenario: \\\"unknown-root\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidEncodingFailsBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidEncodingFailsBesidePassingControl(scenario: \\\"unknown-nested\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidEncodingFailsBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidEncodingFailsBesidePassingControl(scenario: \\\"missing-required\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidEncodingFailsBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidEncodingFailsBesidePassingControl(scenario: \\\"unsupported-version\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidEncodingFailsBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidEncodingFailsBesidePassingControl(scenario: \\\"escaped-property\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidEncodingFailsBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidEncodingFailsBesidePassingControl(scenario: \\\"property-order\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidEncodingFailsBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidEncodingFailsBesidePassingControl(scenario: \\\"bom\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidEncodingFailsBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidEncodingFailsBesidePassingControl(scenario: \\\"float-integer\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidEncodingFailsBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidEncodingFailsBesidePassingControl(scenario: \\\"null-entry\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidEncodingFailsBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.InvalidEncodingFailsBesidePassingControl(scenario: \\\"oversized\\\")",
+      "result": "Pass",
+      "time": "0.013",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "InvalidEncodingFailsBesidePassingControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests.CompleteFixtureMatchesIndependentGoldenDigestsAndRoundTripsExactly",
+      "result": "Pass",
+      "time": "0.014",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogCodecTests",
+      "method": "CompleteFixtureMatchesIndependentGoldenDigestsAndRoundTripsExactly"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.NewExecutionRejectionsHavePassingControls(scenario: \\\"missing-actor\\\", reason: \\\"invalid-actor-type\\\")",
+      "result": "Pass",
+      "time": "0.083",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "NewExecutionRejectionsHavePassingControls"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.NewExecutionRejectionsHavePassingControls(scenario: \\\"query-clr-policy\\\", reason: \\\"unsupported-alias-policy\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "NewExecutionRejectionsHavePassingControls"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.NewExecutionRejectionsHavePassingControls(scenario: \\\"missing-primary\\\", reason: \\\"missing-primary-alias\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "NewExecutionRejectionsHavePassingControls"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.NewExecutionRejectionsHavePassingControls(scenario: \\\"invalid-query-kind\\\", reason: \\\"invalid-query-kind\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "NewExecutionRejectionsHavePassingControls"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.NewExecutionRejectionsHavePassingControls(scenario: \\\"computed-actor\\\", reason: \\\"actor-requires-projection\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "NewExecutionRejectionsHavePassingControls"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.NewExecutionRejectionsHavePassingControls(scenario: \\\"unexpected-output\\\", reason: \\\"unexpected-projection-outputs\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "NewExecutionRejectionsHavePassingControls"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.NewExecutionRejectionsHavePassingControls(scenario: \\\"missing-output\\\", reason: \\\"missing-or-invalid-list\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "NewExecutionRejectionsHavePassingControls"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.NewExecutionRejectionsHavePassingControls(scenario: \\\"duplicate-output\\\", reason: \\\"duplicate-projection-output\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "NewExecutionRejectionsHavePassingControls"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.NewExecutionRejectionsHavePassingControls(scenario: \\\"invalid-alias\\\", reason: \\\"missing-or-invalid-discriminator\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "NewExecutionRejectionsHavePassingControls"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.NewExecutionRejectionsHavePassingControls(scenario: \\\"unbounded-handler\\\", reason: \\\"execution-requires-exact-handler\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "NewExecutionRejectionsHavePassingControls"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.NewExecutionRejectionsHavePassingControls(scenario: \\\"missing-handler\\\", reason: \\\"missing-or-invalid-discriminator\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "NewExecutionRejectionsHavePassingControls"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.IndependentV2VectorsBindEveryExecutionFieldAndFacet",
+      "result": "Pass",
+      "time": "0.02",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "IndependentV2VectorsBindEveryExecutionFieldAndFacet"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.ResolverScopeIsRequiredAndBoundByFacetAndRootDigests",
+      "result": "Pass",
+      "time": "0.012",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "ResolverScopeIsRequiredAndBoundByFacetAndRootDigests"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.AliasProtocolPreservesActualLookupWithoutUnboundedHandlers(wire: \\\"IncrementCounter\\\", matches: True)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "AliasProtocolPreservesActualLookupWithoutUnboundedHandlers"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.AliasProtocolPreservesActualLookupWithoutUnboundedHandlers(wire: \\\"increment-counter\\\", matches: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "AliasProtocolPreservesActualLookupWithoutUnboundedHandlers"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.AliasProtocolPreservesActualLookupWithoutUnboundedHandlers(wire: \\\"Arbitrary.Namespace.IncrementCounter, Arbitrary.As\\\"\u00b7\u00b7\u00b7, matches: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "AliasProtocolPreservesActualLookupWithoutUnboundedHandlers"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.AliasProtocolPreservesActualLookupWithoutUnboundedHandlers(wire: \\\"Unknown\\\", matches: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "AliasProtocolPreservesActualLookupWithoutUnboundedHandlers"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.AliasProtocolPreservesActualLookupWithoutUnboundedHandlers(wire: \\\"IncrementCounter , Assembly\\\", matches: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "AliasProtocolPreservesActualLookupWithoutUnboundedHandlers"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.AliasProtocolPreservesActualLookupWithoutUnboundedHandlers(wire: \\\"incrementcounter\\\", matches: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "AliasProtocolPreservesActualLookupWithoutUnboundedHandlers"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.NormalizedCommandAliasesCannotOverlapExactQueryAliases",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "NormalizedCommandAliasesCannotOverlapExactQueryAliases"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.RejectsInvalidV2BesideValidControl(scenario: \\\"unsupported-alias\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "RejectsInvalidV2BesideValidControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.RejectsInvalidV2BesideValidControl(scenario: \\\"duplicate-alias\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "RejectsInvalidV2BesideValidControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.RejectsInvalidV2BesideValidControl(scenario: \\\"wrong-target\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "RejectsInvalidV2BesideValidControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.RejectsInvalidV2BesideValidControl(scenario: \\\"computed-actor\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "RejectsInvalidV2BesideValidControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.RejectsInvalidV2BesideValidControl(scenario: \\\"unknown-execution-field\\\")",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "RejectsInvalidV2BesideValidControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.RejectsInvalidV2BesideValidControl(scenario: \\\"missing-execution-field\\\")",
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "RejectsInvalidV2BesideValidControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.RejectsInvalidV2BesideValidControl(scenario: \\\"v1-extension\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "RejectsInvalidV2BesideValidControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests.ActorAndComputedQueriesRoundTripWithoutInventingProjectionTargets",
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogV2Tests",
+      "method": "ActorAndComputedQueriesRoundTripWithoutInventingProjectionTargets"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests.EveryExpectedRootMustMatchTheCurrentExactBytes(fixture: \\\"CanonicalCatalog.json\\\")",
+      "result": "Pass",
+      "time": "0.104",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests",
+      "method": "EveryExpectedRootMustMatchTheCurrentExactBytes"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests.EveryExpectedRootMustMatchTheCurrentExactBytes(fixture: \\\"V2CanonicalCatalog.json\\\")",
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests",
+      "method": "EveryExpectedRootMustMatchTheCurrentExactBytes"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests.ReturnedModelMutationCannotChangeLaterDecodedAuthority(fixture: \\\"CanonicalCatalog.json\\\")",
+      "result": "Pass",
+      "time": "0.012",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests",
+      "method": "ReturnedModelMutationCannotChangeLaterDecodedAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests.ReturnedModelMutationCannotChangeLaterDecodedAuthority(fixture: \\\"V2CanonicalCatalog.json\\\")",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests",
+      "method": "ReturnedModelMutationCannotChangeLaterDecodedAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests.ConcurrentCatalogReadsKeepCompleteByteAndRootValidation",
+      "result": "Pass",
+      "time": "0.065",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests",
+      "method": "ConcurrentCatalogReadsKeepCompleteByteAndRootValidation"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests.CallerBufferMutationRequiresCompleteValidationAgain(fixture: \\\"CanonicalCatalog.json\\\")",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests",
+      "method": "CallerBufferMutationRequiresCompleteValidationAgain"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests.CallerBufferMutationRequiresCompleteValidationAgain(fixture: \\\"V2CanonicalCatalog.json\\\")",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDecodeIsolationTests",
+      "method": "CallerBufferMutationRequiresCompleteValidationAgain"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/internal/dead-letters/**\\\", path: \\\"/internal/dead-letters\\\", expected: True)",
+      "result": "Pass",
+      "time": "0.017",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/internal/dead-letters/**\\\", path: \\\"/internal/dead-letters/count\\\", expected: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/internal/dead-letters/**\\\", path: \\\"/internal/dead-letters/tenant-a/id/retry\\\", expected: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/internal/dead-letters/**\\\", path: \\\"/internal/dead-letters-other/count\\\", expected: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/internal/dead-letters/**\\\", path: \\\"/other/internal/dead-letters/count\\\", expected: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/internal/dead-letters\\\", path: \\\"/internal/dead-letters/tenant-a/id\\\", expected: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/internal/dead-letters/*\\\", path: \\\"/internal/dead-letters\\\", expected: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/internal/dead-letters/*\\\", path: \\\"/internal/dead-letters/count\\\", expected: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/internal/dead-letters/*\\\", path: \\\"/internal/dead-letters/tenant-a/id\\\", expected: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/api/v1/commands/status/workload/*/*\\\", path: \\\"/api/v1/commands/status/workload\\\", expected: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/api/v1/commands/status/workload/*/*\\\", path: \\\"/api/v1/commands/status/workload/tenant-a\\\", expected: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/api/v1/commands/status/workload/*/*\\\", path: \\\"/api/v1/commands/status/workload/tenant-a/command-\\\"\u00b7\u00b7\u00b7, expected: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/api/v1/commands/status/workload/tenant-a/*\\\", path: \\\"/api/v1/commands/status/workload/tenant-a\\\", expected: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/api/v1/commands/status/workload/tenant-a/*\\\", path: \\\"/api/v1/commands/status/workload/tenant-a/command-\\\"\u00b7\u00b7\u00b7, expected: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.MatchesActualTrieSemantics(grant: \\\"/api/v1/commands/status/workload/tenant-a/*\\\", path: \\\"/api/v1/commands/status/workload/tenant-b/command-\\\"\u00b7\u00b7\u00b7, expected: False)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "MatchesActualTrieSemantics"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.RetainedDoubleScalarDeclarationDoesNotGrantItsTwoParameterEndpoint",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "RetainedDoubleScalarDeclarationDoesNotGrantItsTwoParameterEndpoint"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.UnknownAndAmbiguousShapesRefuse(grant: \\\"/unknown/a*b\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "UnknownAndAmbiguousShapesRefuse"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.UnknownAndAmbiguousShapesRefuse(grant: \\\"/unknown/**/child\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "UnknownAndAmbiguousShapesRefuse"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.UnknownAndAmbiguousShapesRefuse(grant: \\\"/unknown/*/literal\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "UnknownAndAmbiguousShapesRefuse"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.UnknownAndAmbiguousShapesRefuse(grant: \\\"/unknown/*/*/*\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "UnknownAndAmbiguousShapesRefuse"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.UnknownAndAmbiguousShapesRefuse(grant: \\\"/unknown/../admin\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "UnknownAndAmbiguousShapesRefuse"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests.UnknownAndAmbiguousShapesRefuse(grant: \\\"/unknown/%2fadmin\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.RouteCatalogDaprGrantTests",
+      "method": "UnknownAndAmbiguousShapesRefuse"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests.NullablePayloadAndSeparateInputsAreExplicitAndDigestBound",
+      "result": "Pass",
+      "time": "0.106",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests",
+      "method": "NullablePayloadAndSeparateInputsAreExplicitAndDigestBound"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests.MalformedMetadataRefusesWithoutWideningLegacyNames(fault: \\\"unknown-source\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests",
+      "method": "MalformedMetadataRefusesWithoutWideningLegacyNames"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests.MalformedMetadataRefusesWithoutWideningLegacyNames(fault: \\\"nullable-option\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests",
+      "method": "MalformedMetadataRefusesWithoutWideningLegacyNames"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests.MalformedMetadataRefusesWithoutWideningLegacyNames(fault: \\\"nullable-target\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests",
+      "method": "MalformedMetadataRefusesWithoutWideningLegacyNames"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests.MalformedMetadataRefusesWithoutWideningLegacyNames(fault: \\\"non-string-option\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests",
+      "method": "MalformedMetadataRefusesWithoutWideningLegacyNames"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests.MalformedMetadataRefusesWithoutWideningLegacyNames(fault: \\\"wrong-scope-name\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests",
+      "method": "MalformedMetadataRefusesWithoutWideningLegacyNames"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests.MalformedMetadataRefusesWithoutWideningLegacyNames(fault: \\\"legacy-name\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests",
+      "method": "MalformedMetadataRefusesWithoutWideningLegacyNames"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests.MalformedMetadataRefusesWithoutWideningLegacyNames(fault: \\\"invalid-payload-name\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests",
+      "method": "MalformedMetadataRefusesWithoutWideningLegacyNames"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests.MalformedMetadataRefusesWithoutWideningLegacyNames(fault: \\\"duplicate-payload\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests",
+      "method": "MalformedMetadataRefusesWithoutWideningLegacyNames"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests.MalformedMetadataRefusesWithoutWideningLegacyNames(fault: \\\"duplicate-target\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests",
+      "method": "MalformedMetadataRefusesWithoutWideningLegacyNames"
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests.DefaultMetadataPreservesLegacyBytesAndGoldenDigests",
+      "result": "Pass",
+      "time": "0.014",
+      "type": "Hexalith.EventStore.Contracts.Tests.Routing.IdempotencyDescriptorCompatibilityTests",
+      "method": "DefaultMetadataPreservesLegacyBytesAndGoldenDigests"
+    }
+  ]
+}

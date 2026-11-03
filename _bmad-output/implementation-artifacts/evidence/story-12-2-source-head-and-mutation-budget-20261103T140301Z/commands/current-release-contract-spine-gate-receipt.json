@@ -1,0 +1,32 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "tests/tools/run-contract-spine-gates.ps1"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-03T12:52:19.181356+00:00",
+  "utc_end": "2026-11-03T12:52:25.045889+00:00",
+  "exit_code": 1,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-source-head-20261103-QnMdfZ/current-release-contract-spine-gate-private.log",
+    "sha256": "9a93bf0fbaf334e6508f7c76bc7c6b298e21c19c38280c5ab61c385e8a26d089"
+  },
+  "private_xml": null,
+  "summary": null,
+  "source_or_head_drift": [],
+  "working_tree_status_changes": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 0
+  },
+  "runtime_module_observations": 0,
+  "fixture_module_observations": 0,
+  "original_private_receipt_sha256": "d4483c5cfde964fedaf8a93b4b549f28efc7ce3b86eb58bc0ed6be34ac206c45"
+}

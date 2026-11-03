@@ -1,0 +1,116 @@
+{
+  "phase": "Bounded opt-in task-status diagnostics and approved temporary SDK fixture verbosity retirement",
+  "ownership": "No active process/build/test/live. Final product/test source released to parent; no further edits planned.",
+  "changed_files": {
+    "src/Hexalith.Folders/Queries/Folders/TaskStatusQueryHandler.cs": "16f759d4be1925b764a46c5fa70c4e85d49fd488d9ba1bab49dc7a81d5dfe76a",
+    "src/Hexalith.Folders/Queries/Folders/TaskStatusQueryDiagnostics.cs": "c184f8abaa45e0a7b87554d1545d46ff0c75906ff771c4d188ae5cfe5e10a4fd",
+    "tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusQueryHandlerTests.cs": "1df8dc6b199f9b4be0e2bef09f174f080ed442b459e3ffd6a2098abcaed0cb92",
+    "tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusDiagnosticLogger.cs": "92cdfabf85b0f20609a6102bfb9ffad0ee79e406fd32f28ddf7f3ddc9145543a",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "e3c2621f07914948cec4b8f6f5b4986190470986462b2cd53b5a0b83b5cb9cee"
+  },
+  "commands": [
+    "dotnet build tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+    "dotnet tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll -class Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests -class Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests -class Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests -xml /tmp/story12-2-task-status-diagnostics-20261103/domain-focused-private.xml -nocolor",
+    "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+    "dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests -xml /tmp/story12-2-task-status-diagnostics-20261103/apphost-focused-private.xml -nocolor"
+  ],
+  "builds": [
+    {
+      "project": "Folders.Tests",
+      "warnings": 0,
+      "errors": 0,
+      "seconds": 7.82
+    },
+    {
+      "project": "Folders.AppHost.Tests",
+      "warnings": 0,
+      "errors": 0,
+      "seconds": 43.0
+    }
+  ],
+  "focused_lanes": [
+    {
+      "name": "domain-focused",
+      "result": {
+        "total": "77",
+        "passed": "77",
+        "failed": "0",
+        "skipped": "0",
+        "errors": "0",
+        "time": "0.194"
+      },
+      "by_class": {
+        "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests": 26,
+        "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests": 10,
+        "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests": 41
+      }
+    },
+    {
+      "name": "apphost-focused",
+      "result": {
+        "total": "2",
+        "passed": "2",
+        "failed": "0",
+        "skipped": "0",
+        "errors": "0",
+        "time": "0.308"
+      },
+      "by_class": {
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests": 2
+      }
+    }
+  ],
+  "count_limits": "77Domain and2AppHost are this phase selections;15new task diagnostic cases. Do not aggregate with overlapping prior334/48/etc selections.",
+  "final_fixture_cleanup": "The parent subsequently authorized removing4temporarySDKDebug categories. Only those fixture logging lines were removed after builds/tests; category-preservation static assertions passed. Parent full runtime build must compile this final fixture source before live. Core product/test code remains exactly what focused checks executed.",
+  "advisory_contract": [
+    "Exact existing public TaskStatusQueryHandler constructor/logger dependency preserved; no new service/provider resolution.",
+    "All new IsEnabled/Log calls protected; provider failures do not replace results or cancellation.",
+    "No new source/backend/clock read, guard, retry, deadline, authority or persisted value.",
+    "Original HandleCore body reconstructed byte-for-byte after removing new diagnostics and restoring previous warning call.",
+    "1220Debug: tenant outcome enum,freshness enum,age int clamped\u00b186400seconds.",
+    "1221Debug: completed result enum,folder-denial layer enum and allowlisted outcome/freshness.",
+    "1222Warning replaces original read-model failure warning with closed exception class; no exception object/message/type name.",
+    "Fixture only enables TaskStatus category atDebug and keeps metadataHTTPInformation plus original command/projection diagnostics.",
+    "Retired4temporarySDKDebug overrides only; SDK diagnostic implementation remains available unchanged."
+  ],
+  "static_controls": {
+    "original_core_equivalent": true,
+    "strict_body_hashes": {
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc"
+    },
+    "retired_categories": [
+      "RouteCatalogInvocationHandler",
+      "RouteCatalogAuthority",
+      "TechnicalHttpRouteCatalogReceiver",
+      "DaprDomainServiceInvoker"
+    ],
+    "retained_categories": [
+      "TaskStatusQueryHandler",
+      "NativeSourceMetadata",
+      "CommandRouter",
+      "SubmitCommandHandler",
+      "ProjectionUpdateOrchestrator"
+    ],
+    "tenant_budget_source_sha256": "39e40ecb2914a1a075c03101a4c12177a98adaff61d6ecde0bfb9c1462ce28e7",
+    "mutation_budget_source_sha256": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429"
+  },
+  "remaining": [
+    "Parent runtime rebuild/audit and isolated strict execution.",
+    "Strict5postrestart503 exact cause still unproven; new observations discriminate it.",
+    "Storyacceptance/SM4 and fixedcatalog SDK qualification gates remain open."
+  ],
+  "receipt_hashes": {
+    "apphost-build-private.log": "74c166f8317115db427f05fbdc02884d0bb99d12b191eb8e5612b02acb10cb3a",
+    "domain-build-private.log": "c127cf2d2b787bf988588286cc713f6ea8b9233709d3dd62f0bf492542f12611",
+    "apphost-focused-private.log": "96fbbc2258817fb6a5415303c7321d1d51d1c234d2c956c8df0697295ea5f068",
+    "apphost-focused-private.xml": "2794108dc624dbe927db76dbe62b25869f6a74c81f28effdffdd7711fcf841ba",
+    "before.json": "e0caa613ac46cf7b30f93ad9f720a6537f8ef3338c5bd3def30de55201770264",
+    "domain-focused-private.log": "c416de51537de879e8aeec02eb048a709ea052bfde9b189181e896cfbef6d41c",
+    "domain-focused-private.xml": "3804a42dd4bf6ec01f4bba873a46be91f39958b3d0a67e4ff042d209c6bc81ac",
+    "FolderDurabilityAcceptanceFixture.cs.before": "bd1b523459153f7ae32c107fc5dfd7860bc93bb6d7825116e17e63a2dba3dd30",
+    "phase.patch": "ba8cbdb6542cda15e4ef41ef9dbb7069d71d3c848fc2d137649115900368b1cf",
+    "TaskStatusQueryHandlerTests.cs.before": "4294296330398000341515783278b555220858ea28041ee1701587f632486317",
+    "TaskStatusQueryHandler.cs.before": "82af96900287a4f1e2394b31a0b5ca73855f7ccd1f207da65a7aee9991dce009"
+  }
+}

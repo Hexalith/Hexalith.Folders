@@ -1,0 +1,268 @@
+{
+  "scope": "Read-only strict7 completed result and lifecycle evidence. No source/build/test/live mutation or acceptance/correction claim. Parent owns drift/cleanup receipts.",
+  "result": {
+    "total": "1",
+    "passed": "0",
+    "failed": "1",
+    "skipped": "0",
+    "errors": "0",
+    "time": "393.087"
+  },
+  "failure": {
+    "exception": "InvalidOperationException",
+    "message": "Task-owned resource eventstore command stop failed.",
+    "site": "ResourceCommandAsync552 -> RestartHostsAsync516 -> RequireAllConcernRebuildAndRecoveryAsync552 -> RequireRealTaskClosureAsync339",
+    "phase": "EventStore stop during interrupted-generation drill, before its completion PASS, concurrent-worker check or later main restart."
+  },
+  "partial_assertions": [
+    "Persisted ordinary and rebuilt retention assertions executed.",
+    "Exact source-folded rebuilt lifecycle/workspace/task row equality assertions executed.",
+    "All-six-concerns PASSmarker printed; semantic limitation of taskcorruption503control below."
+  ],
+  "task_diagnostics": [
+    {
+      "utc": "2026-11-03T13:17:49.803Z",
+      "id": 1220,
+      "outcome": "Allowed",
+      "freshness": "Fresh",
+      "age_seconds": 290
+    },
+    {
+      "utc": "2026-11-03T13:17:51.716Z",
+      "id": 1221,
+      "code": "Allowed",
+      "folder_denial_layer": null,
+      "folder_denial_outcome": "none"
+    },
+    {
+      "utc": "2026-11-03T13:17:59.230Z",
+      "id": 1220,
+      "outcome": "Allowed",
+      "freshness": "Stale",
+      "age_seconds": 300
+    },
+    {
+      "utc": "2026-11-03T13:17:59.231Z",
+      "id": 1221,
+      "code": "ReadModelUnavailable",
+      "folder_denial_layer": "TenantAccessFreshness",
+      "folder_denial_outcome": "tenant_projection_stale",
+      "folder_denial_freshness": "stale"
+    }
+  ],
+  "negative_control_limit": "The actual nested tenant_projection_stale denial is observed during the unchanged Corrupt timestamp metadata concern taskHTTP503probe(lines514\u2013519), before protected operational task-model lookup. That503 does not independently establish corrupt-row rejection in this run. Age is integer-truncated; classify using observed denial, not age alone. No postrestart task status was reached.",
+  "lifecycle": [
+    {
+      "phase": "host_configuration",
+      "processId": 80230,
+      "utc": "2026-11-03T13:12:39.7752493+00:00",
+      "stopConcurrently": false,
+      "shutdownTimeoutMilliseconds": 30000,
+      "serviceRegistrationOrder": [
+        "other",
+        "opaque_factory",
+        "telemetry_shutdown",
+        "other",
+        "other",
+        "other",
+        "other",
+        "opaque_factory",
+        "rate_limit_sync",
+        "opaque_factory",
+        "opaque_factory",
+        "snapshot_qualification",
+        "projection_discovery",
+        "opaque_factory",
+        "opaque_factory",
+        "opaque_factory",
+        "opaque_factory",
+        "web_server"
+      ],
+      "serviceRegistrationCount": 18,
+      "serviceOrderTruncated": false,
+      "serverRegisteredLast": true,
+      "factoryRegistrationCount": 8,
+      "nonSingletonRegistrationCount": 0,
+      "knownLifecycleRegistrationCount": 1
+    },
+    {
+      "phase": "observer_registered",
+      "processId": 80230,
+      "utc": "2026-11-03T13:12:39.7816045+00:00",
+      "elapsedMilliseconds": 144.6891,
+      "inFlightRequests": 0,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "host_start",
+      "processId": 80230,
+      "utc": "2026-11-03T13:12:40.3628684+00:00",
+      "elapsedMilliseconds": 725.9528,
+      "inFlightRequests": 0,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "application_stopping",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:18.7444693+00:00",
+      "elapsedMilliseconds": 339121.6147,
+      "inFlightRequests": 2,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "host_stop",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:18.7639599+00:00",
+      "elapsedMilliseconds": 339141.1055,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:19.7450901+00:00",
+      "elapsedMilliseconds": 340122.2358,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:20.7445186+00:00",
+      "elapsedMilliseconds": 341121.6648,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:21.7445747+00:00",
+      "elapsedMilliseconds": 342121.7206,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:22.744682+00:00",
+      "elapsedMilliseconds": 343121.8278,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:23.7449297+00:00",
+      "elapsedMilliseconds": 344122.0754,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:24.7446812+00:00",
+      "elapsedMilliseconds": 345121.8272,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:25.7452015+00:00",
+      "elapsedMilliseconds": 346122.3472,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:26.7454852+00:00",
+      "elapsedMilliseconds": 347122.6312,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:27.7456498+00:00",
+      "elapsedMilliseconds": 348122.7956,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:28.7451527+00:00",
+      "elapsedMilliseconds": 349122.2984,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 80230,
+      "utc": "2026-11-03T13:18:29.7438291+00:00",
+      "elapsedMilliseconds": 350120.975,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false
+    }
+  ],
+  "shutdown_interpretation": [
+    "Effective observed stopConcurrently=false,shutdownTimeout30000ms,18singleton registrations,server last,8opaque factories,1known lifecycle registration. Descriptor order does not resolve factory types or prove absence of further factory lifecycle services.",
+    "ApplicationStopping13:18:18.7444693 had2inflight; HostStop13:18:18.7639599 after19.4906ms had0inflight.",
+    "HostStop is in framework finally: Server.StopAsync exited normal or exceptional; successful return alone is not proven.",
+    "Healthy zero-drop/sinkFailed=false snapshots through13:18:29.7438291 retain HostStopSeen=true,ApplicationStoppedSeen=false and0requests. The serverStop await is not the pending work in this interval.",
+    "DCPstop timeout13:18:30.740/30.741,resourcecommanderror13:18:35.5490129.",
+    "Pending interval narrows to subsequent hosted StopAsync/StoppedAsync work before ApplicationStopped; not post-ApplicationStopped disposal. Exact service/call remains unproven.",
+    "ProjectionActivationWorker still logs deliveryactivationpending every~2s until13:18:30.397; no individual service blocker inferred from these unrelated failures."
+  ],
+  "inputs_sha256": {
+    "/tmp/story12-2-source-head-20261103-QnMdfZ/strict-source-head-7-private.log": "167dcb7c9eeee0987245111f4875a251d5be308b3241b24adddb2ca1ebbe34ed",
+    "/tmp/story12-2-source-head-20261103-QnMdfZ/strict-source-head-7-private.xml": "b389276cf7eeba91449abd1564b01caf6a652062d2453faca39250ca72ad6c02",
+    "/tmp/story12-2-source-head-20261103-QnMdfZ/strict-source-head-7-lifecycle-private.jsonl": "102d1b74b9f470ffd645e7f1724e33bb4a369247730508a00259334e17bf23b2"
+  }
+}

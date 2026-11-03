@@ -1,6 +1,7 @@
 using Dapr;
 using Hexalith.EventStore.Client.Registration;
 using Hexalith.EventStore.Client.Subscriptions;
+using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders;
 using Hexalith.Folders.Aggregates.Folder;
@@ -83,7 +84,8 @@ public static partial class FoldersWorkersModule
         // authorization projections must be resolvable even when this registration is used standalone.
         services.AddFoldersLayeredAuthorization();
         services.AddEventStoreReadModelStore();
-        services.AddHttpClient<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
+        services.AddEventStoreGatewayNativeSourceMetadataReader("folders");
+        services.TryAddSingleton<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
         services.RemoveAll<IEffectivePermissionsReadModel>();
         services.TryAddSingleton<EventStoreOrganizationEffectivePermissionsReadModel>();
         services.TryAddSingleton<EventStoreFolderEffectivePermissionsReadModel>();

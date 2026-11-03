@@ -1,0 +1,89 @@
+{
+  "scope": "Read-only diagnosis; no source/build/test/live mutation. Runtime cleanup and no-drift are parent receipts. No acceptance/SM4 claim.",
+  "result": {
+    "total": "1",
+    "passed": "0",
+    "failed": "1",
+    "skipped": "0",
+    "errors": "0",
+    "time": "474.854"
+  },
+  "failure": {
+    "exception": "TaskCanceledException",
+    "site": "FolderDurabilityHttp.SendAsync:88 retry delay -> WaitForPublicStatusAsync:599 -> RequireRealTaskClosureAsync:346 postrestart terminal task read"
+  },
+  "positive_assertion_markers": [
+    "six concerns rebuild/integrity",
+    "SDK interrupted generation",
+    "two concurrent workers",
+    "four host PID replacements"
+  ],
+  "recovery_http": {
+    "unique_executions": 17,
+    "first_utc": "2026-11-03T12:12:53.835Z",
+    "last_utc": "2026-11-03T12:14:03.986Z",
+    "status": 503,
+    "terminal_mechanism": "Repeated real replies retried until unchanged75second helper budget canceled delay; outer90second/task and40second HTTP limits were not the observed expiration.",
+    "problem_code": "Not logged.",
+    "telemetry_category": "projection_unavailable is generic FolderAuditEndpointFilter.Category(503), not the actual ProblemDetails category/code.",
+    "latency_ms": "About3\u201344ms for executing-to-executed endpoint records; first is44ms."
+  },
+  "source_http": {
+    "deduplication": "Exact UTCtimestamp+serialized JSON record; Aspire replays historical records during restart.",
+    "unique_clienthandler_completed": 119,
+    "status_counts": {
+      "200": 119
+    },
+    "latest_completion_utc": "2026-11-03T12:11:51.963Z",
+    "recovery_window": "No NativeSourceMetadata HTTP record observed; this absence alone does not establish no source reader invocation."
+  },
+  "restart_binding": {
+    "folders_ports_http_https": [
+      10406,
+      10407
+    ],
+    "eventstore_ports_http_https": [
+      10410,
+      10411
+    ],
+    "unchanged_from_initial": true,
+    "new_folders_listen_utc": "2026-11-03T12:12:45.340Z",
+    "new_eventstore_listen_utc": "2026-11-03T12:12:54.470Z",
+    "new_folders_catalog_commit_utc": "2026-11-03T12:12:45.784Z",
+    "new_eventstore_catalog_commit_utc": "2026-11-03T12:12:54.908Z",
+    "limit": "Listener equality and new independently observed commit markers do not prove the exact failing read\u2019s catalog binding. No stale physical URL is demonstrated."
+  },
+  "freshness_candidate": {
+    "classification": "Supported source/timing inference; unproven runtime cause.",
+    "unchanged_limits": "Diagnostic tenant read30minutes; nested folder StrictRead requires fresh tenant evidence under5minute MutationFreshnessBudget.",
+    "last_observed_membership_persisted_utc": "2026-11-03T12:07:06.124Z",
+    "first_recovery_read_elapsed_since_persist_ms": 347711,
+    "mechanism": "Strict tenant freshness rejection occurs before folder/native source observation and maps to503. Last successful source metadata call was within5minutes of observed membership persistence.",
+    "missing_proof": "Actual persisted projection LastEventTimestamp, effective options, terminal denial layer/code and any swallowed read exception are not logged. No guard/TTL/deadline correction is justified from this inference."
+  },
+  "independent_warnings": [
+    "delivery_state_unavailable/activation_delivery_pending repeats are not correlated to a task-read trace and do not prove its cause.",
+    "unhosted-sample workload metadata assertion400 and target-outside-catalog refusal are separate startup metadata paths; no relation to task reads established."
+  ],
+  "next_smallest_diagnostic": {
+    "scope": "Opt-in payload-free observation only; requires parent authorization before source edits.",
+    "capture": "TaskStatusQueryHandler completed result code plus FolderAuthorizationDenial terminal layer/outcome/freshness class, or initial TenantAccess result code/freshness/age; bounded known metadata only. Existing catches may report safe exception type. No row/payload/principal/key/header/token logging.",
+    "fixture": "Enable only the selected debug category. Preserve every authentication/authorization/source observation, result, cancellation, retry and deadline.",
+    "purpose": "Distinguish unchanged5minute tenant-freshness refusal from model/state access or later guard failure before choosing a correction."
+  },
+  "source_sha256": {
+    "src/Hexalith.Folders/Authorization/TenantAccessOptions.cs": "39e40ecb2914a1a075c03101a4c12177a98adaff61d6ecde0bfb9c1462ce28e7",
+    "src/Hexalith.Folders/Authorization/TenantAccessAuthorizer.cs": "2cafff0ab164ef5f9025cad7d018965c79649b77e051271dab03729125c49660",
+    "src/Hexalith.Folders/Authorization/LayeredFolderOperationPolicy.cs": "effd5cde18aba908628010daaf569a204000347d993ce4daf1b960a0311e1626",
+    "src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs": "8b3aeb8b0c6411ca3f95a4e0bea2b91b503691930890f5dacf1033192b20f049",
+    "src/Hexalith.Folders/Queries/Folders/TaskStatusQueryHandler.cs": "82af96900287a4f1e2394b31a0b5ca73855f7ccd1f207da65a7aee9991dce009",
+    "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs": "1effa5b126098750d7f1315d9310e5ab6d71b10c5c2154eb7fa60ba138397bfa",
+    "src/Hexalith.Folders.Server/FolderAuditEndpointFilter.cs": "de10a5627cb3d6a0b6efb3e0d510a2608cd46e04bed6fa5d26bf822e08b0c4a4",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityHttp.cs": "83c62a47662ce31cb3544e0a09acf42b841a72c03a82036c17808c4dfac46b22",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90"
+  },
+  "inputs": {
+    "/tmp/story12-2-source-head-20261103-QnMdfZ/strict-source-head-5-private.log": "cf27589612f4c661ab6a7b66631161a060ede97c7ac68195f406282fabc43eb7",
+    "/tmp/story12-2-source-head-20261103-QnMdfZ/strict-source-head-5-private.xml": "76e8fec3a395c9af5df7a28109be1ffd1f1342f6c0e4f9fd1612fc2039b118e4"
+  }
+}

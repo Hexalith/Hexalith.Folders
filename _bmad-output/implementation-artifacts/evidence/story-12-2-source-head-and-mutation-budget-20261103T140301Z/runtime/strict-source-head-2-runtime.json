@@ -1,0 +1,1581 @@
+{
+  "poll_observations": [
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/host/fxr/10.0.14/libhostfxr.so",
+      "sha256": "3e39d88afa3670798842aafb156893cd49fa817f604949addfabffae2925367e"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/Microsoft.Win32.Primitives.dll",
+      "sha256": "4094c154d472d493fc9314ca88817eaa8cc4433affedc6c4183943486942f1b6"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Collections.Concurrent.dll",
+      "sha256": "bf447847582ef31de3a8f4acfbe451720e6e2082f09a3819e60f1a65cfba237b"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Collections.NonGeneric.dll",
+      "sha256": "36780e3e28a7f6deee88c550d57c752b514f40239cfd08c396aaf3180b14b7cc"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Collections.dll",
+      "sha256": "db3059eca80ea3e42a09d7a9ac5ab9769b1897ee671b954aca403e06f6ea1c11"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.ComponentModel.Primitives.dll",
+      "sha256": "6e18f61344cc864286a7e7f96270a19560ffe9af71d5b4e69011c67f0cc29446"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Console.dll",
+      "sha256": "d571f6095154bdb07f851642b59dae2c94b42bd3e6fc6d00074faf92c71a8cfa"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Diagnostics.DiagnosticSource.dll",
+      "sha256": "8ed6e3480e56950bbd3e2d38f87e2e080d5640b8501c5ca5cc5967979baaad8e"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Diagnostics.Process.dll",
+      "sha256": "da867d57969858e40239e6324ed8f5654aef6d7664df4b753ee1d7443ffb7f4a"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Diagnostics.TraceSource.dll",
+      "sha256": "56cb4670dfc4772de78f4ba3f886fa91434185d07a75bdcc285d6326b76f0abf"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Diagnostics.Tracing.dll",
+      "sha256": "eca9cc25477cc2f9dd697dedd32caf03c0c2779c307f4a6311f3e5d0ec993969"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.IO.Pipes.dll",
+      "sha256": "d42fae607824b355e2f7d78760427c76903679866ec4438be12aaa342db3eb2b"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Linq.dll",
+      "sha256": "4879905671860d2038ac2b52f2e81eabd917719a186cc00f7abaca6b1dd8bd0b"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Memory.dll",
+      "sha256": "749db3af71950e1549660bfa81c1e1a8f2858b81b6aedae7789a01b2bc740899"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Net.Http.Json.dll",
+      "sha256": "8aa33e8e5c7dc6b73865e3cd8e3d3586fdd3c1f8dd56413db1d51bfbc44786bc"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Net.Http.dll",
+      "sha256": "d5e6a71649c671b1c5ef3cc0e4a459ba5bd6498725bca9a437e9d7c985f32b1a"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Net.NameResolution.dll",
+      "sha256": "171069eba752613ee109bc8c47ca57b3d79a5427abf544a718bc723fddb8071b"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Net.Primitives.dll",
+      "sha256": "f2e86accafe9de5af0f16f18c974ec669231c973d43792be72ca6e51a3aff7d9"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Net.Security.dll",
+      "sha256": "df23123fd6e49878087e87287f1bf1bf22260aaf01a3683a2c62e333b35c2049"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Net.Sockets.dll",
+      "sha256": "5fe8da6f65d3000b328b13ccbd7ccaa4483354a5b0342f2325bf51a2d4ebc572"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Private.CoreLib.dll",
+      "sha256": "dbe82a7a9a38f468d8dafb7890a3301f904c420718a8a985a302aa182c1268bc"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Private.Uri.dll",
+      "sha256": "937386450b618daab122570e306e457e52a87616bc7ba4a840fdb5e851e24a10"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Private.Xml.Linq.dll",
+      "sha256": "a307edc44e2d0ccf731ee033b789c12e31637adb24f8eb9a459dd7d3c661c0bb"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Private.Xml.dll",
+      "sha256": "f9974a1d5a72542f35be15f18ae55df71572b685580434af35a10f67fae60cee"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Runtime.InteropServices.dll",
+      "sha256": "7498430a42ee968f55e01139c7551a6729df6e462bef6f1dc64b4a8930d66890"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Runtime.Intrinsics.dll",
+      "sha256": "527ba6339b3755295a8ba2a2e370d608e3c14a10ab3e2ca217fe64f33ec99141"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Runtime.Numerics.dll",
+      "sha256": "036ff16ac5b1b8c811f957d8e831aa95cd680944dad479f2dc42f344835d5a5e"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Runtime.dll",
+      "sha256": "839cdd56c557d7845ca950ebdca65d1f159643c400e6a0af9a6d25dd64565602"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Security.Cryptography.dll",
+      "sha256": "db81d873a163907c95fc75d77f7209fa48dbe9effa30f9b7662f5f495b511ef8"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Text.Json.dll",
+      "sha256": "407fed3d662b4a6dbdc27e722ba61014f4be350059115fe9213af8570c884973"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Text.RegularExpressions.dll",
+      "sha256": "2cb4845d0bbfd593524d45ab254768a25d5fee68652729a3ef13586a6663de5e"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Threading.Tasks.Extensions.dll",
+      "sha256": "382356d9b241bf1b231441c8f2c3940d955bf5b9e8ff616c6bd5ade8eb0d6085"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Threading.Thread.dll",
+      "sha256": "dcf489e1a1a0816de5e5c78dad86a1ff47e8c31ceca95707fc0cb108cbc76236"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Threading.ThreadPool.dll",
+      "sha256": "be68d332857e77b50b56ba2411fc4c8b9020ac7254834267b15164936741ea45"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Threading.dll",
+      "sha256": "827ba6462048a629673f889efe2a0ef59982a20a176c3b353bc667f66a871e0f"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Xml.ReaderWriter.dll",
+      "sha256": "65b5f58d6cdd5f2f61ab70ae81e2fc3857a65192e75a319468cd403e73f5331a"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Xml.XDocument.dll",
+      "sha256": "7af9c0dfae3d7c73b0d2fd724d0c84187a2c21242879c2382f64b337aebb8be0"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libSystem.Native.so",
+      "sha256": "b3bdf652033d370679bae4a0aa64611e3a05e0c094bcf32a9042afe51834eb5e"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libSystem.Security.Cryptography.Native.OpenSsl.so",
+      "sha256": "b3d2f2dacb3141cadb814f4065ecbbcb14b8677d3747c6bca429529c0a44cc28"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libclrjit.so",
+      "sha256": "fd4e672a34b28fb38d2b5f43d7c50d8b1892aebca97d41cfaccc1c8be3ee40e9"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libcoreclr.so",
+      "sha256": "843b66a2b33a570537c779283b27f7c1f3ff5394e5a72436bf181c885d4cdfff"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libhostpolicy.so",
+      "sha256": "bf7db236025e002775497199c04c31202445c24126b39b8bf3822680bda4d1b0"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/netstandard.dll",
+      "sha256": "ecc773f1ee8f112d802d6aca2c3767d39f7052536bd01302694a9e279ddd6134"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "ebb79b191040a4d32839d36516d0d8452a559431c4670cf4374f7b13f76a2e91",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+      "pdb_sha256": "8a2117edae2cf5db4b180afb7cb64b6d4c0a077b3cee9f35655d037c9a660e0e"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "b4e636bf1f9b893f2e657a40bfc98c5398c1cbab995aaf8daeb051da1bbed316",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+      "pdb_sha256": "c469440c2ff051fd80c331a7fef258bf60b74334928dae365fd978487a2e8cc1"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "sha256": "9ebd6d0103cf013e518babd74f7e2306687f2aa1757b58ca09d37a18e2d25613",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.pdb",
+      "pdb_sha256": "ae6d8b6917ad476ec3e78121fd017bc364447023b1b6538c76af569eaef8f0e6"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Microsoft.Bcl.AsyncInterfaces.dll",
+      "sha256": "5705d245072d3eb78400547b32147dbb6e2c8b02ba8bda76729798f5efdeaecb"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Microsoft.Testing.Platform.dll",
+      "sha256": "a3319a6bb4bdfb1df2e531765c5a48c2b48de1fe7cf4dcd932c9b82f114107da"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/xunit.v3.common.dll",
+      "sha256": "9cf3cd23eefabd397c0eb86e705a8e620f459715e2b3e0428db07ff68e53bf39"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/xunit.v3.core.dll",
+      "sha256": "ac165a05487a95a1d5c163bb08e81ae15b4f51c7d7fbb23f1c5fd55254b7e056"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/xunit.v3.mtp-v2.dll",
+      "sha256": "734d5b7650cd8e575d675cfdeca99519c51ebf7720552f14981fe83c3afad58b"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/xunit.v3.runner.common.dll",
+      "sha256": "4070293988b67cb44ac29647abb68188b528e1b29ab846f0223cdaff9c12a789"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/xunit.v3.runner.inproc.console.dll",
+      "sha256": "19daaa378a3c0eea354434ca6dc3a38a91cc9b88507ae18b6c1e7ae7bc38a480"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "sha256": "bda779ea9e9ad234f60315477d7cfd0bdde861cd8ddd9df8cdaf62f18c4cec14"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "sha256": "85e64f97e348786a8fb4d9f3d52fec289e2fb86bba20f0731dfe61990525e0f7"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+      "sha256": "5385f0436ac2e284ba8c5fb1488874057c29c04be72dea32add832694f381e28"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+      "sha256": "59d725ca30596a9863f4fa2552a7125f834842abc86b40890231c129358965d2"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "sha256": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/libicudata.so.78.2",
+      "sha256": "3a08c11ef1d168a1edc3b0437cecb8b42e621f67706980a0502c97364bf744a7"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/libicui18n.so.78.2",
+      "sha256": "14b42ecb935cb21758a24a61052e7b4cd410553e4deae37736cd8c748a1511f4"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/libicuuc.so.78.2",
+      "sha256": "1eb54ce8839e953fbaa755522f3488039d879be3a61b272df3cabd6c00f08d2d"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "sha256": "1c488db6f4fe8cecb72456bc018de000b7a9b539c2994864b0416b5e8371b3d8"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+      "sha256": "1327fc40710691dbd94e88b6cf4efce27fefe8fbb93f7d1164a75b4dccaea696"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/librt.so.1",
+      "sha256": "9f3cc59207bcaaac74aaf7aca961f4816f0f4d945e4bd1c3cb98ec516becf161"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+      "sha256": "63b47f444efa588e291e9b650a5ba2ab02f856356f2d50f13a2e477db9119e09"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+      "sha256": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+      "sha256": "27fa6c6cb94fb5b099ead61758a300dbc392d1dbf307fff6c16a9b8e57fdc9de"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+      "sha256": "060eeb79531d435306665fd78329d8a9dd579f95876c5960bb67937825362a80"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Formats.Asn1.dll",
+      "sha256": "2c932f755e240ec337aee1f41fe5287334544914d4b17126b98e6284032c147f"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Text.Encoding.Extensions.dll",
+      "sha256": "d35c939c5092e06c2becb94bb8fa2edaefc6c03996524951cc53ac61e3c3fef7"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Configuration.Abstractions.dll",
+      "sha256": "cf0436bd3fee01dacd00160d92d2c495629346f10f297ea3437a3ca144829c5a"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Configuration.Binder.dll",
+      "sha256": "65e598a9c1e91fb29ecf921440f5f6f2d9c001e53536d02ab7ac9af051d25b82"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Configuration.CommandLine.dll",
+      "sha256": "ca2f81aeada66ff68b42d54d370388611d5c4e6179bae609a98c05ad36b2afee"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Configuration.EnvironmentVariables.dll",
+      "sha256": "f9c4dba2db21a759dba3692b6efdc0355752f3f54e6ba13d2c2adb7fcf6f6749"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Configuration.FileExtensions.dll",
+      "sha256": "f12ad5f13a1bb29ff5e42d3fd39a86d9f4585410febf48bd53de3b5e699f7310"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Configuration.Json.dll",
+      "sha256": "6c67fd6c1444435e48e578f14ecdf32cf2487dd0011222141b644a89edd4f77b"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Configuration.UserSecrets.dll",
+      "sha256": "9fa74e5ab94e6b888a4f5bff49932daae31bc5b11872b8e9f02bfaa7c4ccde1d"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Configuration.dll",
+      "sha256": "42266324999bfa3575d71099927c6ce19a6a7fe290885acfbbaab3a663eacb7d"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+      "sha256": "8bc15b2a240737a54c253711054d140db8995055d0209d98f9148e04daec27f4"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.DependencyInjection.dll",
+      "sha256": "12a361d88bf9c0ef4f4efe388415aa3820bb15c115002be4fd6f219fab527170"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Diagnostics.Abstractions.dll",
+      "sha256": "fbbd4037992374ea49195ba3e4b3ac9433f2446c2354fe17c51f21c46cf95ddb"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.dll",
+      "sha256": "f4b04aaa0ffda4bdd300d849802c427a97b228f9d3be1eb5b0287d770d1f858e"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Diagnostics.HealthChecks.dll",
+      "sha256": "fb7c8af5683e7bf0f4c7cdee44ce3bf44dc481a8142259a96baa52a413010ca3"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Diagnostics.dll",
+      "sha256": "fbdf457ae87687ff5fb078b4314dd0c1ab6124a380f25cd9f03d22474606530f"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.FileProviders.Abstractions.dll",
+      "sha256": "e036c2b0e30c0f0288f0337d26a1df9a52909c159d72de7563c3d90c1e2f673e"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.FileProviders.Physical.dll",
+      "sha256": "42718c8326cdb20b8a00d33390bcf35f12d0ddfb306f4ef5a68e6b455eacda1a"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Hosting.Abstractions.dll",
+      "sha256": "d25e7f15321e91ac998e6cd7651d7b0d2bb9eb50cac690b2ac513ed0129fd751"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Hosting.dll",
+      "sha256": "35f6a25f077d71cb82ac183a656d287afc3b988880a3db3c2c0aeb9d23eb6210"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Http.dll",
+      "sha256": "d375a80e2b8ccca66d3843c030e8eb786f142191e3765da9789ff5c4eef987b2"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Logging.Abstractions.dll",
+      "sha256": "c014eba79da8764b050bee1f1f70db623dd5026e855b5bc7bf463b10913643b2"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Logging.Configuration.dll",
+      "sha256": "bd6e50527e40fbd8d2625d48bc480cb6d26aba6c10fecc05162ccafdd469e451"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Logging.Console.dll",
+      "sha256": "267ae19681760412b8e00d0bbe109fa237ee39b0ce89374d4a903acc07886f5d"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Logging.Debug.dll",
+      "sha256": "e0c9b59df0c8abd961fcb0acbbc7c2523cfccdea7559d21316b2f565fc3d95aa"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Logging.EventSource.dll",
+      "sha256": "0549a30b873976c58023f3865547c0cf4e6a98ac6104f960a4b63b1f97a55d79"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Logging.dll",
+      "sha256": "6035023d1cdc740850ddf9e9f2a53af8516779b8498cf5911f4ab0e6e4a8c078"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Options.ConfigurationExtensions.dll",
+      "sha256": "3bfcf85ed7371f33aa3eae236227ec3357b550fad063b1a87b1548662ab9f017"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Options.dll",
+      "sha256": "d2ffbe5032ca0192ffd87ea5fed0f025282742c2530e7e0424c7bed5f488a3b7"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.Extensions.Primitives.dll",
+      "sha256": "28d09f3a5d34db55b3fe44564ce7a428ee57ce71647b4be77664b78031987229"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Collections.Immutable.dll",
+      "sha256": "94bc31471f4e342353dae017445d640e4087fe81060b01cfc03b9a5a25ed3f90"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.ComponentModel.dll",
+      "sha256": "5f3001f276c9c8f9e8a7f0fc85fac66ffddfe16e1ae1f496bb4e2083527f928a"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.IO.FileSystem.Watcher.dll",
+      "sha256": "fd1dc6cb6f00c280ab53e6e91cc25e69cc1c9eed84360937d139c2d2293c3bde"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.IO.Pipelines.dll",
+      "sha256": "e32a01a18c0226e35d842b00c35542b3d44ae505913127fefd91ce8e2af19de9"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Numerics.Vectors.dll",
+      "sha256": "a576a927d7023594a7bd2f354a5da397717e5a308c33d2a1f955674b3d4be8f9"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Reflection.Emit.ILGeneration.dll",
+      "sha256": "521f634cd65832fb3ce9426c374e6be3132e9caa07429ecd7f7478af9ea7ca6e"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Reflection.Emit.Lightweight.dll",
+      "sha256": "d2d1801fefa184fbfef208c1d54f3f30b2b5784d124a4297cb1fe40c7f8f5ef8"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Reflection.Primitives.dll",
+      "sha256": "3043d26dacf632e5703b9f8f896eab3b56582be85b28811175638b3b3cf9cd18"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Text.Encodings.Web.dll",
+      "sha256": "12237c5ab0c988482e343944c88c88062f03c6a8a52604fc9571d213231eb6d8"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Aspire.Hosting.Keycloak.dll",
+      "sha256": "052c0ea0fc679b9405eec14c9efb52548df2d50b32cd76d7c6696f2f26f9f616"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Aspire.Hosting.Testing.dll",
+      "sha256": "f1bc0b0a854236fd41d1e299bcd9249e7587d0f05679baa0da04017c7324d834"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Aspire.Hosting.dll",
+      "sha256": "7ede5667cdfe3ae9fa91cc71ccd8ba1cbd4a96236c73706ba1562eab6549b06d"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/CommunityToolkit.Aspire.Hosting.Dapr.dll",
+      "sha256": "02894c232208a8a6e77ee092e0b62ec7325419babdfd0356f0d342771a1092d9"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Dapr.Client.dll",
+      "sha256": "701c6ec09bd7fa54690b1aca6bfbe3b5ece2c8376699145a1fb0e7be610ea981"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Google.Protobuf.dll",
+      "sha256": "8997a69619b59db587a45e75a03c164a44afb613f82db138d35e1636e4cbdc73"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+      "sha256": "972ff0fa94525b234df0c3a35000a3de269a0ec12133b6ab17c69b0b537cd66c",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.pdb",
+      "pdb_sha256": "7b8177eaa3e6f41d027e3aa0632c9e75a24c1ec004f77d4e9be267c7e0b09652"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.dll",
+      "sha256": "4a2114dba67cdeaaea390776490dac2b6f80a6ba30e20d5abbe7610a0fd3d032",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.pdb",
+      "pdb_sha256": "1ca08c2a675dbfb65f8a840311d58ca0c330d1b9ae230cda400b74ac9e53e495"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll",
+      "sha256": "656b308ed59de8a844315ac4ce4f64f2b10570df532d5c8e992b3508557f9fce",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Aspire.pdb",
+      "pdb_sha256": "2353d255ba0df28df7cc4f322c04f3bfe096a6277b2323e5ef827921f3261a3b"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Memories.Aspire.dll",
+      "sha256": "d383f42cef4348bc97a3166d476a3b92f3050d8c775f1c325ffc0b7a380669d7",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Memories.Aspire.pdb",
+      "pdb_sha256": "7dc191f0c4b441e4c46ffca3d55584c9bad89b80b5f75358db556cab1a8bbd86"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Aspire.dll",
+      "sha256": "f7f8ca64d87223bf172fd23ab62debc901400d134d3ac9224f393e427b62306f",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Aspire.pdb",
+      "pdb_sha256": "e90b493ec8d9630b87e30f9d392b6533763f692ff51b16f5f541c8fd49ecf0a8"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/KubernetesClient.dll",
+      "sha256": "1fdb3ddc3db829a3f4015afc328a00d3747fb228c7866df6f765be4cedb800ce"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/OpenTelemetry.Api.ProviderBuilderExtensions.dll",
+      "sha256": "dfaab1ecfb87773ccef2737aafbf1eb22a9f074c44e9fdd31947702da59234bc"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/OpenTelemetry.Api.dll",
+      "sha256": "bd75bbab25a4bf769727ec6c17457d4bf189a8c2c70034e5c212ae345132591d"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/OpenTelemetry.Extensions.Hosting.dll",
+      "sha256": "442d9c18f5cc9ffa65e3f486874f01b375866854b0ad08e40e6367139eb9b35a"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/OpenTelemetry.dll",
+      "sha256": "63fb9724258d4a1ac76c7ddffc2e0b18ee5125a1c8ff4b242a570a3410c97fc6"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.AspNetCore.Http.dll",
+      "sha256": "a0b29cb1f19c8f719a31dfa7c4d559d0b07a2d1e990ab34dd3bcc90a1f4b5718"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App/10.0.14/Microsoft.AspNetCore.Mvc.Core.dll",
+      "sha256": "a0bd7fabc23de2119a8494db0b67673fab95a06743b58bd7221d235fed56931c"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.ComponentModel.Annotations.dll",
+      "sha256": "0b4d81f288a151edae1f4a324d57def3bc5c71bad394869ed104daaf4fc7c025"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.ComponentModel.TypeConverter.dll",
+      "sha256": "dd65cca51ead8cb9280f3af48f4d473b7504aeeb3eb796b9d0e232f3674711d7"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.IO.MemoryMappedFiles.dll",
+      "sha256": "a38f7a3fcd5b094b08e80e94189c07905242fa77350f054460a435cda6bc1274"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.ObjectModel.dll",
+      "sha256": "0b5d4f6de23044d01bfc5e54c1ab330cd379da2a8aa5465cc308a9b795262eb9"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Runtime.Serialization.Primitives.dll",
+      "sha256": "b238c221d4548acbfd2e6bcf7d332c1c41190f3ad82ccdafe76a37c1dca77f4f"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Threading.Channels.dll",
+      "sha256": "0c1f2cd447d31f005287ea17078c91917d641f813aae7b31a19b2d882f5453a2"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "eedff1d76afa81f820982bffdaebf779fd0d45e798be75a305d87f263f175077",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+      "pdb_sha256": "662112aca3e654427990c4d6a93a38b4a6cdf1e87a4fe8e83ab6e542633b5d39"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.dll",
+      "sha256": "ac4abdcdddb54687633d06a284bf4c9c02e1391630ff5dd59e932294e74759da",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.pdb",
+      "pdb_sha256": "3242a2143261a5ca26593e3cd13580f475fadf95ef44c5e534b36b1c2dce0496"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll",
+      "sha256": "b43ad16a5fe35cee650350f46f34f270ec6d217327773756dd32aa349db4165e",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.pdb",
+      "pdb_sha256": "e28445cc386293f2b37b0442361e78cc8e6cdd5b89899d374a040f6a27cbab73"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "sha256": "3c4c6310d87abf2c43cafabafc1750503a8282969fd5303f6d55930af67e1034",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+      "pdb_sha256": "c93c88397c0a640582aeeaac6470c44849b5b2c4465ef6fe43688c248ca0510a"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Builds.Tooling.dll",
+      "sha256": "453e5dbae8946e75ecc2c71338337fa920b882947b05bd6ffa76e655357a4e07",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Builds.Tooling.pdb",
+      "pdb_sha256": "d835344b5dbcb97c93d1c00eebbd16eee7b14cbc33c0db47e0e81f81d35e45cf"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "34b4adc0e1a159f9ad7f94f546121a5c5c6f39ec2e5c2476943e3b0625fbd928",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+      "pdb_sha256": "c053cf1d07fe0d0e04e9daa21e4e946a01d5868ffa9ee08dea66b2133213e773"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "ff2fe71f2df476ed394c16545fb1d64d4dac696c8b678ed94c8162f43776067e",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+      "pdb_sha256": "68c73a90f714750ced792ab61ba98558fcac41e4c0a3e82d89d3e3f9cf2426bd"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+      "sha256": "927fb00d97be29ba6ae5241cbd50725cbc0e9b3e39397871f966a918b1e80339",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+      "pdb_sha256": "62c74a9983c7b87f4e0eda9f6d76d8a87a71123040f64fc2f2816afa9137966a"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "39d3a3a09ee0c5eb8b0c13e5895499d8953556bec61b5468124966eb734fb930",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.pdb",
+      "pdb_sha256": "5af5e5e255aa603838789439288ca0539fabf47c32077295de871a847e347778"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+      "sha256": "cf24ea868a92f8ed35dfe62ad4ebf25be0b6136582c22a907f6dc89ccf99d4f0",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+      "pdb_sha256": "faa52388361e97f8e1266a270983a42533bf10f192fe0110dcbc0f25b533bceb"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Microsoft.VisualStudio.Threading.dll",
+      "sha256": "138e3548e487152de355b81303ae98e1bb52a31fe5c9107fa81a15f66404f426"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Microsoft.VisualStudio.Validation.dll",
+      "sha256": "59cd5e953cce597847e515a73a1c0975cd5a6b94921a7b91e81045fa9922f57c"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/NuGet.Versioning.dll",
+      "sha256": "fc2f75a7a5f3be9b4c3dcfc21644b871bb5a41ada8615c92d778713d2a310670"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Polly.Core.dll",
+      "sha256": "f7f50017ca9f457b854498358ae595c2a8ab69c1fd8b915139d22bed8f7e4f2a"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Semver.dll",
+      "sha256": "a99edcb96efce3d6ff019c667e132d81d879f5a92bc9337591e0b7309d7f493f"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/StreamJsonRpc.dll",
+      "sha256": "ddc6a4d60e6cc940aae31faafc1fdcdbe520dfa51bec8dfc7f505449291536d5"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/System.IO.Hashing.dll",
+      "sha256": "550d10bb0ba785057915fb0ecbc6a3e8802fdee2e2ac22d80966691ccb11e2ff"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/YamlDotNet.dll",
+      "sha256": "d618138109a40e4a7250e49e2abad8c450e3636bee18d7499ab231e37fa9150a"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Diagnostics.StackTrace.dll",
+      "sha256": "b973bc54ccfd472c5963a226e379d1dd3634ad7bbf427564d716ea7c506ce50c"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Net.WebSockets.dll",
+      "sha256": "6f955fc822262a2b4d79d04d099040601127d60db905b85fe7774cc19bc2ce86"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Reflection.Metadata.dll",
+      "sha256": "fae943c73b59e382d5495d2c57a31891da73103486d5bead7cbd8bce68ad9611"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Fractions.dll",
+      "sha256": "e8407a878af8aec1f485f50a9f356c439371610fff20756d4f2284ac6c995cbf"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Net.Quic.dll",
+      "sha256": "8b8a4ef87e1b403541db1caed92dee7d8380f7e5c7d5e7a9c63a43178e869233"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.IO.Compression.dll",
+      "sha256": "01429c550746ab2625c1a24bf295e5107ce9b3d96dc2c4e7c0fc2fb13fb4681e"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libSystem.IO.Compression.Native.so",
+      "sha256": "93400ac2d71aff81344287eb8133e2680c64550d663bd3d6fca564b242ca3f5c"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Dapr.Common.dll",
+      "sha256": "a17129663d6fa08f2d8117343fc6a859a86fc3c60743215633813ebdb0d2bf6f"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Dapr.Protos.dll",
+      "sha256": "bf96cf02107221910bb6760b29fdcc9131604a260cb79b7c1487240367dba0a0"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Grpc.Core.Api.dll",
+      "sha256": "d9b5751a0988cdcf209f669b166e20b76b6ea3af1bc6601e03f3349e97059385"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Grpc.Net.Client.dll",
+      "sha256": "a2bdafc8d6a7baa8b8f6c0b39d8a7f859ad84af14380ccae118c2f5316602212"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Grpc.Net.Common.dll",
+      "sha256": "b2354e7717e4d1b5b23a80d1eaf65ecc128f1b458bf052a7b83334dcbe3f6206"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Grpc.Reflection.dll",
+      "sha256": "87795d17c1385e7c05469c447ad8eecc883c3c71b4804319c5918a5a490c8d57"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Security.Claims.dll",
+      "sha256": "17007563d30265048dcc0743004f6d6402d0dc1aca6afd399a38979014cf2e86"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Microsoft.IdentityModel.JsonWebTokens.dll",
+      "sha256": "b48515aeaa4a8fadc5fcacb45978c808a4d5bbffaf74f8894cc57c0769a9fb9e"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Microsoft.IdentityModel.Logging.dll",
+      "sha256": "90b6fa70f28a3b7711fe95aa30a0c5551f1e6aa28565187aa7b3681194215c84"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Microsoft.IdentityModel.Tokens.dll",
+      "sha256": "84409b8c3a52313fe4f4f621fce39544f42074109e870ac2631e627c8b70210f"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/ByteAether.Ulid.dll",
+      "sha256": "fc4f3d99e88023ffbd37eea2941ddd81f604611fc967fedb116a4daaf9ae4590"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "77d188cf5e257b2012b3cd5926556faf42294052045143626b10ad61da7c2381",
+      "pdb_path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+      "pdb_sha256": "287e0ab43066bf655775743489005273399b93eb10ebaf061e7c26f86637371d"
+    },
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+      "sha256": "cf37440c96bd178f2676867b77fa651df001b56b2f42be99b08e5226b3ab4918"
+    }
+  ],
+  "fixture_bindings": [
+    {
+      "runDirectory": "/tmp/hexalith-dapr/de3c70d95d574fd1b00eb4034deaf305",
+      "certificateDirectory": "/tmp/hexalith-dapr/de3c70d95d574fd1b00eb4034deaf305/dapr-credentials-60A31F3C49E3A5A83D00890B85618F60"
+    },
+    {
+      "resource": "folders",
+      "launcherProcessId": 4060601,
+      "processId": 4061203,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "77D188CF5E257B2012B3CD5926556FAF42294052045143626B10AD61DA7C2381",
+      "mvid": "83e4a855-ff16-458b-875e-862c78ea45d7",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+      "pdbSha256": "287E0AB43066BF655775743489005273399B93EB10EBAF061E7C26F86637371D"
+    },
+    {
+      "resource": "folders",
+      "launcherProcessId": 4060601,
+      "processId": 4061203,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "EBB79B191040A4D32839D36516D0D8452A559431C4670CF4374F7B13F76A2E91",
+      "mvid": "4c51de28-75c9-4b75-96e1-244df3646b09",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+      "pdbSha256": "8A2117EDAE2CF5DB4B180AFB7CB64B6D4C0A077B3CEE9F35655D037C9A660E0E"
+    },
+    {
+      "resource": "folders",
+      "launcherProcessId": 4060601,
+      "processId": 4061203,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "B4E636BF1F9B893F2E657A40BFC98C5398C1CBAB995AAF8DAEB051DA1BBED316",
+      "mvid": "27ff2254-c53f-47b9-9e7c-8c7dfe9cdc7d",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+      "pdbSha256": "C469440C2FF051FD80C331A7FEF258BF60B74334928DAE365FD978487A2E8CC1"
+    },
+    {
+      "resource": "folders",
+      "launcherProcessId": 4060601,
+      "processId": 4061203,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "34B4ADC0E1A159F9AD7F94F546121A5C5C6F39EC2E5C2476943E3B0625FBD928",
+      "mvid": "d5dd2a2f-9eb8-4420-b95b-2c088aced30b",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+      "pdbSha256": "C053CF1D07FE0D0E04E9DAA21E4E946A01D5868FFA9EE08DEA66B2133213E773"
+    },
+    {
+      "resource": "folders",
+      "launcherProcessId": 4060601,
+      "processId": 4061203,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "FF2FE71F2DF476ED394C16545FB1D64D4DAC696C8B678ED94C8162F43776067E",
+      "mvid": "429b0610-c8bd-4ca9-b86a-09368c9b4d1a",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+      "pdbSha256": "68C73A90F714750CED792AB61BA98558FCAC41E4C0A3E82D89D3E3F9CF2426BD"
+    },
+    {
+      "resource": "folders",
+      "launcherProcessId": 4060601,
+      "processId": 4061203,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+      "sha256": "927FB00D97BE29BA6AE5241CBD50725CBC0E9B3E39397871F966A918B1E80339",
+      "mvid": "fb9f5797-f46f-4d72-b36f-cddbee538719",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+      "pdbSha256": "62C74A9983C7B87F4E0EDA9F6D76D8A87A71123040F64FC2F2816AFA9137966A"
+    },
+    {
+      "resource": "folders",
+      "launcherProcessId": 4060601,
+      "processId": 4061203,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "sha256": "3C4C6310D87ABF2C43CAFABAFC1750503A8282969FD5303F6D55930AF67E1034",
+      "mvid": "4df0fb49-5117-422a-9196-3784f6c9b781",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+      "pdbSha256": "C93C88397C0A640582AEEAAC6470C44849B5B2C4465EF6FE43688C248CA0510A"
+    },
+    {
+      "resource": "folders",
+      "launcherProcessId": 4060601,
+      "processId": 4061203,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "B21F9C502785D4E076F30BC6D6ECAB2049B54200DFC12D342F0E4D597CF13D2C",
+      "mvid": "4cfce8d9-5979-4fea-a899-6b8fd9390fa4",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+      "pdbSha256": "5B72D71D9B54C65C40AE840B397F444E9E1CFA54692DF6A2F7F587D500020390"
+    },
+    {
+      "resource": "folders",
+      "launcherProcessId": 4060601,
+      "processId": 4061203,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "39D3A3A09EE0C5EB8B0C13E5895499D8953556BEC61B5468124966EB734FB930",
+      "mvid": "c44d6e9d-6f87-4f18-882b-a9f58ad90959",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.pdb",
+      "pdbSha256": "5AF5E5E255AA603838789439288CA0539FABF47C32077295DE871A847E347778"
+    },
+    {
+      "resource": "folders",
+      "launcherProcessId": 4060601,
+      "processId": 4061203,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll",
+      "sha256": "F1E86685563EE5D78446335FD09E7FC91CBADA211153CBFE098D2BC445D8CD73",
+      "mvid": "01c548f8-99ea-4223-a740-ff8983597c49",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.pdb",
+      "pdbSha256": "D2416275F294F2108EB31BE4808D4D1ABCBA4C9741D8AA432B56215C502E9D0B"
+    },
+    {
+      "resource": "folders",
+      "launcherProcessId": 4060601,
+      "processId": 4061203,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll",
+      "sha256": "5FEEB68A72796339FAE27B319D096AD8FB8489011FBE79C34C1950ED9E142185",
+      "mvid": "98cb58bf-4445-41a3-8522-d39354dcd04f",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Contracts.pdb",
+      "pdbSha256": "CDD1269502D427F0A4209B36230830E1119CF3C3E2509C25CD99A68892B4F85D"
+    },
+    {
+      "resource": "folders",
+      "launcherProcessId": 4060601,
+      "processId": 4061203,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "ABD5E69F88353D9E4182B9D6C53C76EEFA7D2324A88481E32BB84A42D2271E9A",
+      "mvid": "61aba7f5-9d19-4282-b053-cf047562ddf7",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+      "pdbSha256": "2E47F21A5C7BF502C0F49DCE842486F168B0001F06C95A1BA9149330B6444351"
+    },
+    {
+      "resource": "folders",
+      "launcherProcessId": 4060601,
+      "processId": 4061203,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "EEDFF1D76AFA81F820982BFFDAEBF779FD0D45E798BE75A305D87F263F175077",
+      "mvid": "a40cab04-d169-48ea-ba81-7eb5bb4c927a",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+      "pdbSha256": "662112ACA3E654427990C4D6A93A38B4A6CDF1E87A4FE8E83AB6E542633B5D39"
+    },
+    {
+      "resource": "folders-workers",
+      "launcherProcessId": 4060635,
+      "processId": 4061270,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "EBB79B191040A4D32839D36516D0D8452A559431C4670CF4374F7B13F76A2E91",
+      "mvid": "4c51de28-75c9-4b75-96e1-244df3646b09",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+      "pdbSha256": "8A2117EDAE2CF5DB4B180AFB7CB64B6D4C0A077B3CEE9F35655D037C9A660E0E"
+    },
+    {
+      "resource": "folders-workers",
+      "launcherProcessId": 4060635,
+      "processId": 4061270,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "B4E636BF1F9B893F2E657A40BFC98C5398C1CBAB995AAF8DAEB051DA1BBED316",
+      "mvid": "27ff2254-c53f-47b9-9e7c-8c7dfe9cdc7d",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+      "pdbSha256": "C469440C2FF051FD80C331A7FEF258BF60B74334928DAE365FD978487A2E8CC1"
+    },
+    {
+      "resource": "folders-workers",
+      "launcherProcessId": 4060635,
+      "processId": 4061270,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "34B4ADC0E1A159F9AD7F94F546121A5C5C6F39EC2E5C2476943E3B0625FBD928",
+      "mvid": "d5dd2a2f-9eb8-4420-b95b-2c088aced30b",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+      "pdbSha256": "C053CF1D07FE0D0E04E9DAA21E4E946A01D5868FFA9EE08DEA66B2133213E773"
+    },
+    {
+      "resource": "folders-workers",
+      "launcherProcessId": 4060635,
+      "processId": 4061270,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "FF2FE71F2DF476ED394C16545FB1D64D4DAC696C8B678ED94C8162F43776067E",
+      "mvid": "429b0610-c8bd-4ca9-b86a-09368c9b4d1a",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+      "pdbSha256": "68C73A90F714750CED792AB61BA98558FCAC41E4C0A3E82D89D3E3F9CF2426BD"
+    },
+    {
+      "resource": "folders-workers",
+      "launcherProcessId": 4060635,
+      "processId": 4061270,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "B21F9C502785D4E076F30BC6D6ECAB2049B54200DFC12D342F0E4D597CF13D2C",
+      "mvid": "4cfce8d9-5979-4fea-a899-6b8fd9390fa4",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+      "pdbSha256": "5B72D71D9B54C65C40AE840B397F444E9E1CFA54692DF6A2F7F587D500020390"
+    },
+    {
+      "resource": "folders-workers",
+      "launcherProcessId": 4060635,
+      "processId": 4061270,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "4C52F20319B7444E38BD91E81F4C54AA8E4B8F64EA125C2AF59D424A15D68A31",
+      "mvid": "57641c27-2ea7-49bd-948c-4bf293d19f79",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.pdb",
+      "pdbSha256": "848EF3A9E0E0892812696221B2C73C4F70DCD31EFCC53CE312A72CD2D72B50D6"
+    },
+    {
+      "resource": "folders-workers",
+      "launcherProcessId": 4060635,
+      "processId": 4061270,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "39D3A3A09EE0C5EB8B0C13E5895499D8953556BEC61B5468124966EB734FB930",
+      "mvid": "c44d6e9d-6f87-4f18-882b-a9f58ad90959",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.pdb",
+      "pdbSha256": "5AF5E5E255AA603838789439288CA0539FABF47C32077295DE871A847E347778"
+    },
+    {
+      "resource": "folders-workers",
+      "launcherProcessId": 4060635,
+      "processId": 4061270,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "ABD5E69F88353D9E4182B9D6C53C76EEFA7D2324A88481E32BB84A42D2271E9A",
+      "mvid": "61aba7f5-9d19-4282-b053-cf047562ddf7",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+      "pdbSha256": "2E47F21A5C7BF502C0F49DCE842486F168B0001F06C95A1BA9149330B6444351"
+    },
+    {
+      "resource": "folders-workers",
+      "launcherProcessId": 4060635,
+      "processId": 4061270,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "EEDFF1D76AFA81F820982BFFDAEBF779FD0D45E798BE75A305D87F263F175077",
+      "mvid": "a40cab04-d169-48ea-ba81-7eb5bb4c927a",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+      "pdbSha256": "662112ACA3E654427990C4D6A93A38B4A6CDF1E87A4FE8E83AB6E542633B5D39"
+    },
+    {
+      "resource": "folders-workers-replica",
+      "launcherProcessId": 4050075,
+      "processId": 4050991,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "EBB79B191040A4D32839D36516D0D8452A559431C4670CF4374F7B13F76A2E91",
+      "mvid": "4c51de28-75c9-4b75-96e1-244df3646b09",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+      "pdbSha256": "8A2117EDAE2CF5DB4B180AFB7CB64B6D4C0A077B3CEE9F35655D037C9A660E0E"
+    },
+    {
+      "resource": "folders-workers-replica",
+      "launcherProcessId": 4050075,
+      "processId": 4050991,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "B4E636BF1F9B893F2E657A40BFC98C5398C1CBAB995AAF8DAEB051DA1BBED316",
+      "mvid": "27ff2254-c53f-47b9-9e7c-8c7dfe9cdc7d",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+      "pdbSha256": "C469440C2FF051FD80C331A7FEF258BF60B74334928DAE365FD978487A2E8CC1"
+    },
+    {
+      "resource": "folders-workers-replica",
+      "launcherProcessId": 4050075,
+      "processId": 4050991,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "34B4ADC0E1A159F9AD7F94F546121A5C5C6F39EC2E5C2476943E3B0625FBD928",
+      "mvid": "d5dd2a2f-9eb8-4420-b95b-2c088aced30b",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+      "pdbSha256": "C053CF1D07FE0D0E04E9DAA21E4E946A01D5868FFA9EE08DEA66B2133213E773"
+    },
+    {
+      "resource": "folders-workers-replica",
+      "launcherProcessId": 4050075,
+      "processId": 4050991,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "FF2FE71F2DF476ED394C16545FB1D64D4DAC696C8B678ED94C8162F43776067E",
+      "mvid": "429b0610-c8bd-4ca9-b86a-09368c9b4d1a",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+      "pdbSha256": "68C73A90F714750CED792AB61BA98558FCAC41E4C0A3E82D89D3E3F9CF2426BD"
+    },
+    {
+      "resource": "folders-workers-replica",
+      "launcherProcessId": 4050075,
+      "processId": 4050991,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "sha256": "B21F9C502785D4E076F30BC6D6ECAB2049B54200DFC12D342F0E4D597CF13D2C",
+      "mvid": "4cfce8d9-5979-4fea-a899-6b8fd9390fa4",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.pdb",
+      "pdbSha256": "5B72D71D9B54C65C40AE840B397F444E9E1CFA54692DF6A2F7F587D500020390"
+    },
+    {
+      "resource": "folders-workers-replica",
+      "launcherProcessId": 4050075,
+      "processId": 4050991,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "sha256": "4C52F20319B7444E38BD91E81F4C54AA8E4B8F64EA125C2AF59D424A15D68A31",
+      "mvid": "57641c27-2ea7-49bd-948c-4bf293d19f79",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.pdb",
+      "pdbSha256": "848EF3A9E0E0892812696221B2C73C4F70DCD31EFCC53CE312A72CD2D72B50D6"
+    },
+    {
+      "resource": "folders-workers-replica",
+      "launcherProcessId": 4050075,
+      "processId": 4050991,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "39D3A3A09EE0C5EB8B0C13E5895499D8953556BEC61B5468124966EB734FB930",
+      "mvid": "c44d6e9d-6f87-4f18-882b-a9f58ad90959",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.pdb",
+      "pdbSha256": "5AF5E5E255AA603838789439288CA0539FABF47C32077295DE871A847E347778"
+    },
+    {
+      "resource": "folders-workers-replica",
+      "launcherProcessId": 4050075,
+      "processId": 4050991,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+      "sha256": "ABD5E69F88353D9E4182B9D6C53C76EEFA7D2324A88481E32BB84A42D2271E9A",
+      "mvid": "61aba7f5-9d19-4282-b053-cf047562ddf7",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.pdb",
+      "pdbSha256": "2E47F21A5C7BF502C0F49DCE842486F168B0001F06C95A1BA9149330B6444351"
+    },
+    {
+      "resource": "folders-workers-replica",
+      "launcherProcessId": 4050075,
+      "processId": 4050991,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "EEDFF1D76AFA81F820982BFFDAEBF779FD0D45E798BE75A305D87F263F175077",
+      "mvid": "a40cab04-d169-48ea-ba81-7eb5bb4c927a",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+      "pdbSha256": "662112ACA3E654427990C4D6A93A38B4A6CDF1E87A4FE8E83AB6E542633B5D39"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+      "sha256": "EEDFF1D76AFA81F820982BFFDAEBF779FD0D45E798BE75A305D87F263F175077",
+      "mvid": "a40cab04-d169-48ea-ba81-7eb5bb4c927a",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+      "pdbSha256": "662112ACA3E654427990C4D6A93A38B4A6CDF1E87A4FE8E83AB6E542633B5D39"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.dll",
+      "sha256": "AC4ABDCDDDB54687633D06A284BF4C9C02E1391630FF5DD59E932294E74759DA",
+      "mvid": "8e18ffc0-0ea7-423a-912e-beb4921ffe77",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.pdb",
+      "pdbSha256": "3242A2143261A5CA26593E3CD13580F475FADF95EF44C5E534B36B1C2DCE0496"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+      "sha256": "77D188CF5E257B2012B3CD5926556FAF42294052045143626B10AD61DA7C2381",
+      "mvid": "83e4a855-ff16-458b-875e-862c78ea45d7",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+      "pdbSha256": "287E0AB43066BF655775743489005273399B93EB10EBAF061E7C26F86637371D"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+      "sha256": "7E0644CFBC68235C6ECF6E3DC1F75FDD228A0B3E4164F3BAC697EE606C47A573",
+      "mvid": "ee47ae75-00d7-4122-882f-6a651d5d372b",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.pdb",
+      "pdbSha256": "DB30D13D4EDB85E9D57313DCE52F5249A4272D22C5439EDD8E8E225CBDEE72F3"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "sha256": "EBB79B191040A4D32839D36516D0D8452A559431C4670CF4374F7B13F76A2E91",
+      "mvid": "4c51de28-75c9-4b75-96e1-244df3646b09",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+      "pdbSha256": "8A2117EDAE2CF5DB4B180AFB7CB64B6D4C0A077B3CEE9F35655D037C9A660E0E"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "sha256": "B4E636BF1F9B893F2E657A40BFC98C5398C1CBAB995AAF8DAEB051DA1BBED316",
+      "mvid": "27ff2254-c53f-47b9-9e7c-8c7dfe9cdc7d",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+      "pdbSha256": "C469440C2FF051FD80C331A7FEF258BF60B74334928DAE365FD978487A2E8CC1"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "sha256": "34B4ADC0E1A159F9AD7F94F546121A5C5C6F39EC2E5C2476943E3B0625FBD928",
+      "mvid": "d5dd2a2f-9eb8-4420-b95b-2c088aced30b",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+      "pdbSha256": "C053CF1D07FE0D0E04E9DAA21E4E946A01D5868FFA9EE08DEA66B2133213E773"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+      "sha256": "2D45D93B39DDD203797F40D660F7DB3414FEFBB63D4151A140DBBB60B6CA4637",
+      "mvid": "2e0d3e6a-cbd3-45ea-bb30-9d09f0c20cc4",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb",
+      "pdbSha256": "620A403B8D5F919BB9847F0CD54AFE47D5ADF75CF28290FDE1F1B8E28053B93F"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "sha256": "B96A89BB41B71BB937E1399229AB7222824A13A6DE303FF64DD0DE005122CC4E",
+      "mvid": "4aa17adf-59bc-4431-8fd5-e0138d0bb589",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+      "pdbSha256": "BA0D5DA0A37EE069B6633B64E8B014B82382BE6746BF4E823B318B57D9A745C5"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "sha256": "FF2FE71F2DF476ED394C16545FB1D64D4DAC696C8B678ED94C8162F43776067E",
+      "mvid": "429b0610-c8bd-4ca9-b86a-09368c9b4d1a",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+      "pdbSha256": "68C73A90F714750CED792AB61BA98558FCAC41E4C0A3E82D89D3E3F9CF2426BD"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+      "sha256": "927FB00D97BE29BA6AE5241CBD50725CBC0E9B3E39397871F966A918B1E80339",
+      "mvid": "fb9f5797-f46f-4d72-b36f-cddbee538719",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.Contracts.pdb",
+      "pdbSha256": "62C74A9983C7B87F4E0EDA9F6D76D8A87A71123040F64FC2F2816AFA9137966A"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll",
+      "sha256": "B43AD16A5FE35CEE650350F46F34F270EC6D217327773756DD32AA349DB4165E",
+      "mvid": "533b160e-9ded-4e1c-9e67-985666ac3082",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.pdb",
+      "pdbSha256": "E28445CC386293F2B37B0442361E78CC8E6CDD5B89899D374A040F6A27CBAB73"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "sha256": "39D3A3A09EE0C5EB8B0C13E5895499D8953556BEC61B5468124966EB734FB930",
+      "mvid": "c44d6e9d-6f87-4f18-882b-a9f58ad90959",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.pdb",
+      "pdbSha256": "5AF5E5E255AA603838789439288CA0539FABF47C32077295DE871A847E347778"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "sha256": "3C4C6310D87ABF2C43CAFABAFC1750503A8282969FD5303F6D55930AF67E1034",
+      "mvid": "4df0fb49-5117-422a-9196-3784f6c9b781",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.pdb",
+      "pdbSha256": "C93C88397C0A640582AEEAAC6470C44849B5B2C4465EF6FE43688C248CA0510A"
+    },
+    {
+      "resource": "eventstore",
+      "launcherProcessId": 4060452,
+      "processId": 4061158,
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+      "sha256": "CF24EA868A92F8ED35DFE62AD4EBF25BE0B6136582C22A907F6DC89CCF99D4F0",
+      "mvid": "70260e3a-ad50-485b-b2a4-c7d982f529f3",
+      "pdbPath": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+      "pdbSha256": "FAA52388361E97F8E1266A270983A42533BF10F192FE0110DCBC0F25B533BCEB"
+    }
+  ],
+  "executables": [
+    {
+      "pid": 4043710,
+      "start_id": "8459931",
+      "path": "/home/administrator/.dotnet/dotnet",
+      "sha256": "634efbf2414144d140d6f59d167342c8b3b53b4c34346ed786dd0470ddc9a3cb"
+    }
+  ],
+  "containers": [
+    {
+      "ID": "5b8960292322af089f2f266d52c928cd37ebbe9833f200d8731f99670584ded4",
+      "Names": "folders-durability-462d101f0115f869",
+      "Image": "redis:7-alpine",
+      "Status": "Up 1 second",
+      "image_id": "sha256:8da19c7399dca900c6822a1cf30f9d2285585e2c4b457ff4095b0f4500054d3f"
+    },
+    {
+      "ID": "3d628a83f28077edc2b1d03f6c70d8d86ce08fbbe46d8665e550b67a994e6353",
+      "Names": "dapr-sentry-jddknfbu",
+      "Image": "daprio/sentry:1.18.7",
+      "Status": "Up 1 second",
+      "image_id": "sha256:4aacb3ca515ee6208dbafb2b44ebd9d9cdf216e390aa459543787624058c0d80"
+    },
+    {
+      "ID": "60fc8362f1f9a68a88fa56f8387e0f9acc8822768f405c21be76c3a10ba33919",
+      "Names": "security-tnxudghg",
+      "Image": "quay.io/keycloak/keycloak:26.6",
+      "Status": "Up 1 second",
+      "image_id": "sha256:0aae0de7fca85525f727d3354df17896092de8bb26ae4c12d89c77e5df8cbce4"
+    },
+    {
+      "ID": "8481b471a61e5ae2fe7e0903d5ddfd13fdbce03e940c564651924f393d2201ea",
+      "Names": "memories-graphs-hdxjztsn",
+      "Image": "falkordb/falkordb@sha256:4b7c79901ad409a39655f049b772adbc499b92ee2e01db80c3502572444df84d",
+      "Status": "Up 1 second",
+      "image_id": "sha256:4b7c79901ad409a39655f049b772adbc499b92ee2e01db80c3502572444df84d"
+    },
+    {
+      "ID": "a38a1f9bef633f94b50f694e1fec66c0b6b97a1b6d18f97792838ccf3be039d3",
+      "Names": "memories-vectors-pxftjjjz",
+      "Image": "redis/redis-stack:latest",
+      "Status": "Up 1 second",
+      "image_id": "sha256:5d5154123426693540ea6c1d9e638eae2bf2024879c839db6fcfdd7717e817c7"
+    },
+    {
+      "ID": "748a7b74985e139baa846f51455ca87723a1d595640b4340e0dc06189480aeca",
+      "Names": "dapr-scheduler-mtls-egwqznvb",
+      "Image": "daprio/dapr:1.18.7",
+      "Status": "Up 1 second",
+      "image_id": "sha256:0ac4fadf0016be85065cdebab952a8350e468cf9283d26777b0307a14a10aecc"
+    },
+    {
+      "ID": "8221852140e65d45d276764ed4dab6f8358b50e7a2a77dd301e141aa8f32a6b4",
+      "Names": "dapr-placement-mtls-cqemntxu",
+      "Image": "daprio/dapr:1.18.7",
+      "Status": "Up 1 second",
+      "image_id": "sha256:0ac4fadf0016be85065cdebab952a8350e468cf9283d26777b0307a14a10aecc"
+    }
+  ]
+}

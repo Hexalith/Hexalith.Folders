@@ -1,0 +1,61 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+    "-showLiveOutput",
+    "-result-xml",
+    "/tmp/story12-2-resume-20261102-1EZDgA/strict-operational-3-private.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-02T20:41:31.548902+00:00",
+  "utc_end": "2026-11-02T20:42:16.552502+00:00",
+  "exit_code": 1,
+  "environment_selection": {
+    "Folders__EventStoreDaprHttpPort": 36013,
+    "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true"
+  },
+  "private_log": {
+    "path": "/tmp/story12-2-resume-20261102-1EZDgA/strict-operational-3-private.log",
+    "sha256": "cfd2e058d07466f89ce328c950e884664c5bc0c56ff5a8efda8a75de74b1b5ed"
+  },
+  "private_xml": {
+    "path": "/tmp/story12-2-resume-20261102-1EZDgA/strict-operational-3-private.xml",
+    "sha256": "1f8436fae7aae425f0e1c8d385278fafb8e0c3c2771e4e7fdf1ed06a4d314261"
+  },
+  "summary": {
+    "assemblies": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "run-date": "2026-11-02",
+        "run-time": "20:41:31",
+        "errors": "0",
+        "failed": "1",
+        "passed": "0",
+        "skipped": "0",
+        "time": "42.929",
+        "total": "1"
+      }
+    ],
+    "tests": [
+      {
+        "name": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures",
+        "result": "Fail",
+        "time": "0",
+        "type": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "method": "RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures"
+      }
+    ]
+  },
+  "source_or_head_drift": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 0
+  },
+  "runtime_module_observations": 168,
+  "fixture_module_observations": 45
+}

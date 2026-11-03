@@ -1,0 +1,46 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+    "-showLiveOutput",
+    "-result-xml",
+    "/tmp/story12-2-resume-20261102-1EZDgA/strict-operational-1-private.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-02T20:17:23.580589+00:00",
+  "utc_end": "2026-11-02T20:19:15.888102+00:00",
+  "exit_code": -9,
+  "environment_selection": {
+    "Folders__EventStoreDaprHttpPort": 36011,
+    "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true"
+  },
+  "private_log": {
+    "path": "/tmp/story12-2-resume-20261102-1EZDgA/strict-operational-1-private.log",
+    "sha256": "7c92330afa20d669b49c67377abf78e92d2605aa825de2299d565a878b7a3fa8"
+  },
+  "private_xml": null,
+  "summary": null,
+  "source_or_head_drift": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [
+      {
+        "ID": "6693573256db7547be21b23398b2eb2afd54bd8e97211049b7ab9068d343ef51",
+        "Names": "folders-durability-3ad2ecb39cff2182",
+        "Image": "redis:7-alpine",
+        "Status": "Up 1 second",
+        "image_id": "sha256:8da19c7399dca900c6822a1cf30f9d2285585e2c4b457ff4095b0f4500054d3f"
+      }
+    ],
+    "remaining_observed_directories": [
+      "/tmp/folders-durability-4tkp0t5s.oyw",
+      "/tmp/hexalith-dapr/e8317b9e529b4de495e0b155bcfc4c50"
+    ],
+    "remaining_unattributed_container_count": 1
+  },
+  "runtime_module_observations": 170,
+  "fixture_module_observations": 45
+}

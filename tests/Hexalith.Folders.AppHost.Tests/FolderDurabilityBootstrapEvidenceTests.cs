@@ -4,6 +4,9 @@ using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Testing;
 using Hexalith.EventStore.Contracts.Routing;
+using Hexalith.EventStore.Contracts.Identity;
+using Hexalith.Tenants.Contracts.Commands;
+using Hexalith.Tenants.Contracts.Routing;
 using Hexalith.EventStore.Contracts.Streams;
 using Shouldly;
 using Xunit;
@@ -99,14 +102,14 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
         else Should.Throw<InvalidOperationException>(() => FolderDurabilityBootstrapEvidence.Authority(authority, "administrator"));
     }
 
-    /// <summary>Provisions actual physical peer identities before startup while retaining existing users, secrets and operation scopes.</summary>
+    /// <summary>Provisions actual peer identities and equivalent canonical administrator scopes before startup.</summary>
     [Fact]
     public void IsolatedIssuerImportIsReadyBeforeEitherOwnerOrGatewayStarts()
     {
         string source = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json"));
         JsonObject original = JsonNode.Parse(File.ReadAllText(source))!.AsObject();
         JsonObject realm = FolderDurabilityBootstrapConfiguration.Realm(original, "eventstore-selected", "tenants-selected", "folders-selected");
-        realm["users"]!.ToJsonString().ShouldBe(original["users"]!.ToJsonString());
+        AssertOnlyExistingAdministratorScopeChanges(original, realm);
         JsonArray clients = realm["clients"]!.AsArray();
         clients.ShouldNotContain(client => client!["clientId"]!.GetValue<string>() == "eventstore" || client["clientId"]!.GetValue<string>() == "tenants");
         JsonObject gateway = clients.Single(client => client!["clientId"]!.GetValue<string>() == "eventstore-selected")!.AsObject();
@@ -124,6 +127,58 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
     }
 
     [Fact]
+    public void ImportedAdministratorHasExactlyTheCanonicalPermissionsNeededByItsExistingWorkflow()
+    {
+        string source = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json"));
+        JsonObject original = JsonNode.Parse(File.ReadAllText(source))!.AsObject();
+        string before = original.ToJsonString();
+        JsonObject realm = FolderDurabilityBootstrapConfiguration.Realm(original);
+        string[] required =
+        [
+            TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == BootstrapGlobalAdmin.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
+            TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == CreateTenant.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
+            TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == AddUserToTenant.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
+            TenantCatalogDeclarations.Queries.Single(query => query.MessageType == "get-global-administrators").PlatformAdmission!.RequiredHumanPermission,
+            TenantCatalogDeclarations.Queries.Single(query => query.MessageType == "list-tenants").PlatformAdmission!.RequiredHumanPermission,
+        ];
+        required.ShouldBe(new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" });
+        TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == BootstrapGlobalAdmin.CommandType)
+            .Route.PlatformAdmission!.Namespace.ShouldBe("platform:global-administrators");
+        foreach (string operation in new[] { CreateTenant.CommandType, AddUserToTenant.CommandType })
+            TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == operation)
+                .Route.PlatformAdmission!.Namespace.ShouldBe("platform:tenants");
+        JsonObject administrator = realm["users"]!.AsArray().Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
+        foreach (string permission in required)
+            administrator["attributes"]!["permissions"]!.AsArray().Count(item => item!.GetValue<string>() == permission).ShouldBe(1);
+        administrator["username"]!.GetValue<string>().ShouldBe("admin-user");
+        administrator["attributes"]!["global_admin"]!.AsArray().ShouldHaveSingleItem()!.GetValue<string>().ShouldBe("true");
+        string[] grants = administrator["attributes"]!["tenants"]!.AsArray().Select(item => item!.GetValue<string>()).ToArray();
+        grants.ShouldBe(new[] { "tenant-a", "tenant-b" });
+        TenantCanonicalizer.TryCanonicalizeGrants(grants, out _).ShouldBeTrue();
+        foreach (JsonNode? user in realm["users"]!.AsArray().Where(user => user!["id"]!.GetValue<string>() != "admin-user"))
+        {
+            user!["attributes"]!["permissions"]!.AsArray().ShouldNotContain(permission => required.Contains(permission!.GetValue<string>(), StringComparer.Ordinal));
+            user.ToJsonString().ShouldBe(original["users"]!.AsArray().Single(candidate => candidate!["id"]!.GetValue<string>() == user["id"]!.GetValue<string>())!.ToJsonString());
+        }
+        original.ToJsonString().ShouldBe(before);
+    }
+
+    [Theory]
+    [InlineData("subject")]
+    [InlineData("not-admin")]
+    public void ImportCannotGrantBootstrapToAnotherOrNondesignatedPrincipal(string fault)
+    {
+        string source = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json"));
+        JsonObject original = JsonNode.Parse(File.ReadAllText(source))!.AsObject();
+        JsonObject administrator = original["users"]!.AsArray().Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
+        if (fault == "subject") administrator["id"] = "another-principal";
+        else administrator["attributes"]!["global_admin"] = new JsonArray("false");
+        string before = original.ToJsonString();
+        Should.Throw<InvalidOperationException>(() => FolderDurabilityBootstrapConfiguration.Realm(original));
+        original.ToJsonString().ShouldBe(before);
+    }
+
+    [Fact]
     public void ActualIssuerProfilesPreserveHumansAndKeepTheOwnerServiceAccountSeparate()
     {
         string source = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json"));
@@ -131,7 +186,7 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
         string before = original.ToJsonString();
         JsonObject realm = FolderDurabilityBootstrapConfiguration.Realm(original);
         original.ToJsonString().ShouldBe(before);
-        realm["users"]!.ToJsonString().ShouldBe(original["users"]!.ToJsonString());
+        AssertOnlyExistingAdministratorScopeChanges(original, realm);
         JsonObject owner = realm["clients"]!.AsArray().Single(client => client!["clientId"]!.GetValue<string>() == "tenants")!.AsObject();
         owner["publicClient"]!.GetValue<bool>().ShouldBeFalse(); owner["serviceAccountsEnabled"]!.GetValue<bool>().ShouldBeTrue();
         owner["defaultClientScopes"]!.AsArray().ShouldBeEmpty();
@@ -141,8 +196,20 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
         {
             string id = client!["clientId"]!.GetValue<string>();
             JsonObject mapper = client["protocolMappers"]!.AsArray().Single(node => node!["name"]!.GetValue<string>() == "authenticated-surface")!.AsObject();
-            mapper["config"]!["claim.value"]!.GetValue<string>().ShouldBe(id is "eventstore" or "tenants" ? "service" : "ui");
+            mapper["config"]!["claim.value"]!.GetValue<string>().ShouldBe(id is "eventstore" or "tenants" or "folders" or "folders-workers" ? "service" : "ui");
             if (id == "tenants") mapper.ToJsonString().ShouldNotContain("global_admin");
         }
+    }
+
+    private static void AssertOnlyExistingAdministratorScopeChanges(JsonObject original, JsonObject realm)
+    {
+        JsonArray expected = original["users"]!.DeepClone().AsArray();
+        JsonObject administrator = expected.Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
+        JsonArray permissions = administrator["attributes"]!["permissions"]!.AsArray();
+        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" })
+            permissions.Add(permission);
+        JsonArray grants = administrator["attributes"]!["tenants"]!.AsArray();
+        grants.Remove(grants.Single(grant => grant!.GetValue<string>() == "system"));
+        realm["users"]!.ToJsonString().ShouldBe(expected.ToJsonString());
     }
 }

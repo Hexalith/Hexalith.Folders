@@ -1,0 +1,576 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.Tests.dll",
+    "-class",
+    "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+    "-result-xml",
+    "/tmp/story12-2-resume-20261102-1EZDgA/contract-client-source-fallback-private.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-02T21:33:41.926457+00:00",
+  "utc_end": "2026-11-02T21:34:10.232887+00:00",
+  "exit_code": 0,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-resume-20261102-1EZDgA/contract-client-source-fallback-private.log",
+    "sha256": "2a48c174ea36d5a680476f248cb894afea074a8fbe8bebdc037c5a2dfc1ddb9e"
+  },
+  "private_xml": {
+    "path": "/tmp/story12-2-resume-20261102-1EZDgA/contract-client-source-fallback-private.xml",
+    "sha256": "b7610d926ac76f31ef8e30b695f1f0a3facaf0ab8d262bdb6a52e043340e1eb3"
+  },
+  "summary": {
+    "assemblies": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.Tests.dll",
+        "run-date": "2026-11-02",
+        "run-time": "21:33:42",
+        "errors": "0",
+        "failed": "0",
+        "passed": "75",
+        "skipped": "0",
+        "time": "25.788",
+        "total": "75"
+      }
+    ],
+    "tests": [
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.NswagConfigurationUsesContractSpineAsOnlyInput",
+        "result": "Pass",
+        "time": "0.019",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "NswagConfigurationUsesContractSpineAsOnlyInput"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.FileMutationHelpersIgnoreRawContentAndLocalPaths",
+        "result": "Pass",
+        "time": "0.041",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "FileMutationHelpersIgnoreRawContentAndLocalPaths"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.CanonicalHasherFailsClosedForMalformedMetadata",
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "CanonicalHasherFailsClosedForMalformedMetadata"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.Oq2ProblemMetadataShouldRejectTrailingLf(field: \\\"code\\\")",
+        "result": "Pass",
+        "time": "0.022",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "Oq2ProblemMetadataShouldRejectTrailingLf"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.Oq2ProblemMetadataShouldRejectTrailingLf(field: \\\"correlationId\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "Oq2ProblemMetadataShouldRejectTrailingLf"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.RangeWireTreats206AsSuccessAndProjectsExact416And503",
+        "result": "Pass",
+        "time": "0.094",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "RangeWireTreats206AsSuccessAndProjectsExact416And503"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute(path: \\\"field\\\\0\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute(path: \\\"field\\\\t\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute(path: \\\"field\\\\r\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute(path: \\\"field\\\\n\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute(path: \\\"field\u007f\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute(path: \\\"field\u0085\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute(path: \\\"field\ufeff\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute(path: \\\"field\u2028\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute(path: \\\"field\u2029\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.HandBuiltStreamMutationsRejectEveryEvidenceMismatch",
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "HandBuiltStreamMutationsRejectEveryEvidenceMismatch"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorFailsClosedBeforeWritingHelpersWhenClientShapeDrifts",
+        "result": "Pass",
+        "time": "2.012",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorFailsClosedBeforeWritingHelpersWhenClientShapeDrifts"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratedClientUsesFolderScopedTaskAndDiagnosticRoutes",
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratedClientUsesFolderScopedTaskAndDiagnosticRoutes"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratedClientAndHelpersMatchIsolatedRegeneration",
+        "result": "Pass",
+        "time": "5.615",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratedClientAndHelpersMatchIsolatedRegeneration"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.HelperGeneratorProjectIsBuildTimeInput",
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "HelperGeneratorProjectIsBuildTimeInput"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.CanonicalLinePreservesEscapedValuesAndValidUnicodePaths",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "CanonicalLinePreservesEscapedValuesAndValidUnicodePaths"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.DirectCanonicalLineRejectsMalformedUtf16Paths",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsMalformedUtf16Paths"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratedOq2TypesRejectWrongExactValuesAndMissingPolicyClass",
+        "result": "Pass",
+        "time": "0.018",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratedOq2TypesRejectWrongExactValuesAndMissingPolicyClass"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.IdempotencyEncodingCorpusIsConsumedForParserPolicyCases",
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "IdempotencyEncodingCorpusIsConsumedForParserPolicyCases"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.HelperGenerationTargetRegeneratesWhenContractSpineChanges",
+        "result": "Pass",
+        "time": "4.994",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "HelperGenerationTargetRegeneratesWhenContractSpineChanges"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.NullAndOmittedValuesProduceDifferentCanonicalHashes",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "NullAndOmittedValuesProduceDifferentCanonicalHashes"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsReferencedParametersWithoutNames(name: null)",
+        "result": "Pass",
+        "time": "1.531",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsReferencedParametersWithoutNames"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsReferencedParametersWithoutNames(name: \\\"\\\")",
+        "result": "Pass",
+        "time": "0.628",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsReferencedParametersWithoutNames"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsReferencedParametersWithoutNames(name: \\\" \\\")",
+        "result": "Pass",
+        "time": "0.595",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsReferencedParametersWithoutNames"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratedNestedHelperHandlesNullAtEveryDepthAndRetainsPresenceSemantics",
+        "result": "Pass",
+        "time": "3.136",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratedNestedHelperHandlesNullAtEveryDepthAndRetainsPresenceSemantics"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratedOq2ResponseUnionsAcceptExactAndLegacyBranchesButRejectMalformedExactSignals",
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratedOq2ResponseUnionsAcceptExactAndLegacyBranchesButRejectMalformedExactSignals"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.FileMutationHelperSeparatesAddChangeAndRemove",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "FileMutationHelperSeparatesAddChangeAndRemove"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.Oq2WireValidationRejectsCoercionAndCompleteShapeDrift",
+        "result": "Pass",
+        "time": "0.009",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "Oq2WireValidationRejectsCoercionAndCompleteShapeDrift"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsMissingParameterReferenceTargets",
+        "result": "Pass",
+        "time": "0.344",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMissingParameterReferenceTargets"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.RepositoryReconciliationConflictWithFinalStateIsAcceptedForItsOperation(path: \\\"api/v2/folders/folder_000000001/repository-binding\\\"\u00b7\u00b7\u00b7)",
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "RepositoryReconciliationConflictWithFinalStateIsAcceptedForItsOperation"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.RepositoryReconciliationConflictWithFinalStateIsAcceptedForItsOperation(path: \\\"api/v2/folders/repository-backed\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "RepositoryReconciliationConflictWithFinalStateIsAcceptedForItsOperation"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsMalformedParametersBeforePublishing(key: \\\"$ref\\\", value: \\\"\\\")",
+        "result": "Pass",
+        "time": "0.331",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsMalformedParametersBeforePublishing(key: \\\"$ref\\\", value: \\\" \\\")",
+        "result": "Pass",
+        "time": "0.333",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsMalformedParametersBeforePublishing(key: \\\"$ref\\\", value: \\\"#/components/parameters/\\\")",
+        "result": "Pass",
+        "time": "0.325",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsMalformedParametersBeforePublishing(key: \\\"$ref\\\", value: \\\"#/components/parameters/ \\\")",
+        "result": "Pass",
+        "time": "0.344",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsMalformedParametersBeforePublishing(key: \\\"$ref\\\", value: \\\"#/components/parameters/FolderId/extra\\\")",
+        "result": "Pass",
+        "time": "0.328",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsMalformedParametersBeforePublishing(key: \\\"$ref\\\", value: \\\"#/components/schemas/FolderId\\\")",
+        "result": "Pass",
+        "time": "0.328",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsMalformedParametersBeforePublishing(key: \\\"$ref\\\", value: \\\"external.yaml#/components/parameters/FolderId\\\")",
+        "result": "Pass",
+        "time": "0.35",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsMalformedParametersBeforePublishing(key: \\\"name\\\", value: \\\"\\\")",
+        "result": "Pass",
+        "time": "0.315",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsMalformedParametersBeforePublishing(key: \\\"name\\\", value: \\\" \\\")",
+        "result": "Pass",
+        "time": "0.34",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsMalformedParametersBeforePublishing(key: \\\"description\\\", value: \\\"missing name and reference\\\")",
+        "result": "Pass",
+        "time": "0.343",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.RepositoryUnknownOutcomeRequiresExactFinalStateInGeneratedProblem(resultTypeName: \\\"CreateRepositoryBackedFolderUnavailableProblem\\\")",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "RepositoryUnknownOutcomeRequiresExactFinalStateInGeneratedProblem"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.RepositoryUnknownOutcomeRequiresExactFinalStateInGeneratedProblem(resultTypeName: \\\"BindRepositoryUnavailableProblem\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "RepositoryUnknownOutcomeRequiresExactFinalStateInGeneratedProblem"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.MutatingRequestsExposeIdempotencyHelpersAndQueriesDoNot",
+        "result": "Pass",
+        "time": "0.044",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "MutatingRequestsExposeIdempotencyHelpersAndQueriesDoNot"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.CanonicalHasherPinsPrimitiveEdgeFormatting",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "CanonicalHasherPinsPrimitiveEdgeFormatting"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs(repositoryRoot: \\\"\\\")",
+        "result": "Pass",
+        "time": "0.08",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs(repositoryRoot: \\\" \\\")",
+        "result": "Pass",
+        "time": "0.084",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs(repositoryRoot: \\\".\\\")",
+        "result": "Pass",
+        "time": "0.08",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs(repositoryRoot: \\\"relative/repository\\\")",
+        "result": "Pass",
+        "time": "0.087",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs(repositoryRoot: \\\"../repository\\\")",
+        "result": "Pass",
+        "time": "0.079",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.ExactAuthorizationAndOperationUnavailableProjectionRejectsWrongWireTuple",
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "ExactAuthorizationAndOperationUnavailableProjectionRejectsWrongWireTuple"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.DuplicateFieldDiagnosticPrecedesOrderDiagnosticWithoutChangingCaseSensitivity",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DuplicateFieldDiagnosticPrecedesOrderDiagnosticWithoutChangingCaseSensitivity"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GenericProblemTupleIsAcceptedOnlyForItsOriginatingOperation",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GenericProblemTupleIsAcceptedOnlyForItsOriginatingOperation"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratedOutputCarriesStableSafeProvenance",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratedOutputCarriesStableSafeProvenance"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.CreateRepositoryBackedFolderHelperIncludesExistingFolderIdentity",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "CreateRepositoryBackedFolderHelperIncludesExistingFolderIdentity"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.StaleGeneratedOutputDetectionUsesAllContentHashes",
+        "result": "Pass",
+        "time": "0.014",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "StaleGeneratedOutputDetectionUsesAllContentHashes"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.ApiExceptionExposesTypedProblemDetails",
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "ApiExceptionExposesTypedProblemDetails"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.BranchRefPolicyHelperUsesDeclaredSpineFields",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "BranchRefPolicyHelperUsesDeclaredSpineFields"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorPreservesLegalUnusedParametersWithoutHelperIdentifiers(name: \\\"_\\\")",
+        "result": "Pass",
+        "time": "1.227",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorPreservesLegalUnusedParametersWithoutHelperIdentifiers"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratorPreservesLegalUnusedParametersWithoutHelperIdentifiers(name: \\\"---\\\")",
+        "result": "Pass",
+        "time": "1.342",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorPreservesLegalUnusedParametersWithoutHelperIdentifiers"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.ApiExceptionProjectionRejectsArbitraryTypedResultsAndHttpStatusMismatch",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "ApiExceptionProjectionRejectsArbitraryTypedResultsAndHttpStatusMismatch"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.EveryGeneratedOperationUnavailableWrapperHasAnExactTupleMap",
+        "result": "Pass",
+        "time": "0.15",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "EveryGeneratedOperationUnavailableWrapperHasAnExactTupleMap"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.CreateFolderHelperUsesDeclaredLexicographicFields",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "CreateFolderHelperUsesDeclaredLexicographicFields"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.RequiredNonNullableEnumFieldsDoNotEmitNullChecks",
+        "result": "Pass",
+        "time": "0.011",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "RequiredNonNullableEnumFieldsDoNotEmitNullChecks"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GenericProblemProjectionValidatesDeclaredOptionalFieldsAndClosedScalars",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GenericProblemProjectionValidatesDeclaredOptionalFieldsAndClosedScalars"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.CanonicalErrorCodeNumberingIsPinned",
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "CanonicalErrorCodeNumberingIsPinned"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.Oq2FreshnessShouldAcceptCanonicalUtcAndRejectTrailingLf(observedAt: \\\"2026-09-14T00:00:00Z\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "Oq2FreshnessShouldAcceptCanonicalUtcAndRejectTrailingLf"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.Oq2FreshnessShouldAcceptCanonicalUtcAndRejectTrailingLf(observedAt: \\\"2026-09-14T00:00:00+00:00\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "Oq2FreshnessShouldAcceptCanonicalUtcAndRejectTrailingLf"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.Oq2FreshnessShouldAcceptCanonicalUtcAndRejectTrailingLf(observedAt: \\\"2026-09-14T00:00:00-00:00\\\")",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "Oq2FreshnessShouldAcceptCanonicalUtcAndRejectTrailingLf"
+      },
+      {
+        "name": "Hexalith.Folders.Client.Tests.ClientGenerationTests.GenericProblemProjectionRejectsUnknownDetailsKey",
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GenericProblemProjectionRejectsUnknownDetailsKey"
+      }
+    ]
+  },
+  "source_or_head_drift": [],
+  "working_tree_status_changes": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 3
+  },
+  "runtime_module_observations": 87,
+  "fixture_module_observations": 0
+}

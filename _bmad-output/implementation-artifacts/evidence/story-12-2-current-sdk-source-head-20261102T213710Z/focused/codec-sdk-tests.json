@@ -1,0 +1,1074 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "20:11:38",
+      "errors": "0",
+      "failed": "0",
+      "passed": "151",
+      "skipped": "0",
+      "time": "23.937",
+      "total": "151"
+    }
+  ],
+  "tests": [
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.PrepareFencesNewDispatchAndCannotCommitUntilDurableLeasesDrain",
+      "result": "Pass",
+      "time": "0.088",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "PrepareFencesNewDispatchAndCannotCommitUntilDurableLeasesDrain"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.CapturedSnapshotCannotBeChangedThroughMutableCallerCollectionsOrBytes",
+      "result": "Pass",
+      "time": "0.073",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "CapturedSnapshotCannotBeChangedThroughMutableCallerCollectionsOrBytes"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.DeclarationsAloneCannotActivateOrServe",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "DeclarationsAloneCannotActivateOrServe"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.HostFailureBeforeCommitRecoversOnlyThePriorCompleteAuthority(ready: False)",
+      "result": "Pass",
+      "time": "0.078",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "HostFailureBeforeCommitRecoversOnlyThePriorCompleteAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.HostFailureBeforeCommitRecoversOnlyThePriorCompleteAuthority(ready: True)",
+      "result": "Pass",
+      "time": "0.092",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "HostFailureBeforeCommitRecoversOnlyThePriorCompleteAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.InvalidCandidateCannotReplacePriorAuthority(fault: \\\"root\\\")",
+      "result": "Pass",
+      "time": "0.057",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "InvalidCandidateCannotReplacePriorAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.InvalidCandidateCannotReplacePriorAuthority(fault: \\\"bytes\\\")",
+      "result": "Pass",
+      "time": "0.074",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "InvalidCandidateCannotReplacePriorAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.InvalidCandidateCannotReplacePriorAuthority(fault: \\\"hosts\\\")",
+      "result": "Pass",
+      "time": "0.059",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "InvalidCandidateCannotReplacePriorAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.InvalidCandidateCannotReplacePriorAuthority(fault: \\\"trust\\\")",
+      "result": "Pass",
+      "time": "0.036",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "InvalidCandidateCannotReplacePriorAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.InvalidCandidateCannotReplacePriorAuthority(fault: \\\"predecessor\\\")",
+      "result": "Pass",
+      "time": "0.045",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "InvalidCandidateCannotReplacePriorAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.ConcurrentAttemptsCannotOverwritePreparedAuthority",
+      "result": "Pass",
+      "time": "0.026",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "ConcurrentAttemptsCannotOverwritePreparedAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.RestartAndRollbackReadPersistedCompleteGenerationsAndAdvanceTheFence",
+      "result": "Pass",
+      "time": "0.091",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "RestartAndRollbackReadPersistedCompleteGenerationsAndAdvanceTheFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.DevelopmentFixtureCannotGrantProductionReadiness",
+      "result": "Pass",
+      "time": "0.063",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "DevelopmentFixtureCannotGrantProductionReadiness"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests.EveryExactHostMustAttestTheSameCompleteGeneration",
+      "result": "Pass",
+      "time": "0.054",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "EveryExactHostMustAttestTheSameCompleteGeneration"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect(scenario: \\\"current\\\")",
+      "result": "Pass",
+      "time": "0.364",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect(scenario: \\\"current-after-commit\\\")",
+      "result": "Pass",
+      "time": "0.239",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect(scenario: \\\"current-after-rollback\\\")",
+      "result": "Pass",
+      "time": "0.265",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect(scenario: \\\"missing-root\\\")",
+      "result": "Pass",
+      "time": "0.106",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect(scenario: \\\"wrong-root\\\")",
+      "result": "Pass",
+      "time": "0.094",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect(scenario: \\\"missing-epoch\\\")",
+      "result": "Pass",
+      "time": "0.091",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect(scenario: \\\"wrong-epoch\\\")",
+      "result": "Pass",
+      "time": "0.113",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect(scenario: \\\"stale-root-after-commit\\\")",
+      "result": "Pass",
+      "time": "0.163",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect(scenario: \\\"stale-epoch-after-rollback\\\")",
+      "result": "Pass",
+      "time": "0.209",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReceiverRequiresCurrentRootAndEpochBeforeAnyHandlerEffect"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReceiverIndependentlyRequiresMandatoryDelegatedCallerContext(supplied: False)",
+      "result": "Pass",
+      "time": "0.159",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReceiverIndependentlyRequiresMandatoryDelegatedCallerContext"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReceiverIndependentlyRequiresMandatoryDelegatedCallerContext(supplied: True)",
+      "result": "Pass",
+      "time": "0.109",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReceiverIndependentlyRequiresMandatoryDelegatedCallerContext"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReceiverLeaseRemainsThroughAsyncResultStreamingAndCancellation(cancel: False)",
+      "result": "Pass",
+      "time": "0.289",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReceiverLeaseRemainsThroughAsyncResultStreamingAndCancellation"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReceiverLeaseRemainsThroughAsyncResultStreamingAndCancellation(cancel: True)",
+      "result": "Pass",
+      "time": "0.197",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReceiverLeaseRemainsThroughAsyncResultStreamingAndCancellation"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReconstructionUsesOnlyRelevantCommandTenantScopeAndCanonicalOperation(scenario: \\\"matching-command\\\", accepted: True)",
+      "result": "Pass",
+      "time": "0.047",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReconstructionUsesOnlyRelevantCommandTenantScopeAndCanonicalOperation"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReconstructionUsesOnlyRelevantCommandTenantScopeAndCanonicalOperation(scenario: \\\"wildcard-query\\\", accepted: False)",
+      "result": "Pass",
+      "time": "0.033",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReconstructionUsesOnlyRelevantCommandTenantScopeAndCanonicalOperation"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReconstructionUsesOnlyRelevantCommandTenantScopeAndCanonicalOperation(scenario: \\\"missing-command\\\", accepted: False)",
+      "result": "Pass",
+      "time": "0.027",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReconstructionUsesOnlyRelevantCommandTenantScopeAndCanonicalOperation"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.ReconstructionUsesOnlyRelevantCommandTenantScopeAndCanonicalOperation(scenario: \\\"wrong-operation\\\", accepted: False)",
+      "result": "Pass",
+      "time": "0.042",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "ReconstructionUsesOnlyRelevantCommandTenantScopeAndCanonicalOperation"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"reconstruction\\\", fault: \\\"valid\\\")",
+      "result": "Pass",
+      "time": "0.033",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"receipt\\\", fault: \\\"tenant\\\")",
+      "result": "Pass",
+      "time": "0.034",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"receipt\\\", fault: \\\"domain\\\")",
+      "result": "Pass",
+      "time": "0.03",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"receipt\\\", fault: \\\"valid\\\")",
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"owner\\\", fault: \\\"projection\\\")",
+      "result": "Pass",
+      "time": "0.05",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"owner\\\", fault: \\\"tenant\\\")",
+      "result": "Pass",
+      "time": "0.051",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"owner\\\", fault: \\\"domain\\\")",
+      "result": "Pass",
+      "time": "0.05",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"owner\\\", fault: \\\"valid\\\")",
+      "result": "Pass",
+      "time": "0.041",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"shared\\\", fault: \\\"projection\\\")",
+      "result": "Pass",
+      "time": "0.055",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"shared\\\", fault: \\\"tenant\\\")",
+      "result": "Pass",
+      "time": "0.041",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"shared\\\", fault: \\\"domain\\\")",
+      "result": "Pass",
+      "time": "0.029",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"shared\\\", fault: \\\"valid\\\")",
+      "result": "Pass",
+      "time": "0.03",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"multipart\\\", fault: \\\"projection\\\")",
+      "result": "Pass",
+      "time": "0.032",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"multipart\\\", fault: \\\"tenant\\\")",
+      "result": "Pass",
+      "time": "0.03",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"multipart\\\", fault: \\\"domain\\\")",
+      "result": "Pass",
+      "time": "0.053",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"multipart\\\", fault: \\\"valid\\\")",
+      "result": "Pass",
+      "time": "0.072",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"dispatch\\\", fault: \\\"projection\\\")",
+      "result": "Pass",
+      "time": "0.077",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"dispatch\\\", fault: \\\"tenant\\\")",
+      "result": "Pass",
+      "time": "0.028",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"dispatch\\\", fault: \\\"domain\\\")",
+      "result": "Pass",
+      "time": "0.029",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"dispatch\\\", fault: \\\"valid\\\")",
+      "result": "Pass",
+      "time": "0.031",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"reconstruction\\\", fault: \\\"tenant\\\")",
+      "result": "Pass",
+      "time": "0.04",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"reconstruction\\\", fault: \\\"domain\\\")",
+      "result": "Pass",
+      "time": "0.041",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"receipt\\\", fault: \\\"projection\\\")",
+      "result": "Pass",
+      "time": "0.07",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests.EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection(shape: \\\"unknown\\\", fault: \\\"shape\\\")",
+      "result": "Pass",
+      "time": "0.051",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverScopeTests",
+      "method": "EveryAuxiliaryReceiverShapeBindsExactDomainTenantAndSelectedProjection"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"valid\\\")",
+      "result": "Pass",
+      "time": "0.083",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"stale-observer\\\")",
+      "result": "Pass",
+      "time": "0.051",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"nonadvancing\\\")",
+      "result": "Pass",
+      "time": "0.049",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"changed-pending\\\")",
+      "result": "Pass",
+      "time": "0.068",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"duplicate-attempt\\\")",
+      "result": "Pass",
+      "time": "0.047",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"missing-attempt\\\")",
+      "result": "Pass",
+      "time": "0.076",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"foreign-old-host\\\")",
+      "result": "Pass",
+      "time": "0.055",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"blank-proof\\\")",
+      "result": "Pass",
+      "time": "0.053",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"missing-observer\\\")",
+      "result": "Pass",
+      "time": "0.083",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"unknown-lease\\\")",
+      "result": "Pass",
+      "time": "0.105",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"wrong-epoch\\\")",
+      "result": "Pass",
+      "time": "0.052",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"wrong-predecessor\\\")",
+      "result": "Pass",
+      "time": "0.039",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"old-trust\\\")",
+      "result": "Pass",
+      "time": "0.065",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"old-local-identity\\\")",
+      "result": "Pass",
+      "time": "0.054",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"forged-proof\\\")",
+      "result": "Pass",
+      "time": "0.068",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"no-verifier\\\")",
+      "result": "Pass",
+      "time": "0.043",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"unprepared\\\")",
+      "result": "Pass",
+      "time": "0.06",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"wrong-root\\\")",
+      "result": "Pass",
+      "time": "0.072",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests.ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence(scenario: \\\"missing-coordinates\\\")",
+      "result": "Pass",
+      "time": "0.048",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests.TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority(mismatch: \\\"adapter\\\")",
+      "result": "Pass",
+      "time": "0.262",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests.TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority(mismatch: \\\"keys\\\")",
+      "result": "Pass",
+      "time": "0.283",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests.TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority(mismatch: \\\"capability\\\")",
+      "result": "Pass",
+      "time": "0.223",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests.TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority(mismatch: \\\"operation\\\")",
+      "result": "Pass",
+      "time": "0.264",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests.AcquisitionRefusesAfter32ConflictsWithoutLeakingAndLaterSucceeds",
+      "result": "Pass",
+      "time": "0.505",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "AcquisitionRefusesAfter32ConflictsWithoutLeakingAndLaterSucceeds"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests.MissingIndependentPolicyFactsCannotProduceAHostIdentity",
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "MissingIndependentPolicyFactsCannotProduceAHostIdentity"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests.ReusedStructuralValidationStillRecapturesAndRefusesChangedExecutableTarget",
+      "result": "Pass",
+      "time": "0.036",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "ReusedStructuralValidationStillRecapturesAndRefusesChangedExecutableTarget"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests.InstalledAdmissionObservationRefusesDisabledPolicyOrUnavailableKeyGeneration(enabled: False)",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "InstalledAdmissionObservationRefusesDisabledPolicyOrUnavailableKeyGeneration"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests.InstalledAdmissionObservationRefusesDisabledPolicyOrUnavailableKeyGeneration(enabled: True)",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "InstalledAdmissionObservationRefusesDisabledPolicyOrUnavailableKeyGeneration"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests.QuiescentOwnLeaseReleaseMakesProgressPast32ConflictsAndConcurrentDispatchDrains",
+      "result": "Pass",
+      "time": "1.74",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "QuiescentOwnLeaseReleaseMakesProgressPast32ConflictsAndConcurrentDispatchDrains"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ReplayFactoriesStayOutsideActualRemoteEnrollment(method: \\\"StageReplayAsync\\\", remote: False)",
+      "result": "Pass",
+      "time": "0.087",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ReplayFactoriesStayOutsideActualRemoteEnrollment"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ReplayFactoriesStayOutsideActualRemoteEnrollment(method: \\\"StageReplayAsync\\\", remote: True)",
+      "result": "Pass",
+      "time": "0.072",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ReplayFactoriesStayOutsideActualRemoteEnrollment"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ReplayFactoriesStayOutsideActualRemoteEnrollment(method: \\\"PromoteReplayAsync\\\", remote: False)",
+      "result": "Pass",
+      "time": "0.094",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ReplayFactoriesStayOutsideActualRemoteEnrollment"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ReplayFactoriesStayOutsideActualRemoteEnrollment(method: \\\"PromoteReplayAsync\\\", remote: True)",
+      "result": "Pass",
+      "time": "0.132",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ReplayFactoriesStayOutsideActualRemoteEnrollment"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ReplayFactoriesStayOutsideActualRemoteEnrollment(method: \\\"FinalizeReplayAsync\\\", remote: False)",
+      "result": "Pass",
+      "time": "0.083",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ReplayFactoriesStayOutsideActualRemoteEnrollment"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ReplayFactoriesStayOutsideActualRemoteEnrollment(method: \\\"FinalizeReplayAsync\\\", remote: True)",
+      "result": "Pass",
+      "time": "0.087",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ReplayFactoriesStayOutsideActualRemoteEnrollment"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ReplayFactoriesStayOutsideActualRemoteEnrollment(method: \\\"ReadReplayCompletionAsync\\\", remote: False)",
+      "result": "Pass",
+      "time": "0.138",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ReplayFactoriesStayOutsideActualRemoteEnrollment"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ReplayFactoriesStayOutsideActualRemoteEnrollment(method: \\\"ReadReplayCompletionAsync\\\", remote: True)",
+      "result": "Pass",
+      "time": "0.082",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ReplayFactoriesStayOutsideActualRemoteEnrollment"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ConcreteLifecycleTransportFaultRetainsFenceEvenWhenQueryRouterHandlesItsError(failure: False)",
+      "result": "Pass",
+      "time": "0.161",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ConcreteLifecycleTransportFaultRetainsFenceEvenWhenQueryRouterHandlesItsError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ConcreteLifecycleTransportFaultRetainsFenceEvenWhenQueryRouterHandlesItsError(failure: True)",
+      "result": "Pass",
+      "time": "0.111",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ConcreteLifecycleTransportFaultRetainsFenceEvenWhenQueryRouterHandlesItsError"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.CommandLocalFactoryFailuresDrainWhileActualActorFailuresRetain(fenced: False, remote: False)",
+      "result": "Pass",
+      "time": "0.172",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "CommandLocalFactoryFailuresDrainWhileActualActorFailuresRetain"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.CommandLocalFactoryFailuresDrainWhileActualActorFailuresRetain(fenced: False, remote: True)",
+      "result": "Pass",
+      "time": "0.218",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "CommandLocalFactoryFailuresDrainWhileActualActorFailuresRetain"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.CommandLocalFactoryFailuresDrainWhileActualActorFailuresRetain(fenced: True, remote: False)",
+      "result": "Pass",
+      "time": "0.124",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "CommandLocalFactoryFailuresDrainWhileActualActorFailuresRetain"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.CommandLocalFactoryFailuresDrainWhileActualActorFailuresRetain(fenced: True, remote: True)",
+      "result": "Pass",
+      "time": "0.12",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "CommandLocalFactoryFailuresDrainWhileActualActorFailuresRetain"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.PublicAndTypeBasedQueryRoutersRequireAuthorityBeforeActorEffects(typeBased: False)",
+      "result": "Pass",
+      "time": "0.09",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "PublicAndTypeBasedQueryRoutersRequireAuthorityBeforeActorEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.PublicAndTypeBasedQueryRoutersRequireAuthorityBeforeActorEffects(typeBased: True)",
+      "result": "Pass",
+      "time": "0.114",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "PublicAndTypeBasedQueryRoutersRequireAuthorityBeforeActorEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ActualHttpCatalogRefusalPreservesProblemMediaTypeAndPrePipelineShape",
+      "result": "Pass",
+      "time": "0.207",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ActualHttpCatalogRefusalPreservesProblemMediaTypeAndPrePipelineShape"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ActualHttpTransportCannotFollowRedirectsOrInvokeUnscopedActors(scenario: \\\"declared\\\")",
+      "result": "Pass",
+      "time": "0.156",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ActualHttpTransportCannotFollowRedirectsOrInvokeUnscopedActors"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ActualHttpTransportCannotFollowRedirectsOrInvokeUnscopedActors(scenario: \\\"redirect\\\")",
+      "result": "Pass",
+      "time": "0.101",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ActualHttpTransportCannotFollowRedirectsOrInvokeUnscopedActors"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests.ActualHttpTransportCannotFollowRedirectsOrInvokeUnscopedActors(scenario: \\\"raw-actor\\\")",
+      "result": "Pass",
+      "time": "0.088",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogRuntimeBoundaryTests",
+      "method": "ActualHttpTransportCannotFollowRedirectsOrInvokeUnscopedActors"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests.ExactNativeRequestsShareOneLeaseUntilCallbackReturns",
+      "result": "Pass",
+      "time": "0.051",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "ExactNativeRequestsShareOneLeaseUntilCallbackReturns"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests.DetachedNativeReadCannotBorrowAReleasedLease",
+      "result": "Pass",
+      "time": "0.029",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "DetachedNativeReadCannotBorrowAReleasedLease"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests.LocalObservationDriftStillRefusesEachScopedNativeRequest",
+      "result": "Pass",
+      "time": "0.039",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "LocalObservationDriftStillRefusesEachScopedNativeRequest"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests.FailedNativeReadClosesTheScopeAndReleasesItsLease",
+      "result": "Pass",
+      "time": "0.053",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "FailedNativeReadClosesTheScopeAndReleasesItsLease"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests.GuardedNativeHttpReadsReuseOneLeaseWithoutSkippingPerRequestValidation",
+      "result": "Pass",
+      "time": "0.079",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "GuardedNativeHttpReadsReuseOneLeaseWithoutSkippingPerRequestValidation"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealCoordinatorCanPrepareReadyCommitAndAcquireTheCommittedLease",
+      "result": "Pass",
+      "time": "0.844",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealCoordinatorCanPrepareReadyCommitAndAcquireTheCommittedLease"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.HumanUiProxyCannotMutateAnyCoordinatorControl(stage: \\\"prepare\\\")",
+      "result": "Pass",
+      "time": "0.42",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "HumanUiProxyCannotMutateAnyCoordinatorControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.HumanUiProxyCannotMutateAnyCoordinatorControl(stage: \\\"ready\\\")",
+      "result": "Pass",
+      "time": "0.289",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "HumanUiProxyCannotMutateAnyCoordinatorControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.HumanUiProxyCannotMutateAnyCoordinatorControl(stage: \\\"commit\\\")",
+      "result": "Pass",
+      "time": "0.239",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "HumanUiProxyCannotMutateAnyCoordinatorControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.HumanUiProxyCannotMutateAnyCoordinatorControl(stage: \\\"rollback\\\")",
+      "result": "Pass",
+      "time": "0.215",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "HumanUiProxyCannotMutateAnyCoordinatorControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.HumanUiProxyCannotMutateAnyCoordinatorControl(stage: \\\"reconcile\\\")",
+      "result": "Pass",
+      "time": "0.35",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "HumanUiProxyCannotMutateAnyCoordinatorControl"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.ActualGetAndPostFamilyHasExactDescriptorVerbJoins(scenario: \\\"same-path-two-verbs\\\", admitted: True)",
+      "result": "Pass",
+      "time": "0.247",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "ActualGetAndPostFamilyHasExactDescriptorVerbJoins"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.ActualGetAndPostFamilyHasExactDescriptorVerbJoins(scenario: \\\"duplicate-verb\\\", admitted: False)",
+      "result": "Pass",
+      "time": "0.182",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "ActualGetAndPostFamilyHasExactDescriptorVerbJoins"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.ActualGetAndPostFamilyHasExactDescriptorVerbJoins(scenario: \\\"mismatched-verb\\\", admitted: False)",
+      "result": "Pass",
+      "time": "0.286",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "ActualGetAndPostFamilyHasExactDescriptorVerbJoins"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"put\\\", expected: 200)",
+      "result": "Pass",
+      "time": "0.404",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"probe-post\\\", expected: 403)",
+      "result": "Pass",
+      "time": "0.226",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"probe-descendant\\\", expected: 403)",
+      "result": "Pass",
+      "time": "0.189",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"health\\\", expected: 200)",
+      "result": "Pass",
+      "time": "0.287",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"filter-changed\\\", expected: 403)",
+      "result": "Pass",
+      "time": "0.214",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"schema-changed\\\", expected: 403)",
+      "result": "Pass",
+      "time": "0.304",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"policy-changed\\\", expected: 403)",
+      "result": "Pass",
+      "time": "0.185",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"metadata-changed\\\", expected: 403)",
+      "result": "Pass",
+      "time": "0.299",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"wrong-verb\\\", expected: 403)",
+      "result": "Pass",
+      "time": "0.24",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"unmarked\\\", expected: 403)",
+      "result": "Pass",
+      "time": "0.289",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"admin-role-denied\\\", expected: 403)",
+      "result": "Pass",
+      "time": "0.32",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"role-denied\\\", expected: 200)",
+      "result": "Pass",
+      "time": "0.256",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"mixed-workload\\\", expected: 403)",
+      "result": "Pass",
+      "time": "0.283",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"wrong-channel\\\", expected: 401)",
+      "result": "Pass",
+      "time": "0.268",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"anonymous\\\", expected: 401)",
+      "result": "Pass",
+      "time": "0.316",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"service\\\", expected: 200)",
+      "result": "Pass",
+      "time": "0.247",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"agent\\\", expected: 200)",
+      "result": "Pass",
+      "time": "0.374",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"duplicate-surface\\\", expected: 200)",
+      "result": "Pass",
+      "time": "0.356",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"missing-surface\\\", expected: 200)",
+      "result": "Pass",
+      "time": "0.277",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"admin-post\\\", expected: 202)",
+      "result": "Pass",
+      "time": "0.255",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"channel-callback\\\", expected: 200)",
+      "result": "Pass",
+      "time": "0.326",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.RealSdkActionsRetainCredentialPolicyMetadataAndEffects(scenario: \\\"channel-mixed-human\\\", expected: 401)",
+      "result": "Pass",
+      "time": "0.175",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "RealSdkActionsRetainCredentialPolicyMetadataAndEffects"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.EveryRealRegisteredSdkTechnicalMvcActionQualifiesCompletely(inventoryAssembly: \\\"Hexalith.EventStore.Gateway\\\")",
+      "result": "Pass",
+      "time": "0.625",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "EveryRealRegisteredSdkTechnicalMvcActionQualifiesCompletely"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.EveryRealRegisteredSdkTechnicalMvcActionQualifiesCompletely(inventoryAssembly: \\\"Hexalith.EventStore.Admin.Server\\\")",
+      "result": "Pass",
+      "time": "0.702",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "EveryRealRegisteredSdkTechnicalMvcActionQualifiesCompletely"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.ActualGatewayCoreInvocationGrantsRequireTheirObservedPolicies",
+      "result": "Pass",
+      "time": "0.44",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "ActualGatewayCoreInvocationGrantsRequireTheirObservedPolicies"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests.ArtificialCombinedHostCannotCommitOverlappingRealActionMembership",
+      "result": "Pass",
+      "time": "0.324",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttpCatalogReceiverTests",
+      "method": "ArtificialCombinedHostCannotCommitOverlappingRealActionMembership"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests.QueuedAdmissionCanCancelWhileSameAuthorityControlStillAdvancesAndInvalidatesTheHeldRead",
+      "result": "Pass",
+      "time": "0.051",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "QueuedAdmissionCanCancelWhileSameAuthorityControlStillAdvancesAndInvalidatesTheHeldRead"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests.AwaitedAcquireLetsTheIndependentContentionOwnerFinishBeforeTheBoundIsExhausted",
+      "result": "Pass",
+      "time": "0.084",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "AwaitedAcquireLetsTheIndependentContentionOwnerFinishBeforeTheBoundIsExhausted"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests.PermanentContentionRetainsExactlyThirtyTwoFreshAttemptsAndNoDispatchFence",
+      "result": "Pass",
+      "time": "0.447",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "PermanentContentionRetainsExactlyThirtyTwoFreshAttemptsAndNoDispatchFence"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests.EveryRetryRevalidatesTheCurrentStateAndIndependentObservation(mutation: \\\"pending\\\")",
+      "result": "Pass",
+      "time": "0.057",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "EveryRetryRevalidatesTheCurrentStateAndIndependentObservation"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests.EveryRetryRevalidatesTheCurrentStateAndIndependentObservation(mutation: \\\"observed-host\\\")",
+      "result": "Pass",
+      "time": "0.046",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "EveryRetryRevalidatesTheCurrentStateAndIndependentObservation"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests.PreCancelledAcquireNeverTouchesTheProvider",
+      "result": "Pass",
+      "time": "0.023",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "PreCancelledAcquireNeverTouchesTheProvider"
+    },
+    {
+      "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests.CancellationAfterAConflictStopsBeforeAnotherProviderReadOrExchange",
+      "result": "Pass",
+      "time": "0.026",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "CancellationAfterAConflictStopsBeforeAnotherProviderReadOrExchange"
+    }
+  ]
+}

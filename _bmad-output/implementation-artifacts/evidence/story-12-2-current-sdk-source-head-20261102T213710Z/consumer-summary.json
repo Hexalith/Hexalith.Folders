@@ -1,0 +1,90 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "21:20:22",
+      "errors": "0",
+      "failed": "0",
+      "passed": "2364",
+      "skipped": "2",
+      "time": "54.232",
+      "total": "2366"
+    },
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "21:21:19",
+      "errors": "0",
+      "failed": "0",
+      "passed": "1331",
+      "skipped": "0",
+      "time": "156.992",
+      "total": "1331"
+    },
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "21:23:59",
+      "errors": "0",
+      "failed": "0",
+      "passed": "162",
+      "skipped": "0",
+      "time": "4.348",
+      "total": "162"
+    },
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "21:24:06",
+      "errors": "0",
+      "failed": "0",
+      "passed": "854",
+      "skipped": "0",
+      "time": "34.875",
+      "total": "854"
+    },
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "21:24:44",
+      "errors": "0",
+      "failed": "0",
+      "passed": "123",
+      "skipped": "0",
+      "time": "3.640",
+      "total": "123"
+    },
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "21:29:17",
+      "errors": "0",
+      "failed": "0",
+      "passed": "636",
+      "skipped": "0",
+      "time": "42.977",
+      "total": "636"
+    },
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "21:33:42",
+      "errors": "0",
+      "failed": "0",
+      "passed": "75",
+      "skipped": "0",
+      "time": "25.788",
+      "total": "75"
+    }
+  ],
+  "totals": {
+    "passed": 5545,
+    "failed": 0,
+    "skipped": 2,
+    "errors": 0,
+    "total": 5547
+  },
+  "strict_live": false,
+  "release_package_gate": false
+}

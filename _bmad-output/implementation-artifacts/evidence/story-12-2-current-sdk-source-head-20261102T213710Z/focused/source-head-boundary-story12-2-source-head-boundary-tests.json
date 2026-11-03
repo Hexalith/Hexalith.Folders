@@ -1,0 +1,66 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "run-date": "2026-11-02",
+      "run-time": "21:18:54",
+      "errors": "0",
+      "failed": "0",
+      "passed": "7",
+      "skipped": "0",
+      "time": "0.184",
+      "total": "7"
+    }
+  ],
+  "tests": [
+    {
+      "name": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests.SdkRawMetadataAdapterAlsoFailsClosedWithoutSendingAnActorRequest",
+      "result": "Pass",
+      "time": "0.056",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "SdkRawMetadataAdapterAlsoFailsClosedWithoutSendingAnActorRequest"
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests.LegacySourceHeadIsRefusedBeforeAuthorityAcquisitionOrTransport",
+      "result": "Pass",
+      "time": "0.016",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "LegacySourceHeadIsRefusedBeforeAuthorityAcquisitionOrTransport"
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests.ProvenZeroSourceHeadRetainsItsExistingSafeNotFoundOutcome",
+      "result": "Pass",
+      "time": "0.006",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "ProvenZeroSourceHeadRetainsItsExistingSafeNotFoundOutcome"
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests.RefusedIndependentReadDoesNotTurnMissingProjectionIntoAProvenZeroHead",
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "RefusedIndependentReadDoesNotTurnMissingProjectionIntoAProvenZeroHead"
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests.NativeGatewayMissingUnsupportedAndUnavailableEvidenceDoesNotInventAZeroObservation(scenario: \\\"missing\\\")",
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "NativeGatewayMissingUnsupportedAndUnavailableEvidenceDoesNotInventAZeroObservation"
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests.NativeGatewayMissingUnsupportedAndUnavailableEvidenceDoesNotInventAZeroObservation(scenario: \\\"unsupported-zero\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "NativeGatewayMissingUnsupportedAndUnavailableEvidenceDoesNotInventAZeroObservation"
+    },
+    {
+      "name": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests.NativeGatewayMissingUnsupportedAndUnavailableEvidenceDoesNotInventAZeroObservation(scenario: \\\"backend\\\")",
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "NativeGatewayMissingUnsupportedAndUnavailableEvidenceDoesNotInventAZeroObservation"
+    }
+  ]
+}

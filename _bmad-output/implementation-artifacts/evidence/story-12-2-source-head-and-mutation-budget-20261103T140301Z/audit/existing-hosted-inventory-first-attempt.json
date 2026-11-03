@@ -1,0 +1,10 @@
+{
+  "command": "python3 scripts/generate-pd10-v2-conformance-set.py --repository-root .",
+  "exit_code": 1,
+  "result": "RuntimeError: Candidate inventory omits runtime/test compile inputs",
+  "missing": [
+    "tests/Hexalith.Folders.Server.Tests/LifecycleDiagnosticBackgroundService.cs",
+    "tests/Hexalith.Folders.Server.Tests/LifecycleUnsupportedProvider.cs"
+  ],
+  "disposition": "Retained initial inventory failure; add exact missing compile inputs before final regeneration."
+}
