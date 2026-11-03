@@ -28,6 +28,12 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
     {
         try
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (OrganizationAclOperationalSource.IsCompletePrefix(request))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                return DomainProjectionHandlerResult.Completed();
+            }
             OperationalStatusEvent[] events = Read(request);
             var result = await writer.ApplyAsync(request.TenantId, request.AggregateId, dispatchId,
                 events, cancellationToken).ConfigureAwait(false);
@@ -55,6 +61,9 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
         CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
+        cancellationToken.ThrowIfCancellationRequested();
+        if (OrganizationAclOperationalSource.IsCompletePrefix(request))
+            throw new InvalidOperationException("Organization ACL source has no Folder operations; use bounded shared partition transport.");
         OperationalStatusEvent[] events = Read(request);
         // The SDK verifies original global positions against the sealed capture before invoking us.
         // Domain folding verifies the contiguous 1..N owner prefix, independently of later appends.
@@ -71,13 +80,24 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
     /// <inheritdoc/>
     public SharedProjectionScope CreateScope(string tenantId) => OperationalStatusGeneration.Scope(tenantId);
     /// <inheritdoc/>
-    public Task<IReadOnlyList<ReadModelBatchOperation>> FoldCatchUpAsync(SharedProjectionDelivery delivery,
+    public async Task<IReadOnlyList<ReadModelBatchOperation>> FoldCatchUpAsync(SharedProjectionDelivery delivery,
         long generation, SharedProjectionEpochCoordinator coordinator, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(delivery);
         if (_foldDiagnostics.IsEnabled("FoldCatchUp"))
             _foldDiagnostics.Write("FoldCatchUp", new KeyValuePair<string, long>(delivery.SourceStream, delivery.EnvelopePosition));
-        return writer.FoldCatchUpAsync(delivery, generation, cancellationToken);
+        ProjectionRequest request = JsonSerializer.Deserialize<ProjectionRequest>(delivery.CanonicalPayload, JsonSerializerOptions.Web)
+            ?? throw new InvalidOperationException("Operational delivery is unreadable.");
+        if (request.Domain != "folders" || request.AggregateId != delivery.SourceStream || request.Events.Length != 1)
+            throw new InvalidOperationException("Operational delivery scope conflicts.");
+        if (OrganizationAclOperationalSource.IsCompletePrefix(request))
+        {
+            if (request.Events[0].GlobalPosition != delivery.EnvelopePosition || request.Events[0].SequenceNumber != delivery.OwnerSequenceNumber)
+                throw new InvalidOperationException("Organization ACL delivery position differs from its source.");
+            cancellationToken.ThrowIfCancellationRequested();
+            return [];
+        }
+        return await writer.FoldCatchUpAsync(delivery, generation, cancellationToken).ConfigureAwait(false);
     }
     /// <inheritdoc/>
     public Task<DomainSharedProjectionRebuildCandidate> CreateEmptyCandidateAsync(
@@ -103,6 +123,11 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
         ArgumentNullException.ThrowIfNull(aggregateHistory);
         if (aggregateHistory.TenantId != identity.TenantId || aggregateHistory.Domain != Domain)
             throw new InvalidOperationException("Operational rebuild partition scope conflicts.");
+        if (OrganizationAclOperationalSource.IsCompletePrefix(aggregateHistory))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return [JsonSerializer.SerializeToUtf8Bytes(Array.Empty<SharedProjectionMutation>())];
+        }
         var plan = await PrepareRebuildAsync(aggregateHistory, identity.OperationId, cancellationToken).ConfigureAwait(false);
         List<ReadOnlyMemory<byte>> chunks = [];
         List<SharedProjectionMutation> page = [];

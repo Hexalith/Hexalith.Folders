@@ -1616,6 +1616,7 @@ public sealed partial class FolderDomainProcessor(
 
     private static DomainResult Rejection(CommandEnvelope envelope, FolderResultCode code, FolderResult? result)
     {
+        if (Enum.IsDefined(code)) Activity.Current?.SetTag("hexalith.folders.rejection.result_code", code.ToString());
         // FolderCommandRejected.Create canonicalizes correlation/idempotency identifiers
         // before they enter the rejection event so that an internal /process caller cannot
         // smuggle CR/LF or oversized values into downstream log/trace surfaces. Values that
