@@ -1,6 +1,4 @@
 using Hexalith.EventStore.Client.Streams;
-using Hexalith.EventStore.DomainService;
-using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.EventStore.ServiceDefaults.Routing;
 using Hexalith.Folders.Authorization;
 
@@ -21,27 +19,25 @@ internal static class FoldersDevelopmentOwnerMetadata
         if (!builder.Environment.IsDevelopment()
             || string.IsNullOrWhiteSpace(builder.Configuration["EventStore:RouteCatalog:DevelopmentBootstrap:Directory"]))
             throw new InvalidOperationException("Private owner metadata requires the selected Development catalog.");
-        const string clientName = "folders-bound-owner-metadata";
-        builder.Services.AddHttpClient(clientName, http =>
+        ServiceDescriptor[] registrations = builder.Services.Where(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader)).ToArray();
+        if (registrations.Length != 1 || registrations[0].IsKeyedService
+            || registrations[0].Lifetime != ServiceLifetime.Transient || registrations[0].ImplementationFactory is not { } factory)
+            throw new InvalidOperationException("Private owner metadata requires the existing public SDK reader factory.");
+        builder.Services.Replace(ServiceDescriptor.Describe(typeof(INativeSourceMetadataReader), provider =>
         {
-            string endpoint = builder.Configuration["DAPR_HTTP_ENDPOINT"]
-                ?? "http://127.0.0.1:" + builder.Configuration["DAPR_HTTP_PORT"];
-            http.BaseAddress = new Uri(endpoint.TrimEnd('/') + "/v1.0/invoke/eventstore/method/");
-            http.Timeout = TimeSpan.FromSeconds(3);
-        });
-        builder.Services.AddSingleton<INativeSourceMetadataReader>(provider =>
-        {
-            INativeSourceMetadataReader reader = new BoundOwnerNativeSourceMetadataReader(
-                provider.GetRequiredService<IHttpClientFactory>(), clientName, provider.GetRequiredService<IWorkloadAssertionIssuer>(),
-                "folders", builder.Configuration["Authentication:BoundStreamRead:PrivateKey"]
-                    ?? throw new InvalidOperationException("The owner proof key is missing."), ["folders"], TimeProvider.System);
-            return builder.Configuration.GetValue<bool>("Folders:EventStore:OwnerMetadataReads:DiagnosticsEnabled")
-                && provider.GetRequiredService<IOptions<RouteCatalogHostOptions>>().Value is
+            if (factory(provider) is not GatewayNativeSourceMetadataReader reader)
+                throw new InvalidOperationException("Private owner metadata requires the actual public SDK reader.");
+            if (!builder.Configuration.GetValue<bool>("Folders:EventStore:OwnerMetadataReads:DiagnosticsEnabled")
+                || provider.GetRequiredService<IOptions<RouteCatalogHostOptions>>().Value is not
                     { DevelopmentFixture: true, Profile: "Development", RequireTechnicalHttpBinding: true }
-                && provider.GetRequiredService<IHostEnvironment>().IsDevelopment()
-                ? new FoldersDevelopmentOwnerMetadataDiagnostics(reader,
-                    provider.GetRequiredService<ILogger<FoldersDevelopmentOwnerMetadataDiagnostics>>()) : reader;
-        });
+                || !provider.GetRequiredService<IHostEnvironment>().IsDevelopment()) return reader;
+            try
+            {
+                return provider.GetService<ILogger<FoldersDevelopmentOwnerMetadataDiagnostics>>() is { } logger
+                    ? new FoldersDevelopmentOwnerMetadataDiagnostics(reader, logger) : reader;
+            }
+            catch { return reader; /* Optional diagnostic service resolution cannot replace the SDK reader. */ }
+        }, registrations[0].Lifetime));
         builder.Services.Replace(ServiceDescriptor.Singleton<IOrganizationStreamSequenceReader, GatewayOrganizationStreamSequenceReader>());
 #else
         throw new InvalidOperationException("Private owner metadata requires a local Debug source build.");

@@ -32,7 +32,7 @@ internal static class FolderDurabilityBootstrapConfiguration
         if (!administrator["attributes"]!["global_admin"]!.AsArray().Any(value => value!.GetValue<string>() == "true"))
             throw new InvalidOperationException("The disposable bootstrap principal is not the designated administrator.");
         JsonArray permissions = administrator["attributes"]!["permissions"]!.AsArray();
-        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" })
+        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "tenants:update", "global-administrators:read", "tenants:read" })
             if (!permissions.Any(value => value!.GetValue<string>() == permission)) permissions.Add(permission);
         JsonArray tenantGrants = administrator["attributes"]!["tenants"]!.AsArray();
         for (int index = tenantGrants.Count - 1; index >= 0; index--)

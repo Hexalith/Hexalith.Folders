@@ -1785,9 +1785,9 @@ pending-decision snapshot remain immutable. Production five-minute freshness, ap
 mutation evidence, all other grants/deadlines, original strict/capacity bodies and folder retained
 prefix assertions remain unchanged. No other SDK, production or dependency change is included.
 
-- [ ] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs`: add exactly
+- [x] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs`: add exactly
   `tenants:update` once to the existing disposable administrator, retaining all other realm semantics.
-- [ ] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs` and focused single-type
+- [x] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs` and focused single-type
   helpers: maintain only the fixture's own tenant through the existing canonical authenticated
   `UpdateTenant`, with its original name/description and administrator. Use bounded foreground
   positive-evidence/restart hooks, a conservative two-minute trigger, and caller cancellation.
@@ -1796,7 +1796,7 @@ prefix assertions remain unchanged. No other SDK, production or dependency chang
   roles and configuration. Missing/malformed/conflicting/failed/undelivered evidence fails the fixture;
   no background heartbeat, global client hook, direct source/derived write, old-event restamp, grant
   churn or stale authorization is permitted. Reuse existing source/catalog/issuer guards.
-- [ ] Adjacent AppHost fixture-policy/realm tests: qualify the exact added permission and unchanged
+- [x] Adjacent AppHost fixture-policy/realm tests: qualify the exact added permission and unchanged
   other identities/grants; no command when sufficiently fresh; own-tenant canonical command shape;
   rejected/failed or unobserved source/projection cannot establish freshness; unchanged authority;
   bounded cancellation. Preserve existing production stale-denial controls and all original bodies.
@@ -1810,3 +1810,186 @@ Source inspection established that normal UpdateTenant always emits TenantUpdate
 active tenant and changes only name/description. Its exact `tenants:update` admission has no admin
 bypass. Repeating AddUserToTenant for an existing member is rejected. This exception qualifies an
 actively maintained disposable tenant and does not qualify indefinite idle-tenant access.
+
+
+### Foreground tenant maintenance focused handoff — 2026-11-03
+
+Implemented only the approved disposable administrator permission and foreground fixture path.
+The fixture reads its authenticated canonical platform Tenants source and normal Workers projection
+before positive folder-evidence and before/after host-restart phases. At a native source age of at
+least two minutes, it submits the original metadata through UpdateTenant, requires matching Completed
+status, original correlation/causation and human attribution, unchanged retained Tenants prefix, then
+exact Workers message/sequence/native timestamp evidence with unchanged enabled state, principals,
+roles and configuration. A ninety-second whole-maintenance linked deadline includes gate wait and
+all command/source/projection I/O. Existing callers retain the existing submit/status defaults;
+production five-minute freshness, the approved two-second mutation budget, all other existing limits,
+original strict/capacity bodies, folder retained-prefix assertions and production realm are unchanged.
+The only new log is a closed payload-free maintenance PASS record after the complete barrier.
+
+The final focused selection passes 101 cases (47 new maintenance controls plus 54 retained
+bootstrap/realm/scope/source-reader controls), zero failures/errors/skips, in 5.525 seconds. The
+unchanged current-source Domain output passes 77 tenant/layered/task authorization controls,
+including the existing stale-denial cases, in 0.222 seconds. These are separate selections; earlier
+95-case execution overlaps the final fixture selection and is not added to it. AppHost test builds
+passed with zero warnings/errors in 59.91 and 51.70 seconds. The first build's six new-test CA2007
+errors were corrected and its receipt retained. A final XML-summary-only rebuild then encountered
+three external SDK CS8300 conflict-marker errors in SubmitCommandRequestValidator.cs; no SDK source
+was edited in this phase, and the markers had already disappeared at immediate read-only capture.
+The final focused run used the preceding successful output containing all 47 new controls. The
+comment-only source addition and external concurrent SDK/output activity require the parent's full
+current-source runtime rebuild and source/PDB/dependency audit before live qualification.
+
+Private phase receipts, before/after hashes, exact commands, source patch and runner handoff are in
+`/tmp/story12-2-tenant-maintenance-implementation-20261103/`. No live test ran in this implementation
+phase, so the parent runtime/audit/live checkbox remains open. The earlier strict failures and sealed
+packets are unchanged. This qualifies the fixture policy for an actively maintained tenant; it does
+not claim indefinite idle-tenant access, live acceptance, capacity, SM4, SDK/package parity or story
+completion. This phase changed no production policy, authority guard, grant beyond the single fixture
+exception, dependency pin, frozen artifact, Git state or public v2 exposure. The parent subsequently
+confirmed an external EventStore merge in progress and externally advanced SDK HEAD; the prior broad
+SDK/consumer runs do not qualify that new producer cohort. No external merge/source edits were resolved
+or incorporated by this fixture phase; coherent producer qualification remains with the parent.
+
+
+### Current-cohort qualification follow-up — 2026-11-03
+
+External work merged a new EventStore producer cohort while this fixture implementation was being
+qualified. The parent preserved that work, restored with both source flags, rebuilt runtime/Memories
+with zero warnings/errors, and verified all92selected modules plus the observer against source/PDB,
+one SHA/MVID per selected assembly, and project-only selected assets. Rebuilt101fixture and77stale
+controls pass. One build observed an unrelated McpCli HEAD-only commit; its source map did not change.
+The existing sealed packets remain historical and unchanged.
+
+The unchanged strict class failed twice before reaching the new tenant-maintenance hook: once on a
+retained UnavailableProjection rejection where ValidationFailed is required (137.433s), and once at
+the unknown-profile HTTP retry deadline (195.562s). The latter has a positively identified five-second
+ConfigureProviderBinding domain invocation deadline:78ms acquisition and4922ms transport in the failed
+span. Its receiver/handler/reply boundary is not observed by the enabled categories. No deadline,
+authorization, mapper, retained outcome or strict assertion was changed to accept either failure.
+All owned resources are removed; unrelated resources were preserved.
+
+- [x] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs` and
+  `FolderDurabilityAcceptanceFixture.cs`: add a separate real-AppHost control for the approved
+  maintenance path, since the strict class currently stops earlier. Expose only the existing hook
+  internally with its bool result. Establish the real verified baseline, snapshot persisted Workers
+  authority/evidence, wait for the ORIGINAL native timestamp to reach the existing two-minute trigger
+  using real elapsed time/caller cancellation, and require genuine maintenance and exactly one new
+  persisted message/watermark/timestamp with unchanged authority and prior evidence. Immediate
+  fresh execution must be a no-op with identical persisted state. No fake clock, forced renewal flag,
+  direct write, new permission, new source-reader exposure or replacement of strict/capacity bodies.
+  This separate control can qualify active fixture maintenance, never full durability acceptance.
+- [x] In the root-declared EventStore owning repository, correct fixed test-only credential-shaped
+  values in `tests/Hexalith.EventStore.DomainService.Tests/NativeSourceMetadataCompositionTests.cs`
+  and `tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceMetadataCatalogObservationTests.cs`
+  using generated per-test ephemeral values and exact shared expectations. Keep malformed-key
+  refusal meaningful and all authentication/catalog assertions intact. Current SecretsProtectionTests
+  reports only these prior story-owned test lines. Do not exempt paths or weaken the scanner.
+- [x] Build/run focused controls serially after parent broad qualification releases outputs. Retain
+  the new SDK published-package authenticity failure separately: its pinned expected SHA is
+  e21f5ac7b5f332f1921f70a249ab2032b9978d56ffdd6641a0a4b94d04850bdc, but the restored archive is
+  81a33bb7562507004d4dfb8da2365cdea1fb874ff53798787bff110c0d9573ef. Do not replace its expected
+  hash, skip it, change package pins, or claim the later ABI assertions executed.
+- [ ] Parent rebuild/audit and execute the new real maintenance control; preserve the failed strict
+  runs and keep the original strict row open until it actually passes. A further same-code strict
+  diagnosis may enable only existing receiver/ASP.NET timing categories to locate the observed remote
+  interval; it does not authorize timeout, guard, outcome or assertion changes. Remaining SDK/package,
+  capacity, governance/PD10, SM4 and whole-story review gates retain their separate dispositions.
+
+
+### Current-cohort follow-up focused handoff — 2026-11-03
+
+Added the separate real-AppHost maintenance control and exposed only the existing fixture hook's
+internal bool result. The control establishes the real verified baseline, waits for its original
+native timestamp to age naturally to the unchanged two-minute threshold, requires genuine source
+maintenance, independently reads persisted Workers evidence/authority, and requires an immediate
+fresh no-op with identical persisted state. It adds no credential exposure, forced-renewal flag,
+fake clock, background heartbeat, permission, source write or strict/capacity-body change. Discovery
+finds the new class/method; no live execution or acceptance claim occurred in this implementation phase.
+
+The two prior-owned SDK tests now use generated per-test values with exact shared expectations.
+The malformed key is generated but deterministically invalid DER; valid, missing-key, bad-key and
+foreign-domain transport/issuer refusal assertions remain intact. The catalog observation still
+requires that the exact private sentinel is absent. Scenario selection moved outside the credential
+assignment after the unchanged scanner correctly continued to report its literal-valued expression.
+Final SDK selections pass four composition cases in 0.283s and 275 catalog/scanner cases in 5.548s,
+zero failures/errors/skips. Earlier overlapping executions and the intermediate one-case scanner
+failure are retained, not added to these counts. SDK test builds pass with zero warnings/errors.
+The first SDK build encountered duplicate packaged/source Commons assets; focused restores with both
+source flags corrected generated assets without changing sources or dependency pins.
+
+The full AppHost test build is blocked by an external production edit: untouched
+FoldersDevelopmentOwnerMetadata.cs:34 references BoundOwnerNativeSourceMetadataReader, which is
+absent from the selected SDK. No external production or SDK capability repair was attempted.
+The permitted narrow fallback with BuildProjectReferences=false compiles the fixture/control against
+existing referenced outputs with zero warnings/errors in 5.71s; its 101 retained fixture controls pass
+in 5.321s. This checks the changed test code, not a coherent current-source runtime. Parent must resolve
+or coordinate the separately owned producer/composition prerequisite before a full runtime rebuild,
+source/PDB/dependency audit and real standalone control. No SDK package authenticity hash/assertion,
+scanner exemption, product guard, mapper, deadline, frozen artifact or Git state changed in this phase.
+The earlier published Tenant7 authenticity failure before ABI assertions remains separate and open.
+
+Exact phase commands, failure receipts, before/after source and selected-output hashes, root/SDK
+patches and runner handoff are private under `/tmp/story12-2-current-cohort-followup-20261103/`.
+Parent retains current broad results and owns pending inventory refresh for external/new compile
+inputs and SourceSHA, Contracts rerun, runtime rebuild and actual standalone execution. The parent
+execution checkbox above, original strict acceptance, capacity, SDK/package, PD10/governance, SM4 and
+whole-story review gates remain open with their separate dispositions. No new live topology was run.
+
+
+### Bounded current public-composition repair — 2026-11-03
+
+The external Root commit9e26eb8f4296fe2fdef70cd5858341a55f7ea9e4 adds a Development-only owner
+metadata helper that references BoundOwnerNativeSourceMetadataReader, absent from the current SDK.
+The coherent source build now fails CS0246 at FoldersDevelopmentOwnerMetadata.cs:34. Do not revive
+a private transport or mint/relabel a caller. The already-approved supported public-composition
+repair applies: FoldersServerServiceCollectionExtensions already registers the public
+AddEventStoreGatewayNativeSourceMetadataReader("folders") before this private helper is invoked.
+
+- [x] `src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadata.cs`: reuse that existing public
+  SDK reader registration/factory with its existing lifetime, rather than constructing the unavailable
+  class or a separate fixed-caller/fixed-destination HTTP client. Preserve the explicit enabled flag,
+  Debug/source restriction, Development/catalog-directory guards, optional diagnostics guards and
+  GatewayOrganizationStreamSequenceReader selection. Preserve actual configured workload/key/AppId,
+  metadata-only shape/domain, human default transport, all proofs/denials and existing deadlines.
+  Any unexpected/missing composition must fail closed; no source/actor/persistence protocol change.
+- [x] Adjacent Server composition controls: qualify the guarded public SDK composition, exact normal
+  reader/factory/lifetime and diagnostic decoration, unchanged disabled/non-Development behavior and
+  preserved default human transport. Build/run focused checks serially, retain the preceding CS0246
+  and stale-output fallback limits, then release to parent for full coherent rebuild/source audit.
+
+This is the previously approved minimal supported public-composition repair; it adds no new caller,
+grant, endpoint, public v2, timeout exception, package/gitlink update or publication authority. Keep
+all external product edits beyond this precise unavailable-type composition point untouched.
+
+
+### Supported public-composition repair focused handoff — 2026-11-03
+
+The bounded helper repair reuses the already registered public SDK metadata-reader factory and its
+transient lifetime. It removes the unavailable class and unused fixed caller/destination HTTP client;
+it neither registers a different source capability nor changes the SDK. The configured SDK workload,
+key, AppId, exact metadata-only domain/shape and independent human transport remain owned by that
+original factory. Missing, ambiguous, keyed, wrong-lifetime or non-factory registrations fail closed;
+a factory returning a different adapter also refuses. Optional decoration keeps the original enable,
+Debug/source, Development, catalog and diagnostic guards, and advisory logger resolution cannot
+replace the original reader. GatewayOrganizationStreamSequenceReader selection remains unchanged.
+Every other external product edit is preserved.
+
+The full current-source Server test build passes with zero warnings/errors in 10.20s, and 36 focused
+composition/source-boundary cases pass with zero failures/errors/skips in 3.230s. These include 15
+composition controls for real public factory reuse, transient resolution, default human transport,
+optional diagnostics/logger failure, disabled/environment/catalog guards and unexpected-composition
+refusals. The complete current-source AppHost test build now passes with zero warnings/errors in
+88.50s; 101 retained fixture controls pass in 5.487s. Discovery identifies the new standalone control;
+it has not been executed. Earlier fallback/intermediate results overlap these selections and are
+retained as history, not added to the final counts. SDK composition four-case and catalog/scanner
+275-case passes from this same follow-up remain separately recorded; no full-suite producer or ABI
+success is inferred.
+
+The prior CS0246 and stale-output fallback are retained but superseded as compile dispositions by
+this supported repair and successful full build. Parent now owns full runtime/Memories rebuild,
+source/PDB/dependency audit, pending-only compile inventory/SourceSHA refresh, Contracts rerun and
+actual natural-age standalone execution. Original strict/capacity bodies and package authenticity
+pins/scanner assertions are unchanged. The original strict failures, producer/package authenticity,
+capacity, PD10/governance, SM4 and whole-story review remain distinct open gates; standalone success
+would qualify only active tenant maintenance. No live topology, Git mutation, dependency change,
+frozen-artifact update or publication occurred in this implementation phase.

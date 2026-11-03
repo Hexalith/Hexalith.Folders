@@ -23,6 +23,7 @@ using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.OperationalStatus;
+using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Tenants.Contracts.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -66,6 +67,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     private string _projectWorkloadToken = string.Empty;
     private string _metadataWorkloadToken = string.Empty;
     private string? _namedCatalogFingerprint;
+    private FolderDurabilityTenantMaintenance? _tenantMaintenance;
 
     /// <summary>Gets whether the explicit integration opt-in is present.</summary>
     public bool Enabled { get; } = Environment.GetEnvironmentVariable(AspireFoldersAppHostFixture.OptInEnvironmentVariable)
@@ -233,6 +235,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     /// <summary>Observes authorized current ACL and operational watermarks before the next positive mutation.</summary>
     public async Task WaitForCurrentFolderEvidenceAsync(string folderId, string phase, bool replica = false)
     {
+        await MaintainTenantAsync(TestContext.Current.CancellationToken).ConfigureAwait(false);
         using HttpClient client = replica ? CreateContentReplicaClient() : CreateFoldersClient();
         using HttpRequestMessage request = new(HttpMethod.Get, $"/api/v1/folders/{folderId}/effective-permissions");
         await FolderDurabilityHttp.WaitForCurrentFolderAsync(client, request, folderId, phase, async token =>
@@ -508,6 +511,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     /// <summary>Restarts the domain hosts while retaining the same identity provider, broker and state store.</summary>
     public async Task<IReadOnlyDictionary<string, (int Before, int After)>> RestartHostsAsync()
     {
+        await MaintainTenantAsync(TestContext.Current.CancellationToken).ConfigureAwait(false);
         Dictionary<string, (int Before, int After)> identities = [];
         foreach (string resource in OwningHosts)
         {
@@ -525,6 +529,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             FolderDurabilityRuntimeBinding.Record(resource, after);
         }
 
+        await MaintainTenantAsync(TestContext.Current.CancellationToken).ConfigureAwait(false);
         return identities;
     }
 
@@ -618,7 +623,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     }
 
     /// <summary>Compares an HTTP status without including credentials or protected response payloads.</summary>
-    public static async Task RequireStatusAsync(HttpResponseMessage response, HttpStatusCode expected, string operation)
+    public static async Task RequireStatusAsync(HttpResponseMessage response, HttpStatusCode expected, string operation, CancellationToken? cancellationToken = null)
     {
         ArgumentNullException.ThrowIfNull(response);
         if (response.StatusCode != expected)
@@ -626,7 +631,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             string code = "unavailable";
             try
             {
-                JsonElement body = await response.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(false);
+                JsonElement body = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken ?? TestContext.Current.CancellationToken).ConfigureAwait(false);
                 if (body.TryGetProperty("code", out JsonElement value) && value.ValueKind == JsonValueKind.String)
                 {
                     code = value.GetString()!;
@@ -1429,27 +1434,30 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         return (await response.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(false)).GetProperty("access_token").GetString()!;
     }
 
-    internal async Task<JsonElement> SubmitAsync(string tenant, string domain, string aggregate, string command, object payload, string token)
+    /// <summary>Submits a real scoped command and observes Completed, optionally bounded by a foreground caller and original identities.</summary>
+    internal async Task<JsonElement> SubmitAsync(string tenant, string domain, string aggregate, string command, object payload, string token,
+        CancellationToken? cancellationToken = null, string? messageId = null, string? correlationId = null)
     {
+        CancellationToken caller = cancellationToken ?? TestContext.Current.CancellationToken;
         // Each command fans out into internal actor/projection requests. Keep the acceptance driver
         // below the existing consumer limiter; rate-limit/load qualification is a separate concern.
-        await Task.Delay(TimeSpan.FromSeconds(1), TestContext.Current.CancellationToken).ConfigureAwait(false);
+        await Task.Delay(TimeSpan.FromSeconds(1), caller).ConfigureAwait(false);
         using HttpClient client = App.CreateHttpClient("eventstore", "http");
         client.Timeout = TimeSpan.FromSeconds(40);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/commands")
         {
-            Content = JsonContent.Create(new SubmitCommandRequest(NewId(), tenant, domain, aggregate, command, JsonSerializer.SerializeToElement(payload),
-                Extensions: new Dictionary<string, string> { ["taskId"] = NewId() },
+            Content = JsonContent.Create(new SubmitCommandRequest(messageId ?? NewId(), tenant, domain, aggregate, command, JsonSerializer.SerializeToElement(payload),
+                CorrelationId: correlationId, Extensions: new Dictionary<string, string> { ["taskId"] = NewId() },
                 IdempotencyKey: domain == "folders" ? NewId() : null)),
         };
-        request.Headers.Add("X-Correlation-Id", NewId());
+        request.Headers.Add("X-Correlation-Id", correlationId ?? NewId());
         FolderDurabilityGatewayScope.Apply(request, tenant);
-        using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, false, TestContext.Current.CancellationToken).ConfigureAwait(false);
-        await RequireStatusAsync(response, HttpStatusCode.Accepted, "Authenticated " + command).ConfigureAwait(false);
-        JsonElement accepted = await response.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(false);
+        using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, false, caller).ConfigureAwait(false);
+        await RequireStatusAsync(response, HttpStatusCode.Accepted, "Authenticated " + command, caller).ConfigureAwait(false);
+        JsonElement accepted = await response.Content.ReadFromJsonAsync<JsonElement>(caller).ConfigureAwait(false);
         string statusKey = accepted.GetProperty("messageId").GetString()!;
-        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
+        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(caller);
         deadline.CancelAfter(TimeSpan.FromSeconds(90));
         while (true)
         {
@@ -1471,10 +1479,39 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
                 }
             }
             else if (status.StatusCode != HttpStatusCode.NotFound)
-                await RequireStatusAsync(status, HttpStatusCode.OK, "Authenticated command status").ConfigureAwait(false);
+                await RequireStatusAsync(status, HttpStatusCode.OK, "Authenticated command status", deadline.Token).ConfigureAwait(false);
 
             await Task.Delay(1000, deadline.Token).ConfigureAwait(false);
         }
+    }
+
+    /// <summary>Runs the existing real-source maintenance barrier and reports whether it submitted a genuine update.</summary>
+    internal async Task<bool> MaintainTenantAsync(CancellationToken cancellationToken)
+    {
+        _tenantMaintenance ??= new FolderDurabilityTenantMaintenance(TenantId, PrincipalId, ReadTenantSourceAsync,
+            token => new EventStoreFolderTenantAccessProjectionStore(RawStore).GetAsync(TenantId, token),
+            (command, correlation, token) => SubmitAsync(command.Tenant, command.Domain, command.AggregateId,
+                command.CommandType, command.Payload, _adminToken, token, command.MessageId, correlation));
+        bool maintained = await _tenantMaintenance.EnsureFreshAsync(cancellationToken).ConfigureAwait(false);
+        if (maintained)
+            Console.WriteLine("PASS tenant maintenance: Completed; original TenantUpdated matched; Workers sequence/timestamp matched; authority unchanged.");
+        return maintained;
+    }
+
+    private async Task<StreamReadPage> ReadTenantSourceAsync(CancellationToken cancellationToken)
+    {
+        using HttpClient client = App.CreateHttpClient("eventstore", "http");
+        client.Timeout = TimeSpan.FromSeconds(40);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+        using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/streams/read")
+        {
+            Content = JsonContent.Create(new StreamReadRequest(TenantPlatformScopes.Tenants, "tenants", TenantId, PageSize: 1000)),
+        };
+        FolderDurabilityGatewayScope.Apply(request, TenantPlatformScopes.Tenants);
+        using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, true, cancellationToken).ConfigureAwait(false);
+        await RequireStatusAsync(response, HttpStatusCode.OK, "Authenticated tenant maintenance source", cancellationToken).ConfigureAwait(false);
+        return await response.Content.ReadFromJsonAsync<StreamReadPage>(Json, cancellationToken).ConfigureAwait(false)
+            ?? throw new InvalidOperationException("Tenant maintenance source is missing.");
     }
 
     private void BindCommittedCatalog(HttpRequestMessage request, string host = "folders")

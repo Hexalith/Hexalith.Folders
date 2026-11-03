@@ -138,13 +138,14 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
             TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == BootstrapGlobalAdmin.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
             TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == CreateTenant.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
             TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == AddUserToTenant.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
+            TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == UpdateTenant.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
             TenantCatalogDeclarations.Queries.Single(query => query.MessageType == "get-global-administrators").PlatformAdmission!.RequiredHumanPermission,
             TenantCatalogDeclarations.Queries.Single(query => query.MessageType == "list-tenants").PlatformAdmission!.RequiredHumanPermission,
         ];
-        required.ShouldBe(new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" });
+        required.ShouldBe(new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "tenants:update", "global-administrators:read", "tenants:read" });
         TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == BootstrapGlobalAdmin.CommandType)
             .Route.PlatformAdmission!.Namespace.ShouldBe("platform:global-administrators");
-        foreach (string operation in new[] { CreateTenant.CommandType, AddUserToTenant.CommandType })
+        foreach (string operation in new[] { CreateTenant.CommandType, AddUserToTenant.CommandType, UpdateTenant.CommandType })
             TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == operation)
                 .Route.PlatformAdmission!.Namespace.ShouldBe("platform:tenants");
         JsonObject administrator = realm["users"]!.AsArray().Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
@@ -206,7 +207,7 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
         JsonArray expected = original["users"]!.DeepClone().AsArray();
         JsonObject administrator = expected.Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
         JsonArray permissions = administrator["attributes"]!["permissions"]!.AsArray();
-        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" })
+        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "tenants:update", "global-administrators:read", "tenants:read" })
             permissions.Add(permission);
         JsonArray grants = administrator["attributes"]!["tenants"]!.AsArray();
         grants.Remove(grants.Single(grant => grant!.GetValue<string>() == "system"));
