@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <IsPackable>false</IsPackable>
+    <DefineConstants Condition="'$(HexalithEventStoreFromSource)' == 'true'">$(DefineConstants);FOLDERS_OWNER_METADATA_SOURCE</DefineConstants>
   </PropertyGroup>
   <ItemGroup Condition="'$(UseHexalithProjectReferences)' == 'true'">
-    <PackageReference Include="Hexalith.Commons.UniqueIds" ExcludeAssets="all" />
+    <PackageReference Include="Hexalith.Commons.UniqueIds" ExcludeAssets="all" Condition="'$(HexalithCommonsFromSource)' != 'true'" />
     <ProjectReference Include="$(HexalithCommonsRoot)/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj" />
   </ItemGroup>
   <ItemGroup>

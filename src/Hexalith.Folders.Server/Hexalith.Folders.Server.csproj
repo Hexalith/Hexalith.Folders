@@ -5,6 +5,7 @@
     <EnableContainer>true</EnableContainer>
     <ContainerRepository>hexalith-folders-server</ContainerRepository>
     <HexalithContainerServiceName>server</HexalithContainerServiceName>
+    <DefineConstants Condition="'$(HexalithEventStoreFromSource)' == 'true'">$(DefineConstants);FOLDERS_OWNER_METADATA_SOURCE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Hexalith.Folders.Server.Tests" />

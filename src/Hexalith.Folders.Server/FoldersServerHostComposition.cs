@@ -87,6 +87,7 @@ public static class FoldersServerHostComposition
             FoldersRuntimeCatalogDeclarations.Routes.Where(route => route.Kind == "projection").ToArray()));
         builder.Services.AddEventStoreDevelopmentDomainCatalog(builder.Configuration,
             typeof(FoldersRuntimeCatalogDeclarations).Assembly);
+        builder.AddFoldersDevelopmentOwnerMetadata();
         builder.Services.AddHostedService<FolderRepositoryStartupAssertion>();
 
         // Validate scoped service lifetimes at build time so a missing or misconfigured DI

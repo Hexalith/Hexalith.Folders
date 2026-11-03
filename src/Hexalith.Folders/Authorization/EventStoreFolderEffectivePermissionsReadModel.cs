@@ -83,23 +83,72 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
         }
 
         long folderHead;
+        EffectivePermissionsReadModelResult baseline;
+        using CancellationTokenSource observations = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        Task<long>? folderRead = null;
+        Task<EffectivePermissionsReadModelResult>? organizationRead = null;
         try
         {
-            folderHead = await sequenceReader.GetCurrentSequenceAsync(request.ManagedTenantId,
-                request.FolderId, cancellationToken).ConfigureAwait(false);
+            try
+            {
+                folderRead = sequenceReader.GetCurrentSequenceAsync(request.ManagedTenantId,
+                    request.FolderId, observations.Token);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                return EffectivePermissionsReadModelResult.Unavailable("folder_stream_unavailable", now);
+            }
+
+            // The independent current Folder and Organization sources share only the caller's
+            // deadline. Keep both fresh observations; neither supplies authority to the other.
+            try
+            {
+                organizationRead = organizationReadModel.GetAsync(
+                    request with { FolderId = FolderStreamName.ReservedOrganizationPermissionScope }, observations.Token);
+            }
+            catch (Exception ex)
+            {
+                organizationRead = Task.FromException<EffectivePermissionsReadModelResult>(ex);
+            }
+            try
+            {
+                folderHead = await folderRead.ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                return EffectivePermissionsReadModelResult.Unavailable("folder_stream_unavailable", now);
+            }
+            if (folderHead < folder.LastSequence)
+            {
+                return EffectivePermissionsReadModelResult.Malformed(freshness);
+            }
+            baseline = await organizationRead.ConfigureAwait(false);
         }
-        catch (Exception ex) when (ex is not OperationCanceledException)
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
-            return EffectivePermissionsReadModelResult.Unavailable("folder_stream_unavailable", now);
+            cancellationToken.ThrowIfCancellationRequested();
+            throw;
+        }
+        finally
+        {
+            try
+            {
+                observations.Cancel();
+            }
+            catch (AggregateException) { /* A cleanup callback cannot replace the selected observation outcome. */ }
+            finally
+            {
+                // GetOnce owns each started read through completion. The outer catch-up bound
+                // may return exhausted while this cancellation/drain finishes; it accepts no late authority.
+                try
+                {
+                    await Task.WhenAll((Task?)folderRead ?? Task.CompletedTask,
+                        (Task?)organizationRead ?? Task.CompletedTask).ConfigureAwait(false);
+                }
+                catch (Exception) { /* Preserve the original Folder-first result/error precedence. */ }
+            }
         }
 
-        if (folderHead < folder.LastSequence)
-        {
-            return EffectivePermissionsReadModelResult.Malformed(freshness);
-        }
-
-        EffectivePermissionsReadModelResult baseline = await organizationReadModel.GetAsync(
-            request with { FolderId = FolderStreamName.ReservedOrganizationPermissionScope }, cancellationToken).ConfigureAwait(false);
         if (baseline.Status is not (EffectivePermissionsReadModelStatus.Available
             or EffectivePermissionsReadModelStatus.Stale or EffectivePermissionsReadModelStatus.NotFound)
             || baseline.Status != EffectivePermissionsReadModelStatus.NotFound && baseline.Snapshot is null)
