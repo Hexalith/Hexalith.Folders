@@ -136,3 +136,163 @@ The following original broad results describe the pre-audit source snapshot; cur
 - Final real live class passed 1/1 in 248.730s. Both serving Folders processes and the worker/EventStore owners changed identities. All 30 DLL and 30 PDB paths across 141 runtime bindings match final build outputs. The current replica race returned 202/409, retained AppendConflict and exactly one persisted version-1 winner. Exact inline/multipart bytes after restart, suppression, holds/resume/fresh P7D epochs, byte erasure with retained create fence, faults and atomic publication passed.
 - The first final Contracts run identified a cache-lint violation in one new test fixture. It was corrected with a strong byte-state/ETag read and exact scoped-key/end-state assertions; the current solution build, full Server and full Contracts were rerun. Parent lanes ran sequentially. Production sources remained unchanged throughout; all 179 source/configuration/support paths remained unchanged over the final corrected-source interval. No edit/build/test overlapped the live class.
 - [Final review evidence](../../docs/evidence/story-12-3-workspace-content/review-fixes/README.md) records exact commands/log digests, 138 current root paths, 41 upstream paths, review resolutions, matrix coverage, runtime identities and separate failed attempts. Earlier evidence remains historical. All 229 pending candidate inventory entries match current hashes; public v2 remains disabled. Approved intent, OQ2 and historical v1 remain unchanged. EventStore is qualified from source; Release/package consumption/publication remains separate.
+
+### Review Findings (2026-11-04, chunk 1 of 3: src)
+
+Review of commit `d6fda13a` (its parent is `baseline_commit` `28513763`), limited to `src/**`: 72 files, +1,967/−96. Tests (3,463 diff lines) and docs/scripts (722 diff lines) are follow-up chunks, and `docs/evidence` is excluded. The EventStore content capability was read from upstream `d0eb3d895`; it is not part of this repository's diff. Blind Hunter, Edge Case Hunter, Verification Gap and Acceptance Auditor all ran, and none failed. All 82 raw findings were verified claim by claim at `d6fda13a` and then checked against later `main` (`46214293`). Line numbers refer to `d6fda13a`. Every open item below is still present on `main` unless noted.
+
+- [x] [Review][Decision] An orphaned Pending content publication blocks every later mutation in the workspace.
+  - **Behavior.** `GetPublicationOutcomeAsync` returns Pending unconditionally for an actor-owned read (`WorkspaceContentAuthority.cs:172`). Outside the actor it resolves only on a gateway `IsRejected` (`:173-176`). A command that was prepared but never appended or domain-rejected therefore stays Pending forever. That happens on a crash between `PrepareAsync` and append, an infrastructure append failure, or an expired command status.
+  - **Impact.** The SDK refuses every `PrepareAsync` while any publication in the scope is Pending (`DaprAuthoritativeContentStore.PrepareAsync`). Every later add, change or remove in that workspace then returns 409. The approved retention rule keeps unresolved publications protected from deletion. It does not require blocking new preparations.
+  - **Options.**
+    1. Resolve as Rejected when the gateway reports a terminal non-accepted status, or the status is missing past a bounded recovery window. This is a Folders-side change and needs the terminal-status vocabulary.
+    2. Add an SDK-owned bounded recovery deadline that converts an unresolved Pending to Rejected after proving there was no append. This needs an EventStore story under Model B.
+    3. Recover only by operator action through the disposition endpoint, plus a runbook. Resolved 2026-11-04: Jerome chose option (1), Folders resolves an orphaned Pending from terminal gateway status; tracked as a patch below.
+- [x] [Review][Decision] The v1 file routes emit outcomes that the v1 Contract Spine does not declare.
+  - **Behavior.** `ContentProblem` (`FoldersDomainServiceEndpoints.Content.cs:65-66`) emits 409 `concurrency_conflict`, and 422 `confidential_operation_not_durable` with `clientAction: correct_input`.
+  - **Contract.** v1 `CanonicalErrorCategory` (`hexalith.folders.v1.yaml:11126-11169`) has neither value, and `correct_input` appears nowhere. AddFile/ChangeFile declare 409 only as `IdempotencyConflict` and 422 only as `FileContentLimitExceeded422` (`:2218-2225`). At baseline an AppendConflict mapped to the declared `repository_conflict`.
+  - **Mandate.** Epic 12 context and architecture PD8/D-11 require these codes.
+  - **Options.**
+    1. Extend the v1 spine with the new enum values and response refs, regenerate the client and helpers, and accept the PD10 and parity digest churn.
+    2. Remap v1 to already-declared outcomes and carry the mandated codes on v2 only.
+  - **Rejected sub-claim.** That the move from 416 to 404 for sensitivity-redacted ranges is a regression: OQ2 forbids 416 for a sensitivity denial. Resolved 2026-11-04: Jerome chose option (1), extend the v1 spine; tracked as a patch below.
+- [x] [Review][Decision] JSON `PutFileStream` mode can never succeed.
+  - **Behavior.** A non-receipt or unknown `stagingReference` reaches `VerifyUploadAsync`, which throws `ContentUnavailableException`. The endpoint maps that to a retryable 503 `file_policy_unavailable` (`FoldersDomainServiceEndpoints.cs:3360-3371`).
+  - **Impact.** No Folders route issues a receipt; `UploadAsync` is called only on the inline and multipart paths (`:3356`). `FileStreamStagingEvidence` and the contract's own `ChangeFileStreamRequest` example can therefore only ever be told to retry.
+  - **Options.**
+    1. Add a receipt-issuing upload route. This is new public surface: contract plus client.
+    2. Retire JSON stream mode in favour of multipart.
+  - In either case, a malformed or unknown receipt should become a non-retryable 400 `content_evidence_invalid`. Resolved 2026-11-04: Jerome chose option (2), retire JSON stream mode in favour of multipart; tracked as a patch below.
+- [x] [Review][Decision] Each erasure grant restarts every other receipt's P7D cleanup epoch.
+  - **Behavior.** The disposition generation is the raw folder stream head (`WorkspaceContentAuthority.cs:186`). The SDK resets the epoch whenever the generation differs (`DaprAuthoritativeContentStore.ApplyDispositionAsync`). Every grant appends an event (`WorkspaceContentErasure.cs:30`).
+  - **Impact.** N mature receipts in one folder take about N×7 days to erase, and any unrelated folder event restarts them all.
+  - **Options.**
+    1. Derive the generation from receipt-relevant source state only: this receipt's references, task closure, grant and holds.
+    2. Keep the head-based generation (the most conservative reading of the approved rule) and grant all mature receipts in one event.
+    3. Accept and document the slower cadence. Resolved 2026-11-04: Jerome chose option (1), a receipt-relevant generation; tracked as a patch below.
+- [x] [Review][Decision] Replay detection matches on `operationId` alone across the whole folder.
+  - **Behavior.** `ValidateIngressAsync` uses `ContentPublications.Values.SingleOrDefault(b => b.OperationId == operationId)` across every workspace and task (`WorkspaceContentAuthority.cs:32-39`).
+  - **Impact.** A later task that reuses a client-chosen operationId gets a permanent 409; the CLI `--operation-id` option is free-form. Duplicate bindings can be created through the batch and gateway-direct paths, which skip ingress. `SingleOrDefault` then throws, and that surfaces as a retryable 503.
+  - **Options.**
+    1. Scope uniqueness to (workspace, task) and match replay by task plus operationId.
+    2. Enforce folder-lifetime uniqueness on every admission path, with a deterministic non-retryable conflict.
+  - In either case, replace `SingleOrDefault`. Resolved 2026-11-04: Jerome chose option (1), scope uniqueness to (workspace, task); tracked as a patch below.
+- [x] [Review][Decision] The operational status state keeps content command keys and receipt ids.
+  - **Behavior.** The sanitizer (`OperationalStatusFold.cs:91-102`) strips command keys ("Do not duplicate command keys…"). It does not strip `ContentPublications` (keyed by idempotency key; holds CommandId and ReceiptId), `CommittedContentReferences` or `ContentErasureGrants`.
+  - **Impact.** These collections persist unbounded in operational storage. Simply clearing them breaks later folds (`FolderStateApply.cs:418-420`).
+  - **Options.**
+    1. Re-key or digest these collections in the operational projection.
+    2. Fold a separate minimal content view and exclude this bookkeeping from operational state.
+    3. Accept them as operational metadata and record that in C3. Resolved 2026-11-04: Jerome chose option (1), re-key/digest in the operational projection; tracked as a patch below.
+- [x] [Review][Decision] A breaking v1 contract and Client change shipped as a `fix:` commit and went out as patch releases.
+  - **Behavior.** `d6fda13a` (titled `fix: story 12.2`, although it delivered 12.3) makes `expectedFileVersion` and `expectedLockFence` required on v1 `FileMutationRequest` (`hexalith.folders.v1.yaml:9109-9128`). The server rejects requests that lack them (`FoldersDomainServiceEndpoints.cs:3317-3318`). The commit also adds a route, a command and an event.
+  - **Release.** `.releaserc.json` uses the default commit analyzer, and tags v1.3.2 and v1.3.3 contain this commit.
+  - **Options.**
+    1. Publish a breaking-change and migration notice for 1.3.2 and later.
+    2. Cut a corrective major release.
+    3. Accept as is, on the basis that there are no external consumers yet. Resolved 2026-11-04: Jerome chose option (1), a breaking-change and migration notice; tracked as a patch below.
+- [ ] [Review][Patch] Resolve an orphaned Pending content publication as Rejected when the gateway reports a terminal non-accepted command status (failed or timed out); a missing status stays Pending for operator recovery — owner decision 2026-11-04 [`src/Hexalith.Folders.Server/Content/WorkspaceContentAuthority.cs:172`]
+- [ ] [Review][Patch] Extend the v1 Contract Spine with `concurrency_conflict` (CanonicalErrorCategory), `correct_input` (clientAction), `confidential_operation_not_durable`, and the matching 409/422 response refs on the AddFile/ChangeFile/RemoveFile routes. Then regenerate the client and helpers and reconcile the PD10 and parity digests — owner decision 2026-11-04 [`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:11126`]
+- [ ] [Review][Patch] Retire JSON `PutFileStream` mode. Return a non-retryable 400 `content_evidence_invalid` for any JSON `stagingReference`, keep multipart as the only stream transport, and mark `FileStreamStagingEvidence` / `BuildStreamedFileMutation` unsupported — owner decision 2026-11-04 [`src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:3360`]
+- [ ] [Review][Patch] Derive the erasure disposition generation from source events relevant to the receipt (its references, task closure or resume, its grant, holds) instead of the raw folder head, so unrelated events and other receipts' grants no longer restart its P7D epoch. Resume and hold cycles must still change the generation — owner decision 2026-11-04 [`src/Hexalith.Folders.Server/Content/WorkspaceContentAuthority.cs:186`]
+- [ ] [Review][Patch] Match a content replay by (workspace, task, operationId), and replace `SingleOrDefault` with an explicit duplicate check that returns a deterministic non-retryable conflict — owner decision 2026-11-04 [`src/Hexalith.Folders.Server/Content/WorkspaceContentAuthority.cs:32`]
+- [ ] [Review][Patch] In the operational projection, re-key `ContentPublications` by digest and replace receipt ids and command keys in `ContentPublications`, `CommittedContentReferences` and `ContentErasureGrants` with digests, keeping what the fold's version checks need — owner decision 2026-11-04 [`src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusFold.cs:91`]
+- [ ] [Review][Patch] Publish a breaking-change and migration notice for v1.3.2 and later (CHANGELOG and release notes) covering the new required `expectedFileVersion` and `expectedLockFence` on v1 file mutations — owner decision 2026-11-04 [`CHANGELOG.md`]
+- [ ] [Review][Patch] Run path evidence and sensitivity classification before the existence/version checks, so a sensitivity-denied path cannot be probed through 409 vs 404. This is the OQ2 evaluation order, and the same ordering appears at both sites [`src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:3333`, `src/Hexalith.Folders.Server/Content/WorkspaceContentAuthority.cs:48`, `src/Hexalith.Folders/Aggregates/Folder/WorkspaceFileMutationService.cs:135`]
+- [ ] [Review][Patch] Make `ContentProblem` emit the v1 exact file-problem tuples. The SDK's `Oq2WireObjectConverter.ValidateExactProblem` currently rejects every one of these responses. [`src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.Content.cs:56`]
+  - Use the contract titles and messages, and `visibility: redacted` for 404 and 503.
+  - Never emit a null correlation id, and drop the extra `taskId` member.
+  - Fix the test that pins `"visibility":"metadata_only"` (`FileContextEndpointTests.cs:292`).
+- [ ] [Review][Patch] Catch the SDK-internal `OperationCanceledException` in `ProcessContentBatchAsync` after `PrepareAsync` and return a rejection, so a timed-out preparation is recorded as Rejected rather than left Pending, which feeds the workspace-wedge decision above [`src/Hexalith.Folders.Server/FolderDomainProcessor.ContentBatch.cs:91`]
+- [ ] [Review][Patch] Sync the AddFile/ChangeFile/RemoveFile `x-hexalith-idempotency-equivalence` lists with the server fingerprint (`expectedFileVersion`, `expectedLockFence`, `ownerFileId`) and regenerate the helpers. Today a retry with a new fence or version derives the same key and gets a permanent `idempotency_conflict` [`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:2242`]
+- [ ] [Review][Patch] When the retained rejection cannot be matched uniquely, narrow the match by correlation, task and command type. If it is still ambiguous, return a non-retryable rejection rather than a retryable 503 `file_policy_unavailable`. Log the exception that the empty `catch` currently swallows [`src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:3417`]
+- [ ] [Review][Patch] Map ingress lock-holder, closed-task, expired-lease and inactive-lifecycle failures to the declared 410 `WorkspaceLockExpired` / 409 `lock_not_owned` outcomes, not 409 `concurrency_conflict`. The domain and batch paths already do this [`src/Hexalith.Folders.Server/Content/WorkspaceContentAuthority.cs:42`]
+- [ ] [Review][Patch] Catch SDK-internal timeouts in the mutation endpoint's content block (`when (!cancellationToken.IsCancellationRequested)`) and return the canonical 503 instead of an unhandled 500 [`src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:3371`]
+- [ ] [Review][Patch] On a rejected batch, return the item's canonical `FolderResultCode` (LockExpired, LockNotOwned, AppendConflict, PathPolicyDenied) instead of `ValidationFailed` [`src/Hexalith.Folders.Server/FolderDomainProcessor.ContentBatch.cs:70`]
+- [ ] [Review][Patch] Fail a context read as Unavailable when a source-active, receipt-bound file version is missing from the SDK ledger, rather than silently leaving it out (an empty success or a safe 404) [`src/Hexalith.Folders.Server/Content/AuthoritativeWorkspaceFileContextSource.cs:57`]
+- [ ] [Review][Patch] Fold the cumulative batch events against actor state before returning. Order-dependent apply checks, such as the 10,000-identity bound or two adds binding the same Projects reference, then fail the decision instead of poisoning replay after append [`src/Hexalith.Folders.Server/FolderDomainProcessor.ContentBatch.cs:88`]
+- [ ] [Review][Patch] Evaluate inline routing for 262,145–1,048,576 bytes (413) before the length/hash mismatch check (400), per OQ2 content-failure precedence [`src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:3760`]
+- [ ] [Review][Patch] Add `InvalidDataException` (malformed multipart framing, or part headers over 16,384 bytes) to the 400 exception filter; today it falls through to a 500 [`src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:3276`]
+- [ ] [Review][Patch] Report a source-head change during a context read as source unavailability, not `PolicyUnavailable` (`file_policy_unavailable`) [`src/Hexalith.Folders.Server/Content/AuthoritativeWorkspaceFileContextSource.cs:92`]
+- [ ] [Review][Patch] Report a duplicate batch operationId as `ValidationFailed`, not `PathPolicyDenied` [`src/Hexalith.Folders.Server/FolderDomainProcessor.ContentBatch.cs:39`]
+- [ ] [Review][Patch] Reuse the deserialized `mutation.OperationId` instead of a case-sensitive `GetProperty("operationId")`. A differently cased key currently throws KeyNotFound, which becomes a retryable PolicyEvidenceUnavailable [`src/Hexalith.Folders.Server/FolderDomainProcessor.ContentBatch.cs:67`]
+- [ ] [Review][Patch] Send the operator's validated correlation id with the erasure-grant submission, instead of the synthetic `erase-…` id [`src/Hexalith.Folders.Server/Content/WorkspaceContentErasure.cs:43`]
+- [ ] [Review][Patch] Skip the `ownerFileId` replay compare for `add`. The service ignores that field and mints its own id, so today an identical add retry gets a 409 instead of replaying [`src/Hexalith.Folders.Server/Content/WorkspaceContentAuthority.cs:39`]
+- [ ] [Review][Patch] Add a post-processor rewrite for `LockLeaseMetadata.LockFence`, like the one P2 added for `version`, so an omitted fence does not round-trip as `lockFence: 0`, which violates `minimum: 1` [`src/Hexalith.Folders.Client/Generation/GeneratedClientPostProcessor.cs:98`]
+- [ ] [Review][Patch] Forward `descriptor.ContentMediaType` in the raw-stream helper's inline payload [`src/Hexalith.Folders.Client/Convenience/WorkspaceFileStreamUploadExtensions.cs:49`]
+- [ ] [Review][Patch] Use `FileUpload.MaximumFileBytes` and `InlineTransportBoundaryBytes` instead of duplicated literals [`src/Hexalith.Folders.Client/Convenience/WorkspaceFileStreamUploadExtensions.cs:28`]
+- [ ] [Review][Patch] Test preparation and publication outcome through the real `WorkspaceContentAuthority`; every normal-lane test currently swaps in a seed, transport or source authority. Cover stale fence, stale head, stale lease and an erasure-granted receipt being rejected, and Pending during the actor decision becoming Accepted after the fold [`src/Hexalith.Folders.Server/Content/WorkspaceContentAuthority.cs:119`]
+- [ ] [Review][Patch] Extend `WorkspaceContentProcessWiringTests` with three cases [`src/Hexalith.Folders/Aggregates/Folder/WorkspaceFileMutationService.cs:127`]:
+  - a processed change with `ownerFileId` omitted, producing version 2;
+  - a remove, producing a tombstone and an inactive identity;
+  - a stale-version change, returning 409 with no append.
+- [ ] [Review][Patch] Assert that adapter `FailureCode` values propagate (AppendConflict → 409) for both the content and delete stores [`src/Hexalith.Folders/Aggregates/Folder/WorkspaceFileMutationService.cs:225`]
+- [ ] [Review][Patch] Add endpoint tests for the gateway `folder-command-rejected` branch (a retained rejection maps to its canonical code), the 403/404 → 404 remap and the 503 → `file_policy_unavailable` remap [`src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:3417`]
+- [ ] [Review][Patch] Add processor tests for `ProcessContentErasure`, plus tests for `AuthorizeContentErasureIdempotencyIntentAdapter` and the `manage_folder_access` token mapping [`src/Hexalith.Folders.Server/FolderDomainProcessor.cs:1317`]. Processor cases:
+  - accept;
+  - idempotent re-grant;
+  - newer-grant conflict;
+  - live reference;
+  - active task;
+  - unclosed assigned task;
+  - head mismatch.
+- [ ] [Review][Patch] Add endpoint tests for the content disposition route [`src/Hexalith.Folders.Server/Content/WorkspaceContentRetentionEndpoints.cs:25`]:
+  - hold, release, abandon and apply;
+  - invalid operation or receipt;
+  - unauthorized → 404;
+  - conflict → 409;
+  - its middleware bypass.
+- [ ] [Review][Patch] Add transport tests for the bearer-relay branches [`src/Hexalith.Folders.Server/Authentication/FoldersGatewayHumanBearerHandler.cs:14`]:
+  - stream reads and status calls relay when the content action item is set;
+  - a submit with only the action item does not relay;
+  - the retention flag relays.
+- [ ] [Review][Patch] Pin lock-fence generation (it must increase across acquire, release and re-acquire) and the `Lease.LockFence` projection. Later lock-endpoint tests on `main` partly cover this [`src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs:447`]
+- [ ] [Review][Patch] Assert `fileId` and `version` on produced authoritative context items [`src/Hexalith.Folders.Server/Content/AuthoritativeWorkspaceFileContextSource.cs:125`]
+- [ ] [Review][Patch] Test case-alias and file/directory prefix collisions at upload admission and at context read [`src/Hexalith.Folders.Server/Content/WorkspaceContentPathEvidenceProvider.cs:145`]
+- [ ] [Review][Patch] Add a handler theory for invalid globs (`[ab]`, `../x`, `/abs`, `src/**.cs`) that expects ValidationFailed with no source call [`src/Hexalith.Folders/Queries/FileContext/WorkspaceFileContextQueryHandler.cs:228`]
+- [ ] [Review][Patch] Add HTTP tests that a denying principal on the context and files routes, and a NotFoundSafe source, return 404 `tenant_access_denied`/`resource_unavailable` [`src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:4473`]
+- [ ] [Review][Patch] Add client tests that `ownerFileId` reaches the wire for change through all three helpers, and that `UploadWorkspaceFileAsync` change uses PUT `/files/change` [`src/Hexalith.Folders.Client/Convenience/FoldersFileUploadExtensions.cs:59`]
+- [x] [Review][Defer] A redelivered batch whose items all replay is rejected as AppendConflict [`src/Hexalith.Folders.Server/FolderDomainProcessor.ContentBatch.cs:69`] — deferred: unverified medium. It depends on whether EventStore re-dispatches an already-appended MutateFiles command id to the processor (Story 12.6 admission semantics).
+- [x] [Review][Defer] An erasure on an uncreated aggregate could append a null-organization event that breaks the operational fold [`src/Hexalith.Folders.Server/FolderDomainProcessor.cs:1335`] — deferred: unverified medium. It depends on whether layered authorization admits `manage_folder_access` for a nonexistent folder on a gateway-direct submit.
+- [x] [Review][Defer] A context read replays the full stream three times per query, and each fold rebuilds `ContentPublications` per event (O(n²)), all inside the 2 s deadline [`src/Hexalith.Folders.Server/Content/AuthoritativeWorkspaceFileContextSource.cs:41`] — deferred: this needs snapshot-aware or head-only rechecks through the platform head/stream-metadata seam, which the Story 12.1 review already decided to obtain from EventStore under Model B. The per-event rebuild pattern predates this story.
+- [x] [Review][Defer] New `FolderState` members change the operational checkpoint integrity digest, so checkpoints written before a deploy fail as malformed [`src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusIntegrity.cs:10`] — deferred: the checkpoint design predates this story; checkpoint schema versioning belongs to Story 12.2 durable projections, and no production checkpoints exist.
+
+Resolved on `main` after the reviewed commit; no action needed:
+
+- **Lock fence missing from public responses.** No public lock-status response emitted a lock fence, so callers could not build `expectedLockFence` at all. Fixed by `21d9c38e`.
+- **Erasure rejections stalled Workers.** `AuthorizeWorkspaceContentErasure` rejections made the Workers rejection classifier throw "command type is unknown", which stalled the folder permission projection. Fixed by `9a818bb6`.
+- **Golden lifecycle test failed.** `GoldenLifecycleAllNineStepsDriveOverRealRestTransportToTransportTerminalClass` was a normal-lane `[Fact]` that the new hash and fence checks made fail at `d6fda13a`. Fixed by `c901c8be`. The story's qualification ran only the filtered content-wiring integration lane and did not claim the full lane.
+
+Rejected:
+
+- `false` — **expectedHead fallback** to `IdempotencyFingerprints.Count`. `FolderActorSequenceScope` is always entered for folder commands (`FoldersDomainServiceRequestHandler.cs:161`). Otherwise `ValidatePreparationAsync` fails closed on `!ActorOwned`.
+- `false` — **Replay throw makes the aggregate unloadable.** Throwing is the existing fail-closed replay pattern. Single-item events are test-folded before append, and `1.1.0` is the only policy version the snapshot accepts. The batch case is covered by the cumulative-fold patch.
+- `false` — **Service-locator lookups in the batch.** They cause no behavioral harm.
+- `false` — **Missing WorkspaceId check on erasure.** Grants are keyed by receipt. A `state.WorkspaceId` check would block erasure of receipts from earlier workspaces.
+- `false` — **The 10 s erasure poll throws OperationCanceledException.** It maps to a retryable 503, and the next apply takes over the abandoned claim, so the delay is bounded.
+- `false` — **Orphaned uploads after a failed submit.** Uploads are task-bound and follow the approved terminal → P7D path, and the SDK upload is create-only per OperationId.
+- `false` — **Bearer forwarding by URL substring.** The request URIs are built internally on the gateway client. The retention flag is set only inside erasure authorization, whose submit needs the human credential.
+- `false` — **Fence skipped for a replacement authority.** Production registers `WorkspaceContentAuthority`. The domain pre-check and `ValidatePreparationAsync` still fence, and the Read operation runs mutation reauthorization through ActionItem.
+- `false` — **No shipped policy configuration.** OQ2 requires failing closed with no permissive default. The setting is documented in `docs/operations/workspace-content-authority.md:8`, and the AppHost is owned by the platform repo.
+- `false` — **Remove commands not updated.** CLI/MCP remove take the full `RemoveFileRequest` JSON, which carries the new fields, and `CommandSurfaceE2ETests` covers this.
+- `false` — **Placeholder stagingReference.** The multipart branch uploads the actual bytes and ignores the field.
+- `false` — **Hard-coded NFC.** OQ2 1.1.0 is ASCII-only, and NFC is the only accepted value.
+- `false` — **Enum members inserted at position 0.** Neither enum is persisted or serialized numerically, and the new default is the fail-closed value.
+- `false` — **HasActiveTask blocks erasure forever.** Unclosed failed or released work counts as unresolved and protected under the approved retention rule.
+- `false` — **BaseAddress handling in the stream helper.** It resolves URIs exactly as the generated client does, and a null BaseAddress fails loudly inside HttpClient.
+- `false` — **Post-processor rewrite could silently do nothing.** `GeneratedClientAndHelpersMatchIsolatedRegeneration` diffs the output, and `ClientGenerationTests.cs:1375` pins the legacy version omission.
+- `false` — **Upload bytes never scanned for confidential cleartext.** Byte-level tokenization is Story 12.7 scope. The approved 12.3 mechanism is an explicit `non_confidential` policy that fails closed otherwise.
+- `low` — **Fingerprint fence/version presence markers.** Already in the deferred-work ledger from the Story 11.5 follow-up review, pending a versioned-fingerprint decision. The public route requires both fields.
+- `low` — **Disposition hold, release and abandon leave no audit event.** This is an operator-only route with a separate admin contract, apply already appends a source event, and new events would be new design.
+- `low` — **Confidential check runs after admission on the batch and gateway-direct paths.** Nothing is persisted because upload fails closed, and a pre-admission hook is not a direct fix.
+- `low` — **`DateTimeOffset.UtcNow` on erasure event metadata.** It is only a metadata stamp; the epoch uses the SDK clock.
+- `low` — **Hard-coded context sensitivity labels and the search bound.** The labels can't be reached with the shipped classifier, search is bounded by the C4 2 s deadline, and the cursor claim repeats B7.
+- `low` — **Optional client fence/version parameters throw at runtime.** The first call fails loudly with a descriptive message. Making them required would be another breaking signature change to a published package.
+- `low` — **The lock 202 response carries no fence.** This is ordinary eventual consistency with a canonical retry, and returning the fence adds public surface.
+- `low` — **The raw-stream helper skips client validation.** The server re-validates and returns 400.
+- `low` — **The raw-stream helper buffers the stream.** Buffering is capped at 1 MiB and is needed to hash before sending.
+- `low` — **ownerFileId not typed as OpaqueIdentifier.** The server mints conforming ULIDs and rejects malformed values with 409. Fixing this needs contract regeneration.
+- `low` — **Disposition with an unknown receipt returns 503.** The SDK uses one exception for both not-found and unavailable, and the route is operator-only.
+- `low` — **Path limit lowered from 512 to 500.** This matches OQ2 1.1.0 and v1 `maxLength: 500`. Out-of-contract identities exist only in pre-12.3 non-production data.
+- `low` — **Raw headers reflected into the disposition problem body.** Kestrel limits bound their size, and the response shape is covered by the ContentProblem patch.
+- `low` — **Legacy files without bindings can't be changed or removed.** Pre-12.3 production stores were unavailable placeholders, so no production legacy identities exist, and the spec disclaims legacy reconstruction.

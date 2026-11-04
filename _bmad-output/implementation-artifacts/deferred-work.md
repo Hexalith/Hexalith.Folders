@@ -3215,3 +3215,18 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-folders-canonical-package-cohort.md`
   summary: Reconcile the approved legacy McpCli Tenants 5.10.0 fixed-system enrollment with the canonical EventStore 4 gateway under a new owner-approved enrollment decision.
   evidence: The baseline executor already forwards fixedTenant=system, while selected baseline EventStore a9317e4b228adfbcdd6686a2f86171b464f34c06 rejects public system; canonical synthetic tests and Folders model qualification do not validate these real legacy operations. Preserve the historical published approval; do not infer operational acceptance from this package cohort.
+
+## Deferred from: code review of spec-12-3-durable-workspace-file-content-store-and-content-read-source.md (2026-11-04, chunk 1 src)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-3-durable-workspace-file-content-store-and-content-read-source.md`
+  summary: A redelivered `MutateFiles` batch whose items all replay is rejected as AppendConflict, unlike single-item replay (unverified medium).
+  evidence: `FolderDomainProcessor.ContentBatch.cs:69-74,111-112` at `d6fda13a`. Replayed items return no adapter changes, so `WorkspaceContentBatch.Complete()` throws `ContentConflictException`. This matters only if EventStore re-dispatches an already-appended command id to the processor. Confirm against the Story 12.6 admission and redelivery semantics.
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-3-durable-workspace-file-content-store-and-content-read-source.md`
+  summary: An erasure grant on an uncreated folder aggregate could append a `WorkspaceContentErasureAuthorized` event with a null organization id, which would break `OperationalStatusFold` (unverified medium).
+  evidence: `FolderDomainProcessor.cs:1317-1339` at `d6fda13a` has no `IsCreated` guard and passes `state.OrganizationId!`. At head 0 with no task and no reference, every other guard passes. Check whether layered authorization admits `manage_folder_access` for a nonexistent folder on a gateway-direct submit.
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-3-durable-workspace-file-content-store-and-content-read-source.md`
+  summary: Authoritative context reads replay the full folder stream three times per query with no snapshot, and each fold rebuilds the `ContentPublications` FrozenDictionary per event (O(n²)), all within the 2 s deadline.
+  evidence: `AuthoritativeWorkspaceFileContextSource.cs:41,91/100,138` and `FolderStateApply.cs:421-423` at `d6fda13a`. Large folders will degrade to `Timeout`. Deferred because the remedy needs snapshot-aware reads or head-only rechecks through the platform head/stream-metadata seam, which the Story 12.1 review (2026-10-14) decided to request from EventStore under Model B. The per-event rebuild pattern (`RecordIdempotency`) predates this story.
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-3-durable-workspace-file-content-store-and-content-read-source.md`
+  summary: Adding `FolderState` members (content publications, grants, references, lock fence) changes the operational checkpoint integrity digest, so checkpoints written before a deploy fail as "Malformed operational checkpoint; complete source rebuild required".
+  evidence: `OperationalStatusIntegrity.cs:10-24` hashes the full serialized `FolderState`, and `OperationalStatusProjectionWriter.cs:123-124` throws. The design predates this story; any `FolderState` addition does this. Deferred to checkpoint schema versioning in Story 12.2 durable projections. No production checkpoints exist yet.
