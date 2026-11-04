@@ -1,0 +1,38 @@
+{
+  "argv": [
+    "dotnet",
+    "build",
+    "references/Hexalith.Memories/src/Hexalith.Memories.Server/Hexalith.Memories.Server.csproj",
+    "-c",
+    "Debug",
+    "--no-restore",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-m:1",
+    "-nr:false",
+    "-v:quiet"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-03T18:24:31.453019+00:00",
+  "utc_end": "2026-11-03T18:24:38.072338+00:00",
+  "exit_code": 0,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/tenant-memories-build-private.log",
+    "sha256": "a8d7e001c8747724acb5c5e237888fda9e2d11220260a609f7b4ea7feb1afa53"
+  },
+  "private_xml": null,
+  "summary": null,
+  "source_or_head_drift": [],
+  "working_tree_status_changes": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 3
+  },
+  "runtime_module_observations": 0,
+  "fixture_module_observations": 0,
+  "original_private_receipt_sha256": "d82d466f7684a1732c27638783fd30be96a4a052ea7d5c5abfad870963b3fbc9"
+}

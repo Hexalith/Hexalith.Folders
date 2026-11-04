@@ -1,0 +1,21 @@
+{
+  "utc": "2026-11-03T20:06:28.191815+00:00",
+  "url": "https://api.nuget.org/v3-flatcontainer/hexalith.tenants.contracts/7.0.0/hexalith.tenants.contracts.7.0.0.nupkg",
+  "http_headers": {
+    "Content-Type": "application/octet-stream",
+    "Content-Length": "61147",
+    "ETag": "0x8DF39835DEE982E",
+    "Last-Modified": "Tue, 03 Nov 2026 08:20:48 GMT"
+  },
+  "archive_sha256": "e21f5ac7b5f332f1921f70a249ab2032b9978d56ffdd6641a0a4b94d04850bdc",
+  "archive_bytes": 61147,
+  "signed_entry_present": true,
+  "contracts_dll_sha256": "5676f656752395e149296ffbe9bc9d5e5e699e4bd6d4265df7de0f3442f05a40",
+  "pinned_expected_sha256": "e21f5ac7b5f332f1921f70a249ab2032b9978d56ffdd6641a0a4b94d04850bdc",
+  "previous_restored_archive_sha256": "81a33bb7562507004d4dfb8da2365cdea1fb874ff53798787bff110c0d9573ef",
+  "previous_restored_dll_sha256": "2366d0453ca95aa284495636741991b99cf34e58e51cb0e4fd23c417a792e19d",
+  "official_archive_matches_pinned_expected": true,
+  "finding": "Official signed archive matches unchanged expected hash; previous restored archive differs. Isolated official fixture materialization and unmodified ABI tests are required before qualification.",
+  "shared_package_cache_or_expected_hash_mutated": false,
+  "private_isolated_fixture_cache_prepared": true
+}

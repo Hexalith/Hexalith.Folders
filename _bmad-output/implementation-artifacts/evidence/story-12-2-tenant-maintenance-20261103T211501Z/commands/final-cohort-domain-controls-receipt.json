@@ -1,0 +1,57 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+    "-namespace",
+    "Hexalith.Folders.Tests.Projections.OperationalStatus",
+    "-class",
+    "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests",
+    "-class",
+    "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+    "-class",
+    "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "-result-xml",
+    "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/final-cohort-domain-controls-private.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-03T20:16:46.536478+00:00",
+  "utc_end": "2026-11-03T20:16:49.158591+00:00",
+  "exit_code": 0,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/final-cohort-domain-controls-private.log",
+    "sha256": "6c964f82edeb55e5aebbf49c73b02bebbcf8aacdcf4f0df75d4c0cb3d8d1e3f2"
+  },
+  "private_xml": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/final-cohort-domain-controls-private.xml",
+    "sha256": "a60f250e607c7669c55cfb92336b9b32eba6a59825a0ace43efd64bdc798df64"
+  },
+  "summary": {
+    "assemblies": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "20:16:46",
+        "errors": "0",
+        "failed": "0",
+        "passed": "0",
+        "skipped": "0",
+        "time": "0.016",
+        "total": "0"
+      }
+    ],
+    "tests": []
+  },
+  "source_or_head_drift": [],
+  "working_tree_status_changes": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 0
+  },
+  "runtime_module_observations": 0,
+  "fixture_module_observations": 0,
+  "original_private_receipt_sha256": "df6c97095cb69f205bc4bf7345582965b3559366fe03d0b7aca3e48f577cf7c1"
+}

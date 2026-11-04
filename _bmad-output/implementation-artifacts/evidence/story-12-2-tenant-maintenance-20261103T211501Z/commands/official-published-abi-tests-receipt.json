@@ -1,0 +1,76 @@
+{
+  "argv": [
+    "dotnet",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+    "-class",
+    "Hexalith.EventStore.Server.Tests.Routing.PublishedTenantQuerySelectorAbiTests",
+    "-result-xml",
+    "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/official-published-abi-tests-private.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-03T20:09:32.539786+00:00",
+  "utc_end": "2026-11-03T20:09:36.330781+00:00",
+  "exit_code": 0,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/official-published-abi-tests-private.log",
+    "sha256": "c414c510e7172173eda12f1649b73b36558fcc57e740b74cb35b41718805c6d3"
+  },
+  "private_xml": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/official-published-abi-tests-private.xml",
+    "sha256": "68a97dcffc3ba1de584d5cfba63f6fb05c79946642d7a77c528abad630593198"
+  },
+  "summary": {
+    "assemblies": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "20:09:32",
+        "errors": "0",
+        "failed": "0",
+        "passed": "3",
+        "skipped": "0",
+        "time": "1.036",
+        "total": "3"
+      }
+    ],
+    "tests": [
+      {
+        "result": "Pass",
+        "time": "0.41",
+        "type": "Hexalith.EventStore.Server.Tests.Routing.PublishedTenantQuerySelectorAbiTests",
+        "method": "PublishedFixtureMaterializationUsesRestoreResolvedCustomPathInEitherMode",
+        "display_name_sha256": "6991838400061615fe45dc1005e7a879d998b19f981ada57aa1d0efb34ef3ea0",
+        "case_ordinal": 1
+      },
+      {
+        "result": "Pass",
+        "time": "0.357",
+        "type": "Hexalith.EventStore.Server.Tests.Routing.PublishedTenantQuerySelectorAbiTests",
+        "method": "PublishedFixtureMaterializationUsesRestoreResolvedCustomPathInEitherMode",
+        "display_name_sha256": "9a242ac951a7885a10e4590d249f676756223baf64e8540f537d90c25474949e",
+        "case_ordinal": 2
+      },
+      {
+        "result": "Pass",
+        "time": "0.177",
+        "type": "Hexalith.EventStore.Server.Tests.Routing.PublishedTenantQuerySelectorAbiTests",
+        "method": "AuthenticPublicTenantSevenConstructsOriginalDeclarationsAgainstExtendedContracts",
+        "display_name_sha256": "d0a3f069e01c56a4f8bef88a97181de8adeced260d7d5765de060e32fd450ea9",
+        "case_ordinal": 3
+      }
+    ]
+  },
+  "source_or_head_drift": [],
+  "working_tree_status_changes": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 0
+  },
+  "runtime_module_observations": 97,
+  "fixture_module_observations": 0,
+  "original_private_receipt_sha256": "06c5d4ddeef12eb5e7a5e2ba9321122f4042affccec658f634ae37eacd625392"
+}

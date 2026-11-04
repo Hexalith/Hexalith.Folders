@@ -1,0 +1,591 @@
+{
+  "created_utc": "2026-11-03T20:07:48.850263+00:00",
+  "run": "live-tenant-maintenance-1",
+  "input_hashes": {
+    "live-tenant-maintenance-1-private.log": "f2746f808e93daa2cba177cb33c93269b00af9bb2b59c6e49b161c36d4dec4b7",
+    "live-tenant-maintenance-1-runtime.json": "989ce68512382e37505acd6f24aa15ce660bced6a692367585d30fe8bcfe0583",
+    "live-tenant-maintenance-1-receipt.json": "9e610404681e79ca9313d8d998fd8853e82bbd0367f7a54878e4829454e7125f",
+    "live-tenant-maintenance-1-private.xml": "424a48eb0459621e99d3b05159b7a441cfa74be433b5915b75f012cb66439533",
+    "live-tenant-maintenance-1-before.json": "4b0f287a428fbe1fc3b6c99064d13bc09862d6a383717f11553a6e067a02c629",
+    "live-tenant-maintenance-1-after.json": "d101461b72603127b285d5bd130248efaa5016733e988583bb9feaaa5fa26f5b",
+    "live-tenant-maintenance-1-owned-cleanup-audit.json": "595de15ab95a7f52fcd0cc4b0643a6fb80e961fb9bf9c027ceac9653a282091b"
+  },
+  "result": {
+    "total": "1",
+    "passed": "1",
+    "failed": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "183.007"
+  },
+  "test_results": [
+    {
+      "class": "Hexalith.Folders.AppHost.Tests.FolderDurabilityTenantMaintenanceAcceptanceTests",
+      "method": "NaturallyAgedTenantShouldMaintainRealSourceAndWorkersAuthorityAndSkipFreshUpdate",
+      "result": "Pass",
+      "seconds": "124.962"
+    }
+  ],
+  "closed_marker_counts": {
+    "genuine_bootstrap": 1,
+    "natural_age_wait": 1,
+    "real_original_source_workers_barrier": 1,
+    "standalone_final_source_workers_noop": 1
+  },
+  "executed_evidence": [
+    "The same real full AppHost fixture completed genuine owner bootstrap and real tenant creation/membership.",
+    "The initial authenticated platform Tenants source read and original persisted Workers baseline verification completed before the natural-age WAIT marker.",
+    "The unchanged standalone test waited until the original native timestamp reached the existing2min threshold using real UTC/caller cancellation, then required MaintainTenantAsync==true.",
+    "The real helper requires canonical public UpdateTenant Completed with matching command/correlation/causation/human attribution, original metadata, preserved complete retained prefix and matching Workers message/native sequence/timestamp. The real helper emitted its PASS exactly once.",
+    "Independent persisted Workers assertions passed: exactly one added TenantUpdated delivery record and watermark advance, later native timestamp, preserved prior evidence and unchanged enabled state/principals/roles/configuration.",
+    "The immediate second call returned false; exact persisted snapshot equality passed. Final closed PASS was emitted exactly once. No force flag, synthetic clock, direct source/derived write or permission expansion was used."
+  ],
+  "actual_runtime_consistency": {
+    "poll_module_observations": 177,
+    "fixture_binding_records": 46,
+    "hexalith_distinct_module_names_observed": 27,
+    "multiple_sha_mvid_pdb_variant_names": [],
+    "current_bound_file_or_pdb_differences": [],
+    "runtime_file_drift_receipt": [],
+    "modules": {
+      "Hexalith.EventStore.Client.dll": {
+        "sha256": [
+          "16d4627e21a709981491a443661a2f6fe1df9d04aa1093d146af95ce8204d23f"
+        ],
+        "mvid": [
+          "52390a79-604c-4ba3-8708-373ae37b0cb5"
+        ],
+        "pdb_sha256": [
+          "42592bfa3eb79d0c2fdeea6a19b2e05ec0d45861d9fdc5c858a49a164be2d622"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        ],
+        "process_ids": [
+          1028210,
+          1034515,
+          1041514,
+          1041545,
+          1041618
+        ]
+      },
+      "Hexalith.EventStore.Contracts.dll": {
+        "sha256": [
+          "3877b208266a0b8371e22c1ca57fdfa4591c7f68fd463a4279f9051991e01a06"
+        ],
+        "mvid": [
+          "c86f280e-6aac-4a51-9fc5-f248bffbbda1"
+        ],
+        "pdb_sha256": [
+          "5422b90f88920683177e5aae067a2f05840c25f3b77c0878e686025742c9ab59"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll"
+        ],
+        "process_ids": [
+          1028210,
+          1034515,
+          1041514,
+          1041545,
+          1041618
+        ]
+      },
+      "Hexalith.Folders.AppHost.Tests.dll": {
+        "sha256": [
+          "baff7a841a1e4ec681dfda941dfd6900b0a3cfaed62309b80169be3cd0a25aae"
+        ],
+        "mvid": [],
+        "pdb_sha256": [],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll"
+        ],
+        "process_ids": [
+          1028210
+        ]
+      },
+      "Hexalith.Tenants.Contracts.dll": {
+        "sha256": [
+          "b28d5b3335c321fbfaa9bad894fbb50061bad4253945db71c54d9a4b5f686685"
+        ],
+        "mvid": [
+          "4f0fb906-28f6-49c9-b823-a414368ce116"
+        ],
+        "pdb_sha256": [
+          "80213c0f9d51683032dbfc85ca07d4b44786542570c4c9415e2ab9c99ba7e56e"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll",
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.dll"
+        ],
+        "process_ids": [
+          1028210,
+          1034515,
+          1041514,
+          1041545,
+          1041618
+        ]
+      },
+      "Hexalith.Tenants.Server.dll": {
+        "sha256": [
+          "3cafba6526fd9d58f436aedf23346e5b5fa7f9b0ddbe23b20dc7018e3caa2f3a"
+        ],
+        "mvid": [
+          "b6722bac-0d1d-4b18-b4f0-83adfe1ce274"
+        ],
+        "pdb_sha256": [
+          "52609772b00d305d09434626a80633ab564275b1d28f7c334b9c8ced1420536c"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.dll"
+        ],
+        "process_ids": [
+          1028210,
+          1041514
+        ]
+      },
+      "Hexalith.Folders.EventStore.dll": {
+        "sha256": [
+          "663695a844eb658af44b21ac7c211b6676ae686fe077dea91d8a4be36e9dfb07"
+        ],
+        "mvid": [
+          "5073260d-66bd-40a0-8566-1ad02917bcf4"
+        ],
+        "pdb_sha256": [
+          "5ad4ffd79d879c059603af0662da01d0cbb9a50b3d1d134b547ea383b4c5f35f"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll"
+        ],
+        "process_ids": [
+          1028210,
+          1041514
+        ]
+      },
+      "Hexalith.Folders.Server.dll": {
+        "sha256": [
+          "02eaa9086710f6b2b145af9d7d5a5b5e90d7f51ba01e0e83d3c2b095a2e86121"
+        ],
+        "mvid": [
+          "ddebbb4d-d2b5-44a4-af46-cfbd0386bcd2"
+        ],
+        "pdb_sha256": [
+          "5117bbc92a21d08165e7e2c0a375f825a331a09f093897be68178b521abb9619"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll"
+        ],
+        "process_ids": [
+          1028210,
+          1041514,
+          1041545
+        ]
+      },
+      "Hexalith.Builds.Tooling.dll": {
+        "sha256": [
+          "2e3c2072799d71f05967ecfba92d44c40e42dc92cea3cb7cfb607b654a26e23c"
+        ],
+        "mvid": [],
+        "pdb_sha256": [],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Builds.Tooling.dll"
+        ],
+        "process_ids": [
+          1028210
+        ]
+      },
+      "Hexalith.EventStore.Aspire.dll": {
+        "sha256": [
+          "c3b9ce58d74fb1012c2f1bfc7c9c1c2aade38ac1abc40eb8eb3a4bbacfdd6549"
+        ],
+        "mvid": [],
+        "pdb_sha256": [],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll"
+        ],
+        "process_ids": [
+          1028210
+        ]
+      },
+      "Hexalith.EventStore.DomainService.dll": {
+        "sha256": [
+          "b12ecfa5ffc27875099765830f5f7c888d3fbad7c6a3803f443c5841e25b5c96"
+        ],
+        "mvid": [
+          "8fbd1e04-48d6-46bf-bc9c-d263e930b324"
+        ],
+        "pdb_sha256": [
+          "b92a80871d493ed7d62ef333db5c62c878559f984a12013fddb78607052b5918"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        ],
+        "process_ids": [
+          1028210,
+          1034515,
+          1041514,
+          1041545,
+          1041618
+        ]
+      },
+      "Hexalith.EventStore.ServiceDefaults.dll": {
+        "sha256": [
+          "87fb4bfedcb74ff408f513ff37d1d56ce4a9c45da4f8196461aa9c030fe1e5ac"
+        ],
+        "mvid": [
+          "ed5505af-094e-41a0-a567-a9e6a52b5e6c"
+        ],
+        "pdb_sha256": [
+          "4645af8ddda90ba0189b2459a8dcce802835f4bc67f3dc46aacad0ac9fce6679"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll"
+        ],
+        "process_ids": [
+          1028210,
+          1034515,
+          1041514,
+          1041545,
+          1041618
+        ]
+      },
+      "Hexalith.Folders.AppHost.dll": {
+        "sha256": [
+          "53b6e29570520590e3c6c11059cd04ffe91f814569b314d541405b152a7e06b2"
+        ],
+        "mvid": [],
+        "pdb_sha256": [],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.dll"
+        ],
+        "process_ids": [
+          1028210
+        ]
+      },
+      "Hexalith.Folders.Aspire.dll": {
+        "sha256": [
+          "24e02fcbc77d3a734e26ad2c48960dcabc138d15f03ef3f1e6df73e34c60c22a"
+        ],
+        "mvid": [],
+        "pdb_sha256": [],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Aspire.dll"
+        ],
+        "process_ids": [
+          1028210
+        ]
+      },
+      "Hexalith.Folders.Contracts.dll": {
+        "sha256": [
+          "66d0e507d1dc1ef2947999adbec968754a2c85aeff926f4d7a17bcab1c8198ba"
+        ],
+        "mvid": [
+          "570f0ba1-584e-424a-aafa-1697074ba866"
+        ],
+        "pdb_sha256": [
+          "5b0ad1e7ad1fa42a4e6c8cc41aa0bdfe7e9427de405db2e0a786996efc40aa0c"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll"
+        ],
+        "process_ids": [
+          1028210,
+          1041514,
+          1041545
+        ]
+      },
+      "Hexalith.Folders.dll": {
+        "sha256": [
+          "08795c86d8591e20717d07282fb97044965e5bebbe5ec0054a16cc873c7155d0"
+        ],
+        "mvid": [
+          "9c335a4f-d9ba-4387-9662-3013b7bea704"
+        ],
+        "pdb_sha256": [
+          "af98b4ccc5ab0de90c22c89fdb59f82d3332d7b3dcdbcda4b328cafce9ba5d06"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.dll"
+        ],
+        "process_ids": [
+          1028210,
+          1034515,
+          1041514,
+          1041545,
+          1041618
+        ]
+      },
+      "Hexalith.McpCli.Abstractions.dll": {
+        "sha256": [
+          "f4364b8f269edf1573a4ddd190b87ca9f00f0741d116469462df7f322ea1d2db"
+        ],
+        "mvid": [
+          "5684bc7c-0c23-424d-83b8-b4de29ae5f0e"
+        ],
+        "pdb_sha256": [
+          "c23c549397879b61f7dd520a0c75f00483148bd2d385e3e3d4564e37db46356f"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll",
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.dll"
+        ],
+        "process_ids": [
+          1028210,
+          1041514
+        ]
+      },
+      "Hexalith.Memories.Aspire.dll": {
+        "sha256": [
+          "52d566448b96f280c525976d443624ab22527b9667729d9d1914fede4c0dc988"
+        ],
+        "mvid": [],
+        "pdb_sha256": [],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Memories.Aspire.dll"
+        ],
+        "process_ids": [
+          1028210
+        ]
+      },
+      "Hexalith.Tenants.Aspire.dll": {
+        "sha256": [
+          "a3e9f59e7ea449de3bf5e157d638aedba514bc0b800fb7bd8eb2abea4f716d9c"
+        ],
+        "mvid": [],
+        "pdb_sha256": [],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Aspire.dll"
+        ],
+        "process_ids": [
+          1028210
+        ]
+      },
+      "Hexalith.Commons.UniqueIds.dll": {
+        "sha256": [
+          "77d188cf5e257b2012b3cd5926556faf42294052045143626b10ad61da7c2381"
+        ],
+        "mvid": [
+          "83e4a855-ff16-458b-875e-862c78ea45d7"
+        ],
+        "pdb_sha256": [
+          "287e0ab43066bf655775743489005273399b93eb10ebaf061e7c26f86637371d"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll",
+          "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.dll"
+        ],
+        "process_ids": [
+          1028210,
+          1041514,
+          1041545
+        ]
+      },
+      "Hexalith.Folders.ServiceDefaults.dll": {
+        "sha256": [
+          "4faf9a1ae469394764da66c334f93326801fd7a3bd7f507796eb7981c130efde"
+        ],
+        "mvid": [
+          "f0614e05-f0dd-4234-95b9-8dd21f645e8f"
+        ],
+        "pdb_sha256": [
+          "e96e149fd04ebd546d2a79804c6b968728612bfc07f4b572fd5265b39a8c402e"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll"
+        ],
+        "process_ids": [
+          1034515,
+          1041545,
+          1041618
+        ]
+      },
+      "Hexalith.Memories.Client.Rest.dll": {
+        "sha256": [
+          "ada90d59ee579f7ac4d6dcdb60384a15d7470caa16106ab779432af5e6a6b554"
+        ],
+        "mvid": [
+          "7522a2ae-6815-4dd5-87a1-a0e8d5c23b61"
+        ],
+        "pdb_sha256": [
+          "26c01dec9ea2c98f5f758a304cd9fed3d2a47954f49c35fe664a6c04a0c38373"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Client.Rest.dll"
+        ],
+        "process_ids": [
+          1041545
+        ]
+      },
+      "Hexalith.Memories.Contracts.dll": {
+        "sha256": [
+          "111077740c686b6c8b00ca499b3dadce5e79cba03c71c222ec5e1d607aa7b2cf"
+        ],
+        "mvid": [
+          "f4c42f2a-9b0e-4fc1-a6b2-e3c6ca5256af"
+        ],
+        "pdb_sha256": [
+          "7fc2ab0a25d3d1eb21686d3f177b4c35a64c55868aba27481bb8937ab24ab5c3"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Memories.Contracts.dll"
+        ],
+        "process_ids": [
+          1041545
+        ]
+      },
+      "Hexalith.Tenants.Client.dll": {
+        "sha256": [
+          "8c80d434ae44448faa23d10e787315de08fbb29f3a778ba4fc05ce231daeab1d"
+        ],
+        "mvid": [
+          "e4ab9b1f-5790-4a28-a384-d0ad54fb81d2"
+        ],
+        "pdb_sha256": [
+          "98fc254c7e74f75d9dfc1f0a452f522825a6e9ef320367b9cccff64e78714f52"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Tenants.Client.dll",
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Tenants.Client.dll"
+        ],
+        "process_ids": [
+          1034515,
+          1041545,
+          1041618
+        ]
+      },
+      "Hexalith.Folders.Workers.dll": {
+        "sha256": [
+          "39a29fed0ed96d2f24522593a535bd87874e4cd00833fd69f8f5c83467f8d558"
+        ],
+        "mvid": [
+          "088ce7ba-903b-4f1b-a2d8-b48adfb5b1f0"
+        ],
+        "pdb_sha256": [
+          "35490920ca2bffb2004f632376b74bb63e09516416c051279ab58b2173a09a3d"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll"
+        ],
+        "process_ids": [
+          1034515,
+          1041618
+        ]
+      },
+      "Hexalith.EventStore.Admin.Abstractions.dll": {
+        "sha256": [
+          "9b51625a9093c1eb245587aa87ac73d71892008806fd86fdb2f74ba82c51d737"
+        ],
+        "mvid": [
+          "59a0c54c-e246-4e1a-8a9d-614021056533"
+        ],
+        "pdb_sha256": [
+          "7356bae2d0df223a18a8bd3de6d73ee563ff13d357c7d687970bd5ad8f885c44"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll"
+        ],
+        "process_ids": [
+          1041514
+        ]
+      },
+      "Hexalith.EventStore.Gateway.dll": {
+        "sha256": [
+          "b46bc371bc5cd9b219672760290adee7930bc96cdd84142d13588e120128af27"
+        ],
+        "mvid": [
+          "87352148-8490-4c5b-96f8-7d4e132173b8"
+        ],
+        "pdb_sha256": [
+          "b7d8c5685a3540e38bc78115ff6612b483c7e0f7c2f6cf65269e5ba2f7da733e"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll"
+        ],
+        "process_ids": [
+          1041514
+        ]
+      },
+      "Hexalith.EventStore.Server.dll": {
+        "sha256": [
+          "27f466acd13b0e7452d6ac037d515a5b3689aaf27460168e547774cc3f8ca07c"
+        ],
+        "mvid": [
+          "64144742-b39a-4958-9aff-7f62f9907840"
+        ],
+        "pdb_sha256": [
+          "f7eb449b2f98b7a12360a80574597a5a2bad31413cb6c143a03ca24e9a1a0b53"
+        ],
+        "paths": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll"
+        ],
+        "process_ids": [
+          1041514
+        ]
+      }
+    },
+    "qualification_limit": "Actual runtime observations establish only the observed module set. Parent separately audited all92 selected source/PDB/project assets before run; this assessment does not inflate observed modules to92.",
+    "hash_and_mvid_comparison": "Case-normalized hex identifiers; fixture emits uppercase digests while poll audit emits lowercase."
+  },
+  "source_head_consistency": {
+    "raw_qualifier_source_or_head_drift": [
+      "/home/administrator/projects/hexalith/folders"
+    ],
+    "raw_working_tree_status_changes": [
+      "/home/administrator/projects/hexalith/folders"
+    ],
+    "differences": [
+      {
+        "root": "/home/administrator/projects/hexalith/folders",
+        "before_head": "f24ee01f2682045e0d6b09fa6d4f794113b28f16",
+        "after_head": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+        "source_difference_count": 0,
+        "source_difference_paths": []
+      }
+    ],
+    "meaning": "Root HEAD advanced externally; every recorded repository compile-source map remained unchanged. This is not a no-HEAD-drift claim. Actual runtime bytes/PDBs are retained and did not drift."
+  },
+  "cleanup": {
+    "runtimeOwnedProcessRemainders": [],
+    "ownedContainerRemainders": [],
+    "ownedDaprDirectories": [
+      {
+        "path": "/tmp/hexalith-dapr/90d57683d6ed461599307e2a22d42c3e",
+        "exists": false
+      }
+    ],
+    "unattributedNewContainerCount": 0,
+    "unattributedNewDirectories": [],
+    "actionOnUnattributedResources": "None"
+  },
+  "scope_limit": [
+    "This is executed qualification of active disposable-tenant maintenance only. It does not prove indefinite idle access or replace original strict/capacity assertions.",
+    "Original strict provider classification/timeout failures remain open; no mapper/guard/deadline/permission change follows from this pass.",
+    "SDK published-package authenticity mismatch is pending parent qualification against a privately fetched official archive; no local cache/pin/expected hash change. Capacity, PD10/governance, SM4 and whole-story review remain separate.",
+    "No source/output/build/test/topology action was performed by this read-only assessment; only private JSON under/tmp was written."
+  ],
+  "source_hashes": {
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs": "35698e6a4434bddd2ead8ecdf611b8dcbd0ac19469adb3b7d3695cc7104311a8",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs": "973a068fb30dca17298a25aba7731605fd65ae2f042e50aa29a10867e81ad1b5",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "f57f907a1edd0edd8c254b047b4da2845ab1aa6c7ddc7aa1fead01023e9c9d4a"
+  }
+}

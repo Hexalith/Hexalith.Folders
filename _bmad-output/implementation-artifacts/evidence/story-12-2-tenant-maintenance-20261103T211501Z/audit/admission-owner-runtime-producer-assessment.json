@@ -1,0 +1,8 @@
+{
+  "owner_focused_service_defaults_sha256": "6beff61aecf0e6f849b017019c43874e3fc14938d1adf68a6e409456adf354ac",
+  "selected_runtime_service_defaults_sha256": [
+    "6beff61aecf0e6f849b017019c43874e3fc14938d1adf68a6e409456adf354ac"
+  ],
+  "same_implementation_producer": true,
+  "comparison": "Normalize hex case only; no digest bytes or source changed. Prior transient console comparison was case-sensitive and returnedfalse; this normalized comparison is authoritative."
+}

@@ -1,0 +1,39 @@
+{
+  "argv": [
+    "dotnet",
+    "msbuild",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj",
+    "-t:CopyPublishedTenantQuerySelectorFixture",
+    "-m:1",
+    "-nr:false",
+    "-v:quiet",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-p:RestorePackagesPath=/tmp/story12-2-tenant-maintenance-20261103-updu69yz/official-fixture-cache",
+    "-p:NuGetPackageRoot=/tmp/story12-2-tenant-maintenance-20261103-updu69yz/official-fixture-cache/",
+    "-p:OutDir=/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-03T20:09:28.590843+00:00",
+  "utc_end": "2026-11-03T20:09:31.199610+00:00",
+  "exit_code": 0,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/official-published-fixture-materialization-private.log",
+    "sha256": "437bfbafc7e5fe6561d545b1da541420b4616cfb4f4f8ae93197d0634e6199e7"
+  },
+  "private_xml": null,
+  "summary": null,
+  "source_or_head_drift": [],
+  "working_tree_status_changes": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 0
+  },
+  "runtime_module_observations": 0,
+  "fixture_module_observations": 0,
+  "original_private_receipt_sha256": "8770a953a65e69c7548114a434cd15f05022f4a0c14fa36ee2e05ac22bf94598"
+}

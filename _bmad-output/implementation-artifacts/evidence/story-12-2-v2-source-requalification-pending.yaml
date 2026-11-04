@@ -16,7 +16,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 0d2143cca8b5f594fe5ab2749596076562f26b069c38ba77a12157f868accdb8
+candidate_set_sha256: 0cce9de609131496622dadda423477f7630aa1428596a8d75c089657ed73e5b7
 artifact_count: 1522
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -4990,7 +4990,7 @@ artifacts:
   - path: "tests/Hexalith.Folders.Server.Tests/ParallelPermissionObservationTests.cs"
     kind: file
     bytes: 11132
-    sha256: 6f64f25663005676dcc90e7c877b58d387a89807ed31940553a70a8e289389f1
+    sha256: dce1c6fcb5801af09e735060251f77d899124a4791ce79e625e38495167c1cd6
   - path: "tests/Hexalith.Folders.Server.Tests/Pd10AuthorizationAuditSinkTests.cs"
     kind: file
     bytes: 2446

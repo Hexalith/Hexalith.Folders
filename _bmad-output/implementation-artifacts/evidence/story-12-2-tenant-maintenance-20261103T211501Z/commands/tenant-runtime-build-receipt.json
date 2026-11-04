@@ -1,0 +1,42 @@
+{
+  "argv": [
+    "dotnet",
+    "build",
+    "Hexalith.Folders.slnx",
+    "-c",
+    "Debug",
+    "--no-restore",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-m:1",
+    "-nr:false",
+    "-v:quiet"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-03T18:19:27.422129+00:00",
+  "utc_end": "2026-11-03T18:23:17.441837+00:00",
+  "exit_code": 0,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/tenant-runtime-build-private.log",
+    "sha256": "91d9f572e6e082f61569e954bea2fb678be7ad6c4ba6fe04e80adcde0113a1e0"
+  },
+  "private_xml": null,
+  "summary": null,
+  "source_or_head_drift": [
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli"
+  ],
+  "working_tree_status_changes": [
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli"
+  ],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 1
+  },
+  "runtime_module_observations": 0,
+  "fixture_module_observations": 0,
+  "original_private_receipt_sha256": "c8de2ce7dcdcff5ac87d008407c76bafce5897963876a45456dabddd4180ed6e"
+}

@@ -1,0 +1,89 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "21:12:26",
+      "errors": "0",
+      "failed": "0",
+      "passed": "9",
+      "skipped": "0",
+      "time": "2.185",
+      "total": "9"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.072",
+      "type": "Hexalith.Folders.Server.Tests.ParallelPermissionObservationTests",
+      "method": "BothCurrentSourcesStartTogetherAndNeitherAloneCanAuthorize",
+      "case_ordinal": 1,
+      "display_name_sha256": "0ee56b6590bbe9af2716183a21b4fbfe234d04e07758f2cfd26c2afd36893e81"
+    },
+    {
+      "result": "Pass",
+      "time": "0.009",
+      "type": "Hexalith.Folders.Server.Tests.ParallelPermissionObservationTests",
+      "method": "CallerOrCatchupCancellationDrainsBothSourcesAndAcceptsNoLateAuthority",
+      "case_ordinal": 2,
+      "display_name_sha256": "008bfabef59a4203f035b50d43584038e25b4db7d7f1a1b77bd6efcac48ce9d9"
+    },
+    {
+      "result": "Pass",
+      "time": "2.001",
+      "type": "Hexalith.Folders.Server.Tests.ParallelPermissionObservationTests",
+      "method": "CallerOrCatchupCancellationDrainsBothSourcesAndAcceptsNoLateAuthority",
+      "case_ordinal": 3,
+      "display_name_sha256": "1152dd84edb8f578ff8b70a4323ce507ccb94d7e824a1049db38ea585b507c36"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.ParallelPermissionObservationTests",
+      "method": "OrganizationFailureCannotOvertakeFolderOutcome",
+      "case_ordinal": 4,
+      "display_name_sha256": "39e0960a8d30707e725a5b5528ac44da5ee3c35bec11ed1e8fce64853a701fa4"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.ParallelPermissionObservationTests",
+      "method": "OrganizationFailureCannotOvertakeFolderOutcome",
+      "case_ordinal": 5,
+      "display_name_sha256": "a61237fd78e386ba0fda8706800064df36798bcfdb01ff68b7b74c604a659e23"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.Folders.Server.Tests.ParallelPermissionObservationTests",
+      "method": "FolderFailureOrMalformedHeadCancelsAndDrainsStartedOrganizationRead",
+      "case_ordinal": 6,
+      "display_name_sha256": "7aa353ddde257db123d0bfddef976bb9559f6fe8d70b599ed75c7f64f63552c4"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.Folders.Server.Tests.ParallelPermissionObservationTests",
+      "method": "FolderFailureOrMalformedHeadCancelsAndDrainsStartedOrganizationRead",
+      "case_ordinal": 7,
+      "display_name_sha256": "0b037420f52e4f8607a80289a08e49fa75dced175154a79470fc08c91c8f59c6"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.ParallelPermissionObservationTests",
+      "method": "FolderFailureOrMalformedHeadCancelsAndDrainsStartedOrganizationRead",
+      "case_ordinal": 8,
+      "display_name_sha256": "c23f4401deae6a2ab495350bed4c2b220ae85b475f7ee14c5ca35113014bbb34"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.ParallelPermissionObservationTests",
+      "method": "FolderFailureOrMalformedHeadCancelsAndDrainsStartedOrganizationRead",
+      "case_ordinal": 9,
+      "display_name_sha256": "39d4b4fa93370f1d17c5f28fd751c3f96ff608b20b7509cdc4e3f45065c194dc"
+    }
+  ]
+}

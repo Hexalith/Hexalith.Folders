@@ -1,0 +1,567 @@
+diff --git a/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs b/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs
+index 8ead6f043..771420c43 100644
+--- a/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs
++++ b/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs
+@@ -164,27 +164,93 @@ public sealed class RouteCatalogAuthority(IRouteCatalogStateStore store, IRouteC
+         RequireLocalIdentity();
+         RouteCatalogActivation? captured = null;
+         long epoch = 0;
++        string? capturedAppId = null;
++        RouteCatalogStateCoordinates? capturedCoordinates = null;
+         string leaseId = Hexalith.Commons.UniqueIds.UniqueIdHelper.GenerateSortableUniqueStringId();
+-        await UpdateAsync(async state =>
++        for (int attempt = 0; attempt < MaximumUpdateAttempts; attempt++)
+         {
+-            if (state.Leases.Any(l => l.LeaseId == leaseId) && state.Committed is { } retained)
++            (RouteCatalogActivationState state, _) = await ReadAdmissionStateAsync(cancellationToken, diagnostics).ConfigureAwait(false);
++            bool retainedLease = state.Leases.Any(fence => fence.LeaseId == leaseId);
++            if ((!retainedLease && state.Pending is not null) || state.Committed is null)
++                throw new RouteCatalogUnavailableException("No complete catalog generation is serving.");
++            // Own the complete candidate before awaited observations. A store/observer alias must
++            // never allow a later authority change to inherit validation of the original bytes.
++            RouteCatalogActivation candidate = Freeze(state.Committed);
++            RouteCatalogHostIdentity identity = options.Value.Identity!;
++            string profile = options.Value.Profile;
++            RouteCatalogStateCoordinates? coordinates = store.Coordinates;
++            RouteCatalogActivation observed = Freeze(candidate);
++            await ValidateAsync(observed, cancellationToken, diagnostics).ConfigureAwait(false);
++            if (!SameAdmissionActivation(candidate, observed))
++                throw new RouteCatalogUnavailableException("The observed catalog activation changed during admission.");
++            RequireLocalIdentity();
++            if (options.Value.Identity != identity || options.Value.Profile != profile || store.Coordinates != coordinates)
++                throw new RouteCatalogUnavailableException("The local catalog authority changed during admission.");
++            if (retainedLease)
+             {
+-                await ValidateAsync(retained, cancellationToken, diagnostics).ConfigureAwait(false);
+-                captured = retained;
++                RequireAdmissionFence(state, leaseId, identity, candidate);
++                captured = candidate;
+                 epoch = state.Epoch;
+-                return state;
++                capturedAppId = identity.AppId;
++                capturedCoordinates = coordinates;
++                break;
+             }
+-            if (state.Pending is not null || state.Committed is null)
++            // Lease-only writers may have advanced the inventory while the expensive fresh owner
++            // capture ran. Rebase only onto an independently read, exactly unchanged authority.
++            (RouteCatalogActivationState fresh, string etag) = await ReadAdmissionStateAsync(cancellationToken, diagnostics).ConfigureAwait(false);
++            cancellationToken.ThrowIfCancellationRequested();
++            if (options.Value.Identity != identity || options.Value.Profile != profile || store.Coordinates != coordinates)
++                throw new RouteCatalogUnavailableException("The local catalog authority changed during admission.");
++            bool sameAuthority = fresh.Epoch == state.Epoch && fresh.Committed is { } committed
++                && SameAdmissionActivation(candidate, Freeze(committed));
++            if (sameAuthority && fresh.Leases.Any(fence => fence.LeaseId == leaseId))
++            {
++                // Recover an already durable admission even if a successor began draining it.
++                // This creates no fence and retains the original response-loss cleanup path.
++                RequireAdmissionFence(fresh, leaseId, identity, candidate);
++                captured = candidate;
++                epoch = fresh.Epoch;
++                capturedAppId = identity.AppId;
++                capturedCoordinates = coordinates;
++                break;
++            }
++            if (fresh.Pending is not null)
+                 throw new RouteCatalogUnavailableException("No complete catalog generation is serving.");
+-            await ValidateAsync(state.Committed, cancellationToken, diagnostics).ConfigureAwait(false);
+-            captured = state.Committed;
+-            epoch = state.Epoch;
+-            long sequence = checked(state.LastLease + 1);
+-            if (state.Leases.Count >= 4096) throw new RouteCatalogUnavailableException("The durable dispatch lease inventory requires draining.");
+-            return state with { LastLease = sequence, Leases = [.. state.Leases, new RouteCatalogDispatchFence(sequence, leaseId, options.Value.Identity!.HostId, state.Committed.RootDigest, state.Epoch)] };
+-        }, cancellationToken, diagnostics).ConfigureAwait(false);
++            if (sameAuthority)
++            {
++                long sequence = checked(fresh.LastLease + 1);
++                if (fresh.Leases.Count >= 4096)
++                    throw new RouteCatalogUnavailableException("The durable dispatch lease inventory requires draining.");
++                cancellationToken.ThrowIfCancellationRequested();
++                if (options.Value.Identity != identity || options.Value.Profile != profile || store.Coordinates != coordinates)
++                    throw new RouteCatalogUnavailableException("The local catalog authority changed during admission.");
++                RouteCatalogActivationState next = fresh with
++                {
++                    LastLease = sequence,
++                    Leases = [.. fresh.Leases, new RouteCatalogDispatchFence(sequence, leaseId, identity.HostId, candidate.RootDigest, fresh.Epoch)],
++                };
++                bool exchanged;
++                using (var stage = diagnostics?.Start(DispatchStageName.CatalogCompareExchange))
++                {
++                    exchanged = await store.CompareExchangeAsync(next, etag, cancellationToken).ConfigureAwait(false);
++                    stage?.Complete();
++                }
++                if (exchanged)
++                {
++                    captured = candidate;
++                    epoch = fresh.Epoch;
++                    capturedAppId = identity.AppId;
++                    capturedCoordinates = coordinates;
++                    break;
++                }
++            }
++            if (attempt < MaximumUpdateAttempts - 1)
++                await Task.Delay(Random.Shared.Next(1, Math.Min((attempt + 1) * 4, 50) + 1), cancellationToken).ConfigureAwait(false);
++        }
++        if (captured is null)
++            throw new RouteCatalogUnavailableException("Concurrent catalog authority updates could not be serialized.");
+         using var snapshotStage = diagnostics?.Start(DispatchStageName.CatalogSnapshot);
+-        var lease = new RouteCatalogDispatchLease(new(captured!, epoch, options.Value.Identity!.AppId, store.Coordinates), () => ReleaseAsync(leaseId))
++        var lease = new RouteCatalogDispatchLease(new(captured!, epoch, capturedAppId, capturedCoordinates), () => ReleaseAsync(leaseId))
+         {
+             Activation = captured,
+         };
+@@ -192,6 +258,28 @@ public sealed class RouteCatalogAuthority(IRouteCatalogStateStore store, IRouteC
+         return lease;
+     }
+ 
++    private async Task<(RouteCatalogActivationState State, string ETag)> ReadAdmissionStateAsync(CancellationToken cancellationToken, DispatchDiagnostics? diagnostics)
++    {
++        using var stage = diagnostics?.Start(DispatchStageName.CatalogStateRead);
++        var result = await store.ReadAsync(cancellationToken).ConfigureAwait(false);
++        stage?.Complete();
++        return result;
++    }
++
++    private static bool SameAdmissionActivation(RouteCatalogActivation validated, RouteCatalogActivation current)
++        => validated.RootDigest == current.RootDigest
++            && string.Equals(validated.TrustProof, current.TrustProof, StringComparison.Ordinal)
++            && validated.CanonicalCatalog.AsSpan().SequenceEqual(current.CanonicalCatalog)
++            && RouteCatalogActivationBinding.ComputeDigest(validated) == RouteCatalogActivationBinding.ComputeDigest(current);
++
++    private static void RequireAdmissionFence(RouteCatalogActivationState state, string leaseId, RouteCatalogHostIdentity identity, RouteCatalogActivation activation)
++    {
++        RouteCatalogDispatchFence[] own = [.. state.Leases.Where(fence => fence.LeaseId == leaseId)];
++        if (own.Length != 1 || own[0].HostId != identity.HostId || own[0].RootDigest != activation.RootDigest
++            || own[0].Epoch != state.Epoch || own[0].Sequence > state.LastLease)
++            throw new RouteCatalogUnavailableException("The retained dispatch fence differs from the validated authority.");
++    }
++
+     /// <summary>Rechecks independently observed local facts for a native read under its existing durable lease.</summary>
+     internal async Task ValidateNativeReadLeaseAsync(RouteCatalogDispatchLease lease, CancellationToken cancellationToken)
+     {
+diff --git a/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAcquisitionDiagnosticsTests.cs b/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAcquisitionDiagnosticsTests.cs
+index 1afe8f5c8..0bb15ff8d 100644
+--- a/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAcquisitionDiagnosticsTests.cs
++++ b/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAcquisitionDiagnosticsTests.cs
+@@ -36,8 +36,12 @@ public sealed class CatalogAcquisitionDiagnosticsTests
+         {
+             if (loggerResolutionThrows) log.Records.ShouldBeEmpty();
+             else
+-                foreach (string stage in new[] { "CatalogAdmissionWait", "CatalogStateRead", "CatalogActivationDigest", "CatalogHostCapture", "CatalogTrust", "CatalogCompareExchange", "CatalogSnapshot" })
++            {
++                log.Records.Where(record => Equals(record["Stage"], "CatalogStateRead")).Select(record => record["Status"])
++                    .ShouldBe(new object[] { "Started", "Completed", "Started", "Completed" });
++                foreach (string stage in new[] { "CatalogAdmissionWait", "CatalogActivationDigest", "CatalogHostCapture", "CatalogTrust", "CatalogCompareExchange", "CatalogSnapshot" })
+                     CommandDispatchDiagnosticsTests.AssertClosed(log, stage, "Completed");
++            }
+         }
+         (await fixture.Store.ReadAsync(default)).State.Leases.ShouldBeEmpty();
+         CommandDispatchDiagnosticsTests.AssertPrivate(log);
+diff --git a/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogUpdateContentionTests.cs b/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogUpdateContentionTests.cs
+index 7df29fd78..20653317f 100644
+--- a/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogUpdateContentionTests.cs
++++ b/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogUpdateContentionTests.cs
+@@ -56,7 +56,7 @@ public sealed class CatalogUpdateContentionTests
+         };
+         await Should.ThrowAsync<RouteCatalogUnavailableException>(() => authority.AcquireAsync(TestContext.Current.CancellationToken));
+         store.Attempts.ShouldBe(1);
+-        store.Reads.ShouldBe(2);
++        store.Reads.ShouldBe(3);
+         var state = (await fixture.Store.ReadAsync(default)).State;
+         state.Leases.ShouldBeEmpty(); state.Epoch.ShouldBe(1); state.Committed!.RootDigest.ShouldBe(first.RootDigest);
+         (state.Pending is not null).ShouldBe(mutation == "pending");
+@@ -71,7 +71,7 @@ public sealed class CatalogUpdateContentionTests
+         using var cancelled = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
+         store.Conflict = (_, _) => { cancelled.Cancel(); return Task.CompletedTask; };
+         await Should.ThrowAsync<OperationCanceledException>(() => Authority(fixture, store).AcquireAsync(cancelled.Token));
+-        store.Reads.ShouldBe(1); store.Attempts.ShouldBe(1);
++        store.Reads.ShouldBe(2); store.Attempts.ShouldBe(1);
+         JsonSerializer.Serialize((await fixture.Store.ReadAsync(default)).State).ShouldBe(before);
+     }
+ 
+@@ -97,7 +97,7 @@ public sealed class CatalogUpdateContentionTests
+         string before = JsonSerializer.Serialize((await fixture.Store.ReadAsync(default)).State);
+         var store = new ControlledCatalogContentionStore(fixture.Store);
+         await Should.ThrowAsync<RouteCatalogUnavailableException>(() => Authority(fixture, store).AcquireAsync(TestContext.Current.CancellationToken));
+-        store.Reads.ShouldBe(96); store.Attempts.ShouldBe(96);
++        store.Reads.ShouldBe(192); store.Attempts.ShouldBe(96);
+         JsonSerializer.Serialize((await fixture.Store.ReadAsync(default)).State).ShouldBe(before);
+     }
+ 
+diff --git a/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAdmissionRebaseStore.cs b/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAdmissionRebaseStore.cs
+new file mode 100644
+index 000000000..573c969c8
+--- /dev/null
++++ b/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAdmissionRebaseStore.cs
+@@ -0,0 +1,43 @@
++using Hexalith.EventStore.ServiceDefaults.Routing;
++
++namespace Hexalith.EventStore.Server.Tests.Routing;
++
++/// <summary>Injects deterministic races around an actual serialized, ETag-checked authority store.</summary>
++internal sealed class CatalogAdmissionRebaseStore(IRouteCatalogStateStore inner) : IRouteCatalogStateStore
++{
++    /// <inheritdoc/>
++    public RouteCatalogStateCoordinates? Coordinates => inner.Coordinates;
++    /// <summary>Gets the observed read count.</summary>
++    internal int Reads { get; private set; }
++    /// <summary>Gets the attempted CAS count.</summary>
++    internal int Exchanges { get; private set; }
++    /// <summary>Gets the exact read concurrency tokens.</summary>
++    internal List<string> ReadETags { get; } = [];
++    /// <summary>Gets the exact attempted concurrency tokens.</summary>
++    internal List<string> ExchangeETags { get; } = [];
++    /// <summary>Gets or sets an action before the selected fresh read.</summary>
++    internal Func<int, CancellationToken, Task>? BeforeRead { get; set; }
++    /// <summary>Gets or sets a deliberately aliased read result.</summary>
++    internal Func<int, RouteCatalogActivationState, RouteCatalogActivationState>? TransformRead { get; set; }
++    /// <summary>Gets or sets an action that can model contention or response loss at CAS.</summary>
++    internal Func<int, RouteCatalogActivationState, string, CancellationToken, Task<bool?>>? Exchange { get; set; }
++    /// <inheritdoc/>
++    public async Task<(RouteCatalogActivationState State, string ETag)> ReadAsync(CancellationToken cancellationToken)
++    {
++        cancellationToken.ThrowIfCancellationRequested();
++        int read = ++Reads;
++        if (BeforeRead is { } before) await before(read, cancellationToken);
++        var result = await inner.ReadAsync(cancellationToken);
++        ReadETags.Add(result.ETag);
++        return (TransformRead?.Invoke(read, result.State) ?? result.State, result.ETag);
++    }
++    /// <inheritdoc/>
++    public async Task<bool> CompareExchangeAsync(RouteCatalogActivationState state, string etag, CancellationToken cancellationToken)
++    {
++        cancellationToken.ThrowIfCancellationRequested();
++        int exchange = ++Exchanges;
++        ExchangeETags.Add(etag);
++        if (Exchange is { } change && await change(exchange, state, etag, cancellationToken) is { } result) return result;
++        return await inner.CompareExchangeAsync(state, etag, cancellationToken);
++    }
++}
+diff --git a/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAdmissionRebaseTests.cs b/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAdmissionRebaseTests.cs
+new file mode 100644
+index 000000000..bb20d9bfc
+--- /dev/null
++++ b/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAdmissionRebaseTests.cs
+@@ -0,0 +1,322 @@
++using Hexalith.EventStore.Contracts.Routing;
++using Hexalith.EventStore.ServiceDefaults.Routing;
++
++using Microsoft.Extensions.Hosting;
++using Microsoft.Extensions.Options;
++
++using NSubstitute;
++using Shouldly;
++
++namespace Hexalith.EventStore.Server.Tests.Routing;
++
++/// <summary>Fresh admission may rebase inventory only across the exact independently validated authority.</summary>
++public sealed class CatalogAdmissionRebaseTests
++{
++    [Fact]
++    public async Task EveryCaptureCanAdvanceForeignInventoryWithoutLosingPeersOrUsingItsOldETag()
++    {
++        var fixture = await FixtureAsync();
++        var store = new CatalogAdmissionRebaseStore(fixture.Store);
++        int captures = 0;
++        var authority = Authority(fixture, store, async (_, token) =>
++        {
++            int capture = ++captures;
++            await ChangeAsync(fixture, state => state with
++            {
++                LastLease = state.LastLease + 1,
++                Leases = [.. state.Leases, new(state.LastLease + 1, "peer-" + capture, fixture.Hosts[1].HostId, state.Committed!.RootDigest, state.Epoch)],
++                Previous = state.Committed,
++            }, token);
++        });
++        store.Exchange = (attempt, _, _, _) => Task.FromResult<bool?>(attempt == 1 ? false : null);
++        await using (var lease = await authority.AcquireAsync(TestContext.Current.CancellationToken))
++        {
++            captures.ShouldBe(2); store.Reads.ShouldBe(4); store.Exchanges.ShouldBe(2);
++            store.ExchangeETags.ShouldBe([store.ReadETags[1], store.ReadETags[3]]);
++            store.ReadETags[0].ShouldNotBe(store.ReadETags[1]);
++            var state = (await fixture.Store.ReadAsync(default)).State;
++            state.LastLease.ShouldBe(3); state.Leases.Count.ShouldBe(3);
++            state.Leases.Where(fence => fence.LeaseId.StartsWith("peer-", StringComparison.Ordinal)).Count().ShouldBe(2);
++            state.Previous.ShouldNotBeNull();
++            state.Attempts.ShouldHaveSingleItem();
++            lease.Snapshot.Epoch.ShouldBe(state.Epoch);
++        }
++        (await fixture.Store.ReadAsync(default)).State.Leases.Select(fence => fence.LeaseId).ShouldBe(["peer-1", "peer-2"]);
++    }
++
++    [Theory]
++    [InlineData("pending")]
++    [InlineData("missing")]
++    [InlineData("epoch")]
++    [InlineData("committed")]
++    [InlineData("binding")]
++    [InlineData("proof")]
++    [InlineData("bytes")]
++    public async Task ChangedAuthorityCannotInheritThePriorObservationOrTrust(string change)
++    {
++        var fixture = await FixtureAsync();
++        var store = new CatalogAdmissionRebaseStore(fixture.Store);
++        int captures = 0;
++        var authority = Authority(fixture, store, async (_, token) =>
++        {
++            if (++captures > 1) throw new InvalidOperationException("fresh observation required");
++            await ChangeAsync(fixture, state => change switch
++            {
++                "pending" => state with { Pending = fixture.Candidate(2, state.Committed!.RootDigest) },
++                "missing" => state with { Committed = null },
++                "epoch" => state with { Epoch = state.Epoch + 1 },
++                "committed" => state with { Committed = fixture.Candidate(2, state.Committed!.RootDigest) },
++                "binding" => state with { Committed = state.Committed! with { Owner = "different-owner" } },
++                "proof" => state with { Committed = state.Committed! with { TrustProof = state.Committed.TrustProof + "-changed" } },
++                _ => state with { Committed = state.Committed! with { CanonicalCatalog = [.. state.Committed.CanonicalCatalog, 32] } },
++            }, token);
++        });
++        await Should.ThrowAsync<Exception>(() => authority.AcquireAsync(TestContext.Current.CancellationToken));
++        store.Exchanges.ShouldBe(0);
++        captures.ShouldBe(change is "epoch" or "committed" or "binding" or "proof" ? 2 : 1);
++        (await fixture.Store.ReadAsync(default)).State.Leases.ShouldBeEmpty();
++    }
++
++    [Theory]
++    [InlineData("bytes")]
++    [InlineData("hosts")]
++    public async Task MutableReadAliasesCannotRewriteThePrivatelyValidatedActivation(string field)
++    {
++        var fixture = await FixtureAsync();
++        var initial = (await fixture.Store.ReadAsync(default)).State;
++        byte[] bytes = initial.Committed!.CanonicalCatalog.ToArray();
++        RouteCatalogHostIdentity[] hosts = [.. initial.Committed.RequiredHosts];
++        var alias = initial.Committed with { CanonicalCatalog = bytes, RequiredHosts = hosts };
++        var store = new CatalogAdmissionRebaseStore(fixture.Store)
++        {
++            TransformRead = (read, state) => read == 1 ? state with { Committed = alias } : state,
++        };
++        int captures = 0;
++        var authority = Authority(fixture, store, async (observed, token) =>
++        {
++            if (++captures > 1) throw new InvalidOperationException("fresh observation required");
++            observed.CanonicalCatalog.ShouldNotBeSameAs(bytes);
++            observed.RequiredHosts.ShouldNotBeSameAs(hosts);
++            if (field == "bytes") bytes[0] ^= 1;
++            else hosts[0] = hosts[1];
++            // A concurrent backend change shares the changed original values, never the owned snapshot.
++            await ChangeAsync(fixture, state => state with { Committed = alias }, token);
++        });
++        await Should.ThrowAsync<Exception>(() => authority.AcquireAsync(TestContext.Current.CancellationToken));
++        store.Exchanges.ShouldBe(0);
++        (await fixture.Store.ReadAsync(default)).State.Leases.ShouldBeEmpty();
++    }
++
++    [Theory]
++    [InlineData("cap")]
++    [InlineData("overflow")]
++    public async Task RefreshedInventoryLimitsRemainClosed(string limit)
++    {
++        var fixture = await FixtureAsync();
++        var store = new CatalogAdmissionRebaseStore(fixture.Store);
++        var authority = Authority(fixture, store, (_, token) => ChangeAsync(fixture, state => state with
++        {
++            LastLease = limit == "overflow" ? long.MaxValue : 4096,
++            Leases = limit == "overflow" ? [] : [.. Enumerable.Range(1, 4096).Select(sequence =>
++                new RouteCatalogDispatchFence(sequence, "peer-" + sequence, fixture.Hosts[1].HostId, state.Committed!.RootDigest, state.Epoch))],
++        }, token));
++        if (limit == "overflow") await Should.ThrowAsync<OverflowException>(() => authority.AcquireAsync(TestContext.Current.CancellationToken));
++        else await Should.ThrowAsync<RouteCatalogUnavailableException>(() => authority.AcquireAsync(TestContext.Current.CancellationToken));
++        store.Exchanges.ShouldBe(0);
++        (await fixture.Store.ReadAsync(default)).State.Leases.Count.ShouldBe(limit == "cap" ? 4096 : 0);
++    }
++
++    [Theory]
++    [InlineData("cancel")]
++    [InlineData("failure")]
++    [InlineData("identity")]
++    [InlineData("profile")]
++    [InlineData("coordinates")]
++    public async Task RefreshFailureCancellationOrChangedLocalIdentityCannotCreateAFence(string scenario)
++    {
++        var fixture = await FixtureAsync();
++        var store = new CatalogAdmissionRebaseStore(fixture.Store);
++        using var cancelled = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
++        var local = new RouteCatalogHostOptions { Identity = fixture.Hosts[0], Profile = "Development", DevelopmentFixture = true };
++        store.BeforeRead = (read, _) =>
++        {
++            if (read == 2)
++            {
++                if (scenario == "cancel") cancelled.Cancel();
++                else if (scenario == "failure") throw new IOException("refresh unavailable");
++                else if (scenario == "identity") local.Identity = fixture.Hosts[1];
++                else if (scenario == "profile") local.Profile = "Changed";
++                else fixture.Store.Coordinates = new("changed", "changed", "http://127.0.0.1:3501/");
++            }
++            return Task.CompletedTask;
++        };
++        await Should.ThrowAsync<Exception>(() => Authority(fixture, store, local: local).AcquireAsync(cancelled.Token));
++        store.Exchanges.ShouldBe(0);
++        (await fixture.Store.ReadAsync(default)).State.Leases.ShouldBeEmpty();
++    }
++
++    [Theory]
++    [InlineData(false)]
++    [InlineData(true)]
++    public async Task PendingSuccessorDoesNotStrandAnAlreadyRecordedOwnFence(bool pendingOnRefresh)
++    {
++        var fixture = await FixtureAsync();
++        var store = new CatalogAdmissionRebaseStore(fixture.Store);
++        RouteCatalogActivationState? written = null;
++        store.Exchange = async (attempt, state, etag, token) =>
++        {
++            if (attempt != 1) return null;
++            written = state;
++            if (!pendingOnRefresh)
++            {
++                (await fixture.Store.CompareExchangeAsync(state, etag, token)).ShouldBeTrue();
++                await ChangeAsync(fixture, current => current with { Pending = fixture.Candidate(2, current.Committed!.RootDigest) }, token);
++            }
++            return false;
++        };
++        int captures = 0;
++        Task Capture(RouteCatalogActivation _, CancellationToken token)
++        {
++            // An independent writer installs the exact previously proposed fence while capture
++            // awaits. Both reads remain actual strong snapshots with their original exact ETags.
++            return pendingOnRefresh && ++captures == 2
++                ? ChangeAsync(fixture, current => current with
++                {
++                    LastLease = written!.LastLease,
++                    Leases = written.Leases,
++                    Pending = fixture.Candidate(2, current.Committed!.RootDigest),
++                }, token)
++                : Task.CompletedTask;
++        }
++        await using (await Authority(fixture, store, Capture).AcquireAsync(TestContext.Current.CancellationToken))
++        {
++            written.ShouldNotBeNull(); store.Exchanges.ShouldBe(1);
++            var state = (await fixture.Store.ReadAsync(default)).State;
++            state.Leases.ShouldHaveSingleItem(); state.Pending.ShouldNotBeNull();
++        }
++        var final = (await fixture.Store.ReadAsync(default)).State;
++        final.Leases.ShouldBeEmpty(); final.Pending.ShouldNotBeNull();
++    }
++
++    [Fact]
++    public async Task LostSuccessfulCasResponseRetainsOneExactOwnFenceWithoutDuplicatingAdmission()
++    {
++        var fixture = await FixtureAsync();
++        var store = new CatalogAdmissionRebaseStore(fixture.Store);
++        store.Exchange = async (attempt, state, etag, token) =>
++        {
++            if (attempt != 1) return null;
++            (await fixture.Store.CompareExchangeAsync(state, etag, token)).ShouldBeTrue();
++            return false;
++        };
++        int captures = 0;
++        await using (await Authority(fixture, store, (_, _) => { captures++; return Task.CompletedTask; }).AcquireAsync(TestContext.Current.CancellationToken))
++        {
++            captures.ShouldBe(2); store.Reads.ShouldBe(3); store.Exchanges.ShouldBe(1);
++            var state = (await fixture.Store.ReadAsync(default)).State;
++            state.Leases.ShouldHaveSingleItem(); state.LastLease.ShouldBe(1);
++        }
++        (await fixture.Store.ReadAsync(default)).State.Leases.ShouldBeEmpty();
++    }
++
++    [Fact]
++    public async Task WinningFenceAndSnapshotKeepTheirValidatedLocalBindingUntilCleanup()
++    {
++        var fixture = await FixtureAsync();
++        var coordinates = fixture.Store.Coordinates;
++        var local = new RouteCatalogHostOptions { Identity = fixture.Hosts[0], Profile = "Development", DevelopmentFixture = true };
++        var store = new CatalogAdmissionRebaseStore(fixture.Store);
++        store.Exchange = async (_, state, etag, token) =>
++        {
++            bool applied = await fixture.Store.CompareExchangeAsync(state, etag, token);
++            local.Identity = fixture.Hosts[1];
++            fixture.Store.Coordinates = coordinates with { StateKey = "later-cell" };
++            return applied;
++        };
++        await using (var lease = await Authority(fixture, store, local: local).AcquireAsync(TestContext.Current.CancellationToken))
++        {
++            lease.Snapshot.LocalAppId.ShouldBe(fixture.Hosts[0].AppId);
++            lease.Snapshot.AuthorityCoordinates.ShouldBe(coordinates);
++            (await fixture.Store.ReadAsync(default)).State.Leases.Single().HostId.ShouldBe(fixture.Hosts[0].HostId);
++        }
++        (await fixture.Store.ReadAsync(default)).State.Leases.ShouldBeEmpty();
++    }
++
++    [Theory]
++    [InlineData("host")]
++    [InlineData("root")]
++    [InlineData("epoch")]
++    [InlineData("sequence")]
++    [InlineData("duplicate")]
++    public async Task ResponseLossCannotReturnAMisboundOrDuplicateOwnFence(string field)
++    {
++        var fixture = await FixtureAsync();
++        var store = new CatalogAdmissionRebaseStore(fixture.Store);
++        store.Exchange = async (_, state, etag, token) =>
++        {
++            var fence = state.Leases.Single();
++            var changed = field switch
++            {
++                "host" => fence with { HostId = fixture.Hosts[1].HostId },
++                "root" => fence with { RootDigest = "different-root" },
++                "epoch" => fence with { Epoch = state.Epoch + 1 },
++                "sequence" => fence with { Sequence = state.LastLease + 1 },
++                _ => fence,
++            };
++            (await fixture.Store.CompareExchangeAsync(state with { Leases = field == "duplicate" ? [changed, changed] : [changed] }, etag, token)).ShouldBeTrue();
++            return false;
++        };
++        await Should.ThrowAsync<RouteCatalogUnavailableException>(() => Authority(fixture, store).AcquireAsync(TestContext.Current.CancellationToken));
++        store.Exchanges.ShouldBe(1);
++        // A malformed durable record is retained for explicit owner recovery, never silently erased.
++        (await fixture.Store.ReadAsync(default)).State.Leases.Count.ShouldBe(field == "duplicate" ? 2 : 1);
++    }
++
++    [Fact]
++    public async Task CompletedValidatorCannotRewriteThePrivateComparisonSnapshotThroughItsActivationArgument()
++    {
++        var fixture = await FixtureAsync();
++        var store = new CatalogAdmissionRebaseStore(fixture.Store);
++        var authority = Authority(fixture, store, afterTrust: observed => observed.CanonicalCatalog[0] ^= 1);
++        await Should.ThrowAsync<RouteCatalogUnavailableException>(() => authority.AcquireAsync(TestContext.Current.CancellationToken));
++        store.Exchanges.ShouldBe(0);
++        (await fixture.Store.ReadAsync(default)).State.Leases.ShouldBeEmpty();
++    }
++
++    private static async Task<RouteCatalogTestFixture> FixtureAsync()
++    {
++        var fixture = new RouteCatalogTestFixture();
++        await fixture.ActivateAsync(fixture.Candidate());
++        return fixture;
++    }
++
++    private static async Task ChangeAsync(RouteCatalogTestFixture fixture, Func<RouteCatalogActivationState, RouteCatalogActivationState> change, CancellationToken token)
++    {
++        var (state, etag) = await fixture.Store.ReadAsync(token);
++        (await fixture.Store.CompareExchangeAsync(change(state), etag, token)).ShouldBeTrue();
++    }
++
++    private static RouteCatalogAuthority Authority(RouteCatalogTestFixture fixture, IRouteCatalogStateStore store,
++        Func<RouteCatalogActivation, CancellationToken, Task>? capture = null, RouteCatalogHostOptions? local = null, Action<RouteCatalogActivation>? afterTrust = null)
++    {
++        var options = Options.Create(local ?? new RouteCatalogHostOptions { Identity = fixture.Hosts[0], Profile = "Development", DevelopmentFixture = true });
++        var environment = Substitute.For<IHostEnvironment>(); environment.EnvironmentName.Returns("Development");
++        var observer = Substitute.For<IRouteCatalogHostObserver>();
++        observer.ObserveAsync(Arg.Any<RouteCatalogActivation>(), Arg.Any<RouteCatalogStateCoordinates>(), Arg.Any<CancellationToken>())
++            .Returns(async call =>
++            {
++                if (capture is not null) await capture(call.Arg<RouteCatalogActivation>(), call.Arg<CancellationToken>());
++                return fixture.Hosts[0];
++            });
++        IRouteCatalogTrustValidator actualTrust = new DevelopmentRouteCatalogTrustValidator(options, environment);
++        if (afterTrust is null) return new(store, actualTrust, options, observer);
++        var trust = Substitute.For<IRouteCatalogTrustValidator>();
++        trust.ValidateAsync(Arg.Any<RouteCatalogActivation>(), Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(async call =>
++        {
++            var activation = call.Arg<RouteCatalogActivation>();
++            await actualTrust.ValidateAsync(activation, call.Arg<string>(), call.Arg<CancellationToken>());
++            afterTrust(activation);
++        });
++        return new(store, trust, options, observer);
++    }
++}

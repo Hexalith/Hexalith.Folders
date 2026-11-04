@@ -98,3 +98,18 @@ remaining optimization or justify changing a timeout or accepting the failed tas
 SDK retained-catalog parity, red-phase/optional SDK lanes, Release/package NU1109, current-cohort live
 capacity, PD10/governance, SM4 and independent whole-story review remain separate gates. No package
 or gitlink update, publication, deployment, staging, commit, push or public v2 exposure is included.
+
+
+## Approved component qualification — 2026-11-03
+
+The exact grant/foreground maintenance implementation is now qualified by the separate real natural-
+age control (1pass, zero failures/errors/skips,183.007s),101focused fixture cases and repeated genuine
+maintenance inside unchanged strict4. Original retained Tenant source prefixes and normal persisted
+Workers authority/evidence/no-op controls pass. Production freshness5min and every approved deadline
+remain unchanged. All owned resources were removed. See the [continuation packet](evidence/story-12-2-tenant-maintenance-20261103T211501Z/README.md).
+
+Full strict acceptance remains open at an independent later task-scope probe: native metadata for a
+never-created folder is unsupported and returns503, while the old probe expects404. Tenant was Fresh;
+restart task state/replay passed. The [prepared scope-contract exception](proposal-12-2-foreign-task-scope-proof.md)
+is not applied and requires a new owner decision. This does not alter this proposal's approved scope
+or establish whole-story/package/SM4 acceptance.

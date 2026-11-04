@@ -1,0 +1,7 @@
+{
+  "utc": "2026-11-03T18:52:44.736365+00:00",
+  "availableCpuAffinity": 14,
+  "/proc/loadavg": "5.94 7.25 9.56 4/5362 3756372",
+  "/sys/fs/cgroup/cpu.stat": "usage_usec 571146308000\nuser_usec 424020900000\nsystem_usec 147125408000\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+  "/sys/fs/cgroup/cpu.pressure": "some avg10=1.32 avg60=1.89 avg300=5.04 total=10844646684\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+}

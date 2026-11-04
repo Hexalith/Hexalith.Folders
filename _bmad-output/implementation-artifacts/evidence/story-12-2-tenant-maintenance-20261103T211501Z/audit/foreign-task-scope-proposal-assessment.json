@@ -1,0 +1,10 @@
+{
+  "applied": false,
+  "source_before_sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+  "proposed_after_sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+  "patch_sha256": "c832f58f6c1b05516c1b62f97e2bc8a820d6ed2b4a51f6006952db28a16d7856",
+  "one_test_body_change_only": true,
+  "original_404_assertion_retained": true,
+  "unknown_physical_absence_control_503_added": true,
+  "production_code_changed": false
+}

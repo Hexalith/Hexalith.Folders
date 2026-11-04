@@ -1,0 +1,202 @@
+{
+  "phase": "approved fixture foreground tenant maintenance",
+  "source_output_ownership": "released; no active owned build/test/topology",
+  "files": {
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": {
+      "sha256": "19c8349067c35344188eb0e0f7208b177025dd17d4b8d932df5977db47f5bd25",
+      "bytes": 106735,
+      "change": "modified"
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs": {
+      "sha256": "17f50118b0fd1975e5dede11fd4ab37f21fa201e67c276998f72a29863bb7269",
+      "bytes": 6701,
+      "change": "modified"
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs": {
+      "sha256": "b98450d04d3155bdffbf3195ae715505a958627a1c73f75e5deef24ef85c7615",
+      "bytes": 15462,
+      "change": "modified"
+    },
+    "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md": {
+      "sha256": "409133ab32b1a25d4c2148fde096e0daceeac1bc778fce7450b00735962c63a5",
+      "bytes": 233717,
+      "change": "modified"
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs": {
+      "sha256": "973a068fb30dca17298a25aba7731605fd65ae2f042e50aa29a10867e81ad1b5",
+      "bytes": 11143,
+      "change": "added"
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs": {
+      "sha256": "0f4983fe6a300b4cced25cb6ce65c444745625907c705338fc20f04324e13019",
+      "bytes": 22817,
+      "change": "added"
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs": {
+      "sha256": "fc19a8c93f8c47f2c9481b352b6356370b84696fbc52ae8e6daa1a712a6d4b7d",
+      "bytes": 1006,
+      "change": "added"
+    }
+  },
+  "commands": {
+    "apphost-build": {
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+      "exit_code": 1,
+      "elapsed": "00:01:20.08",
+      "log_sha256": "af1463acbb70563037e4afa9a60e321ab2f2c83538eb4bba6d4df65f4fe8fd72"
+    },
+    "apphost-build-2": {
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+      "exit_code": 0,
+      "elapsed": "00:00:59.91",
+      "log_sha256": "8bb1c7a2b0af19cdb1fb060e07568c91eaa05816f081a877fd04cead2189e9dc"
+    },
+    "apphost-build-final": {
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+      "exit_code": 0,
+      "elapsed": "00:00:51.70",
+      "log_sha256": "d249e6e84cbdbcc1e79dffc7f43bfce6cd8cbbc671c5fdf04f6de136b8a1291c"
+    },
+    "apphost-build-handoff": {
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+      "exit_code": 1,
+      "elapsed": "00:01:11.37",
+      "log_sha256": "280e813a566e7bdc186012261d339e21dfea84bce1f39f40cee182fc3de88cf4"
+    }
+  },
+  "tests": {
+    "focused-1": {
+      "total": 95,
+      "passed": 95,
+      "failed": 0,
+      "by_class": {
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityTenantMaintenanceTests": 41,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests": 2,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests": 28,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests": 11,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests": 13
+      },
+      "assembly_attributes": {
+        "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "a8581245-ee8e-40cd-b232-26f9a3efec19",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "18:11:10",
+        "start-rtf": "2026-11-03T18:11:10.6165052+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-11-03T18:11:16.0786880+00:00",
+        "not-run": "0",
+        "passed": "95",
+        "skipped": "0",
+        "time": "5.462",
+        "time-rtf": "00:00:05.4620000",
+        "total": "95"
+      }
+    },
+    "focused-final": {
+      "total": 101,
+      "passed": 101,
+      "failed": 0,
+      "by_class": {
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityTenantMaintenanceTests": 47,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests": 2,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests": 28,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests": 11,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests": 13
+      },
+      "assembly_attributes": {
+        "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "2cc79fcc-390b-44ca-9727-0f1b3625d691",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "18:15:53",
+        "start-rtf": "2026-11-03T18:15:53.9233453+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-11-03T18:15:59.4542856+00:00",
+        "not-run": "0",
+        "passed": "101",
+        "skipped": "0",
+        "time": "5.525",
+        "time-rtf": "00:00:05.5250000",
+        "total": "101"
+      }
+    },
+    "stale-controls": {
+      "total": 77,
+      "passed": 77,
+      "failed": 0,
+      "by_class": {
+        "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests": 26,
+        "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests": 41,
+        "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests": 10
+      },
+      "assembly_attributes": {
+        "environment": "64-bit (x64) .NET 10.0.14 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "810ac1aa-07d5-4c12-98c1-04f9b0571714",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "18:16:15",
+        "start-rtf": "2026-11-03T18:16:15.6895902+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-11-03T18:16:15.9131290+00:00",
+        "not-run": "0",
+        "passed": "77",
+        "skipped": "0",
+        "time": "0.222",
+        "time-rtf": "00:00:00.2220000",
+        "total": "77"
+      }
+    }
+  },
+  "test_commands": {
+    "focused-final": "dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityTenantMaintenanceTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests -result-xml /tmp/story12-2-tenant-maintenance-implementation-20261103/focused-final-private.xml",
+    "stale-controls": "dotnet tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll -class Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests -class Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests -class Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests -result-xml /tmp/story12-2-tenant-maintenance-implementation-20261103/stale-controls-private.xml"
+  },
+  "bounds": {
+    "trigger_seconds": 120,
+    "whole_foreground_budget_seconds": 90,
+    "production_tenant_freshness_seconds": 300,
+    "approved_mutation_evidence_seconds": 2,
+    "old_submit_status_seconds": 90,
+    "old_http_retry_seconds": 75,
+    "old_submit_http_seconds": 40
+  },
+  "original_bodies": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": {
+      "before": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "after": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "unchanged": true
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": {
+      "before": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "after": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "unchanged": true
+    }
+  },
+  "limitations": [
+    "No live acceptance execution by this phase. Parent owns coherent runtime rebuild/audit/strict retry.",
+    "Final build after XML-summary-only addition failed during external SDK merge: CS8300 markers in SubmitCommandRequestValidator.cs. Markers had disappeared at immediate capture; file was not edited by this phase.",
+    "Final 101 controls ran exact last successful output including all 47 new controls; source differs from that output only by added SubmitAsync XML summary in phase-owned code. External SDK/output drift must be requalified.",
+    "Domain 77 controls ran preserved previously built current-source output; no new Domain source edits/build in this phase.",
+    "Parent reports external EventStore HEAD 743465ad87f8a034020f9dd56fa76b0a3f4a262d, MERGE_HEAD 16dff1f018e8a68a9d244975e8228d96429eb61c. Do not attribute prior broad results to this external cohort.",
+    "Qualifies actively maintained disposable tenant, not indefinite idle access. Existing production stale denials retained."
+  ],
+  "parent_next": [
+    "Wait for externally owned SDK source/Git/output activity to settle; do not resolve/revert external merge as part of fixture scope.",
+    "Add three new AppHost test compile files to pending input inventory only; preserve frozen artifacts and old sealed packets.",
+    "Rebuild coherent actual runtime + Memories with both source flags, audit selected PDB/source/dependency modules and SDK producer cohort.",
+    "Run unchanged strict class with isolated topology and lifecycle sink via /tmp/story12-2-tenant-maintenance-20261103-updu69yz qualifier; retain maintenance closed PASS evidence, prior failures and exact owned cleanup.",
+    "Keep live capacity, SDK/package parity, Release NU1109, governance/PD10, SM4 and whole-story review separate."
+  ],
+  "no_git_mutation": true,
+  "no_production_or_sdk_edits_in_phase": true
+}

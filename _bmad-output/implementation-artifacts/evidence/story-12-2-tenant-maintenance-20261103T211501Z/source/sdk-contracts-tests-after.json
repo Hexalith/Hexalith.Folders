@@ -1,0 +1,148 @@
+{
+  "utc": "2026-11-03T19:16:18.482207+00:00",
+  "repos": [
+    {
+      "root": "/home/administrator/projects/hexalith/folders",
+      "head": "9e26eb8f4296fe2fdef70cd5858341a55f7ea9e4",
+      "branch": "main",
+      "status": "M _bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml\n M _bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md\n M scripts/pd10-v2-story-owned-paths.txt\n M tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs\n M tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs\n M tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs",
+      "source_tree": {
+        "path": "source/trees/7902ae39ee72cbc04717cbe71eda2978d6bc2a924ae2c33e10cc17b13ee8ad32.json",
+        "canonical_sha256": "7902ae39ee72cbc04717cbe71eda2978d6bc2a924ae2c33e10cc17b13ee8ad32",
+        "file_count": 2097
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.AI.Tools",
+      "head": "1745b6663ad32bb1288167135ed0f979366c53a0",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/9980ad28f07965657bfc8a7116a72d7086a7f50dd967ba05a0c17043a56f16bc.json",
+        "canonical_sha256": "9980ad28f07965657bfc8a7116a72d7086a7f50dd967ba05a0c17043a56f16bc",
+        "file_count": 11
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "head": "dc9957efc64311a51d90026d648aebb5638a0a19",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/3bb48f10bcf49f678c28771c988581c57d5416df73adcf8fd36e3c5dabcd9e38.json",
+        "canonical_sha256": "3bb48f10bcf49f678c28771c988581c57d5416df73adcf8fd36e3c5dabcd9e38",
+        "file_count": 1597
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons",
+      "head": "11555ace9efcae2928a00122dcba91243e5a8a1a",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/cb796c63e5a14aa8269df209e23c1bcb47ee11a9f3dee1dc32835dbec4ccd427.json",
+        "canonical_sha256": "cb796c63e5a14aa8269df209e23c1bcb47ee11a9f3dee1dc32835dbec4ccd427",
+        "file_count": 206
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "head": "bca57ab16802ba1b91f744c2c6b9c73259bdbdcc",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/ffc7aabbde55770008c7da8edf8fb83a59264e6a88cf02e2d8f66589d4ae647c.json",
+        "canonical_sha256": "ffc7aabbde55770008c7da8edf8fb83a59264e6a88cf02e2d8f66589d4ae647c",
+        "file_count": 6470
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "head": "b105c846c31844441f1cff84b5c187da0eff3546",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/2b34ca50d0647f056f5a494aacf0a733631cfdededb0a2ad405b36090ec3e686.json",
+        "canonical_sha256": "2b34ca50d0647f056f5a494aacf0a733631cfdededb0a2ad405b36090ec3e686",
+        "file_count": 2908
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "head": "50e94096d0a0f74fc15e164d6013819655829d0c",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/47851cd2a8b95286c494f4c41ed8bd42470372861a91629006855b8e17756745.json",
+        "canonical_sha256": "47851cd2a8b95286c494f4c41ed8bd42470372861a91629006855b8e17756745",
+        "file_count": 1434
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+      "head": "d959bdae5af9c22f53573eda71c091cb5c0aae4c",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/457383a6043483937112b7e50a0fad8512ca7996679ab56e3c25ce2d10d195df.json",
+        "canonical_sha256": "457383a6043483937112b7e50a0fad8512ca7996679ab56e3c25ce2d10d195df",
+        "file_count": 2885
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties",
+      "head": "f1f33f8de655d9aa9307bafba128b0c7ea5c2570",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/1ff0375234f12473581deb835f38837bc830a3dd2fc9ce5f5b1660d6be08adc4.json",
+        "canonical_sha256": "1ff0375234f12473581deb835f38837bc830a3dd2fc9ce5f5b1660d6be08adc4",
+        "file_count": 2047
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "head": "8432397c66ebc0fd22e5671ce620a7d2139f7453",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/a025d22f6f972b5b7f5ecabbe3970e38f326f9c570d62d4526aeba0432ce5a94.json",
+        "canonical_sha256": "a025d22f6f972b5b7f5ecabbe3970e38f326f9c570d62d4526aeba0432ce5a94",
+        "file_count": 2818
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations",
+      "head": "bce4eb9f45c6b131b960ab4fa39e50ff01e51960",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/09ee63779d3983826275fe286d19b58b235e7b5766b9f7856e99f51df781e959.json",
+        "canonical_sha256": "09ee63779d3983826275fe286d19b58b235e7b5766b9f7856e99f51df781e959",
+        "file_count": 55
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "head": "98efe700b60cacfe0b3cc3cb0c134e0902419b4c",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/3046b55e62afb6bd321d509f793ac0857795ca9793dc79d2140c97a1a601d136.json",
+        "canonical_sha256": "3046b55e62afb6bd321d509f793ac0857795ca9793dc79d2140c97a1a601d136",
+        "file_count": 1702
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "head": "9e02fd1589cbfbf84972418ab9866761188a45cd",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/63f84f5fabaea57a29e1384acffa14379e619b65a17497aefe1c75936525369f.json",
+        "canonical_sha256": "63f84f5fabaea57a29e1384acffa14379e619b65a17497aefe1c75936525369f",
+        "file_count": 900
+      }
+    }
+  ]
+}

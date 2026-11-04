@@ -1,0 +1,68 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+    "-showLiveOutput",
+    "-result-xml",
+    "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/strict-tenant-maintenance-3-private.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-03T20:05:25.852677+00:00",
+  "utc_end": "2026-11-03T20:09:18.095521+00:00",
+  "exit_code": 1,
+  "environment_selection": {
+    "Folders__EventStoreDaprHttpPort": 36032,
+    "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true"
+  },
+  "private_log": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/strict-tenant-maintenance-3-private.log",
+    "sha256": "f19a544eb9407cc53fb42812005f71ecefaffae1c5c7fa8ab3417fdf7f59c6d0"
+  },
+  "private_xml": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/strict-tenant-maintenance-3-private.xml",
+    "sha256": "de0c3d5ec1110aedc9ae2b9a176d12f155f67eb88f69ba41255231d5ccb2074e"
+  },
+  "summary": {
+    "assemblies": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "20:05:26",
+        "errors": "0",
+        "failed": "1",
+        "passed": "0",
+        "skipped": "0",
+        "time": "229.047",
+        "total": "1"
+      }
+    ],
+    "tests": [
+      {
+        "result": "Fail",
+        "time": "163.348",
+        "type": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "method": "RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures",
+        "display_name_sha256": "2d1c3f84a96d181e0800023c4abe97fc1b90e31064c115a190be37934b25a41b",
+        "case_ordinal": 1
+      }
+    ]
+  },
+  "source_or_head_drift": [
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore"
+  ],
+  "working_tree_status_changes": [
+    "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore"
+  ],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 0
+  },
+  "runtime_module_observations": 174,
+  "fixture_module_observations": 47,
+  "original_private_receipt_sha256": "4e8c391f73534f361ac54252c14c92f5864defb3c79ed3069cfa9a8d9380c137"
+}

@@ -1,0 +1,19 @@
+{
+  "utc": "2026-11-03T18:18:07.018036+00:00",
+  "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "head": {
+    "exit_code": 0,
+    "output": "bca57ab16802ba1b91f744c2c6b9c73259bdbdcc"
+  },
+  "merge_head": {
+    "exit_code": 1,
+    "output": ""
+  },
+  "status": {
+    "exit_code": 0,
+    "output": ""
+  },
+  "validator_sha256_at_observation": "4ba70997921d819b6df79bc9ecec34d7dd36d642c1c50908da0ed7904843deeb",
+  "validator_conflict_markers_at_observation": [],
+  "disposition": "External source/merge activity preserved. No Git/source mutation performed by this continuation. Prior SDK cohort qualification remains historical until coherent rebuilt runtime is audited."
+}

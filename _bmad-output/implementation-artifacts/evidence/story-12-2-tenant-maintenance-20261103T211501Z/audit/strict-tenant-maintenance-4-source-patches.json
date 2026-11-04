@@ -1,0 +1,19 @@
+[
+  {
+    "repository": "folders",
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/strict-tenant-maintenance-4-folders-source.patch",
+    "bytes": 10369,
+    "sha256": "a94a82764e270001fe1a972c9b9750aba13c0bb2e183e83f4d8d3648c5fa0c93",
+    "untrackedInputs": []
+  },
+  {
+    "repository": "eventstore",
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/strict-tenant-maintenance-4-eventstore-source.patch",
+    "bytes": 33393,
+    "sha256": "59633fbc2c1bba112e4a1ba51c1232cc0278046977ffa3dd4ca02427a10b06e9",
+    "untrackedInputs": [
+      "tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAdmissionRebaseStore.cs",
+      "tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAdmissionRebaseTests.cs"
+    ]
+  }
+]

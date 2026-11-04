@@ -1,0 +1,49 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "19:28:20",
+      "errors": "0",
+      "failed": "0",
+      "passed": "4",
+      "skipped": "0",
+      "time": "0.308",
+      "total": "4"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.189",
+      "type": "Hexalith.EventStore.DomainService.Tests.NativeSourceMetadataCompositionTests",
+      "method": "SeparateMetadataClientPreservesDefaultGatewayAndRefusesUnprovableScope",
+      "case_ordinal": 1,
+      "display_name_sha256": "eaeb26b81e7117902064931de02c39dfe5a314e7d4f54dde810789d428b3065f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.EventStore.DomainService.Tests.NativeSourceMetadataCompositionTests",
+      "method": "SeparateMetadataClientPreservesDefaultGatewayAndRefusesUnprovableScope",
+      "case_ordinal": 2,
+      "display_name_sha256": "5ec3eeb3519d27b8c9b6a0258ead004f2134284f3b7d36014f0f0b000383969f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.DomainService.Tests.NativeSourceMetadataCompositionTests",
+      "method": "SeparateMetadataClientPreservesDefaultGatewayAndRefusesUnprovableScope",
+      "case_ordinal": 3,
+      "display_name_sha256": "1bb9f118e9cf80ce7f209047fbce6310181bfc45f5afe3ddd2df7fc168975e46"
+    },
+    {
+      "result": "Pass",
+      "time": "0.028",
+      "type": "Hexalith.EventStore.DomainService.Tests.NativeSourceMetadataCompositionTests",
+      "method": "SeparateMetadataClientPreservesDefaultGatewayAndRefusesUnprovableScope",
+      "case_ordinal": 4,
+      "display_name_sha256": "29f68703b78c828df165df2754b0387d47a3a73a9b77327db94ec543ec7c6db7"
+    }
+  ]
+}

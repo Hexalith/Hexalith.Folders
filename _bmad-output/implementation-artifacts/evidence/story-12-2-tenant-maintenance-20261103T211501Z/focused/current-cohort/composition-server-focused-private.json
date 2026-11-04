@@ -1,0 +1,305 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "19:46:34",
+      "errors": "0",
+      "failed": "0",
+      "passed": "36",
+      "skipped": "0",
+      "time": "3.230",
+      "total": "36"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "UnavailableIndependentSourceObservationNeverInventsZero",
+      "case_ordinal": 1,
+      "display_name_sha256": "3501fe3610f1db3f14bef74126f701c4688d79bc791a55442fcb9f185ce77d71"
+    },
+    {
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "SdkRawMetadataAdapterAlsoFailsClosedWithoutSendingAnActorRequest",
+      "case_ordinal": 2,
+      "display_name_sha256": "89c457c653809b8633d0d39185fe3cf5f5f1ddc46a41a8dfdcf0991fc77f16d0"
+    },
+    {
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "ProvenZeroSourceHeadRetainsItsExistingSafeNotFoundOutcome",
+      "case_ordinal": 3,
+      "display_name_sha256": "7bc265120609b4df255e64c1c6b6fb73aec1866830e41f5390c4f257c0d5fe65"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "RefusedIndependentReadDoesNotTurnMissingProjectionIntoAProvenZeroHead",
+      "case_ordinal": 4,
+      "display_name_sha256": "b7009052884213d5aa24dc4305e9362d60eba6b8f8c8e6669897aaf9391ad97b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "NativeGatewayMissingUnsupportedAndUnavailableEvidenceDoesNotInventAZeroObservation",
+      "case_ordinal": 5,
+      "display_name_sha256": "19f57c504124a96d70cef2ab04c231b76bbcc806cc284103c412c0bcdf0de624"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "NativeGatewayMissingUnsupportedAndUnavailableEvidenceDoesNotInventAZeroObservation",
+      "case_ordinal": 6,
+      "display_name_sha256": "9c42a48273a3d1aadd4489409176a141904bbac90853def40400db9e71d6073d"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+      "method": "NativeGatewayMissingUnsupportedAndUnavailableEvidenceDoesNotInventAZeroObservation",
+      "case_ordinal": 7,
+      "display_name_sha256": "12d3fe0fb01f7197e9aa7e4d002caa718f6376a6349919a896cd7193a3d6d7bc"
+    },
+    {
+      "result": "Pass",
+      "time": "0.046",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "ExactOwnActorScopesNeverStandInForAnotherSource",
+      "case_ordinal": 8,
+      "display_name_sha256": "79352ccb1b7c6fcf559951d6af52f1265110c16f7ca4ebcd41044af1c4458019"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "ExactOwnActorScopesNeverStandInForAnotherSource",
+      "case_ordinal": 9,
+      "display_name_sha256": "9050e843130db39e67af1dae2dd8a078e551b2773177948b5c8aa4c1f311f375"
+    },
+    {
+      "result": "Pass",
+      "time": "0.018",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "ExactOwnActorScopesNeverStandInForAnotherSource",
+      "case_ordinal": 10,
+      "display_name_sha256": "04bc357f70ae0b0a659324cb8d49a3bb0d9a1ee7d534f3e3cbe3e236836a9be6"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "ExactOwnActorScopesNeverStandInForAnotherSource",
+      "case_ordinal": 11,
+      "display_name_sha256": "221722bbf0b13958a949222b56678a8023a3bbd6a5a3c515f504f688a668f006"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "ExactOwnActorScopesNeverStandInForAnotherSource",
+      "case_ordinal": 12,
+      "display_name_sha256": "f97c2056e90f9a4f37d0a0c6b8e376214fa3d649826ef619c65c0553dea04179"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "ExactOwnActorScopesNeverStandInForAnotherSource",
+      "case_ordinal": 13,
+      "display_name_sha256": "04507eb834189ab48f1dcb6e8c1515d3e4ca6dbbf15901c1656b15b44d602f84"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "CanceledCallerDoesNotObserveSourceEvenInsideOwnActorScope",
+      "case_ordinal": 14,
+      "display_name_sha256": "ca8db3d0bb25790255a95df721877eecf5aeba5603c9fa11053420935036315f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence",
+      "case_ordinal": 15,
+      "display_name_sha256": "e6cc75019f62ab60b4b4d9509eaca288e5502535b7cf56a785174a6b265e4a1d"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence",
+      "case_ordinal": 16,
+      "display_name_sha256": "87053d86531149836ed91b2ade3c7ee117401bbf51706db08789da9bcab0d2c9"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence",
+      "case_ordinal": 17,
+      "display_name_sha256": "e509211e526bc20a66c4c5232815743fbf277ae867da837d0d59aa2fc2e6be6e"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence",
+      "case_ordinal": 18,
+      "display_name_sha256": "f6f8e6b7f09454255cb1c81d8138c9679350e7676a543b8e2c986e38e3c330a9"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence",
+      "case_ordinal": 19,
+      "display_name_sha256": "938b7bf5020c19a2a324d227faf832bc7acf21491628a12825a157dbf2b501a9"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence",
+      "case_ordinal": 20,
+      "display_name_sha256": "db74235bf2765457281aa300ec9651ec1890338caa99878c70bd3f544ac226e7"
+    },
+    {
+      "result": "Pass",
+      "time": "3.002",
+      "type": "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "method": "NoncooperativeSourceCannotOutliveExistingThreeSecondCeiling",
+      "case_ordinal": 21,
+      "display_name_sha256": "41627f4856b2417e922d84135a2ddf0f7f4940e0bc5689540a33711408fc2a58"
+    },
+    {
+      "result": "Pass",
+      "time": "0.065",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "EnabledSelectionRequiresTheSinglePublicTransientFactory",
+      "case_ordinal": 22,
+      "display_name_sha256": "453a5dad97e52d28fbd185eba56a390b0a55420f3bfc9a50f59c053c590f062a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "EnabledSelectionRequiresTheSinglePublicTransientFactory",
+      "case_ordinal": 23,
+      "display_name_sha256": "b8f2872447023ca9f14cb9c608abc8bc663c0492a9b1f2d3963682f8f71578ad"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "EnabledSelectionRequiresTheSinglePublicTransientFactory",
+      "case_ordinal": 24,
+      "display_name_sha256": "bf43c57d550521b2909e796fac51233fb46f5ef1b0d15cf7fe1c95b96cf6a584"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "EnabledSelectionRequiresTheSinglePublicTransientFactory",
+      "case_ordinal": 25,
+      "display_name_sha256": "0f35fae6905aadc47028db9b83befe449867048ec0ce403be78d853e775b3be2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "EnabledSelectionRequiresTheSinglePublicTransientFactory",
+      "case_ordinal": 26,
+      "display_name_sha256": "3cda73e99edc0c671b76376566842ec850896b7c948be9f408656014415a6ddd"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "EnabledSelectionRequiresTheSinglePublicTransientFactory",
+      "case_ordinal": 27,
+      "display_name_sha256": "11f59043c281b697ee138b1155d33ea9555517182da2f0a8f8fb625f293036eb"
+    },
+    {
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "UnexpectedFactoryResultRefusesWithoutReadingOrIssuingAuthority",
+      "case_ordinal": 28,
+      "display_name_sha256": "69f73f45331ab1c73b959b8bcb6f0e3fed20aa3b0ae820548369908c4e1db3b3"
+    },
+    {
+      "result": "Pass",
+      "time": "0.055",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "EnabledSelectionRetainsEnvironmentAndCatalogGuards",
+      "case_ordinal": 29,
+      "display_name_sha256": "4405cc842c98e3a9962b68c15082971d8cb0aa9c9d13608d131908c7b04eb626"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "EnabledSelectionRetainsEnvironmentAndCatalogGuards",
+      "case_ordinal": 30,
+      "display_name_sha256": "4f7d8bc30ae1d56da76f4437091c2ed81c6d7e0d03317c8f78ace41eed618ee4"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "EnabledSelectionRetainsEnvironmentAndCatalogGuards",
+      "case_ordinal": 31,
+      "display_name_sha256": "1a1e21c6a4e5c7882b487ad0abc7eb0ebff815703ab33d67bdaefcd71fabf2a8"
+    },
+    {
+      "result": "Pass",
+      "time": "0.072",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "RealBootstrapOptionsSelectOnlyTheOptedInOwnerDecorator",
+      "case_ordinal": 32,
+      "display_name_sha256": "119c26ac319a992ef955d27fb646417fcbdee139ff5664954d521b6271bb173d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.026",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "RealBootstrapOptionsSelectOnlyTheOptedInOwnerDecorator",
+      "case_ordinal": 33,
+      "display_name_sha256": "085173e890572a0d9e91ec9a8147c322e293e4cdd0d3cff6a5d1c68d3a072495"
+    },
+    {
+      "result": "Pass",
+      "time": "0.059",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "RealBootstrapOptionsSelectOnlyTheOptedInOwnerDecorator",
+      "case_ordinal": 34,
+      "display_name_sha256": "1df1a5ef4d5fa2269e71aca190261225740abd975c1576aa01f914cb476bed0c"
+    },
+    {
+      "result": "Pass",
+      "time": "0.027",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "RealBootstrapOptionsSelectOnlyTheOptedInOwnerDecorator",
+      "case_ordinal": 35,
+      "display_name_sha256": "d0f7da414789831ce304851eb7684a51577c691a7c6117ffdb8cc58f05aa06bf"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+      "method": "DisabledSelectionPreservesThePublicFactory",
+      "case_ordinal": 36,
+      "display_name_sha256": "07f1d812622b4156e24225865d0b016669e27c9a5222e96fd4e2d67a690a7995"
+    }
+  ]
+}

@@ -1,0 +1,1793 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "20:38:53",
+      "errors": "0",
+      "failed": "0",
+      "passed": "222",
+      "skipped": "0",
+      "time": "20.415",
+      "total": "222"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.033",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "ExactNativeRequestsShareOneLeaseUntilCallbackReturns",
+      "case_ordinal": 1,
+      "display_name_sha256": "ee7bcce930af31ba80f6725002c80775d2c377872df872e4bb22b835ab683574"
+    },
+    {
+      "result": "Pass",
+      "time": "0.029",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "DetachedNativeReadCannotBorrowAReleasedLease",
+      "case_ordinal": 2,
+      "display_name_sha256": "c07131fd2902eefa9b7e97646413093d5a7a42e2c240f0a0dce46cb4dfafdd24"
+    },
+    {
+      "result": "Pass",
+      "time": "0.031",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "LocalObservationDriftStillRefusesEachScopedNativeRequest",
+      "case_ordinal": 3,
+      "display_name_sha256": "1d536e171329b9334cff13e266003c775453231fe50fdbb1d5ca5add86ef1cd5"
+    },
+    {
+      "result": "Pass",
+      "time": "0.025",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "FailedNativeReadClosesTheScopeAndReleasesItsLease",
+      "case_ordinal": 4,
+      "display_name_sha256": "a53bf31aadf8f04767d53da3f5a02914367cc3996ccdd6b26992b25c8bd04512"
+    },
+    {
+      "result": "Pass",
+      "time": "0.034",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "method": "GuardedNativeHttpReadsReuseOneLeaseWithoutSkippingPerRequestValidation",
+      "case_ordinal": 5,
+      "display_name_sha256": "9ac663b4f907aee886e98db4b678ed585037d96af313530965f5b0407f07e959"
+    },
+    {
+      "result": "Pass",
+      "time": "0.072",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogQuiescenceRaceTests",
+      "method": "EveryCasRetryRevalidatesCurrentAuthorityAndNeverDiscardsAnotherFence",
+      "case_ordinal": 6,
+      "display_name_sha256": "5614878c6e53b80891df74289581bf3e269f57e4cd0fcf81a85279d389ad3c43"
+    },
+    {
+      "result": "Pass",
+      "time": "0.063",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogQuiescenceRaceTests",
+      "method": "EveryCasRetryRevalidatesCurrentAuthorityAndNeverDiscardsAnotherFence",
+      "case_ordinal": 7,
+      "display_name_sha256": "0a9289bf53b83bacbf968668fa31dd052e120ca1eb2dafc5a2e6223a6f2235d8"
+    },
+    {
+      "result": "Pass",
+      "time": "0.063",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogQuiescenceRaceTests",
+      "method": "EveryCasRetryRevalidatesCurrentAuthorityAndNeverDiscardsAnotherFence",
+      "case_ordinal": 8,
+      "display_name_sha256": "be29396d87a2cf3a3e91d3f4b0077961a0d05108b1dda7683e2ab326f7918a9f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.063",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogQuiescenceRaceTests",
+      "method": "EveryCasRetryRevalidatesCurrentAuthorityAndNeverDiscardsAnotherFence",
+      "case_ordinal": 9,
+      "display_name_sha256": "c606f18ab0e9cede5ce9829993c00009adab1b936ce68b751a4ba9f6d26c8d26"
+    },
+    {
+      "result": "Pass",
+      "time": "0.064",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogQuiescenceRaceTests",
+      "method": "EveryCasRetryRevalidatesCurrentAuthorityAndNeverDiscardsAnotherFence",
+      "case_ordinal": 10,
+      "display_name_sha256": "81c63bdb591e30135ddc419b89de7034a84c6e8d965a0847c365bf093fb6c9fb"
+    },
+    {
+      "result": "Pass",
+      "time": "0.064",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogQuiescenceRaceTests",
+      "method": "EveryCasRetryRevalidatesCurrentAuthorityAndNeverDiscardsAnotherFence",
+      "case_ordinal": 11,
+      "display_name_sha256": "24562c3a78d08ef36ad4ef1a3b0b1299caefd388cddafcabdd5e1cd78068a5da"
+    },
+    {
+      "result": "Pass",
+      "time": "0.054",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogQuiescenceRaceTests",
+      "method": "EveryCasRetryRevalidatesCurrentAuthorityAndNeverDiscardsAnotherFence",
+      "case_ordinal": 12,
+      "display_name_sha256": "fa941e54e04fb6708f9aa1330d193af4ad9fa0aa498dcb628a500416c67eb643"
+    },
+    {
+      "result": "Pass",
+      "time": "0.089",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogQuiescenceRaceTests",
+      "method": "EveryCasRetryRevalidatesCurrentAuthorityAndNeverDiscardsAnotherFence",
+      "case_ordinal": 13,
+      "display_name_sha256": "ad9db4a3554f483f5efe1e2d7414c2edb211263f3ee5ab0794b2aa70fb264ca2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRetentionTests",
+      "method": "LocalBoundaryProofFailuresAndPostCompletionCancellationReleaseTheirFences",
+      "case_ordinal": 14,
+      "display_name_sha256": "b0d2e5310708671b9901b9396e4c5506481ef7952a625c6c25aa422e4bb63c72"
+    },
+    {
+      "result": "Pass",
+      "time": "0.028",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRetentionTests",
+      "method": "LocalBoundaryProofFailuresAndPostCompletionCancellationReleaseTheirFences",
+      "case_ordinal": 15,
+      "display_name_sha256": "46591a10d21fb7d88f6630a04596493cd82e40710600a3cb18b12667c7e47dd1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.027",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRetentionTests",
+      "method": "LocalBoundaryProofFailuresAndPostCompletionCancellationReleaseTheirFences",
+      "case_ordinal": 16,
+      "display_name_sha256": "491cd1c98951d8fd53443590ddd07db7ab09329f95d7c246840d5764d8ce862b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.029",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRetentionTests",
+      "method": "LocalBoundaryProofFailuresAndPostCompletionCancellationReleaseTheirFences",
+      "case_ordinal": 17,
+      "display_name_sha256": "5efb7210e87fbb5de69d4430c9b5b0f7405431224ebb425c9827056dee250462"
+    },
+    {
+      "result": "Pass",
+      "time": "0.039",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "LostSuccessfulCasResponseRetainsOneExactOwnFenceWithoutDuplicatingAdmission",
+      "case_ordinal": 18,
+      "display_name_sha256": "60e3f2bf12953c41a2968c738454236e92997816c94fd02f8e0fa87fa5cdeae1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.039",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "EveryCaptureCanAdvanceForeignInventoryWithoutLosingPeersOrUsingItsOldETag",
+      "case_ordinal": 19,
+      "display_name_sha256": "f531944d05e438aa07d47b60e828a197ac51a8c945f066403c6a1aa4ce88325b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.032",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "CompletedValidatorCannotRewriteThePrivateComparisonSnapshotThroughItsActivationArgument",
+      "case_ordinal": 20,
+      "display_name_sha256": "923b9e05b15d7ea9d91e313fb6c8cb7a9d93bebff0d42dc0f708615dc470344b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.054",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshedInventoryLimitsRemainClosed",
+      "case_ordinal": 21,
+      "display_name_sha256": "cb750b73d11a54d8bdb639c618afd3c32b1cfbab6f1e70b5424edbde440b384a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.032",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshedInventoryLimitsRemainClosed",
+      "case_ordinal": 22,
+      "display_name_sha256": "a95c046d5e66ca7cee8751d9fa4b2dd9d1694b90a49b330521e2e6bda59e4093"
+    },
+    {
+      "result": "Pass",
+      "time": "0.032",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "MutableReadAliasesCannotRewriteThePrivatelyValidatedActivation",
+      "case_ordinal": 23,
+      "display_name_sha256": "1ddd18ea0ad308e81a8a6192344ed20a6dae2a49a9db273727a16bea475ac968"
+    },
+    {
+      "result": "Pass",
+      "time": "0.031",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "MutableReadAliasesCannotRewriteThePrivatelyValidatedActivation",
+      "case_ordinal": 24,
+      "display_name_sha256": "0a4294c2b63c098ed58950c8b1ffb1027121f9c89b7ce74053da9b26fc44e2ed"
+    },
+    {
+      "result": "Pass",
+      "time": "0.035",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ResponseLossCannotReturnAMisboundOrDuplicateOwnFence",
+      "case_ordinal": 25,
+      "display_name_sha256": "c9dc6bea1c29a7665013d524ce5b5388e49c3d258f673f2cbd74da208528687a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.034",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ResponseLossCannotReturnAMisboundOrDuplicateOwnFence",
+      "case_ordinal": 26,
+      "display_name_sha256": "5be476070dd196b17462f99f6b8715a8bff32d314e361987e3a2a0fdd689629b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.035",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ResponseLossCannotReturnAMisboundOrDuplicateOwnFence",
+      "case_ordinal": 27,
+      "display_name_sha256": "75a972b06f4f2286d71c9efa0d022ee21ec12e0336b4238a1318cc72478fddba"
+    },
+    {
+      "result": "Pass",
+      "time": "0.043",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ResponseLossCannotReturnAMisboundOrDuplicateOwnFence",
+      "case_ordinal": 28,
+      "display_name_sha256": "8d1de80a48f2acb887a98409ec97ecd88a0b0ff5b33d7d387eb37ae9b59bbd36"
+    },
+    {
+      "result": "Pass",
+      "time": "0.03",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ResponseLossCannotReturnAMisboundOrDuplicateOwnFence",
+      "case_ordinal": 29,
+      "display_name_sha256": "053c200f43a025c9d343d0800ea99064df2401eed2d4dcf03937c5b05fde4992"
+    },
+    {
+      "result": "Pass",
+      "time": "0.049",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "PendingSuccessorDoesNotStrandAnAlreadyRecordedOwnFence",
+      "case_ordinal": 30,
+      "display_name_sha256": "6d0e989e7474de6f1cfe5ecbc4dd1f5874bdfb2e2d03876828011810cfcdd1db"
+    },
+    {
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "PendingSuccessorDoesNotStrandAnAlreadyRecordedOwnFence",
+      "case_ordinal": 31,
+      "display_name_sha256": "95854e67c5118a79a35320f2862d9671e427fcc446479a6c89e5fe2b69e3ce7d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 32,
+      "display_name_sha256": "fbc5da5d96e7f24895b7e9dbf33f34d26f03f6e7b34e44d862e1d844ae1e3324"
+    },
+    {
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 33,
+      "display_name_sha256": "ad0c011d940fa90c27eddb37e2442da8e4e92fcdd7ed2df9eb8d3e61bf0c1394"
+    },
+    {
+      "result": "Pass",
+      "time": "0.023",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 34,
+      "display_name_sha256": "eb640faa4cb94835696f872a7cf0cac566bcdc6a88be50bc808a9a257bf3c267"
+    },
+    {
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 35,
+      "display_name_sha256": "7abf49bc1a8d089d8a554ec92669a742694a83f981bc6a694bbd9f95f9ce2bbf"
+    },
+    {
+      "result": "Pass",
+      "time": "0.039",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 36,
+      "display_name_sha256": "a580bc7b5260ac1fe6061ef1b9c3f56df419feb42c72ac750b488f52341d85a1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.03",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 37,
+      "display_name_sha256": "cc38edae998e6707bc1a481a01329a3dac6d813020fb0298c21665b51d2b5dd9"
+    },
+    {
+      "result": "Pass",
+      "time": "0.031",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 38,
+      "display_name_sha256": "dcf6c4e293fe4646a518dc75ea0a7ce6e375359a2ec0aa071653bebfc7b9d743"
+    },
+    {
+      "result": "Pass",
+      "time": "0.033",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "WinningFenceAndSnapshotKeepTheirValidatedLocalBindingUntilCleanup",
+      "case_ordinal": 39,
+      "display_name_sha256": "7a9aaf00e4e8819e834c5bb406958e974679c5b2a85bf89b60f93d89714ca137"
+    },
+    {
+      "result": "Pass",
+      "time": "0.034",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshFailureCancellationOrChangedLocalIdentityCannotCreateAFence",
+      "case_ordinal": 40,
+      "display_name_sha256": "40c7ceeada61334465f3946bb952895d80507cdd64da5e2e6bff8a16d25841ca"
+    },
+    {
+      "result": "Pass",
+      "time": "0.022",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshFailureCancellationOrChangedLocalIdentityCannotCreateAFence",
+      "case_ordinal": 41,
+      "display_name_sha256": "7fc817dbf24571318e94d9c8d26c25aa5b3f5da6e2175a92212825e4081faad7"
+    },
+    {
+      "result": "Pass",
+      "time": "0.026",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshFailureCancellationOrChangedLocalIdentityCannotCreateAFence",
+      "case_ordinal": 42,
+      "display_name_sha256": "349ca10cf61c0056f964e75cdbf278ad950460ac80636183fb2312e9b56e8868"
+    },
+    {
+      "result": "Pass",
+      "time": "0.027",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshFailureCancellationOrChangedLocalIdentityCannotCreateAFence",
+      "case_ordinal": 43,
+      "display_name_sha256": "6adaea702f1d8837db31a7c7a4a0009d585da49b0b038a321bad22fcdaa4e039"
+    },
+    {
+      "result": "Pass",
+      "time": "0.025",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshFailureCancellationOrChangedLocalIdentityCannotCreateAFence",
+      "case_ordinal": 44,
+      "display_name_sha256": "74a57d316855c81b6b4f6f29d7b50c75a367b4b4d2e6c14954bd39716f636468"
+    },
+    {
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "OriginalValidationFailureRetainsItsBoundaryAndNoFence",
+      "case_ordinal": 45,
+      "display_name_sha256": "5ac39d4cb06bc106eee3877620ff05bb773185a12359a0f0d8e15b9c8db568ca"
+    },
+    {
+      "result": "Pass",
+      "time": "0.026",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "OriginalValidationFailureRetainsItsBoundaryAndNoFence",
+      "case_ordinal": 46,
+      "display_name_sha256": "d7d1d72b69990b1ebe8b437452debc999eab90c8e5b500a3ee51617f91e608af"
+    },
+    {
+      "result": "Pass",
+      "time": "0.031",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "SupportedRegistrationKeepsOptionalLoggerResolutionAdvisory",
+      "case_ordinal": 47,
+      "display_name_sha256": "6cca3bd9f8251ed99b6c1d95cfe9dda1cdc09d974a655509c59b3bb1209d921f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.035",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "SupportedRegistrationKeepsOptionalLoggerResolutionAdvisory",
+      "case_ordinal": 48,
+      "display_name_sha256": "60bc7f048fd235a8ed467e452e9628453a736415c93f46a51d53beeec30d2292"
+    },
+    {
+      "result": "Pass",
+      "time": "0.028",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "QueueCancellationDoesNotReadOrRetainAnAdditionalFence",
+      "case_ordinal": 49,
+      "display_name_sha256": "1bed198847ee4c8d88b8c86217a6558a597f7cdd3d36ce5be3932ca0f3df8146"
+    },
+    {
+      "result": "Pass",
+      "time": "0.032",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "DisabledOrThrowingLoggingRemainsAdvisory",
+      "case_ordinal": 50,
+      "display_name_sha256": "26dddcc51a25eea74c96514b809ae4f620698f6df8482c761788bb5585339093"
+    },
+    {
+      "result": "Pass",
+      "time": "0.035",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "DisabledOrThrowingLoggingRemainsAdvisory",
+      "case_ordinal": 51,
+      "display_name_sha256": "223f8198d62877863eab0a29b86d78e20179c9720f566ac2d350d86372f441e2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.025",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+      "method": "PreviouslyCommittedAuthorityRefusesEffectiveCellDrift",
+      "case_ordinal": 52,
+      "display_name_sha256": "38a507b198e135624fa1db6ca7e80056d15ce98d449aa7a8ee51d7180279b7a4"
+    },
+    {
+      "result": "Pass",
+      "time": "0.024",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+      "method": "PreviouslyCommittedAuthorityRefusesEffectiveCellDrift",
+      "case_ordinal": 53,
+      "display_name_sha256": "9f31ff2b5c4f6d354c17fc3ea8212c6614eea82f26a8330620576813e3b0c5d5"
+    },
+    {
+      "result": "Pass",
+      "time": "0.025",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+      "method": "PreviouslyCommittedAuthorityRefusesEffectiveCellDrift",
+      "case_ordinal": 54,
+      "display_name_sha256": "b3f61a4173a121a3f52b77e794fb73036213110b31a8d889804010bc9ce8398f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.024",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+      "method": "PreviouslyCommittedAuthorityRefusesEffectiveCellDrift",
+      "case_ordinal": 55,
+      "display_name_sha256": "fbd3e4e4e7ac3fa9ccd96ce2e1b3948459cdd830400c4a7342118f826368df05"
+    },
+    {
+      "result": "Pass",
+      "time": "0.023",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+      "method": "PreviouslyCommittedAuthorityRefusesEffectiveCellDrift",
+      "case_ordinal": 56,
+      "display_name_sha256": "3151bc77b9675254871dfa07d61ce789a25742962e1bbab97559b3156166f984"
+    },
+    {
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+      "method": "EffectiveStateTransportAndObservationUseTheSameNormalizedRuntimeCoordinates",
+      "case_ordinal": 57,
+      "display_name_sha256": "0abf2d5c7bc0d5a3f9c1c7e827dd90c17e8dd44260c17e4c094aef3ec8a7448c"
+    },
+    {
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+      "method": "EachExecutableTargetRequiresItsActualCompiledDeclaration",
+      "case_ordinal": 58,
+      "display_name_sha256": "f4827520cec030442c772589d03a22be5b072de5dc7cdf447330893732c6951f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.04",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+      "method": "EachExecutableTargetRequiresItsActualCompiledDeclaration",
+      "case_ordinal": 59,
+      "display_name_sha256": "4435ce2ef59e6709deedb0c18a63ad186d281267dd0d12f0f31a626a6a6daea9"
+    },
+    {
+      "result": "Pass",
+      "time": "0.053",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+      "method": "SeparatelyValidCellsCannotReuseTheOldHostIdentity",
+      "case_ordinal": 60,
+      "display_name_sha256": "592353d46cf16ed046e903144bb2504073f7255ff319c64cf4481292590b1f59"
+    },
+    {
+      "result": "Pass",
+      "time": "0.048",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+      "method": "SeparatelyValidCellsCannotReuseTheOldHostIdentity",
+      "case_ordinal": 61,
+      "display_name_sha256": "087d8f012f9f5f484bdba701c8228f6f5844be765d8bad9529e8b621b790cb70"
+    },
+    {
+      "result": "Pass",
+      "time": "0.047",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+      "method": "SeparatelyValidCellsCannotReuseTheOldHostIdentity",
+      "case_ordinal": 62,
+      "display_name_sha256": "a026bae67d5db6eda633b4702fa44489a1fc8e6d70116b3ff1cb7d501a2e5223"
+    },
+    {
+      "result": "Pass",
+      "time": "0.067",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogBackendHttpTests",
+      "method": "ConcreteAuthorityBackendFailuresBecomeNonsecretGatewayProblemDetails",
+      "case_ordinal": 63,
+      "display_name_sha256": "ee025de3fd8899b71733b9ec152b6b3429544e2d3f6586fd9d42e28fb72150af"
+    },
+    {
+      "result": "Pass",
+      "time": "0.043",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogBackendHttpTests",
+      "method": "ConcreteAuthorityBackendFailuresBecomeNonsecretGatewayProblemDetails",
+      "case_ordinal": 64,
+      "display_name_sha256": "47cacbe0b8a7f306e5824d40345b9bd224f410e62036cb00246bff3a560d3752"
+    },
+    {
+      "result": "Pass",
+      "time": "0.045",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogBackendHttpTests",
+      "method": "ConcreteAuthorityBackendFailuresBecomeNonsecretGatewayProblemDetails",
+      "case_ordinal": 65,
+      "display_name_sha256": "0a929bfef2bd820b0264416aea5b03b8d28f540bc6cd4d9b9f32fce25705069c"
+    },
+    {
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogBackendHttpTests",
+      "method": "ConcreteAuthorityBackendFailuresBecomeNonsecretGatewayProblemDetails",
+      "case_ordinal": 66,
+      "display_name_sha256": "596d594fd768f7bde3b3e3db8ce3eec4363c45d68a498414321184a76aa8caf7"
+    },
+    {
+      "result": "Pass",
+      "time": "0.037",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogBackendHttpTests",
+      "method": "ConcreteAuthorityBackendFailuresBecomeNonsecretGatewayProblemDetails",
+      "case_ordinal": 67,
+      "display_name_sha256": "4050ade5ea9e6f8e0657bc510500fd39032bbee3bf853c15fb9d8375f041d24e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.039",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogBackendHttpTests",
+      "method": "ConcreteAuthorityBackendFailuresBecomeNonsecretGatewayProblemDetails",
+      "case_ordinal": 68,
+      "display_name_sha256": "b75371b15a15f445f58793a7fab98315d14200c7cd06f6dce76385908bbe03f8"
+    },
+    {
+      "result": "Pass",
+      "time": "0.139",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogBackendHttpTests",
+      "method": "ConcreteAuthorityBackendFailuresBecomeNonsecretGatewayProblemDetails",
+      "case_ordinal": 69,
+      "display_name_sha256": "3adbb3547d1e4966b041e8249014dfe2c2494ac6463e20502e9739bd3185d93d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.105",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogBackendHttpTests",
+      "method": "ConcreteStateTransportPreservesCallerCancellationWithoutMutation",
+      "case_ordinal": 70,
+      "display_name_sha256": "538c0c2b240ce61183ed61fe3a0b952a4579fd6b6fdb6397c118c1e237ebdfe4"
+    },
+    {
+      "result": "Pass",
+      "time": "0.131",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 71,
+      "display_name_sha256": "675c49cd5d6dcebffe9a321b3ffe0b7981095db6013db22d7f03574b079295c7"
+    },
+    {
+      "result": "Pass",
+      "time": "0.079",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 72,
+      "display_name_sha256": "ca1cfa55c69409abb14702b5a1d66669fdec4f58d39bbeba55f7695b51145d91"
+    },
+    {
+      "result": "Pass",
+      "time": "0.055",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 73,
+      "display_name_sha256": "abf56c680e4e7687171ed504239d22998d7fe89774efadb7090a9c4b27a5cf0f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.047",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 74,
+      "display_name_sha256": "ce4aa8357738010fd25dbc002a241f61198d47fc8942002089e4b54a11442fef"
+    },
+    {
+      "result": "Pass",
+      "time": "0.052",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 75,
+      "display_name_sha256": "f6b6e44683f7971e2e511ed02d5607128a76c85415cf0beef60efbb0386918c6"
+    },
+    {
+      "result": "Pass",
+      "time": "0.048",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 76,
+      "display_name_sha256": "505879c3fbcd7089d8912144714686323bcffaf6a138984b0d04870bbfefe17e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.048",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 77,
+      "display_name_sha256": "7c4c9d22ffafeee062eb78b8ed156bec9955f3c5570eecd9d80e0de4f18ddf5e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.052",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 78,
+      "display_name_sha256": "013d4ab6ae547cb8cd172683acccad00debf2817956f667ebdd6d717767662c0"
+    },
+    {
+      "result": "Pass",
+      "time": "0.05",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 79,
+      "display_name_sha256": "baa7fa12a4933ed5ba5e58d880a55140139ff39e7d35d46155d74cfabe1ae0a8"
+    },
+    {
+      "result": "Pass",
+      "time": "0.054",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 80,
+      "display_name_sha256": "b1bd3959b3739da09b9ebf27ef722a94ebc7310f0324e11f86c9c85ce93675d2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.048",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 81,
+      "display_name_sha256": "05955412ec357265eb657bc161587271fd35dc678c13205990ef176a1c79acbc"
+    },
+    {
+      "result": "Pass",
+      "time": "0.049",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 82,
+      "display_name_sha256": "98dc727d1501ce53a9afba82eb52a2a240791cb75bd167286a208007b6d8b00a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.052",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 83,
+      "display_name_sha256": "50973574a11d4fa2059138bef9229a28cb398d619e74754b83214d3b675bae2e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.052",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 84,
+      "display_name_sha256": "b7439d8d79b0ca636cc3260aeff97fe8fd93fa2adc598fe3ece6fd78eb72a294"
+    },
+    {
+      "result": "Pass",
+      "time": "0.061",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 85,
+      "display_name_sha256": "0cfe972d869091d2997f47845b1daae01257aa29ad969d881500cbd6d53f5d1a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.051",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "method": "ConcreteSdkStateRpcAmbiguitySurvivesNormalIndeterminateHttpResponse",
+      "case_ordinal": 86,
+      "display_name_sha256": "56971e5ab1f9ce97e6e007103d8c4cf2fc13904e79178ce139ffd9dcf1a8cea3"
+    },
+    {
+      "result": "Pass",
+      "time": "0.827",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "IndependentHostsSerializeConcurrentDurableAdmission",
+      "case_ordinal": 87,
+      "display_name_sha256": "580737e3f4a8d43518369a494f9182032d152870ea5203a1e4c148616f82226b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.067",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "PrepareFencesNewDispatchAndCannotCommitUntilDurableLeasesDrain",
+      "case_ordinal": 88,
+      "display_name_sha256": "eb935b9cb95bbaf66f1bdf8ed504dfcaf480acea107a09d2cce630e368bd8ba0"
+    },
+    {
+      "result": "Pass",
+      "time": "0.028",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "CapturedSnapshotCannotBeChangedThroughMutableCallerCollectionsOrBytes",
+      "case_ordinal": 89,
+      "display_name_sha256": "5bbe771571e2579ea1d1d7e169aee1f6ca899f9dc27b9b221402a7dc1db69a73"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "DeclarationsAloneCannotActivateOrServe",
+      "case_ordinal": 90,
+      "display_name_sha256": "e7e46cd3589e580bb1ac021608897ca3044b20858ce9622cf3b81368ae4f903c"
+    },
+    {
+      "result": "Pass",
+      "time": "0.054",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "HostFailureBeforeCommitRecoversOnlyThePriorCompleteAuthority",
+      "case_ordinal": 91,
+      "display_name_sha256": "a033ce02c873b0cd083c5610f56d7561b557649f336ef01fc28f7306415edf36"
+    },
+    {
+      "result": "Pass",
+      "time": "0.053",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "HostFailureBeforeCommitRecoversOnlyThePriorCompleteAuthority",
+      "case_ordinal": 92,
+      "display_name_sha256": "3bfa8edbe89abc88d5f8c0799abbeeb2efa413ef0dc208d8efaa384556955d37"
+    },
+    {
+      "result": "Pass",
+      "time": "0.031",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "InvalidCandidateCannotReplacePriorAuthority",
+      "case_ordinal": 93,
+      "display_name_sha256": "bbe908b37459076c15193ce30bdf970220e7676995bb64a02fa97453a9fdd4ed"
+    },
+    {
+      "result": "Pass",
+      "time": "0.031",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "InvalidCandidateCannotReplacePriorAuthority",
+      "case_ordinal": 94,
+      "display_name_sha256": "ffd5b54330ef948e39e2182a843b8f26f57efd73c51868f1f2af866b61dd1434"
+    },
+    {
+      "result": "Pass",
+      "time": "0.031",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "InvalidCandidateCannotReplacePriorAuthority",
+      "case_ordinal": 95,
+      "display_name_sha256": "32354f9b0e079c653f1132ff6609103867665b8ede3036b3deaf7429fc87d7c9"
+    },
+    {
+      "result": "Pass",
+      "time": "0.03",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "InvalidCandidateCannotReplacePriorAuthority",
+      "case_ordinal": 96,
+      "display_name_sha256": "bd773f4a19583f96d2d0dc553b99b33bcbed405abd8db368b715a73dec770624"
+    },
+    {
+      "result": "Pass",
+      "time": "0.03",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "InvalidCandidateCannotReplacePriorAuthority",
+      "case_ordinal": 97,
+      "display_name_sha256": "397925f161c1cb905625670784cd7b6e09b9323a572e5dde349cf6d09bdfb3d3"
+    },
+    {
+      "result": "Pass",
+      "time": "0.02",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "ConcurrentAttemptsCannotOverwritePreparedAuthority",
+      "case_ordinal": 98,
+      "display_name_sha256": "bfcd1f39c8d2966cc295e1cb6344549e8fa4a045f7065b60a02313d952714277"
+    },
+    {
+      "result": "Pass",
+      "time": "0.061",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "RestartAndRollbackReadPersistedCompleteGenerationsAndAdvanceTheFence",
+      "case_ordinal": 99,
+      "display_name_sha256": "251aa635c715ad15bf58b502b8965aa33a8057cfb485bca0e48bd51243dd5c95"
+    },
+    {
+      "result": "Pass",
+      "time": "0.026",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "DevelopmentFixtureCannotGrantProductionReadiness",
+      "case_ordinal": 100,
+      "display_name_sha256": "5abb4f58061322c95fad6137bb536b1ea305c7a206ecb5984cbbbdc9c92355d4"
+    },
+    {
+      "result": "Pass",
+      "time": "0.034",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "method": "EveryExactHostMustAttestTheSameCompleteGeneration",
+      "case_ordinal": 101,
+      "display_name_sha256": "55edb73c7fb2106dc4f64c2eb40c59e57373a4d9b3acc371be4aaf510f7cfe5b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.046",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "QueuedAdmissionCanCancelWhileSameAuthorityControlStillAdvancesAndInvalidatesTheHeldRead",
+      "case_ordinal": 102,
+      "display_name_sha256": "d20a127db9a8542b153bd99e305e921e0e5ef5191dcb11b96e6b98b664452492"
+    },
+    {
+      "result": "Pass",
+      "time": "0.095",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "AwaitedAcquireLetsTheIndependentContentionOwnerFinishBeforeTheBoundIsExhausted",
+      "case_ordinal": 103,
+      "display_name_sha256": "cd71a874eca6eae0582c058e0721a2c382605e3e5c0a0ecb759362ce7bce2cc6"
+    },
+    {
+      "result": "Pass",
+      "time": "2.792",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "PermanentContentionRetainsExactlyNinetySixFreshAttemptsAndNoDispatchFence",
+      "case_ordinal": 104,
+      "display_name_sha256": "154b280e5b5bd9e563efd31d114a304974e9d245f1d5a073dc1125bb07fd6ba4"
+    },
+    {
+      "result": "Pass",
+      "time": "0.048",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "EveryRetryRevalidatesTheCurrentStateAndIndependentObservation",
+      "case_ordinal": 105,
+      "display_name_sha256": "b567b9b222ef829f82c583d320ed48c8e6f74164ef6d29d46220d9c003e44073"
+    },
+    {
+      "result": "Pass",
+      "time": "0.032",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "EveryRetryRevalidatesTheCurrentStateAndIndependentObservation",
+      "case_ordinal": 106,
+      "display_name_sha256": "50d80db8e3d4e7b06ea8028611e8f42629dce65bc8fb76ec4265d46f0144a7b8"
+    },
+    {
+      "result": "Pass",
+      "time": "0.024",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "PreCancelledAcquireNeverTouchesTheProvider",
+      "case_ordinal": 107,
+      "display_name_sha256": "f1e0c8cc8fb325234eaabeb880d54a95ad7fd33dabd0e39c91b0cc73295ed290"
+    },
+    {
+      "result": "Pass",
+      "time": "1.139",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "SustainedContentionCanClearAfterFortyEightConflicts",
+      "case_ordinal": 108,
+      "display_name_sha256": "3b049b8379a3329b749282673856590e550cbb33dd21ed5072d242270c6c2d17"
+    },
+    {
+      "result": "Pass",
+      "time": "0.025",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "CancellationAfterAConflictStopsBeforeAnotherProviderReadOrExchange",
+      "case_ordinal": 109,
+      "display_name_sha256": "2bbf431cf860fedb29c20fc3545209f979a4fb287b21fea50255d7e8568b0115"
+    },
+    {
+      "result": "Pass",
+      "time": "0.138",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 110,
+      "display_name_sha256": "f39beb4645007e1ca87a03b29402cde279e38b8f2452477f735dc7cdd66042dc"
+    },
+    {
+      "result": "Pass",
+      "time": "0.065",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 111,
+      "display_name_sha256": "4ac1a24aab00988b7c2f27c8acf37375ee9b78bf767b28571906c517b83627f8"
+    },
+    {
+      "result": "Pass",
+      "time": "0.06",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 112,
+      "display_name_sha256": "87d6b77e30aadc05ae37846841c7e010d303e7df50d4555b3de1fe5fcd0dcf52"
+    },
+    {
+      "result": "Pass",
+      "time": "0.084",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 113,
+      "display_name_sha256": "d522782ff769a85e123e0cd0791bef9ef97a98f0eb307a566f413a5c874f7631"
+    },
+    {
+      "result": "Pass",
+      "time": "0.063",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 114,
+      "display_name_sha256": "4ffe641893b6ccb311e84e52edcf443ac3d6cf5d302ef3fe50cb43dcad0f2bf3"
+    },
+    {
+      "result": "Pass",
+      "time": "0.058",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 115,
+      "display_name_sha256": "002069c5ff80eb33eb7a2332351724d31381d4b9b33f63ad010b5ec42cd27a3d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.061",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 116,
+      "display_name_sha256": "283f6327538b0931758a024a7b99f9af4aed38ffe0ca209dfd2e212e31b6f044"
+    },
+    {
+      "result": "Pass",
+      "time": "0.05",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 117,
+      "display_name_sha256": "f2df9336ede42c60c6869da5509814256e67b304ac38bcbadb308e9435f6208a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.057",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 118,
+      "display_name_sha256": "c78d09957fd42203b7cd5004e25a1c8d9f03a797f96fbf6f903479e0d436ed01"
+    },
+    {
+      "result": "Pass",
+      "time": "0.053",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 119,
+      "display_name_sha256": "532c14e608c138aecd86af8808be19c01df5bb0c817f634644954e1913f6c4b0"
+    },
+    {
+      "result": "Pass",
+      "time": "0.049",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 120,
+      "display_name_sha256": "73c764b16a7b9edf5952cc1fa666762d4f52b8eee630b352946e5a8adec9bc67"
+    },
+    {
+      "result": "Pass",
+      "time": "0.059",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 121,
+      "display_name_sha256": "8fcb7f575816476d467da87e9f70d0749a7ddfc9380020bda60c6e19bd4427f8"
+    },
+    {
+      "result": "Pass",
+      "time": "0.07",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 122,
+      "display_name_sha256": "a93a1c92c23990a598e75c492fa992c20461c4601f6e0d27f2f847209915e110"
+    },
+    {
+      "result": "Pass",
+      "time": "0.058",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 123,
+      "display_name_sha256": "76d0e6b80d41fb0c451b45f2dd8315281fe8859ca4d0fbb11c5edbd9b5733987"
+    },
+    {
+      "result": "Pass",
+      "time": "0.068",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 124,
+      "display_name_sha256": "1412c113a00299781e6ba9d24d9a55bc48c154c133223b7d9eabeaabcdefea3a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.083",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 125,
+      "display_name_sha256": "3d96783785dc50f74ca0ecd7672d1486d344a9d716663188783402816872e261"
+    },
+    {
+      "result": "Pass",
+      "time": "0.055",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 126,
+      "display_name_sha256": "c94fb473dae418f1c0d8ac755572b1853f1819951ac9ecb8e33c2ff454f8b30b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.088",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 127,
+      "display_name_sha256": "bbb745f14c05a34d455aef99ae813c0daae051a1ec463dfed735cf6783343247"
+    },
+    {
+      "result": "Pass",
+      "time": "0.07",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "method": "ControllerProofBindsExactInFlightQueryBeforeRealMediatorEligibility",
+      "case_ordinal": 128,
+      "display_name_sha256": "a68b52742dc3515517dd18f794eb7e55906e6917e3b1bfa8eb9cc3f7fe214dd0"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "NativeBatchRefusesInvalidProofInFreshRangeMetadataBeforeReadingEvents",
+      "case_ordinal": 129,
+      "display_name_sha256": "e269293bdae5fb6542cfe6530a01fc8deec12130879a93c3dfba792dd3f05442"
+    },
+    {
+      "result": "Pass",
+      "time": "0.014",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "AuthenticatedGatewayAndNativeReaderBindTheExactPersistedRawPrefix",
+      "case_ordinal": 130,
+      "display_name_sha256": "e83bbe29c62247eb7c10831ab0e01170f7334ece2448f43e213311dae7154892"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "AuthenticatedGatewayAndNativeReaderBindTheExactPersistedRawPrefix",
+      "case_ordinal": 131,
+      "display_name_sha256": "359e7f02997b91f0e84d3d4564111040f2adcbbb9df70128d79b873340b2ea3d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "AuthenticatedGatewayAndNativeReaderBindTheExactPersistedRawPrefix",
+      "case_ordinal": 132,
+      "display_name_sha256": "e294b2c6f713db1fb23df7e0eba63d5e76b28f5153564e4cca9ddaa621b4344d"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "AuthenticatedGatewayAndNativeReaderBindTheExactPersistedRawPrefix",
+      "case_ordinal": 133,
+      "display_name_sha256": "7a5587037ec3301bcc6bf60807a89e63799ec8a99acb296e7896cc7f5978a5b5"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "NativeBatchReusesFreshRangeMetadataForItsInsideProof",
+      "case_ordinal": 134,
+      "display_name_sha256": "22d38009fee58139a33364cfdc4996a3ce1e3b3df2a3755a34d3c8d2893ff588"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "NativeActorRangeRefusesRecoveryAndPreservesActualPersistedState",
+      "case_ordinal": 135,
+      "display_name_sha256": "23086fbf075395ea988e3685efd6638accdee24d60877f538471938c2f5e9983"
+    },
+    {
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "AuthenticatedNativePagingPreservesExactFinalProofAcrossCountAndActorByteBounds",
+      "case_ordinal": 136,
+      "display_name_sha256": "8b60a33f9ffca816eab337add3e6695a55f21a7af93b48dcb9889441e11d51f6"
+    },
+    {
+      "result": "Pass",
+      "time": "0.009",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "method": "AuthenticatedNativePagingPreservesExactFinalProofAcrossCountAndActorByteBounds",
+      "case_ordinal": 137,
+      "display_name_sha256": "4a976b5091a6d0550d2b693b646256be7afbd0abd83969a31d46143eead35e3c"
+    },
+    {
+      "result": "Pass",
+      "time": "0.009",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "case_ordinal": 138,
+      "display_name_sha256": "dc4deb84340cdf11cbf4da040b2e2e7d7f19037d7baa333cf18f8e1261e655d1"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "case_ordinal": 139,
+      "display_name_sha256": "9be65ea589bf283850dbfd4bb135a55560901824af17cc22a4cf00121ab944e3"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "case_ordinal": 140,
+      "display_name_sha256": "6e90918eec5d310a4a3c12134dc8aaf231b077846b408eda35f15fed207c2909"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "case_ordinal": 141,
+      "display_name_sha256": "c7fc9f61f3df5b7a23182f6f55753d751dce78cbd42256010c4916f547f9c1d4"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "case_ordinal": 142,
+      "display_name_sha256": "f48fa4a83dd4aba8f34916ed4e16c978e5963d998a2d996f5148a175c975ae7f"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "case_ordinal": 143,
+      "display_name_sha256": "cb98ae596d916e778ee3bb95419817aa1fc341616ae0158a2ab2f15c323451b0"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "case_ordinal": 144,
+      "display_name_sha256": "e7b4183b9a8c7d68872b25003cd8271102aac94f1db1e68bb8bb63da4c6f4346"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "case_ordinal": 145,
+      "display_name_sha256": "9497845cea816a7dd6f060cdaf505661727030d128ace7a6f5e0ce9d358e8477"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "UnsupportedMalformedOrForeignNativeProofNeverBecomesAuthority",
+      "case_ordinal": 146,
+      "display_name_sha256": "971d408b602eb2bf4ee29df930218410463d8ea68d9353823519890e7054cfaf"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "ExistingActorWireProofIsReadWithoutEventsOrServerClientDependency",
+      "case_ordinal": 147,
+      "display_name_sha256": "a4403ce33b6025c421d3045b1f05602a88cc086495d0957141a7a07dda2a4440"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "PersistedNativeEmptySeedRemainsDifferentFromMissingMetadata",
+      "case_ordinal": 148,
+      "display_name_sha256": "931c6a8103a0db499f55861601196eeecf17866627857f947374cec05999d750"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "MalformedOrUnsupportedSidecarEndpointFailsClosed",
+      "case_ordinal": 149,
+      "display_name_sha256": "cda3d5212f6f8f98749ad6d6468e1bcc52627f5429bb663d605787ed918e16f5"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "MalformedOrUnsupportedSidecarEndpointFailsClosed",
+      "case_ordinal": 150,
+      "display_name_sha256": "8929703e28b66d314db10be2ef2d158c57804cf52a82c60aececf51a23f86295"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "method": "MalformedOrUnsupportedSidecarEndpointFailsClosed",
+      "case_ordinal": 151,
+      "display_name_sha256": "d9ab317e72e338f8ea26b43e1905d26e8b28632ac6f23ee4aa1eb7775deaf953"
+    },
+    {
+      "result": "Pass",
+      "time": "3.393",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "AcquisitionRefusesAfter96ConflictsWithoutLeakingAndLaterSucceeds",
+      "case_ordinal": 152,
+      "display_name_sha256": "80a37111e51fe8007ebb5d52e1b6a139e1f046b361172e0f2eb68db8f46c1383"
+    },
+    {
+      "result": "Pass",
+      "time": "0.097",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority",
+      "case_ordinal": 153,
+      "display_name_sha256": "34444fd0dd6ddbfe7792468e97b2b74508e01867a082fb29e577b218794fb811"
+    },
+    {
+      "result": "Pass",
+      "time": "0.092",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority",
+      "case_ordinal": 154,
+      "display_name_sha256": "5e59f3505d0abe000438bab1e8d8df6a1974ab7d34f8d09e41c69ffb26575149"
+    },
+    {
+      "result": "Pass",
+      "time": "0.158",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority",
+      "case_ordinal": 155,
+      "display_name_sha256": "6a58fde8ddae793f64a9e7f329f73e48f6e0ceb02155ef8c0683cc55bb1c8c53"
+    },
+    {
+      "result": "Pass",
+      "time": "0.206",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "TrustedLocallyIncompatibleCandidateCannotBecomeReadyOrReplacePersistedAuthority",
+      "case_ordinal": 156,
+      "display_name_sha256": "25febd1358f78a685407d758634c65a4f47766c1bf95fe0f7b98c2da277c4f93"
+    },
+    {
+      "result": "Pass",
+      "time": "0.009",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "MissingIndependentPolicyFactsCannotProduceAHostIdentity",
+      "case_ordinal": 157,
+      "display_name_sha256": "fd4806376ad8d3116897750f3be33585a1b049ba519f3f229349bf366c898bd2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.019",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "ReusedStructuralValidationStillRecapturesAndRefusesChangedExecutableTarget",
+      "case_ordinal": 158,
+      "display_name_sha256": "c8b391502f285ddb82965cba2eac1f3a376e9668cd93a0ca0bc4c2a28a6e59ab"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "InstalledAdmissionObservationRefusesDisabledPolicyOrUnavailableKeyGeneration",
+      "case_ordinal": 159,
+      "display_name_sha256": "0fd6991b9447773cf77bd055d2d3a5cb441394fbd7a61f58c7d003cbca046d90"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "InstalledAdmissionObservationRefusesDisabledPolicyOrUnavailableKeyGeneration",
+      "case_ordinal": 160,
+      "display_name_sha256": "dc133221c96d6bb5f8f5a103429a7d3594aac6c40d46a256f6e9f4da97d4f444"
+    },
+    {
+      "result": "Pass",
+      "time": "1.629",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "method": "QuiescentOwnLeaseReleaseMakesProgressPast32ConflictsAndConcurrentDispatchDrains",
+      "case_ordinal": 161,
+      "display_name_sha256": "5bcde2aa123e58c9cf777a4a8d9fd828b4dcf2a8cd2d4dbc23fd7e8b5bf2001c"
+    },
+    {
+      "result": "Pass",
+      "time": "0.041",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+      "method": "FailedDurableReleasePermitsExplicitRetry",
+      "case_ordinal": 162,
+      "display_name_sha256": "fca95f88ff263c7cde9c47e060c0fb4e3fb338f76cf59311dac555061d6ee30e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.011",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+      "method": "CommandOnlyCandidateCannotOmitTheAdmissionConsumerHost",
+      "case_ordinal": 163,
+      "display_name_sha256": "0763480241ef43ac42e365532857183ea158ddad17c26212b6a974fd6efd1892"
+    },
+    {
+      "result": "Pass",
+      "time": "0.031",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+      "method": "CapturedAsyncContextCannotStartRemoteEffectsAfterItsLeaseIsDisposed",
+      "case_ordinal": 164,
+      "display_name_sha256": "fbe69a8fdf1fdc9c9b005d8fb1d761b19782b13a366fafeb60019eb85acb51fa"
+    },
+    {
+      "result": "Pass",
+      "time": "0.026",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+      "method": "OnlyActualAmbiguousRemoteCallsRetainCanceledScopes",
+      "case_ordinal": 165,
+      "display_name_sha256": "f8ae0c5642f3a0f507311ebe41efa43fd87bef9857721b74f5c7df89acf465a9"
+    },
+    {
+      "result": "Pass",
+      "time": "0.029",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+      "method": "OnlyActualAmbiguousRemoteCallsRetainCanceledScopes",
+      "case_ordinal": 166,
+      "display_name_sha256": "1d46605541e20ef2cb947da02ba62858a5ff81a9d4ed03a1340db1bae3595827"
+    },
+    {
+      "result": "Pass",
+      "time": "0.029",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+      "method": "DisposalWhileRemoteFactoryIsExecutingRetainsTheDurableFence",
+      "case_ordinal": 167,
+      "display_name_sha256": "87fc8e81af198791f51dd6b82fa5a3efa61652b58a254f5e511b08d861a68e84"
+    },
+    {
+      "result": "Pass",
+      "time": "0.032",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+      "method": "IndependentlyObservedExecutableDriftRefusesPrepareOrReadyDespiteCorrectTrust",
+      "case_ordinal": 168,
+      "display_name_sha256": "c75fce5551d581f9f57db7ae24b43051702b7e21172870c270adace7cc6b8f6f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+      "method": "IndependentlyObservedExecutableDriftRefusesPrepareOrReadyDespiteCorrectTrust",
+      "case_ordinal": 169,
+      "display_name_sha256": "b1631f953b1b62db494597cef962f7d6fbf8e68d220c77537fcab5c22c52ea3c"
+    },
+    {
+      "result": "Pass",
+      "time": "0.043",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+      "method": "CapacityRefusalIsAlsoReadinessRefusalAndRecoveryRestoresServing",
+      "case_ordinal": 170,
+      "display_name_sha256": "b68c0a027129d832e983f8d88ce7e8e5a0e2b22db9b11b697464a12e1b818bf4"
+    },
+    {
+      "result": "Pass",
+      "time": "0.113",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+      "method": "DelayedPendingAbortCannotBecomeCommittedRollbackOrAbortAReplacement",
+      "case_ordinal": 171,
+      "display_name_sha256": "0205de43404d4045e1a4e6400486bfe98b09db6ce5a3d0ce1988f91036e1315d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.043",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+      "method": "AbandonedActualRemoteTaskRetainsItsFenceEvenAfterEventualCompletion",
+      "case_ordinal": 172,
+      "display_name_sha256": "42b3bced8b9a6294250f2248df0cd24cbb71fd011794d16c4c7d22ebe7c54006"
+    },
+    {
+      "result": "Pass",
+      "time": "0.058",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+      "method": "AbortedAttemptIsDurablyImmutableAndExactAbortRetriesLeaveReplacementUntouched",
+      "case_ordinal": 173,
+      "display_name_sha256": "bee4ea2d546ef2953962c20cffedb945cb6479cc77264478d80fb3b2ba6c4ba1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.063",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataCatalogObservationTests",
+      "method": "SourceOnlyReceiverEnrollmentIsPartOfTheIndependentCatalogObservation",
+      "case_ordinal": 174,
+      "display_name_sha256": "c5d2578e58b605be9a1f65713fc8be9e15d5fdf4c8aaf83bda265de76c6464e6"
+    },
+    {
+      "result": "Pass",
+      "time": "0.465",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "case_ordinal": 175,
+      "display_name_sha256": "b61e26244e4fc4bd0fbfa4cdd43588e5d90dd84005731e1b9ec3f366f56ff5b2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.082",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "case_ordinal": 176,
+      "display_name_sha256": "84a19851b2f65187dc2b16cf22ef7ecf40b6b7c9f6c691c4afc528eacf779bd7"
+    },
+    {
+      "result": "Pass",
+      "time": "0.083",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "case_ordinal": 177,
+      "display_name_sha256": "d99d8f64c632fe6f5d954a385b6e175cc8d79db23342a1f934883158a4cadd4a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.052",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "case_ordinal": 178,
+      "display_name_sha256": "a654f31ec40d9cce177722fb99dbd533daf47578ac67db7177206c767930d9db"
+    },
+    {
+      "result": "Pass",
+      "time": "0.078",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "case_ordinal": 179,
+      "display_name_sha256": "d85cf4d271ecebcb909f5f05a1e77febdf24407ca32f16b767726992465718e1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.065",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "case_ordinal": 180,
+      "display_name_sha256": "0133b1c25d454f2b333177b6020c694c03cca3acf470ad63f2905264bc526fa9"
+    },
+    {
+      "result": "Pass",
+      "time": "0.055",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "case_ordinal": 181,
+      "display_name_sha256": "041fc644d0cb1ce75529b54ff83e2cfee0b665cd53e1809e8b99d888d56eadc5"
+    },
+    {
+      "result": "Pass",
+      "time": "0.11",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence",
+      "case_ordinal": 182,
+      "display_name_sha256": "00eee45aa1890ba2a67f9116072d1223ddbe9314a1d1ab25e5ddbd9aedac1cda"
+    },
+    {
+      "result": "Pass",
+      "time": "0.061",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingStreamReadGrantDoesNotEnforceMetadataOnlyAuthority",
+      "case_ordinal": 183,
+      "display_name_sha256": "61738977351cd7777f6628398efc372efd80bff460de66f6e9f81f9d3a3b4546"
+    },
+    {
+      "result": "Pass",
+      "time": "0.089",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "ExistingStreamReadGrantDoesNotEnforceMetadataOnlyAuthority",
+      "case_ordinal": 184,
+      "display_name_sha256": "50f53f58d14ca447bbab6ae45f8cf21518b4b3fb7ba0c1b1e999743e92e79e9e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.082",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 185,
+      "display_name_sha256": "a5a8a0418c726c1c8b4944942dc9b54d29afdd6b9ae45491d4a29ec1e864a3a5"
+    },
+    {
+      "result": "Pass",
+      "time": "0.05",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 186,
+      "display_name_sha256": "5263c70cdcc9becae914c04126cff153253b9be57b19967535843bb602ce6fa2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.055",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 187,
+      "display_name_sha256": "4ffd88bd3332d910d328df33c35c0e22c4ce094e73ec5f55c94ff699559cc081"
+    },
+    {
+      "result": "Pass",
+      "time": "0.034",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 188,
+      "display_name_sha256": "6ce49bcee124ceaba20661eb46ee2b6df0a4708cbc13318116f56e9c52ee7aab"
+    },
+    {
+      "result": "Pass",
+      "time": "0.07",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 189,
+      "display_name_sha256": "717291b62539bdda577e4674927b9e14c03299bcf21c089633d34500cea72364"
+    },
+    {
+      "result": "Pass",
+      "time": "0.086",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 190,
+      "display_name_sha256": "74afc71e90940500855a4da0045fed1d1159b1dc871d4bd24c366dca28b68262"
+    },
+    {
+      "result": "Pass",
+      "time": "0.078",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 191,
+      "display_name_sha256": "ec95344b117732326e453690486f5795cbfd5d4e534b1be984127fabd1886088"
+    },
+    {
+      "result": "Pass",
+      "time": "0.092",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 192,
+      "display_name_sha256": "a8c2559fd48f298655dda4f13938031160fe9efdaa03b893b66ef45b6fb8ef63"
+    },
+    {
+      "result": "Pass",
+      "time": "0.064",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 193,
+      "display_name_sha256": "de3c095f7dfd23ddd7a808f1ae5e282bd01f59ec368e577002ac196023d7fb58"
+    },
+    {
+      "result": "Pass",
+      "time": "0.035",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 194,
+      "display_name_sha256": "20e85a89baff3a4ccbb9931a225f39b7c751b0123e93c9939e8da0ec1d8582d4"
+    },
+    {
+      "result": "Pass",
+      "time": "0.056",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 195,
+      "display_name_sha256": "bb4a7d8126f16ab1796a30c4ccd5bee0e92a916dc4eebb54ef0452c6a9b125f6"
+    },
+    {
+      "result": "Pass",
+      "time": "0.054",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 196,
+      "display_name_sha256": "c0473f1bfc606c556eb03b3c954e9bc35fa3dce745267a8556d5f6decc838fd1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.115",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 197,
+      "display_name_sha256": "81c0f359c0ff219e1e6c594b93909038d04f3bb34f3246b4a83e758f1c0ebde0"
+    },
+    {
+      "result": "Pass",
+      "time": "0.066",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 198,
+      "display_name_sha256": "9a18edb954f5c3d1625e0a6ae71ef5d03e3f6faa9e8220fe0d2815d33f1ed82d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.071",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 199,
+      "display_name_sha256": "d24c19314ff93b702c00e5de514f5bb1862acf5e6992f32a48233f78e0c662da"
+    },
+    {
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 200,
+      "display_name_sha256": "4d58ff8573589814b9138a8baccc0977ec5a5847788c0389de5abd76c1f2bfbc"
+    },
+    {
+      "result": "Pass",
+      "time": "0.052",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 201,
+      "display_name_sha256": "c86ceb68a4fe16ce875c42cca042538830abf34995cc5d50b7247576eeb81aad"
+    },
+    {
+      "result": "Pass",
+      "time": "0.069",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 202,
+      "display_name_sha256": "bf1f8129f5f7316618a80065cb3ced0c6d32a21637760d52df84de81048e5884"
+    },
+    {
+      "result": "Pass",
+      "time": "0.053",
+      "type": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "method": "SourceOnlyEnrollmentRequiresExactMetadataShapeAndActualProofBeforeObservation",
+      "case_ordinal": 203,
+      "display_name_sha256": "6cbb66804bc6dd05e42364bd88c02308c69c33676f1152c6e569f27cbff48aa5"
+    },
+    {
+      "result": "Pass",
+      "time": "0.084",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 204,
+      "display_name_sha256": "4163e3ad3816a918e2dcd7058d6df520c12718b70f152054ee1a715237a2ce05"
+    },
+    {
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 205,
+      "display_name_sha256": "7cd4a59a5104c1feb068667323881a548d2b9c7b27ff7cc12ad60bb655962dd2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.049",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 206,
+      "display_name_sha256": "96416a6eb0289bc83d705a1408db3034e44f261835ec932755123986e48cc44c"
+    },
+    {
+      "result": "Pass",
+      "time": "0.046",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 207,
+      "display_name_sha256": "f5f4ae6680a6bf755a4585ff160086f06eb5e8f23a728bb48bf039361e1952a8"
+    },
+    {
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 208,
+      "display_name_sha256": "04d29faf58d0e02dc2ee812854c797f3b019df891810728a5fbcf764a4ecfce0"
+    },
+    {
+      "result": "Pass",
+      "time": "0.04",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 209,
+      "display_name_sha256": "a73dbf4c247f9bb98789f39a5ef92a941e716fa3904db31adc53b44da482b02e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.048",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 210,
+      "display_name_sha256": "4b8994339fcb0b2e8a442af1965416b526b8a7e1659f3190214170bc8ebb6f51"
+    },
+    {
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 211,
+      "display_name_sha256": "e441280967c1321b379775eab9791bcb5e1344fed6b5b093aaf0e398325f46d7"
+    },
+    {
+      "result": "Pass",
+      "time": "0.058",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 212,
+      "display_name_sha256": "180c62d4e8841d6ec73ca39274e37d433ca096d8a3e9d216387bea8610de6b5d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.051",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 213,
+      "display_name_sha256": "dc8784bde4c73baea60bab78b62e29775d0482fd5b8411649b143e3010182800"
+    },
+    {
+      "result": "Pass",
+      "time": "0.045",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 214,
+      "display_name_sha256": "d06fefea731f7e1a7ce885de8bf2f865478be99311e690714b46d0ffc2e14eaf"
+    },
+    {
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 215,
+      "display_name_sha256": "c48c9ea19e48ca9eb5ee6fa41da156a3ab9b3beebed598460ff0c45e8035b84b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.051",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 216,
+      "display_name_sha256": "c2e5c2fca4df609b7ce5dd7cc8c53e3478efeeae5d86975162cb5ea22ab86b68"
+    },
+    {
+      "result": "Pass",
+      "time": "0.046",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 217,
+      "display_name_sha256": "9d353be18e59969972018b1b84f88f0cbcc98c0f13bd84dd0d6b35f07670c1e2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.046",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 218,
+      "display_name_sha256": "dcaf2ed8abd8ae8047b6b24f94a7466e17c2ee6f6fb2d254faa2070bacba01a1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.043",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 219,
+      "display_name_sha256": "21a0380d50941a866dbc1ef7a3c2f84c688cabfe7741ee7fda9fd2a4f9b6ba99"
+    },
+    {
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 220,
+      "display_name_sha256": "0eccf1a97fa3ac3b8d33ab6d79b48124a59c6440cae896f138cd9fd380ed8039"
+    },
+    {
+      "result": "Pass",
+      "time": "0.048",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 221,
+      "display_name_sha256": "5f2de17ca14a7697d8879fa3c951eb2ceb0523f8089a5d678719b0e41234b52f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.042",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "method": "ChangedCoordinatesRequirePreparedSuccessorAndExactOwnerVerifiedOldFence",
+      "case_ordinal": 222,
+      "display_name_sha256": "564d53ac38b6815ce0896b41dd021520033cdb97895ede051ed5be0f24406e6b"
+    }
+  ]
+}

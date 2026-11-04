@@ -1,0 +1,467 @@
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+@@ -1485,14 +1485,17 @@
+         }
+     }
+ 
+-    private async Task MaintainTenantAsync(CancellationToken cancellationToken)
++    /// <summary>Runs the existing real-source maintenance barrier and reports whether it submitted a genuine update.</summary>
++    internal async Task<bool> MaintainTenantAsync(CancellationToken cancellationToken)
+     {
+         _tenantMaintenance ??= new FolderDurabilityTenantMaintenance(TenantId, PrincipalId, ReadTenantSourceAsync,
+             token => new EventStoreFolderTenantAccessProjectionStore(RawStore).GetAsync(TenantId, token),
+             (command, correlation, token) => SubmitAsync(command.Tenant, command.Domain, command.AggregateId,
+                 command.CommandType, command.Payload, _adminToken, token, command.MessageId, correlation));
+-        if (await _tenantMaintenance.EnsureFreshAsync(cancellationToken).ConfigureAwait(false))
++        bool maintained = await _tenantMaintenance.EnsureFreshAsync(cancellationToken).ConfigureAwait(false);
++        if (maintained)
+             Console.WriteLine("PASS tenant maintenance: Completed; original TenantUpdated matched; Workers sequence/timestamp matched; authority unchanged.");
++        return maintained;
+     }
+ 
+     private async Task<StreamReadPage> ReadTenantSourceAsync(CancellationToken cancellationToken)
+--- a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
++++ b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+@@ -1868,7 +1868,7 @@
+ authorization, mapper, retained outcome or strict assertion was changed to accept either failure.
+ All owned resources are removed; unrelated resources were preserved.
+ 
+-- [ ] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs` and
++- [x] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs` and
+   `FolderDurabilityAcceptanceFixture.cs`: add a separate real-AppHost control for the approved
+   maintenance path, since the strict class currently stops earlier. Expose only the existing hook
+   internally with its bool result. Establish the real verified baseline, snapshot persisted Workers
+@@ -1878,13 +1878,13 @@
+   fresh execution must be a no-op with identical persisted state. No fake clock, forced renewal flag,
+   direct write, new permission, new source-reader exposure or replacement of strict/capacity bodies.
+   This separate control can qualify active fixture maintenance, never full durability acceptance.
+-- [ ] In the root-declared EventStore owning repository, correct fixed test-only credential-shaped
++- [x] In the root-declared EventStore owning repository, correct fixed test-only credential-shaped
+   values in `tests/Hexalith.EventStore.DomainService.Tests/NativeSourceMetadataCompositionTests.cs`
+   and `tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceMetadataCatalogObservationTests.cs`
+   using generated per-test ephemeral values and exact shared expectations. Keep malformed-key
+   refusal meaningful and all authentication/catalog assertions intact. Current SecretsProtectionTests
+   reports only these prior story-owned test lines. Do not exempt paths or weaken the scanner.
+-- [ ] Build/run focused controls serially after parent broad qualification releases outputs. Retain
++- [x] Build/run focused controls serially after parent broad qualification releases outputs. Retain
+   the new SDK published-package authenticity failure separately: its pinned expected SHA is
+   e21f5ac7b5f332f1921f70a249ab2032b9978d56ffdd6641a0a4b94d04850bdc, but the restored archive is
+   81a33bb7562507004d4dfb8da2365cdea1fb874ff53798787bff110c0d9573ef. Do not replace its expected
+@@ -1894,3 +1894,102 @@
+   diagnosis may enable only existing receiver/ASP.NET timing categories to locate the observed remote
+   interval; it does not authorize timeout, guard, outcome or assertion changes. Remaining SDK/package,
+   capacity, governance/PD10, SM4 and whole-story review gates retain their separate dispositions.
++
++
++### Current-cohort follow-up focused handoff — 2026-11-03
++
++Added the separate real-AppHost maintenance control and exposed only the existing fixture hook's
++internal bool result. The control establishes the real verified baseline, waits for its original
++native timestamp to age naturally to the unchanged two-minute threshold, requires genuine source
++maintenance, independently reads persisted Workers evidence/authority, and requires an immediate
++fresh no-op with identical persisted state. It adds no credential exposure, forced-renewal flag,
++fake clock, background heartbeat, permission, source write or strict/capacity-body change. Discovery
++finds the new class/method; no live execution or acceptance claim occurred in this implementation phase.
++
++The two prior-owned SDK tests now use generated per-test values with exact shared expectations.
++The malformed key is generated but deterministically invalid DER; valid, missing-key, bad-key and
++foreign-domain transport/issuer refusal assertions remain intact. The catalog observation still
++requires that the exact private sentinel is absent. Scenario selection moved outside the credential
++assignment after the unchanged scanner correctly continued to report its literal-valued expression.
++Final SDK selections pass four composition cases in 0.283s and 275 catalog/scanner cases in 5.548s,
++zero failures/errors/skips. Earlier overlapping executions and the intermediate one-case scanner
++failure are retained, not added to these counts. SDK test builds pass with zero warnings/errors.
++The first SDK build encountered duplicate packaged/source Commons assets; focused restores with both
++source flags corrected generated assets without changing sources or dependency pins.
++
++The full AppHost test build is blocked by an external production edit: untouched
++FoldersDevelopmentOwnerMetadata.cs:34 references BoundOwnerNativeSourceMetadataReader, which is
++absent from the selected SDK. No external production or SDK capability repair was attempted.
++The permitted narrow fallback with BuildProjectReferences=false compiles the fixture/control against
++existing referenced outputs with zero warnings/errors in 5.71s; its 101 retained fixture controls pass
++in 5.321s. This checks the changed test code, not a coherent current-source runtime. Parent must resolve
++or coordinate the separately owned producer/composition prerequisite before a full runtime rebuild,
++source/PDB/dependency audit and real standalone control. No SDK package authenticity hash/assertion,
++scanner exemption, product guard, mapper, deadline, frozen artifact or Git state changed in this phase.
++The earlier published Tenant7 authenticity failure before ABI assertions remains separate and open.
++
++Exact phase commands, failure receipts, before/after source and selected-output hashes, root/SDK
++patches and runner handoff are private under `/tmp/story12-2-current-cohort-followup-20261103/`.
++Parent retains current broad results and owns pending inventory refresh for external/new compile
++inputs and SourceSHA, Contracts rerun, runtime rebuild and actual standalone execution. The parent
++execution checkbox above, original strict acceptance, capacity, SDK/package, PD10/governance, SM4 and
++whole-story review gates remain open with their separate dispositions. No new live topology was run.
++
++
++### Bounded current public-composition repair — 2026-11-03
++
++The external Root commit9e26eb8f4296fe2fdef70cd5858341a55f7ea9e4 adds a Development-only owner
++metadata helper that references BoundOwnerNativeSourceMetadataReader, absent from the current SDK.
++The coherent source build now fails CS0246 at FoldersDevelopmentOwnerMetadata.cs:34. Do not revive
++a private transport or mint/relabel a caller. The already-approved supported public-composition
++repair applies: FoldersServerServiceCollectionExtensions already registers the public
++AddEventStoreGatewayNativeSourceMetadataReader("folders") before this private helper is invoked.
++
++- [x] `src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadata.cs`: reuse that existing public
++  SDK reader registration/factory with its existing lifetime, rather than constructing the unavailable
++  class or a separate fixed-caller/fixed-destination HTTP client. Preserve the explicit enabled flag,
++  Debug/source restriction, Development/catalog-directory guards, optional diagnostics guards and
++  GatewayOrganizationStreamSequenceReader selection. Preserve actual configured workload/key/AppId,
++  metadata-only shape/domain, human default transport, all proofs/denials and existing deadlines.
++  Any unexpected/missing composition must fail closed; no source/actor/persistence protocol change.
++- [x] Adjacent Server composition controls: qualify the guarded public SDK composition, exact normal
++  reader/factory/lifetime and diagnostic decoration, unchanged disabled/non-Development behavior and
++  preserved default human transport. Build/run focused checks serially, retain the preceding CS0246
++  and stale-output fallback limits, then release to parent for full coherent rebuild/source audit.
++
++This is the previously approved minimal supported public-composition repair; it adds no new caller,
++grant, endpoint, public v2, timeout exception, package/gitlink update or publication authority. Keep
++all external product edits beyond this precise unavailable-type composition point untouched.
++
++
++### Supported public-composition repair focused handoff — 2026-11-03
++
++The bounded helper repair reuses the already registered public SDK metadata-reader factory and its
++transient lifetime. It removes the unavailable class and unused fixed caller/destination HTTP client;
++it neither registers a different source capability nor changes the SDK. The configured SDK workload,
++key, AppId, exact metadata-only domain/shape and independent human transport remain owned by that
++original factory. Missing, ambiguous, keyed, wrong-lifetime or non-factory registrations fail closed;
++a factory returning a different adapter also refuses. Optional decoration keeps the original enable,
++Debug/source, Development, catalog and diagnostic guards, and advisory logger resolution cannot
++replace the original reader. GatewayOrganizationStreamSequenceReader selection remains unchanged.
++Every other external product edit is preserved.
++
++The full current-source Server test build passes with zero warnings/errors in 10.20s, and 36 focused
++composition/source-boundary cases pass with zero failures/errors/skips in 3.230s. These include 15
++composition controls for real public factory reuse, transient resolution, default human transport,
++optional diagnostics/logger failure, disabled/environment/catalog guards and unexpected-composition
++refusals. The complete current-source AppHost test build now passes with zero warnings/errors in
++88.50s; 101 retained fixture controls pass in 5.487s. Discovery identifies the new standalone control;
++it has not been executed. Earlier fallback/intermediate results overlap these selections and are
++retained as history, not added to the final counts. SDK composition four-case and catalog/scanner
++275-case passes from this same follow-up remain separately recorded; no full-suite producer or ABI
++success is inferred.
++
++The prior CS0246 and stale-output fallback are retained but superseded as compile dispositions by
++this supported repair and successful full build. Parent now owns full runtime/Memories rebuild,
++source/PDB/dependency audit, pending-only compile inventory/SourceSHA refresh, Contracts rerun and
++actual natural-age standalone execution. Original strict/capacity bodies and package authenticity
++pins/scanner assertions are unchanged. The original strict failures, producer/package authenticity,
++capacity, PD10/governance, SM4 and whole-story review remain distinct open gates; standalone success
++would qualify only active tenant maintenance. No live topology, Git mutation, dependency change,
++frozen-artifact update or publication occurred in this implementation phase.
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs
+@@ -0,0 +1,94 @@
++using System.Text.Json;
++
++using Hexalith.Folders.Projections.TenantAccess;
++
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Qualifies genuine fixture maintenance separately from the unchanged full durability acceptance body.</summary>
++[Collection("Folder durability acceptance")]
++public sealed class FolderDurabilityTenantMaintenanceAcceptanceTests(FolderDurabilityAcceptanceFixture fixture, ITestOutputHelper output)
++    : IClassFixture<FolderDurabilityAcceptanceFixture>
++{
++    /// <summary>Waits for natural native-source age, verifies one real update and proves an immediate fresh no-op.</summary>
++    [Fact]
++    public async Task NaturallyAgedTenantShouldMaintainRealSourceAndWorkersAuthorityAndSkipFreshUpdate()
++    {
++        if (!fixture.Enabled)
++        {
++            Assert.Skip($"Set {AspireFoldersAppHostFixture.OptInEnvironmentVariable}=true to execute real tenant maintenance acceptance.");
++            return;
++        }
++
++        CancellationToken caller = TestContext.Current.CancellationToken;
++        // This uses the same real authenticated source/projection barrier as the strict fixture.
++        // Slow bootstrap may already have crossed the trigger; any initial renewal remains genuine.
++        await fixture.MaintainTenantAsync(caller).ConfigureAwait(true);
++        FolderTenantAccessProjection before = await SnapshotAsync(caller).ConfigureAwait(true);
++        DateTimeOffset originalTimestamp = before.LastEventTimestamp
++            ?? throw new InvalidOperationException("Verified tenant evidence has no original native timestamp.");
++
++        output.WriteLine("Tenant maintenance control: waiting for original native source age to reach the existing trigger.");
++        while (DateTimeOffset.UtcNow - originalTimestamp < FolderDurabilityTenantMaintenance.RenewalAge)
++        {
++            TimeSpan remaining = originalTimestamp + FolderDurabilityTenantMaintenance.RenewalAge - DateTimeOffset.UtcNow;
++            if (remaining > TimeSpan.Zero) await Task.Delay(remaining, caller).ConfigureAwait(true);
++        }
++        (DateTimeOffset.UtcNow - originalTimestamp >= FolderDurabilityTenantMaintenance.RenewalAge)
++            .ShouldBeTrue("Maintenance must follow natural source age, without a forced renewal or changed clock.");
++
++        // True is returned only after Completed, the matching original TenantUpdated and unchanged
++        // retained prefix, and exact normal Workers message/sequence/native-timestamp verification.
++        (await fixture.MaintainTenantAsync(caller).ConfigureAwait(true)).ShouldBeTrue();
++        FolderTenantAccessProjection after = await SnapshotAsync(caller).ConfigureAwait(true);
++        after.Watermark.ShouldBe(checked(before.Watermark + 1));
++        after.ProcessedMessages.Count.ShouldBe(before.ProcessedMessages.Count + 1);
++        (after.Version > before.Version).ShouldBeTrue();
++        (after.LastEventTimestamp > originalTimestamp).ShouldBeTrue();
++        SameAuthority(before, after).ShouldBeTrue("Metadata maintenance must preserve all persisted authority.");
++        before.ProcessedMessages.All(pair => after.ProcessedMessages.TryGetValue(pair.Key, out var evidence) && evidence == pair.Value)
++            .ShouldBeTrue("Maintenance must preserve every original persisted delivery record.");
++        FolderTenantEventEvidence[] newMessages = after.ProcessedMessages
++            .Where(pair => !before.ProcessedMessages.ContainsKey(pair.Key)).Select(pair => pair.Value).ToArray();
++        newMessages.Length.ShouldBe(1);
++        FolderTenantEventEvidence added = newMessages[0];
++        added.EventTypeName.ShouldBe(nameof(FolderTenantAccessEventKind.TenantUpdated));
++        added.SequenceNumber.ShouldBe(after.Watermark);
++        (added.Timestamp == after.LastEventTimestamp).ShouldBeTrue();
++        string.Equals(added.TenantId, fixture.TenantId, StringComparison.Ordinal).ShouldBeTrue();
++        string.IsNullOrWhiteSpace(added.MessageId).ShouldBeFalse();
++        FolderTenantAccessEvent expected = new FoldersTenantAccessEventMapper().Map(FolderTenantAccessEventKind.TenantUpdated,
++            fixture.TenantId, fixture.TenantId, added.MessageId, added.SequenceNumber, added.Timestamp, string.Empty,
++            fingerprintParts: [FolderDurabilityTenantMaintenance.TenantName]);
++        string.Equals(added.PayloadFingerprint, expected.PayloadFingerprint, StringComparison.Ordinal).ShouldBeTrue();
++
++        (await fixture.MaintainTenantAsync(caller).ConfigureAwait(true)).ShouldBeFalse();
++        FolderTenantAccessProjection fresh = await SnapshotAsync(caller).ConfigureAwait(true);
++        string.Equals(JsonSerializer.Serialize(fresh), JsonSerializer.Serialize(after), StringComparison.Ordinal)
++            .ShouldBeTrue("An immediate fresh no-op must leave the exact persisted evidence unchanged.");
++        output.WriteLine("PASS real tenant maintenance acceptance: natural age; original TenantUpdated and retained prefix verified; persisted Workers authority unchanged; immediate fresh no-op verified.");
++    }
++
++    private async Task<FolderTenantAccessProjection> SnapshotAsync(CancellationToken caller)
++    {
++        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(caller);
++        deadline.CancelAfter(FolderDurabilityTenantMaintenance.Budget);
++        FolderTenantAccessProjection? projection = await new EventStoreFolderTenantAccessProjectionStore(fixture.RawStore)
++            .GetAsync(fixture.TenantId, deadline.Token).ConfigureAwait(false);
++        deadline.Token.ThrowIfCancellationRequested();
++        if (projection is null || !string.Equals(projection.TenantId, fixture.TenantId, StringComparison.Ordinal)
++            || !projection.Enabled || projection.ReplayConflict || projection.MalformedEvidence
++            || !projection.Principals.TryGetValue(fixture.PrincipalId, out var principal)
++            || principal != new FolderTenantPrincipalEvidence(fixture.PrincipalId, "TenantOwner"))
++            throw new InvalidOperationException("Verified tenant maintenance authority is absent, malformed or changed.");
++        return projection.Clone();
++    }
++
++    private static bool SameAuthority(FolderTenantAccessProjection before, FolderTenantAccessProjection after)
++        => before.Enabled == after.Enabled && before.Principals.Count == after.Principals.Count
++            && before.Principals.All(pair => after.Principals.TryGetValue(pair.Key, out var value) && value == pair.Value)
++            && before.ConfigurationKeys.SetEquals(after.ConfigurationKeys)
++            && before.RemovedConfigurationKeys.SetEquals(after.RemovedConfigurationKeys);
++}
+--- a/src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadata.cs
++++ b/src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadata.cs
+@@ -1,6 +1,4 @@
+ using Hexalith.EventStore.Client.Streams;
+-using Hexalith.EventStore.DomainService;
+-using Hexalith.EventStore.ServiceDefaults.Authentication;
+ using Hexalith.EventStore.ServiceDefaults.Routing;
+ using Hexalith.Folders.Authorization;
+ 
+@@ -21,27 +19,25 @@
+         if (!builder.Environment.IsDevelopment()
+             || string.IsNullOrWhiteSpace(builder.Configuration["EventStore:RouteCatalog:DevelopmentBootstrap:Directory"]))
+             throw new InvalidOperationException("Private owner metadata requires the selected Development catalog.");
+-        const string clientName = "folders-bound-owner-metadata";
+-        builder.Services.AddHttpClient(clientName, http =>
++        ServiceDescriptor[] registrations = builder.Services.Where(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader)).ToArray();
++        if (registrations.Length != 1 || registrations[0].IsKeyedService
++            || registrations[0].Lifetime != ServiceLifetime.Transient || registrations[0].ImplementationFactory is not { } factory)
++            throw new InvalidOperationException("Private owner metadata requires the existing public SDK reader factory.");
++        builder.Services.Replace(ServiceDescriptor.Describe(typeof(INativeSourceMetadataReader), provider =>
+         {
+-            string endpoint = builder.Configuration["DAPR_HTTP_ENDPOINT"]
+-                ?? "http://127.0.0.1:" + builder.Configuration["DAPR_HTTP_PORT"];
+-            http.BaseAddress = new Uri(endpoint.TrimEnd('/') + "/v1.0/invoke/eventstore/method/");
+-            http.Timeout = TimeSpan.FromSeconds(3);
+-        });
+-        builder.Services.AddSingleton<INativeSourceMetadataReader>(provider =>
+-        {
+-            INativeSourceMetadataReader reader = new BoundOwnerNativeSourceMetadataReader(
+-                provider.GetRequiredService<IHttpClientFactory>(), clientName, provider.GetRequiredService<IWorkloadAssertionIssuer>(),
+-                "folders", builder.Configuration["Authentication:BoundStreamRead:PrivateKey"]
+-                    ?? throw new InvalidOperationException("The owner proof key is missing."), ["folders"], TimeProvider.System);
+-            return builder.Configuration.GetValue<bool>("Folders:EventStore:OwnerMetadataReads:DiagnosticsEnabled")
+-                && provider.GetRequiredService<IOptions<RouteCatalogHostOptions>>().Value is
++            if (factory(provider) is not GatewayNativeSourceMetadataReader reader)
++                throw new InvalidOperationException("Private owner metadata requires the actual public SDK reader.");
++            if (!builder.Configuration.GetValue<bool>("Folders:EventStore:OwnerMetadataReads:DiagnosticsEnabled")
++                || provider.GetRequiredService<IOptions<RouteCatalogHostOptions>>().Value is not
+                     { DevelopmentFixture: true, Profile: "Development", RequireTechnicalHttpBinding: true }
+-                && provider.GetRequiredService<IHostEnvironment>().IsDevelopment()
+-                ? new FoldersDevelopmentOwnerMetadataDiagnostics(reader,
+-                    provider.GetRequiredService<ILogger<FoldersDevelopmentOwnerMetadataDiagnostics>>()) : reader;
+-        });
++                || !provider.GetRequiredService<IHostEnvironment>().IsDevelopment()) return reader;
++            try
++            {
++                return provider.GetService<ILogger<FoldersDevelopmentOwnerMetadataDiagnostics>>() is { } logger
++                    ? new FoldersDevelopmentOwnerMetadataDiagnostics(reader, logger) : reader;
++            }
++            catch { return reader; /* Optional diagnostic service resolution cannot replace the SDK reader. */ }
++        }, registrations[0].Lifetime));
+         builder.Services.Replace(ServiceDescriptor.Singleton<IOrganizationStreamSequenceReader, GatewayOrganizationStreamSequenceReader>());
+ #else
+         throw new InvalidOperationException("Private owner metadata requires a local Debug source build.");
+--- a/tests/Hexalith.Folders.Server.Tests/FoldersDevelopmentOwnerMetadataTests.cs
++++ b/tests/Hexalith.Folders.Server.Tests/FoldersDevelopmentOwnerMetadataTests.cs
+@@ -1,6 +1,9 @@
+ using System.Security.Cryptography;
+ 
+ using Hexalith.EventStore.Client.Streams;
++using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Client.Registration;
++using Hexalith.Folders.Authorization;
+ using Hexalith.EventStore.DomainService;
+ using Hexalith.EventStore.ServiceDefaults.Authentication;
+ using Hexalith.EventStore.ServiceDefaults.Routing;
+@@ -9,6 +12,8 @@
+ using Microsoft.Extensions.Configuration;
+ using Microsoft.Extensions.DependencyInjection;
+ using Microsoft.Extensions.Hosting;
++using Microsoft.Extensions.Logging;
++using Microsoft.Extensions.Options;
+ 
+ using Shouldly;
+ 
+@@ -21,9 +26,11 @@
+ {
+     /// <summary>The explicit private flag selects diagnostics without inventing raw SDK option configuration or issuing authority.</summary>
+     [Theory]
+-    [InlineData(false)]
+-    [InlineData(true)]
+-    public void RealBootstrapOptionsSelectOnlyTheOptedInOwnerDecorator(bool diagnostics)
++    [InlineData(false, false)]
++    [InlineData(true, false)]
++    [InlineData(false, true)]
++    [InlineData(true, true)]
++    public void RealBootstrapOptionsSelectOnlyTheOptedInOwnerDecorator(bool diagnostics, bool loggerFails)
+     {
+         string directory = Directory.CreateTempSubdirectory("folder-owner-diagnostic-").FullName;
+         try
+@@ -42,18 +49,39 @@
+             using RSA key = RSA.Create(2048);
+             builder.Configuration["Authentication:BoundStreamRead:PrivateKey"] = Convert.ToBase64String(key.ExportPkcs8PrivateKey());
+             builder.Services.AddSingleton<IWorkloadAssertionIssuer, DiagnosticCompositionAssertionIssuer>();
++            builder.Services.AddFoldersServer();
++            ServiceDescriptor original = builder.Services.Single(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader));
++            original.Lifetime.ShouldBe(ServiceLifetime.Transient);
++            var originalFactory = original.ImplementationFactory!;
++            int factoryCalls = 0;
++            builder.Services[builder.Services.IndexOf(original)] = ServiceDescriptor.Describe(typeof(INativeSourceMetadataReader), provider =>
++            {
++                factoryCalls++;
++                return originalFactory(provider);
++            }, original.Lifetime);
++            if (loggerFails) builder.Services.AddSingleton<ILogger<FoldersDevelopmentOwnerMetadataDiagnostics>>(_ => throw new InvalidOperationException("Controlled optional logger failure."));
+             builder.Services.AddEventStoreDevelopmentRouteCatalogBootstrap(builder.Configuration,
+                 (_, _) => throw new InvalidOperationException("Composition must not activate or observe a catalog."));
+ #if DEBUG && FOLDERS_OWNER_METADATA_SOURCE
++            int serviceCount = builder.Services.Count;
+             builder.AddFoldersDevelopmentOwnerMetadata();
++            builder.Services.Count.ShouldBe(serviceCount);
+             using var provider = builder.Services.BuildServiceProvider();
+ 
+             builder.Configuration["EventStore:RouteCatalog:DevelopmentFixture"].ShouldBeNull();
+             builder.Configuration["EventStore:RouteCatalog:Profile"].ShouldBeNull();
+             builder.Configuration["EventStore:RouteCatalog:RequireTechnicalHttpBinding"].ShouldBeNull();
+             INativeSourceMetadataReader reader = provider.GetRequiredService<INativeSourceMetadataReader>();
+-            if (diagnostics) reader.ShouldBeOfType<FoldersDevelopmentOwnerMetadataDiagnostics>();
+-            else reader.ShouldBeOfType<BoundOwnerNativeSourceMetadataReader>();
++            if (diagnostics && !loggerFails) reader.ShouldBeOfType<FoldersDevelopmentOwnerMetadataDiagnostics>();
++            else reader.ShouldBeOfType<GatewayNativeSourceMetadataReader>();
++            provider.GetRequiredService<INativeSourceMetadataReader>().ShouldNotBeSameAs(reader);
++            factoryCalls.ShouldBe(2);
++            builder.Services.Single(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader))
++                .Lifetime.ShouldBe(original.Lifetime);
++            provider.GetRequiredService<IOptions<EventStoreGatewayClientOptions>>().Value.UseWorkloadTransport.ShouldBeFalse();
++            provider.GetService<IEventStoreGatewayWorkloadAssertionSource>().ShouldBeNull();
++            provider.GetService<IEventStoreGatewayStreamReadProofSource>().ShouldBeNull();
++            provider.GetRequiredService<IOrganizationStreamSequenceReader>().ShouldBeOfType<GatewayOrganizationStreamSequenceReader>();
+ #else
+             Should.Throw<InvalidOperationException>(() => builder.AddFoldersDevelopmentOwnerMetadata()).Message
+                 .ShouldBe("Private owner metadata requires a local Debug source build.");
+@@ -61,4 +89,85 @@
+         }
+         finally { Directory.Delete(directory, recursive: true); }
+     }
++
++    /// <summary>Disabled composition leaves the exact public descriptor and all registrations unchanged.</summary>
++    [Fact]
++    public void DisabledSelectionPreservesThePublicFactory()
++    {
++        WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = Environments.Production });
++        builder.Configuration["Folders:EventStore:OwnerMetadataReads:Enabled"] = "false";
++        builder.Services.AddFoldersServer();
++        ServiceDescriptor original = builder.Services.Single(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader));
++        int count = builder.Services.Count;
++        builder.AddFoldersDevelopmentOwnerMetadata();
++        builder.Services.Count.ShouldBe(count);
++        builder.Services.Single(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader)).ShouldBeSameAs(original);
++    }
++
++    /// <summary>The explicit flag never admits production, staging or a missing Development catalog directory.</summary>
++    [Theory]
++    [InlineData("Production", "configured")]
++    [InlineData("Staging", "configured")]
++    [InlineData("Development", "")]
++    public void EnabledSelectionRetainsEnvironmentAndCatalogGuards(string environment, string directory)
++    {
++        WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = environment });
++        builder.Configuration["Folders:EventStore:OwnerMetadataReads:Enabled"] = "true";
++        builder.Configuration["EventStore:RouteCatalog:DevelopmentBootstrap:Directory"] = directory;
++        builder.Services.AddFoldersServer();
++        ServiceDescriptor original = builder.Services.Single(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader));
++        Should.Throw<InvalidOperationException>(() => builder.AddFoldersDevelopmentOwnerMetadata());
++        builder.Services.Single(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader)).ShouldBeSameAs(original);
++    }
++
++#if DEBUG && FOLDERS_OWNER_METADATA_SOURCE
++    /// <summary>Unexpected lifetimes, ambiguous registrations and missing factories refuse before any factory is invoked.</summary>
++    [Theory]
++    [InlineData("missing")]
++    [InlineData("duplicate")]
++    [InlineData("singleton")]
++    [InlineData("scoped")]
++    [InlineData("instance")]
++    [InlineData("keyed")]
++    public void EnabledSelectionRequiresTheSinglePublicTransientFactory(string scenario)
++    {
++        WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = Environments.Development });
++        builder.Configuration["Folders:EventStore:OwnerMetadataReads:Enabled"] = "true";
++        builder.Configuration["EventStore:RouteCatalog:DevelopmentBootstrap:Directory"] = "configured";
++        int calls = 0;
++        object Factory(IServiceProvider _) { calls++; throw new InvalidOperationException("Unexpected resolution."); }
++        switch (scenario)
++        {
++            case "duplicate":
++                builder.Services.Add(ServiceDescriptor.Transient(typeof(INativeSourceMetadataReader), Factory));
++                builder.Services.Add(ServiceDescriptor.Transient(typeof(INativeSourceMetadataReader), Factory));
++                break;
++            case "singleton": builder.Services.Add(ServiceDescriptor.Singleton(typeof(INativeSourceMetadataReader), Factory)); break;
++            case "scoped": builder.Services.Add(ServiceDescriptor.Scoped(typeof(INativeSourceMetadataReader), Factory)); break;
++            case "instance": builder.Services.AddSingleton(SourceHeadBoundaryProxy.Create<INativeSourceMetadataReader>((_, _) => throw new InvalidOperationException("No read permitted."))); break;
++            case "keyed": builder.Services.AddKeyedTransient<INativeSourceMetadataReader>("unexpected", (_, _) => { calls++; throw new InvalidOperationException("Unexpected resolution."); }); break;
++        }
++        Should.Throw<InvalidOperationException>(() => builder.AddFoldersDevelopmentOwnerMetadata()).Message
++            .ShouldBe("Private owner metadata requires the existing public SDK reader factory.");
++        calls.ShouldBe(0);
++    }
++
++    /// <summary>A factory returning another reader cannot substitute a private transport for the public SDK adapter.</summary>
++    [Fact]
++    public void UnexpectedFactoryResultRefusesWithoutReadingOrIssuingAuthority()
++    {
++        WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = Environments.Development });
++        builder.Configuration["Folders:EventStore:OwnerMetadataReads:Enabled"] = "true";
++        builder.Configuration["Folders:EventStore:OwnerMetadataReads:DiagnosticsEnabled"] = "false";
++        builder.Configuration["EventStore:RouteCatalog:DevelopmentBootstrap:Directory"] = "configured";
++        var unexpected = SourceHeadBoundaryProxy.Create<INativeSourceMetadataReader>((_, _) => throw new InvalidOperationException("No read permitted."));
++        builder.Services.AddTransient(_ => unexpected);
++        builder.AddFoldersDevelopmentOwnerMetadata();
++        using var provider = builder.Services.BuildServiceProvider();
++        Should.Throw<InvalidOperationException>(() => provider.GetRequiredService<INativeSourceMetadataReader>()).Message
++            .ShouldBe("Private owner metadata requires the actual public SDK reader.");
++        ((SourceHeadBoundaryProxy)(object)unexpected).Calls.ShouldBe(0);
++    }
++#endif
++
+ }

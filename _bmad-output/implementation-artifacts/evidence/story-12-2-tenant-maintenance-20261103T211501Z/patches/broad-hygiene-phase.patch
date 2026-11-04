@@ -1,0 +1,102 @@
+--- a/references/Hexalith.EventStore/tests/Hexalith.EventStore.Admin.Server.Tests/Services/DaprStreamQueryServiceTests.cs
++++ b/references/Hexalith.EventStore/tests/Hexalith.EventStore.Admin.Server.Tests/Services/DaprStreamQueryServiceTests.cs
+@@ -217,7 +217,8 @@
+             User = new ClaimsPrincipal(new ClaimsIdentity(includePermission
+                 ? [new Claim("eventstore:permission", AdminPlatformScopeCatalog.ReadPermission)] : [], "Test")),
+         };
+-        httpContext.Request.Headers.Authorization = "Bearer health-operator-token";
++        string healthOperatorToken = Guid.NewGuid().ToString("N");
++        httpContext.Request.Headers.Authorization = "Bearer " + healthOperatorToken;
+         if (includeScope) {
+             httpContext.Request.Headers["X-Hexalith-Scope"] = AdminPlatformScopeCatalog.Namespace;
+         }
+@@ -246,7 +247,7 @@
+         handler.RequestCount.ShouldBe(allowed ? 1 : 0);
+         if (allowed) {
+             HttpRequestMessage request = handler.LastRequest.ShouldNotBeNull();
+-            request.Headers.Authorization!.Parameter.ShouldBe("health-operator-token");
++            request.Headers.Authorization!.Parameter.ShouldBe(healthOperatorToken);
+             request.Headers.GetValues("X-Hexalith-Scope").ShouldBe([AdminPlatformScopeCatalog.Namespace]);
+         }
+         else {
+--- a/tests/Hexalith.Folders.Server.Tests/ParallelPermissionObservationTests.cs
++++ b/tests/Hexalith.Folders.Server.Tests/ParallelPermissionObservationTests.cs
+@@ -159,7 +159,7 @@
+         await Task.WhenAll(folderStarted.Task, organizationStarted.Task).WaitAsync(TimeSpan.FromSeconds(5), token);
+         if (catchupDeadline)
+         {
+-            EffectivePermissionsReadModelResult result = await pending.WaitAsync(TimeSpan.FromSeconds(2), token);
++            EffectivePermissionsReadModelResult result = await pending.WaitAsync(TimeSpan.FromSeconds(5), token);
+             result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
+             result.Snapshot.ShouldBeNull();
+             result.Freshness.ReasonCode.ShouldBe("permission_projection_catch_up_timeout");
+--- a/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
++++ b/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
+@@ -16,7 +16,7 @@
+ governance_status: candidate-awaiting-a6b
+ production_routed: false
+ hash_algorithm: SHA-256
+-candidate_set_sha256: 0d2143cca8b5f594fe5ab2749596076562f26b069c38ba77a12157f868accdb8
++candidate_set_sha256: 0cce9de609131496622dadda423477f7630aa1428596a8d75c089657ed73e5b7
+ artifact_count: 1522
+ artifacts:
+   - path: ".github/workflows/ci.yml"
+@@ -4990,7 +4990,7 @@
+   - path: "tests/Hexalith.Folders.Server.Tests/ParallelPermissionObservationTests.cs"
+     kind: file
+     bytes: 11132
+-    sha256: 6f64f25663005676dcc90e7c877b58d387a89807ed31940553a70a8e289389f1
++    sha256: dce1c6fcb5801af09e735060251f77d899124a4791ce79e625e38495167c1cd6
+   - path: "tests/Hexalith.Folders.Server.Tests/Pd10AuthorizationAuditSinkTests.cs"
+     kind: file
+     bytes: 2446
+--- a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
++++ b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+@@ -2148,20 +2148,44 @@
+ 
+ After the parent serial broad sequence releases outputs, perform only these bounded test corrections:
+ 
+-- [ ] `references/Hexalith.EventStore/tests/Hexalith.EventStore.Admin.Server.Tests/Services/DaprStreamQueryServiceTests.cs`:
++- [x] `references/Hexalith.EventStore/tests/Hexalith.EventStore.Admin.Server.Tests/Services/DaprStreamQueryServiceTests.cs`:
+   replace only the health operator's fixed bearer literal with a generated ephemeral local token and
+   use the same variable in the existing exact forwarding assertion. Preserve all externally added
+   scope/permission/filter behavior, every other identity and the scanner's rules. No shared cache edit.
+-- [ ] `tests/Hexalith.Folders.Server.Tests/ParallelPermissionObservationTests.cs`: change only the
++- [x] `tests/Hexalith.Folders.Server.Tests/ParallelPermissionObservationTests.cs`: change only the
+   outer test harness guard for awaiting the2s catch-up result from2s to5s, matching its existing5s
+   source-start guard. This resolves two equal wall-clock timers racing under a loaded runner. Keep
+   the actual production catch-up2s and all SDK2s/reader3s/domain5s/HTTP40s limits unchanged. Retain
+   exact unavailable reason, both sources drained, cancellation identity and unchanged-store checks.
+   This is not a change to either original strict/capacity body or a product timeout.
+-- [ ] Build/run affected owning Admin and Folders Server classes, plus the unchanged full secret
++- [x] Build/run affected owning Admin and Folders Server classes, plus the unchanged full secret
+   scanner, serially with both source flags. Retain the broad failures and focused rechecks separately.
+   Refresh only pending source inventory hashes if this existing compile input requires it; preserve
+   the immutable dated PD10 artifact. Hand back without active source/output mutations.
+ 
+ The unrelated proposed foreign-task-scope strict-body exception remains pending the user's decision;
+ none of these hygiene tasks applies that patch or changes the original strict hash.
++
++
++### Broad-gate hygiene focused handoff — 2026-11-03
++
++The health operator fixture now generates one ephemeral local bearer value and uses that same value
++in its exact forwarding assertion. All external Admin scope/permission/filter and denial checks are
++preserved. The permission-observation test changes only the outer await guard from2s to5s; actual
++production catch-up remains2s and every result/reason, cancellation token, source-drain and unchanged
++store assertion is retained. Scanner rules, product source, credentials/grants/pins and both original
++strict/capacity bodies are unchanged. The proposed foreign-task scope patch remains unapplied.
++
++The initial Admin no-restore build correctly refused missing assets with NETSDK1004; a focused
++restore using both source flags resolved that local preparation prerequisite. Subsequent Admin and
++Folders Server test builds pass with zero warnings/errors in2.91s and4.92s. Serial focused execution
++passes37Admin cases in0.355s,9permission-observation cases in2.185s, all274unchanged secrets-scanner
++cases in5.436s, and18pending-inventory controls in6.159s, with zero failures/errors/skips. These are
++separate focused results; the preceding broad failures remain retained and no new full-suite pass
++is inferred. Only the pending inventory's edited test-source SHA and set digest changed; historical
++conformance/spine bytes and disabled-v2 status are preserved.
++
++Exact phase-only patch, before/after hashes, commands, output identities and build/test receipts are
++retained in `/tmp/story12-2-broad-hygiene-20261103`. Source/output ownership is released to the parent
++with no active build/test/topology. Whole-story, original strict contract decision, live capacity,
++packaged SDK capability and independent review/SM4 gates remain separate.

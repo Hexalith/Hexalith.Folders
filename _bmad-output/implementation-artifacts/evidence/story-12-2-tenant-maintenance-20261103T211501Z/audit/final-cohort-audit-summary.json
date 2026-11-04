@@ -1,0 +1,13 @@
+{
+  "modules": 92,
+  "source_or_pdb_issues": [],
+  "sdk_variant_failures": {},
+  "asset_failures": [],
+  "strict_bodies_unchanged": {
+    "OperationalStatusDurabilityAcceptanceTests.cs": true,
+    "FolderDurabilityAcceptanceTests.cs": true,
+    "OperationalStatusBoundedHistoryAcceptanceTests.cs": true
+  },
+  "frozen_sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+  "frozen_unchanged": true
+}

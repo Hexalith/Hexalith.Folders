@@ -1,0 +1,21 @@
+[
+  {
+    "repository": "folders",
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/live-tenant-maintenance-1-folders-source.patch",
+    "bytes": 109079,
+    "sha256": "60aaf7eece5c2f38c186770f3195cbb17abbb6f95318288e11f5601939bdab7b",
+    "untrackedInputs": [
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs"
+    ]
+  },
+  {
+    "repository": "eventstore",
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/live-tenant-maintenance-1-eventstore-source.patch",
+    "bytes": 5737,
+    "sha256": "76436dafa913614538daf8b583c1a985c78014c26f3561f5f4fd23f85d1b5502",
+    "untrackedInputs": []
+  }
+]

@@ -1,0 +1,13 @@
+{
+  ".github/copilot-instructions.md": "4c59ec61f9012466b778bc1ed0438387f621986a8678aca34eefca719ab1825d",
+  "AGENTS.md": "4c59ec61f9012466b778bc1ed0438387f621986a8678aca34eefca719ab1825d",
+  "CLAUDE.md": "4c59ec61f9012466b778bc1ed0438387f621986a8678aca34eefca719ab1825d",
+  "README.md": "3ac8a7b01cff1f8d0c31d6f9d5d1f34b92e2daf73714e839682b9cf490119f97",
+  "hexalith-git-instructions.md": "515854cc73feb97baeee02f6cf308efb248f728b0dc921485c72f8e3e5bcc333",
+  "hexalith-llm-instructions.md": "49e0fc0c04960b6f986343e87250462313394642ce9f9451de7ddca34e849bb4",
+  "hexalith-mcpcli-migration-instructions.md": "e84a2913bc6b876482250abf2b13c7deb823e9fcc6177be4e481ad450f2d4a60",
+  "hexalith-state-instructions.md": "1908bb8f46ba24b352aed0bdfe3042fe41ffa3bd0157a3276d8158c0d58fa753",
+  "hexalith-ux-instructions.md": "215c029a3a8dda1fc41fd6b5ea14c155545c89e8540392258443ad309eb64992",
+  "package-lock.json": "b1995907950d91a222d6db168b428922e143f79ce6da650376b718812eca8ebe",
+  "package.json": "3b30a4f98915fa0a1a1771f181a39e64682dc69ce806866055875fb1aeb3d6d0"
+}

@@ -1800,7 +1800,7 @@ prefix assertions remain unchanged. No other SDK, production or dependency chang
   other identities/grants; no command when sufficiently fresh; own-tenant canonical command shape;
   rejected/failed or unobserved source/projection cannot establish freshness; unchanged authority;
   bounded cancellation. Preserve existing production stale-denial controls and all original bodies.
-- [ ] Build/run focused current-source controls only and hand source/outputs back without an active
+- [x] Build/run focused current-source controls only and hand source/outputs back without an active
   command. Parent then refreshes only pending compile-input inventory, rebuilds/audits runtime, and
   reruns the unchanged strict class with private traces and exact owned cleanup. Retain every failed
   attempt; keep SDK parity/red-phase/optional lanes, Release/package, capacity, PD10/governance, SM4
@@ -1889,7 +1889,7 @@ All owned resources are removed; unrelated resources were preserved.
   e21f5ac7b5f332f1921f70a249ab2032b9978d56ffdd6641a0a4b94d04850bdc, but the restored archive is
   81a33bb7562507004d4dfb8da2365cdea1fb874ff53798787bff110c0d9573ef. Do not replace its expected
   hash, skip it, change package pins, or claim the later ABI assertions executed.
-- [ ] Parent rebuild/audit and execute the new real maintenance control; preserve the failed strict
+- [x] Parent rebuild/audit and execute the new real maintenance control; preserve the failed strict
   runs and keep the original strict row open until it actually passes. A further same-code strict
   diagnosis may enable only existing receiver/ASP.NET timing categories to locate the observed remote
   interval; it does not authorize timeout, guard, outcome or assertion changes. Remaining SDK/package,
@@ -1993,3 +1993,234 @@ pins/scanner assertions are unchanged. The original strict failures, producer/pa
 capacity, PD10/governance, SM4 and whole-story review remain distinct open gates; standalone success
 would qualify only active tenant maintenance. No live topology, Git mutation, dependency change,
 frozen-artifact update or publication occurred in this implementation phase.
+
+
+### Native catalog admission contention qualification — 2026-11-03
+
+The approved real maintenance control passed once with zero failures/errors/skips in183.007s,
+including natural two-minute source age, a genuine matching TenantUpdated/unchanged retained prefix,
+normal persisted Workers authority/evidence and an immediate exact fresh no-op. Root HEAD advanced
+externally during that run but all captured compile-source maps were identical; runtime bytes and
+owned cleanup were clean. Original full strict acceptance remains separate and open.
+
+Strict attempt3 passed provider binding/rebuild and reached repository binding. Its failed native
+metadata acquisition performed25 fresh state/validation/capture attempts and24 failed CAS attempts
+inside2007ms, then canceled before the25th CAS and before any transport/receiver for that invocation.
+The actor subsequently returned a safe rejection; cached retries retained the result. Earlier fast
+receiver records belong to different invocations. This diagnoses acquisition contention for this
+request without mislabeling it as transport latency, missing durable task state or tenant staleness.
+All original assertions and configured deadlines remain unchanged. SDK source advanced externally
+across14 Admin-related files during the run; the actual pre-run producer is explicitly bound.
+
+The existing frozen2026-11-02 native-authority performance approval permits a bounded correction
+that preserves every required observation/proof/final check and all existing deadlines. No new
+permission, trust cache, protocol, lifecycle authority or dependency/publication scope is included.
+A concrete source/ETag rebase candidate is under read-only assessment: after each complete fresh
+acquisition validation, re-read strong authority state immediately before lease CAS, reuse that
+validation only for the exact unchanged committed activation binding/epoch with no pending
+transition, and apply all current lease identity, inventory, overflow and sequence checks to the
+fresh state. The activation binding digest excludes TrustProof, so exact opaque TrustProof and
+canonical catalog bytes must also agree; a proof-only change cannot inherit a prior validation. A changed authority must restart fresh validation. Generic lifecycle update paths,
+remote verifier ordering, durable fences/release and default human gateway composition remain intact.
+
+- [x] Assess that exact candidate against SDK authority/observation contracts and deterministic
+  lifecycle/lease races; record whether it stays within the approved observation and security scope.
+  Do not implement a stale snapshot/cache or omit a required read/check to accept the failed run.
+- [x] If that assessment succeeds, bind the smallest exact implementation and meaningful focused
+  regressions here before source edits, then rebuild and qualify the affected owner/consumer/native
+  acquisition path serially. Keep prior failures, real maintenance pass, fresh package failures and
+  independent whole-story/SM4 gates separate.
+
+
+### Exact bounded admission rebase implementation — 2026-11-03
+
+Implement only after the immediately preceding read-only assessment confirms the exact store and
+activation-ownership contracts. The existing native-authority performance approval covers this
+internal acquisition correction; it adds no package, trust, protocol, deadline or publication scope.
+The parent has released all source/output ownership; no parent build or topology remains active.
+
+- [x] In the owning root-declared EventStore repository, change only the dispatch acquisition path
+  in `src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs` (small adjacent
+  single-type internal helpers only if required). On every attempt retain the existing fresh
+  state read, local identity/profile/host observation, activation binding and independent trust
+  validation. Privately freeze the complete validated activation before asynchronous work so no
+  aliased mutable arrays/lists can establish later equality. Then perform a new strong state/ETag
+  read immediately before constructing the lease CAS. A rebase is permitted only with no pending
+  transition and identical epoch, canonical catalog bytes/root, full activation binding and exact
+  ordinal opaque TrustProof. Never equate proof by binding digest alone. Any changed activation,
+  proof or epoch restarts full fresh validation (or preserves the existing safe refusal for an
+  active pending transition); no changed candidate inherits earlier validation.
+- [x] Apply every existing admission invariant to the newly read state: exact local identity and
+  generation, own lease identity/idempotency, maximum4096leases, checked LastLease+1, exact fence
+  epoch/root/host. Preserve every concurrent foreign fence and all other fresh state fields. CAS
+  only the fresh ETag through the unchanged store primitive. Failed CAS restarts complete fresh
+  validation under the existing96attempt/caller bounds and conflict scheduling. Cancellation or
+  backend failure before CAS cannot create a fence. Do not move generic Prepare/Ready/Commit/
+  Rollback/Reconcile or release/verifier behavior; retain final native-read and remote proof checks,
+  durable lease cleanup, default human gateway composition and every2s/3s/5s/40s limit.
+- [x] Add meaningful deterministic owner controls in
+  `tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAdmissionRebaseTests.cs` and adjacent
+  single-type test helpers: lease-only contention during every host capture must preserve peers and
+  acquire using the refreshed ETag; pending/committed/epoch/full binding/TrustProof-only changes
+  cannot reuse validation; mutable activation aliases cannot pass; lease cap/overflow/current
+  sequence, cancellation, refresh failure and sustained CAS conflict remain fail-closed. Retain
+  existing lifecycle/coordinate/native-read controls. Update only existing read-count assertions
+  that necessarily include the additional strong read, with explicit expectations; never weaken
+  an original outcome, safety or finite-attempt assertion.
+- [x] Build and run focused owner controls serially with both source flags, plus relevant existing
+  catalog contention/lifecycle/installed-observation/native-source suites. Retain intermediate
+  failures. Hand back exact source patch/hashes/results and released outputs before parent
+  rebuild/audit/live qualification. No shared cache, package pin, Git, publication or deployment
+  mutation; original Folders strict/capacity bodies and frozen intent stay byte-identical.
+
+
+### Admission rebase focused handoff — 2026-11-03
+
+The strong-read and private activation ownership assessment passed. Acquisition alone now freezes
+its candidate before awaited validation, gives observers/validators a separate owned copy, and
+performs an additional strong state/ETag read before admission CAS. Rebase requires the exact epoch,
+canonical bytes/root, full activation binding and ordinal opaque TrustProof. Changed authority
+restarts fresh validation; pending still refuses new fences. An already recorded exact own fence
+can be recovered and released alongside pending, preserving response-loss draining semantics.
+Fresh lease inventory supplies the checked sequence,4096 limit and complete retained state; CAS
+uses only its new ETag. Local identity/profile/coordinates are rechecked after the added read, and
+the winning fence/snapshot retain the validated local binding. Generic lifecycle updates, release,
+final native/remote checks,96 attempts, conflict scheduling and every caller deadline remain intact.
+
+The owner test build passes with zero warnings/errors in13.02s using both source flags. The final
+18-class focused selection passes222/222 with zero failures/errors/skips in20.415s, including27 new
+deterministic admission races and retained lifecycle/quiescence, installed-observation, coordinates,
+backend, native-scope and native-source controls. Read-count assertions now explicitly require two
+reads per attempted new admission: conflict-then-refusal3 instead of2, cancellation after CAS2
+instead of1, permanent96 attempts192 instead of96, and two closed diagnostic read pairs. Existing
+outcome/safety/attempt assertions are retained. Earlier overlapping35-case and222-case runs each
+had one assertion failure; both raw logs/XML and the exact corrections are retained independently.
+No results are added across overlapping selections.
+
+The exact private assessment, phase-only patch, before/after source hashes, commands, build/test
+receipts and output hashes are retained under `/tmp/story12-2-admission-rebase-20261103`.
+Original strict/capacity bodies remain byte-identical. No live topology or real contention latency
+qualification occurred here; the extra read adds I/O and does not guarantee progress under sustained
+CAS contention. Parent owns current producer rebuild/audit and any isolated live qualification.
+The prior real maintenance pass, original strict failures, packaged4.0.4 source-capability mismatch
+and whole-story/SM4 gates remain separate; this focused pass does not close them.
+
+
+### Current strict foreign-scope contract boundary — 2026-11-03
+
+Parent requalified the admission correction on a coherent Debug/source runtime plus Memories with
+all92selected source/PDB/module identities and project assets clean. The owner222cases and parent
+36reader/101fixture cases pass. Generic SDK lifecycle/release/final-native code remains unchanged.
+The fourth unchanged strict attempt failed once, zero errors/skips, in362.951s. It passed genuine
+tenant maintenance, all six concerns, interrupted generation, concurrent Workers, process replacement,
+post-restart ready task reads, equivalent replay, closed-binding denial and retained prefix checks.
+Its final `folderId=absent-folder` probe expected404 but received503/read_model_unavailable at
+FolderAcl. Tenant was Fresh, source/head/runtime drift zero, and owned cleanup complete. Unrelated
+Parties containers were preserved. The actual native request acquired in70ms and returned receiver
+HTTP503 in380ms uncanceled; the earlier acquisition-starvation failure did not recur at this boundary.
+
+Current SDK owner inspection returns Unsupported/Invalid with no proof for missing/unactivated
+metadata. The approved source-head contract explicitly requires unavailability for this case; valid
+existing zero remains separate. There is no supported read-only authoritative-absence seam. No
+missing-proof-to-zero conversion, source seeding, non-native fallback, relaxed mapping or changed
+assertion was implemented to accept the failed run. The original strict hash remains
+f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90.
+
+A prepared [bounded test-contract proposal](proposal-12-2-foreign-task-scope-proof.md) and
+[unapplied exact patch](proposal-12-2-foreign-task-scope-proof.patch) distinguish genuine foreign
+task scope404 from unsupported physical absence503. It creates a real different folder via existing
+authenticated v1 creation and current Workers/source evidence, preserving task-key isolation and the
+404 assertion; the old literal remains as a separate503/no-protected-observation control. This is
+an explicit proposed strict-body exception, not an implemented change. The user decision is pending.
+The patch passes `git apply --check`. Independent current-producer broad rechecks continue serially;
+no whole-story completion, SM4, package, governance or independent review pass is implied.
+
+
+### Broad-gate test hygiene follow-up — 2026-11-03
+
+The current admission producer's broad SDK Server run has7612passes,1failure and25existing skips.
+The sole failure is the unchanged SecretsProtection scanner reporting an externally added fixed
+bearer literal at SDK Admin `DaprStreamQueryServiceTests.cs:220`. The current Folders Server run has
+1394passes/1failure: `ParallelPermissionObservationTests.CallerOrCatchupCancellationDrainsBothSourcesAndAcceptsNoLateAuthority`
+times out at its test-only2s WaitAsync, exactly the approved2s production catch-up deadline. The
+case's expected timeout reason, no-late-authority, token drain and unchanged-store assertions remain
+required. Prior full1395pass is retained independently; no production cause is inferred.
+
+After the parent serial broad sequence releases outputs, perform only these bounded test corrections:
+
+- [x] `references/Hexalith.EventStore/tests/Hexalith.EventStore.Admin.Server.Tests/Services/DaprStreamQueryServiceTests.cs`:
+  replace only the health operator's fixed bearer literal with a generated ephemeral local token and
+  use the same variable in the existing exact forwarding assertion. Preserve all externally added
+  scope/permission/filter behavior, every other identity and the scanner's rules. No shared cache edit.
+- [x] `tests/Hexalith.Folders.Server.Tests/ParallelPermissionObservationTests.cs`: change only the
+  outer test harness guard for awaiting the2s catch-up result from2s to5s, matching its existing5s
+  source-start guard. This resolves two equal wall-clock timers racing under a loaded runner. Keep
+  the actual production catch-up2s and all SDK2s/reader3s/domain5s/HTTP40s limits unchanged. Retain
+  exact unavailable reason, both sources drained, cancellation identity and unchanged-store checks.
+  This is not a change to either original strict/capacity body or a product timeout.
+- [x] Build/run affected owning Admin and Folders Server classes, plus the unchanged full secret
+  scanner, serially with both source flags. Retain the broad failures and focused rechecks separately.
+  Refresh only pending source inventory hashes if this existing compile input requires it; preserve
+  the immutable dated PD10 artifact. Hand back without active source/output mutations.
+
+The unrelated proposed foreign-task-scope strict-body exception remains pending the user's decision;
+none of these hygiene tasks applies that patch or changes the original strict hash.
+
+
+### Broad-gate hygiene focused handoff — 2026-11-03
+
+The health operator fixture now generates one ephemeral local bearer value and uses that same value
+in its exact forwarding assertion. All external Admin scope/permission/filter and denial checks are
+preserved. The permission-observation test changes only the outer await guard from2s to5s; actual
+production catch-up remains2s and every result/reason, cancellation token, source-drain and unchanged
+store assertion is retained. Scanner rules, product source, credentials/grants/pins and both original
+strict/capacity bodies are unchanged. The proposed foreign-task scope patch remains unapplied.
+
+The initial Admin no-restore build correctly refused missing assets with NETSDK1004; a focused
+restore using both source flags resolved that local preparation prerequisite. Subsequent Admin and
+Folders Server test builds pass with zero warnings/errors in2.91s and4.92s. Serial focused execution
+passes37Admin cases in0.355s,9permission-observation cases in2.185s, all274unchanged secrets-scanner
+cases in5.436s, and18pending-inventory controls in6.159s, with zero failures/errors/skips. These are
+separate focused results; the preceding broad failures remain retained and no new full-suite pass
+is inferred. Only the pending inventory's edited test-source SHA and set digest changed; historical
+conformance/spine bytes and disabled-v2 status are preserved.
+
+Exact phase-only patch, before/after hashes, commands, output identities and build/test receipts are
+retained in `/tmp/story12-2-broad-hygiene-20261103`. Source/output ownership is released to the parent
+with no active build/test/topology. Whole-story, original strict contract decision, live capacity,
+packaged SDK capability and independent review/SM4 gates remain separate.
+
+
+### Approved continuation closeout and pending strict-scope decision — 2026-11-03
+
+The new [portable continuation evidence](evidence/story-12-2-tenant-maintenance-20261103T211501Z/README.md) binds all closed phases,
+source/module identities, owner handoffs, failed runs, focused corrections and the pending proposal.
+The real maintenance component passed separately (1pass183.007s) and executed repeatedly inside
+strict4. The catalog acquisition correction passed222owner cases (27new); final rebuilt source
+reader36 and fixture101 controls pass. Final92module source/PDB/single-SDK/project-assets audit is
+clean; frozen intent, all three original strict/capacity bodies and dated PD10 bytes remain unchanged.
+
+Current-producer broad results: Domain2384pass/2existing skips; SDK Server7612pass/1scanner failure/
+25existing skips; Folders Server1394pass/1test-guard failure; Workers162, Integration854, Gateway123,
+Contracts636 and client generation75pass. The sole scanner finding was an external Admin test's fixed
+bearer literal, now generated with its unchanged exact forwarding assertion (37Admin cases and
+274unchanged scanner cases pass). The outer test guard equal to the approved2s catch-up deadline was
+corrected to5s while production remains2s; all9affected source-drain/cancellation cases pass.
+18pending-inventory checks pass after only the necessary source SHA/set-digest update. These focused
+rechecks overlap broad suites and are never added to them or relabeled as full broad reruns.
+The previous public-package cache discrepancy was independently resolved using the official pinned
+archive in an isolated fixture cache; original ABI controls pass, including in the latest broad SDK
+run (whose only failure was the scanner). Shared cache content/pins were not manually replaced.
+
+Fresh exact Release contract-spine gate progressed past the historical NU1109 and fails CS1061: the
+unchanged published SDK4.0.4 lacks AddEventStoreGatewayNativeSourceMetadataReader at Folders Server67
+and Workers87. No dependency/publication scope was broadened. Debug/source assets were restored and
+requalified. Required10001/32769handler/dispatcher component cases passed on the current admission
+producer; no extra32769Folders HTTP run is claimed or required by the recorded composition decision.
+
+Unchanged strict4 remains failed at its unsupported physical-absence404 expectation after passing
+post-restart task durability/replay/source guards. The exact test-contract proposal and unapplied
+patch are ready; the user decision is pending. No revised body is built or executed, and no physical
+absence is converted into native zero. All owned live resources were removed; unrelated resources
+were preserved. Step03/story/sprint stay in-progress; full strict, package/governance, SM4 and whole-
+story review are not marked complete. Prior sealed packets still verify unchanged.

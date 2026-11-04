@@ -1,0 +1,97 @@
+{
+  "created_utc": "2026-11-03T21:01:35.123107+00:00",
+  "assessment": "Consistent with accepted native evidence contract; narrowly scoped strict-input exception is viable after explicit owner approval. No implementation authorized or performed in this phase.",
+  "source_bindings_from_strict4_producer": [
+    {
+      "repository": "/home/administrator/projects/hexalith/folders",
+      "head": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+      "path": "src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs",
+      "saved_sha256": "f1f1a9e7c55a9490bb32bbbeedad3f50d62f8d8c40460c7a9fd89cf2ae99a8a5"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders",
+      "head": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+      "path": "src/Hexalith.Folders/Authorization/EventStoreFolderEffectivePermissionsReadModel.cs",
+      "saved_sha256": "a3d97f32cb711e12c60772b818d7e0d674a410a18ca8a4faf5385395d637adfb"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders",
+      "head": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+      "path": "src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs",
+      "saved_sha256": "8b3aeb8b0c6411ca3f95a4e0bea2b91b503691930890f5dacf1033192b20f049"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders",
+      "head": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+      "path": "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusKeys.cs",
+      "saved_sha256": "96e33554480af2d35f0a41175bdf38ae2e0dbd5788ed1d3a1521902928f57fc8"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders",
+      "head": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+      "path": "src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs",
+      "saved_sha256": "dc46fa4d585df068b6b376870eeaacba290af4ca94ea64808f906bf32e3dd138"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders",
+      "head": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+      "path": "src/Hexalith.Folders/Queries/Folders/TaskStatusQueryHandler.cs",
+      "saved_sha256": "16f759d4be1925b764a46c5fa70c4e85d49fd488d9ba1bab49dc7a81d5dfe76a"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders",
+      "head": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "saved_sha256": "f57f907a1edd0edd8c254b047b4da2845ab1aa6c7ddc7aa1fead01023e9c9d4a"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders",
+      "head": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+      "path": "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+      "saved_sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90"
+    }
+  ],
+  "scope_semantics": {
+    "existing_literal": "Never-created absent-folder qualifies unsupported source absence, not a task lookup under independently established folder authority. Its existing native contract is503/read_model_unavailable.",
+    "proposed_real_foreign_folder": "Authenticated v1 CreateFolder with a fresh idempotency key yields a distinct real folder, normal retained source and current persisted ACL/operational checkpoint. Existing actor/identity/grants remain unchanged.",
+    "foreign_task": "Query originalTaskId under authorizedFolderId=secondFolder. Read model selects only tenant+secondFolder+originalTaskId; no row/evidence exists there, so validated missing result maps NotFoundSafe/404. This does not claim originalTaskId is globally absent."
+  },
+  "ordering_and_keys": {
+    "handler": "Tenant evidence and complete layered authorization for supplied folder finish before ITaskStatusReadModel.GetAsync. Folder denial/unavailability returns without task read-model invocation.",
+    "reader": "Requires nonempty AuthorizedFolderId and AuthorizationWatermark before store observation. OperationalStatusKeys.Task encodes tenant,folder,task; selected key/checkpoint/evidence/receipt and fresh native source use only supplied authorized folder.",
+    "original_task_no_observation": "No global task index or original-folder task key lookup exists in this path. A foreign query reads at most the authorized foreign-folder task slot after that folder authority is established.",
+    "fold": "Create-only source establishes folder lifecycle/checkpoint but creates task views only for workspace lifecycle/task evidence; no originalTask row should exist in the foreign folder. Use a fresh generated task header; never pass the original pipeline taskId on CreateFolder.",
+    "source_current_limit": "Keep the second folder create-only and require the normal current source/Workers checkpoint barrier before querying. Do not rely on a lagging or absent foreign checkpoint to get404."
+  },
+  "minimal_proposed_changes": [
+    "After the main retained-prefix/replay checks, use existing fixture.MutateAsync POST /api/v1/folders with requestSchemaVersion=v1, ordinary display metadata and fresh idempotency key; require202. Compute foreignFolder through existing CreatedFolderId; assert distinct from pipeline folder.",
+    "Wait normal lifecycle/current folder evidence using existing public lifecycle read and WaitForCurrentFolderEvidenceAsync; verify actual foreign source/checkpoint via the normal barrier. No raw source state seeding or synthetic timestamp.",
+    "Change only the foreign-task probe input from literal absent-folder to that known current foreignFolder; retain expected404 and no-disclosure checks, original taskId, user identity/grants and all existing deadlines.",
+    "Retain a separate literal absent-folder request expecting existing503/read_model_unavailable and no task-store observation. Do not create or seed that literal source.",
+    "Keep original missing-folder-scope503 and all durability/capacity/restart/rebuild/task pipeline assertions. No provider/repository/workspace needs to be created for the foreign folder."
+  ],
+  "qualification_controls": [
+    "Focused actual persistent read-model control: original task under folderA; independently real current create-only folderB; query originalTask with AuthorizedFolderId=folderB returnsNotFound and observes only B-scoped task/checkpoint/evidence keys; original A row unchanged/unobserved.",
+    "Handler/endpoint unavailable-folder control: missing native proof -> folder authorization unavailable -> canonical503/read_model_unavailable; counting task read-model/store observer remains0; no task fields disclose.",
+    "Retain existing supported-zero vs unsupported/missing/erased/invalid evidence controls; do not map unsupported to0.",
+    "Normal real acceptance: original task under actual folder continues ready; supplied real foreign folder yields404; uncreated literal yields503; genuine original retained prefix unchanged."
+  ],
+  "existing_source_controls": [
+    "OperationalStatusPersistenceTests.TaskLookupCannotObserveTaskBoundToAnotherFolder",
+    "OperationalStatusPersistenceTests.TaskLookupRequiresCurrentFolderAuthorityBeforeStoreObservation",
+    "TaskStatusQueryHandlerTests.MissingFolderScopeShouldFailBeforeProtectedTaskLookup",
+    "WorkspaceStatusEndpointTests.TaskFolderDenialsUseOnlyActiveV1CanonicalErrorCategories",
+    "NativeSourceHeadEvidenceContractTests.ExistingWorkloadMetadataRoutePreservesSupportedZeroAndRefusesUnprovedAbsence"
+  ],
+  "approval_requirements": [
+    "Explicit owner authorization to change the frozen strict input/body for this precise task-scope reconciliation and append the separate absence503 control.",
+    "No new production permission, SDK protocol, absent proof, source fallback or deadline exception is needed.",
+    "Unit/source assessment is not execution of the proposed real input; parent must rebuild/audit and execute after approval."
+  ],
+  "risks": [
+    "Second folder introduces real command/projection work and some runtime cost; normal existing limits may still failclosed and cannot be widened silently.",
+    "HTTP503 alone does not prove zero task-store observations; retain meaningful counting/selected-key controls plus current source ordering.",
+    "Safe404 requires the new folder to be genuinely authorized/current; a denied or unavailable foreign folder would qualify a different boundary and must not be accepted as equivalent."
+  ],
+  "actions_performed": "Read-only source inspection plus this private assessment JSON. No source/output/build/test/topology actions."
+}

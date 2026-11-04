@@ -1,0 +1,64 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+    "-showLiveOutput",
+    "-result-xml",
+    "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/strict-tenant-maintenance-4-private.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-03T20:42:47.153285+00:00",
+  "utc_end": "2026-11-03T20:48:54.245321+00:00",
+  "exit_code": 1,
+  "environment_selection": {
+    "Folders__EventStoreDaprHttpPort": 36033,
+    "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true"
+  },
+  "private_log": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/strict-tenant-maintenance-4-private.log",
+    "sha256": "5c424694a914a114127a0ac35393208f2909a5712a1fbd3280f64c7fa8bf876b"
+  },
+  "private_xml": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/strict-tenant-maintenance-4-private.xml",
+    "sha256": "2d2e56fbcfb3f4b9b02d10e9416c4ad8dc0ce3573688f0ca6470282617a2d43a"
+  },
+  "summary": {
+    "assemblies": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "20:42:47",
+        "errors": "0",
+        "failed": "1",
+        "passed": "0",
+        "skipped": "0",
+        "time": "362.951",
+        "total": "1"
+      }
+    ],
+    "tests": [
+      {
+        "result": "Fail",
+        "time": "299.506",
+        "type": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "method": "RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures",
+        "display_name_sha256": "2d1c3f84a96d181e0800023c4abe97fc1b90e31064c115a190be37934b25a41b",
+        "case_ordinal": 1
+      }
+    ]
+  },
+  "source_or_head_drift": [],
+  "working_tree_status_changes": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 2
+  },
+  "runtime_module_observations": 174,
+  "fixture_module_observations": 215,
+  "original_private_receipt_sha256": "dfdd893a6339533139e1376a82ee6df5371a05cc4f2d93925124645ea1daf816"
+}

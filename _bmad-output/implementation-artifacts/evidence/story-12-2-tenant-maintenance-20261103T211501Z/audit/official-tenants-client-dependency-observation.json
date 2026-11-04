@@ -1,0 +1,41 @@
+{
+  "utc": "2026-11-03T20:11:35.553238+00:00",
+  "url": "https://api.nuget.org/v3-flatcontainer/hexalith.tenants.client/7.0.0/hexalith.tenants.client.7.0.0.nupkg",
+  "archive_sha256": "ecaade25858382710fe086c158b6e23d21c768fcde0b1b76568e044fba2c0226",
+  "signature_present": true,
+  "dependencies": [
+    {
+      "id": "Hexalith.Tenants.Contracts",
+      "version": "7.0.0"
+    },
+    {
+      "id": "Dapr.AspNetCore",
+      "version": "1.19.0"
+    },
+    {
+      "id": "Hexalith.EventStore.Client",
+      "version": "4.0.4"
+    },
+    {
+      "id": "ByteAether.Ulid",
+      "version": "1.4.2"
+    },
+    {
+      "id": "Dapr.Client",
+      "version": "1.19.0"
+    },
+    {
+      "id": "Hexalith.Commons.UniqueIds",
+      "version": "2.30.10"
+    },
+    {
+      "id": "Hexalith.EventStore.Contracts",
+      "version": "4.0.4"
+    },
+    {
+      "id": "Hexalith.McpCli.Abstractions",
+      "version": "2.0.0"
+    }
+  ],
+  "shared_cache_changed": false
+}

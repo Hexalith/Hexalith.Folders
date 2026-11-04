@@ -1,0 +1,652 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.Tests.dll",
+    "-class",
+    "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+    "-result-xml",
+    "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/consumer-client-generation-tests-private.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-03T19:21:37.310231+00:00",
+  "utc_end": "2026-11-03T19:22:04.787545+00:00",
+  "exit_code": 0,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/consumer-client-generation-tests-private.log",
+    "sha256": "32a7da0854558d05fabf2859d0da54c5651913bc214eb6d9164a0a46ded0c7de"
+  },
+  "private_xml": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/consumer-client-generation-tests-private.xml",
+    "sha256": "cf6fdbeb0d713bfbcd4fea733721dc2ab209dd61ab790fd1cd67f0b633e22902"
+  },
+  "summary": {
+    "assemblies": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "19:21:37",
+        "errors": "0",
+        "failed": "0",
+        "passed": "75",
+        "skipped": "0",
+        "time": "24.757",
+        "total": "75"
+      }
+    ],
+    "tests": [
+      {
+        "result": "Pass",
+        "time": "0.017",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "NswagConfigurationUsesContractSpineAsOnlyInput",
+        "display_name_sha256": "88f9f8913b4961b0373e369383e30ddf6006a21f7780d987265539f0784869fa",
+        "case_ordinal": 1
+      },
+      {
+        "result": "Pass",
+        "time": "0.045",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "FileMutationHelpersIgnoreRawContentAndLocalPaths",
+        "display_name_sha256": "c83ffbaa98c075beffa95582a9c0ae10ec7fb985b2dfc225a7ef8c050a6a0a54",
+        "case_ordinal": 2
+      },
+      {
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "CanonicalHasherFailsClosedForMalformedMetadata",
+        "display_name_sha256": "e5b546affdd4fd410cf18c83207eaa8b524380c66f7ae5ce994c160d2851e9d9",
+        "case_ordinal": 3
+      },
+      {
+        "result": "Pass",
+        "time": "0.022",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "Oq2ProblemMetadataShouldRejectTrailingLf",
+        "display_name_sha256": "33412beb2a6440a4e16f035a8e53f607e9a8968b5ea53bd042e14341aa8163ed",
+        "case_ordinal": 4
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "Oq2ProblemMetadataShouldRejectTrailingLf",
+        "display_name_sha256": "3da67976c2a3193c81ba73455913071b874f9723a629aaabd1f11d56d322f8ac",
+        "case_ordinal": 5
+      },
+      {
+        "result": "Pass",
+        "time": "0.079",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "RangeWireTreats206AsSuccessAndProjectsExact416And503",
+        "display_name_sha256": "eb9e33a70b76dd13a47b282892703a7ff00f7732f36899977014f0e048c539d7",
+        "case_ordinal": 6
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute",
+        "display_name_sha256": "a430168133b8ac216d1408477ff5918fc24ae6eab36e0ed434ec325865f7847e",
+        "case_ordinal": 7
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute",
+        "display_name_sha256": "be8ad42a806dff918d522695f8c1f1e23ed8a3bf9569f0877d48fefe618d9bb1",
+        "case_ordinal": 8
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute",
+        "display_name_sha256": "4d6a767df99155793b64184c7187660232eaba884b155b9af6b95c3f633c983c",
+        "case_ordinal": 9
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute",
+        "display_name_sha256": "6408642d0058b97af00aaf3aaec1ca36eac3e0320d42916ca9b6accca617acca",
+        "case_ordinal": 10
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute",
+        "display_name_sha256": "fab7a382771aa0c1cff187ced52081ac0f6c3efa46c7cb885fba3f36e8086dbe",
+        "case_ordinal": 11
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute",
+        "display_name_sha256": "00f3baeb1c5f67a4bf13c93d30619801ec1b2f617346a1461883fb757e47f8d4",
+        "case_ordinal": 12
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute",
+        "display_name_sha256": "3b74e166dddf2f4e997bac024a7f73f97a80f7c98e714f8701fd4914de151ae5",
+        "case_ordinal": 13
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute",
+        "display_name_sha256": "7526c62237c1486185ff0b82542cb521c92a0b81f938c555509c0d2bfbcb9047",
+        "case_ordinal": 14
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsTheSameUnsafePathsAsCompute",
+        "display_name_sha256": "466285747ec4dd73077a6600fc087d9475a5fe5c8a0c4f997437eb208146b1b6",
+        "case_ordinal": 15
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "HandBuiltStreamMutationsRejectEveryEvidenceMismatch",
+        "display_name_sha256": "93d65b0a3306a00f14e150fa9dc7a9d3eeebb78dc7346e866ac1c2df65f5d443",
+        "case_ordinal": 16
+      },
+      {
+        "result": "Pass",
+        "time": "1.809",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorFailsClosedBeforeWritingHelpersWhenClientShapeDrifts",
+        "display_name_sha256": "da4783b91452fe45f9e14a7e8657127728c76bb3dece8dbfcc36bb445ae6b114",
+        "case_ordinal": 17
+      },
+      {
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratedClientUsesFolderScopedTaskAndDiagnosticRoutes",
+        "display_name_sha256": "e73dfd5e7d99083f7a729bf099e33e83e37f6656df968340e0a02cce6b9bbdf7",
+        "case_ordinal": 18
+      },
+      {
+        "result": "Pass",
+        "time": "5.231",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratedClientAndHelpersMatchIsolatedRegeneration",
+        "display_name_sha256": "874b2e00fcbe0d0b747544d8b2943c7d95476a537682fef2962f9aeb8ef29989",
+        "case_ordinal": 19
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "HelperGeneratorProjectIsBuildTimeInput",
+        "display_name_sha256": "be5995f9ac14275c34c4b4a61d233db0ddb25d219e81858e9d6e33cc0cc58605",
+        "case_ordinal": 20
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "CanonicalLinePreservesEscapedValuesAndValidUnicodePaths",
+        "display_name_sha256": "596f64a850f0141290d74a4b1826b0c22aa979cb35d24ba783d9e36b1f63d1eb",
+        "case_ordinal": 21
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DirectCanonicalLineRejectsMalformedUtf16Paths",
+        "display_name_sha256": "af9f2a4984ac7957679043727a89fb514af4b7c50dfa9e576b892f2ca83940f0",
+        "case_ordinal": 22
+      },
+      {
+        "result": "Pass",
+        "time": "0.018",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratedOq2TypesRejectWrongExactValuesAndMissingPolicyClass",
+        "display_name_sha256": "e12239d6a8993b37848cfe564dedeb2d95b87a83d42a52e80688fbf0aed1d7f9",
+        "case_ordinal": 23
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "IdempotencyEncodingCorpusIsConsumedForParserPolicyCases",
+        "display_name_sha256": "554bc7a62a79fb67e0f399ee56d4469b1416b8fd461bbeeaa8e1dbde93d0a400",
+        "case_ordinal": 24
+      },
+      {
+        "result": "Pass",
+        "time": "4.745",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "HelperGenerationTargetRegeneratesWhenContractSpineChanges",
+        "display_name_sha256": "dec8b94506309815a88c7044d695aced431842337221a0fa9e55f67ed7017355",
+        "case_ordinal": 25
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "NullAndOmittedValuesProduceDifferentCanonicalHashes",
+        "display_name_sha256": "0e715322a1a641b938087306248b05729519f5a002823a1408f75fcffe152200",
+        "case_ordinal": 26
+      },
+      {
+        "result": "Pass",
+        "time": "1.453",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsReferencedParametersWithoutNames",
+        "display_name_sha256": "25523f4b4a7c6ef010b97e7aec8b4584da67c3f2163e85968cea85dd1c7846be",
+        "case_ordinal": 27
+      },
+      {
+        "result": "Pass",
+        "time": "0.612",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsReferencedParametersWithoutNames",
+        "display_name_sha256": "8b83471f33540324d1a8272868f0660bf911dc1219d84ff815dd977887649eaa",
+        "case_ordinal": 28
+      },
+      {
+        "result": "Pass",
+        "time": "0.573",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsReferencedParametersWithoutNames",
+        "display_name_sha256": "7fb31f8b0978e2cb14335524722a4a8c3629ce5c8f89bd105fcfd3006107035f",
+        "case_ordinal": 29
+      },
+      {
+        "result": "Pass",
+        "time": "2.867",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratedNestedHelperHandlesNullAtEveryDepthAndRetainsPresenceSemantics",
+        "display_name_sha256": "b0764241243aec46b31bc1c5accd94d647568fcd7b7c5414835d1b18572c5247",
+        "case_ordinal": 30
+      },
+      {
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratedOq2ResponseUnionsAcceptExactAndLegacyBranchesButRejectMalformedExactSignals",
+        "display_name_sha256": "d351a95db0c2c6e47ffffe902e8fe03c85637d3aa98a2179267df0c5d9eefdfb",
+        "case_ordinal": 31
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "FileMutationHelperSeparatesAddChangeAndRemove",
+        "display_name_sha256": "99770656c5205f9902fad092d5f63e5f38b8ad73ccfa6518246cab2b5b35f3c8",
+        "case_ordinal": 32
+      },
+      {
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "Oq2WireValidationRejectsCoercionAndCompleteShapeDrift",
+        "display_name_sha256": "609b28ba91da3d3daa51b55b45c7e4ca7c628814de8bce82f97e007d3e0367e9",
+        "case_ordinal": 33
+      },
+      {
+        "result": "Pass",
+        "time": "0.318",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMissingParameterReferenceTargets",
+        "display_name_sha256": "77543e8501f853fc04e6fdc2b0f38030248d71119f032b38b3e11b7a05e7fb1e",
+        "case_ordinal": 34
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "RepositoryReconciliationConflictWithFinalStateIsAcceptedForItsOperation",
+        "display_name_sha256": "97fde973995a6be7452bd9bfec421c3b48c21c56f0e40a0b807073838c798554",
+        "case_ordinal": 35
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "RepositoryReconciliationConflictWithFinalStateIsAcceptedForItsOperation",
+        "display_name_sha256": "65875fc59523aea1498677a52a81b9419746ab975fbb3387b9786ec358d31db5",
+        "case_ordinal": 36
+      },
+      {
+        "result": "Pass",
+        "time": "0.318",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing",
+        "display_name_sha256": "8a575f27683859ddacd73b42f2e89492ba0e5f4f468eb08bf228165163ebbdec",
+        "case_ordinal": 37
+      },
+      {
+        "result": "Pass",
+        "time": "0.302",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing",
+        "display_name_sha256": "e12352b6a96a7d35778b82592be5a538ae0a19f61cee11009c3e4deaa8de189f",
+        "case_ordinal": 38
+      },
+      {
+        "result": "Pass",
+        "time": "0.314",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing",
+        "display_name_sha256": "167623ee20168f54e8ccd8d9b766cd9679ce1259812ced71be5a480ea6d590e5",
+        "case_ordinal": 39
+      },
+      {
+        "result": "Pass",
+        "time": "0.32",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing",
+        "display_name_sha256": "9790f9f9f0e2e9b85afa485d435a99bebbc93d29df58a4a4d265d3890002c36b",
+        "case_ordinal": 40
+      },
+      {
+        "result": "Pass",
+        "time": "0.304",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing",
+        "display_name_sha256": "3f2d008a97c2158aaf2db58fba81349eeaa4d98c592b60c5da60ca57b985d967",
+        "case_ordinal": 41
+      },
+      {
+        "result": "Pass",
+        "time": "0.319",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing",
+        "display_name_sha256": "53722d7fc30130c94f0572b6f74dfb07a25737c9d461357dece1722077af316f",
+        "case_ordinal": 42
+      },
+      {
+        "result": "Pass",
+        "time": "0.314",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing",
+        "display_name_sha256": "eb8a01152592767012300d167b7510053b538f8cc0e10ef43080a2f7a383dd51",
+        "case_ordinal": 43
+      },
+      {
+        "result": "Pass",
+        "time": "0.31",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing",
+        "display_name_sha256": "631a12bb40058a1169834d738bb4a5d82ab52b9cac46cbfb193e83bcc73d9106",
+        "case_ordinal": 44
+      },
+      {
+        "result": "Pass",
+        "time": "0.321",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing",
+        "display_name_sha256": "819efb5e770960983686aa881c97b0585ee4f682a96f0112165b3769aa460f20",
+        "case_ordinal": 45
+      },
+      {
+        "result": "Pass",
+        "time": "0.312",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsMalformedParametersBeforePublishing",
+        "display_name_sha256": "697ba858a7cdf67fad44e7312e217e291bf8418c627177508f9374e16d319826",
+        "case_ordinal": 46
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "RepositoryUnknownOutcomeRequiresExactFinalStateInGeneratedProblem",
+        "display_name_sha256": "4a5adf5be07da8f0b0b1aaee746f9efc3644a854c815a9a10e1410acaecee8d1",
+        "case_ordinal": 47
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "RepositoryUnknownOutcomeRequiresExactFinalStateInGeneratedProblem",
+        "display_name_sha256": "408d3c5fb4ab052eddf0ff941283bc239fe117f2d7b4290d81d69c056ff1e90f",
+        "case_ordinal": 48
+      },
+      {
+        "result": "Pass",
+        "time": "0.041",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "MutatingRequestsExposeIdempotencyHelpersAndQueriesDoNot",
+        "display_name_sha256": "39f313bc6d551ed58786be30f00bd5cddc3c924a15b50210117ec5a25dc7994f",
+        "case_ordinal": 49
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "CanonicalHasherPinsPrimitiveEdgeFormatting",
+        "display_name_sha256": "09b5d6f4d8edd1924a4e2211f922275536bd039a8e0ea5ec1f4a4c32b6615205",
+        "case_ordinal": 50
+      },
+      {
+        "result": "Pass",
+        "time": "0.076",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs",
+        "display_name_sha256": "17e28da63181ba0c7b06710132325e3c847ef0f5bb424953bb12025d75266dba",
+        "case_ordinal": 51
+      },
+      {
+        "result": "Pass",
+        "time": "0.083",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs",
+        "display_name_sha256": "7d053fcac667af75a8c96f8a499b3752ac74804971b990b73adeb70285908887",
+        "case_ordinal": 52
+      },
+      {
+        "result": "Pass",
+        "time": "0.076",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs",
+        "display_name_sha256": "f3bf1bf3bfb5425642cfa039210b84fc954e50e4e9b889ceae9a2cff8fce4688",
+        "case_ordinal": 53
+      },
+      {
+        "result": "Pass",
+        "time": "0.086",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs",
+        "display_name_sha256": "fe1ba3af158b6712d8fe768b69e787865f50a8b3a646a21a0c50b5ac17e9a11b",
+        "case_ordinal": 54
+      },
+      {
+        "result": "Pass",
+        "time": "0.076",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs",
+        "display_name_sha256": "a6b2b04ba2cd769c83227a0704905c1df7afac1a4c064fb3fda14294a7fc5673",
+        "case_ordinal": 55
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "ExactAuthorizationAndOperationUnavailableProjectionRejectsWrongWireTuple",
+        "display_name_sha256": "f6e51683b8bf3ccfc6fb5bd49a4a13149d310beafa7fafb1254174aa5fc1256d",
+        "case_ordinal": 56
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "DuplicateFieldDiagnosticPrecedesOrderDiagnosticWithoutChangingCaseSensitivity",
+        "display_name_sha256": "17a3f50af5208bcc64425ca934921716c17c8bd82f292423b2ee9c1677b4996b",
+        "case_ordinal": 57
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GenericProblemTupleIsAcceptedOnlyForItsOriginatingOperation",
+        "display_name_sha256": "16881d878e66075b7399484115702e7bd910df2592a6623fb42c883bdeacc9a4",
+        "case_ordinal": 58
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratedOutputCarriesStableSafeProvenance",
+        "display_name_sha256": "3ea011ad7a7158fa20e45c4638a953dc4b8fbfd2eda4de38110c4cc30d321747",
+        "case_ordinal": 59
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "CreateRepositoryBackedFolderHelperIncludesExistingFolderIdentity",
+        "display_name_sha256": "b4d6e4f4f37a25ad049aaec2b328e5ee656c03ac5d943f99b8e32c3e5b1d3423",
+        "case_ordinal": 60
+      },
+      {
+        "result": "Pass",
+        "time": "0.012",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "StaleGeneratedOutputDetectionUsesAllContentHashes",
+        "display_name_sha256": "b6dde1877d6fb5ecedc8bd91d6d56238a498616dbcd6fc069edd13cd11f82d91",
+        "case_ordinal": 61
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "ApiExceptionExposesTypedProblemDetails",
+        "display_name_sha256": "df8677b4826baf5b7372d0ac47ff555af66ecf3b37a27ce16081b3569cc7e28c",
+        "case_ordinal": 62
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "BranchRefPolicyHelperUsesDeclaredSpineFields",
+        "display_name_sha256": "a537fc7b600e646d4340fa0744a7e8e728016d29f0f64bdb4d70f89e38a007be",
+        "case_ordinal": 63
+      },
+      {
+        "result": "Pass",
+        "time": "1.419",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorPreservesLegalUnusedParametersWithoutHelperIdentifiers",
+        "display_name_sha256": "b6f378ac6125fdf8c98f9f1012722de09682d837f121dd32ee1f6e791d40a596",
+        "case_ordinal": 64
+      },
+      {
+        "result": "Pass",
+        "time": "1.545",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GeneratorPreservesLegalUnusedParametersWithoutHelperIdentifiers",
+        "display_name_sha256": "dcfe66972b6c5bec555b3dc67da87800605ed91b78d44fc00b6dacd6c0543ce0",
+        "case_ordinal": 65
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "ApiExceptionProjectionRejectsArbitraryTypedResultsAndHttpStatusMismatch",
+        "display_name_sha256": "722507e21dd979ad55cbf48a2c209f7a9a95b87bd38addd44bcfead92cb83e8c",
+        "case_ordinal": 66
+      },
+      {
+        "result": "Pass",
+        "time": "0.211",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "EveryGeneratedOperationUnavailableWrapperHasAnExactTupleMap",
+        "display_name_sha256": "c1d109bcd18d15fae81b0be5bb87ec4359eb8b758a2a61b1725079ac0bb49879",
+        "case_ordinal": 67
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "CreateFolderHelperUsesDeclaredLexicographicFields",
+        "display_name_sha256": "b4a69db44ede9547cf95ce5710c62678afe0483465cf3eb579089454836ba38b",
+        "case_ordinal": 68
+      },
+      {
+        "result": "Pass",
+        "time": "0.01",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "RequiredNonNullableEnumFieldsDoNotEmitNullChecks",
+        "display_name_sha256": "39ec5700cbcf5bab4fc1f29f50227f1095cc26b002525293e78c0d0aa451c6f0",
+        "case_ordinal": 69
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GenericProblemProjectionValidatesDeclaredOptionalFieldsAndClosedScalars",
+        "display_name_sha256": "9a5844bd03e3cdf6960423095caf0d5cf142f73882061f5297d388b83e3bae2c",
+        "case_ordinal": 70
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "CanonicalErrorCodeNumberingIsPinned",
+        "display_name_sha256": "e30255a5e1fd2c79bc65c99d03b8e1ed4113801ceb1785c984fc5acc937e51bb",
+        "case_ordinal": 71
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "Oq2FreshnessShouldAcceptCanonicalUtcAndRejectTrailingLf",
+        "display_name_sha256": "14d0f5932877a7d9b9b3ec529ce911f4a4fedf571140dfa2f7d5d90ba7eac830",
+        "case_ordinal": 72
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "Oq2FreshnessShouldAcceptCanonicalUtcAndRejectTrailingLf",
+        "display_name_sha256": "443f9758dbe170621b34a9bda1074b3b37dc29fb86c1b77d1f4f8158a8302db0",
+        "case_ordinal": 73
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "Oq2FreshnessShouldAcceptCanonicalUtcAndRejectTrailingLf",
+        "display_name_sha256": "d1bb54f99101144095f5856e3d1e4c720f768d294173f5a447539a074b5ac9a7",
+        "case_ordinal": 74
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+        "method": "GenericProblemProjectionRejectsUnknownDetailsKey",
+        "display_name_sha256": "107e84f7d05935d2ba4228fa468463cde3a44f294501a848d00b60b1614afe67",
+        "case_ordinal": 75
+      }
+    ]
+  },
+  "source_or_head_drift": [],
+  "working_tree_status_changes": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 0
+  },
+  "runtime_module_observations": 87,
+  "fixture_module_observations": 0,
+  "original_private_receipt_sha256": "ff17b56030459ac4837f2edf24390f188bdbbf2191bb34ad86e438e7db8ea303"
+}

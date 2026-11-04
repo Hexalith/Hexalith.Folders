@@ -1,0 +1,13 @@
+{
+  "runtimeOwnedProcessRemainders": [],
+  "ownedContainerRemainders": [],
+  "ownedDaprDirectories": [
+    {
+      "path": "/tmp/hexalith-dapr/73c52aae8e7047389abc871b1f8c6a7a",
+      "exists": false
+    }
+  ],
+  "unattributedNewContainerCount": 1,
+  "unattributedNewDirectories": [],
+  "actionOnUnattributedResources": "None"
+}

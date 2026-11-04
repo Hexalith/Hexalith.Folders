@@ -1,0 +1,296 @@
+{
+  "before_audit": "final-cohort-pdb-audit.json",
+  "after_audit": "admission-runtime-pdb-audit.json",
+  "changed_module_copies": [
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "assembly": "Hexalith.EventStore.DomainService",
+      "before_sha256": "51EE03EA8F167FEBB88155746DCEC49AF275789141DC6FEB5E45E5DE388FAFC8",
+      "after_sha256": "0A2BEA378EAE23B89042449787AF7D7F5D75AC9449A6FC9715896FE619316908",
+      "before_mvid": "010b1cc2-8cce-4b27-af54-55f876c59458",
+      "after_mvid": "14ad9286-5da6-4b32-976e-7cb8d0c4569a"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "assembly": "Hexalith.EventStore.ServiceDefaults",
+      "before_sha256": "16AF80E6FBF91B792920BB61F3363F4D23859020100F2DA04AFE303F07447A70",
+      "after_sha256": "6BEFF61AECF0E6F849B017019C43874E3FC14938D1ADF68A6E409456ADF354AC",
+      "before_mvid": "a663f978-9eee-4442-b16a-96a5688f93b7",
+      "after_mvid": "410e0343-495a-422a-b19a-1c775bdbf09b"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/bin/Debug/net10.0/Hexalith.Memories.Server.dll",
+      "assembly": "Hexalith.Memories.Server",
+      "before_sha256": "0F577CCA160B1DCBDEF2FEC4257F399C7A1CEED1CD2021B76B5F305CAEBA29F9",
+      "after_sha256": "E84499B46374D279C8CBFC7BCCCF8D4656AB764561C66CD99CB1DBC1DE01E094",
+      "before_mvid": "ed928c68-5e98-4f99-9a7a-e2738d143eaf",
+      "after_mvid": "54eccdfc-964e-46e1-abde-27ebc0950a27"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "assembly": "Hexalith.EventStore.DomainService",
+      "before_sha256": "51EE03EA8F167FEBB88155746DCEC49AF275789141DC6FEB5E45E5DE388FAFC8",
+      "after_sha256": "0A2BEA378EAE23B89042449787AF7D7F5D75AC9449A6FC9715896FE619316908",
+      "before_mvid": "010b1cc2-8cce-4b27-af54-55f876c59458",
+      "after_mvid": "14ad9286-5da6-4b32-976e-7cb8d0c4569a"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+      "assembly": "Hexalith.EventStore.Gateway",
+      "before_sha256": "A1E6C6D7C4111D9AACBDFA72852D0ADABAD89E7A7C6804B191A6EBA986030EA9",
+      "after_sha256": "0BC2404CAC91F23FA96EE774C3E3571BFA303F73112BC87D2C410F6CF7B91684",
+      "before_mvid": "e94e759e-d5c6-4efd-acf5-9ecf24b371d4",
+      "after_mvid": "76474446-b618-4b44-a47e-5510df1f7885"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "assembly": "Hexalith.EventStore.Server",
+      "before_sha256": "6FC4E9F3D12E6705AE904866FF57302709244EF829CEB05C9F1436461592FA79",
+      "after_sha256": "36C85E7669911ED460B992D51B1DE81A86C2C97280C0941A2A3B1BA39D7FD6A2",
+      "before_mvid": "c7bdf897-4f80-4e31-bcb3-bfa1ce522cd3",
+      "after_mvid": "6d952eab-9595-43c7-83a7-dfcda5755d46"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "assembly": "Hexalith.EventStore.ServiceDefaults",
+      "before_sha256": "16AF80E6FBF91B792920BB61F3363F4D23859020100F2DA04AFE303F07447A70",
+      "after_sha256": "6BEFF61AECF0E6F849B017019C43874E3FC14938D1ADF68A6E409456ADF354AC",
+      "before_mvid": "a663f978-9eee-4442-b16a-96a5688f93b7",
+      "after_mvid": "410e0343-495a-422a-b19a-1c775bdbf09b"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.Server.dll",
+      "assembly": "Hexalith.Tenants.Server",
+      "before_sha256": "808858287BFB04B2B4E5EA6451547C80DFB7276922DC8ABB77D5C85F78572016",
+      "after_sha256": "C9C32DB58849D75082700AB1D2B6C85895DDBC79F8EE710977D409BBBC4BAE06",
+      "before_mvid": "ee522076-afb1-4065-96b9-628eddf41e24",
+      "after_mvid": "7b64c131-6131-4946-9a1a-b0e42e797b23"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.dll",
+      "assembly": "Hexalith.Tenants",
+      "before_sha256": "DFBCB8505C81A5BD1C244FA15A5F9FF259E59472A4C795EA4732BCCB52E188F4",
+      "after_sha256": "120BFAEE5F45A7D57DD971925AB7368C91300AC9FB11A8CF550FC9DDAEBF957E",
+      "before_mvid": "6194f250-7f42-4d91-8cb6-fe86db61feb0",
+      "after_mvid": "2b3a81ba-e8eb-4e8d-a4c6-15ea270eedd8"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Builds.Tooling.dll",
+      "assembly": "Hexalith.Builds.Tooling",
+      "before_sha256": "C27067016158A193449D61CBD141B878F75D35967C256C1F2A1ADBD8DFEDCB4C",
+      "after_sha256": "5D64F7A95100B4246FD3DEBB9AA79ECC205A0180719D782737545277317F2457",
+      "before_mvid": "0ec815ee-308c-4e69-be8f-b218f7d8947f",
+      "after_mvid": "ced341fa-0ae1-4632-91cf-6828bded39e3"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+      "assembly": "Hexalith.EventStore.Aspire",
+      "before_sha256": "AB3E413BBD77373DE8A843CDE6941032F57143A6D292679A0691BC04ADE41D4E",
+      "after_sha256": "AADC202FBB0068DA3527C3840CD7F80150DBE3BEE76B8A7B81B4E546ACE93258",
+      "before_mvid": "9890cad7-ba76-41af-ab5a-b756aa255dd4",
+      "after_mvid": "f0fe6374-e1e8-41d1-8c67-f5bc18174395"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "assembly": "Hexalith.EventStore.ServiceDefaults",
+      "before_sha256": "16AF80E6FBF91B792920BB61F3363F4D23859020100F2DA04AFE303F07447A70",
+      "after_sha256": "6BEFF61AECF0E6F849B017019C43874E3FC14938D1ADF68A6E409456ADF354AC",
+      "before_mvid": "a663f978-9eee-4442-b16a-96a5688f93b7",
+      "after_mvid": "410e0343-495a-422a-b19a-1c775bdbf09b"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Folders.AppHost.dll",
+      "assembly": "Hexalith.Folders.AppHost",
+      "before_sha256": "59565C1CF987618FD2F124F2ED57F7EABA7360C965CA393C444FE8BFE0C85F21",
+      "after_sha256": "CA49AAC6681534214E3BAAA02244160CEACA067B5EEC3D2EEA123543D3860E16",
+      "before_mvid": "4c1cece7-423f-44c4-90e0-686797115abf",
+      "after_mvid": "e3475574-4c74-44bd-b99f-6a3688222eb7"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Debug/net10.0/Hexalith.Tenants.Aspire.dll",
+      "assembly": "Hexalith.Tenants.Aspire",
+      "before_sha256": "663A132E25550FFBB6C59FC9FE971DBA217A6DE9EBF2B60F9C20D65219D467C6",
+      "after_sha256": "ECA06172BA9066A24F50DB3A2D4D45983414644C6F47DE6BE61E990C1154CF30",
+      "before_mvid": "180dfcfa-13c8-447d-aeb7-eea97ec4d09e",
+      "after_mvid": "ecdaab1d-d2d2-439c-b43f-41883eb354d6"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "assembly": "Hexalith.EventStore.DomainService",
+      "before_sha256": "51EE03EA8F167FEBB88155746DCEC49AF275789141DC6FEB5E45E5DE388FAFC8",
+      "after_sha256": "0A2BEA378EAE23B89042449787AF7D7F5D75AC9449A6FC9715896FE619316908",
+      "before_mvid": "010b1cc2-8cce-4b27-af54-55f876c59458",
+      "after_mvid": "14ad9286-5da6-4b32-976e-7cb8d0c4569a"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+      "assembly": "Hexalith.EventStore.Gateway",
+      "before_sha256": "A1E6C6D7C4111D9AACBDFA72852D0ADABAD89E7A7C6804B191A6EBA986030EA9",
+      "after_sha256": "0BC2404CAC91F23FA96EE774C3E3571BFA303F73112BC87D2C410F6CF7B91684",
+      "before_mvid": "e94e759e-d5c6-4efd-acf5-9ecf24b371d4",
+      "after_mvid": "76474446-b618-4b44-a47e-5510df1f7885"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+      "assembly": "Hexalith.EventStore.Server",
+      "before_sha256": "6FC4E9F3D12E6705AE904866FF57302709244EF829CEB05C9F1436461592FA79",
+      "after_sha256": "36C85E7669911ED460B992D51B1DE81A86C2C97280C0941A2A3B1BA39D7FD6A2",
+      "before_mvid": "c7bdf897-4f80-4e31-bcb3-bfa1ce522cd3",
+      "after_mvid": "6d952eab-9595-43c7-83a7-dfcda5755d46"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "assembly": "Hexalith.EventStore.ServiceDefaults",
+      "before_sha256": "16AF80E6FBF91B792920BB61F3363F4D23859020100F2DA04AFE303F07447A70",
+      "after_sha256": "6BEFF61AECF0E6F849B017019C43874E3FC14938D1ADF68A6E409456ADF354AC",
+      "before_mvid": "a663f978-9eee-4442-b16a-96a5688f93b7",
+      "after_mvid": "410e0343-495a-422a-b19a-1c775bdbf09b"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll",
+      "assembly": "Hexalith.Folders.EventStore",
+      "before_sha256": "3122E87F698A33773F7F31710F15A596B90C542449DA2742D5CC9BB927A8EEAF",
+      "after_sha256": "5F23EAC49E1AA02494BE0FF6ECF8659F3F804BAC188CD92DC4E01A913AC0DE65",
+      "before_mvid": "7642e0b7-f773-4e05-a3e8-4afeb0357bc4",
+      "after_mvid": "1c5ed074-9fc2-49a8-9e19-02bc60b025d2"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "assembly": "Hexalith.EventStore.DomainService",
+      "before_sha256": "51EE03EA8F167FEBB88155746DCEC49AF275789141DC6FEB5E45E5DE388FAFC8",
+      "after_sha256": "0A2BEA378EAE23B89042449787AF7D7F5D75AC9449A6FC9715896FE619316908",
+      "before_mvid": "010b1cc2-8cce-4b27-af54-55f876c59458",
+      "after_mvid": "14ad9286-5da6-4b32-976e-7cb8d0c4569a"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "assembly": "Hexalith.EventStore.ServiceDefaults",
+      "before_sha256": "16AF80E6FBF91B792920BB61F3363F4D23859020100F2DA04AFE303F07447A70",
+      "after_sha256": "6BEFF61AECF0E6F849B017019C43874E3FC14938D1ADF68A6E409456ADF354AC",
+      "before_mvid": "a663f978-9eee-4442-b16a-96a5688f93b7",
+      "after_mvid": "410e0343-495a-422a-b19a-1c775bdbf09b"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "assembly": "Hexalith.Folders.Server",
+      "before_sha256": "7758B44ED25F8697607B8D7A769393415E6C8B4A4CADDC9474946BEDD11EE1C6",
+      "after_sha256": "459CDEEED428A499A1963CBB441FCDC0B1E331F83F457182917BCDA671362543",
+      "before_mvid": "631f0549-6801-4dcf-852b-c018f6af6fbc",
+      "after_mvid": "f3a8cf46-a785-4822-afb3-c282f644344c"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "assembly": "Hexalith.Folders.ServiceDefaults",
+      "before_sha256": "8DF5FD13EF74938D80CCB0CB27B82D8F815261525ADED98BD4AAEEDC846ED918",
+      "after_sha256": "D7507CD8ED1D1F1BE7709806307856C2D9D1CA71263B52E3BF75F009FCA9F1B1",
+      "before_mvid": "f2c1978a-a03e-4de0-a48e-08e24d1ca809",
+      "after_mvid": "bc10ff8f-dc8d-44a8-aa11-e4b2fb6c06b6"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "assembly": "Hexalith.EventStore.DomainService",
+      "before_sha256": "51EE03EA8F167FEBB88155746DCEC49AF275789141DC6FEB5E45E5DE388FAFC8",
+      "after_sha256": "0A2BEA378EAE23B89042449787AF7D7F5D75AC9449A6FC9715896FE619316908",
+      "before_mvid": "010b1cc2-8cce-4b27-af54-55f876c59458",
+      "after_mvid": "14ad9286-5da6-4b32-976e-7cb8d0c4569a"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "assembly": "Hexalith.EventStore.ServiceDefaults",
+      "before_sha256": "16AF80E6FBF91B792920BB61F3363F4D23859020100F2DA04AFE303F07447A70",
+      "after_sha256": "6BEFF61AECF0E6F849B017019C43874E3FC14938D1ADF68A6E409456ADF354AC",
+      "before_mvid": "a663f978-9eee-4442-b16a-96a5688f93b7",
+      "after_mvid": "410e0343-495a-422a-b19a-1c775bdbf09b"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "assembly": "Hexalith.Folders.ServiceDefaults",
+      "before_sha256": "8DF5FD13EF74938D80CCB0CB27B82D8F815261525ADED98BD4AAEEDC846ED918",
+      "after_sha256": "D7507CD8ED1D1F1BE7709806307856C2D9D1CA71263B52E3BF75F009FCA9F1B1",
+      "before_mvid": "f2c1978a-a03e-4de0-a48e-08e24d1ca809",
+      "after_mvid": "bc10ff8f-dc8d-44a8-aa11-e4b2fb6c06b6"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "assembly": "Hexalith.Folders.Workers",
+      "before_sha256": "9629AA441A314E130D043859509B60CA63414F61E40839071186083EA9B66B2F",
+      "after_sha256": "A3C1E32A6EB6024B13F6FC1C3405098D5951EBD12B83E1D66EC3B79137CC4084",
+      "before_mvid": "b50fca53-8d7d-4c90-a54d-f832d0adb045",
+      "after_mvid": "6ee38be7-0f7f-4859-9c49-b7b17c950c87"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Builds.Tooling.dll",
+      "assembly": "Hexalith.Builds.Tooling",
+      "before_sha256": "C27067016158A193449D61CBD141B878F75D35967C256C1F2A1ADBD8DFEDCB4C",
+      "after_sha256": "5D64F7A95100B4246FD3DEBB9AA79ECC205A0180719D782737545277317F2457",
+      "before_mvid": "0ec815ee-308c-4e69-be8f-b218f7d8947f",
+      "after_mvid": "ced341fa-0ae1-4632-91cf-6828bded39e3"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+      "assembly": "Hexalith.EventStore.Aspire",
+      "before_sha256": "AB3E413BBD77373DE8A843CDE6941032F57143A6D292679A0691BC04ADE41D4E",
+      "after_sha256": "AADC202FBB0068DA3527C3840CD7F80150DBE3BEE76B8A7B81B4E546ACE93258",
+      "before_mvid": "9890cad7-ba76-41af-ab5a-b756aa255dd4",
+      "after_mvid": "f0fe6374-e1e8-41d1-8c67-f5bc18174395"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "assembly": "Hexalith.EventStore.DomainService",
+      "before_sha256": "51EE03EA8F167FEBB88155746DCEC49AF275789141DC6FEB5E45E5DE388FAFC8",
+      "after_sha256": "0A2BEA378EAE23B89042449787AF7D7F5D75AC9449A6FC9715896FE619316908",
+      "before_mvid": "010b1cc2-8cce-4b27-af54-55f876c59458",
+      "after_mvid": "14ad9286-5da6-4b32-976e-7cb8d0c4569a"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+      "assembly": "Hexalith.EventStore.ServiceDefaults",
+      "before_sha256": "16AF80E6FBF91B792920BB61F3363F4D23859020100F2DA04AFE303F07447A70",
+      "after_sha256": "6BEFF61AECF0E6F849B017019C43874E3FC14938D1ADF68A6E409456ADF354AC",
+      "before_mvid": "a663f978-9eee-4442-b16a-96a5688f93b7",
+      "after_mvid": "410e0343-495a-422a-b19a-1c775bdbf09b"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "assembly": "Hexalith.Folders.AppHost.Tests",
+      "before_sha256": "448D393228C679755BA59A49BD429DD43E6357D93819262D38FBE4DFFCB4024D",
+      "after_sha256": "D4E9F0F4291DBBBD736CA8C4FC621CCFA22A00043881F298A4EFCB15585BAE75",
+      "before_mvid": "771aa361-dc4b-4fff-989e-c5bc8918b9e4",
+      "after_mvid": "ffec8cab-3da3-4f37-a5e6-2459dcf8e066"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.dll",
+      "assembly": "Hexalith.Folders.AppHost",
+      "before_sha256": "59565C1CF987618FD2F124F2ED57F7EABA7360C965CA393C444FE8BFE0C85F21",
+      "after_sha256": "CA49AAC6681534214E3BAAA02244160CEACA067B5EEC3D2EEA123543D3860E16",
+      "before_mvid": "4c1cece7-423f-44c4-90e0-686797115abf",
+      "after_mvid": "e3475574-4c74-44bd-b99f-6a3688222eb7"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+      "assembly": "Hexalith.Folders.ServiceDefaults",
+      "before_sha256": "8DF5FD13EF74938D80CCB0CB27B82D8F815261525ADED98BD4AAEEDC846ED918",
+      "after_sha256": "D7507CD8ED1D1F1BE7709806307856C2D9D1CA71263B52E3BF75F009FCA9F1B1",
+      "before_mvid": "f2c1978a-a03e-4de0-a48e-08e24d1ca809",
+      "after_mvid": "bc10ff8f-dc8d-44a8-aa11-e4b2fb6c06b6"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.dll",
+      "assembly": "Hexalith.Folders.Workers",
+      "before_sha256": "9629AA441A314E130D043859509B60CA63414F61E40839071186083EA9B66B2F",
+      "after_sha256": "A3C1E32A6EB6024B13F6FC1C3405098D5951EBD12B83E1D66EC3B79137CC4084",
+      "before_mvid": "b50fca53-8d7d-4c90-a54d-f832d0adb045",
+      "after_mvid": "6ee38be7-0f7f-4859-9c49-b7b17c950c87"
+    },
+    {
+      "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Tenants.Aspire.dll",
+      "assembly": "Hexalith.Tenants.Aspire",
+      "before_sha256": "663A132E25550FFBB6C59FC9FE971DBA217A6DE9EBF2B60F9C20D65219D467C6",
+      "after_sha256": "ECA06172BA9066A24F50DB3A2D4D45983414644C6F47DE6BE61E990C1154CF30",
+      "before_mvid": "180dfcfa-13c8-447d-aeb7-eea97ec4d09e",
+      "after_mvid": "ecdaab1d-d2d2-439c-b43f-41883eb354d6"
+    }
+  ],
+  "both_audits_clean": true,
+  "interpretation": "Current runtime freshly rebuilt/audited. Prior full and capacity tests remain attributed to their exact producer; relevant222owner/36reader/101fixture controls qualify the changed authority. Original strict4 is a new live execution, not reuse of strict3."
+}

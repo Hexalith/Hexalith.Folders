@@ -1,0 +1,148 @@
+{
+  "utc": "2026-11-03T18:32:13.973646+00:00",
+  "repos": [
+    {
+      "root": "/home/administrator/projects/hexalith/folders",
+      "head": "da69bc65aa2637ad885bcfa073636113629ed5bf",
+      "branch": "main",
+      "status": "M _bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml\n M _bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md\n M references/Hexalith.Builds\n M references/Hexalith.EventStore\n M references/Hexalith.McpCli\n M references/Hexalith.Tenants\n M scripts/pd10-v2-story-owned-paths.txt\n M tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs\n M tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs\n M tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs\n?? tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs",
+      "source_tree": {
+        "path": "source/trees/82f6a2a2303677835309e3ed0cff558b9f995593770e1868bc4bf69ba60d5828.json",
+        "canonical_sha256": "82f6a2a2303677835309e3ed0cff558b9f995593770e1868bc4bf69ba60d5828",
+        "file_count": 2086
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.AI.Tools",
+      "head": "1745b6663ad32bb1288167135ed0f979366c53a0",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/9980ad28f07965657bfc8a7116a72d7086a7f50dd967ba05a0c17043a56f16bc.json",
+        "canonical_sha256": "9980ad28f07965657bfc8a7116a72d7086a7f50dd967ba05a0c17043a56f16bc",
+        "file_count": 11
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "head": "aed2f87a469d57c7033b5a944f9fb83301bb4859",
+      "branch": "main",
+      "status": "M  .github/workflows/domain-ci.md\nM  .github/workflows/domain-ci.yml\nM  Github/initialize-build/README.md\nM  Github/initialize-build/action.yml\nUU Props/Directory.Packages.props\nM  README.md\nM  Tools/package-version-audit.json\n M Tools/test-authoritative-package-catalog.ps1\nM  Tools/test-publish-g4-tool-packages.ps1\nM  references/Hexalith.AI.Tools\nM  schemas/hexalith.module-manifest.v1.json\nM  src/libraries/Hexalith.Builds.Tooling/Manifest/PlatformManifestValidator.cs\nM  src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionDeclarationClosure.cs\nM  src/libraries/Hexalith.Builds.Tooling/Runtime/CompositionDeclarationOptions.cs\nM  test/Hexalith.Builds.Module.Tests/DeclarationClosureTests.cs\nA  test/Hexalith.Builds.Module.Tests/DirectCatalogDeclarationTests.cs\nA  test/Hexalith.Builds.Module.Tests/ReleasedDependencyProfileTests.cs\nM  test/Hexalith.Builds.Module.Tests/Workspace/WorkspaceCommandModeTests.cs\nM  test/fixtures/evidence/acceptance/bound/cleanup-down-foreign-run.json\nM  test/fixtures/evidence/acceptance/bound/cleanup-down.json\nM  test/fixtures/evidence/acceptance/bound/run-cancelled-no-profile.json\nM  test/fixtures/evidence/acceptance/bound/run-cancelled.json\nM  test/fixtures/evidence/acceptance/bound/run-persisted-mtp.json\nM  test/fixtures/evidence/acceptance/bound/run-persisted-vstest-all-skipped.json\nM  test/fixtures/evidence/acceptance/bound/run-persisted-vstest-count-mismatch.json\nM  test/fixtures/evidence/acceptance/bound/run-persisted-vstest-dirty.json\nM  test/fixtures/evidence/acceptance/bound/run-persisted-vstest-failed-report.json\nM  test/fixtures/evidence/acceptance/bound/run-persisted-vstest-other-revision.json\nM  test/fixtures/evidence/acceptance/bound/run-persisted-vstest-partial-assertions.json\nM  test/fixtures/evidence/acceptance/bound/run-persisted-vstest-unbound.json\nM  test/fixtures/evidence/acceptance/bound/run-persisted-vstest.json\nM  test/fixtures/evidence/acceptance/bound/run-prerequisite-unavailable.json\nM  test/fixtures/evidence/acceptance/bound/run-unsupported-profile.json\nM  test/fixtures/evidence/acceptance/negative/all-skipped-report.json\nM  test/fixtures/evidence/acceptance/negative/approval-before-runs.json\nM  test/fixtures/evidence/acceptance/negative/approval-in-future.json\nM  test/fixtures/evidence/acceptance/negative/approval-revision-mismatch.json\nM  test/fixtures/evidence/acceptance/negative/cancelled-without-profile.json\nM  test/fixtures/evidence/acceptance/negative/cleanup-foreign-run.json\nM  test/fixtures/evidence/acceptance/negative/cleanup-not-down-evidence.json\nM  test/fixtures/evidence/acceptance/negative/command-mismatch.json\nM  test/fixtures/evidence/acceptance/negative/control-run-with-report.json\nM  test/fixtures/evidence/acceptance/negative/dirty-evidence.json\nM  test/fixtures/evidence/acceptance/negative/duplicate-key.json\nM  test/fixtures/evidence/acceptance/negative/duplicate-run-key.json\nM  test/fixtures/evidence/acceptance/negative/evidence-other-revision.json\nM  test/fixtures/evidence/acceptance/negative/failed-native-report.json\nM  test/fixtures/evidence/acceptance/negative/manifest-hash-mismatch.json\nM  test/fixtures/evidence/acceptance/negative/missing-approval.json\nM  test/fixtures/evidence/acceptance/negative/missing-mtp-run.json\nM  test/fixtures/evidence/acceptance/negative/missing-package.json\nM  test/fixtures/evidence/acceptance/negative/missing-rollback.json\nM  test/fixtures/evidence/acceptance/negative/mtp-run-cites-vstest-evidence.json\nM  test/fixtures/evidence/acceptance/negative/package-identity-mismatch.json\nM  test/fixtures/evidence/acceptance/negative/package-version-not-lockstep.json\nM  test/fixtures/evidence/acceptance/negative/partial-persisted-assertions.json\nM  test/fixtures/evidence/acceptance/negative/pin-mismatch.json\nM  test/fixtures/evidence/acceptance/negative/prerequisite-is-passing-run.json\nM  test/fixtures/evidence/acceptance/negative/report-count-mismatch.json\nM  test/fixtures/evidence/acceptance/negative/report-not-bound.json\nM  test/fixtures/evidence/acceptance/negative/report-platform-mismatch.json\nM  test/fixtures/evidence/acceptance/negative/secret-bearing.json\nM  test/fixtures/evidence/acceptance/negative/status-candidate.json\nM  test/fixtures/evidence/acceptance/negative/tampered-evidence-hash.json\nM  test/fixtures/evidence/acceptance/negative/unavailable-claimed-passing.json\nM  test/fixtures/evidence/acceptance/negative/unknown-field.json\nM  test/fixtures/evidence/acceptance/negative/unsupported-profile-as-unavailable.json\nM  test/fixtures/evidence/acceptance/negative/unsupported-schema.json\nM  test/fixtures/evidence/acceptance/negative/wrong-feed.json\nM  test/fixtures/evidence/acceptance/positive/p0-acceptance.json\nM  test/fixtures/evidence/negative/artifact-command-filter-mismatch.yaml\nM  test/fixtures/evidence/negative/artifact-command-manifest-mismatch.yaml\nM  test/fixtures/evidence/negative/artifact-command-profile-mismatch.yaml\nM  test/fixtures/evidence/negative/artifact-duplicate-option-mismatch.yaml\nM  test/fixtures/evidence/negative/artifact-raw-filter-equals-mismatch.yaml\nM  test/fixtures/evidence/negative/artifact-raw-filter-mismatch.yaml\nM  test/fixtures/evidence/negative/binding-mismatch.yaml\nM  test/fixtures/evidence/negative/coverage-shortfall.yaml\nM  test/fixtures/evidence/negative/evidence/artifact-command-filter-mismatch.json\nM  test/fixtures/evidence/negative/evidence/artifact-command-manifest-mismatch.json\nM  test/fixtures/evidence/negative/evidence/artifact-command-profile-mismatch.json\nM  test/fixtures/evidence/negative/evidence/artifact-duplicate-option-mismatch.json\nM  test/fixtures/evidence/negative/evidence/artifact-raw-filter-equals-mismatch.json\nM  test/fixtures/evidence/negative/evidence/artifact-raw-filter-mismatch.json\nM  test/fixtures/evidence/negative/evidence/down-run.json\nM  test/fixtures/evidence/negative/evidence/fixture-hash-mismatch.json\nM  test/fixtures/evidence/negative/evidence/manifest-hash-mismatch.json\nM  test/fixtures/evidence/negative/evidence/manifest-profile-fixture-mismatch.json\nM  test/fixtures/evidence/negative/evidence/secret-metadata.json\nM  test/fixtures/evidence/negative/evidence/test-no-tests.json\nM  test/fixtures/evidence/negative/filter-hash-mismatch.yaml\nM  test/fixtures/evidence/negative/fixture-hash-mismatch.yaml\nM  test/fixtures/evidence/negative/fixture-path-mismatch.yaml\nM  test/fixtures/evidence/negative/malformed-row-option-mismatch.yaml\nM  test/fixtures/evidence/negative/manifest-hash-mismatch.yaml\nM  test/fixtures/evidence/negative/manifest-path-mismatch.yaml\nM  test/fixtures/evidence/negative/manifest-profile-fixture-mismatch.yaml\nM  test/fixtures/evidence/negative/no-executed-tests.yaml\nM  test/fixtures/evidence/negative/outcome-mismatch.yaml\nM  test/fixtures/evidence/negative/policy-controls.yaml\nM  test/fixtures/evidence/negative/row-duplicate-option-mismatch.yaml\nM  test/fixtures/evidence/negative/row-missing-filter-mismatch.yaml\nM  test/fixtures/evidence/negative/row-missing-manifest-mismatch.yaml\nM  test/fixtures/evidence/negative/row-profile-mismatch.yaml\nM  test/fixtures/evidence/negative/secret-metadata.yaml\nM  test/fixtures/evidence/positive/evidence/release-passed.json\nM  test/fixtures/evidence/positive/readiness.yaml\nM  test/fixtures/module/executable/hexalith.module-manifest.v1.json\nM  test/fixtures/module/negative/absolute-path.json\nM  test/fixtures/module/negative/duplicate-id.json\nM  test/fixtures/module/negative/duplicate-json-key.json\nM  test/fixtures/module/negative/invalid-profile.json\nM  test/fixtures/module/negative/malformed-dependency.json\nM  test/fixtures/module/negative/missing-descriptor.json\nM  test/fixtures/module/negative/missing-required-value.json\nM  test/fixtures/module/negative/path-escape.json\nM  test/fixtures/module/negative/placeholder.json\nM  test/fixtures/module/negative/secret-bearing.json\nM  test/fixtures/module/negative/superseded-frontcomposer-pin.json\nM  test/fixtures/module/negative/unknown-field.json\nM  test/fixtures/module/negative/unknown-schema.json\nM  test/fixtures/module/negative/unsupported-profile-class.json\nA  test/fixtures/module/platform/eventstore-4.0.4.json\nA  test/fixtures/module/platform/memories-3.0.18.json\nA  test/fixtures/module/platform/tenants-7.0.0.json\nM  test/fixtures/module/positive/hexalith.module-manifest.v1.json",
+      "source_tree": {
+        "path": "source/trees/3bb48f10bcf49f678c28771c988581c57d5416df73adcf8fd36e3c5dabcd9e38.json",
+        "canonical_sha256": "3bb48f10bcf49f678c28771c988581c57d5416df73adcf8fd36e3c5dabcd9e38",
+        "file_count": 1597
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons",
+      "head": "11555ace9efcae2928a00122dcba91243e5a8a1a",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/cb796c63e5a14aa8269df209e23c1bcb47ee11a9f3dee1dc32835dbec4ccd427.json",
+        "canonical_sha256": "cb796c63e5a14aa8269df209e23c1bcb47ee11a9f3dee1dc32835dbec4ccd427",
+        "file_count": 206
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "head": "bca57ab16802ba1b91f744c2c6b9c73259bdbdcc",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/ffc7aabbde55770008c7da8edf8fb83a59264e6a88cf02e2d8f66589d4ae647c.json",
+        "canonical_sha256": "ffc7aabbde55770008c7da8edf8fb83a59264e6a88cf02e2d8f66589d4ae647c",
+        "file_count": 6470
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "head": "b105c846c31844441f1cff84b5c187da0eff3546",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/2b34ca50d0647f056f5a494aacf0a733631cfdededb0a2ad405b36090ec3e686.json",
+        "canonical_sha256": "2b34ca50d0647f056f5a494aacf0a733631cfdededb0a2ad405b36090ec3e686",
+        "file_count": 2908
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+      "head": "50e94096d0a0f74fc15e164d6013819655829d0c",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/47851cd2a8b95286c494f4c41ed8bd42470372861a91629006855b8e17756745.json",
+        "canonical_sha256": "47851cd2a8b95286c494f4c41ed8bd42470372861a91629006855b8e17756745",
+        "file_count": 1434
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+      "head": "d959bdae5af9c22f53573eda71c091cb5c0aae4c",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/457383a6043483937112b7e50a0fad8512ca7996679ab56e3c25ce2d10d195df.json",
+        "canonical_sha256": "457383a6043483937112b7e50a0fad8512ca7996679ab56e3c25ce2d10d195df",
+        "file_count": 2885
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties",
+      "head": "f1f33f8de655d9aa9307bafba128b0c7ea5c2570",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/1ff0375234f12473581deb835f38837bc830a3dd2fc9ce5f5b1660d6be08adc4.json",
+        "canonical_sha256": "1ff0375234f12473581deb835f38837bc830a3dd2fc9ce5f5b1660d6be08adc4",
+        "file_count": 2047
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "head": "8432397c66ebc0fd22e5671ce620a7d2139f7453",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/a025d22f6f972b5b7f5ecabbe3970e38f326f9c570d62d4526aeba0432ce5a94.json",
+        "canonical_sha256": "a025d22f6f972b5b7f5ecabbe3970e38f326f9c570d62d4526aeba0432ce5a94",
+        "file_count": 2818
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations",
+      "head": "bce4eb9f45c6b131b960ab4fa39e50ff01e51960",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/09ee63779d3983826275fe286d19b58b235e7b5766b9f7856e99f51df781e959.json",
+        "canonical_sha256": "09ee63779d3983826275fe286d19b58b235e7b5766b9f7856e99f51df781e959",
+        "file_count": 55
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "head": "98efe700b60cacfe0b3cc3cb0c134e0902419b4c",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/3046b55e62afb6bd321d509f793ac0857795ca9793dc79d2140c97a1a601d136.json",
+        "canonical_sha256": "3046b55e62afb6bd321d509f793ac0857795ca9793dc79d2140c97a1a601d136",
+        "file_count": 1702
+      }
+    },
+    {
+      "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+      "head": "9e02fd1589cbfbf84972418ab9866761188a45cd",
+      "branch": "main",
+      "status": "",
+      "source_tree": {
+        "path": "source/trees/63f84f5fabaea57a29e1384acffa14379e619b65a17497aefe1c75936525369f.json",
+        "canonical_sha256": "63f84f5fabaea57a29e1384acffa14379e619b65a17497aefe1c75936525369f",
+        "file_count": 900
+      }
+    }
+  ]
+}

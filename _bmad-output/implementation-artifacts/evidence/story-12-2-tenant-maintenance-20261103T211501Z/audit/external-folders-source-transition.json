@@ -1,0 +1,16 @@
+{
+  "compared_to": "tenant-runtime-build-after.json",
+  "comparison": "Same source file suffix set in both snapshots",
+  "changed_production_paths": [
+    "src/Hexalith.Folders.Server/FolderDomainProcessor.cs",
+    "src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadata.cs",
+    "src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadataDiagnostics.cs",
+    "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs",
+    "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj",
+    "src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+    "src/Hexalith.Folders.Server/OrganizationAclOperationalSource.cs",
+    "src/Hexalith.Folders/Authorization/EventStoreFolderEffectivePermissionsReadModel.cs",
+    "src/Hexalith.Folders/Authorization/GatewayOrganizationStreamSequenceReader.cs"
+  ],
+  "disposition": "Preserved external edits; rebuild/source audit required before next live qualification. Existing outcomes retain exact original producer attribution."
+}

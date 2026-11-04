@@ -1,0 +1,10 @@
+{
+  "requested_parent_environment": {
+    "FOLDERS_TASK36_SHUTDOWN_LOG": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/strict-tenant-maintenance-4-lifecycle-private.jsonl",
+    "Logging__LogLevel__Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority": "Debug",
+    "Logging__LogLevel__Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler": "Debug",
+    "Logging__LogLevel__Hexalith.EventStore.ServiceDefaults.Routing.TechnicalHttpRouteCatalogReceiver": "Debug",
+    "Logging__LogLevel__Microsoft.AspNetCore.Hosting.Diagnostics": "Information"
+  },
+  "diagnostic_child_inheritance": "Only actual emitted records establish inheritance; all original limits and test body preserved"
+}

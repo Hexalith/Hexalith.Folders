@@ -1,0 +1,254 @@
+{
+  "created_utc": "2026-11-03T21:14:28.282415+00:00",
+  "ownership": "released; no active implementation build/test/live process",
+  "heads": {
+    "root": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+    "sdk": "2253b733539a84f436443d3b4996ce2136437bef"
+  },
+  "changed_files": [
+    {
+      "path": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Admin.Server.Tests/Services/DaprStreamQueryServiceTests.cs",
+      "before_sha256": "bea79409073aedd46a7bf76890987a68c9de5e148d21e824b50f7d31a139d7e4",
+      "after_sha256": "76aa15139a9cbb11ea545ca7bd920e3c367920564cb4c7ebff00c98f65e3b0ea"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/ParallelPermissionObservationTests.cs",
+      "before_sha256": "6f64f25663005676dcc90e7c877b58d387a89807ed31940553a70a8e289389f1",
+      "after_sha256": "dce1c6fcb5801af09e735060251f77d899124a4791ce79e625e38495167c1cd6"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml",
+      "before_sha256": "e2049dbf420511ec96fa04aca76bcc4f33e8b5f5954f545032d234687b44ef55",
+      "after_sha256": "0f6ffed5c05f5f75f63f12eb95f65d46a7e2b86a9bc646a73006f3e1acc2cdef"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+      "before_sha256": "57e3a83ebf68f97dd1435b58dd1c0527525198245f56a97092f11168cf19f465",
+      "after_sha256": "b3fd9daf5495d31ed693095d45c75aadf1497d3f9361f727d2ae72d50f829140"
+    }
+  ],
+  "phase_patch_sha256": "057add80535afbff8401cc1b2a2ff74763d37e94796ffd8d0105242bddf706d2",
+  "guards": {
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Security/SecretsProtectionTests.cs": {
+      "before_sha256": "447a07209dee98c2fb757e2fb69d5b55636a5af7d108dc41dd6909fafa36f6e9",
+      "after_sha256": "447a07209dee98c2fb757e2fb69d5b55636a5af7d108dc41dd6909fafa36f6e9",
+      "unchanged": true
+    },
+    "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": {
+      "before_sha256": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+      "after_sha256": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+      "unchanged": true
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": {
+      "before_sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "after_sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "unchanged": true
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": {
+      "before_sha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "after_sha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "unchanged": true
+    },
+    "_bmad-output/implementation-artifacts/proposal-12-2-foreign-task-scope-proof.md": {
+      "before_sha256": "06d267c92774cea0c8f08f029274ccb4c8696ab70e28d15295e86ab918d4ea13",
+      "after_sha256": "06d267c92774cea0c8f08f029274ccb4c8696ab70e28d15295e86ab918d4ea13",
+      "unchanged": true
+    },
+    "_bmad-output/implementation-artifacts/proposal-12-2-foreign-task-scope-proof.patch": {
+      "before_sha256": "c832f58f6c1b05516c1b62f97e2bc8a820d6ed2b4a51f6006952db28a16d7856",
+      "after_sha256": "c832f58f6c1b05516c1b62f97e2bc8a820d6ed2b4a51f6006952db28a16d7856",
+      "unchanged": true
+    },
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": {
+      "before_sha256": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+      "after_sha256": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+      "unchanged": true
+    },
+    "src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml": {
+      "before_sha256": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+      "after_sha256": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+      "unchanged": true
+    }
+  },
+  "test_edits_exactly_expected": true,
+  "commands": [
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.EventStore.Admin.Server.Tests/Hexalith.EventStore.Admin.Server.Tests.csproj",
+        "-c",
+        "Debug",
+        "--no-restore",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "initial_exit": 1,
+      "initial_reason": "NETSDK1004 absent project.assets.json",
+      "final_exit": 0,
+      "final_elapsed": "00:00:02.91"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "argv": [
+        "dotnet",
+        "restore",
+        "tests/Hexalith.EventStore.Admin.Server.Tests/Hexalith.EventStore.Admin.Server.Tests.csproj",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "exit": 0
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+        "-c",
+        "Debug",
+        "--no-restore",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "exit": 0,
+      "elapsed": "00:00:04.92"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.EventStore.Admin.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Admin.Server.Tests.dll",
+        "-class",
+        "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+        "-result-xml",
+        "/tmp/story12-2-broad-hygiene-20261103/admin-tests-private.xml"
+      ],
+      "exit": 0
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Server.Tests.ParallelPermissionObservationTests",
+        "-result-xml",
+        "/tmp/story12-2-broad-hygiene-20261103/folders-tests-private.xml"
+      ],
+      "exit": 0
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+        "-class",
+        "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+        "-result-xml",
+        "/tmp/story12-2-broad-hygiene-20261103/scanner-tests-private.xml"
+      ],
+      "exit": 0
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "-result-xml",
+        "/tmp/story12-2-broad-hygiene-20261103/inventory-tests-private.xml"
+      ],
+      "exit": 0
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "python3",
+        "scripts/generate-pd10-v2-conformance-set.py"
+      ],
+      "exit": 0,
+      "scope": "Only pending inventory; source hash and set digest. No dated artifact change."
+    }
+  ],
+  "focused_results": [
+    {
+      "label": "admin-tests",
+      "xml_sha256": "ad71845b3043c36f8ba933264c6c074f77e88e9551846d66eedfef406051b83b",
+      "log_sha256": "7e9f5e38cd9a216d4621ba0550376c8878a66c1bc8f773a06f8efc1270e583ed",
+      "total": "37",
+      "passed": "37",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "0.355"
+    },
+    {
+      "label": "folders-tests",
+      "xml_sha256": "e190a344779006908cd76e95c0999b0a410fdc25758310537a1f14bc33c4f61d",
+      "log_sha256": "ba46c3d3f3b78cd2ef760e4f7f2fec7c13708cc994b4c1a2e9878d1bbb0e0b79",
+      "total": "9",
+      "passed": "9",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "2.185"
+    },
+    {
+      "label": "scanner-tests",
+      "xml_sha256": "2b1e9ba85564fe3932967d0c2d7426f3d620f2e2a2d23f432122fe1bcd761fec",
+      "log_sha256": "d323395756deded7e32bf4ab157c1bfcc291400dd254f01137be494b6ede0ea6",
+      "total": "274",
+      "passed": "274",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "5.436"
+    },
+    {
+      "label": "inventory-tests",
+      "xml_sha256": "6ac5a0df1ddfa095515b3a55531e4ffa8249212ff2acda7a3509b110a8ce5944",
+      "log_sha256": "f3c2a237dad98679044bd2002d4da918205a844af8e545181388c63be12cab17",
+      "total": "18",
+      "passed": "18",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "time": "6.159"
+    }
+  ],
+  "log_hashes": {
+    "pending-inventory-private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "scanner-tests-private.log": "d323395756deded7e32bf4ab157c1bfcc291400dd254f01137be494b6ede0ea6",
+    "folders-tests-private.log": "ba46c3d3f3b78cd2ef760e4f7f2fec7c13708cc994b4c1a2e9878d1bbb0e0b79",
+    "admin-build-2-private.log": "b8cc9aa568d335742668cc0f44ab8be303bea3e97da7b7aca6e40c4aafdae6a7",
+    "admin-build-private.log": "82ab47c9b48232ae9e2a7934925e51b2c38dd9a833a73495d97c2f26cfdaa396",
+    "admin-restore-private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "admin-tests-private.log": "7e9f5e38cd9a216d4621ba0550376c8878a66c1bc8f773a06f8efc1270e583ed",
+    "inventory-tests-private.log": "f3c2a237dad98679044bd2002d4da918205a844af8e545181388c63be12cab17",
+    "folders-server-build-private.log": "8703c2cf2c4e53cb51b6480f0abfefd25fb9ac6315d8a5d9947fafd80bc1f321"
+  },
+  "output_assembly_sha256": {
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Admin.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Admin.Server.Tests.dll": "3e4f62af689997aac6bdb2a8bfc68e296fb895aa8f6e4e30448cc6ac4e3e4871",
+    "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll": "d8ebbb7096e197190ca7e7d435e7e985a463ba35dc3dc36bbe365bbcd1647495",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll": "c3b28e469ef6249213e1c6a0cc0c46e763a1afed9e14502ca88f0babfbf279bf",
+    "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll": "fb15d4fe9fadf8293f4baa46dd7b3a63492fb31b192635fc5661620f28bd828a"
+  },
+  "qualification_limits": [
+    "Scanner and Contracts classes use the already-built unchanged owner test assemblies from parent current-producer verification; scan/inventory read the current modified source.",
+    "No overlapping broad/focused counts are aggregated. SDK7612pass1fail25skip and Root1394pass1fail are historical broad dispositions retained by parent, not newly rerun full-suite results.",
+    "Foreign-task strict proposal is unapplied; original strict hash unchanged.",
+    "No production source, deadline, permission, scanner rule, shared cache,pin,Git or topology mutation."
+  ]
+}

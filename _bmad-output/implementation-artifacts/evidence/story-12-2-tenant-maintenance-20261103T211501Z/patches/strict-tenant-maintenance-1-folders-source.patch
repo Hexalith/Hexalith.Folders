@@ -1,0 +1,928 @@
+diff --git a/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml b/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
+index f94a2039..37f62b91 100644
+--- a/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
++++ b/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
+@@ -16,8 +16,8 @@ story_closure_claimed: false
+ governance_status: candidate-awaiting-a6b
+ production_routed: false
+ hash_algorithm: SHA-256
+-candidate_set_sha256: 95a4f457e2ae6ff734cd5e4f45e73c03e1b2d4fd4a854d0bbeb39a4cef53e74d
+-artifact_count: 1507
++candidate_set_sha256: 2422f90bf11144086afd4f88049b2339a2696b4b14a17a45510dc2bbb5ab63fb
++artifact_count: 1510
+ artifacts:
+   - path: ".github/workflows/ci.yml"
+     kind: file
+@@ -113,8 +113,8 @@ artifacts:
+     sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
+   - path: "scripts/pd10-v2-story-owned-paths.txt"
+     kind: file
+-    bytes: 107835
+-    sha256: 16917f06c41e7ed65c7aafde743f69a899c3e7b5811d7a868e91c91a4d1fa267
++    bytes: 108067
++    sha256: ae9f82cdab2f4a35b60f5ddc03310ce90016d9471054033098ed31294c1f4abe
+   - path: "scripts/prepare-ci-topology-projects.sh"
+     kind: file
+     bytes: 8110
+@@ -4227,6 +4227,18 @@ artifacts:
+     kind: file
+     bytes: 7227
+     sha256: 15516f0e3bc962501c3933e1ccd10ab12536a2b2a7ecf285a09f749457ed472a
++  - path: "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs"
++    kind: file
++    bytes: 11143
++    sha256: 973a068fb30dca17298a25aba7731605fd65ae2f042e50aa29a10867e81ad1b5
++  - path: "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs"
++    kind: file
++    bytes: 22817
++    sha256: 0f4983fe6a300b4cced25cb6ce65c444745625907c705338fc20f04324e13019
++  - path: "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs"
++    kind: file
++    bytes: 1006
++    sha256: fc19a8c93f8c47f2c9481b352b6356370b84696fbc52ae8e6daa1a712a6d4b7d
+   - path: "tests/Hexalith.Folders.Cli.Tests/CommandOptionsFreshnessTests.cs"
+     kind: file
+     bytes: 1486
+diff --git a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+index b19bcfde..05270a1a 100644
+--- a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
++++ b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+@@ -1785,9 +1785,9 @@ pending-decision snapshot remain immutable. Production five-minute freshness, ap
+ mutation evidence, all other grants/deadlines, original strict/capacity bodies and folder retained
+ prefix assertions remain unchanged. No other SDK, production or dependency change is included.
+ 
+-- [ ] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs`: add exactly
++- [x] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs`: add exactly
+   `tenants:update` once to the existing disposable administrator, retaining all other realm semantics.
+-- [ ] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs` and focused single-type
++- [x] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs` and focused single-type
+   helpers: maintain only the fixture's own tenant through the existing canonical authenticated
+   `UpdateTenant`, with its original name/description and administrator. Use bounded foreground
+   positive-evidence/restart hooks, a conservative two-minute trigger, and caller cancellation.
+@@ -1796,7 +1796,7 @@ prefix assertions remain unchanged. No other SDK, production or dependency chang
+   roles and configuration. Missing/malformed/conflicting/failed/undelivered evidence fails the fixture;
+   no background heartbeat, global client hook, direct source/derived write, old-event restamp, grant
+   churn or stale authorization is permitted. Reuse existing source/catalog/issuer guards.
+-- [ ] Adjacent AppHost fixture-policy/realm tests: qualify the exact added permission and unchanged
++- [x] Adjacent AppHost fixture-policy/realm tests: qualify the exact added permission and unchanged
+   other identities/grants; no command when sufficiently fresh; own-tenant canonical command shape;
+   rejected/failed or unobserved source/projection cannot establish freshness; unchanged authority;
+   bounded cancellation. Preserve existing production stale-denial controls and all original bodies.
+@@ -1810,3 +1810,42 @@ Source inspection established that normal UpdateTenant always emits TenantUpdate
+ active tenant and changes only name/description. Its exact `tenants:update` admission has no admin
+ bypass. Repeating AddUserToTenant for an existing member is rejected. This exception qualifies an
+ actively maintained disposable tenant and does not qualify indefinite idle-tenant access.
++
++
++### Foreground tenant maintenance focused handoff — 2026-11-03
++
++Implemented only the approved disposable administrator permission and foreground fixture path.
++The fixture reads its authenticated canonical platform Tenants source and normal Workers projection
++before positive folder-evidence and before/after host-restart phases. At a native source age of at
++least two minutes, it submits the original metadata through UpdateTenant, requires matching Completed
++status, original correlation/causation and human attribution, unchanged retained Tenants prefix, then
++exact Workers message/sequence/native timestamp evidence with unchanged enabled state, principals,
++roles and configuration. A ninety-second whole-maintenance linked deadline includes gate wait and
++all command/source/projection I/O. Existing callers retain the existing submit/status defaults;
++production five-minute freshness, the approved two-second mutation budget, all other existing limits,
++original strict/capacity bodies, folder retained-prefix assertions and production realm are unchanged.
++The only new log is a closed payload-free maintenance PASS record after the complete barrier.
++
++The final focused selection passes 101 cases (47 new maintenance controls plus 54 retained
++bootstrap/realm/scope/source-reader controls), zero failures/errors/skips, in 5.525 seconds. The
++unchanged current-source Domain output passes 77 tenant/layered/task authorization controls,
++including the existing stale-denial cases, in 0.222 seconds. These are separate selections; earlier
++95-case execution overlaps the final fixture selection and is not added to it. AppHost test builds
++passed with zero warnings/errors in 59.91 and 51.70 seconds. The first build's six new-test CA2007
++errors were corrected and its receipt retained. A final XML-summary-only rebuild then encountered
++three external SDK CS8300 conflict-marker errors in SubmitCommandRequestValidator.cs; no SDK source
++was edited in this phase, and the markers had already disappeared at immediate read-only capture.
++The final focused run used the preceding successful output containing all 47 new controls. The
++comment-only source addition and external concurrent SDK/output activity require the parent's full
++current-source runtime rebuild and source/PDB/dependency audit before live qualification.
++
++Private phase receipts, before/after hashes, exact commands, source patch and runner handoff are in
++`/tmp/story12-2-tenant-maintenance-implementation-20261103/`. No live test ran in this implementation
++phase, so the parent runtime/audit/live checkbox remains open. The earlier strict failures and sealed
++packets are unchanged. This qualifies the fixture policy for an actively maintained tenant; it does
++not claim indefinite idle-tenant access, live acceptance, capacity, SM4, SDK/package parity or story
++completion. This phase changed no production policy, authority guard, grant beyond the single fixture
++exception, dependency pin, frozen artifact, Git state or public v2 exposure. The parent subsequently
++confirmed an external EventStore merge in progress and externally advanced SDK HEAD; the prior broad
++SDK/consumer runs do not qualify that new producer cohort. No external merge/source edits were resolved
++or incorporated by this fixture phase; coherent producer qualification remains with the parent.
+Submodule references/Hexalith.Builds contains modified content
+Submodule references/Hexalith.EventStore 743465ad..bca57ab1:
+  > build: merge refs/remotes/origin/main into main via /pushall
+Submodule references/Hexalith.McpCli 4052803e..50e94096:
+  > build: merge refs/remotes/origin/main into main via /pushall
+  > build: merge refs/remotes/origin/main into main via /pushall
+Submodule references/Hexalith.Tenants 743c4176..9e02fd15:
+  > build: merge refs/remotes/origin/main into main via /pushall
+  > build: merge refs/remotes/origin/main into main via /pushall
+diff --git a/scripts/pd10-v2-story-owned-paths.txt b/scripts/pd10-v2-story-owned-paths.txt
+index b73765a9..2ab1d5bf 100644
+--- a/scripts/pd10-v2-story-owned-paths.txt
++++ b/scripts/pd10-v2-story-owned-paths.txt
+@@ -1050,6 +1050,9 @@ src/shared/AdapterCore/SafeBearerTokenHandler.cs
+ src/shared/AdapterCore/UnsafeBearerTransportException.cs
+ tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfiguration.cs
+ tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfigurationTests.cs
++tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs
++tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs
++tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs
+ tests/Hexalith.Folders.Cli.Tests/CommandOptionsFreshnessTests.cs
+ tests/Hexalith.Folders.Cli.Tests/CommandSurfaceE2ETests.cs
+ tests/Hexalith.Folders.Cli.Tests/ErrorProjectionTests.cs
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+index 861e09ec..f67c6ceb 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+@@ -23,6 +23,7 @@ using Hexalith.EventStore.DomainService;
+ using Hexalith.EventStore.ServiceDefaults.Authentication;
+ using Hexalith.Folders.Authorization;
+ using Hexalith.Folders.Projections.OperationalStatus;
++using Hexalith.Folders.Projections.TenantAccess;
+ using Hexalith.Tenants.Contracts.Identity;
+ using Microsoft.Extensions.DependencyInjection;
+ using Microsoft.IdentityModel.JsonWebTokens;
+@@ -66,6 +67,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+     private string _projectWorkloadToken = string.Empty;
+     private string _metadataWorkloadToken = string.Empty;
+     private string? _namedCatalogFingerprint;
++    private FolderDurabilityTenantMaintenance? _tenantMaintenance;
+ 
+     /// <summary>Gets whether the explicit integration opt-in is present.</summary>
+     public bool Enabled { get; } = Environment.GetEnvironmentVariable(AspireFoldersAppHostFixture.OptInEnvironmentVariable)
+@@ -233,6 +235,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+     /// <summary>Observes authorized current ACL and operational watermarks before the next positive mutation.</summary>
+     public async Task WaitForCurrentFolderEvidenceAsync(string folderId, string phase, bool replica = false)
+     {
++        await MaintainTenantAsync(TestContext.Current.CancellationToken).ConfigureAwait(false);
+         using HttpClient client = replica ? CreateContentReplicaClient() : CreateFoldersClient();
+         using HttpRequestMessage request = new(HttpMethod.Get, $"/api/v1/folders/{folderId}/effective-permissions");
+         await FolderDurabilityHttp.WaitForCurrentFolderAsync(client, request, folderId, phase, async token =>
+@@ -508,6 +511,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+     /// <summary>Restarts the domain hosts while retaining the same identity provider, broker and state store.</summary>
+     public async Task<IReadOnlyDictionary<string, (int Before, int After)>> RestartHostsAsync()
+     {
++        await MaintainTenantAsync(TestContext.Current.CancellationToken).ConfigureAwait(false);
+         Dictionary<string, (int Before, int After)> identities = [];
+         foreach (string resource in OwningHosts)
+         {
+@@ -525,6 +529,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+             FolderDurabilityRuntimeBinding.Record(resource, after);
+         }
+ 
++        await MaintainTenantAsync(TestContext.Current.CancellationToken).ConfigureAwait(false);
+         return identities;
+     }
+ 
+@@ -618,7 +623,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+     }
+ 
+     /// <summary>Compares an HTTP status without including credentials or protected response payloads.</summary>
+-    public static async Task RequireStatusAsync(HttpResponseMessage response, HttpStatusCode expected, string operation)
++    public static async Task RequireStatusAsync(HttpResponseMessage response, HttpStatusCode expected, string operation, CancellationToken? cancellationToken = null)
+     {
+         ArgumentNullException.ThrowIfNull(response);
+         if (response.StatusCode != expected)
+@@ -626,7 +631,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+             string code = "unavailable";
+             try
+             {
+-                JsonElement body = await response.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(false);
++                JsonElement body = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken ?? TestContext.Current.CancellationToken).ConfigureAwait(false);
+                 if (body.TryGetProperty("code", out JsonElement value) && value.ValueKind == JsonValueKind.String)
+                 {
+                     code = value.GetString()!;
+@@ -1429,27 +1434,30 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         return (await response.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(false)).GetProperty("access_token").GetString()!;
+     }
+ 
+-    internal async Task<JsonElement> SubmitAsync(string tenant, string domain, string aggregate, string command, object payload, string token)
++    /// <summary>Submits a real scoped command and observes Completed, optionally bounded by a foreground caller and original identities.</summary>
++    internal async Task<JsonElement> SubmitAsync(string tenant, string domain, string aggregate, string command, object payload, string token,
++        CancellationToken? cancellationToken = null, string? messageId = null, string? correlationId = null)
+     {
++        CancellationToken caller = cancellationToken ?? TestContext.Current.CancellationToken;
+         // Each command fans out into internal actor/projection requests. Keep the acceptance driver
+         // below the existing consumer limiter; rate-limit/load qualification is a separate concern.
+-        await Task.Delay(TimeSpan.FromSeconds(1), TestContext.Current.CancellationToken).ConfigureAwait(false);
++        await Task.Delay(TimeSpan.FromSeconds(1), caller).ConfigureAwait(false);
+         using HttpClient client = App.CreateHttpClient("eventstore", "http");
+         client.Timeout = TimeSpan.FromSeconds(40);
+         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+         using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/commands")
+         {
+-            Content = JsonContent.Create(new SubmitCommandRequest(NewId(), tenant, domain, aggregate, command, JsonSerializer.SerializeToElement(payload),
+-                Extensions: new Dictionary<string, string> { ["taskId"] = NewId() },
++            Content = JsonContent.Create(new SubmitCommandRequest(messageId ?? NewId(), tenant, domain, aggregate, command, JsonSerializer.SerializeToElement(payload),
++                CorrelationId: correlationId, Extensions: new Dictionary<string, string> { ["taskId"] = NewId() },
+                 IdempotencyKey: domain == "folders" ? NewId() : null)),
+         };
+-        request.Headers.Add("X-Correlation-Id", NewId());
++        request.Headers.Add("X-Correlation-Id", correlationId ?? NewId());
+         FolderDurabilityGatewayScope.Apply(request, tenant);
+-        using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, false, TestContext.Current.CancellationToken).ConfigureAwait(false);
+-        await RequireStatusAsync(response, HttpStatusCode.Accepted, "Authenticated " + command).ConfigureAwait(false);
+-        JsonElement accepted = await response.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(false);
++        using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, false, caller).ConfigureAwait(false);
++        await RequireStatusAsync(response, HttpStatusCode.Accepted, "Authenticated " + command, caller).ConfigureAwait(false);
++        JsonElement accepted = await response.Content.ReadFromJsonAsync<JsonElement>(caller).ConfigureAwait(false);
+         string statusKey = accepted.GetProperty("messageId").GetString()!;
+-        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
++        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(caller);
+         deadline.CancelAfter(TimeSpan.FromSeconds(90));
+         while (true)
+         {
+@@ -1471,12 +1479,38 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+                 }
+             }
+             else if (status.StatusCode != HttpStatusCode.NotFound)
+-                await RequireStatusAsync(status, HttpStatusCode.OK, "Authenticated command status").ConfigureAwait(false);
++                await RequireStatusAsync(status, HttpStatusCode.OK, "Authenticated command status", deadline.Token).ConfigureAwait(false);
+ 
+             await Task.Delay(1000, deadline.Token).ConfigureAwait(false);
+         }
+     }
+ 
++    private async Task MaintainTenantAsync(CancellationToken cancellationToken)
++    {
++        _tenantMaintenance ??= new FolderDurabilityTenantMaintenance(TenantId, PrincipalId, ReadTenantSourceAsync,
++            token => new EventStoreFolderTenantAccessProjectionStore(RawStore).GetAsync(TenantId, token),
++            (command, correlation, token) => SubmitAsync(command.Tenant, command.Domain, command.AggregateId,
++                command.CommandType, command.Payload, _adminToken, token, command.MessageId, correlation));
++        if (await _tenantMaintenance.EnsureFreshAsync(cancellationToken).ConfigureAwait(false))
++            Console.WriteLine("PASS tenant maintenance: Completed; original TenantUpdated matched; Workers sequence/timestamp matched; authority unchanged.");
++    }
++
++    private async Task<StreamReadPage> ReadTenantSourceAsync(CancellationToken cancellationToken)
++    {
++        using HttpClient client = App.CreateHttpClient("eventstore", "http");
++        client.Timeout = TimeSpan.FromSeconds(40);
++        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
++        using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/streams/read")
++        {
++            Content = JsonContent.Create(new StreamReadRequest(TenantPlatformScopes.Tenants, "tenants", TenantId, PageSize: 1000)),
++        };
++        FolderDurabilityGatewayScope.Apply(request, TenantPlatformScopes.Tenants);
++        using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, true, cancellationToken).ConfigureAwait(false);
++        await RequireStatusAsync(response, HttpStatusCode.OK, "Authenticated tenant maintenance source", cancellationToken).ConfigureAwait(false);
++        return await response.Content.ReadFromJsonAsync<StreamReadPage>(Json, cancellationToken).ConfigureAwait(false)
++            ?? throw new InvalidOperationException("Tenant maintenance source is missing.");
++    }
++
+     private void BindCommittedCatalog(HttpRequestMessage request, string host = "folders")
+     {
+         string directory = _catalog?.Directory ?? throw new InvalidOperationException("The actual fixture catalog is unavailable.");
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs
+index cef72a4d..dd451490 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs
+@@ -32,7 +32,7 @@ internal static class FolderDurabilityBootstrapConfiguration
+         if (!administrator["attributes"]!["global_admin"]!.AsArray().Any(value => value!.GetValue<string>() == "true"))
+             throw new InvalidOperationException("The disposable bootstrap principal is not the designated administrator.");
+         JsonArray permissions = administrator["attributes"]!["permissions"]!.AsArray();
+-        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" })
++        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "tenants:update", "global-administrators:read", "tenants:read" })
+             if (!permissions.Any(value => value!.GetValue<string>() == permission)) permissions.Add(permission);
+         JsonArray tenantGrants = administrator["attributes"]!["tenants"]!.AsArray();
+         for (int index = tenantGrants.Count - 1; index >= 0; index--)
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs
+index 1c4e93cd..126e2318 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs
+@@ -138,13 +138,14 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
+             TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == BootstrapGlobalAdmin.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
+             TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == CreateTenant.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
+             TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == AddUserToTenant.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
++            TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == UpdateTenant.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
+             TenantCatalogDeclarations.Queries.Single(query => query.MessageType == "get-global-administrators").PlatformAdmission!.RequiredHumanPermission,
+             TenantCatalogDeclarations.Queries.Single(query => query.MessageType == "list-tenants").PlatformAdmission!.RequiredHumanPermission,
+         ];
+-        required.ShouldBe(new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" });
++        required.ShouldBe(new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "tenants:update", "global-administrators:read", "tenants:read" });
+         TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == BootstrapGlobalAdmin.CommandType)
+             .Route.PlatformAdmission!.Namespace.ShouldBe("platform:global-administrators");
+-        foreach (string operation in new[] { CreateTenant.CommandType, AddUserToTenant.CommandType })
++        foreach (string operation in new[] { CreateTenant.CommandType, AddUserToTenant.CommandType, UpdateTenant.CommandType })
+             TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == operation)
+                 .Route.PlatformAdmission!.Namespace.ShouldBe("platform:tenants");
+         JsonObject administrator = realm["users"]!.AsArray().Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
+@@ -206,7 +207,7 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
+         JsonArray expected = original["users"]!.DeepClone().AsArray();
+         JsonObject administrator = expected.Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
+         JsonArray permissions = administrator["attributes"]!["permissions"]!.AsArray();
+-        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" })
++        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "tenants:update", "global-administrators:read", "tenants:read" })
+             permissions.Add(permission);
+         JsonArray grants = administrator["attributes"]!["tenants"]!.AsArray();
+         grants.Remove(grants.Single(grant => grant!.GetValue<string>() == "system"));
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs
+new file mode 100644
+index 00000000..17fafcf4
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs
+@@ -0,0 +1,168 @@
++using System.Text.Json;
++
++using Hexalith.EventStore.Contracts.Commands;
++using Hexalith.EventStore.Contracts.Streams;
++using Hexalith.Folders.Projections.TenantAccess;
++using Hexalith.Tenants.Contracts.Commands;
++using Hexalith.Tenants.Contracts.Events;
++using Hexalith.Tenants.Contracts.Identity;
++
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Maintains only the disposable tenant through real public commands and ordinary Workers evidence.</summary>
++internal sealed class FolderDurabilityTenantMaintenance(
++    string tenantId,
++    string principalId,
++    Func<CancellationToken, Task<StreamReadPage>> readSource,
++    Func<CancellationToken, Task<FolderTenantAccessProjection?>> readProjection,
++    Func<SubmitCommandRequest, string, CancellationToken, Task<JsonElement>> submit,
++    TimeProvider? timeProvider = null)
++{
++    /// <summary>The original metadata supplied by this fixture's CreateTenant command.</summary>
++    internal const string TenantName = "Durability acceptance";
++    /// <summary>The original description, with no authority or membership changes.</summary>
++    internal const string TenantDescription = "Disposable local acceptance tenant";
++    /// <summary>Starts foreground maintenance well before the unchanged five-minute production limit.</summary>
++    internal static readonly TimeSpan RenewalAge = TimeSpan.FromMinutes(2);
++    /// <summary>Bounds the entire source, command and projection barrier without extending existing I/O limits.</summary>
++    internal static readonly TimeSpan Budget = TimeSpan.FromSeconds(90);
++    private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
++    private readonly SemaphoreSlim _gate = new(1, 1);
++    private readonly TimeProvider _time = timeProvider ?? TimeProvider.System;
++
++    /// <summary>Verifies original evidence and renews only when its native timestamp reaches the trigger age.</summary>
++    internal async Task<bool> EnsureFreshAsync(CancellationToken cancellationToken)
++    {
++        using CancellationTokenSource timeout = new(Budget, _time);
++        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
++        CancellationToken token = deadline.Token;
++        await _gate.WaitAsync(token).ConfigureAwait(false);
++        try
++        {
++            StreamReadPage beforeSource = await readSource(token).ConfigureAwait(false);
++            ValidateSource(beforeSource);
++            StreamReadEvent prior = beforeSource.Events[^1];
++            FolderTenantAccessProjection before = await WaitForProjectionAsync(prior, null, token).ConfigureAwait(false);
++            token.ThrowIfCancellationRequested();
++            if (_time.GetUtcNow() - prior.Timestamp < RenewalAge) return false;
++
++            string messageId = FolderDurabilityAcceptanceFixture.NewId();
++            string correlationId = FolderDurabilityAcceptanceFixture.NewId();
++            DateTimeOffset started = _time.GetUtcNow();
++            JsonElement status = await submit(Command(tenantId, messageId), correlationId, token).ConfigureAwait(false);
++            if (status.GetProperty("status").GetString() != "Completed"
++                || status.GetProperty("messageId").GetString() != messageId
++                || status.GetProperty("correlationId").GetString() != correlationId)
++                throw new InvalidOperationException("Tenant maintenance has no matching Completed command.");
++
++            StreamReadEvent updated;
++            while (true)
++            {
++                token.ThrowIfCancellationRequested();
++                StreamReadPage source = await readSource(token).ConfigureAwait(false);
++                ValidateSource(source);
++                if (source.Events.Count < beforeSource.Events.Count
++                    || JsonSerializer.Serialize(source.Events.Take(beforeSource.Events.Count), Json)
++                        != JsonSerializer.Serialize(beforeSource.Events, Json))
++                    throw new InvalidOperationException("Tenant maintenance changed its original retained source prefix.");
++                if (source.Events.Count == beforeSource.Events.Count)
++                {
++                    await Task.Delay(100, token).ConfigureAwait(false);
++                    continue;
++                }
++
++                updated = source.Events[^1];
++                TenantUpdated? payload = JsonSerializer.Deserialize<TenantUpdated>(updated.Payload, Json);
++                if (source.Events.Count != beforeSource.Events.Count + 1
++                    || updated.EventTypeName.Split(',', 2)[0].Trim() != typeof(TenantUpdated).FullName
++                    || updated.CausationId != messageId || updated.CorrelationId != correlationId || updated.UserId != "admin-user"
++                    || updated.Timestamp < started || updated.Timestamp <= prior.Timestamp
++                    || updated.SerializationFormat != "json" || updated.MetadataVersion != 1 || updated.PayloadVersion is not (null or 1)
++                    || payload is null || payload.TenantId != tenantId || payload.Name != TenantName
++                    || payload.Description != TenantDescription || payload.UpdatedAt < started || payload.UpdatedAt > _time.GetUtcNow())
++                    throw new InvalidOperationException("Tenant maintenance has no matching original metadata-only source event.");
++                break;
++            }
++
++            await WaitForProjectionAsync(updated, before, token).ConfigureAwait(false);
++            token.ThrowIfCancellationRequested();
++            if (_time.GetUtcNow() - updated.Timestamp >= RenewalAge)
++                throw new InvalidOperationException("Tenant maintenance evidence expired before its foreground barrier completed.");
++            return true;
++        }
++        finally
++        {
++            _gate.Release();
++        }
++    }
++
++    /// <summary>Uses the exact approved own-tenant command under the existing explicit platform scope.</summary>
++    internal static SubmitCommandRequest Command(string tenantId, string messageId)
++        => new(messageId, TenantPlatformScopes.Tenants, TenantIdentity.Domain, tenantId, nameof(UpdateTenant),
++            JsonSerializer.SerializeToElement(new { tenantId, name = TenantName, description = TenantDescription }, Json));
++
++    private void ValidateSource(StreamReadPage source)
++    {
++        if (source.Tenant != TenantIdentity.DefaultTenantId || source.Domain != TenantIdentity.Domain || source.AggregateId != tenantId
++            || source.Metadata.FromSequence != 0 || source.Metadata.ToSequence is not null || source.Metadata.IsTruncated
++            || source.Metadata.NextContinuationToken is not null || source.Events.Count == 0
++            || source.Metadata.EventCount != source.Events.Count || source.Metadata.LatestSequence != source.Events.Count
++            || source.Metadata.LastSequenceReturned != source.Metadata.LatestSequence
++            || source.Events.Select(item => item.MessageId).Distinct(StringComparer.Ordinal).Count() != source.Events.Count)
++            throw new InvalidOperationException("Tenant maintenance requires its complete authenticated retained source.");
++        for (int index = 0; index < source.Events.Count; index++)
++        {
++            StreamReadEvent item = source.Events[index];
++            if (item.SequenceNumber != index + 1 || string.IsNullOrWhiteSpace(item.MessageId)
++                || item.Timestamp == default || item.Timestamp > _time.GetUtcNow())
++                throw new InvalidOperationException("Tenant maintenance source metadata is malformed.");
++        }
++    }
++
++    private async Task<FolderTenantAccessProjection> WaitForProjectionAsync(StreamReadEvent source,
++        FolderTenantAccessProjection? before, CancellationToken token)
++    {
++        while (true)
++        {
++            token.ThrowIfCancellationRequested();
++            FolderTenantAccessProjection? projection = await readProjection(token).ConfigureAwait(false);
++            if (projection is not null)
++            {
++                if (projection.TenantId != tenantId || !projection.Enabled || projection.ReplayConflict || projection.MalformedEvidence
++                    || projection.Version <= 0 || projection.Watermark <= 0 || projection.Watermark > source.SequenceNumber
++                    || projection.LastEventTimestamp is null || projection.LastEventTimestamp > _time.GetUtcNow()
++                    || projection.ProjectionWatermark != $"{tenantId}:{projection.Watermark}"
++                    || !projection.Principals.TryGetValue(principalId, out FolderTenantPrincipalEvidence? principal)
++                    || principal != new FolderTenantPrincipalEvidence(principalId, "TenantOwner")
++                    || before is not null && !SameAuthority(before, projection))
++                    throw new InvalidOperationException("Tenant maintenance observed invalid or changed tenant authority.");
++                if (projection.Watermark == source.SequenceNumber)
++                {
++                    string kind = source.EventTypeName.Split(',', 2)[0].Split('.').Last();
++                    if (projection.LastEventTimestamp != source.Timestamp
++                        || !projection.ProcessedMessages.TryGetValue(source.MessageId, out FolderTenantEventEvidence? evidence)
++                        || evidence.MessageId != source.MessageId || evidence.TenantId != tenantId
++                        || evidence.SequenceNumber != source.SequenceNumber || evidence.Timestamp != source.Timestamp || evidence.EventTypeName != kind)
++                        throw new InvalidOperationException("Tenant maintenance projection does not match original source evidence.");
++                    if (before is not null)
++                    {
++                        FolderTenantAccessEvent expected = new FoldersTenantAccessEventMapper().Map(FolderTenantAccessEventKind.TenantUpdated,
++                            tenantId, tenantId, source.MessageId, source.SequenceNumber, source.Timestamp, source.CorrelationId!, fingerprintParts: [TenantName]);
++                        if (evidence.PayloadFingerprint != expected.PayloadFingerprint || projection.Version <= before.Version
++                            || before.ProcessedMessages.Any(pair => !projection.ProcessedMessages.TryGetValue(pair.Key, out var value) || value != pair.Value))
++                            throw new InvalidOperationException("Tenant maintenance lost original Workers delivery evidence.");
++                    }
++                    return projection.Clone();
++                }
++            }
++            await Task.Delay(100, token).ConfigureAwait(false);
++        }
++    }
++
++    private static bool SameAuthority(FolderTenantAccessProjection before, FolderTenantAccessProjection after)
++        => before.TenantId == after.TenantId && before.Enabled == after.Enabled
++            && before.Principals.Count == after.Principals.Count
++            && before.Principals.All(pair => after.Principals.TryGetValue(pair.Key, out var value) && value == pair.Value)
++            && before.ConfigurationKeys.SetEquals(after.ConfigurationKeys)
++            && before.RemovedConfigurationKeys.SetEquals(after.RemovedConfigurationKeys);
++}
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs
+new file mode 100644
+index 00000000..fce6e037
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs
+@@ -0,0 +1,403 @@
++using System.Text.Json;
++using System.Text.Json.Nodes;
++
++using Hexalith.EventStore.Contracts.Commands;
++using Hexalith.EventStore.Contracts.Streams;
++using Hexalith.Folders.Authorization;
++using Hexalith.Folders.Projections.TenantAccess;
++using Hexalith.Tenants.Contracts.Events;
++using Hexalith.Tenants.Contracts.Identity;
++
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Qualifies fixture-only real-event maintenance without weakening production freshness or authority.</summary>
++public sealed class FolderDurabilityTenantMaintenanceTests
++{
++    private const string Tenant = "durability-test";
++    private const string Principal = "fixture-principal";
++    private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
++
++    [Fact]
++    public void CommandUsesOnlyTheApprovedOwnTenantMetadataAndCanonicalScope()
++    {
++        SubmitCommandRequest command = FolderDurabilityTenantMaintenance.Command(Tenant, "original-command");
++        command.MessageId.ShouldBe("original-command");
++        command.Tenant.ShouldBe(TenantPlatformScopes.Tenants);
++        command.Domain.ShouldBe("tenants");
++        command.AggregateId.ShouldBe(Tenant);
++        command.CommandType.ShouldBe("UpdateTenant");
++        command.Payload.EnumerateObject().Select(property => property.Name).ShouldBe(["tenantId", "name", "description"]);
++        command.Payload.GetProperty("tenantId").GetString().ShouldBe(Tenant);
++        command.Payload.GetProperty("name").GetString().ShouldBe("Durability acceptance");
++        command.Payload.GetProperty("description").GetString().ShouldBe("Disposable local acceptance tenant");
++        command.IdempotencyKey.ShouldBeNull();
++        using HttpRequestMessage request = new();
++        FolderDurabilityGatewayScope.Apply(request, command.Tenant);
++        request.Headers.GetValues("X-Hexalith-Scope").ShouldBe([TenantPlatformScopes.Tenants]);
++        request.Headers.Contains("X-Hexalith-Tenant").ShouldBeFalse();
++    }
++
++    [Theory]
++    [InlineData(0)]
++    [InlineData(119)]
++    public async Task FreshOriginalSourceAndWorkersEvidenceNeverSubmitMaintenance(int age)
++    {
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddSeconds(-age));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        int commands = 0;
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            _ => Task.FromResult(source), _ => Task.FromResult<FolderTenantAccessProjection?>(projection),
++            (_, _, _) => { commands++; throw new InvalidOperationException("Unexpected maintenance."); });
++        (await maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken)).ShouldBeFalse();
++        commands.ShouldBe(0);
++        projection.LastEventTimestamp.ShouldBe(source.Events[^1].Timestamp);
++    }
++
++    [Fact]
++    public async Task OldEvidenceRequiresMatchingNewSourceAndRealHandlerDeliveryWithIdenticalAuthority()
++    {
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        var store = new InMemoryFolderTenantAccessProjectionStore();
++        FolderTenantAccessProjection seed = Projection(source.Events[^1]);
++        seed.Version = 0;
++        await store.SaveAsync(seed, TestContext.Current.CancellationToken);
++        FolderTenantAccessProjection before = (await store.GetAsync(Tenant, TestContext.Current.CancellationToken))!;
++        string originalPrefix = JsonSerializer.Serialize(source.Events, Json);
++        int commands = 0;
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            _ => Task.FromResult(source), token => store.GetAsync(Tenant, token),
++            async (command, correlation, token) =>
++            {
++                commands++;
++                token.CanBeCanceled.ShouldBeTrue();
++                command.Tenant.ShouldBe(TenantPlatformScopes.Tenants);
++                command.AggregateId.ShouldBe(Tenant);
++                StreamReadEvent updated = Updated(command.MessageId, correlation);
++                source = Append(source, updated);
++                FolderTenantAccessEvent delivery = new FoldersTenantAccessEventMapper().Map(FolderTenantAccessEventKind.TenantUpdated,
++                    Tenant, Tenant, updated.MessageId, updated.SequenceNumber, updated.Timestamp, correlation,
++                    fingerprintParts: [FolderDurabilityTenantMaintenance.TenantName]);
++                await new FolderTenantAccessHandler(store, new SystemUtcClock(), new TenantAccessOptions()).HandleAsync(delivery, token).ConfigureAwait(false);
++                return Completed(command.MessageId, correlation);
++            });
++
++        (await maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken)).ShouldBeTrue();
++        commands.ShouldBe(1);
++        FolderTenantAccessProjection after = (await store.GetAsync(Tenant, TestContext.Current.CancellationToken))!;
++        after.Enabled.ShouldBe(before.Enabled);
++        after.Principals.OrderBy(pair => pair.Key).ShouldBe(before.Principals.OrderBy(pair => pair.Key));
++        after.ConfigurationKeys.ShouldBe(before.ConfigurationKeys);
++        after.RemovedConfigurationKeys.ShouldBe(before.RemovedConfigurationKeys);
++        after.Watermark.ShouldBe(3);
++        after.LastEventTimestamp.ShouldBe(source.Events[^1].Timestamp);
++        after.ProcessedMessages[source.Events[^1].MessageId].SequenceNumber.ShouldBe(3);
++        JsonSerializer.Serialize(source.Events.Take(2), Json).ShouldBe(originalPrefix);
++        (await maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken)).ShouldBeFalse();
++        commands.ShouldBe(1);
++    }
++
++    [Theory]
++    [InlineData("Rejected")]
++    [InlineData("Failed")]
++    [InlineData("PublishFailed")]
++    [InlineData("TimedOut")]
++    [InlineData("Accepted")]
++    [InlineData("wrong-message")]
++    [InlineData("wrong-correlation")]
++    public async Task AnUnsuccessfulOrUnboundTerminalResultCannotEstablishFreshness(string fault)
++    {
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        int reads = 0;
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            _ => { reads++; return Task.FromResult(source); }, _ => Task.FromResult<FolderTenantAccessProjection?>(projection),
++            (command, correlation, _) => Task.FromResult(JsonSerializer.SerializeToElement(new
++            {
++                status = fault.StartsWith("wrong-", StringComparison.Ordinal) ? "Completed" : fault,
++                messageId = fault == "wrong-message" ? "another-command" : command.MessageId,
++                correlationId = fault == "wrong-correlation" ? "another-correlation" : correlation,
++            })));
++        await Should.ThrowAsync<InvalidOperationException>(() => maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken));
++        reads.ShouldBe(1);
++        projection.Watermark.ShouldBe(2);
++    }
++
++    [Theory]
++    [InlineData("tenant")]
++    [InlineData("scope")]
++    [InlineData("domain")]
++    [InlineData("truncated")]
++    [InlineData("sequence")]
++    [InlineData("message")]
++    [InlineData("correlation")]
++    [InlineData("actor")]
++    [InlineData("event")]
++    [InlineData("timestamp")]
++    [InlineData("metadata")]
++    [InlineData("description")]
++    [InlineData("prefix")]
++    public async Task ChangedOrUnrelatedOriginalSourceCannotEstablishFreshness(string fault)
++    {
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            _ => Task.FromResult(source), _ => Task.FromResult<FolderTenantAccessProjection?>(projection),
++            (command, correlation, _) =>
++            {
++                StreamReadEvent updated = Updated(command.MessageId, correlation);
++                updated = fault switch
++                {
++                    "sequence" => updated with { SequenceNumber = 4 },
++                    "message" => updated with { CausationId = "another-command" },
++                    "correlation" => updated with { CorrelationId = "another-correlation" },
++                    "actor" => updated with { UserId = "another-user" },
++                    "event" => updated with { EventTypeName = typeof(TenantEnabled).FullName! },
++                    "timestamp" => updated with { Timestamp = source.Events[^1].Timestamp },
++                    "metadata" => updated with { MetadataVersion = 2 },
++                    "description" => updated with { Payload = JsonSerializer.SerializeToUtf8Bytes(new TenantUpdated(Tenant,
++                        FolderDurabilityTenantMaintenance.TenantName, "changed", DateTimeOffset.UtcNow), Json) },
++                    _ => updated,
++                };
++                source = Append(source, updated);
++                source = fault switch
++                {
++                    "tenant" => source with { AggregateId = "another-tenant" },
++                    "scope" => source with { Tenant = Tenant },
++                    "domain" => source with { Domain = "folders" },
++                    "truncated" => source with { Metadata = source.Metadata with { IsTruncated = true } },
++                    "prefix" => source with { Events = [source.Events[0] with { UserId = "changed" }, source.Events[1], updated] },
++                    _ => source,
++                };
++                return Task.FromResult(Completed(command.MessageId, correlation));
++            });
++        await Should.ThrowAsync<InvalidOperationException>(() => maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken));
++        projection.Watermark.ShouldBe(2);
++    }
++
++    [Theory]
++    [InlineData("enabled")]
++    [InlineData("principal")]
++    [InlineData("role")]
++    [InlineData("configuration")]
++    [InlineData("removed-configuration")]
++    [InlineData("conflict")]
++    [InlineData("malformed")]
++    [InlineData("timestamp")]
++    [InlineData("fingerprint")]
++    [InlineData("message")]
++    [InlineData("prior-evidence")]
++    public async Task ChangedAuthorityOrUnmatchedWorkersEvidenceCannotEstablishFreshness(string fault)
++    {
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            _ => Task.FromResult(source), _ => Task.FromResult<FolderTenantAccessProjection?>(projection),
++            (command, correlation, _) =>
++            {
++                StreamReadEvent updated = Updated(command.MessageId, correlation);
++                source = Append(source, updated);
++                FolderTenantAccessProjection next = Projection(updated);
++                foreach (var pair in projection.ProcessedMessages) next.ProcessedMessages.Add(pair.Key, pair.Value);
++                next.Version = projection.Version + 1;
++                switch (fault)
++                {
++                    case "enabled": next.Enabled = false; break;
++                    case "principal": next.Principals["extra"] = new("extra", "TenantOwner"); break;
++                    case "role": next.Principals[Principal] = new(Principal, "TenantContributor"); break;
++                    case "configuration": next.ConfigurationKeys.Add("folders.changed"); break;
++                    case "removed-configuration": next.RemovedConfigurationKeys.Add("folders.changed"); break;
++                    case "conflict": next.ReplayConflict = true; break;
++                    case "malformed": next.MalformedEvidence = true; break;
++                    case "timestamp": next.LastEventTimestamp = updated.Timestamp.AddSeconds(-1); break;
++                    case "fingerprint": next.ProcessedMessages[updated.MessageId] = next.ProcessedMessages[updated.MessageId] with { PayloadFingerprint = "wrong" }; break;
++                    case "message": next.ProcessedMessages.Remove(updated.MessageId); break;
++                    case "prior-evidence": next.ProcessedMessages.Remove(projection.ProcessedMessages.Keys.Single()); break;
++                }
++                projection = next;
++                return Task.FromResult(Completed(command.MessageId, correlation));
++            });
++        await Should.ThrowAsync<InvalidOperationException>(() => maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken));
++    }
++
++    [Theory]
++    [InlineData("source")]
++    [InlineData("command")]
++    [InlineData("new-source")]
++    [InlineData("projection")]
++    public async Task CallerCancellationReachesEveryIoAndNeverTreatsAbsenceOrLagAsFresh(string stage)
++    {
++        using CancellationTokenSource caller = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        bool submitted = false;
++        CancellationToken ioToken = default;
++        async Task CancelAsync(CancellationToken token)
++        {
++            ioToken = token;
++            caller.Cancel();
++            await Task.Delay(Timeout.Infinite, token).ConfigureAwait(false);
++        }
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            async token =>
++            {
++                if (stage == "source" || stage == "new-source" && submitted) await CancelAsync(token).ConfigureAwait(false);
++                return source;
++            }, async token =>
++            {
++                if (stage == "projection" && submitted) await CancelAsync(token).ConfigureAwait(false);
++                return projection;
++            }, async (command, correlation, token) =>
++            {
++                submitted = true;
++                if (stage == "command") await CancelAsync(token).ConfigureAwait(false);
++                if (stage == "projection") source = Append(source, Updated(command.MessageId, correlation));
++                return Completed(command.MessageId, correlation);
++            });
++        await Should.ThrowAsync<OperationCanceledException>(() => maintenance.EnsureFreshAsync(caller.Token));
++        ioToken.IsCancellationRequested.ShouldBeTrue();
++        ioToken.ShouldNotBe(caller.Token);
++        projection.Watermark.ShouldBe(2);
++    }
++
++    [Fact]
++    public async Task WholeMaintenanceDeadlineCancelsARealOutstandingIoWithoutWaitingForItsOwnLimit()
++    {
++        var timer = new FolderDurabilityTenantMaintenanceTimer();
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal, async token =>
++        {
++            timer.DueTime.ShouldBe(TimeSpan.FromSeconds(90));
++            timer.Expire();
++            await Task.Delay(Timeout.Infinite, token).ConfigureAwait(false);
++            throw new InvalidOperationException("Unreachable.");
++        }, _ => throw new InvalidOperationException("Unexpected projection."),
++            (_, _, _) => throw new InvalidOperationException("Unexpected command."), timer);
++        await Should.ThrowAsync<OperationCanceledException>(() => maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken));
++    }
++
++    [Theory]
++    [InlineData("new-source")]
++    [InlineData("projection")]
++    [InlineData("initial-projection")]
++    public async Task CompletedCommandCannotTurnActuallyAbsentOrLaggingEvidenceIntoFreshness(string missing)
++    {
++        var timer = new FolderDurabilityTenantMaintenanceTimer();
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        bool submitted = false;
++        int observedMissing = 0;
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal, _ =>
++        {
++            if (submitted && missing == "new-source")
++            {
++                observedMissing++;
++                timer.Expire();
++            }
++            return Task.FromResult(source);
++        }, _ =>
++        {
++            if (missing == "initial-projection" || submitted && missing == "projection")
++            {
++                observedMissing++;
++                timer.Expire();
++            }
++            return Task.FromResult(missing == "initial-projection" ? null : (FolderTenantAccessProjection?)projection);
++        }, (command, correlation, _) =>
++        {
++            submitted = true;
++            if (missing == "projection") source = Append(source, Updated(command.MessageId, correlation));
++            return Task.FromResult(Completed(command.MessageId, correlation));
++        }, timer);
++
++        await Should.ThrowAsync<OperationCanceledException>(() => maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken));
++        submitted.ShouldBe(missing != "initial-projection");
++        observedMissing.ShouldBe(1);
++        projection.Watermark.ShouldBe(2);
++        projection.LastEventTimestamp.ShouldBe(source.Events[1].Timestamp);
++    }
++
++    [Theory]
++    [InlineData("source")]
++    [InlineData("projection")]
++    [InlineData("command")]
++    public async Task IoFailureIsPropagatedWithoutAnInventedFreshObservation(string stage)
++    {
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        var failure = new IOException("Controlled fixture transport failure.");
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            _ => stage == "source" ? Task.FromException<StreamReadPage>(failure) : Task.FromResult(source),
++            _ => stage == "projection" ? Task.FromException<FolderTenantAccessProjection?>(failure)
++                : Task.FromResult<FolderTenantAccessProjection?>(projection),
++            (_, _, _) => Task.FromException<JsonElement>(failure));
++        (await Should.ThrowAsync<IOException>(() => maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken))).ShouldBeSameAs(failure);
++        projection.Watermark.ShouldBe(2);
++    }
++
++    [Fact]
++    public void RealmAddsTheSinglePermissionOnceAndPreservesEveryOtherIdentityAndGrant()
++    {
++        string path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json"));
++        JsonObject original = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
++        string before = original.ToJsonString();
++        JsonObject actual = FolderDurabilityBootstrapConfiguration.Realm(original);
++        JsonObject admin = actual["users"]!.AsArray().Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
++        JsonArray permissions = admin["attributes"]!["permissions"]!.AsArray();
++        permissions.Count(value => value!.GetValue<string>() == "tenants:update").ShouldBe(1);
++        foreach (JsonNode? user in actual["users"]!.AsArray().Where(user => user!["id"]!.GetValue<string>() != "admin-user"))
++        {
++            user!["attributes"]!["permissions"]!.AsArray().ShouldNotContain(value => value!.GetValue<string>() == "tenants:update");
++            user.ToJsonString().ShouldBe(original["users"]!.AsArray().Single(item => item!["id"]!.GetValue<string>() == user["id"]!.GetValue<string>())!.ToJsonString());
++        }
++        JsonObject alreadyGranted = original.DeepClone().AsObject();
++        alreadyGranted["users"]!.AsArray().Single(user => user!["id"]!.GetValue<string>() == "admin-user")!["attributes"]!["permissions"]!.AsArray().Add("tenants:update");
++        JsonArray repeated = FolderDurabilityBootstrapConfiguration.Realm(alreadyGranted)["users"]!.AsArray()
++            .Single(user => user!["id"]!.GetValue<string>() == "admin-user")!["attributes"]!["permissions"]!.AsArray();
++        repeated.Count(value => value!.GetValue<string>() == "tenants:update").ShouldBe(1);
++        repeated.Select(value => value!.GetValue<string>()).Order(StringComparer.Ordinal)
++            .ShouldBe(permissions.Select(value => value!.GetValue<string>()).Order(StringComparer.Ordinal));
++        original.ToJsonString().ShouldBe(before);
++    }
++
++    private static StreamReadPage Original(DateTimeOffset timestamp)
++    {
++        StreamReadEvent first = new(1, typeof(TenantCreated).FullName!, [], "json", 1, "created", "create", "create", timestamp.AddSeconds(-1), "admin-user");
++        StreamReadEvent last = new(2, typeof(UserAddedToTenant).FullName!, [], "json", 1, "member", "membership", "membership", timestamp, "admin-user");
++        return new(TenantIdentity.DefaultTenantId, "tenants", Tenant, [first, last], new(0, null, 2, 2, 2, false, null));
++    }
++
++    private static StreamReadEvent Updated(string messageId, string correlation)
++    {
++        DateTimeOffset now = DateTimeOffset.UtcNow;
++        return new(3, typeof(TenantUpdated).FullName!, JsonSerializer.SerializeToUtf8Bytes(new TenantUpdated(Tenant,
++            FolderDurabilityTenantMaintenance.TenantName, FolderDurabilityTenantMaintenance.TenantDescription, now), Json),
++            "json", 1, "updated-" + messageId, correlation, messageId, now, "admin-user");
++    }
++
++    private static StreamReadPage Append(StreamReadPage before, StreamReadEvent updated)
++        => before with { Events = [.. before.Events, updated], Metadata = new(0, null, 3, 3, 3, false, null) };
++
++    private static FolderTenantAccessProjection Projection(StreamReadEvent source)
++    {
++        var projection = new FolderTenantAccessProjection
++        {
++            TenantId = Tenant, Enabled = true, Version = 1, Watermark = source.SequenceNumber,
++            LastEventTimestamp = source.Timestamp, ProjectionWatermark = $"{Tenant}:{source.SequenceNumber}",
++        };
++        projection.Principals[Principal] = new(Principal, "TenantOwner");
++        projection.ConfigurationKeys.Add("folders.existing");
++        projection.RemovedConfigurationKeys.Add("folders.removed");
++        string kind = source.SequenceNumber == 3 ? "TenantUpdated" : "UserAddedToTenant";
++        string fingerprint = source.SequenceNumber == 3
++            ? new FoldersTenantAccessEventMapper().Map(FolderTenantAccessEventKind.TenantUpdated, Tenant, Tenant, source.MessageId,
++                source.SequenceNumber, source.Timestamp, source.CorrelationId!, fingerprintParts: [FolderDurabilityTenantMaintenance.TenantName]).PayloadFingerprint
++            : "membership-fingerprint";
++        projection.ProcessedMessages[source.MessageId] = new(source.MessageId, Tenant, kind, source.SequenceNumber, source.Timestamp, fingerprint);
++        return projection;
++    }
++
++    private static JsonElement Completed(string messageId, string correlation)
++        => JsonSerializer.SerializeToElement(new { status = "Completed", messageId, correlationId = correlation });
++}
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs
+new file mode 100644
+index 00000000..4607a0c6
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs
+@@ -0,0 +1,18 @@
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Exercises the real whole-operation timeout callback without waiting ninety seconds in a unit control.</summary>
++internal sealed class FolderDurabilityTenantMaintenanceTimer : TimeProvider
++{
++    private Action? _expire;
++    /// <summary>Gets the timeout actually requested by the maintenance coordinator.</summary>
++    internal TimeSpan DueTime { get; private set; }
++    /// <summary>Captures the timer callback while preserving its normal disposal and scheduling implementation.</summary>
++    public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
++    {
++        DueTime = dueTime;
++        _expire = () => callback(state);
++        return base.CreateTimer(callback, state, dueTime, period);
++    }
++    /// <summary>Signals exactly the captured deadline callback.</summary>
++    internal void Expire() => (_expire ?? throw new InvalidOperationException("No maintenance deadline was scheduled."))();
++}

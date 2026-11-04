@@ -1,0 +1,1136 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+    "-class",
+    "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "-class",
+    "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "-class",
+    "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+    "-class",
+    "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+    "-class",
+    "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests",
+    "-class",
+    "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+    "-class",
+    "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "-result-xml",
+    "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/final-cohort-domain-controls-2-private.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-03T20:17:42.543801+00:00",
+  "utc_end": "2026-11-03T20:18:43.035104+00:00",
+  "exit_code": 0,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/final-cohort-domain-controls-2-private.log",
+    "sha256": "5311860cff472933a5c58c764d5cdd71e706398e261e05c3d09081df4367f442"
+  },
+  "private_xml": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/final-cohort-domain-controls-2-private.xml",
+    "sha256": "9b2ef73e75420e56ff32f04161687a54d41c3e00644ef395fc144de80e4ba039"
+  },
+  "summary": {
+    "assemblies": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "20:17:42",
+        "errors": "0",
+        "failed": "0",
+        "passed": "134",
+        "skipped": "0",
+        "time": "58.671",
+        "total": "134"
+      }
+    ],
+    "tests": [
+      {
+        "result": "Pass",
+        "time": "0.043",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "MissingJwtEvidenceShouldDenyBeforeTenantProjectionOrProtectedResourceTouch",
+        "display_name_sha256": "cc378d9690d89ea999e1fc8b86308824c59b90d8d042627bbb1b617141922f22",
+        "case_ordinal": 1
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "ClientControlledTenantMismatchShouldDenyBeforeTenantProjectionOrFolderEvidence",
+        "display_name_sha256": "f95672564279cb79b032faee42c7aeb5ed7a289ec0213e82d9c5f3c8c264e2bb",
+        "case_ordinal": 2
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "DecisionsShouldNotBeReusedAcrossTenantsPrincipalsTasksActionsOrFreshnessWatermarks",
+        "display_name_sha256": "129f55b302bcb8501f66390284c6ba4e3d075184d04c4e3b500617a2cabede5f",
+        "case_ordinal": 3
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "ClaimTransformMismatchShouldDenyBeforeTenantProjectionOrFolderEvidence",
+        "display_name_sha256": "fbfd6d20d9520abe95b28cbedcd2547a15d14b8fb9516eb3b9135a2ff4936eaa",
+        "case_ordinal": 4
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "WildcardPermissionTokenShouldNotEscalateClaimTransformEvidence",
+        "display_name_sha256": "97edc4b14638e92408230737acca16bdd468bd154d53dec11b87799516b4d812",
+        "case_ordinal": 5
+      },
+      {
+        "result": "Pass",
+        "time": "0.024",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "DeniedDecisionSnapshotShouldRemainMetadataOnly",
+        "display_name_sha256": "8227ec10e39dc9803e83ec0a9e256295d9105c30a4c02c20e14ce6b815f78505",
+        "case_ordinal": 6
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "TenantAccessFailureShouldShortCircuitBeforeFolderEvidence",
+        "display_name_sha256": "6098078098740639043aacef472b874e60f54caa4a06f8cc0c9bc26f5ee88747",
+        "case_ordinal": 7
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "TenantAccessFailureShouldShortCircuitBeforeFolderEvidence",
+        "display_name_sha256": "11c42b95b22586eebe86bc929ef08c691eb8e742cf4fbf47f15eb77714d0be58",
+        "case_ordinal": 8
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "TenantAccessFailureShouldShortCircuitBeforeFolderEvidence",
+        "display_name_sha256": "296d6e6c3927cfee13a7147f7386476476830c811861526c448f054e4888b50c",
+        "case_ordinal": 9
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "TenantAccessFailureShouldShortCircuitBeforeFolderEvidence",
+        "display_name_sha256": "4e4bdc849c4251dcc6438093eb933f05223e88a57af2d1430d7478085fab5a80",
+        "case_ordinal": 10
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "TenantAccessFailureShouldShortCircuitBeforeFolderEvidence",
+        "display_name_sha256": "02a95e3ec08794b7706f27bb8d0110d86d6e4744785ac69bf4af6a4a1e52eddf",
+        "case_ordinal": 11
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "TenantAccessFailureShouldShortCircuitBeforeFolderEvidence",
+        "display_name_sha256": "eaf7b4051d95a287d22f3374f05b453d229433ad0a3ecd4340db51b719299131",
+        "case_ordinal": 12
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "FinalTaskMutationReauthorizationUsesFreshCandidateActionEvidence",
+        "display_name_sha256": "d1a015be332803e557638be70627cf100ca225dbf44e1ed3495fd83cc87717ca",
+        "case_ordinal": 13
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "FinalTaskMutationReauthorizationRejectsDeniedDelegatorAfterAllowingActor",
+        "display_name_sha256": "ba8632d5eeb61b66f20b30157ce81486b5dc4c26f295c6443316eb68d1ad19b3",
+        "case_ordinal": 14
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "ValidatorDenialShouldShortCircuitBeforeDaprPolicy",
+        "display_name_sha256": "fa40da138a2441f55e7db92f2d88750d954cdc44e92fdf235cc9350884a8537b",
+        "case_ordinal": 15
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "RequiredDaprEvidenceShouldFailClosedWhenUnavailable",
+        "display_name_sha256": "5e507d6fe811771a65869c53c209f31d64ca473874f76e28bd8c0cea701c0082",
+        "case_ordinal": 16
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "PreauthorizationReuseRequiresTheExactHistoricalAction",
+        "display_name_sha256": "bec757d775e64b11560373c2863b7931b75a37984a5c754f433a514309f7f234",
+        "case_ordinal": 17
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "SameFolderIdAcrossTenantsShouldProduceIsolatedAuthorizationDecisions",
+        "display_name_sha256": "f2770d51f35eccac8d52f83ecc7e52aef6c6a976f395a66c075a44b72a381664",
+        "case_ordinal": 18
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "AuthorizeShouldEvaluateAllowedPathInCanonicalOrder",
+        "display_name_sha256": "4f2ffe6d871af00583583aeef45d8190bdf12aba25fa46fcb39a8cfe66319b12",
+        "case_ordinal": 19
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "NonexistentAndUnauthorizedFolderShouldProduceIndistinguishableProblemBodies",
+        "display_name_sha256": "312c5ee133960a9b1b60be0a8d23e876f8b5c2bd65976c5629c624b72522ca7d",
+        "case_ordinal": 20
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "FolderPermissionFailureShouldShortCircuitBeforeValidatorAndDapr",
+        "display_name_sha256": "9e29c4938197e788aa82027c62e6549558ab43116b0988dafe5e0486f0a01438",
+        "case_ordinal": 21
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "FolderPermissionFailureShouldShortCircuitBeforeValidatorAndDapr",
+        "display_name_sha256": "a816cf9daebf6b6f174814f94dbf1562e3c4d8d72933e6659352e492e40e3ca3",
+        "case_ordinal": 22
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "FolderPermissionFailureShouldShortCircuitBeforeValidatorAndDapr",
+        "display_name_sha256": "ff82964a8880b3e37c155a7ebd002ef6c903a834fbea2d45e91a847a1262c026",
+        "case_ordinal": 23
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "FolderPermissionFailureShouldShortCircuitBeforeValidatorAndDapr",
+        "display_name_sha256": "347e4ee8bebb7d5f86a3a278593b64292fa994a4a01ddeb1ebdbb5e55d1c0b3a",
+        "case_ordinal": 24
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "FolderPermissionFailureShouldShortCircuitBeforeValidatorAndDapr",
+        "display_name_sha256": "cfb950fc98c230961414f15c247b45ec1d012881e8f6c0310e17bf19b75a0f7d",
+        "case_ordinal": 25
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "method": "BoundedDiagnosticReadShouldCarryStaleFreshnessWithoutFailingOpenForStrictReads",
+        "display_name_sha256": "dc8b41b3b89d23cbd5c04dbff47a2a00e5169d06ce1d11d23583ddf1b80ebed9",
+        "case_ordinal": 26
+      },
+      {
+        "result": "Pass",
+        "time": "0.483",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+        "method": "MalformedHolderAndSuccessRejectionCannotAdvanceCheckpointOrViews",
+        "display_name_sha256": "ea8a311c6bf0da03df8cba555c0243d8a00eab5b8e84cd136f703e661b4447e7",
+        "case_ordinal": 27
+      },
+      {
+        "result": "Pass",
+        "time": "0.248",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+        "method": "RejectionOnlyPrefixPublishesNoViewsThenCreationConvergesWithCompleteReplay",
+        "display_name_sha256": "92e72798cdab0b3dbdf6146885a0be0efb79991211291646124ab9b1683a9749",
+        "case_ordinal": 28
+      },
+      {
+        "result": "Pass",
+        "time": "0.072",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+        "method": "CompleteCurrentSourceConditionallyRepairsCorruptCheckpointAndKeepsCommandKeysOutOfStorage",
+        "display_name_sha256": "ecdff2f0296acf00f6480889c2df9524689533ae1d60bfe48437e8e63951935e",
+        "case_ordinal": 29
+      },
+      {
+        "result": "Pass",
+        "time": "0.03",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+        "method": "InterruptedNamedScratchBatchRetriesOrAbortsWithoutLeavingAnActiveSessionAsync",
+        "display_name_sha256": "3b220d35dcf461ab29dae3fb1c36dc62e346e29847ed80644a9a9f5706251d93",
+        "case_ordinal": 30
+      },
+      {
+        "result": "Pass",
+        "time": "0.035",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+        "method": "InterruptedNamedScratchBatchRetriesOrAbortsWithoutLeavingAnActiveSessionAsync",
+        "display_name_sha256": "58c75d7a6ffc535d6ffe3ee32e3113f4bcc394df8ec4239a424828cfbf31e86c",
+        "case_ordinal": 31
+      },
+      {
+        "result": "Pass",
+        "time": "0.007",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+        "method": "RebuildCannotReplaceValidEarlierPrefixWhenTailEventIsIdentical",
+        "display_name_sha256": "a8c175b7dc73570cd187fc8ea38ee95e21625e8e52cc05d532ba12c03a03a23e",
+        "case_ordinal": 32
+      },
+      {
+        "result": "Pass",
+        "time": "0.022",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+        "method": "NamedRebuildAbortsPreDispatchFailureWithoutPublishingRowsAsync",
+        "display_name_sha256": "4c16c57967e9b1b423c74f870a5ca1473d5c9c49044d91e2cd0997d8b6eec03f",
+        "case_ordinal": 33
+      },
+      {
+        "result": "Pass",
+        "time": "15.263",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+        "method": "CompleteOriginalOwnersRebuildGrowAndPreserveHistoricalTasksWithBoundedValues",
+        "display_name_sha256": "39cc98b8a886d05b63907c897c410e12b73ce251f964e4508a1d463572601f3c",
+        "case_ordinal": 34
+      },
+      {
+        "result": "Pass",
+        "time": "42.39",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+        "method": "CompleteOriginalOwnersRebuildGrowAndPreserveHistoricalTasksWithBoundedValues",
+        "display_name_sha256": "cad9c5255df14acb5766bd28ad50e77ab060d34b335c4d200388da710f4ff9b7",
+        "case_ordinal": 35
+      },
+      {
+        "result": "Pass",
+        "time": "0.048",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "DiagnosticsShouldDistinguishInitialTenantAndNestedStrictFreshnessWithoutExtraReads",
+        "display_name_sha256": "10a24997ba872419ed41626ec646ef707bf5ad902ee29cf71f295593dd73b9d4",
+        "case_ordinal": 36
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "DiagnosticsShouldDistinguishInitialTenantAndNestedStrictFreshnessWithoutExtraReads",
+        "display_name_sha256": "4b83892885123f7fbbdccbce589a8d02daa97789438026f3e8c8763f9cc8060f",
+        "case_ordinal": 37
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "DiagnosticsShouldDistinguishInitialTenantAndNestedStrictFreshnessWithoutExtraReads",
+        "display_name_sha256": "43742f925c8f62ef92d024dff5505c2572f0240f1eaed6627338ac8a547494d2",
+        "case_ordinal": 38
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "DiagnosticsShouldDistinguishInitialTenantAndNestedStrictFreshnessWithoutExtraReads",
+        "display_name_sha256": "b4e002cc973438c7ac75a1ff9c1546da4263c490ffa4aa6059293f6e2307c223",
+        "case_ordinal": 39
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "ReadModelOutcomesShouldReturnSafeResults",
+        "display_name_sha256": "217676adba2c8097b45bf16389a2f2c6487b647183d0fcac99cbffbf7982df5a",
+        "case_ordinal": 40
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "ReadModelOutcomesShouldReturnSafeResults",
+        "display_name_sha256": "b48da1edb1682ca5476a178e896a9ad8641bda900995b3d7d2ee5fd4faf1cc6c",
+        "case_ordinal": 41
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "ReadModelOutcomesShouldReturnSafeResults",
+        "display_name_sha256": "f5b9607113cbed08c24d110895f029a8ca7fc8d26b5110747444a0f443b9bc1e",
+        "case_ordinal": 42
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "ReadModelOutcomesShouldReturnSafeResults",
+        "display_name_sha256": "351ecc61ab9ec07b00375a5a44515d61c0d1c3331e25dac3d395b50f25ae3814",
+        "case_ordinal": 43
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "MissingFolderScopeShouldFailBeforeProtectedTaskLookup",
+        "display_name_sha256": "b838ebd42950a3c6039d043245008f407e1b7e8a46fd135fb7ed6f0b102f5005",
+        "case_ordinal": 44
+      },
+      {
+        "result": "Pass",
+        "time": "0.016",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "DiagnosticProviderShouldNotObservePreCanceledRequestsOrChangeTheirToken",
+        "display_name_sha256": "379082841e1a300662a49bced85367c4f783c422e2af1411d1c4f75948c8c5c9",
+        "case_ordinal": 45
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "OptionalDiagnosticProviderFailuresShouldPreserveResultsAndObservations",
+        "display_name_sha256": "1aee777461b85dac07859e4761bac2b2bc9302bcf80ff5f878e86b337d99ece7",
+        "case_ordinal": 46
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "OptionalDiagnosticProviderFailuresShouldPreserveResultsAndObservations",
+        "display_name_sha256": "eafc99aa891091936acca4670692edb374a22b10767e8c7296d565e13c622d46",
+        "case_ordinal": 47
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "OptionalDiagnosticProviderFailuresShouldPreserveResultsAndObservations",
+        "display_name_sha256": "5d5fa14a382ca80ef9f29bf39c8e2da72a71a3e2a5f39d77d1d8412569337afb",
+        "case_ordinal": 48
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "OptionalDiagnosticProviderFailuresShouldPreserveResultsAndObservations",
+        "display_name_sha256": "4a67cdd5cb63375249b555612b1bb35c6dbe8f2869d1b239f48ac8e00929b771",
+        "case_ordinal": 49
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "OptionalDiagnosticProviderFailuresShouldPreserveResultsAndObservations",
+        "display_name_sha256": "903f80b685babc1888b4a005005a58f6e479baa478deaf5a11f0485f4a4c484d",
+        "case_ordinal": 50
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "OptionalDiagnosticProviderFailuresShouldPreserveResultsAndObservations",
+        "display_name_sha256": "739cdbdc5e3ab5c6a3567936f02d5e5d8d2dd79b1870a65ea1ae969ab0e162af",
+        "case_ordinal": 51
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "DiagnosticFieldsShouldClampAgeAndReplaceUnrecognizedStrings",
+        "display_name_sha256": "20589763875fbb1be5b67b9dda1ddde0639d37a90640b5ca4c68b68c0c30f843",
+        "case_ordinal": 52
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "ClientTenantMismatchShouldRejectBeforeTenantProjectionLookup",
+        "display_name_sha256": "3a8e9ccd9dc29477b9d7981544b6a461aa5205fca0683b280d68c103b30e70e1",
+        "case_ordinal": 53
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "MalformedContractSnapshotsShouldFailClosed",
+        "display_name_sha256": "1fcf26110677e4a608d7bdb6ee06cb904f900e7bfc42329711d072b12772caf7",
+        "case_ordinal": 54
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "MalformedContractSnapshotsShouldFailClosed",
+        "display_name_sha256": "67b342bdcc0816bf8b0aea8c8427dbc7ea4ce7079ac92858158dee78584f2598",
+        "case_ordinal": 55
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "MalformedContractSnapshotsShouldFailClosed",
+        "display_name_sha256": "9b58b16b37dcddbb8b032c53b52c502f807a6925894b075b6546c9a59e765ad0",
+        "case_ordinal": 56
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "MalformedContractSnapshotsShouldFailClosed",
+        "display_name_sha256": "e1d7cd09c53bbeaf0190bbb8be2d5bcc40d00899e823196d84a17af55b14f9d6",
+        "case_ordinal": 57
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "MalformedContractSnapshotsShouldFailClosed",
+        "display_name_sha256": "6a840150ef30f90c274238908b0dd1c0cbb6f1a1ab00c94a8c9236376a0678f1",
+        "case_ordinal": 58
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "TenantDenialShouldNotTouchReadModel",
+        "display_name_sha256": "4e10b1e0b95472db543b81025ae5aaee28cf3bcc11c82842fb23b6bfc4c67cdd",
+        "case_ordinal": 59
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "ExceptionDiagnosticShouldPreserveFailClosedOutcomeWithoutExceptionObject",
+        "display_name_sha256": "8384847f1b8433cc2a2b387d27dd422a2308de3f7c1b28365dce047aa11efbdc",
+        "case_ordinal": 60
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "ExceptionDiagnosticShouldPreserveFailClosedOutcomeWithoutExceptionObject",
+        "display_name_sha256": "6b2d715436bac26cb59ce9c30db8828615282e1ce5add82e6245338734c2f646",
+        "case_ordinal": 61
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "ExceptionDiagnosticShouldPreserveFailClosedOutcomeWithoutExceptionObject",
+        "display_name_sha256": "e5ee9f954b9775aa70dcdbb5f13f0435a135ccec2d251c2b556f9e3fadd18b50",
+        "case_ordinal": 62
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "SuccessfulSnapshotsShouldReturnMetadataOnlyTaskEvidence",
+        "display_name_sha256": "45c6a851525aef083c569c9e6c55b55af01bb238b493c97daa3dde93086a062a",
+        "case_ordinal": 63
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "SuccessfulSnapshotsShouldReturnMetadataOnlyTaskEvidence",
+        "display_name_sha256": "89f0b71b3216d19bdb5757a73ee5f60f0fc2d1c32fc1afa24890c662633342f5",
+        "case_ordinal": 64
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "SuccessfulSnapshotsShouldReturnMetadataOnlyTaskEvidence",
+        "display_name_sha256": "27c56316077dc1f024a4198d01cfe4df53e079031c9280c69a81c4c16ad691ad",
+        "case_ordinal": 65
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "MalformedIdentifiersShouldNotTouchTenantProjectionOrReadModel",
+        "display_name_sha256": "000d11691d3bc26b2e8314fd329f215e1a6456319bd4fdfe9ee3890a06ae40ec",
+        "case_ordinal": 66
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "MalformedIdentifiersShouldNotTouchTenantProjectionOrReadModel",
+        "display_name_sha256": "170e0bb73f9b359ea397544ddd2c0444813a1dcc5a665a5bdb4357ee7ffc8bc4",
+        "case_ordinal": 67
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "ClaimTransformDenialShouldNotTouchTenantProjectionOrReadModel",
+        "display_name_sha256": "87b91143c0306f1ff4dbe54bebaf6dab4aa090e19314caef6475420f12d8391d",
+        "case_ordinal": 68
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "ReadModelExceptionsShouldFailClosed",
+        "display_name_sha256": "8a49a826776d980c36d5e21aeae3894783309005d2de8d4fb3535641becca25e",
+        "case_ordinal": 69
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "AuthenticationFailureShouldNotTouchTenantProjectionOrReadModel",
+        "display_name_sha256": "458779b8f3499eaea3a65bf940199a0487e8283400c34975699df8124c198601",
+        "case_ordinal": 70
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "TaskInspectionRequiresItsOwnClaimAndExistingFolderReadGrant",
+        "display_name_sha256": "0652de96659378a6c54c05cc46d547ca8ab47a9ec9edb7d28abc3e752c24d09b",
+        "case_ordinal": 71
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "TaskInspectionRequiresItsOwnClaimAndExistingFolderReadGrant",
+        "display_name_sha256": "7b9fb62c1f54fde78585ee5818b26f76695b0013435a04f14b935bebd227c4ec",
+        "case_ordinal": 72
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "TaskInspectionRequiresItsOwnClaimAndExistingFolderReadGrant",
+        "display_name_sha256": "ac1e6ab53a70b11ebb29852b3b2e1e21db1808352186d9ce8330a76bc0ffdce5",
+        "case_ordinal": 73
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "MalformedAvailableSnapshotsShouldFailClosed",
+        "display_name_sha256": "b00f8746d0c86ae72e2db4a8fae38b078ff961a964cd1d01338ceaee1dc6c572",
+        "case_ordinal": 74
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "MalformedAvailableSnapshotsShouldFailClosed",
+        "display_name_sha256": "d3d1cffb0b2f07484e2d3c10d63cc175485e6f2c826a0519114a7cf2d43d5b3d",
+        "case_ordinal": 75
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "method": "MalformedAvailableSnapshotsShouldFailClosed",
+        "display_name_sha256": "a16f0ef8b31837a9df0c98d578f53a8e5eb0e341946e709a10fce0790931d077",
+        "case_ordinal": 76
+      },
+      {
+        "result": "Pass",
+        "time": "0.031",
+        "type": "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests",
+        "method": "OwnerMutationNeverReusesPreauthorization",
+        "display_name_sha256": "f76f23a48d883eb2b2ac1eab57f7669328f1b234c0c54422348f60b664dbd728",
+        "case_ordinal": 77
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests",
+        "method": "MutationShouldFailClosedForStaleDisabledReplayConflictOrUnavailableProjection",
+        "display_name_sha256": "dc4737bf10248a0896d6db42e379f5f53c27bd3acb16f7fe78bf07a60bb03385",
+        "case_ordinal": 78
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests",
+        "method": "MutationShouldBeAllowedOnlyWithFreshEnabledMembershipEvidence",
+        "display_name_sha256": "a5246d1e8ec718c9916e02ebe9a1c66a1d95dc2d05cb13e7c2cb34ec2603c1f2",
+        "case_ordinal": 79
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests",
+        "method": "MutationShouldRejectInvalidAuthorityOrPrincipal",
+        "display_name_sha256": "d8ef42264f0cfbb049d7885f98655f0fc67ee6dd0dd4d0c63bd3571f7d70302f",
+        "case_ordinal": 80
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests",
+        "method": "MutationShouldRejectInvalidAuthorityOrPrincipal",
+        "display_name_sha256": "49064f69b8436a509a4a92086f79b6648472f2415106d77f318b067e45a2063e",
+        "case_ordinal": 81
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests",
+        "method": "MutationShouldRejectInvalidAuthorityOrPrincipal",
+        "display_name_sha256": "3d2e863d13fda1fa7a70a3d5e491ca1c619b5655285ae7d1bd74c03ced44052c",
+        "case_ordinal": 82
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests",
+        "method": "TenantOnlyAuthorizationDoesNotReuseANonMatchingOuterDecision",
+        "display_name_sha256": "f7dc4b9c6b0f446666e473c5a638647fdcbf1b9d319ee5f9c21b6d56a1c70f98",
+        "case_ordinal": 83
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests",
+        "method": "TenantOnlyAuthorizationDoesNotReuseANonMatchingOuterDecision",
+        "display_name_sha256": "1d6d3f432207f6ca49a8440aa8ecf4bb61d4f5d054255adbbb1d5ce78ccd6159",
+        "case_ordinal": 84
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests",
+        "method": "TenantOnlyAuthorizationReusesAnExactlyMatchingOuterDecision",
+        "display_name_sha256": "2be8dbe496b3634087b0ed924a9ee7713804fbeb803a5382f47733eb9da0cf10",
+        "case_ordinal": 85
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Tests.Authorization.TenantAccessAuthorizerTests",
+        "method": "DiagnosticReadShouldAllowBoundedStaleProjectionWithFreshnessMetadata",
+        "display_name_sha256": "d7bab4565d82df067fab1561ae94fb57c6c2ca7e7ed57072baf0f7697af5dcce",
+        "case_ordinal": 86
+      },
+      {
+        "result": "Pass",
+        "time": "0.495",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+        "method": "ReaderAllowsOnlyFiveMinutesOfLocalClockLagAsync",
+        "display_name_sha256": "34b2246fcf8a5c1f8466c50d9ce6e6a63bf1df8c35d87a0e4d6ae831a552ae7c",
+        "case_ordinal": 87
+      },
+      {
+        "result": "Pass",
+        "time": "0.032",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+        "method": "ReaderAllowsOnlyFiveMinutesOfLocalClockLagAsync",
+        "display_name_sha256": "ea1ed606e1dbad83dc932ec46e6738009a264491163d244239b97d90ad3c9105",
+        "case_ordinal": 88
+      },
+      {
+        "result": "Pass",
+        "time": "0.058",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+        "method": "BoundaryExpiresViewsEvidenceAndPositionRowsWithoutRefreshingTerminalMetadataAsync",
+        "display_name_sha256": "a9442ecc4f5f87f2b11d0eab56dff6cc38a875c7d3c9aef5b68765c2963df693",
+        "case_ordinal": 89
+      },
+      {
+        "result": "Pass",
+        "time": "0.027",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+        "method": "StagedSdkManifestCannotInstallRowsAfterTheirOriginalSourceDeadlineAsync",
+        "display_name_sha256": "bab553e7d30de6518cae0278ac602979a94b8b8ea1a1872de69dbccebbac82da",
+        "case_ordinal": 90
+      },
+      {
+        "result": "Pass",
+        "time": "0.024",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+        "method": "HostAheadTerminalExpiryRetainsItsOriginalPositionEvidenceUntilTheSameBoundaryAsync",
+        "display_name_sha256": "a031b08f46dae3af0a4a48f2d1ee551e63abc70b355ccd57961999e7d5bba741",
+        "case_ordinal": 91
+      },
+      {
+        "result": "Pass",
+        "time": "0.042",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+        "method": "PhysicalExpiryOfBothViewAndEvidenceIsMissingWhileSurvivingEvidenceIsUnavailableAsync",
+        "display_name_sha256": "923e42c44e951b1b8b6841ca44e746efe775d61a9dea27f237a402e496bb011a",
+        "case_ordinal": 92
+      },
+      {
+        "result": "Pass",
+        "time": "0.041",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+        "method": "DomainHostAheadOfPersistenceClockCanCloseAndRebuildATaskAsync",
+        "display_name_sha256": "7b8fd866dc6b3dd5787c80d298976fe88c090df8f845973320b5930981fe8465",
+        "case_ordinal": 93
+      },
+      {
+        "result": "Pass",
+        "time": "0.736",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "OldCoherentWorkspacePrefixCannotConcealTheCurrentSourceLock",
+        "display_name_sha256": "2d2c858101690083b295ee132b90c79d64d22d710475006fb509dde356cb2a38",
+        "case_ordinal": 94
+      },
+      {
+        "result": "Pass",
+        "time": "0.06",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "WorkspaceWrapperMustMatchItsSnapshotWatermarksAndRetainedPrefixDigest",
+        "display_name_sha256": "6313d8a9c77b0cd4a33fd885366019e369c1d3e2468f4804b86db9f29306e39c",
+        "case_ordinal": 95
+      },
+      {
+        "result": "Pass",
+        "time": "0.051",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "WorkspaceWrapperMustMatchItsSnapshotWatermarksAndRetainedPrefixDigest",
+        "display_name_sha256": "231e93af8d6e0b235d5be388f930c6df75b53bb9b3fba4e0e12d5f8ffeacfb14",
+        "case_ordinal": 96
+      },
+      {
+        "result": "Pass",
+        "time": "0.052",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "RejectionMayAdvanceCheckpointWithoutRewritingHistoricalWorkspaceOrTerminalTask",
+        "display_name_sha256": "3e9021b69d4b0d5ae84c24f942faaa47329989aeef2c02f3a3369ca47b1b75c7",
+        "case_ordinal": 97
+      },
+      {
+        "result": "Pass",
+        "time": "0.019",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "DerivedViewLossRequiresCompleteSourceRebuildWithoutErasingItsCompletedReceipt",
+        "display_name_sha256": "439e239483c158fc459ee5dcd893c55715f7f990857fd5babbc06f5884efcb13",
+        "case_ordinal": 98
+      },
+      {
+        "result": "Pass",
+        "time": "0.092",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "DuplicateDeliveryCannotAcknowledgeMissingCurrentWorkspaceOrCorruptTaskWithLifecycleIntact",
+        "display_name_sha256": "774b5cf90aea392ec19bb247062d721df5eff5067a3b401ae15ad9fe51ff46ef",
+        "case_ordinal": 99
+      },
+      {
+        "result": "Pass",
+        "time": "0.095",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "CleanupReadsRebindAuthorizedRequestTracingWithoutChangingRetainedSourceContext",
+        "display_name_sha256": "e4c5fb56851c849a591a387ba8d9232d8c0cdab4828cc068c40ea9111434a93a",
+        "case_ordinal": 100
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "TaskLookupRequiresCurrentFolderAuthorityBeforeStoreObservation",
+        "display_name_sha256": "9afd9d54957dd6310c32b4c215a8d8ca91645de919fc29172805aa7e64509ef2",
+        "case_ordinal": 101
+      },
+      {
+        "result": "Pass",
+        "time": "0.129",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "PersistedTaskResultSurvivesNewReaderAndEmptyCheckpointRebuild",
+        "display_name_sha256": "7e0d17d2fbe0b113b949cbc2614608cd991ff92e0d79fbb7b4c300bf05e120cb",
+        "case_ordinal": 102
+      },
+      {
+        "result": "Pass",
+        "time": "0.038",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "OldValidLifecycleCannotBePairedWithAnArchivedCurrentCheckpoint",
+        "display_name_sha256": "de7b9d0ae4a40d19553d0b2cff97b18767f81ec17799797244067a3ae7a4ebca",
+        "case_ordinal": 103
+      },
+      {
+        "result": "Pass",
+        "time": "0.075",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "FreshRebuildRepairsMissingViewsAndRepeatedEmptyCheckpoints",
+        "display_name_sha256": "de3330bdd65f0df5be7e9bec45fba0de7695dcc30c46877232f94299494d1f94",
+        "case_ordinal": 104
+      },
+      {
+        "result": "Pass",
+        "time": "0.058",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "TaskLookupCannotObserveTaskBoundToAnotherFolder",
+        "display_name_sha256": "6f219795b90a1cfacf435d74f724a0430e1c2c530a911e24bc1ae533ec6f7072",
+        "case_ordinal": 105
+      },
+      {
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment",
+        "display_name_sha256": "3908879a035c00422b189d8498b20c95f39fd499930fc7400a175115f24faa26",
+        "case_ordinal": 106
+      },
+      {
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment",
+        "display_name_sha256": "3913a3cf923435978b6414cf3c99bc55249becda19b9974a86cefca4aaa8c7b1",
+        "case_ordinal": 107
+      },
+      {
+        "result": "Pass",
+        "time": "0.013",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment",
+        "display_name_sha256": "acdeb62735a3303941c2e6b22e0339a3c14bba2de5e6e255509a1ce94099047f",
+        "case_ordinal": 108
+      },
+      {
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment",
+        "display_name_sha256": "70989d25b58df0a5f266507732767c7257d3228c6426eec428cff21ec7bd9197",
+        "case_ordinal": 109
+      },
+      {
+        "result": "Pass",
+        "time": "0.006",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment",
+        "display_name_sha256": "7da0f4eb121174a3fe6e694331c4d8b157984c4604c2b902534cce878db19d6f",
+        "case_ordinal": 110
+      },
+      {
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "InvalidDeliveryCannotAdvancePersistedCheckpoint",
+        "display_name_sha256": "30dd0980ea90a8759eb2b1d6ca0da6da419914672c924bf61387a2d30abf5dc1",
+        "case_ordinal": 111
+      },
+      {
+        "result": "Pass",
+        "time": "0.021",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "ReadersDistinguishMissingLaggingUnavailableCorruptAndExpiredEvidence",
+        "display_name_sha256": "bbfd12583de9278dbbc6653769a5a03610cd1f732681e5453c4f00267f23c08b",
+        "case_ordinal": 112
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "IndependentWritersForTheSameDeliveryConvergeWithoutDoubleAdvance",
+        "display_name_sha256": "081bf7ececa35db601262d0bcb04bf0cacaf434ce035d4dff31be0b7b1aa95e9",
+        "case_ordinal": 113
+      },
+      {
+        "result": "Pass",
+        "time": "0.153",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "MissingKnownWorkspaceAndTaskViewsFailClosedUntilRebuilt",
+        "display_name_sha256": "e5401afbe63e328a5c29a8328a66ae8394e40ff0c395f44748b74cf4c7de4a0e",
+        "case_ordinal": 114
+      },
+      {
+        "result": "Pass",
+        "time": "0.063",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "TerminalTaskMustAgreeWithItsOriginalSourceClosure",
+        "display_name_sha256": "a47780070a417a7c3a43a0e849cf0e781957e2259cc505ada9ea4c38e0f89cd4",
+        "case_ordinal": 115
+      },
+      {
+        "result": "Pass",
+        "time": "0.048",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "method": "TerminalTaskMustAgreeWithItsOriginalSourceClosure",
+        "display_name_sha256": "5fa1ed4abeacc73317d8824175ce8e7ac8c9196e366486e207420223669deae9",
+        "case_ordinal": 116
+      },
+      {
+        "result": "Pass",
+        "time": "0.217",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "ForeignIdentityAndCorruptCheckpointFailBeforeCandidates",
+        "display_name_sha256": "06c682d050e5a2b8889493891c1a012993f7e6a7e85a28ce1ef36afe6ce8204d",
+        "case_ordinal": 117
+      },
+      {
+        "result": "Pass",
+        "time": "0.04",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "UnknownOutcomesRemainNonretryableWithoutTerminalSuccess",
+        "display_name_sha256": "6a8373868d8ba954909174d108f08ff37068e135bc693d53aa641862832b0bc2",
+        "case_ordinal": 118
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "UnknownOutcomesRemainNonretryableWithoutTerminalSuccess",
+        "display_name_sha256": "beaf88b1840321bb3e41dc313b293c7b13bd11cb1888c244e9849356f14219d0",
+        "case_ordinal": 119
+      },
+      {
+        "result": "Pass",
+        "time": "0",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "KeysPreserveTenantAndComponentBoundaries",
+        "display_name_sha256": "6877b2a5a89c3c8189ba6217ffd6a8d077769db52c58d39f43150ffb01ae559d",
+        "case_ordinal": 120
+      },
+      {
+        "result": "Pass",
+        "time": "0.031",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "CommitTerminalEvidenceSurvivesLaterWorkspaceReleaseWithoutInventingCleanup",
+        "display_name_sha256": "128fb68243127bd239e2bbb954c7e458d54ae91f9daf94b8431d5f9e30273f6c",
+        "case_ordinal": 121
+      },
+      {
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "CleanExplicitReleaseClosesTaskAndDeniesNewWorkAfterEquivalentReplay",
+        "display_name_sha256": "21415274ba1817eadfa84d144dda14dbb2dc0fb1981529749e721efeb848a421",
+        "case_ordinal": 122
+      },
+      {
+        "result": "Pass",
+        "time": "0.004",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "TerminalFailureCannotAdvertiseAnotherMutationAttempt",
+        "display_name_sha256": "527a138160823b16717a7fc5d12dea6aa2adc16cf7261fcc831f5c938a83311b",
+        "case_ordinal": 123
+      },
+      {
+        "result": "Pass",
+        "time": "0.009",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+        "display_name_sha256": "e63833cc100d2dfaae9fac973e04b8602ac61ccfb9ca4e8050b02290bc7bd7fb",
+        "case_ordinal": 124
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+        "display_name_sha256": "f9bf1a3c19d95f92b47496954c22d4711116b1f0edb874f800a09245b2c355e9",
+        "case_ordinal": 125
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+        "display_name_sha256": "08b62e2705bfbbc758dddf7df150dea2ae23170d759a79d48b96ac1238ecf43c",
+        "case_ordinal": 126
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+        "display_name_sha256": "08b62e2705bfbbc758dddf7df150dea2ae23170d759a79d48b96ac1238ecf43c",
+        "case_ordinal": 127
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+        "display_name_sha256": "08b62e2705bfbbc758dddf7df150dea2ae23170d759a79d48b96ac1238ecf43c",
+        "case_ordinal": 128
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+        "display_name_sha256": "08b62e2705bfbbc758dddf7df150dea2ae23170d759a79d48b96ac1238ecf43c",
+        "case_ordinal": 129
+      },
+      {
+        "result": "Pass",
+        "time": "0.003",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+        "display_name_sha256": "08b62e2705bfbbc758dddf7df150dea2ae23170d759a79d48b96ac1238ecf43c",
+        "case_ordinal": 130
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+        "display_name_sha256": "08b62e2705bfbbc758dddf7df150dea2ae23170d759a79d48b96ac1238ecf43c",
+        "case_ordinal": 131
+      },
+      {
+        "result": "Pass",
+        "time": "0.002",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+        "display_name_sha256": "8e5b441d5b8389dfa17566fb97cd8634e1606740e560e61907ca92c54f33fc82",
+        "case_ordinal": 132
+      },
+      {
+        "result": "Pass",
+        "time": "0.005",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+        "display_name_sha256": "3285e1a1a0b32c5a77df1134e4482f9974c466737ab734023d84a91937d815d9",
+        "case_ordinal": 133
+      },
+      {
+        "result": "Pass",
+        "time": "0.001",
+        "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+        "method": "ExactDuplicatesCannotAdvanceCheckpointAndDifferentBytesCannotReplaceThem",
+        "display_name_sha256": "861a0f32bfad6a9a908b6551fcea54eaf335e6149325ec7f1464d26613a796e4",
+        "case_ordinal": 134
+      }
+    ]
+  },
+  "source_or_head_drift": [],
+  "working_tree_status_changes": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 0
+  },
+  "runtime_module_observations": 89,
+  "fixture_module_observations": 0,
+  "original_private_receipt_sha256": "a04ec363dc44cfd689536ba942cc7ada22a586a57bb74c1824a0d0469cb21a3f"
+}

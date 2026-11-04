@@ -1,0 +1,1439 @@
+{
+  "created_utc": "2026-11-03T19:07:18.657828+00:00",
+  "run": "strict-tenant-maintenance-2",
+  "parent_reported_sdk_head": "bca57ab16802ba1b91f744c2c6b9c73259bdbdcc",
+  "parent_extra_logging_only": [
+    "Logging__LogLevel__Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority=Debug",
+    "Logging__LogLevel__Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler=Debug"
+  ],
+  "input_hashes": {
+    "strict-tenant-maintenance-2-private.log": "f87033c03f560ce6c2c544e0d9e28b3d9e497c48b70f806127aac39d5672b62a",
+    "strict-tenant-maintenance-2-stages-private.json": "10c7ff6584cdcb2ee3156e4aae7f8ef25551140fbdf93355ee678d3c14c95f88",
+    "strict-tenant-maintenance-2-private.xml": "22c333dba839ce4f3bf5d0a8ef435b0baedbb55aad08703ff5f3ae72cd23e69e",
+    "strict-tenant-maintenance-2-lifecycle-private.jsonl": "3cce244521bdec6c6ed117a8fb54c8da1941ac544203932fbf0aec1a36e7e8e5",
+    "strict-tenant-maintenance-2-semantic-correlation-private.json": "64771ab178c575228a53ae8ddb1abbce5f53959e6ff66745459dfe04ee1a5a8e"
+  },
+  "executed_result": {
+    "total": "1",
+    "passed": "0",
+    "failed": "1",
+    "errors": "0",
+    "skipped": "0",
+    "time": "195.562"
+  },
+  "failure": {
+    "exception": "System.Threading.Tasks.TaskCanceledException",
+    "stack": [
+      {
+        "method": "FolderDurabilityHttp.SendAsync",
+        "line": 88
+      },
+      {
+        "method": "FolderDurabilityAcceptanceFixture.MutateAsync",
+        "line": 195
+      },
+      {
+        "method": "OperationalStatusDurabilityAcceptanceTests.RequireRealTaskClosureAsync",
+        "line": 173
+      }
+    ],
+    "meaning": "unchanged unknown-profile PUT outer retry budget exhausted while delaying after a retryable response; no final expected403 assertion result was reached",
+    "tenant_maintenance_exercised": false
+  },
+  "semantic_correlation_join": {
+    "semantic_correlation_sha256": "570752da04c784c7ff685caef620ff14e1ded684ddbc119e94e2fc422f68d82c",
+    "rows": [
+      {
+        "utc": "2026-11-03T18:54:38.7030000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:54:40.9350000",
+        "category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+        "event_id": 2001,
+        "closed_fields": {
+          "CommandType": "ConfigureProviderBinding",
+          "Domain": "folders",
+          "Stage": "Processing"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:54:40.9390000",
+        "category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+        "event_id": 0,
+        "closed_fields": {}
+      },
+      {
+        "utc": "2026-11-03T18:54:46.1450000",
+        "category": "Hexalith.EventStore.Server.DomainServices.DaprDomainServiceInvoker",
+        "event_id": 3004,
+        "closed_fields": {
+          "Domain": "folders",
+          "MethodName": "process",
+          "TimeoutSeconds": 5,
+          "ConfiguredTimeoutElapsed": true
+        }
+      },
+      {
+        "utc": "2026-11-03T18:54:46.2160000",
+        "category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+        "event_id": 2003,
+        "closed_fields": {
+          "CommandType": "ConfigureProviderBinding",
+          "Domain": "folders"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:54:46.2270000",
+        "category": "Hexalith.EventStore.Server.Events.DeadLetterPublisher",
+        "event_id": 3200,
+        "closed_fields": {
+          "CommandType": "ConfigureProviderBinding",
+          "Domain": "folders"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:54:46.2310000",
+        "category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+        "event_id": 2002,
+        "closed_fields": {
+          "CommandType": "ConfigureProviderBinding",
+          "Domain": "folders",
+          "Stage": "Rejected"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:54:46.2310000",
+        "category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+        "event_id": 2004,
+        "closed_fields": {
+          "Status": "Rejected",
+          "CommandType": "ConfigureProviderBinding",
+          "Domain": "folders"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:54:49.3440000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:54:54.8380000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:00.3240000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:02.2350000",
+        "category": "Hexalith.Folders.Observability.FolderTelemetryEmitter",
+        "event_id": 0,
+        "closed_fields": {
+          "OperationKind": "ProviderReadiness",
+          "Result": "Unavailable",
+          "Category": "projection_unavailable",
+          "RedactionState": "MetadataOnly"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:03.4820000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:05.9250000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:10.8730000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:17.3280000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:18.3850000",
+        "category": "Hexalith.Folders.Observability.FolderTelemetryEmitter",
+        "event_id": 0,
+        "closed_fields": {
+          "OperationKind": "ProviderReadiness",
+          "Result": "Unavailable",
+          "Category": "projection_unavailable",
+          "RedactionState": "MetadataOnly"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:20.4800000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:23.4470000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:26.4480000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:33.4690000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:33.9870000",
+        "category": "Hexalith.Folders.Observability.FolderTelemetryEmitter",
+        "event_id": 0,
+        "closed_fields": {
+          "OperationKind": "ProviderReadiness",
+          "Result": "Unavailable",
+          "Category": "projection_unavailable",
+          "RedactionState": "MetadataOnly"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:37.0740000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:39.0980000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:41.3080000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:50.3950000",
+        "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+        "event_id": 1100,
+        "closed_fields": {
+          "Domain": "folders",
+          "CommandType": "ConfigureProviderBinding"
+        }
+      },
+      {
+        "utc": "2026-11-03T18:55:51.5910000",
+        "category": "Hexalith.Folders.Observability.FolderTelemetryEmitter",
+        "event_id": 0,
+        "closed_fields": {
+          "OperationKind": "ProviderReadiness",
+          "Result": "Unavailable",
+          "Category": "projection_unavailable",
+          "RedactionState": "MetadataOnly"
+        }
+      }
+    ]
+  },
+  "diagnostic_stage_snapshot": {
+    "records": 37516,
+    "closed_records": 18758,
+    "statistics": {
+      "ActivityTracking": {
+        "closed_records": 14,
+        "failed_records": 0,
+        "median_ms": 2.0,
+        "p95_nearest_rank_ms": 6,
+        "max_ms": 6
+      },
+      "ActorRpc": {
+        "closed_records": 3,
+        "failed_records": 0,
+        "median_ms": 1649,
+        "p95_nearest_rank_ms": 2120,
+        "max_ms": 2120
+      },
+      "Admission": {
+        "closed_records": 26,
+        "failed_records": 0,
+        "median_ms": 1122.0,
+        "p95_nearest_rank_ms": 1927,
+        "max_ms": 1948
+      },
+      "AdmissionCompletion": {
+        "closed_records": 11,
+        "failed_records": 0,
+        "median_ms": 181,
+        "p95_nearest_rank_ms": 472,
+        "max_ms": 472
+      },
+      "ArchiveRead": {
+        "closed_records": 14,
+        "failed_records": 0,
+        "median_ms": 0.0,
+        "p95_nearest_rank_ms": 2,
+        "max_ms": 2
+      },
+      "ArchiveWrite": {
+        "closed_records": 14,
+        "failed_records": 0,
+        "median_ms": 1.0,
+        "p95_nearest_rank_ms": 3,
+        "max_ms": 3
+      },
+      "CatalogActivationDigest": {
+        "closed_records": 2651,
+        "failed_records": 0,
+        "median_ms": 1,
+        "p95_nearest_rank_ms": 3,
+        "max_ms": 19
+      },
+      "CatalogAdmissionWait": {
+        "closed_records": 2347,
+        "failed_records": 0,
+        "median_ms": 8,
+        "p95_nearest_rank_ms": 82,
+        "max_ms": 191
+      },
+      "CatalogCompareExchange": {
+        "closed_records": 2651,
+        "failed_records": 0,
+        "median_ms": 3,
+        "p95_nearest_rank_ms": 5,
+        "max_ms": 50
+      },
+      "CatalogHostCapture": {
+        "closed_records": 2651,
+        "failed_records": 0,
+        "median_ms": 29,
+        "p95_nearest_rank_ms": 53,
+        "max_ms": 214
+      },
+      "CatalogSnapshot": {
+        "closed_records": 2342,
+        "failed_records": 0,
+        "median_ms": 2.0,
+        "p95_nearest_rank_ms": 6,
+        "max_ms": 23
+      },
+      "CatalogStateRead": {
+        "closed_records": 2651,
+        "failed_records": 0,
+        "median_ms": 2,
+        "p95_nearest_rank_ms": 6,
+        "max_ms": 47
+      },
+      "CatalogTrust": {
+        "closed_records": 2651,
+        "failed_records": 0,
+        "median_ms": 0,
+        "p95_nearest_rank_ms": 2,
+        "max_ms": 25
+      },
+      "CorrelationWrite": {
+        "closed_records": 14,
+        "failed_records": 0,
+        "median_ms": 2.0,
+        "p95_nearest_rank_ms": 8,
+        "max_ms": 8
+      },
+      "ExecutionBegin": {
+        "closed_records": 11,
+        "failed_records": 0,
+        "median_ms": 206,
+        "p95_nearest_rank_ms": 316,
+        "max_ms": 316
+      },
+      "ExecutionCapability": {
+        "closed_records": 11,
+        "failed_records": 0,
+        "median_ms": 98,
+        "p95_nearest_rank_ms": 193,
+        "max_ms": 193
+      },
+      "ExecutionFence": {
+        "closed_records": 90,
+        "failed_records": 0,
+        "median_ms": 222.0,
+        "p95_nearest_rank_ms": 341,
+        "max_ms": 407
+      },
+      "FencedActorRpc": {
+        "closed_records": 11,
+        "failed_records": 0,
+        "median_ms": 1560,
+        "p95_nearest_rank_ms": 5482,
+        "max_ms": 5482
+      },
+      "InvocationAcquire": {
+        "closed_records": 117,
+        "failed_records": 5,
+        "median_ms": 46,
+        "p95_nearest_rank_ms": 129,
+        "max_ms": 189
+      },
+      "InvocationRelease": {
+        "closed_records": 104,
+        "failed_records": 0,
+        "median_ms": 57.5,
+        "p95_nearest_rank_ms": 152,
+        "max_ms": 220
+      },
+      "InvocationTransport": {
+        "closed_records": 108,
+        "failed_records": 1,
+        "median_ms": 55.5,
+        "p95_nearest_rank_ms": 1103,
+        "max_ms": 4922
+      },
+      "InvocationValidation": {
+        "closed_records": 112,
+        "failed_records": 4,
+        "median_ms": 0.0,
+        "p95_nearest_rank_ms": 0,
+        "max_ms": 0
+      },
+      "ProjectionActivation": {
+        "closed_records": 24,
+        "failed_records": 0,
+        "median_ms": 2.0,
+        "p95_nearest_rank_ms": 5,
+        "max_ms": 24
+      },
+      "ProjectionDelivery": {
+        "closed_records": 3,
+        "failed_records": 0,
+        "median_ms": 2798,
+        "p95_nearest_rank_ms": 3818,
+        "max_ms": 3818
+      },
+      "RouterAcquire": {
+        "closed_records": 14,
+        "failed_records": 0,
+        "median_ms": 66.5,
+        "p95_nearest_rank_ms": 153,
+        "max_ms": 153
+      },
+      "RouterRelease": {
+        "closed_records": 14,
+        "failed_records": 0,
+        "median_ms": 7.0,
+        "p95_nearest_rank_ms": 65,
+        "max_ms": 65
+      },
+      "Routing": {
+        "closed_records": 14,
+        "failed_records": 0,
+        "median_ms": 1650.0,
+        "p95_nearest_rank_ms": 5601,
+        "max_ms": 5601
+      },
+      "StatusRead": {
+        "closed_records": 14,
+        "failed_records": 0,
+        "median_ms": 1.0,
+        "p95_nearest_rank_ms": 4,
+        "max_ms": 4
+      },
+      "StreamTracking": {
+        "closed_records": 13,
+        "failed_records": 0,
+        "median_ms": 12,
+        "p95_nearest_rank_ms": 38,
+        "max_ms": 38
+      },
+      "SubmitAcquire": {
+        "closed_records": 29,
+        "failed_records": 0,
+        "median_ms": 73,
+        "p95_nearest_rank_ms": 165,
+        "max_ms": 169
+      },
+      "SubmitRelease": {
+        "closed_records": 29,
+        "failed_records": 0,
+        "median_ms": 12,
+        "p95_nearest_rank_ms": 102,
+        "max_ms": 113
+      }
+    },
+    "scope": "whole completed run, including startup, intentional controls and cleanup; not a matched comparison with retry1"
+  },
+  "failed_invocation_trace": {
+    "trace_id": "ab5742b9f38351a97502a5af613e7007",
+    "span_id": "553710211aa7709b",
+    "span_stages": [
+      {
+        "timestamp": "2026-11-03T18:54:41.0550000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogAdmissionWait",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.0980000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogAdmissionWait",
+        "status": "Completed",
+        "ms": 43,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.0980000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1010000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1010000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1020000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1030000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1360000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 32,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1360000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1370000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1370000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1400000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1400000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogSnapshot",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1430000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogSnapshot",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "3e11f4d87f35f1ff"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1430000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationAcquire",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "92a07ca26939e311"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1430000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogAdmissionWait",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1820000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogAdmissionWait",
+        "status": "Completed",
+        "ms": 39,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1820000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1850000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1850000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1860000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.1870000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.2160000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 27,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.2160000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.2160000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.2160000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.2190000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.2190000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogSnapshot",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.2210000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogSnapshot",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "7190ceca7b595dc0"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.2210000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationAcquire",
+        "status": "Completed",
+        "ms": 78,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "92a07ca26939e311"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.2210000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationValidation",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "92a07ca26939e311"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.2210000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationValidation",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "92a07ca26939e311"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:41.2210000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationTransport",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "92a07ca26939e311"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:46.1430000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationTransport",
+        "status": "Failed",
+        "ms": 4922,
+        "requestCanceled": "True",
+        "opCanceled": "True",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "92a07ca26939e311"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:46.1440000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationRelease",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "True",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "92a07ca26939e311"
+      },
+      {
+        "timestamp": "2026-11-03T18:54:46.1440000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationRelease",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "True",
+        "opCanceled": "False",
+        "traceId": "ab5742b9f38351a97502a5af613e7007",
+        "spanId": "553710211aa7709b",
+        "attemptId": "92a07ca26939e311"
+      }
+    ],
+    "all_trace_stage_count": 1506,
+    "same_trace_closed_stages_inside_timed_window": {
+      "catalog_host_capture_count": 57,
+      "capture_median_ms": 51,
+      "capture_max_ms": 136,
+      "admission_count": 2,
+      "admission_max_ms": 39
+    },
+    "semantic_join_limit": "The command is identified exactly by semantic CorrelationId in the Invoker and actor logs; the stage span is matched by the unique same-window canceled transport and identical5s timing, not by an emitted direct mapping between semantic CorrelationId and W3C TraceId."
+  },
+  "receiver_observation_limits": {
+    "receiver_stage_records": 0,
+    "aspnet_process_records": 0,
+    "native_metadata_information_records": 0,
+    "required_existing_receiver_logger": "Hexalith.EventStore.ServiceDefaults.Routing.TechnicalHttpRouteCatalogReceiver",
+    "source_facts": [
+      "Technical receiver has ReceiverAcquire, ReceiverNext and ReceiverRelease diagnostic scopes, gated by its exact category. That category was not enabled in this retry.",
+      "Fixture ASP.NET Information overrides apply to EventStore only. No Folders /process ingress/handler/reply record is available in these raw logs.",
+      "FoldersDomainServiceRequestHandler has no logger; absence of a ProcessCommand completion does not establish that ingress or handler was never entered.",
+      "No parsed native metadata Information record establishes no call or dispatch; pre-HTTP work and filtering remain possible."
+    ]
+  },
+  "lifecycle_cleanup_records": [
+    {
+      "phase": "application_stopping",
+      "processId": 3769541,
+      "utc": "2026-11-03T18:55:54.9745772+00:00",
+      "inFlightRequests": 0,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "host_stop",
+      "processId": 3769541,
+      "utc": "2026-11-03T18:55:54.9854759+00:00",
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 3769541,
+      "utc": "2026-11-03T18:55:55.9843597+00:00",
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "application_stopped",
+      "processId": 3769541,
+      "utc": "2026-11-03T18:55:56.2937369+00:00",
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": true,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    }
+  ],
+  "interpretation": [
+    "The first ConfigureProviderBinding command reached AggregateActor Processing, then exhausted the configured5s process-invocation timeout, was dead-lettered and marked Rejected. Later same-correlation submissions and four public Unavailable/projection_unavailable outcomes precede fixture retry cancellation.",
+    "In the corresponding unique failed outgoing span, local InvocationAcquire completes in78ms and validation in0ms; transport then fails canceled after4922ms, with immediate0ms release. These sum to the exact5000ms configured domain window. The previous same-span outer authority acquire completed before that window.",
+    "The timed caller catalog acquisition is a small part of this measured failed window. Remote transport dominates, but that scope includes receiver/actor processing and awaiting its reply; it is not proof of network delay.",
+    "Current diagnostics cannot assign the remote delay to Folders receiver admission/Next, request-handler authorization/read-model work or reply. No correction or deadline change is supported by this boundary alone.",
+    "The first retry retained-code mismatch (UnavailableProjection vs ValidationFailed) remains a separate failure. The generic Rejected403 mapping can mask a retained failureCode; no mapper/assertion change was made or proposed here.",
+    "No maintenance PASS, six-concern, interrupted-generation, concurrent-worker or main-restart marker was reached. No acceptance/capacity/SM4 claim follows.",
+    "Cleanup reached ApplicationStopped in approximately1.3191597s with zero observed in-flight requests/dropped records/sink failures. Exact parent-owned cleanup and drift receipts remain separate.",
+    "All work in this diagnosis was read-only except writing private closed analysis under /tmp; no source/output/build/test/topology mutation occurred."
+  ],
+  "source_hashes": {
+    "src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs": "5c32a8b20a7fe0f3aa282ad8d051c407c8a9acbfd726406bb789252a1ea8547b",
+    "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs": "1effa5b126098750d7f1315d9310e5ab6d71b10c5c2154eb7fa60ba138397bfa",
+    "src/Hexalith.Folders.Server/ProviderReadinessEndpoints.cs": "6509c188f5cab45aff1785d0011b7d888e2ccf32d9c5c753030a6c61ba2f954a",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/TechnicalHttpRouteCatalogReceiver.cs": "48668932ae9a61cc62ba4557fd7d9f318764c48c83f31727c2c5008bab8a1823",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs": "7da4de5a4b05830a567df979e722c163ab2914121b03c9b32f406594e4343025",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs": "c4c319ddfb6fe5c4ed40488cd9ee2eb1a88333f2205e16cf3dc91b41126fcfc0",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/DomainServices/DaprDomainServiceInvoker.cs": "0daa79cf4f2a29f4fc61e7e013b5f54be1a504a533ab3684467d737c261640b3",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "19c8349067c35344188eb0e0f7208b177025dd17d4b8d932df5977db47f5bd25"
+  }
+}

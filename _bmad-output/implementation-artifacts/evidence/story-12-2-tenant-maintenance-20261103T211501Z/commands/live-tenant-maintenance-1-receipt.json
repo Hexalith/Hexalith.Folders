@@ -1,0 +1,68 @@
+{
+  "argv": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.FolderDurabilityTenantMaintenanceAcceptanceTests",
+    "-showLiveOutput",
+    "-result-xml",
+    "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/live-tenant-maintenance-1-private.xml"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-03T20:01:43.150617+00:00",
+  "utc_end": "2026-11-03T20:04:48.161297+00:00",
+  "exit_code": 0,
+  "environment_selection": {
+    "Folders__EventStoreDaprHttpPort": 36031,
+    "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true"
+  },
+  "private_log": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/live-tenant-maintenance-1-private.log",
+    "sha256": "f2746f808e93daa2cba177cb33c93269b00af9bb2b59c6e49b161c36d4dec4b7"
+  },
+  "private_xml": {
+    "path": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/live-tenant-maintenance-1-private.xml",
+    "sha256": "424a48eb0459621e99d3b05159b7a441cfa74be433b5915b75f012cb66439533"
+  },
+  "summary": {
+    "assemblies": [
+      {
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "run-date": "2026-11-03",
+        "run-time": "20:01:43",
+        "errors": "0",
+        "failed": "0",
+        "passed": "1",
+        "skipped": "0",
+        "time": "183.007",
+        "total": "1"
+      }
+    ],
+    "tests": [
+      {
+        "result": "Pass",
+        "time": "124.962",
+        "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityTenantMaintenanceAcceptanceTests",
+        "method": "NaturallyAgedTenantShouldMaintainRealSourceAndWorkersAuthorityAndSkipFreshUpdate",
+        "display_name_sha256": "e56a1cea641672ceaca9d852d4110db0ca999171c3c5aa5482a50d2788089540",
+        "case_ordinal": 1
+      }
+    ]
+  },
+  "source_or_head_drift": [
+    "/home/administrator/projects/hexalith/folders"
+  ],
+  "working_tree_status_changes": [
+    "/home/administrator/projects/hexalith/folders"
+  ],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 0
+  },
+  "runtime_module_observations": 177,
+  "fixture_module_observations": 47,
+  "original_private_receipt_sha256": "9e610404681e79ca9313d8d998fd8853e82bbd0367f7a54878e4829454e7125f"
+}

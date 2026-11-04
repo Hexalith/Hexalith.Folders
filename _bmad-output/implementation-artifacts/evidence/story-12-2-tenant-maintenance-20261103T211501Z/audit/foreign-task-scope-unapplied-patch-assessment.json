@@ -1,0 +1,32 @@
+{
+  "utc": "2026-11-03T21:02:39.410733+00:00",
+  "git_preflight": {
+    "branch": {
+      "exit_code": 0,
+      "output_sha256": "6403203dd5a0867eb14d104ee8a73730bd72dd9ad92e78d996a6dba0a5dcfc01"
+    },
+    "status": {
+      "exit_code": 0,
+      "output_sha256": "7c73cbcd344b816f15f5282cbb1991a950e9804e40d5c9556d53b3ab6e409050"
+    },
+    "remotes": {
+      "exit_code": 0,
+      "output_sha256": "7eefbb9ddcf73b9530207939065681840e2cca40a2f5a0abdd44647c2d950d69"
+    },
+    "recent": {
+      "exit_code": 0,
+      "output_sha256": "d6b817450685025a41b121c7231555fd386edd107af4df5a9b543934e5564cb2"
+    }
+  },
+  "unapplied_patch_check": {
+    "argv": [
+      "git",
+      "apply",
+      "--check",
+      "_bmad-output/implementation-artifacts/proposal-12-2-foreign-task-scope-proof.patch"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "worktree_mutated": false
+  }
+}

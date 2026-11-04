@@ -1,0 +1,297 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "20:35:01",
+      "errors": "0",
+      "failed": "1",
+      "passed": "34",
+      "skipped": "0",
+      "time": "5.921",
+      "total": "35"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.288",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "OriginalValidationFailureRetainsItsBoundaryAndNoFence",
+      "case_ordinal": 1,
+      "display_name_sha256": "5ac39d4cb06bc106eee3877620ff05bb773185a12359a0f0d8e15b9c8db568ca"
+    },
+    {
+      "result": "Pass",
+      "time": "0.092",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "OriginalValidationFailureRetainsItsBoundaryAndNoFence",
+      "case_ordinal": 2,
+      "display_name_sha256": "d7d1d72b69990b1ebe8b437452debc999eab90c8e5b500a3ee51617f91e608af"
+    },
+    {
+      "result": "Fail",
+      "time": "0.093",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "SupportedRegistrationKeepsOptionalLoggerResolutionAdvisory",
+      "case_ordinal": 3,
+      "display_name_sha256": "6cca3bd9f8251ed99b6c1d95cfe9dda1cdc09d974a655509c59b3bb1209d921f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.072",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "SupportedRegistrationKeepsOptionalLoggerResolutionAdvisory",
+      "case_ordinal": 4,
+      "display_name_sha256": "60bc7f048fd235a8ed467e452e9628453a736415c93f46a51d53beeec30d2292"
+    },
+    {
+      "result": "Pass",
+      "time": "0.069",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "QueueCancellationDoesNotReadOrRetainAnAdditionalFence",
+      "case_ordinal": 5,
+      "display_name_sha256": "1bed198847ee4c8d88b8c86217a6558a597f7cdd3d36ce5be3932ca0f3df8146"
+    },
+    {
+      "result": "Pass",
+      "time": "0.065",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "DisabledOrThrowingLoggingRemainsAdvisory",
+      "case_ordinal": 6,
+      "display_name_sha256": "26dddcc51a25eea74c96514b809ae4f620698f6df8482c761788bb5585339093"
+    },
+    {
+      "result": "Pass",
+      "time": "0.063",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "method": "DisabledOrThrowingLoggingRemainsAdvisory",
+      "case_ordinal": 7,
+      "display_name_sha256": "223f8198d62877863eab0a29b86d78e20179c9720f566ac2d350d86372f441e2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.04",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "LostSuccessfulCasResponseRetainsOneExactOwnFenceWithoutDuplicatingAdmission",
+      "case_ordinal": 8,
+      "display_name_sha256": "60e3f2bf12953c41a2968c738454236e92997816c94fd02f8e0fa87fa5cdeae1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.038",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "EveryCaptureCanAdvanceForeignInventoryWithoutLosingPeersOrUsingItsOldETag",
+      "case_ordinal": 9,
+      "display_name_sha256": "f531944d05e438aa07d47b60e828a197ac51a8c945f066403c6a1aa4ce88325b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.04",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshedInventoryLimitsRemainClosed",
+      "case_ordinal": 10,
+      "display_name_sha256": "cb750b73d11a54d8bdb639c618afd3c32b1cfbab6f1e70b5424edbde440b384a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.031",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshedInventoryLimitsRemainClosed",
+      "case_ordinal": 11,
+      "display_name_sha256": "a95c046d5e66ca7cee8751d9fa4b2dd9d1694b90a49b330521e2e6bda59e4093"
+    },
+    {
+      "result": "Pass",
+      "time": "0.03",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "MutableReadAliasesCannotRewriteThePrivatelyValidatedActivation",
+      "case_ordinal": 12,
+      "display_name_sha256": "1ddd18ea0ad308e81a8a6192344ed20a6dae2a49a9db273727a16bea475ac968"
+    },
+    {
+      "result": "Pass",
+      "time": "0.024",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "MutableReadAliasesCannotRewriteThePrivatelyValidatedActivation",
+      "case_ordinal": 13,
+      "display_name_sha256": "0a4294c2b63c098ed58950c8b1ffb1027121f9c89b7ce74053da9b26fc44e2ed"
+    },
+    {
+      "result": "Pass",
+      "time": "0.042",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "PendingSuccessorDoesNotStrandAnAlreadyRecordedOwnFence",
+      "case_ordinal": 14,
+      "display_name_sha256": "6d0e989e7474de6f1cfe5ecbc4dd1f5874bdfb2e2d03876828011810cfcdd1db"
+    },
+    {
+      "result": "Pass",
+      "time": "0.04",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "PendingSuccessorDoesNotStrandAnAlreadyRecordedOwnFence",
+      "case_ordinal": 15,
+      "display_name_sha256": "95854e67c5118a79a35320f2862d9671e427fcc446479a6c89e5fe2b69e3ce7d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.036",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 16,
+      "display_name_sha256": "fbc5da5d96e7f24895b7e9dbf33f34d26f03f6e7b34e44d862e1d844ae1e3324"
+    },
+    {
+      "result": "Pass",
+      "time": "0.027",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 17,
+      "display_name_sha256": "ad0c011d940fa90c27eddb37e2442da8e4e92fcdd7ed2df9eb8d3e61bf0c1394"
+    },
+    {
+      "result": "Pass",
+      "time": "0.028",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 18,
+      "display_name_sha256": "eb640faa4cb94835696f872a7cf0cac566bcdc6a88be50bc808a9a257bf3c267"
+    },
+    {
+      "result": "Pass",
+      "time": "0.037",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 19,
+      "display_name_sha256": "7abf49bc1a8d089d8a554ec92669a742694a83f981bc6a694bbd9f95f9ce2bbf"
+    },
+    {
+      "result": "Pass",
+      "time": "0.03",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 20,
+      "display_name_sha256": "a580bc7b5260ac1fe6061ef1b9c3f56df419feb42c72ac750b488f52341d85a1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.03",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 21,
+      "display_name_sha256": "cc38edae998e6707bc1a481a01329a3dac6d813020fb0298c21665b51d2b5dd9"
+    },
+    {
+      "result": "Pass",
+      "time": "0.029",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "ChangedAuthorityCannotInheritThePriorObservationOrTrust",
+      "case_ordinal": 22,
+      "display_name_sha256": "dcf6c4e293fe4646a518dc75ea0a7ce6e375359a2ec0aa071653bebfc7b9d743"
+    },
+    {
+      "result": "Pass",
+      "time": "0.026",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshFailureCancellationOrChangedLocalIdentityCannotCreateAFence",
+      "case_ordinal": 23,
+      "display_name_sha256": "40c7ceeada61334465f3946bb952895d80507cdd64da5e2e6bff8a16d25841ca"
+    },
+    {
+      "result": "Pass",
+      "time": "0.025",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshFailureCancellationOrChangedLocalIdentityCannotCreateAFence",
+      "case_ordinal": 24,
+      "display_name_sha256": "7fc817dbf24571318e94d9c8d26c25aa5b3f5da6e2175a92212825e4081faad7"
+    },
+    {
+      "result": "Pass",
+      "time": "0.024",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshFailureCancellationOrChangedLocalIdentityCannotCreateAFence",
+      "case_ordinal": 25,
+      "display_name_sha256": "349ca10cf61c0056f964e75cdbf278ad950460ac80636183fb2312e9b56e8868"
+    },
+    {
+      "result": "Pass",
+      "time": "0.024",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshFailureCancellationOrChangedLocalIdentityCannotCreateAFence",
+      "case_ordinal": 26,
+      "display_name_sha256": "6adaea702f1d8837db31a7c7a4a0009d585da49b0b038a321bad22fcdaa4e039"
+    },
+    {
+      "result": "Pass",
+      "time": "0.023",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "method": "RefreshFailureCancellationOrChangedLocalIdentityCannotCreateAFence",
+      "case_ordinal": 27,
+      "display_name_sha256": "74a57d316855c81b6b4f6f29d7b50c75a367b4b4d2e6c14954bd39716f636468"
+    },
+    {
+      "result": "Pass",
+      "time": "0.104",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "QueuedAdmissionCanCancelWhileSameAuthorityControlStillAdvancesAndInvalidatesTheHeldRead",
+      "case_ordinal": 28,
+      "display_name_sha256": "d20a127db9a8542b153bd99e305e921e0e5ef5191dcb11b96e6b98b664452492"
+    },
+    {
+      "result": "Pass",
+      "time": "0.157",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "AwaitedAcquireLetsTheIndependentContentionOwnerFinishBeforeTheBoundIsExhausted",
+      "case_ordinal": 29,
+      "display_name_sha256": "cd71a874eca6eae0582c058e0721a2c382605e3e5c0a0ecb759362ce7bce2cc6"
+    },
+    {
+      "result": "Pass",
+      "time": "2.695",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "PermanentContentionRetainsExactlyNinetySixFreshAttemptsAndNoDispatchFence",
+      "case_ordinal": 30,
+      "display_name_sha256": "154b280e5b5bd9e563efd31d114a304974e9d245f1d5a073dc1125bb07fd6ba4"
+    },
+    {
+      "result": "Pass",
+      "time": "0.049",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "EveryRetryRevalidatesTheCurrentStateAndIndependentObservation",
+      "case_ordinal": 31,
+      "display_name_sha256": "b567b9b222ef829f82c583d320ed48c8e6f74164ef6d29d46220d9c003e44073"
+    },
+    {
+      "result": "Pass",
+      "time": "0.034",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "EveryRetryRevalidatesTheCurrentStateAndIndependentObservation",
+      "case_ordinal": 32,
+      "display_name_sha256": "50d80db8e3d4e7b06ea8028611e8f42629dce65bc8fb76ec4265d46f0144a7b8"
+    },
+    {
+      "result": "Pass",
+      "time": "0.027",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "PreCancelledAcquireNeverTouchesTheProvider",
+      "case_ordinal": 33,
+      "display_name_sha256": "f1e0c8cc8fb325234eaabeb880d54a95ad7fd33dabd0e39c91b0cc73295ed290"
+    },
+    {
+      "result": "Pass",
+      "time": "1.313",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "SustainedContentionCanClearAfterFortyEightConflicts",
+      "case_ordinal": 34,
+      "display_name_sha256": "3b049b8379a3329b749282673856590e550cbb33dd21ed5072d242270c6c2d17"
+    },
+    {
+      "result": "Pass",
+      "time": "0.028",
+      "type": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "method": "CancellationAfterAConflictStopsBeforeAnotherProviderReadOrExchange",
+      "case_ordinal": 35,
+      "display_name_sha256": "2bbf431cf860fedb29c20fc3545209f979a4fb287b21fea50255d7e8568b0115"
+    }
+  ]
+}

@@ -1,0 +1,3759 @@
+{
+  "created_utc": "2026-11-03T20:22:31.713503+00:00",
+  "run": "strict-tenant-maintenance-3",
+  "input_hashes": {
+    "private.log": "f19a544eb9407cc53fb42812005f71ecefaffae1c5c7fa8ab3417fdf7f59c6d0",
+    "private.xml": "de0c3d5ec1110aedc9ae2b9a176d12f155f67eb88f69ba41255231d5ccb2074e",
+    "before.json": "0cc0949edb61f45c7ea48b441b88291a2c967acb7ea0f3c0e8ffb50e168208f6",
+    "after.json": "295c257f783bdad5d6a925af2ae60b905e5506f4c890feedf8a3a9be5d8e0cbe",
+    "runtime.json": "7c47341b38f382cc52c0d3a0d1aac1bc80a9b60fd96f472bf262bde94822ea5a",
+    "receipt.json": "4e8c391f73534f361ac54252c14c92f5864defb3c79ed3069cfa9a8d9380c137",
+    "owned-cleanup-audit.json": "380947b0e8797c2f510fd358dcdaa78dad3365e2564b35a5b7a5a98d54705f00",
+    "stages-private.json": "1a89fee89190f3963c887900bf392fa347b9e3250cc5e91adf7b6233fc8c976a"
+  },
+  "result": {
+    "total": "1",
+    "passed": "0",
+    "failed": "1",
+    "errors": "0",
+    "skipped": "0",
+    "time": "229.047"
+  },
+  "failure": {
+    "exception": "System.Threading.Tasks.TaskCanceledException",
+    "endpoint": "POST /api/v1/folders/{folder}/repository-bindings",
+    "stack": [
+      {
+        "method": "FolderDurabilityHttp.SendAsync",
+        "line": 74
+      },
+      {
+        "method": "FolderDurabilityAcceptanceFixture.MutateAsync",
+        "line": 195
+      },
+      {
+        "method": "OperationalStatusDurabilityAcceptanceTests.RequireRealTaskClosureAsync",
+        "line": 213
+      }
+    ],
+    "configured_outer_limits_seconds": {
+      "HttpClient": 40,
+      "fixture_retry": 75
+    },
+    "attribution_limit": "Final cancellation is in HttpClient SendAsync, not the retry-delay line. XML provides no explicit HttpClient.Timeout40s literal. Do not choose40s or75s as the actual firing timer solely from this stack.",
+    "prior_progress": [
+      "provider binding retained rejection/configuration/complete-prefix rebuild/source integrity passed",
+      "real folder creation and public lifecycle observation passed",
+      "pre-binding maintenance hook and current-folder source/ACL/operational evidence barrier completed"
+    ],
+    "maintenance": {
+      "hook_completed_before_binding": true,
+      "renewal_PASS_observed": false,
+      "scope": "This strict run did not provide a positive renewal record; the separate real maintenance control passed genuine renewal/no-op."
+    }
+  },
+  "binding_semantic_join": [
+    {
+      "utc": "2026-11-03T20:07:52.7440000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:07:55.0030000",
+      "category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+      "event_id": 2001,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "DurationMs": 4.3823,
+        "CommandType": "BindRepository",
+        "Domain": "folders",
+        "Stage": "Processing"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:07:55.0060000",
+      "category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+      "event_id": 0,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {}
+    },
+    {
+      "utc": "2026-11-03T20:07:59.8160000",
+      "category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+      "event_id": 2002,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "DurationMs": 4816.9167,
+        "CommandType": "BindRepository",
+        "Domain": "folders",
+        "Stage": "Rejected"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:07:59.8180000",
+      "category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+      "event_id": 2004,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "DurationMs": 4819.1745,
+        "Status": "Rejected",
+        "CommandType": "BindRepository",
+        "Domain": "folders"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:02.4570000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:05.9840000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:13.2100000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:13.7060000",
+      "category": "Hexalith.Folders.Observability.FolderTelemetryEmitter",
+      "event_id": 0,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "OperationKind": "RestMutation",
+        "Result": "Unavailable",
+        "Category": "projection_unavailable"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:16.6570000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:20.0490000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:23.6770000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:30.0320000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:30.8410000",
+      "category": "Hexalith.Folders.Observability.FolderTelemetryEmitter",
+      "event_id": 0,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "OperationKind": "RestMutation",
+        "Result": "Unavailable",
+        "Category": "projection_unavailable"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:33.2890000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:36.6810000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:39.2020000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:43.3210000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:44.0200000",
+      "category": "Hexalith.Folders.Observability.FolderTelemetryEmitter",
+      "event_id": 0,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "OperationKind": "RestMutation",
+        "Result": "Unavailable",
+        "Category": "projection_unavailable"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:47.6510000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:49.8940000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:53.9430000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:56.7590000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:08:58.0000000",
+      "category": "Hexalith.Folders.Observability.FolderTelemetryEmitter",
+      "event_id": 0,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "OperationKind": "RestMutation",
+        "Result": "Unavailable",
+        "Category": "projection_unavailable"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:09:02.7980000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    },
+    {
+      "utc": "2026-11-03T20:09:04.8310000",
+      "category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+      "event_id": 1100,
+      "correlation_sha256": "c98141d09a516e5769d4f355ee2fe121a72852e1927952d46ba5039d47608be1",
+      "fields": {
+        "Domain": "folders",
+        "CommandType": "BindRepository"
+      }
+    }
+  ],
+  "native_acquisition": {
+    "trace_id": "9fe28f079e0862c3f18d7aac885ca126",
+    "span_id": "df985f0540628bb0",
+    "authority_attempt_id": "1ee5423666702552",
+    "invocation_attempt_id": "e8f925a7b478a956",
+    "named_client_logical_POST_utc": "2026-11-03T20:07:57.7700000",
+    "invocation_stages": [
+      {
+        "timestamp": "2026-11-03T20:07:57.7710000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationAcquire",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "e8f925a7b478a956"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7780000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationAcquire",
+        "status": "Failed",
+        "ms": 2007,
+        "requestCanceled": "True",
+        "opCanceled": "True",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "e8f925a7b478a956"
+      }
+    ],
+    "authority_stages": [
+      {
+        "timestamp": "2026-11-03T20:07:57.7710000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogAdmissionWait",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.7710000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogAdmissionWait",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.7710000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.7740000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.7740000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.7750000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.7760000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8300000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 54,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8300000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8310000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8310000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8340000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8360000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8380000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8380000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8400000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8410000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8840000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 43,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8840000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8850000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8850000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8880000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8920000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8950000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8950000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.8970000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.9250000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.9520000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 27,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.9520000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.9530000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.9530000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.9560000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.9600000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.9630000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.9630000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.9640000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:57.9650000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0060000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 40,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0060000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0070000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0070000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0100000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0130000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0160000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0160000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0170000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0180000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0450000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 26,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0450000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0460000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0460000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0480000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0650000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0690000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 4,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0690000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0700000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.0710000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.1200000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 49,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.1200000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.1210000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.1210000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.1240000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.1450000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.1470000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.1470000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.1490000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.1500000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2080000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 58,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2080000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2090000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2090000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2120000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2240000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2260000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2260000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2280000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2290000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2550000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 26,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2550000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2560000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2560000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2590000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2810000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2830000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2830000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2850000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.2850000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.3390000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 53,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.3390000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.3400000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.3400000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.3430000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.3690000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.3710000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.3710000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.3730000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.3740000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.4030000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 29,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.4030000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.4040000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.4040000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.4060000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.4280000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.4310000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.4310000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.4430000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 11,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.4430000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.5290000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 85,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.5290000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.5300000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.5300000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.5330000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.5760000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.5790000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.5790000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.5800000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.5810000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.6340000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 52,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.6340000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.6340000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.6340000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.6370000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.6740000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.6760000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.6760000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.6780000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.6790000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7070000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 27,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7070000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7080000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7080000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7120000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7320000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7340000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7340000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7360000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7360000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7860000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 49,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7860000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7870000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7870000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.7900000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.8080000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.8110000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.8110000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.8130000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.8140000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9130000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 99,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9130000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9140000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9140000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9170000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9440000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9470000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9470000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9490000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9500000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9800000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 29,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9800000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9810000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9810000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:58.9900000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 9,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0320000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0360000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0360000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0370000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0380000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0640000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 26,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0640000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0650000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0650000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0680000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0760000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0790000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0790000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0810000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.0810000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1310000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 49,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1310000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1320000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1320000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1340000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1630000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1660000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1660000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1670000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1680000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1970000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 28,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1970000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1980000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.1980000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.2000000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.2400000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.2430000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.2430000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.2440000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.2450000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.2730000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 28,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.2730000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.2740000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.2740000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.2770000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.3040000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.3070000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.3070000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.3080000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.3090000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.3600000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 50,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.3600000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.3610000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.3610000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.3640000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.4120000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.4170000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 4,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.4170000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.4180000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.4200000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.4740000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 54,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.4740000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.4760000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.4760000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.4780000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 2,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.5120000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.5160000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.5160000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.5170000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.5180000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.6400000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 122,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.6400000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.6410000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.6410000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.6500000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 8,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.6720000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.6770000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.6770000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.6770000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.6780000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7070000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 28,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7070000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7080000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7080000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7110000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogCompareExchange",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7180000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7210000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogStateRead",
+        "status": "Completed",
+        "ms": 3,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7210000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7220000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogActivationDigest",
+        "status": "Completed",
+        "ms": 1,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7230000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7780000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogHostCapture",
+        "status": "Completed",
+        "ms": 54,
+        "requestCanceled": "True",
+        "opCanceled": "True",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7780000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Started",
+        "ms": 0,
+        "requestCanceled": "True",
+        "opCanceled": "True",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      },
+      {
+        "timestamp": "2026-11-03T20:07:59.7780000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority",
+        "stage": "CatalogTrust",
+        "status": "Failed",
+        "ms": 0,
+        "requestCanceled": "True",
+        "opCanceled": "True",
+        "traceId": "9fe28f079e0862c3f18d7aac885ca126",
+        "spanId": "df985f0540628bb0",
+        "attemptId": "1ee5423666702552"
+      }
+    ],
+    "stage_breakdown": {
+      "CatalogActivationDigest": {
+        "closed_count": 25,
+        "sum_ms": 35,
+        "max_ms": 11,
+        "failed_count": 0
+      },
+      "CatalogAdmissionWait": {
+        "closed_count": 1,
+        "sum_ms": 0,
+        "max_ms": 0,
+        "failed_count": 0
+      },
+      "CatalogCompareExchange": {
+        "closed_count": 24,
+        "sum_ms": 67,
+        "max_ms": 9,
+        "failed_count": 0
+      },
+      "CatalogHostCapture": {
+        "closed_count": 25,
+        "sum_ms": 1185,
+        "max_ms": 122,
+        "failed_count": 0
+      },
+      "CatalogStateRead": {
+        "closed_count": 25,
+        "sum_ms": 61,
+        "max_ms": 4,
+        "failed_count": 0
+      },
+      "CatalogTrust": {
+        "closed_count": 25,
+        "sum_ms": 1,
+        "max_ms": 1,
+        "failed_count": 1
+      }
+    },
+    "observed_elapsed_ms": 2007,
+    "transport_started_for_this_invocation": false,
+    "receiver_entered_for_this_invocation": false,
+    "binding_statement": "Named native HTTP start aligns within1ms with the exact failed outgoing acquisition; its propagated trace is retained. Semantic actor join is independent; no request body/header/identity was printed.",
+    "CAS_result_inference": "24 completed compare-exchange scopes followed by new state/validation passes without a returned snapshot mean24 unsuccessful CAS results under the matching pre-run Acquire/Update code. The25th validation reaches canceled trust token check before its CAS.",
+    "earlier_receiver_limit": "Earlier same-trace receiver40/61/4ms and82/104/7ms records precede this acquisition and are distinct invocations; they do not represent a receiver interval for this failed metadata call."
+  },
+  "observed_causal_boundary": [
+    "BindRepository reached actor Processing at20:07:55.003 and Rejected at20:07:59.816 (~4817ms). No configured5s process cancellation joins this command.",
+    "The source metadata observation failed during outgoing durable catalog acquisition under the unchanged2s source budget, after25 fresh validation/capture passes and24 lost CAS attempts. Admission wait was0ms; capture sum1185ms, read61ms, CAS67ms, digest35ms.",
+    "No egress/metadata receiver occurred for this specific invocation. This is not network/receiver latency or proof that the metadata action/source is unsupported.",
+    "The actor returned a safe rejection before the5s process deadline; cached same-correlation retries continued to return Unavailable/projection_unavailable until final fixture cancellation. No source/durable task loss or tenant-staleness cause is established."
+  ],
+  "runtime_consistency": {
+    "modules": {
+      "Hexalith.EventStore.Client.dll": {
+        "sha256": [
+          "16d4627e21a709981491a443661a2f6fe1df9d04aa1093d146af95ce8204d23f"
+        ],
+        "mvid": [
+          "52390a79-604c-4ba3-8708-373ae37b0cb5"
+        ],
+        "pdb_sha256": [
+          "42592bfa3eb79d0c2fdeea6a19b2e05ec0d45861d9fdc5c858a49a164be2d622"
+        ]
+      },
+      "Hexalith.EventStore.Contracts.dll": {
+        "sha256": [
+          "3877b208266a0b8371e22c1ca57fdfa4591c7f68fd463a4279f9051991e01a06"
+        ],
+        "mvid": [
+          "c86f280e-6aac-4a51-9fc5-f248bffbbda1"
+        ],
+        "pdb_sha256": [
+          "5422b90f88920683177e5aae067a2f05840c25f3b77c0878e686025742c9ab59"
+        ]
+      },
+      "Hexalith.Folders.AppHost.Tests.dll": {
+        "sha256": [
+          "baff7a841a1e4ec681dfda941dfd6900b0a3cfaed62309b80169be3cd0a25aae"
+        ],
+        "mvid": [],
+        "pdb_sha256": []
+      },
+      "Hexalith.EventStore.Aspire.dll": {
+        "sha256": [
+          "c3b9ce58d74fb1012c2f1bfc7c9c1c2aade38ac1abc40eb8eb3a4bbacfdd6549"
+        ],
+        "mvid": [],
+        "pdb_sha256": []
+      },
+      "Hexalith.Folders.AppHost.dll": {
+        "sha256": [
+          "53b6e29570520590e3c6c11059cd04ffe91f814569b314d541405b152a7e06b2"
+        ],
+        "mvid": [],
+        "pdb_sha256": []
+      },
+      "Hexalith.Folders.Aspire.dll": {
+        "sha256": [
+          "24e02fcbc77d3a734e26ad2c48960dcabc138d15f03ef3f1e6df73e34c60c22a"
+        ],
+        "mvid": [],
+        "pdb_sha256": []
+      },
+      "Hexalith.Memories.Aspire.dll": {
+        "sha256": [
+          "52d566448b96f280c525976d443624ab22527b9667729d9d1914fede4c0dc988"
+        ],
+        "mvid": [],
+        "pdb_sha256": []
+      },
+      "Hexalith.Tenants.Aspire.dll": {
+        "sha256": [
+          "a3e9f59e7ea449de3bf5e157d638aedba514bc0b800fb7bd8eb2abea4f716d9c"
+        ],
+        "mvid": [],
+        "pdb_sha256": []
+      },
+      "Hexalith.Tenants.Contracts.dll": {
+        "sha256": [
+          "b28d5b3335c321fbfaa9bad894fbb50061bad4253945db71c54d9a4b5f686685"
+        ],
+        "mvid": [
+          "4f0fb906-28f6-49c9-b823-a414368ce116"
+        ],
+        "pdb_sha256": [
+          "80213c0f9d51683032dbfc85ca07d4b44786542570c4c9415e2ab9c99ba7e56e"
+        ]
+      },
+      "Hexalith.Tenants.Server.dll": {
+        "sha256": [
+          "3cafba6526fd9d58f436aedf23346e5b5fa7f9b0ddbe23b20dc7018e3caa2f3a"
+        ],
+        "mvid": [
+          "b6722bac-0d1d-4b18-b4f0-83adfe1ce274"
+        ],
+        "pdb_sha256": [
+          "52609772b00d305d09434626a80633ab564275b1d28f7c334b9c8ced1420536c"
+        ]
+      },
+      "Hexalith.Folders.EventStore.dll": {
+        "sha256": [
+          "663695a844eb658af44b21ac7c211b6676ae686fe077dea91d8a4be36e9dfb07"
+        ],
+        "mvid": [
+          "5073260d-66bd-40a0-8566-1ad02917bcf4"
+        ],
+        "pdb_sha256": [
+          "5ad4ffd79d879c059603af0662da01d0cbb9a50b3d1d134b547ea383b4c5f35f"
+        ]
+      },
+      "Hexalith.Folders.Server.dll": {
+        "sha256": [
+          "02eaa9086710f6b2b145af9d7d5a5b5e90d7f51ba01e0e83d3c2b095a2e86121"
+        ],
+        "mvid": [
+          "ddebbb4d-d2b5-44a4-af46-cfbd0386bcd2"
+        ],
+        "pdb_sha256": [
+          "5117bbc92a21d08165e7e2c0a375f825a331a09f093897be68178b521abb9619"
+        ]
+      },
+      "Hexalith.Builds.Tooling.dll": {
+        "sha256": [
+          "2e3c2072799d71f05967ecfba92d44c40e42dc92cea3cb7cfb607b654a26e23c"
+        ],
+        "mvid": [],
+        "pdb_sha256": []
+      },
+      "Hexalith.EventStore.DomainService.dll": {
+        "sha256": [
+          "b12ecfa5ffc27875099765830f5f7c888d3fbad7c6a3803f443c5841e25b5c96"
+        ],
+        "mvid": [
+          "8fbd1e04-48d6-46bf-bc9c-d263e930b324"
+        ],
+        "pdb_sha256": [
+          "b92a80871d493ed7d62ef333db5c62c878559f984a12013fddb78607052b5918"
+        ]
+      },
+      "Hexalith.EventStore.ServiceDefaults.dll": {
+        "sha256": [
+          "87fb4bfedcb74ff408f513ff37d1d56ce4a9c45da4f8196461aa9c030fe1e5ac"
+        ],
+        "mvid": [
+          "ed5505af-094e-41a0-a567-a9e6a52b5e6c"
+        ],
+        "pdb_sha256": [
+          "4645af8ddda90ba0189b2459a8dcce802835f4bc67f3dc46aacad0ac9fce6679"
+        ]
+      },
+      "Hexalith.Folders.Contracts.dll": {
+        "sha256": [
+          "66d0e507d1dc1ef2947999adbec968754a2c85aeff926f4d7a17bcab1c8198ba"
+        ],
+        "mvid": [
+          "570f0ba1-584e-424a-aafa-1697074ba866"
+        ],
+        "pdb_sha256": [
+          "5b0ad1e7ad1fa42a4e6c8cc41aa0bdfe7e9427de405db2e0a786996efc40aa0c"
+        ]
+      },
+      "Hexalith.Folders.dll": {
+        "sha256": [
+          "08795c86d8591e20717d07282fb97044965e5bebbe5ec0054a16cc873c7155d0"
+        ],
+        "mvid": [
+          "9c335a4f-d9ba-4387-9662-3013b7bea704"
+        ],
+        "pdb_sha256": [
+          "af98b4ccc5ab0de90c22c89fdb59f82d3332d7b3dcdbcda4b328cafce9ba5d06"
+        ]
+      },
+      "Hexalith.McpCli.Abstractions.dll": {
+        "sha256": [
+          "f4364b8f269edf1573a4ddd190b87ca9f00f0741d116469462df7f322ea1d2db"
+        ],
+        "mvid": [
+          "5684bc7c-0c23-424d-83b8-b4de29ae5f0e"
+        ],
+        "pdb_sha256": [
+          "c23c549397879b61f7dd520a0c75f00483148bd2d385e3e3d4564e37db46356f"
+        ]
+      },
+      "Hexalith.Commons.UniqueIds.dll": {
+        "sha256": [
+          "77d188cf5e257b2012b3cd5926556faf42294052045143626b10ad61da7c2381"
+        ],
+        "mvid": [
+          "83e4a855-ff16-458b-875e-862c78ea45d7"
+        ],
+        "pdb_sha256": [
+          "287e0ab43066bf655775743489005273399b93eb10ebaf061e7c26f86637371d"
+        ]
+      },
+      "Hexalith.Folders.ServiceDefaults.dll": {
+        "sha256": [
+          "4faf9a1ae469394764da66c334f93326801fd7a3bd7f507796eb7981c130efde"
+        ],
+        "mvid": [
+          "f0614e05-f0dd-4234-95b9-8dd21f645e8f"
+        ],
+        "pdb_sha256": [
+          "e96e149fd04ebd546d2a79804c6b968728612bfc07f4b572fd5265b39a8c402e"
+        ]
+      },
+      "Hexalith.Memories.Client.Rest.dll": {
+        "sha256": [
+          "ada90d59ee579f7ac4d6dcdb60384a15d7470caa16106ab779432af5e6a6b554"
+        ],
+        "mvid": [
+          "7522a2ae-6815-4dd5-87a1-a0e8d5c23b61"
+        ],
+        "pdb_sha256": [
+          "26c01dec9ea2c98f5f758a304cd9fed3d2a47954f49c35fe664a6c04a0c38373"
+        ]
+      },
+      "Hexalith.Memories.Contracts.dll": {
+        "sha256": [
+          "111077740c686b6c8b00ca499b3dadce5e79cba03c71c222ec5e1d607aa7b2cf"
+        ],
+        "mvid": [
+          "f4c42f2a-9b0e-4fc1-a6b2-e3c6ca5256af"
+        ],
+        "pdb_sha256": [
+          "7fc2ab0a25d3d1eb21686d3f177b4c35a64c55868aba27481bb8937ab24ab5c3"
+        ]
+      },
+      "Hexalith.Tenants.Client.dll": {
+        "sha256": [
+          "8c80d434ae44448faa23d10e787315de08fbb29f3a778ba4fc05ce231daeab1d"
+        ],
+        "mvid": [
+          "e4ab9b1f-5790-4a28-a384-d0ad54fb81d2"
+        ],
+        "pdb_sha256": [
+          "98fc254c7e74f75d9dfc1f0a452f522825a6e9ef320367b9cccff64e78714f52"
+        ]
+      },
+      "Hexalith.Folders.Workers.dll": {
+        "sha256": [
+          "39a29fed0ed96d2f24522593a535bd87874e4cd00833fd69f8f5c83467f8d558"
+        ],
+        "mvid": [
+          "088ce7ba-903b-4f1b-a2d8-b48adfb5b1f0"
+        ],
+        "pdb_sha256": [
+          "35490920ca2bffb2004f632376b74bb63e09516416c051279ab58b2173a09a3d"
+        ]
+      },
+      "Hexalith.EventStore.Admin.Abstractions.dll": {
+        "sha256": [
+          "9b51625a9093c1eb245587aa87ac73d71892008806fd86fdb2f74ba82c51d737"
+        ],
+        "mvid": [
+          "59a0c54c-e246-4e1a-8a9d-614021056533"
+        ],
+        "pdb_sha256": [
+          "7356bae2d0df223a18a8bd3de6d73ee563ff13d357c7d687970bd5ad8f885c44"
+        ]
+      },
+      "Hexalith.EventStore.Gateway.dll": {
+        "sha256": [
+          "b46bc371bc5cd9b219672760290adee7930bc96cdd84142d13588e120128af27"
+        ],
+        "mvid": [
+          "87352148-8490-4c5b-96f8-7d4e132173b8"
+        ],
+        "pdb_sha256": [
+          "b7d8c5685a3540e38bc78115ff6612b483c7e0f7c2f6cf65269e5ba2f7da733e"
+        ]
+      },
+      "Hexalith.EventStore.Server.dll": {
+        "sha256": [
+          "27f466acd13b0e7452d6ac037d515a5b3689aaf27460168e547774cc3f8ca07c"
+        ],
+        "mvid": [
+          "64144742-b39a-4958-9aff-7f62f9907840"
+        ],
+        "pdb_sha256": [
+          "f7eb449b2f98b7a12360a80574597a5a2bad31413cb6c143a03ca24e9a1a0b53"
+        ]
+      }
+    },
+    "multiple_variants_within_executed_observations": [],
+    "runtime_file_drift_receipt": [],
+    "qualification": "Binds to saved actual execution observations/pre-run producer, not current on-disk outputs after parent builds."
+  },
+  "source_transition": {
+    "raw_qualifier_drift": [
+      "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore"
+    ],
+    "details": [
+      {
+        "root": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+        "before_head": "6c8aa5bbe77745d951cb70fc7cfcc98cff422d25",
+        "after_head": "2253b733539a84f436443d3b4996ce2136437bef",
+        "changed_sources": [
+          "src/Hexalith.EventStore.Admin.Server/Authorization/AdminTenantAuthorizationFilter.cs",
+          "src/Hexalith.EventStore.Admin.Server/Controllers/AdminHealthController.cs",
+          "src/Hexalith.EventStore.Admin.Server/Services/DaprStreamQueryService.cs",
+          "src/Hexalith.EventStore.Admin.Server/Services/HttpContextAdminAuthContext.cs",
+          "src/Hexalith.EventStore.Admin.Server/Services/IAdminAuthContext.cs",
+          "src/Hexalith.EventStore.Admin.UI/Services/AdminStreamApiClient.cs",
+          "src/Hexalith.EventStore.Contracts/Routing/AdminPlatformScopeCatalog.cs",
+          "src/Hexalith.EventStore/Authorization/AdminTenantAuthorizationFilter.cs",
+          "tests/Hexalith.EventStore.Admin.Server.Tests/Authorization/AdminTenantAuthorizationFilterTests.cs",
+          "tests/Hexalith.EventStore.Admin.Server.Tests/IntegrationTests/AdminAuthorizationIntegrationTests.cs",
+          "tests/Hexalith.EventStore.Admin.Server.Tests/Services/DaprStreamQueryServiceTests.cs",
+          "tests/Hexalith.EventStore.Admin.Server.Tests/Services/HttpContextAdminAuthContextTests.cs",
+          "tests/Hexalith.EventStore.Admin.UI.Tests/Services/AdminStreamApiClientTests.cs",
+          "tests/Hexalith.EventStore.Server.Tests/Authorization/AdminTenantAuthorizationFilterTests.cs"
+        ],
+        "changed_count": 14
+      }
+    ],
+    "current_selected_code_comparison": {
+      "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs": {
+        "pre_run_sha256": "7da4de5a4b05830a567df979e722c163ab2914121b03c9b32f406594e4343025",
+        "current_source_sha256": "7da4de5a4b05830a567df979e722c163ab2914121b03c9b32f406594e4343025",
+        "matches_executed_source_snapshot": true
+      },
+      "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs": {
+        "pre_run_sha256": "c4c319ddfb6fe5c4ed40488cd9ee2eb1a88333f2205e16cf3dc91b41126fcfc0",
+        "current_source_sha256": "c4c319ddfb6fe5c4ed40488cd9ee2eb1a88333f2205e16cf3dc91b41126fcfc0",
+        "matches_executed_source_snapshot": true
+      },
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": {
+        "pre_run_sha256": "f57f907a1edd0edd8c254b047b4da2845ab1aa6c7ddc7aa1fead01023e9c9d4a",
+        "current_source_sha256": "f57f907a1edd0edd8c254b047b4da2845ab1aa6c7ddc7aa1fead01023e9c9d4a",
+        "matches_executed_source_snapshot": true
+      },
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": {
+        "pre_run_sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+        "current_source_sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+        "matches_executed_source_snapshot": true
+      }
+    },
+    "qualification": "SDK source/head changed across14Admin-related paths including selected Contracts source. No no-source-drift or current-source/PDB equivalence claim; actual runtime bytes did not drift in the completed receipt."
+  },
+  "cleanup": {
+    "runtimeOwnedProcessRemainders": [],
+    "ownedContainerRemainders": [],
+    "ownedDaprDirectories": [
+      {
+        "path": "/tmp/hexalith-dapr/df23c1a95ade4b5891f36ea83d3317e2",
+        "exists": false
+      }
+    ],
+    "unattributedNewContainerCount": 0,
+    "unattributedNewDirectories": [],
+    "actionOnUnattributedResources": "None"
+  },
+  "separate_gates": [
+    "Standalone active maintenance1pass183.007s remains separate from failed full strict acceptance.",
+    "Official isolated Contracts archive matches unchanged authenticity pin; original ABI class subsequently passed3controls per parent, separately retained.",
+    "Fresh Release with current central SDK4.0.4 fails missing public AddEventStoreGatewayNativeSourceMetadataReader in packagedSDK4.0.4 per parent; historical NU1109 is not the current gate.",
+    "Current SDK source2253 runtime has a new parent92module source/PDB/single-producer audit and focused/finalcontrols after transition; it was not this strict run producer.",
+    "Capacity, PD10/governance, SM4 and whole-story review remain separate."
+  ],
+  "next_readonly_candidate": "Evaluate narrowing capture-to-CAS stale ETag window via additional strong post-validation state read, exact full activation/epoch/pending equality and rebase only lease inventory; no validation/proof/final check may be omitted. Not yet implemented.",
+  "no_source_output_build_test_topology_action": true
+}

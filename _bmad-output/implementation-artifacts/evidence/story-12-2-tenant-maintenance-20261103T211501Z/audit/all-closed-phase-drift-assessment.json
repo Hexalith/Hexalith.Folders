@@ -1,0 +1,112 @@
+[
+  {
+    "phase": "live-tenant-maintenance-1",
+    "changes": [
+      {
+        "repository": "/home/administrator/projects/hexalith/folders",
+        "head_before": "f24ee01f2682045e0d6b09fa6d4f794113b28f16",
+        "head_after": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+        "changed_sources": []
+      }
+    ],
+    "runtime_file_drift": [],
+    "disposition": "External HEAD-only transition; captured source maps unchanged."
+  },
+  {
+    "phase": "strict-tenant-maintenance-3",
+    "changes": [
+      {
+        "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+        "head_before": "6c8aa5bbe77745d951cb70fc7cfcc98cff422d25",
+        "head_after": "2253b733539a84f436443d3b4996ce2136437bef",
+        "changed_sources": [
+          {
+            "path": "src/Hexalith.EventStore.Admin.Server/Authorization/AdminTenantAuthorizationFilter.cs",
+            "sha256_before": "744cdc83d8733407d38c3a91e82f1420305a587eda6ef1c8e6ab2606802d68a2",
+            "sha256_after": "dfcbc5056ae2afa26d11912d0e4c7251fb32034c71d2aee6908bf53c114833b8"
+          },
+          {
+            "path": "src/Hexalith.EventStore.Admin.Server/Controllers/AdminHealthController.cs",
+            "sha256_before": "c1e49ec157edd3d153ac5a1adb5afc2138046dca74627f46b042b1332d0a8ca2",
+            "sha256_after": "00601bca64fd4d4595ef031b77bf33b018afb64a88a3b10df9eaf39df12a52a1"
+          },
+          {
+            "path": "src/Hexalith.EventStore.Admin.Server/Services/DaprStreamQueryService.cs",
+            "sha256_before": "8a736b2b071da510edfb827ac3a87044daf81862d0622938d3364c8bc70a85f8",
+            "sha256_after": "93d28867c6deb2955353d5d2d28c73ea268a3365a3d6ecb84377dbf6eb1c28dd"
+          },
+          {
+            "path": "src/Hexalith.EventStore.Admin.Server/Services/HttpContextAdminAuthContext.cs",
+            "sha256_before": "b1cc9565be71600692780e18f0de0596e68066bec23ebfd44d1540f8fa181f01",
+            "sha256_after": "68e2086ba7cc33bedfda565298a05796e16b7af1d2aebca658db3df2d9e8955e"
+          },
+          {
+            "path": "src/Hexalith.EventStore.Admin.Server/Services/IAdminAuthContext.cs",
+            "sha256_before": "0b004b7d87b7086b62fdaf5e06df1532078cb1cb8fb493fd6cabba0e49fea3fe",
+            "sha256_after": "a066298a2f03859266c1c2f536ca0d35570f4f9db3835b3557897c1ff6acf1c3"
+          },
+          {
+            "path": "src/Hexalith.EventStore.Admin.UI/Services/AdminStreamApiClient.cs",
+            "sha256_before": "f11190706bb77f43d9074e49e37f544b0bfba4372cf8ca121507b94b63ac3e24",
+            "sha256_after": "4a9505dba250f31ea6267529ce7cae9a381c75aec56dda77611439ceb7284546"
+          },
+          {
+            "path": "src/Hexalith.EventStore.Contracts/Routing/AdminPlatformScopeCatalog.cs",
+            "sha256_before": "f6529f7bdbb7018ba5ae580cd67a81c261d21ce78a91d03be6a2cbd18a8341bd",
+            "sha256_after": "8606e132dc856b3a5096846adc0300cd26de0491b3d8e51ce40993333857832e"
+          },
+          {
+            "path": "src/Hexalith.EventStore/Authorization/AdminTenantAuthorizationFilter.cs",
+            "sha256_before": "7dc62272c98d4ca4fb988dc31bf197a0fb35f20ca1ac71ed1db6caf324adc588",
+            "sha256_after": "c3c72ec10f5dde09d64000ed9c885d3c585f1a1f3ac8e6746a9d6e733f0f164b"
+          },
+          {
+            "path": "tests/Hexalith.EventStore.Admin.Server.Tests/Authorization/AdminTenantAuthorizationFilterTests.cs",
+            "sha256_before": "6e493fb4f809a63527df6e6d929b6362697ecba942e0f1150f2ef14bf520c055",
+            "sha256_after": "2f9168105875d815c50bc961ede66ef0d3d67e8878a1fd8a879eb6dd16173069"
+          },
+          {
+            "path": "tests/Hexalith.EventStore.Admin.Server.Tests/IntegrationTests/AdminAuthorizationIntegrationTests.cs",
+            "sha256_before": "5ee60032ae6d6dbe9c11f3165783ce32a6d85ab5bc580db626a455d5facc4178",
+            "sha256_after": "3248a369ef67aa3a68499795c5705a9fe099fc016220b0639a5837a76267c836"
+          },
+          {
+            "path": "tests/Hexalith.EventStore.Admin.Server.Tests/Services/DaprStreamQueryServiceTests.cs",
+            "sha256_before": "8fabe4b9c08e1f791edccc15ad59fedf0cedaf2c86eb961bdf3a3e7e6914e8ff",
+            "sha256_after": "bea79409073aedd46a7bf76890987a68c9de5e148d21e824b50f7d31a139d7e4"
+          },
+          {
+            "path": "tests/Hexalith.EventStore.Admin.Server.Tests/Services/HttpContextAdminAuthContextTests.cs",
+            "sha256_before": "e4ce1813add391b53cabcd649793a1a00365676e622656f3d977cd9da5d4eb14",
+            "sha256_after": "639fdad9090e73c27df48ca7df89af9e0ae4d88c3c6826eab4a5f2d74235be3f"
+          },
+          {
+            "path": "tests/Hexalith.EventStore.Admin.UI.Tests/Services/AdminStreamApiClientTests.cs",
+            "sha256_before": "b846dd2122d27409a42b262f2ef3f6121224dd7ebf537a920e5d01567ee65868",
+            "sha256_after": "20dcaf91a5152e9f198c54c739c0df7d923280382cbcbf09afb00309e6accdfe"
+          },
+          {
+            "path": "tests/Hexalith.EventStore.Server.Tests/Authorization/AdminTenantAuthorizationFilterTests.cs",
+            "sha256_before": "a102827a48991e788cbad1f3b6c988e0c5ed6092bfc4a2e547b9b59a60896589",
+            "sha256_after": "fbc61c6ca46fb4d1e7195b4f755b4945c4a0beb8539c6b6865e4f820642a1ce7"
+          }
+        ]
+      }
+    ],
+    "runtime_file_drift": [],
+    "disposition": "Executed built producer only; external revision and source transitions preserved; not a claim that current working source matches binaries."
+  },
+  {
+    "phase": "tenant-runtime-build",
+    "changes": [
+      {
+        "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+        "head_before": "4052803e86461dc2b9ba9d2343d0eabf59ce18fa",
+        "head_after": "50e94096d0a0f74fc15e164d6013819655829d0c",
+        "changed_sources": []
+      }
+    ],
+    "runtime_file_drift": [],
+    "disposition": "External HEAD-only transition; captured source maps unchanged."
+  }
+]

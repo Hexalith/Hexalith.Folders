@@ -1,0 +1,421 @@
+{
+  "created_utc": "2026-11-03T20:55:31.881427+00:00",
+  "run": "strict-tenant-maintenance-4",
+  "input_hashes": {
+    "strict-tenant-maintenance-4-private.log": "5c424694a914a114127a0ac35393208f2909a5712a1fbd3280f64c7fa8bf876b",
+    "strict-tenant-maintenance-4-private.xml": "2d2e56fbcfb3f4b9b02d10e9416c4ad8dc0ce3573688f0ca6470282617a2d43a",
+    "strict-tenant-maintenance-4-receipt.json": "dfdd893a6339533139e1376a82ee6df5371a05cc4f2d93925124645ea1daf816",
+    "strict-tenant-maintenance-4-before.json": "92499eb52ebf94fec3dfabebd3e9bc588663c58956f9276c849e252489ccdfe7",
+    "strict-tenant-maintenance-4-after.json": "2edb3749b11267d626fecf06fc813e5dbfda46fc04e77da80f2a74fb17edc3a2",
+    "strict-tenant-maintenance-4-runtime.json": "7abfe7599bb988e62de9fe919ce357a4c9082969ff62ea955fa1e115a6ec8eb9",
+    "strict-tenant-maintenance-4-stages-private.json": "e030e7a83c227380809512e2b72cc9ffaadcf7d75a6bb28d4486cbbe5432264d"
+  },
+  "result": {
+    "total": "1",
+    "passed": "0",
+    "failed": "1",
+    "errors": "0",
+    "skipped": "0",
+    "time": "362.951"
+  },
+  "failure": {
+    "type": "System.InvalidOperationException",
+    "strict_line": 365,
+    "operation": "Foreign task folder scope using the unchanged literal absent-folder",
+    "expected_status": 404,
+    "observed_status": 503,
+    "safe_code": "read_model_unavailable",
+    "read_model_result": "ReadModelUnavailable",
+    "folder_denial_layer": "FolderAcl",
+    "folder_denial_outcome": "folder_acl_unavailable",
+    "folder_denial_freshness": "unavailable",
+    "tenant": "Allowed/Fresh in final probe",
+    "stack_closed": [
+      "at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.RequireStatusAsync(HttpResponseMessage response, HttpStatusCode expected, String operation, Nullable`1 cancellationToken) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 642",
+      "at Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RequireRealTaskClosureAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs:line 365",
+      "at Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs:line 44"
+    ]
+  },
+  "positive_progress": {
+    "before_failure_snapshot_utc": "2026-11-03T20:48:09.165425+00:00",
+    "before_failure_marker_counts": {
+      "bound-target denial": 1,
+      "provider binding": 1,
+      "ordinary-write processes": 1,
+      "two concurrent Workers replica processes": 1,
+      "all six concerns": 1,
+      "SDK interrupted generation": 1,
+      "persisted retention": 6,
+      "tenant maintenance": 2
+    },
+    "final_raw_marker_counts": {
+      "bound-target denial": 2,
+      "provider binding": 2,
+      "ordinary-write processes": 2,
+      "two concurrent Workers replica processes": 2,
+      "all six concerns": 2,
+      "SDK interrupted generation": 2,
+      "persisted retention": 12,
+      "tenant maintenance": 2
+    },
+    "replay_caveat": "Failure output replays original test output; count unique body achievements once. Two maintenance PASS records already existed before failure output.",
+    "unique_restart_pid_transitions": [
+      {
+        "resource": "folders",
+        "before": 2171283,
+        "after": 2187707
+      },
+      {
+        "resource": "folders-workers",
+        "before": 2172204,
+        "after": 2189421
+      },
+      {
+        "resource": "folders-workers-replica",
+        "before": 2173407,
+        "after": 2190325
+      },
+      {
+        "resource": "eventstore",
+        "before": 2178628,
+        "after": 2192903
+      }
+    ],
+    "strict_completion_PASS": false,
+    "meaning": "All six concern, retained retention/rebuild, interrupted same-SDK-generation and two-Workers markers are present; postrestart ready reads, equivalent replay, rejected-source retained-prefix and final current evidence barriers precede line365. Whole test remains failed."
+  },
+  "final_task_diagnostics": [
+    {
+      "timestamp": "2026-11-03T20:47:03.9380000Z",
+      "Outcome": "Allowed",
+      "Freshness": "Fresh"
+    },
+    {
+      "timestamp": "2026-11-03T20:47:04.7200000Z",
+      "ResultCode": "Allowed",
+      "FolderDenialLayer": null,
+      "FolderDenialOutcome": "none",
+      "FolderDenialFreshness": "none"
+    },
+    {
+      "timestamp": "2026-11-03T20:47:12.2310000Z",
+      "Outcome": "Allowed",
+      "Freshness": "Fresh"
+    },
+    {
+      "timestamp": "2026-11-03T20:47:13.1160000Z",
+      "ResultCode": "ProjectionUnavailable",
+      "FolderDenialLayer": null,
+      "FolderDenialOutcome": "none",
+      "FolderDenialFreshness": "none"
+    },
+    {
+      "timestamp": "2026-11-03T20:48:20.9730000Z",
+      "Outcome": "Allowed",
+      "Freshness": "Fresh"
+    },
+    {
+      "timestamp": "2026-11-03T20:48:23.1630000Z",
+      "ResultCode": "Allowed",
+      "FolderDenialLayer": null,
+      "FolderDenialOutcome": "none",
+      "FolderDenialFreshness": "none"
+    },
+    {
+      "timestamp": "2026-11-03T20:48:39.1970000Z",
+      "Outcome": "Allowed",
+      "Freshness": "Fresh"
+    },
+    {
+      "timestamp": "2026-11-03T20:48:40.1270000Z",
+      "ResultCode": "Allowed",
+      "FolderDenialLayer": null,
+      "FolderDenialOutcome": "none",
+      "FolderDenialFreshness": "none"
+    },
+    {
+      "timestamp": "2026-11-03T20:48:40.1310000Z",
+      "Outcome": "Allowed",
+      "Freshness": "Fresh"
+    },
+    {
+      "timestamp": "2026-11-03T20:48:40.1310000Z",
+      "ResultCode": "ReadModelUnavailable",
+      "FolderDenialLayer": null,
+      "FolderDenialOutcome": "none",
+      "FolderDenialFreshness": "none"
+    },
+    {
+      "timestamp": "2026-11-03T20:48:40.1350000Z",
+      "Outcome": "Allowed",
+      "Freshness": "Fresh"
+    },
+    {
+      "timestamp": "2026-11-03T20:48:42.1430000Z",
+      "ResultCode": "ReadModelUnavailable",
+      "FolderDenialLayer": "FolderAcl",
+      "FolderDenialOutcome": "folder_acl_unavailable",
+      "FolderDenialFreshness": "unavailable"
+    }
+  ],
+  "native_absence_request": {
+    "named_logical_start_utc": "2026-11-03T20:48:40.1370000Z",
+    "named_client_response_utc": "2026-11-03T20:48:40.5170000Z",
+    "status": 503,
+    "named_client_elapsed_ms": 380.0355,
+    "named_logical_end_observed": false,
+    "temporal_join_limit": "Named HTTP logger omits trace/span. Exactly one outgoing acquire starts at the same millisecond in this interval; its internally propagated trace joins receiver/native stages, but the HTTP-to-stage association remains explicitly temporal.",
+    "trace_id": "52333370c8bda22c79222c129d357f60",
+    "outgoing_span_id": "7411010e7630634a",
+    "outgoing_stages": [
+      {
+        "timestamp": "2026-11-03T20:48:40.2080000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationAcquire",
+        "status": "Completed",
+        "ms": 70,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "52333370c8bda22c79222c129d357f60",
+        "spanId": "7411010e7630634a",
+        "attemptId": "cb32f2bcbc7e5a8c"
+      },
+      {
+        "timestamp": "2026-11-03T20:48:40.2080000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationValidation",
+        "status": "Completed",
+        "ms": 0,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "52333370c8bda22c79222c129d357f60",
+        "spanId": "7411010e7630634a",
+        "attemptId": "cb32f2bcbc7e5a8c"
+      },
+      {
+        "timestamp": "2026-11-03T20:48:40.4930000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationTransport",
+        "status": "Completed",
+        "ms": 284,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "52333370c8bda22c79222c129d357f60",
+        "spanId": "7411010e7630634a",
+        "attemptId": "cb32f2bcbc7e5a8c"
+      },
+      {
+        "timestamp": "2026-11-03T20:48:40.5170000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler",
+        "stage": "InvocationRelease",
+        "status": "Completed",
+        "ms": 24,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "52333370c8bda22c79222c129d357f60",
+        "spanId": "7411010e7630634a",
+        "attemptId": "cb32f2bcbc7e5a8c"
+      }
+    ],
+    "authority_attempt_id": "503445e1f19fb748",
+    "authority_breakdown": {
+      "CatalogActivationDigest": {
+        "count": 1,
+        "sum_ms": 1,
+        "max_ms": 1
+      },
+      "CatalogAdmissionWait": {
+        "count": 1,
+        "sum_ms": 0,
+        "max_ms": 0
+      },
+      "CatalogCompareExchange": {
+        "count": 1,
+        "sum_ms": 2,
+        "max_ms": 2
+      },
+      "CatalogHostCapture": {
+        "count": 1,
+        "sum_ms": 29,
+        "max_ms": 29
+      },
+      "CatalogSnapshot": {
+        "count": 1,
+        "sum_ms": 2,
+        "max_ms": 2
+      },
+      "CatalogStateRead": {
+        "count": 2,
+        "sum_ms": 10,
+        "max_ms": 8
+      },
+      "CatalogTrust": {
+        "count": 1,
+        "sum_ms": 0,
+        "max_ms": 0
+      }
+    },
+    "receiver_stages": [
+      {
+        "timestamp": "2026-11-03T20:48:40.2760000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.TechnicalHttpRouteCatalogReceiver",
+        "stage": "ReceiverAcquire",
+        "status": "Completed",
+        "ms": 64,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "52333370c8bda22c79222c129d357f60",
+        "spanId": "b3e5503031922307",
+        "attemptId": "67bffcd3fdbb07de"
+      },
+      {
+        "timestamp": "2026-11-03T20:48:40.3940000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.TechnicalHttpRouteCatalogReceiver",
+        "stage": "NativeAcquire",
+        "status": "Completed",
+        "ms": 91,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "52333370c8bda22c79222c129d357f60",
+        "spanId": "a44917011e103cbd",
+        "attemptId": "4812354f2f1fae13"
+      },
+      {
+        "timestamp": "2026-11-03T20:48:40.4000000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.TechnicalHttpRouteCatalogReceiver",
+        "stage": "NativeCallback",
+        "status": "Completed",
+        "ms": 5,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "52333370c8bda22c79222c129d357f60",
+        "spanId": "a44917011e103cbd",
+        "attemptId": "4812354f2f1fae13"
+      },
+      {
+        "timestamp": "2026-11-03T20:48:40.4880000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.TechnicalHttpRouteCatalogReceiver",
+        "stage": "NativeRelease",
+        "status": "Completed",
+        "ms": 88,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "52333370c8bda22c79222c129d357f60",
+        "spanId": "a44917011e103cbd",
+        "attemptId": "4812354f2f1fae13"
+      },
+      {
+        "timestamp": "2026-11-03T20:48:40.4920000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.TechnicalHttpRouteCatalogReceiver",
+        "stage": "ReceiverNext",
+        "status": "Completed",
+        "ms": 215,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "52333370c8bda22c79222c129d357f60",
+        "spanId": "b3e5503031922307",
+        "attemptId": "67bffcd3fdbb07de"
+      },
+      {
+        "timestamp": "2026-11-03T20:48:40.5030000Z",
+        "category": "Hexalith.EventStore.ServiceDefaults.Routing.TechnicalHttpRouteCatalogReceiver",
+        "stage": "ReceiverRelease",
+        "status": "Completed",
+        "ms": 11,
+        "requestCanceled": "False",
+        "opCanceled": "False",
+        "traceId": "52333370c8bda22c79222c129d357f60",
+        "spanId": "b3e5503031922307",
+        "attemptId": "67bffcd3fdbb07de"
+      }
+    ],
+    "interpretation": "One fresh capture/trust validation, two strong reads, one successful CAS/snapshot; acquire70ms, transport284ms, release24ms. Receiver/native callbacks complete uncanceled; HTTP503 precedes the task503. This invocation is not acquisition starvation or transport deadline cancellation.",
+    "proof_status_limit": "No response body, native inspection status or proof was exported/observed. Exact absent/unsupported/invalid/changed-proof branch is not directly logged; the missing unactivated source path explains the observed result under the saved producer, without inventing a positive/zero proof.",
+    "sdk_budget_limit": "Folder authorization takes approximately2008ms despite initial380ms503. No LogicalHandler completion is observed. Exact resilience delay/retry stage is not instrumented here; no budget change is inferred."
+  },
+  "comparison_to_strict3": {
+    "prior_failed_acquisition_ms": 2007,
+    "prior_fresh_captures": 25,
+    "prior_failed_CAS": 24,
+    "prior_transport_started": false,
+    "current_final_probe_acquisition_ms": 70,
+    "current_fresh_captures": 1,
+    "current_successful_CAS": 1,
+    "current_transport_completed": true,
+    "limit": "Different requests/runs; no matched-window percentile or causal universal performance claim."
+  },
+  "runtime_and_source": {
+    "saved_bound_sources": [
+      {
+        "repository": "/home/administrator/projects/hexalith/folders",
+        "head": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+        "path": "src/Hexalith.Folders/Authorization/EventStoreFolderEffectivePermissionsReadModel.cs",
+        "saved_source_sha256": "a3d97f32cb711e12c60772b818d7e0d674a410a18ca8a4faf5385395d637adfb"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders",
+        "head": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+        "path": "src/Hexalith.Folders/Authorization/GatewayOrganizationStreamSequenceReader.cs",
+        "saved_source_sha256": "e520ad93a2bf2c8eb825180cb56e2b1534847a45bf56878c045a75b0a29f4634"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders",
+        "head": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+        "path": "src/Hexalith.Folders/Queries/Folders/TaskStatusQueryHandler.cs",
+        "saved_source_sha256": "16f759d4be1925b764a46c5fa70c4e85d49fd488d9ba1bab49dc7a81d5dfe76a"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders",
+        "head": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+        "path": "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+        "saved_source_sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+        "head": "2253b733539a84f436443d3b4996ce2136437bef",
+        "path": "src/Hexalith.EventStore.Client/Streams/GatewayNativeSourceMetadataReader.cs",
+        "saved_source_sha256": "2581eb65670bece7c0aac71b082434d97773113c9ac3507f5e7c5c9975670d1b"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+        "head": "2253b733539a84f436443d3b4996ce2136437bef",
+        "path": "src/Hexalith.EventStore.Server/Actors/AggregateActor.SourceProof.cs",
+        "saved_source_sha256": "4282ba0162815b52193bdaaba97767b8d35b068fd9d9097fb71a28d63389ee96"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+        "head": "2253b733539a84f436443d3b4996ce2136437bef",
+        "path": "src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs",
+        "saved_source_sha256": "ab0837c71874564f2a069cc1070ad8ac1e95036386f1bfccb4b8d571463dbf9b"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+        "head": "2253b733539a84f436443d3b4996ce2136437bef",
+        "path": "src/Hexalith.EventStore/Controllers/StreamsController.cs",
+        "saved_source_sha256": "7241961013f94c4e58cf76fe9f1ce76f364785b07d235a14d768d1dae4d59298"
+      }
+    ],
+    "source_or_head_drift": [],
+    "runtime_file_drift": [],
+    "poll_observations": 174,
+    "fixture_module_bindings": 214,
+    "observed_hexalith_assembly_names": 27,
+    "sha_variant_conflicts": {},
+    "mvid_variant_conflicts": {},
+    "binding_limit": "Uses saved actual runtime observations and pre-run source maps only; no idle current-disk comparison."
+  },
+  "cleanup_counts": {
+    "remaining_observed_descendants": 0,
+    "remaining_owned_containers": 0,
+    "remaining_unattributed_containers": 2,
+    "remaining_observed_directories": 0
+  },
+  "supported_absence_contract": {
+    "existing_valid_native_zero": "Available non-erased proof/head0 on existing metadata supports zero and downstream NotFound; reads do not mint it.",
+    "missing_unactivated_metadata": "Actor returns Unsupported (or Invalid for pending erasure),Existsfalse,Proofnull. Native controller returns503 before generic missing-stream404.",
+    "generic_exists_false": "Non-native fallback is outside approved source-proof authority and cannot establish native zero.",
+    "already_supported_readonly_absence_attestation": "None found in the actor/native metadata contracts. Existing seed creation is a writer/maintenance operation, not a read.",
+    "owner_boundary": "Preserving canonical404 for a physically never-created source needs an approved authoritative absence prerequisite/protocol or an explicitly reviewed acceptance prerequisite using independently proven existing source evidence. No missing-to-zero conversion, fixture write, status/assertion relaxation or protocol edit is authorized/performed."
+  },
+  "no_source_output_build_test_topology_action": true
+}

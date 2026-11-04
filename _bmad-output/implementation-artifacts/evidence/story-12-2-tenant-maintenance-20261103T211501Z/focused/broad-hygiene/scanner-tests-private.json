@@ -1,0 +1,2209 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "21:12:46",
+      "errors": "0",
+      "failed": "0",
+      "passed": "274",
+      "skipped": "0",
+      "time": "5.436",
+      "total": "274"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.044",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "FixtureAssignmentRecognition_RequiresExactContext",
+      "case_ordinal": 1,
+      "display_name_sha256": "dc41d3fe45573bbb69a7a68250484da77da7ea01eb6153d8d0794be8f0c9ef05"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "GitSshException_StillRejectsUriCredentials",
+      "case_ordinal": 2,
+      "display_name_sha256": "b1c0d81de4533fabe40e90b44e7ffb163db04a2612038a8bbdfcae3685f3f538"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "GitSshException_StillRejectsUriCredentials",
+      "case_ordinal": 3,
+      "display_name_sha256": "bba1949161c449ceb7ce3648f79ad0ee0736487be5d97c99315c18f4e4f82db1"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "GitSshException_StillRejectsUriCredentials",
+      "case_ordinal": 4,
+      "display_name_sha256": "8e3838c740331929e8230a4332e73cbb072a578f8926dd3a16f87278294607f5"
+    },
+    {
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "StructuredBearerChallenge_IsNotAnAccessToken",
+      "case_ordinal": 5,
+      "display_name_sha256": "72a8a09319e055d599675b49a06b145ae329e4c32491de5e83bf23f1e75b2975"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "StructuredBearerChallenge_IsNotAnAccessToken",
+      "case_ordinal": 6,
+      "display_name_sha256": "c3dfe46ee3031d3b4b62140a4ee58dabd7f13817c758b3c602b5184237fc9500"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "PatchOfParameterResourceAssignment_UsesSourceLanguage",
+      "case_ordinal": 7,
+      "display_name_sha256": "7bf6a0293255253e6e099d8b1fda4c2f0f232095ae84338c192bcb2d2912f297"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "PackageVersionExemption_IsLimitedToDependencyObjects",
+      "case_ordinal": 8,
+      "display_name_sha256": "0e872fe5683eae5ff68bb721f21a5586fc0f2c2dff69f27e50c20a13d2b40266"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "UnrecognizedGitHubSshUsername_IsRejected",
+      "case_ordinal": 9,
+      "display_name_sha256": "1c889fe76c1e16ab77c3bbb67b4c361dfd38ffdff27ccdab48296fd1c2cf3d57"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "PublicGitHubSshUsername_IsAllowed",
+      "case_ordinal": 10,
+      "display_name_sha256": "73dc77215ad653f999942e23f921b5a14a2621b394ae7716766b60ca16db93a3"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "PublicGitHubSshUsername_IsAllowed",
+      "case_ordinal": 11,
+      "display_name_sha256": "b94129c3822cfd11de5c950252620063bf9dda6aa8eaef8265c75d408913092d"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "PublicGitHubSshUsername_IsAllowed",
+      "case_ordinal": 12,
+      "display_name_sha256": "166884828e392f969be2f947c35510e2c8e9705989fa89ab89d27efac3d41afe"
+    },
+    {
+      "result": "Pass",
+      "time": "0.006",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "SourceContexts_NestedScalarsNeverLoseCredentialMeaning",
+      "case_ordinal": 13,
+      "display_name_sha256": "65f8442558b3484f5c3657345d0f41aa0b9a5eacedb7f60c313c049fc7920f68"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "GenericAndSuffixedCredentialNames_AreRejected",
+      "case_ordinal": 14,
+      "display_name_sha256": "4319abaa9bf8c25ba24dc4102a81fdc068f756d0d9e73637c3f59e06793c6796"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CredentialAssignmentEmbeddedInCSharpString_IsRejected",
+      "case_ordinal": 15,
+      "display_name_sha256": "60ba505481229740b182146a660fca8edba5e5e5866a93656bb78b908e0fabc6"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TrackedTraceBinaryExclusion_RequiresAKnownContentSignature",
+      "case_ordinal": 16,
+      "display_name_sha256": "b325929b8c867e67aba0c6f8d6e76d4959a53080b9e3a167b00f5d38be254522"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "StandaloneAndAuthenticationHeaderBearerCredentials_AreRejected",
+      "case_ordinal": 17,
+      "display_name_sha256": "3ac0dc89abef42513696774ba6598d182beb83c42056494971201854318cbfa8"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_MalformedOrTrailingParametersAreRejected",
+      "case_ordinal": 18,
+      "display_name_sha256": "26c5cc1877f40a18f4e8a380fd62e828a065695bc4128aebaf87d110e9dd132c"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_MalformedOrTrailingParametersAreRejected",
+      "case_ordinal": 19,
+      "display_name_sha256": "9d52399113708119f4d12bdccaafd9e35569516cbdd43ec121f3abf378f93d76"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_MalformedOrTrailingParametersAreRejected",
+      "case_ordinal": 20,
+      "display_name_sha256": "d9dc415c4ea4352fcaee72c6c4d9b1d71462cfc180bf9162c335c824f3536b65"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_MalformedOrTrailingParametersAreRejected",
+      "case_ordinal": 21,
+      "display_name_sha256": "8684535eaadaa107c294960f9de3cd223e0cb08483f6965b33cae1d9cc7dadd9"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_MalformedOrTrailingParametersAreRejected",
+      "case_ordinal": 22,
+      "display_name_sha256": "16d26444fffe3401efa5d38c51732cb46c8234c7f942438214b5e9da25664031"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_MalformedOrTrailingParametersAreRejected",
+      "case_ordinal": 23,
+      "display_name_sha256": "5001da8ff75f3ed59d50d79df76508b18fe125497bbd742d9472f015134b8bf3"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_MalformedOrTrailingParametersAreRejected",
+      "case_ordinal": 24,
+      "display_name_sha256": "7da641df2107cbfd13e69e9e90b661c61c52449f90bbebf9c4338d4c8363cb26"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_MalformedOrTrailingParametersAreRejected",
+      "case_ordinal": 25,
+      "display_name_sha256": "f93ad48d207f11988cf6200122738e4a9b0899b8a750a92182f6fdd549d87074"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_MalformedOrTrailingParametersAreRejected",
+      "case_ordinal": 26,
+      "display_name_sha256": "6976d518e278af71cc5e443733d24e99ec34dc3d885749ade45257b3da7a2913"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "EmptyCallRecognition_RejectsUnrecognizedSources",
+      "case_ordinal": 27,
+      "display_name_sha256": "05129cf561fc28614600cbf9dffa796b6c721f7cb2aa2368188a2e126abcf424"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "EmptyCallRecognition_RejectsUnrecognizedSources",
+      "case_ordinal": 28,
+      "display_name_sha256": "fb909596044bca73e94a07f6fe9c054245cfd11d890c0859836780e0e069ccfa"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "EmptyCallRecognition_RejectsUnrecognizedSources",
+      "case_ordinal": 29,
+      "display_name_sha256": "829a7a84e0cb79f14863f9ae60e46dbf153911514795ad9be36673a5104b02d4"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "EmptyCallRecognition_RejectsUnrecognizedSources",
+      "case_ordinal": 30,
+      "display_name_sha256": "75a7c24cddfe5795ff5ef851a8e9073b3f35c8eba94a6627a9196814206d5242"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "EmptyCallRecognition_RejectsUnrecognizedSources",
+      "case_ordinal": 31,
+      "display_name_sha256": "b7892050245f6c2af20abed125c2e2de46c106d504a7bedd05e414fbde827241"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "EmptyCallRecognition_RejectsUnrecognizedSources",
+      "case_ordinal": 32,
+      "display_name_sha256": "24e2a217a0e765012ed136c8c23618a7c6b8c9ebe0715674c9d6af34df63d1ae"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "EmptyCallRecognition_RejectsUnrecognizedSources",
+      "case_ordinal": 33,
+      "display_name_sha256": "896df9bea903234b6b787ef0aee23af9183d2a49ea3d4ec4b6f532e4083a111e"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "EmptyCallRecognition_RejectsUnrecognizedSources",
+      "case_ordinal": 34,
+      "display_name_sha256": "bb589bb26729cd4cc3b57b246c46d16a5aa752ea74ee9d317ad01147ee2e03d6"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CancellationSourceRecognition_RequiresExactFrameworkExpression",
+      "case_ordinal": 35,
+      "display_name_sha256": "6c7e54d61ec345feeb9438ae75d011ee655da7c062dad7183fc83f9ef5600307"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CancellationSourceRecognition_RequiresExactFrameworkExpression",
+      "case_ordinal": 36,
+      "display_name_sha256": "ee00172e3b5e7e359008ac364855d95fca4010b3d7e4a65ec6e9afd7f61290f2"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CancellationSourceRecognition_RequiresExactFrameworkExpression",
+      "case_ordinal": 37,
+      "display_name_sha256": "3e96e5dbda1d4b85e74f1e836f5669d39eaf44e748336d115858020f268b600c"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CancellationSourceRecognition_RequiresExactFrameworkExpression",
+      "case_ordinal": 38,
+      "display_name_sha256": "b0bb9164c3745494f6d6f2058176783c0bab65d1eb74d1fc0a5dd851a5a031a0"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CancellationSourceRecognition_RequiresExactFrameworkExpression",
+      "case_ordinal": 39,
+      "display_name_sha256": "06c38407f43f9e0140a90e6fe0fc3a2bdd3abf15b90ac794c9585c50e0a4bab6"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CancellationSourceRecognition_RequiresExactFrameworkExpression",
+      "case_ordinal": 40,
+      "display_name_sha256": "237bcca694a94bf51a57e9e60f2c47179f2fcf5ff2b16d55f8e47fea3a40a7b0"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "PublicGitHubSshUrl_DoesNotConcealOtherUriCredentials",
+      "case_ordinal": 41,
+      "display_name_sha256": "659780bc205408baf7a36ecd2999e3f7d46596185699e04f2387c1131f2cdd65"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "PublicGitHubSshUrl_DoesNotConcealOtherUriCredentials",
+      "case_ordinal": 42,
+      "display_name_sha256": "c2f6c2a53fbb0b2a580b026042b7562b1bfd29245ff38ea8a2660387257528cc"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "BinaryExclusion_RequiresAKnownContentSignature",
+      "case_ordinal": 43,
+      "display_name_sha256": "8be345c78aed77853e8f6eaeeafd1292d3d787dfcb2c30c0446c0dbc0abb0ec4"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TypedCancellationRecognition_RequiresExactArgumentExtraction",
+      "case_ordinal": 44,
+      "display_name_sha256": "89c50757095206f6f784dcb7f3bdab31ca83578a03490881ea2bb9c5d0d9e776"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TypedCancellationRecognition_RequiresExactArgumentExtraction",
+      "case_ordinal": 45,
+      "display_name_sha256": "fdb28b489e8dfc3508412ef84fab69a806bd0852263e7884f0a8ffe366450cb4"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TypedCancellationRecognition_RequiresExactArgumentExtraction",
+      "case_ordinal": 46,
+      "display_name_sha256": "f8fe347ba48caf2ebf37f243a785d5d150fda2d05ab1e75449524a1c865bc0ea"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TypedCancellationRecognition_RequiresExactArgumentExtraction",
+      "case_ordinal": 47,
+      "display_name_sha256": "82115edf6eec676a62890170b4d74af6809840acc1e6d6f9982b5a9b5a30b600"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TypedCancellationRecognition_RequiresExactArgumentExtraction",
+      "case_ordinal": 48,
+      "display_name_sha256": "134ecd000e59dfba3905c1417cd5423a8957bf7373dc30d80f226f35b52e5b93"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TypedCancellationRecognition_RequiresExactArgumentExtraction",
+      "case_ordinal": 49,
+      "display_name_sha256": "8cb3d0dd4f70032a231e549549842046b3621616db66d9462f147e9c1596de46"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TrackedTextExtensionsAndExtensionlessConfig_AreRecoveredAndScanned",
+      "case_ordinal": 50,
+      "display_name_sha256": "0b0523abc13bf0369ce11c22ffcbec4cb374a9b9b245a23da40e4651fa489a11"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TrackedTextExtensionsAndExtensionlessConfig_AreRecoveredAndScanned",
+      "case_ordinal": 51,
+      "display_name_sha256": "e147b6bd3cbf5711c52a2092b33fffb741f7a51ab648fe7fbc093d1485e96268"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TrackedTextExtensionsAndExtensionlessConfig_AreRecoveredAndScanned",
+      "case_ordinal": 52,
+      "display_name_sha256": "c47992f75c4714de85168c3a21cb5d4ff0d1d3dc47957030e62c76a7a3442610"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TrackedTextExtensionsAndExtensionlessConfig_AreRecoveredAndScanned",
+      "case_ordinal": 53,
+      "display_name_sha256": "cad5050351d29551bb36bd81bd56058600fca816f2643c518e2e828056767e43"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TrackedTextExtensionsAndExtensionlessConfig_AreRecoveredAndScanned",
+      "case_ordinal": 54,
+      "display_name_sha256": "070922ebb07608bcd6bd05b2bf40b9ee1d82f3763c8353ea7dcbb196d8dec575"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TrackedTextExtensionsAndExtensionlessConfig_AreRecoveredAndScanned",
+      "case_ordinal": 55,
+      "display_name_sha256": "ecdba2610c927fc95017b5e78f9c14b6667069b14df5b1b53d1c3fe5231ed1c7"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TrackedTextExtensionsAndExtensionlessConfig_AreRecoveredAndScanned",
+      "case_ordinal": 56,
+      "display_name_sha256": "361a96987b46d0fb9d622522dd0e168282370ee6016ebce27e8c8aa74088833c"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "BomlessUtf16TrackedText_IsRecoveredAndScanned",
+      "case_ordinal": 57,
+      "display_name_sha256": "30240fc0b6072bba5ccf9ddaa696ff07f2af29bd02aafa2c794f26426be317ac"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "BomlessUtf16TrackedText_IsRecoveredAndScanned",
+      "case_ordinal": 58,
+      "display_name_sha256": "dbd04ee959461209ef1b929aa868d20e38f1043f37134cc0d9b18887206320e3"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "SourceContexts_JsonSlashKeysRetainTheOriginalAssignmentNameGrammar",
+      "case_ordinal": 59,
+      "display_name_sha256": "f1c266d8e90c61b6d166098826aec8cdcc6cf535f383cdc4922a77c33adfbb80"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "KnownTextPath_WithControlHeavyMalformedBytes_IsRecoveredAndScanned",
+      "case_ordinal": 60,
+      "display_name_sha256": "26e7409025b88cbdddce2a77380868509b6fda16ee9e0db2d41c9963f1c4e268"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "QualifiedCountAndStructuralJsonValues_AreNotUsableSecrets",
+      "case_ordinal": 61,
+      "display_name_sha256": "357291f4521881539e764b0e13bc861061a61d166180f9299c4663f809014f29"
+    },
+    {
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "MinimalJwtAndInlineCredentialConstructors_AreRejected",
+      "case_ordinal": 62,
+      "display_name_sha256": "8335165791e2c96c4259960faefe5374c1379dc3ef6c9ee824eba7d265bbf0bc"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "LiteralOnlyCallAndCredentialUri_AreRejected",
+      "case_ordinal": 63,
+      "display_name_sha256": "5c17bb40040c79fb268e1d3ad12c5ee1091674715ca71774faca48b7320371e2"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_CompleteQuotedParametersAreAllowed",
+      "case_ordinal": 64,
+      "display_name_sha256": "4cb4be14c12910bc1e974e78638c5ea6c39cc83227b9f9592c92e9c4a861ae43"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_CompleteQuotedParametersAreAllowed",
+      "case_ordinal": 65,
+      "display_name_sha256": "edce1cdf076e6fab9d3be95f7de3e538011661437db52fa21d5cc41820226651"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_CompleteQuotedParametersAreAllowed",
+      "case_ordinal": 66,
+      "display_name_sha256": "5d7c8b71cbb79d31d51f58acb1e54cf29ad2a88a1bf5e2352dc3d452802da0bf"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_CompleteQuotedParametersAreAllowed",
+      "case_ordinal": 67,
+      "display_name_sha256": "b0056d0af7009c9b619a9eb2bd039613b347bf2ea20b0beaab4346deaa60e9df"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_CompleteQuotedParametersAreAllowed",
+      "case_ordinal": 68,
+      "display_name_sha256": "60e6fbe3f6f230ecb44349d1fd6dc2963a69f406154913bb87abf1ae9b43c15f"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_CompleteQuotedParametersAreAllowed",
+      "case_ordinal": 69,
+      "display_name_sha256": "5f651c7437c091ad4a1a58629300559354adf219123f8bb81f3092eb84c34442"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "UnifiedDiffSourceLookup_StopsAtHeaderlessBeginning",
+      "case_ordinal": 70,
+      "display_name_sha256": "b06ad84afebda89080a2ddcec6963914e1418085dca5b2f207cedf2493805208"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "UnifiedDiffSourceLookup_StopsAtHeaderlessBeginning",
+      "case_ordinal": 71,
+      "display_name_sha256": "dd6431fdd9c00e9697f11a467c1adb69d74c58d3fdfe3cd03451dfe7c96ec2b3"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "UnifiedDiffSourceLookup_StopsAtHeaderlessBeginning",
+      "case_ordinal": 72,
+      "display_name_sha256": "c4627c883e9e947fd3c09a2751e11ae8a3f809540974ec2a90573e2c1d059860"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "HtmlEncodedPasswordPlaceholder_IsNotACredential",
+      "case_ordinal": 73,
+      "display_name_sha256": "a3479859fcadd6ee20e0dfa62eec64c4da0725075dd8efb428a55b1df3a1d367"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "SourceContexts_PythonBrokerValuesRejectLiteralOperands",
+      "case_ordinal": 74,
+      "display_name_sha256": "9b50bcd08a39ca0e318729bd0a57be71ba044e11aeb53620dbc5c45012d2b7d5"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "SourceContexts_PythonBrokerValuesRejectLiteralOperands",
+      "case_ordinal": 75,
+      "display_name_sha256": "0e9ee13f829c6a6b87a6712a1916861c72b6b4649896199e429851f21955f484"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "SourceContexts_PythonBrokerValuesRejectLiteralOperands",
+      "case_ordinal": 76,
+      "display_name_sha256": "095f40f6aa809751cdcba20deb0de47aa5cdff0a9c379dde8cb77508951bddda"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "SourceContexts_PythonBrokerValuesRejectLiteralOperands",
+      "case_ordinal": 77,
+      "display_name_sha256": "09c5e5ac186777452a171c0914298507de3bf9e6e3e7a1b9217ec2ab22984de1"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "SourceContexts_PythonBrokerValuesRejectLiteralOperands",
+      "case_ordinal": 78,
+      "display_name_sha256": "3a55dc926d39527e661aae7571c620b768153afb8a9b79749776ccb9b2cf6b98"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "SourceContexts_PythonBrokerValuesRejectLiteralOperands",
+      "case_ordinal": 79,
+      "display_name_sha256": "d79739f21d03b8dece608a4f04daf4ee63b29c8ffdf6d7d5ae3c6d5f94fdca7d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.014",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CredentialAssignmentDiscovery_PreservesOriginalMatches",
+      "case_ordinal": 80,
+      "display_name_sha256": "21d49cab754b5168b7d30dcf8f97b571e493fa780a31a88ebcc5a76393521895"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "ParameterResourceSelection_RequiresExactLiteralFreeExpression",
+      "case_ordinal": 81,
+      "display_name_sha256": "b5bc2e3f9446a3733522a64796fb82f3c2573ee02575a384e67a4613ef966d27"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "ParameterResourceSelection_RequiresExactLiteralFreeExpression",
+      "case_ordinal": 82,
+      "display_name_sha256": "fe688b07ea0c5ff353c0d4c4579956869e00254955612ae9d3264e9dbeb04190"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "DecodedPrivilegedJwtPayload_IsRejected",
+      "case_ordinal": 83,
+      "display_name_sha256": "ffeccbd2a6762cc952e458e82bd91d009e3bed3aa0f026fcf30fbfb90840b5d0"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TrackedTraceDatJavaScriptRuntimeCredentialAssignments_AreAllowed",
+      "case_ordinal": 84,
+      "display_name_sha256": "193c4fe706aa53f041bb5c9f7caa79ea492e6ce0d9fc64b43c61d33165c3575c"
+    },
+    {
+      "result": "Pass",
+      "time": "0.008",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 85,
+      "display_name_sha256": "5f7d0830f4d1941049ac44a46751e59e25c41ffca6d3498607f96207232d36e9"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 86,
+      "display_name_sha256": "fe34ae873ba10df18430b1df2c4dc5a64fa328751a1f229c1a492d1b0a21f04d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 87,
+      "display_name_sha256": "79efeed90f1708899832034fa3827fe97955da1d5a02399aeea90cd9067f3e8a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 88,
+      "display_name_sha256": "8d73d73c65ecb9b3abe033790f2809a1de455df8f9136b8795e11868f1101772"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 89,
+      "display_name_sha256": "1b2ccc78d6179b4b35dca41ff52330acdd934eb0dcc4cb0932f342b5e0397e37"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 90,
+      "display_name_sha256": "cea882d3003221eb7c85767def1d99063853dbd1b0ab860b957ded4adfa89854"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 91,
+      "display_name_sha256": "920effc651213cb0930ec0d2dc15e376c8a2921a33e7168c62f837a60ad0395b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 92,
+      "display_name_sha256": "99fd2b80c09b0af05866881cb588c7e66324fcdfa9ccd57a22f646a6b5a65a00"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 93,
+      "display_name_sha256": "c7a710b0aa1df0d159279bfc6fc02af7b1b75571a76eb93e4b67e3a7f9673c2f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 94,
+      "display_name_sha256": "bd3bb7922d552b1be0930c7afd680830c1972e2da949a09e7f829289b106b961"
+    },
+    {
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 95,
+      "display_name_sha256": "ecc538fc55d8d36e82911b45718a96b1cc2aa11e4065e009e038e875324d7848"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 96,
+      "display_name_sha256": "ee237b649ac3e19d7855561e14473f1796188366b01abb1b38314d7872a27d4f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 97,
+      "display_name_sha256": "933255f544079af202948d42a27b6c3305b71c61912c79c70769b207c45267c2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 98,
+      "display_name_sha256": "4a9819ddb1ba930b3beb41d694a8804fd212cfad60daed6fc5d9f33501d5d650"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 99,
+      "display_name_sha256": "47b8ce0867c1ffda0896d3ff139e0d8880a8db634ab82f0cd8053a80a7c96d09"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 100,
+      "display_name_sha256": "5bec45b354e72ca61c775ace5d8dd0edb8594c5175903a09f68a20c88918b3bd"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 101,
+      "display_name_sha256": "24c9b875ad1eef9cc68b0a5af41342d7f27aea089a4e366afa5c1f932baf9cf0"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 102,
+      "display_name_sha256": "abbe034fdbfa80011eda358d1d5976d3f2eb396d36feebe1fcec56d1359bfb7e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 103,
+      "display_name_sha256": "1cd464b3c897475af427cb36f65f222008ee38b45fbad0aa88086ea0fc2e028b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 104,
+      "display_name_sha256": "2c49a5f7ff122050827bd8fe246f36a295ebed0672ffebcb0274a863b071006e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 105,
+      "display_name_sha256": "d29f8fb1b88d1e22cd9f2cd8279e79d93a80aaf4b5b7968d53dd5c782c1fafb1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 106,
+      "display_name_sha256": "3739bb7dedb76a40f2b48b2c9165a356576edfc058cdd07c8bfb80a240186b96"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 107,
+      "display_name_sha256": "bf9627c8fa07bc721ed2bb6dab2d5a1c263edae244d2431671274273b33c5117"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 108,
+      "display_name_sha256": "2116999fa40ee20df1f26d1f39d1fd58c157e6b989160c8f72cfe6093b6499fc"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 109,
+      "display_name_sha256": "af7971423da2f9435036ca41145c5950e6bb960bd00476314fbd2658af5d3f1f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 110,
+      "display_name_sha256": "6d27f1a7496e4206086074fbbaae1e643909250e6687c25b5a5583d367e47927"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 111,
+      "display_name_sha256": "16ec6202a0ca390795ea6ba96c6370977cdc39e0a49ebb8389b96172e15372b5"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 112,
+      "display_name_sha256": "072dc7ce74e0afa5bc04779363521ba3bb3bcdbf43f2f0fba03982353840d911"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 113,
+      "display_name_sha256": "d13c9dc78fa5bc4770cef01c5cedd7e7e429e8a2b2926c546a2b49557a607555"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 114,
+      "display_name_sha256": "fc52a7a4b3d5ea26c2e86f23c4c7ca57bcb2b22c4879138178d2a9e42afc0d16"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 115,
+      "display_name_sha256": "f561b552f65369b75dca6e9493ffe04bf4bef31b1b5a4ceb4230c94fff82f1ac"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 116,
+      "display_name_sha256": "8f85e23d2629e58ebab6c3b15ccf118ffd2a97c19b4cb7f0550e547bac61a508"
+    },
+    {
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 117,
+      "display_name_sha256": "148e1f40c9fd9b0372534c127c543f0b7165e6b355c5e9934b722c672e093ecc"
+    },
+    {
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 118,
+      "display_name_sha256": "c7938fcec9af54631dee3689014f86e0ff635931ad4db2225933b40338577fe2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 119,
+      "display_name_sha256": "87bf1d63fb5c3a2af0f2196aa2862ad447102658cc4d4d1a879a41996a32f6b3"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 120,
+      "display_name_sha256": "af57e17e990aaa03de4870a054871de7fa59b04ca9745fac32baf28d32657bd7"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 121,
+      "display_name_sha256": "63910dc5a6b6c8607520440507e552b1ab12d64b4fcc1642aa8643107b4cbeed"
+    },
+    {
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 122,
+      "display_name_sha256": "0f84532acbf914f4399ad7f19d6d453e299de62b545934e6115c28a2f47a98e3"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 123,
+      "display_name_sha256": "c01885230d70c35aa29bb7aca2c2e72887374609a80faff5578aeb6037bb2e4c"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 124,
+      "display_name_sha256": "d289b2308b684a4e3a5070a5a5324120f2bc378eea4f883868c6bbc57fdf7d92"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 125,
+      "display_name_sha256": "08a07d539297ce1cd1dc2a74799f0de467658078cb9d2cd127c97b8e84f2225d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 126,
+      "display_name_sha256": "ab43b594244ef239b4a7b5856a2b15b2e5b7ba4503d298d63c472c9d40b5d311"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 127,
+      "display_name_sha256": "49d2be2e90d337f4034e69da2dcc4889176b674ef0b80b0f8d5e569d191dad1d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 128,
+      "display_name_sha256": "befb62af8d3e2386f65e709d3c2ced1ce964a63d8871a4adc20066c76309e138"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 129,
+      "display_name_sha256": "288fa5d15fc790ba1d27da94712d83a01723a09317f1e00d8b75cb18f938c274"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 130,
+      "display_name_sha256": "440f2c163c00ef8d78592f5c88f7e31eb3cbba005df19878065d4088e7ac624b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 131,
+      "display_name_sha256": "902b0542022a8ebfe3b49457e33cf4e7fd4f96a07ee2a9d2a13b56916f747b19"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 132,
+      "display_name_sha256": "58e41bf9963843496e41d46248038e459224c928cfeedf7c855496ae7a4e3258"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 133,
+      "display_name_sha256": "f481c0ddc1c6bb846e62eb8221b2f0ca533daecd41072748ae078ab87dfd82e6"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 134,
+      "display_name_sha256": "b9cbda6364da6c6797f62d0d7429c23a1995ef39249d437f730b20ba0e2f6c4e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 135,
+      "display_name_sha256": "d9209bf3066cc18c585bef4a51e7d590c5ad89a75ce9a2cefe83a1a8535d4882"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 136,
+      "display_name_sha256": "a503ce1aab065604023c4593c2a0ec039b157b934962fb9fadab52a72f73e210"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 137,
+      "display_name_sha256": "bb8fdd43f8de58e8023fd3e39a48ffe2082578e38f1e7d6d1fddd2e37e4615dc"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 138,
+      "display_name_sha256": "43275b665d8d0b1725730678ae3900eb146a8ca4d352916e7bd9c6955720ed32"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 139,
+      "display_name_sha256": "427c93eedd339d784ba52300136f5cd9221977e29878dfc9a31779b23e2aaa12"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 140,
+      "display_name_sha256": "f5a4ce518190fd998d0b79eb0410f465d844e8cdc5f80285f963b09727776eff"
+    },
+    {
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 141,
+      "display_name_sha256": "35bc47fe8c924b76c07297ef4209541abc1e11526766efb9d97cbb99ccc9acd2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 142,
+      "display_name_sha256": "fb0bcb8196e2048f5526c1c07ca5921f35c6c83827606dcbb4f8d56e1a698416"
+    },
+    {
+      "result": "Pass",
+      "time": "0.019",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 143,
+      "display_name_sha256": "a270a7183856b53287d266828b327a79b7c5952b0887175def98bead81a752af"
+    },
+    {
+      "result": "Pass",
+      "time": "0.006",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 144,
+      "display_name_sha256": "8bfb9b38a2fce25ada410178f39fa06746693aac6b646859c06dedadd393a7c9"
+    },
+    {
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 145,
+      "display_name_sha256": "dd21bcd0dd60b4fb9610b0567df246f60624105ce1bf635b21166b3e451abedb"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 146,
+      "display_name_sha256": "d38dde65491261aac25f9310e8ad303c4859ede559dc80fdfaa93ade95caeada"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 147,
+      "display_name_sha256": "33dcc65690a0e0404e46c9214d9d1831f0e5c47ab70ae28824458ed92dd54984"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 148,
+      "display_name_sha256": "a041fb9d2cb3d48317ab1b8690fab6b3c32a47037a932902fb1cdc41f412173b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 149,
+      "display_name_sha256": "3f9b94d51f3130f8565f145cea5b349417e714acf5697d7953a0cf66ccb4ccf2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 150,
+      "display_name_sha256": "6f0f4dbab7bae0d4c3057d87aa0dc7b8dc58ee1144c933bdbba2d183b3dd50f2"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 151,
+      "display_name_sha256": "6b5bf37d2944b5f7347a1fc2016e3efdde122b0f82c07e1bfde5c927411c8fa8"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 152,
+      "display_name_sha256": "eee2def71014595026a09be10c76f7210ddb29d64c1843dbdccd9aa0474849fd"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 153,
+      "display_name_sha256": "e129bca991954227be8dd197176d8f62a6ccb5b3c09cf268390c1613edb5c813"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 154,
+      "display_name_sha256": "c8921087f279c83bda7089b45cec983d77aadc40db0d17491d960778d48257c0"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 155,
+      "display_name_sha256": "4619df8746b5e1fde5362bd9087c51237272b8d362a3248b79413a40e1c9b6ae"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 156,
+      "display_name_sha256": "188d4c921c8c3862256d789ccee41adba6e3cf3b1d34688e9648492775f3225e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 157,
+      "display_name_sha256": "4d75a1fa0dab1a24ea31f3beed950019273eddbfd75c8736107703720690ac76"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 158,
+      "display_name_sha256": "58fa8bc7d3321ca1f735147f764aed1abff507d798ef02b73fe5355416b824a5"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 159,
+      "display_name_sha256": "07b16dcc1b21c928b10d916678872b3cd571097037733bafb46978a56602db81"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 160,
+      "display_name_sha256": "d0a05f66920108a3096af5441cdb7e203d0a16a68eb083a626f0514a859385d9"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 161,
+      "display_name_sha256": "3cbfc4e351d0db105244e398c4b0c9bc137e71fa1f6ba895472ff7257d51e4b9"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 162,
+      "display_name_sha256": "643715ca3d6477b25ca01d94438d7eae72c2078d1c23ce3e970c19b6e211d0fd"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 163,
+      "display_name_sha256": "5d2cbca5b205f4a9c93d395082974b4ef92ce355adde51491311af0f005d19d4"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 164,
+      "display_name_sha256": "ad7fc71fbd369d351f3e5a9c6c01b44987b8628eae41db20cf3b832a0961dde6"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 165,
+      "display_name_sha256": "279bccbcde287dff125b18f09e50a93f3dd3beac9c9017c2fd5d77733f477725"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 166,
+      "display_name_sha256": "ced6e7f4f35b03f68909991867bcf94f177704ccac56264c46548d015553693a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 167,
+      "display_name_sha256": "11410ad572f8ee264f2232bde307ca145f952c22b41af6c9e37729d96e48fe58"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 168,
+      "display_name_sha256": "7e727118f62344d7247e73aa9ce2b7e46f9971114a1e0ea2c17be84b691186cd"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 169,
+      "display_name_sha256": "82557950b08d20908c2eba1aa11ee5516f94321bf67ebe42b472ef4ed03db480"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 170,
+      "display_name_sha256": "083a86100ee74babb3ae194e952c73e85642a9d2eb80c0b1e6208c8f0bf1680f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 171,
+      "display_name_sha256": "25ae3a3994e4b54c384b31950a2962a29fa7f1550267925040cd05d5c8e87ad7"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 172,
+      "display_name_sha256": "b7f1f12973f958f7a367ca7f39207d67405bfeca660e4d98ac53026dc5cedb0e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 173,
+      "display_name_sha256": "5ce27bbc54e43b91cf9363cf6dab2e902099c79accac4123672904eb0138bcac"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 174,
+      "display_name_sha256": "9ba73f601c640be8d1b731e372ff8424807193c45cfc5d59d1cae40f52273e6a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 175,
+      "display_name_sha256": "e626688eb59d810773ebe5b9253d2ee3b8a191c13f90e1f43225497a386e084a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 176,
+      "display_name_sha256": "ef98fd04fca974936f8e613f70ed44bf7f65668beb88a1448e1c04d266cdb28e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 177,
+      "display_name_sha256": "dc86fce5f8fc4bd4dd088c0128b742c59ab70f720686f5a0b9f956cfc4db6f13"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 178,
+      "display_name_sha256": "2ada5630b6ad41aaccca1831af95358b641e50584a5c13c9de0779c7587f0f26"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 179,
+      "display_name_sha256": "a58f7634d27980bf57f0c807f98eb9355112701ae7218e08d0196f6fd3086a5f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetEvidenceMetadata_RequiresSchemaAndPreservesDetection",
+      "case_ordinal": 180,
+      "display_name_sha256": "457b7ecc87745513efaabb34a09988bc284e636ff1dcda3c60d8d00de759692b"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "UriUserInfoColonKeysAndSuffixedNames_AreRejected",
+      "case_ordinal": 181,
+      "display_name_sha256": "7769785df2a8dd3c14657f6bd93be742391579ceb73ed06c95c8f03db2850624"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "ParameterResourceAssignment_IsNotACredential",
+      "case_ordinal": 182,
+      "display_name_sha256": "e34883b9fea1576001edbe96e32e716c458d6c26ea27e178bbdc13ebc82353d1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CancellationTokenBooleanConstructor_IsAllowedOnlyAsExactSource",
+      "case_ordinal": 183,
+      "display_name_sha256": "d402bf3c0abb3faa1e0b4ffbcbb26ea34a48576fb045598668740280f8d1571f"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CancellationTokenBooleanConstructor_IsAllowedOnlyAsExactSource",
+      "case_ordinal": 184,
+      "display_name_sha256": "b6abf74985174d1504e478e7732768a7317f60df831c247de4989b41479ca647"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CancellationTokenBooleanConstructor_IsAllowedOnlyAsExactSource",
+      "case_ordinal": 185,
+      "display_name_sha256": "8030e3e6848c79ff7d4d09780c1d05d82f26d1e45c4638057a006b002638b78c"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CancellationTokenBooleanConstructor_IsAllowedOnlyAsExactSource",
+      "case_ordinal": 186,
+      "display_name_sha256": "83f40bb257bf6f21f214c619c6ab6484caa992291c3195e1b9704906f4eff083"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CancellationTokenBooleanConstructor_IsAllowedOnlyAsExactSource",
+      "case_ordinal": 187,
+      "display_name_sha256": "9e03ec32fc0cf1cd8471929b2575e0f9625f75dae5f535fc156f1f27e09290f2"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CancellationTokenBooleanConstructor_IsAllowedOnlyAsExactSource",
+      "case_ordinal": 188,
+      "display_name_sha256": "6a17d8113c449e82578ab1a0bb78ad57580588ac1848574bea3a878022e6c7da"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TrackedTraceDatLiteralCredentialAssignment_IsRejected",
+      "case_ordinal": 189,
+      "display_name_sha256": "79b27518781e25088f9ff69f64a216257d5d98aab75f6790f6958eef280ed939"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "GeneratedExemption_IsConstrainedToUiTestArtifacts",
+      "case_ordinal": 190,
+      "display_name_sha256": "c7e3d857f3b419a6a51f71c711c640cce4a7b9561a49931e0b09459914762acc"
+    },
+    {
+      "result": "Pass",
+      "time": "0.251",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "LargeQuotedJournal_ScansEveryCredentialWithoutRepeatedValueParsing",
+      "case_ordinal": 191,
+      "display_name_sha256": "2d950fe40f5314592c9fbc16cf7380d56aab5c682c21029ad80c660e4dc1b597"
+    },
+    {
+      "result": "Pass",
+      "time": "0.017",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "DynamicallyPartitionedScan_PreservesCompleteCoverageAndChangedCredentials",
+      "case_ordinal": 192,
+      "display_name_sha256": "64575e513198331331a3569e5a0caf7ade17b796a40c2cc961fcf2fe27d9679a"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CSharpJsonStringRead_RequiresRuntimeSourceWithoutLiteralOperands",
+      "case_ordinal": 193,
+      "display_name_sha256": "a3b2e971d4666ce2ae63b1e54675d1cd8ea9dc6aea7a29ceb718e073ac6c6f79"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CSharpJsonStringRead_RequiresRuntimeSourceWithoutLiteralOperands",
+      "case_ordinal": 194,
+      "display_name_sha256": "9f645e21b05d946c633bc1f9f0f274e3085ea595f9d58d74b891cfab4b0beee1"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "CSharpJsonStringRead_RequiresRuntimeSourceWithoutLiteralOperands",
+      "case_ordinal": 195,
+      "display_name_sha256": "fb25298f7f15b5529b04e5c338f006661b291912126d212e6cc43d7e30741b5e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AppHostTokenCommand_IsRecognizedAsARuntimeCredentialSource",
+      "case_ordinal": 196,
+      "display_name_sha256": "5bdbb356bdf06833a92235ad0b9260a20e629ca6e875edfa9c3aa8666ef05002"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "XmlCredentialShapesAndJavaScriptDestructuringDefaults_AreRejected",
+      "case_ordinal": 197,
+      "display_name_sha256": "ca3ca860fb2cdbb9144b0dd8efb7dbc6b3c74e6c53326e3153b818b725347fa5"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "SourceContexts_JsonCredentialMeaningSurvivesEscapedKeysAndClaimedSourceLanguage",
+      "case_ordinal": 198,
+      "display_name_sha256": "7d4703fa58aa353b16d96c4b677ce8e3d7680d20e1610e6100431e51c3b3fb93"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "PatchStillRejectsLiteralSigningKey",
+      "case_ordinal": 199,
+      "display_name_sha256": "e10c49f3895b93d407c328ab03fda1a39969e3fea02b297865ff79a66682edca"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "BearerChallengeException_RejectsUnknownParametersAndUnquotedValues",
+      "case_ordinal": 200,
+      "display_name_sha256": "6d4855c22288f64e151d178b2a591d19d6c3dd32089e41782d8258eb1c701c8e"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "ArbitraryCSharpRawStringDelimiter_DoesNotHideCredentialAssignment",
+      "case_ordinal": 201,
+      "display_name_sha256": "1aa3d2ba0e036761667527b866ea3d8401e577633e78e5d4f28aba0b4c55d4f2"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 202,
+      "display_name_sha256": "5b12809765df3d7fd5cf204fb81566e0422d3993e40439957b07756e2578040e"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 203,
+      "display_name_sha256": "63c5ae2d566e597dcf106fd9c0c9a4b23044a8d132a76e5115b3d38c4a9ebe30"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 204,
+      "display_name_sha256": "c1152fd7d1edb81cd6d9b3f11766af152cf927719755890bf45d7789a007a2f3"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 205,
+      "display_name_sha256": "e295434681e9cc887526e99c805117a4379c95da8aac4510ad281e8144dc479c"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 206,
+      "display_name_sha256": "03d5358f8522306a987b430a06bd661d28d3f30c39f2144062b8bc50b490b8f9"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 207,
+      "display_name_sha256": "d2d76b4445dd144fc6a5a880688d8cbf79f0e94e4828c312c05245d48a7d1a6b"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 208,
+      "display_name_sha256": "ed9c3b9b0afc00848b5e5e3a1dcdfcedc0c20861ddf0b419588f6447e6d528ee"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 209,
+      "display_name_sha256": "57b1fd0b34d1169da5d7dbf7a1e6d3aa3de8b45e06938e97881651ead4b7b5b6"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 210,
+      "display_name_sha256": "b4752ffcfdc20f1273dafea722cd83be781c68aa00804b44b610a06af806c69d"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 211,
+      "display_name_sha256": "344ac3410f5a9a2fa5804ef10b4f29cbcc14e44bcfc380c6ed86acd30a7423a1"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 212,
+      "display_name_sha256": "031a9a27ea0671efa9615886df08b1373ebf381745cab5ac0303031deeb86545"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 213,
+      "display_name_sha256": "438070493c98cb25fac58137da8f899b2e4662904e2ee7f178f1ceb5125583ae"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 214,
+      "display_name_sha256": "fef6010fa6b70a4887e0e7e3ecb451fcd07ba837beaf6df60e97f91b4c33cdcf"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 215,
+      "display_name_sha256": "c072d994bb430a62c221d5a2fcc6c8cf05838c5fb8a0733805fef6fb3b1c5072"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 216,
+      "display_name_sha256": "18a982cc91512e9baa43ce1f587e3c49f4b1818cd6381723afd110702b111c6d"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 217,
+      "display_name_sha256": "c0e841d639657ee54f9e2c9d2487a2407afa011bab9425bab2d056920ddea6bb"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 218,
+      "display_name_sha256": "40bb78a3581648133f11dfced7cad1934a730e5e70ea78ebe955bd2c1198e0a3"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_RejectsMalformedEmptyOrReversedIntervals",
+      "case_ordinal": 219,
+      "display_name_sha256": "5440e865963b48c696a0e4300844c1b21f8aa767ba6edeb07336ce1706ad73f8"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "RecoverableTextAfterMalformedByte_IsStillScanned",
+      "case_ordinal": 220,
+      "display_name_sha256": "0e3725739452a460b35ab50f4f9c34493456c98125bc543d9fe898d58e42671d"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "ConfigurationKeysAndBracketPlaceholders_RequireStructuralContextAndVocabulary",
+      "case_ordinal": 221,
+      "display_name_sha256": "da62f9f0096d9dac48f9ca39217837675c7705c040d53d2c89de7d386814baaa"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AuthenticationChallenges_DoNotHideOrdinaryTokensOrAdjacentSecrets",
+      "case_ordinal": 222,
+      "display_name_sha256": "8824154bcb943d58cd47014531007d88265f15e3623ec217ff3373962e58a4bd"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "AssignmentSeparatedFromValueByNewline_IsRejected",
+      "case_ordinal": 223,
+      "display_name_sha256": "780873aaf4b383e30722663804dd622641e4ecb031b4e66c12ddf0563d380e04"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "JsonNull_IsAllowedOnlyAsAParsedBareValue",
+      "case_ordinal": 224,
+      "display_name_sha256": "6bef4b927cbc8b8ec2e367889e18ff0449509e1d27d7f0048e74762b22631db2"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "JsonNull_IsAllowedOnlyAsAParsedBareValue",
+      "case_ordinal": 225,
+      "display_name_sha256": "6a7c43fdc078872258091ef601d80104b9caff1173d1bd22df13b3e0cf7f8855"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "JsonNull_IsAllowedOnlyAsAParsedBareValue",
+      "case_ordinal": 226,
+      "display_name_sha256": "106d399ef8547c4d104ce5253e3371076cc0a688e15ffa2c9dbebc94c95b6e08"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "ExplicitInertPlaceholders_AreAllowed",
+      "case_ordinal": 227,
+      "display_name_sha256": "2c313e7a31120eb2aa4f62ec16e194ca1b9fe19230af4539feed35604ad6a1a0"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "ExplicitInertPlaceholders_AreAllowed",
+      "case_ordinal": 228,
+      "display_name_sha256": "0b1965e724d3eddc57e6f15cc9062242e04a9526114d1f615c1a84acdf308910"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "ExplicitInertPlaceholders_AreAllowed",
+      "case_ordinal": 229,
+      "display_name_sha256": "23cc8f0bb5546578e4910193748f946c89c6940599f5faea73d8e80b7a54a6fb"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "ExplicitInertPlaceholders_AreAllowed",
+      "case_ordinal": 230,
+      "display_name_sha256": "d3ffc4fdce7e6537732f4dbe2daa8236ae086e10114f640e68ad7b45041165a3"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "ExplicitInertPlaceholders_AreAllowed",
+      "case_ordinal": 231,
+      "display_name_sha256": "813304737f438daf3b3770576e046cc7adad49d64e5259d43781bad8d059b6f8"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "EmptyCollectionInitializers_AreStructureNotCredentials",
+      "case_ordinal": 232,
+      "display_name_sha256": "3846e34776436d24be9c253f8d14d3a5b640bf8ec643f5eadb8501fb968cf190"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NestedLargeDecodedJwtPayload_IsRejectedWithoutSizeLimit",
+      "case_ordinal": 233,
+      "display_name_sha256": "c84ba7d68880c294245890fb3af24281fb588a31fb2bb43f6b15a69b1d306ee1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_ExemptsOnlySchemaBoundPackageNames",
+      "case_ordinal": 234,
+      "display_name_sha256": "9fe0460eb251a7ec30d00d610c584535d22f530263749c1f6bf8e373042aa916"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_ExemptsOnlySchemaBoundPackageNames",
+      "case_ordinal": 235,
+      "display_name_sha256": "fdf1ff93dc53ed3a13224e1e49a471be9a2a2bfd1b7310561c81fd9ee1212072"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "ConstructorArgumentLabels_PreserveRuntimeTernaryOperands",
+      "case_ordinal": 236,
+      "display_name_sha256": "e5888ab64378b9da0920e6cdbb2444cd773d6ca1b7922da101a8a9d24c1c6aed"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "ConstructorArgumentLabels_PreserveRuntimeTernaryOperands",
+      "case_ordinal": 237,
+      "display_name_sha256": "7372fcd3721ecaa6a42e2397e9ab5f90bc3627c5782881a4a1af247b9451ca9b"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "ArbitraryBracketedValues_AreNotPlaceholders",
+      "case_ordinal": 238,
+      "display_name_sha256": "9f8e2fbb87392705cb7c440b8cdefd18c5fbe8d15956c9da894e904bd121aab9"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "DecodableTrackedTraceResources_AreRecoveredAndScanned",
+      "case_ordinal": 239,
+      "display_name_sha256": "a4d6bdc2f660a374bcf22bc9500465b4df4c33ddce2568bc4558e86e8e8d242d"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "DecodableTrackedTraceResources_AreRecoveredAndScanned",
+      "case_ordinal": 240,
+      "display_name_sha256": "00b708f3a55a8b6c6f19bca662e4e361a8687911386ca9edffcd25a7da6bc5fd"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "DecodableTrackedTraceResources_AreRecoveredAndScanned",
+      "case_ordinal": 241,
+      "display_name_sha256": "a45e1984a2fb4f10378e4ff8741f74e8ca0867b5253bb3dee1d8ad178851e59d"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "DecodableTrackedTraceResources_AreRecoveredAndScanned",
+      "case_ordinal": 242,
+      "display_name_sha256": "3f733e4e4eccc50c2ac15494afb29e03a9afd2e747561cffe13369f79144c8f4"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "DecodableTrackedTraceResources_AreRecoveredAndScanned",
+      "case_ordinal": 243,
+      "display_name_sha256": "2f8beabb15f8bc464d0c1d751ad5f8f3c02137bfcc0f6c133461eb905f56f85b"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "DecodableTrackedTraceResources_AreRecoveredAndScanned",
+      "case_ordinal": 244,
+      "display_name_sha256": "0a78ec52cdf984ae3e208d11bdc2268cd8aaade5c4fa39dbfbb8b2a0c8dbeb00"
+    },
+    {
+      "result": "Pass",
+      "time": "4.588",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "TrackedReusableContent_DoesNotContainUsableSecrets",
+      "case_ordinal": 245,
+      "display_name_sha256": "29a91f91663c391c3b96000c4d03b44d2b14131381f7e6789d15ee2b7b582148"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "UnifiedDiffSourceLookup_TraversesHunkLinesAndDeletedTarget",
+      "case_ordinal": 246,
+      "display_name_sha256": "28b4904d77e417558bfb0e5f3fc00eb2290fe9b89e64f1272ff677c8a4b6d0ac"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "UnifiedDiffSourceLookup_TraversesHunkLinesAndDeletedTarget",
+      "case_ordinal": 247,
+      "display_name_sha256": "8ef1d7defa9df6aa1fc50edbd89a1e85b4366f42755f98733cb3cb2e4d8201a8"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "UnifiedDiffSourceLookup_TraversesHunkLinesAndDeletedTarget",
+      "case_ordinal": 248,
+      "display_name_sha256": "bb9c064c4352f7ae51402f9899b946b0936c672e9269c8114a91af49c6210c08"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "UnifiedDiffSourceLookup_TraversesHunkLinesAndDeletedTarget",
+      "case_ordinal": 249,
+      "display_name_sha256": "e306ed0c967274d0e19d353e21db3ad008538039602cdb9abdca3241b40f17cc"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_AllowsVersionMetadataAndRanges",
+      "case_ordinal": 250,
+      "display_name_sha256": "fbae8141339dd383d836694395089ac568aad9c21627d841aa8e76e55583145c"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_AllowsVersionMetadataAndRanges",
+      "case_ordinal": 251,
+      "display_name_sha256": "302e53eeba26c815180793504aaea9863ad49b869d685e22b4e1140c448d49ad"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_AllowsVersionMetadataAndRanges",
+      "case_ordinal": 252,
+      "display_name_sha256": "b04eee8acad71f0b7cef8535717e08a5267de29e03eda86058ed0621d52178bc"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_AllowsVersionMetadataAndRanges",
+      "case_ordinal": 253,
+      "display_name_sha256": "086f424fa0e166b73b9a14aa3137ef11f362a65de5c454318f010827bd982c70"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_AllowsVersionMetadataAndRanges",
+      "case_ordinal": 254,
+      "display_name_sha256": "6036e17fda3a9f360873ef6bc46bb6ab78b4b40749f3ac47f39e0c1cf4b57745"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_AllowsVersionMetadataAndRanges",
+      "case_ordinal": 255,
+      "display_name_sha256": "d432343103fa4dbdbecf3329152c4f59ab9b3dde8666811850778f9054ce0785"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_AllowsVersionMetadataAndRanges",
+      "case_ordinal": 256,
+      "display_name_sha256": "c6e200adce8bfa307e16013b43f32e191a1b6df7558df8211beb05c91a5f9e4b"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_AllowsVersionMetadataAndRanges",
+      "case_ordinal": 257,
+      "display_name_sha256": "7c4da248f6602fbd1c78c730049ecf366dcbfcdfb66c487ab0b2c955a0f102d1"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_AllowsVersionMetadataAndRanges",
+      "case_ordinal": 258,
+      "display_name_sha256": "93f045a6db3ef906cd46778e87582cc563d29d3a6d60e9faa7ab56f0210c1961"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "NuGetDependencyMetadata_AllowsVersionMetadataAndRanges",
+      "case_ordinal": 259,
+      "display_name_sha256": "b112805aa9143d7dd29d5dcc2e59286181cc51893703d9e4f557643311202f23"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "RuntimeSourcesWithLiteralFallbacksOrOperands_AreRejected",
+      "case_ordinal": 260,
+      "display_name_sha256": "c9e8312366d12087d8c14fbd406b730cf04ca85fb9e37cd4382dee39237bc8ba"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "SourceContexts_GoRuntimeFieldsCannotHideRawStringCredentials",
+      "case_ordinal": 261,
+      "display_name_sha256": "523dc97c91ece036641281da265fc80b53044cf3227721a096644d1395bff817"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "RuntimeDefaultsAndLiteralOperands_AreRejectedRegardlessOfLength",
+      "case_ordinal": 262,
+      "display_name_sha256": "c2af2b76ad3335d251d109c712a722918715d2229b4843867e7e8c752fb936d8"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "PaddedBearerSharedAccessKeyAndCredentialSemver_AreRejected",
+      "case_ordinal": 263,
+      "display_name_sha256": "3a7cda9266132dfbae0c366f0f7cb67341b1b61b0612465c4fe36d8afa2cc489"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "SourceContexts_GoValuesRequireRuntimeSyntax",
+      "case_ordinal": 264,
+      "display_name_sha256": "e55ebff6930253e00c65dcc309afc2f9d7552de4d5fec02b0f628cfe78cdfd3f"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "QuotedBearerChallengeParameters_AreAllowedWithoutConcealingCredentials",
+      "case_ordinal": 265,
+      "display_name_sha256": "a0c4aab8436ffb3c17dd74a2c693dcdabf8b9d35d183458ae9642432ce3efb7f"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "QuotedBearerChallengeParameters_AreAllowedWithoutConcealingCredentials",
+      "case_ordinal": 266,
+      "display_name_sha256": "7bc9ef1215da778550de9b189b6d3e1a919957571de1e62f8c87862faae6a0f5"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "QuotedBearerChallengeParameters_AreAllowedWithoutConcealingCredentials",
+      "case_ordinal": 267,
+      "display_name_sha256": "4f5425159bbc64d677e8119c9ae61ff9336d30661f88259bdc5038d69ccceb02"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "QuotedBearerChallengeParameters_AreAllowedWithoutConcealingCredentials",
+      "case_ordinal": 268,
+      "display_name_sha256": "9ec75ff174c4dc3839d3112a86d25d445ff7cf2280a752d5ea24eebd706149aa"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "QuotedBearerChallengeParameters_AreAllowedWithoutConcealingCredentials",
+      "case_ordinal": 269,
+      "display_name_sha256": "c24f3bae051836c3c7837f7ba6e389bf6402fe72d5df5e5dd252008a312203f4"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "QuotedBearerChallengeParameters_AreAllowedWithoutConcealingCredentials",
+      "case_ordinal": 270,
+      "display_name_sha256": "b29382c6f7940ca5b23d9e45f48fbac87ea9538b00ae0d921d163736e2b3ee0a"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "QuotedBearerChallengeParameters_AreAllowedWithoutConcealingCredentials",
+      "case_ordinal": 271,
+      "display_name_sha256": "110caa28736f8892dd09487523e2f076c129573212e169d00a612f68dbf7aeeb"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "QuotedBearerChallengeParameters_AreAllowedWithoutConcealingCredentials",
+      "case_ordinal": 272,
+      "display_name_sha256": "a23d67d7b5fef71df0f1ab944d19814e457f27e8ca52621232824c3e1eb87dcf"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "RuntimeCredentialFactory_RejectsArbitraryConstructorsAndLiteralInputs",
+      "case_ordinal": 273,
+      "display_name_sha256": "ac6c1917a3e6bb1c4664cfbd80a61cef855b1ab826a583b4bd1249fc916c7731"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+      "method": "UsableLiteralAssignments_AreRejected",
+      "case_ordinal": 274,
+      "display_name_sha256": "3ef3e3b7175b53134bef8804c524278b9369cf548cd59107557cb9363b9b9486"
+    }
+  ]
+}

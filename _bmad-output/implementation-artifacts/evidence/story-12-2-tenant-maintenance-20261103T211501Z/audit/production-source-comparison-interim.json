@@ -1,0 +1,90 @@
+{
+  "prior_packet": "_bmad-output/implementation-artifacts/evidence/story-12-2-source-head-and-mutation-budget-20261103T140301Z",
+  "differences": [
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "path": "src/Hexalith.FrontComposer.SourceTools/Emitters/CommandFormEmitter.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+      "path": "src/Hexalith.FrontComposer.SourceTools/Emitters/CommandRendererEmitter.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties",
+      "path": "src/Hexalith.Parties.AppHost/PartiesDevelopmentCatalogBootstrap.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties",
+      "path": "src/Hexalith.Parties.Contracts/ValueObjects/HumanActorBindingOutcome.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties",
+      "path": "src/Hexalith.Parties.Contracts/ValueObjects/PartyIdentityOutcome.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties",
+      "path": "src/Hexalith.Parties/Queries/PartyIdentityQueryService.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "path": "src/Hexalith.Platform.CatalogBuilder/Hexalith.Platform.CatalogBuilder.csproj"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "path": "src/Hexalith.Platform.CatalogBuilder/Program.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "path": "src/Hexalith.Platform.Composition/Declarations/eventstore.json"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "path": "src/Hexalith.Platform.Composition/Declarations/provenance.json"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "path": "src/Hexalith.Platform.Composition/Declarations/tenants.json"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "path": "src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "path": "src/Hexalith.Platform.Composition/PlatformServerBindings.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "path": "src/Hexalith.Platform.EventStoreHost/Hexalith.Platform.EventStoreHost.csproj"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "path": "src/Hexalith.Projects.AppHost/SupportedProjectReadFixtureProfile.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "path": "src/Hexalith.Projects.Contracts/Queries/GetProjectQuery.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "path": "src/Hexalith.Projects.Contracts/Queries/ListProjectsQuery.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "path": "src/Hexalith.Projects.Server/Projections/ProjectReads/ProjectReadProjectionHandler.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "path": "src/Hexalith.Projects.Server/Queries/ProjectReadAudit.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "path": "src/Hexalith.Projects.Server/Queries/ProjectReadQueryAdmission.cs"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "path": "src/Hexalith.Projects.Server/Queries/ProjectReadQueryExecutor.cs"
+    }
+  ],
+  "disposition": "Observed external changes are preserved. Determine selected runtime dependency participation; do not overwrite or claim unchanged all-repository production sources."
+}

@@ -1,0 +1,16 @@
+{
+  "utc": "2026-11-03T20:23:00.478521+00:00",
+  "prior_packets": [
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-current-sdk-source-head-20261102T213710Z",
+      "seal_sha256": "bb0b9468ceb2d26b1a449d29a0c7f3a5331df6cb1166d191d86b26c461264ba0",
+      "standalone_verifier_exit_code": 0
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-source-head-and-mutation-budget-20261103T140301Z",
+      "seal_sha256": "4616718aa7be37309d99f44f6626117294a2ab42c4aea936e097bfc56e9f894e",
+      "standalone_verifier_exit_code": 0
+    }
+  ],
+  "prior_pending_permission_rows": "Immutable historical snapshots; superseded only by explicit later approvals and actual continuation receipts, never rewritten."
+}

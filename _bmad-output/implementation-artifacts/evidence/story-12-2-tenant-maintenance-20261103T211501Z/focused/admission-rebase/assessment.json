@@ -1,0 +1,37 @@
+{
+  "created_utc": "2026-11-03T20:26:17.424524+00:00",
+  "decision": "safe_with_exact_bound_invariants; implementation ready",
+  "contracts": [
+    "IRouteCatalogStateStore explicitly requires strong reads and exact concurrency token; Dapr GET consistency=strong and CAS first-write+strong atomically replace whole state.",
+    "RouteCatalogActivationState fields Epoch/Committed/Previous/Pending/Ready/LastLease/Leases/Attempts/CompletedTransitions must be preserved from the latest state except own lease append/LastLease.",
+    "Existing Freeze copies all mutable activation collections: canonical bytes, required-host array, auxiliary HTTP grants, projection types, technical receivers/endpoints/methods/policies/invocation methods. Nested noncollection transport/host records contain immutable scalar values.",
+    "TrustProof is an opaque string excluded from ComputeDigest. Exact ordinal proof, canonical bytes/root, epoch and full binding comparisons are mandatory; changed proof cannot inherit validation."
+  ],
+  "implementation": [
+    "Only AcquireCoreAsync receives its own finite96attempt loop. Generic lifecycle UpdateAsync and release/final-native/remote validation remain byte-equivalent.",
+    "Strong-read candidate; privately Freeze committed before async validation. Retain all existing identity/profile/current host observation/binding/trust validation.",
+    "Strong-read latest state/ETag after validation. Pending refuses. Changed epoch/activation binding/canonical bytes/root/TrustProof restarts full fresh validation.",
+    "For exact same authority, reapply own lease identity/idempotency,4096 cap, checked fresh.LastLease+1 and exact fresh epoch/root/host fence to fresh state; preserve all foreign leases and every other fresh field.",
+    "CAS latest ETag; failure returns to full validation under same96attempts and existing jitter/caller token. No stale trust cache/read/check omission."
+  ],
+  "competitors": [
+    "All acquisitions append fences and increment LastLease in the shared whole state; all completed releases remove only their own fence. Same-host Acquire/release already share local admission; cross-host writes can invalidate the pre-capture ETag.",
+    "Lifecycle Prepare/Ready/Commit/Rollback/Reconcile can modify activation/epoch/pending/receipts/attempt state. The exact authority equality gate prevents rebase across changed activation/proof/epoch/pending. No runtime raw-state payload was available to name individual competing writer IDs; contention is proven by24 CAS failures."
+  ],
+  "risks": [
+    "One extra strong read adds bounded I/O and no progress guarantee against adversarial CAS contention; caller and finite attempt bounds remain fail-closed.",
+    "Full binding alone is insufficient because opaque TrustProof is excluded.",
+    "Mutable original aliases must never be used as validated comparison identity; tests must mutate original bytes/list aliases while validation awaits.",
+    "Every final native/remote observation/proof and durable fence remains required; performance/live success is not inferred."
+  ],
+  "race_controls": [
+    "lease-only competitor during every validation wins before initial ETag; refreshed state preserves peers and acquires",
+    "pending/current epoch/committed root/full binding/TrustProof-only change requires refusal or a new complete validation",
+    "mutable canonical/host/auxiliary/capability/technical collection aliases cannot inherit stale validation",
+    "cap/checked overflow/new LastLease sequence and current generation from fresh state enforced",
+    "post-validation read/backend failure/cancellation writes no fence",
+    "sustained post-refresh CAS conflict revalidates every attempt and refuses at96; cancellation not swallowed",
+    "existing lifecycle/coordinates/quiescence/native final observation suites remain intact"
+  ],
+  "no_protocol_deadline_or_default_client_change": true
+}

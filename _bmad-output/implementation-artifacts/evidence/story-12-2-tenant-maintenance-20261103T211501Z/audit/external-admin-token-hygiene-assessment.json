@@ -1,0 +1,10 @@
+{
+  "source": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Admin.Server.Tests/Services/DaprStreamQueryServiceTests.cs",
+  "before_sha256": "bea79409073aedd46a7bf76890987a68c9de5e148d21e824b50f7d31a139d7e4",
+  "proposed_after_sha256": "00fc46c1cb0702a08301428402cefbfe4d0fa8fcebf24dc9eb4e9bfee155545b",
+  "patch_sha256": "86d3943b5f16dd86bb0acb140060793292ef860a2a4ab0eb3a956734098d8288",
+  "applied": false,
+  "scope": "Generate an ephemeral token and share the same variable with the unchanged exact forwarding assertion; preserve all external Admin authorization/scope behavior and scanner checks.",
+  "current_broad_failure": "SecretsProtectionTests.TrackedReusableContent_DoesNotContainUsableSecrets reports this exact external line220 only.",
+  "execution_boundary": "Do not edit until parent serial regression plan releases source/output ownership."
+}

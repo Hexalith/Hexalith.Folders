@@ -1,0 +1,7 @@
+{
+  "phase": "final-cohort-domain-controls",
+  "result": "zero selected cases; not qualifying evidence",
+  "cause": "Combining namespace and class inclusion categories selected their empty intersection.",
+  "correction": "Repeat explicit covering class selectors only under a new immutable phase label final-cohort-domain-controls-2.",
+  "receipt_preserved": true
+}

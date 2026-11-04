@@ -1,0 +1,1635 @@
+diff --git a/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml b/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
+index f94a2039..4d4298e2 100644
+--- a/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
++++ b/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
+@@ -16,8 +16,8 @@ story_closure_claimed: false
+ governance_status: candidate-awaiting-a6b
+ production_routed: false
+ hash_algorithm: SHA-256
+-candidate_set_sha256: 95a4f457e2ae6ff734cd5e4f45e73c03e1b2d4fd4a854d0bbeb39a4cef53e74d
+-artifact_count: 1507
++candidate_set_sha256: 0d2143cca8b5f594fe5ab2749596076562f26b069c38ba77a12157f868accdb8
++artifact_count: 1522
+ artifacts:
+   - path: ".github/workflows/ci.yml"
+     kind: file
+@@ -113,8 +113,8 @@ artifacts:
+     sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
+   - path: "scripts/pd10-v2-story-owned-paths.txt"
+     kind: file
+-    bytes: 107835
+-    sha256: 16917f06c41e7ed65c7aafde743f69a899c3e7b5811d7a868e91c91a4d1fa267
++    bytes: 108975
++    sha256: 6210415d740d7042085d15084f6329c7eb1798fbb2517740516261b4b1f58a99
+   - path: "scripts/prepare-ci-topology-projects.sh"
+     kind: file
+     bytes: 8110
+@@ -881,8 +881,8 @@ artifacts:
+     sha256: 50a196458ab1f091148ddac8194c8b5f4856c306582147be6e223ea6d7bc40e3
+   - path: "src/Hexalith.Folders.Server/FolderDomainProcessor.cs"
+     kind: file
+-    bytes: 87943
+-    sha256: c8f11d624e0dce3445a7bd56372b0a6af5b3d1b75a8f7f922c03e7b72fc8e058
++    bytes: 88062
++    sha256: 5b4649f8496028cf785c88e12e3806ab215e4703527fc9aafc908ea5f3f74871
+   - path: "src/Hexalith.Folders.Server/FolderDomainProjectionHandler.cs"
+     kind: file
+     bytes: 3292
+@@ -919,6 +919,14 @@ artifacts:
+     kind: file
+     bytes: 621
+     sha256: 3c451a5145ed3e6a8b26940dbd5d2a657101a8262ac3a1a75577d1a1319e61f8
++  - path: "src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadata.cs"
++    kind: file
++    bytes: 3078
++    sha256: ecc65576319185118aa6290d7f85e8c5ebe9ce9718b89c27fd48f0a97554dd8e
++  - path: "src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadataDiagnostics.cs"
++    kind: file
++    bytes: 2307
++    sha256: f061b65fad6fcadb9eceeaaf9a72398832ef85a6363071691d9c5aea6b4b2265
+   - path: "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.Content.cs"
+     kind: file
+     bytes: 5848
+@@ -949,8 +957,8 @@ artifacts:
+     sha256: e8d211c6223d1b52fb93958f96aa08cccdefadebfbe93b21050629f34205802b
+   - path: "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs"
+     kind: file
+-    bytes: 8201
+-    sha256: 4f5dc3f31c5d2497b3bd65a706243b6579bdac979c541aa73cbfe721d874bbc8
++    bytes: 8255
++    sha256: ddf301704d8cb5768dd94e94291968ff458b899bad90c6adcfa7f32ce5fa2261
+   - path: "src/Hexalith.Folders.Server/FoldersServerModule.cs"
+     kind: file
+     bytes: 6639
+@@ -965,16 +973,16 @@ artifacts:
+     sha256: 40449740e1ec9e7d6a7ab45e9603152bc17f159441f0f55fe6f03f172f9dced1
+   - path: "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj"
+     kind: file
+-    bytes: 4714
+-    sha256: 9820381f7f4636de8b0473aff0336d92557bd04d5f23167e93be180b0c33cf7a
++    bytes: 4858
++    sha256: 99a917d9b60fe3291e3912cc7f618b93812232bf1192f8c4f6b58d1b34d57e50
+   - path: "src/Hexalith.Folders.Server/HistoricalMutationAuthorization.cs"
+     kind: file
+     bytes: 11047
+     sha256: e9c8453df28835ca39cc263290880df8c608a888f6a3571b3c8262b3355c8bab
+   - path: "src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs"
+     kind: file
+-    bytes: 9384
+-    sha256: 23ac2606f674753045b558bb28069c1c6bb27b4d12d5f57b1e51eba3581746f6
++    bytes: 11126
++    sha256: 44df6979dcad56f49636761e3a640dd4040adb52d767d4f964dc9c45a8495f52
+   - path: "src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs"
+     kind: file
+     bytes: 22080
+@@ -983,6 +991,10 @@ artifacts:
+     kind: file
+     bytes: 526
+     sha256: e33b8c02a3cdb7b3ca9e05c946c8a599cf908c16d6858cd5ba23736d1a33acfd
++  - path: "src/Hexalith.Folders.Server/OrganizationAclOperationalSource.cs"
++    kind: file
++    bytes: 4276
++    sha256: 0bdbce9f97705bfe1ad1d1cb02c453d944392e8b1f2bcb7246258e420c1b4661
+   - path: "src/Hexalith.Folders.Server/Pd10HistoricalRouteRetirement.cs"
+     kind: file
+     bytes: 2051
+@@ -2145,8 +2157,8 @@ artifacts:
+     sha256: 12fce95a46a72ec69c84100ba51fbe95ed4ced7ff325b25d5d756fc6df8e8914
+   - path: "src/Hexalith.Folders/Authorization/EventStoreFolderEffectivePermissionsReadModel.cs"
+     kind: file
+-    bytes: 17167
+-    sha256: 9a318b7ed03f61d0d5607ad55fe209192f20f00c4d69c51a101767a4ef089c6b
++    bytes: 19276
++    sha256: a3d97f32cb711e12c60772b818d7e0d674a410a18ca8a4faf5385395d637adfb
+   - path: "src/Hexalith.Folders/Authorization/EventStoreOrganizationEffectivePermissionsReadModel.cs"
+     kind: file
+     bytes: 14041
+@@ -2191,6 +2203,10 @@ artifacts:
+     kind: file
+     bytes: 232
+     sha256: 2c5b75c01225dd6c24c06ff9304cf66131269fa12bf662f252acb6243b6eb034
++  - path: "src/Hexalith.Folders/Authorization/GatewayOrganizationStreamSequenceReader.cs"
++    kind: file
++    bytes: 1582
++    sha256: e520ad93a2bf2c8eb825180cb56e2b1534847a45bf56878c045a75b0a29f4634
+   - path: "src/Hexalith.Folders/Authorization/IDaprPolicyEvidenceProvider.cs"
+     kind: file
+     bytes: 244
+@@ -4227,6 +4243,22 @@ artifacts:
+     kind: file
+     bytes: 7227
+     sha256: 15516f0e3bc962501c3933e1ccd10ab12536a2b2a7ecf285a09f749457ed472a
++  - path: "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs"
++    kind: file
++    bytes: 11143
++    sha256: 973a068fb30dca17298a25aba7731605fd65ae2f042e50aa29a10867e81ad1b5
++  - path: "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs"
++    kind: file
++    bytes: 6625
++    sha256: 35698e6a4434bddd2ead8ecdf611b8dcbd0ac19469adb3b7d3695cc7104311a8
++  - path: "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs"
++    kind: file
++    bytes: 22817
++    sha256: 0f4983fe6a300b4cced25cb6ce65c444745625907c705338fc20f04324e13019
++  - path: "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs"
++    kind: file
++    bytes: 1006
++    sha256: fc19a8c93f8c47f2c9481b352b6356370b84696fbc52ae8e6daa1a712a6d4b7d
+   - path: "tests/Hexalith.Folders.Cli.Tests/CommandOptionsFreshnessTests.cs"
+     kind: file
+     bytes: 1486
+@@ -4651,6 +4683,10 @@ artifacts:
+     kind: file
+     bytes: 967
+     sha256: f52a46b565a6030abfaa5eff7e530f224632da073c8e0dd6e5e97b137d204adc
++  - path: "tests/Hexalith.Folders.Server.Tests/DiagnosticCompositionAssertionIssuer.cs"
++    kind: file
++    bytes: 611
++    sha256: cd972c118c53af3982e2d7904bf2e2d2b0f4ae8f17b5adbd73fb8ce52c592db3
+   - path: "tests/Hexalith.Folders.Server.Tests/EffectivePermissionsEndpointTests.cs"
+     kind: file
+     bytes: 10884
+@@ -4775,6 +4811,10 @@ artifacts:
+     kind: file
+     bytes: 4358
+     sha256: 23d4a7f710715a928672039f2fbc7080fb5a57a4ec957148dfdb56f783e5da1b
++  - path: "tests/Hexalith.Folders.Server.Tests/FoldersDevelopmentOwnerMetadataTests.cs"
++    kind: file
++    bytes: 10931
++    sha256: 8e4ad357f6dd499b840f9ff834bdecf460649dcc7af7691ad7fcca2f2212af95
+   - path: "tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs"
+     kind: file
+     bytes: 24201
+@@ -4829,8 +4869,8 @@ artifacts:
+     sha256: 0f763802a96444c891801d93f13d1f2cf003ceeea25722c56a8581b475196bcf
+   - path: "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj"
+     kind: file
+-    bytes: 2993
+-    sha256: 31a277da1fb16dfc7b9fdd58e6e73a047ac40834e49bb1bf70a155a012a32702
++    bytes: 3190
++    sha256: 465c8816edaea9a61191d9dc2dfa49a176772f7e1cd827851d90d60b6298f2d0
+   - path: "tests/Hexalith.Folders.Server.Tests/HistoricalMutationAllowingDaprPolicy.cs"
+     kind: file
+     bytes: 427
+@@ -4939,10 +4979,18 @@ artifacts:
+     kind: file
+     bytes: 10814
+     sha256: ab03f2f3797d7c24ffa3c15af5c86c2c04b23f8ec5591d2ed67e4d6b805821da
++  - path: "tests/Hexalith.Folders.Server.Tests/OrganizationOperationalProjectionTests.cs"
++    kind: file
++    bytes: 11664
++    sha256: 6dacb8cbf3cce2471f77d5e16faef2824b7151978ddec02d0750d3d54506f605
+   - path: "tests/Hexalith.Folders.Server.Tests/OrphanOperationalProjectionHandler.cs"
+     kind: file
+     bytes: 667
+     sha256: 2ed76b22e0fa71a147b214e50eca04d7eb595233b865e843c73ad5639190f814
++  - path: "tests/Hexalith.Folders.Server.Tests/ParallelPermissionObservationTests.cs"
++    kind: file
++    bytes: 11132
++    sha256: 6f64f25663005676dcc90e7c877b58d387a89807ed31940553a70a8e289389f1
+   - path: "tests/Hexalith.Folders.Server.Tests/Pd10AuthorizationAuditSinkTests.cs"
+     kind: file
+     bytes: 2446
+@@ -4967,6 +5015,10 @@ artifacts:
+     kind: file
+     bytes: 4925
+     sha256: 0cb5b225466c9bf26d2afc43ad444ca48c2102a3b906bf0185ae5f269c369645
++  - path: "tests/Hexalith.Folders.Server.Tests/PermissionObservationSequenceReader.cs"
++    kind: file
++    bytes: 621
++    sha256: 314739655d6018df96900ada82a685f078412b6c8c3887b6888771b70d705640
+   - path: "tests/Hexalith.Folders.Server.Tests/ProcessBindingReadinessValidator.cs"
+     kind: file
+     bytes: 951
+@@ -5463,10 +5515,18 @@ artifacts:
+     kind: file
+     bytes: 12492
+     sha256: 34b0e4cb9c861ba7d72b42668e57bf834aa861f48c4412cf42b9da2c692b40a3
++  - path: "tests/Hexalith.Folders.Tests/Authorization/GatewayOrganizationStreamSequenceReaderTests.cs"
++    kind: file
++    bytes: 2325
++    sha256: e6d2fb0cce5a3e65835bc5e03d5e573307b0f27b0289b0225f0f2ba88ab23157
+   - path: "tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs"
+     kind: file
+     bytes: 35762
+     sha256: 8f45042d316b788d2a6954e03afd639b3c113c952a644216abb09ff670a38df6
++  - path: "tests/Hexalith.Folders.Tests/Authorization/OwnerMetadataReaderStub.cs"
++    kind: file
++    bytes: 1214
++    sha256: 2539221b14d641efc36d3bd2c18c183ff5e6546ff9ffde4f8f8912d24f6d661b
+   - path: "tests/Hexalith.Folders.Tests/Authorization/ReadyRepositoryCreationReadinessValidator.cs"
+     kind: file
+     bytes: 1237
+diff --git a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+index b19bcfde..dc35cdc4 100644
+--- a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
++++ b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+@@ -1785,9 +1785,9 @@ pending-decision snapshot remain immutable. Production five-minute freshness, ap
+ mutation evidence, all other grants/deadlines, original strict/capacity bodies and folder retained
+ prefix assertions remain unchanged. No other SDK, production or dependency change is included.
+ 
+-- [ ] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs`: add exactly
++- [x] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs`: add exactly
+   `tenants:update` once to the existing disposable administrator, retaining all other realm semantics.
+-- [ ] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs` and focused single-type
++- [x] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs` and focused single-type
+   helpers: maintain only the fixture's own tenant through the existing canonical authenticated
+   `UpdateTenant`, with its original name/description and administrator. Use bounded foreground
+   positive-evidence/restart hooks, a conservative two-minute trigger, and caller cancellation.
+@@ -1796,7 +1796,7 @@ prefix assertions remain unchanged. No other SDK, production or dependency chang
+   roles and configuration. Missing/malformed/conflicting/failed/undelivered evidence fails the fixture;
+   no background heartbeat, global client hook, direct source/derived write, old-event restamp, grant
+   churn or stale authorization is permitted. Reuse existing source/catalog/issuer guards.
+-- [ ] Adjacent AppHost fixture-policy/realm tests: qualify the exact added permission and unchanged
++- [x] Adjacent AppHost fixture-policy/realm tests: qualify the exact added permission and unchanged
+   other identities/grants; no command when sufficiently fresh; own-tenant canonical command shape;
+   rejected/failed or unobserved source/projection cannot establish freshness; unchanged authority;
+   bounded cancellation. Preserve existing production stale-denial controls and all original bodies.
+@@ -1810,3 +1810,186 @@ Source inspection established that normal UpdateTenant always emits TenantUpdate
+ active tenant and changes only name/description. Its exact `tenants:update` admission has no admin
+ bypass. Repeating AddUserToTenant for an existing member is rejected. This exception qualifies an
+ actively maintained disposable tenant and does not qualify indefinite idle-tenant access.
++
++
++### Foreground tenant maintenance focused handoff — 2026-11-03
++
++Implemented only the approved disposable administrator permission and foreground fixture path.
++The fixture reads its authenticated canonical platform Tenants source and normal Workers projection
++before positive folder-evidence and before/after host-restart phases. At a native source age of at
++least two minutes, it submits the original metadata through UpdateTenant, requires matching Completed
++status, original correlation/causation and human attribution, unchanged retained Tenants prefix, then
++exact Workers message/sequence/native timestamp evidence with unchanged enabled state, principals,
++roles and configuration. A ninety-second whole-maintenance linked deadline includes gate wait and
++all command/source/projection I/O. Existing callers retain the existing submit/status defaults;
++production five-minute freshness, the approved two-second mutation budget, all other existing limits,
++original strict/capacity bodies, folder retained-prefix assertions and production realm are unchanged.
++The only new log is a closed payload-free maintenance PASS record after the complete barrier.
++
++The final focused selection passes 101 cases (47 new maintenance controls plus 54 retained
++bootstrap/realm/scope/source-reader controls), zero failures/errors/skips, in 5.525 seconds. The
++unchanged current-source Domain output passes 77 tenant/layered/task authorization controls,
++including the existing stale-denial cases, in 0.222 seconds. These are separate selections; earlier
++95-case execution overlaps the final fixture selection and is not added to it. AppHost test builds
++passed with zero warnings/errors in 59.91 and 51.70 seconds. The first build's six new-test CA2007
++errors were corrected and its receipt retained. A final XML-summary-only rebuild then encountered
++three external SDK CS8300 conflict-marker errors in SubmitCommandRequestValidator.cs; no SDK source
++was edited in this phase, and the markers had already disappeared at immediate read-only capture.
++The final focused run used the preceding successful output containing all 47 new controls. The
++comment-only source addition and external concurrent SDK/output activity require the parent's full
++current-source runtime rebuild and source/PDB/dependency audit before live qualification.
++
++Private phase receipts, before/after hashes, exact commands, source patch and runner handoff are in
++`/tmp/story12-2-tenant-maintenance-implementation-20261103/`. No live test ran in this implementation
++phase, so the parent runtime/audit/live checkbox remains open. The earlier strict failures and sealed
++packets are unchanged. This qualifies the fixture policy for an actively maintained tenant; it does
++not claim indefinite idle-tenant access, live acceptance, capacity, SM4, SDK/package parity or story
++completion. This phase changed no production policy, authority guard, grant beyond the single fixture
++exception, dependency pin, frozen artifact, Git state or public v2 exposure. The parent subsequently
++confirmed an external EventStore merge in progress and externally advanced SDK HEAD; the prior broad
++SDK/consumer runs do not qualify that new producer cohort. No external merge/source edits were resolved
++or incorporated by this fixture phase; coherent producer qualification remains with the parent.
++
++
++### Current-cohort qualification follow-up — 2026-11-03
++
++External work merged a new EventStore producer cohort while this fixture implementation was being
++qualified. The parent preserved that work, restored with both source flags, rebuilt runtime/Memories
++with zero warnings/errors, and verified all92selected modules plus the observer against source/PDB,
++one SHA/MVID per selected assembly, and project-only selected assets. Rebuilt101fixture and77stale
++controls pass. One build observed an unrelated McpCli HEAD-only commit; its source map did not change.
++The existing sealed packets remain historical and unchanged.
++
++The unchanged strict class failed twice before reaching the new tenant-maintenance hook: once on a
++retained UnavailableProjection rejection where ValidationFailed is required (137.433s), and once at
++the unknown-profile HTTP retry deadline (195.562s). The latter has a positively identified five-second
++ConfigureProviderBinding domain invocation deadline:78ms acquisition and4922ms transport in the failed
++span. Its receiver/handler/reply boundary is not observed by the enabled categories. No deadline,
++authorization, mapper, retained outcome or strict assertion was changed to accept either failure.
++All owned resources are removed; unrelated resources were preserved.
++
++- [x] `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs` and
++  `FolderDurabilityAcceptanceFixture.cs`: add a separate real-AppHost control for the approved
++  maintenance path, since the strict class currently stops earlier. Expose only the existing hook
++  internally with its bool result. Establish the real verified baseline, snapshot persisted Workers
++  authority/evidence, wait for the ORIGINAL native timestamp to reach the existing two-minute trigger
++  using real elapsed time/caller cancellation, and require genuine maintenance and exactly one new
++  persisted message/watermark/timestamp with unchanged authority and prior evidence. Immediate
++  fresh execution must be a no-op with identical persisted state. No fake clock, forced renewal flag,
++  direct write, new permission, new source-reader exposure or replacement of strict/capacity bodies.
++  This separate control can qualify active fixture maintenance, never full durability acceptance.
++- [x] In the root-declared EventStore owning repository, correct fixed test-only credential-shaped
++  values in `tests/Hexalith.EventStore.DomainService.Tests/NativeSourceMetadataCompositionTests.cs`
++  and `tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceMetadataCatalogObservationTests.cs`
++  using generated per-test ephemeral values and exact shared expectations. Keep malformed-key
++  refusal meaningful and all authentication/catalog assertions intact. Current SecretsProtectionTests
++  reports only these prior story-owned test lines. Do not exempt paths or weaken the scanner.
++- [x] Build/run focused controls serially after parent broad qualification releases outputs. Retain
++  the new SDK published-package authenticity failure separately: its pinned expected SHA is
++  e21f5ac7b5f332f1921f70a249ab2032b9978d56ffdd6641a0a4b94d04850bdc, but the restored archive is
++  81a33bb7562507004d4dfb8da2365cdea1fb874ff53798787bff110c0d9573ef. Do not replace its expected
++  hash, skip it, change package pins, or claim the later ABI assertions executed.
++- [ ] Parent rebuild/audit and execute the new real maintenance control; preserve the failed strict
++  runs and keep the original strict row open until it actually passes. A further same-code strict
++  diagnosis may enable only existing receiver/ASP.NET timing categories to locate the observed remote
++  interval; it does not authorize timeout, guard, outcome or assertion changes. Remaining SDK/package,
++  capacity, governance/PD10, SM4 and whole-story review gates retain their separate dispositions.
++
++
++### Current-cohort follow-up focused handoff — 2026-11-03
++
++Added the separate real-AppHost maintenance control and exposed only the existing fixture hook's
++internal bool result. The control establishes the real verified baseline, waits for its original
++native timestamp to age naturally to the unchanged two-minute threshold, requires genuine source
++maintenance, independently reads persisted Workers evidence/authority, and requires an immediate
++fresh no-op with identical persisted state. It adds no credential exposure, forced-renewal flag,
++fake clock, background heartbeat, permission, source write or strict/capacity-body change. Discovery
++finds the new class/method; no live execution or acceptance claim occurred in this implementation phase.
++
++The two prior-owned SDK tests now use generated per-test values with exact shared expectations.
++The malformed key is generated but deterministically invalid DER; valid, missing-key, bad-key and
++foreign-domain transport/issuer refusal assertions remain intact. The catalog observation still
++requires that the exact private sentinel is absent. Scenario selection moved outside the credential
++assignment after the unchanged scanner correctly continued to report its literal-valued expression.
++Final SDK selections pass four composition cases in 0.283s and 275 catalog/scanner cases in 5.548s,
++zero failures/errors/skips. Earlier overlapping executions and the intermediate one-case scanner
++failure are retained, not added to these counts. SDK test builds pass with zero warnings/errors.
++The first SDK build encountered duplicate packaged/source Commons assets; focused restores with both
++source flags corrected generated assets without changing sources or dependency pins.
++
++The full AppHost test build is blocked by an external production edit: untouched
++FoldersDevelopmentOwnerMetadata.cs:34 references BoundOwnerNativeSourceMetadataReader, which is
++absent from the selected SDK. No external production or SDK capability repair was attempted.
++The permitted narrow fallback with BuildProjectReferences=false compiles the fixture/control against
++existing referenced outputs with zero warnings/errors in 5.71s; its 101 retained fixture controls pass
++in 5.321s. This checks the changed test code, not a coherent current-source runtime. Parent must resolve
++or coordinate the separately owned producer/composition prerequisite before a full runtime rebuild,
++source/PDB/dependency audit and real standalone control. No SDK package authenticity hash/assertion,
++scanner exemption, product guard, mapper, deadline, frozen artifact or Git state changed in this phase.
++The earlier published Tenant7 authenticity failure before ABI assertions remains separate and open.
++
++Exact phase commands, failure receipts, before/after source and selected-output hashes, root/SDK
++patches and runner handoff are private under `/tmp/story12-2-current-cohort-followup-20261103/`.
++Parent retains current broad results and owns pending inventory refresh for external/new compile
++inputs and SourceSHA, Contracts rerun, runtime rebuild and actual standalone execution. The parent
++execution checkbox above, original strict acceptance, capacity, SDK/package, PD10/governance, SM4 and
++whole-story review gates remain open with their separate dispositions. No new live topology was run.
++
++
++### Bounded current public-composition repair — 2026-11-03
++
++The external Root commit9e26eb8f4296fe2fdef70cd5858341a55f7ea9e4 adds a Development-only owner
++metadata helper that references BoundOwnerNativeSourceMetadataReader, absent from the current SDK.
++The coherent source build now fails CS0246 at FoldersDevelopmentOwnerMetadata.cs:34. Do not revive
++a private transport or mint/relabel a caller. The already-approved supported public-composition
++repair applies: FoldersServerServiceCollectionExtensions already registers the public
++AddEventStoreGatewayNativeSourceMetadataReader("folders") before this private helper is invoked.
++
++- [x] `src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadata.cs`: reuse that existing public
++  SDK reader registration/factory with its existing lifetime, rather than constructing the unavailable
++  class or a separate fixed-caller/fixed-destination HTTP client. Preserve the explicit enabled flag,
++  Debug/source restriction, Development/catalog-directory guards, optional diagnostics guards and
++  GatewayOrganizationStreamSequenceReader selection. Preserve actual configured workload/key/AppId,
++  metadata-only shape/domain, human default transport, all proofs/denials and existing deadlines.
++  Any unexpected/missing composition must fail closed; no source/actor/persistence protocol change.
++- [x] Adjacent Server composition controls: qualify the guarded public SDK composition, exact normal
++  reader/factory/lifetime and diagnostic decoration, unchanged disabled/non-Development behavior and
++  preserved default human transport. Build/run focused checks serially, retain the preceding CS0246
++  and stale-output fallback limits, then release to parent for full coherent rebuild/source audit.
++
++This is the previously approved minimal supported public-composition repair; it adds no new caller,
++grant, endpoint, public v2, timeout exception, package/gitlink update or publication authority. Keep
++all external product edits beyond this precise unavailable-type composition point untouched.
++
++
++### Supported public-composition repair focused handoff — 2026-11-03
++
++The bounded helper repair reuses the already registered public SDK metadata-reader factory and its
++transient lifetime. It removes the unavailable class and unused fixed caller/destination HTTP client;
++it neither registers a different source capability nor changes the SDK. The configured SDK workload,
++key, AppId, exact metadata-only domain/shape and independent human transport remain owned by that
++original factory. Missing, ambiguous, keyed, wrong-lifetime or non-factory registrations fail closed;
++a factory returning a different adapter also refuses. Optional decoration keeps the original enable,
++Debug/source, Development, catalog and diagnostic guards, and advisory logger resolution cannot
++replace the original reader. GatewayOrganizationStreamSequenceReader selection remains unchanged.
++Every other external product edit is preserved.
++
++The full current-source Server test build passes with zero warnings/errors in 10.20s, and 36 focused
++composition/source-boundary cases pass with zero failures/errors/skips in 3.230s. These include 15
++composition controls for real public factory reuse, transient resolution, default human transport,
++optional diagnostics/logger failure, disabled/environment/catalog guards and unexpected-composition
++refusals. The complete current-source AppHost test build now passes with zero warnings/errors in
++88.50s; 101 retained fixture controls pass in 5.487s. Discovery identifies the new standalone control;
++it has not been executed. Earlier fallback/intermediate results overlap these selections and are
++retained as history, not added to the final counts. SDK composition four-case and catalog/scanner
++275-case passes from this same follow-up remain separately recorded; no full-suite producer or ABI
++success is inferred.
++
++The prior CS0246 and stale-output fallback are retained but superseded as compile dispositions by
++this supported repair and successful full build. Parent now owns full runtime/Memories rebuild,
++source/PDB/dependency audit, pending-only compile inventory/SourceSHA refresh, Contracts rerun and
++actual natural-age standalone execution. Original strict/capacity bodies and package authenticity
++pins/scanner assertions are unchanged. The original strict failures, producer/package authenticity,
++capacity, PD10/governance, SM4 and whole-story review remain distinct open gates; standalone success
++would qualify only active tenant maintenance. No live topology, Git mutation, dependency change,
++frozen-artifact update or publication occurred in this implementation phase.
+Submodule references/Hexalith.EventStore contains modified content
+diff --git a/scripts/pd10-v2-story-owned-paths.txt b/scripts/pd10-v2-story-owned-paths.txt
+index b73765a9..edabbd23 100644
+--- a/scripts/pd10-v2-story-owned-paths.txt
++++ b/scripts/pd10-v2-story-owned-paths.txt
+@@ -223,6 +223,8 @@ src/Hexalith.Folders.Server/FolderSensitiveDiagnosticDetector.cs
+ src/Hexalith.Folders.Server/FoldersApiRouteTelemetry.cs
+ src/Hexalith.Folders.Server/FoldersApiRouting.cs
+ src/Hexalith.Folders.Server/FoldersApiRoutingMode.cs
++src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadata.cs
++src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadataDiagnostics.cs
+ src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.Content.cs
+ src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.Native.cs
+ src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
+@@ -239,6 +241,7 @@ src/Hexalith.Folders.Server/HistoricalMutationAuthorization.cs
+ src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs
+ src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs
+ src/Hexalith.Folders.Server/OrganizationAclAuthorizationDeniedException.cs
++src/Hexalith.Folders.Server/OrganizationAclOperationalSource.cs
+ src/Hexalith.Folders.Server/Pd10HistoricalRouteRetirement.cs
+ src/Hexalith.Folders.Server/Pd10V2CandidateCompatibilitySeam.cs
+ src/Hexalith.Folders.Server/Pd10V2RuntimeResponseCatalog.g.cs
+@@ -541,6 +544,7 @@ src/Hexalith.Folders/Authorization/FolderPermissionEvidenceStatus.cs
+ src/Hexalith.Folders/Authorization/FolderPermissionOverrideEntry.cs
+ src/Hexalith.Folders/Authorization/FolderPermissionProjection.cs
+ src/Hexalith.Folders/Authorization/FolderProjectionMessage.cs
++src/Hexalith.Folders/Authorization/GatewayOrganizationStreamSequenceReader.cs
+ src/Hexalith.Folders/Authorization/IDaprPolicyEvidenceProvider.cs
+ src/Hexalith.Folders/Authorization/IEffectivePermissionsReadModel.cs
+ src/Hexalith.Folders/Authorization/IEventStoreAuthorizationValidator.cs
+@@ -1050,6 +1054,10 @@ src/shared/AdapterCore/SafeBearerTokenHandler.cs
+ src/shared/AdapterCore/UnsafeBearerTransportException.cs
+ tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfiguration.cs
+ tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfigurationTests.cs
++tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs
++tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs
++tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs
++tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs
+ tests/Hexalith.Folders.Cli.Tests/CommandOptionsFreshnessTests.cs
+ tests/Hexalith.Folders.Cli.Tests/CommandSurfaceE2ETests.cs
+ tests/Hexalith.Folders.Cli.Tests/ErrorProjectionTests.cs
+@@ -1156,6 +1164,7 @@ tests/Hexalith.Folders.Server.Tests/ConfigureProviderBindingEndpointTests.cs
+ tests/Hexalith.Folders.Server.Tests/CreateFolderEndpointTests.cs
+ tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs
+ tests/Hexalith.Folders.Server.Tests/DeniedTenantAccessProjectionStore.cs
++tests/Hexalith.Folders.Server.Tests/DiagnosticCompositionAssertionIssuer.cs
+ tests/Hexalith.Folders.Server.Tests/EffectivePermissionsEndpointTests.cs
+ tests/Hexalith.Folders.Server.Tests/EventStoreFolderTenantAccessProjectionStoreTests.cs
+ tests/Hexalith.Folders.Server.Tests/EventStoreOrganizationEffectivePermissionsReadModelTests.cs
+@@ -1187,6 +1196,7 @@ tests/Hexalith.Folders.Server.Tests/FoldersCallbackBoundaryTests.cs
+ tests/Hexalith.Folders.Server.Tests/FoldersCallbackRouteCatalog.cs
+ tests/Hexalith.Folders.Server.Tests/FoldersCatalogStateStore.cs
+ tests/Hexalith.Folders.Server.Tests/FoldersContextSearchFacadeRegistrationTests.cs
++tests/Hexalith.Folders.Server.Tests/FoldersDevelopmentOwnerMetadataTests.cs
+ tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs
+ tests/Hexalith.Folders.Server.Tests/FoldersGatewayTransportTests.cs
+ tests/Hexalith.Folders.Server.Tests/FoldersHostSecurityEnrollmentTests.cs
+@@ -1228,13 +1238,16 @@ tests/Hexalith.Folders.Server.Tests/OperationalStatusPermissionEvidence.cs
+ tests/Hexalith.Folders.Server.Tests/OperationalStatusProjectionHandlerTests.cs
+ tests/Hexalith.Folders.Server.Tests/OpsConsoleDiagnosticsEndpointTests.cs
+ tests/Hexalith.Folders.Server.Tests/OrganizationAclReauthorizationTests.cs
++tests/Hexalith.Folders.Server.Tests/OrganizationOperationalProjectionTests.cs
+ tests/Hexalith.Folders.Server.Tests/OrphanOperationalProjectionHandler.cs
++tests/Hexalith.Folders.Server.Tests/ParallelPermissionObservationTests.cs
+ tests/Hexalith.Folders.Server.Tests/Pd10AuthorizationAuditSinkTests.cs
+ tests/Hexalith.Folders.Server.Tests/Pd10NonSeekableReadStream.cs
+ tests/Hexalith.Folders.Server.Tests/Pd10ProtectedOperationCatalogTests.cs
+ tests/Hexalith.Folders.Server.Tests/Pd10ProtectedOperationExecutorTests.cs
+ tests/Hexalith.Folders.Server.Tests/Pd10V2ReadKeyPrecedenceTests.cs
+ tests/Hexalith.Folders.Server.Tests/Pd10V2RequestFolderAuthorizationTests.cs
++tests/Hexalith.Folders.Server.Tests/PermissionObservationSequenceReader.cs
+ tests/Hexalith.Folders.Server.Tests/ProcessBindingReadinessValidator.cs
+ tests/Hexalith.Folders.Server.Tests/ProcessProviderBindingReader.cs
+ tests/Hexalith.Folders.Server.Tests/ProcessWorkspaceReadinessValidator.cs
+@@ -1359,7 +1372,9 @@ tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsTaskScopeTests.cs
+ tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsTestSupport.cs
+ tests/Hexalith.Folders.Tests/Authorization/FolderPermissionEvidenceProviderTests.cs
+ tests/Hexalith.Folders.Tests/Authorization/GatewayMutationFinalReauthorizationTests.cs
++tests/Hexalith.Folders.Tests/Authorization/GatewayOrganizationStreamSequenceReaderTests.cs
+ tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs
++tests/Hexalith.Folders.Tests/Authorization/OwnerMetadataReaderStub.cs
+ tests/Hexalith.Folders.Tests/Authorization/ReadyRepositoryCreationReadinessValidator.cs
+ tests/Hexalith.Folders.Tests/Authorization/RevokingFolderPermissionEvidenceProvider.cs
+ tests/Hexalith.Folders.Tests/Authorization/TenantAccessAuthorizerTests.cs
+diff --git a/src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadata.cs b/src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadata.cs
+index 24519deb..5f96af59 100644
+--- a/src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadata.cs
++++ b/src/Hexalith.Folders.Server/FoldersDevelopmentOwnerMetadata.cs
+@@ -1,6 +1,4 @@
+ using Hexalith.EventStore.Client.Streams;
+-using Hexalith.EventStore.DomainService;
+-using Hexalith.EventStore.ServiceDefaults.Authentication;
+ using Hexalith.EventStore.ServiceDefaults.Routing;
+ using Hexalith.Folders.Authorization;
+ 
+@@ -21,27 +19,25 @@ internal static class FoldersDevelopmentOwnerMetadata
+         if (!builder.Environment.IsDevelopment()
+             || string.IsNullOrWhiteSpace(builder.Configuration["EventStore:RouteCatalog:DevelopmentBootstrap:Directory"]))
+             throw new InvalidOperationException("Private owner metadata requires the selected Development catalog.");
+-        const string clientName = "folders-bound-owner-metadata";
+-        builder.Services.AddHttpClient(clientName, http =>
++        ServiceDescriptor[] registrations = builder.Services.Where(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader)).ToArray();
++        if (registrations.Length != 1 || registrations[0].IsKeyedService
++            || registrations[0].Lifetime != ServiceLifetime.Transient || registrations[0].ImplementationFactory is not { } factory)
++            throw new InvalidOperationException("Private owner metadata requires the existing public SDK reader factory.");
++        builder.Services.Replace(ServiceDescriptor.Describe(typeof(INativeSourceMetadataReader), provider =>
+         {
+-            string endpoint = builder.Configuration["DAPR_HTTP_ENDPOINT"]
+-                ?? "http://127.0.0.1:" + builder.Configuration["DAPR_HTTP_PORT"];
+-            http.BaseAddress = new Uri(endpoint.TrimEnd('/') + "/v1.0/invoke/eventstore/method/");
+-            http.Timeout = TimeSpan.FromSeconds(3);
+-        });
+-        builder.Services.AddSingleton<INativeSourceMetadataReader>(provider =>
+-        {
+-            INativeSourceMetadataReader reader = new BoundOwnerNativeSourceMetadataReader(
+-                provider.GetRequiredService<IHttpClientFactory>(), clientName, provider.GetRequiredService<IWorkloadAssertionIssuer>(),
+-                "folders", builder.Configuration["Authentication:BoundStreamRead:PrivateKey"]
+-                    ?? throw new InvalidOperationException("The owner proof key is missing."), ["folders"], TimeProvider.System);
+-            return builder.Configuration.GetValue<bool>("Folders:EventStore:OwnerMetadataReads:DiagnosticsEnabled")
+-                && provider.GetRequiredService<IOptions<RouteCatalogHostOptions>>().Value is
++            if (factory(provider) is not GatewayNativeSourceMetadataReader reader)
++                throw new InvalidOperationException("Private owner metadata requires the actual public SDK reader.");
++            if (!builder.Configuration.GetValue<bool>("Folders:EventStore:OwnerMetadataReads:DiagnosticsEnabled")
++                || provider.GetRequiredService<IOptions<RouteCatalogHostOptions>>().Value is not
+                     { DevelopmentFixture: true, Profile: "Development", RequireTechnicalHttpBinding: true }
+-                && provider.GetRequiredService<IHostEnvironment>().IsDevelopment()
+-                ? new FoldersDevelopmentOwnerMetadataDiagnostics(reader,
+-                    provider.GetRequiredService<ILogger<FoldersDevelopmentOwnerMetadataDiagnostics>>()) : reader;
+-        });
++                || !provider.GetRequiredService<IHostEnvironment>().IsDevelopment()) return reader;
++            try
++            {
++                return provider.GetService<ILogger<FoldersDevelopmentOwnerMetadataDiagnostics>>() is { } logger
++                    ? new FoldersDevelopmentOwnerMetadataDiagnostics(reader, logger) : reader;
++            }
++            catch { return reader; /* Optional diagnostic service resolution cannot replace the SDK reader. */ }
++        }, registrations[0].Lifetime));
+         builder.Services.Replace(ServiceDescriptor.Singleton<IOrganizationStreamSequenceReader, GatewayOrganizationStreamSequenceReader>());
+ #else
+         throw new InvalidOperationException("Private owner metadata requires a local Debug source build.");
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+index 861e09ec..366afae5 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+@@ -23,6 +23,7 @@ using Hexalith.EventStore.DomainService;
+ using Hexalith.EventStore.ServiceDefaults.Authentication;
+ using Hexalith.Folders.Authorization;
+ using Hexalith.Folders.Projections.OperationalStatus;
++using Hexalith.Folders.Projections.TenantAccess;
+ using Hexalith.Tenants.Contracts.Identity;
+ using Microsoft.Extensions.DependencyInjection;
+ using Microsoft.IdentityModel.JsonWebTokens;
+@@ -66,6 +67,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+     private string _projectWorkloadToken = string.Empty;
+     private string _metadataWorkloadToken = string.Empty;
+     private string? _namedCatalogFingerprint;
++    private FolderDurabilityTenantMaintenance? _tenantMaintenance;
+ 
+     /// <summary>Gets whether the explicit integration opt-in is present.</summary>
+     public bool Enabled { get; } = Environment.GetEnvironmentVariable(AspireFoldersAppHostFixture.OptInEnvironmentVariable)
+@@ -233,6 +235,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+     /// <summary>Observes authorized current ACL and operational watermarks before the next positive mutation.</summary>
+     public async Task WaitForCurrentFolderEvidenceAsync(string folderId, string phase, bool replica = false)
+     {
++        await MaintainTenantAsync(TestContext.Current.CancellationToken).ConfigureAwait(false);
+         using HttpClient client = replica ? CreateContentReplicaClient() : CreateFoldersClient();
+         using HttpRequestMessage request = new(HttpMethod.Get, $"/api/v1/folders/{folderId}/effective-permissions");
+         await FolderDurabilityHttp.WaitForCurrentFolderAsync(client, request, folderId, phase, async token =>
+@@ -508,6 +511,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+     /// <summary>Restarts the domain hosts while retaining the same identity provider, broker and state store.</summary>
+     public async Task<IReadOnlyDictionary<string, (int Before, int After)>> RestartHostsAsync()
+     {
++        await MaintainTenantAsync(TestContext.Current.CancellationToken).ConfigureAwait(false);
+         Dictionary<string, (int Before, int After)> identities = [];
+         foreach (string resource in OwningHosts)
+         {
+@@ -525,6 +529,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+             FolderDurabilityRuntimeBinding.Record(resource, after);
+         }
+ 
++        await MaintainTenantAsync(TestContext.Current.CancellationToken).ConfigureAwait(false);
+         return identities;
+     }
+ 
+@@ -618,7 +623,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+     }
+ 
+     /// <summary>Compares an HTTP status without including credentials or protected response payloads.</summary>
+-    public static async Task RequireStatusAsync(HttpResponseMessage response, HttpStatusCode expected, string operation)
++    public static async Task RequireStatusAsync(HttpResponseMessage response, HttpStatusCode expected, string operation, CancellationToken? cancellationToken = null)
+     {
+         ArgumentNullException.ThrowIfNull(response);
+         if (response.StatusCode != expected)
+@@ -626,7 +631,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+             string code = "unavailable";
+             try
+             {
+-                JsonElement body = await response.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(false);
++                JsonElement body = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken ?? TestContext.Current.CancellationToken).ConfigureAwait(false);
+                 if (body.TryGetProperty("code", out JsonElement value) && value.ValueKind == JsonValueKind.String)
+                 {
+                     code = value.GetString()!;
+@@ -1429,27 +1434,30 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         return (await response.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(false)).GetProperty("access_token").GetString()!;
+     }
+ 
+-    internal async Task<JsonElement> SubmitAsync(string tenant, string domain, string aggregate, string command, object payload, string token)
++    /// <summary>Submits a real scoped command and observes Completed, optionally bounded by a foreground caller and original identities.</summary>
++    internal async Task<JsonElement> SubmitAsync(string tenant, string domain, string aggregate, string command, object payload, string token,
++        CancellationToken? cancellationToken = null, string? messageId = null, string? correlationId = null)
+     {
++        CancellationToken caller = cancellationToken ?? TestContext.Current.CancellationToken;
+         // Each command fans out into internal actor/projection requests. Keep the acceptance driver
+         // below the existing consumer limiter; rate-limit/load qualification is a separate concern.
+-        await Task.Delay(TimeSpan.FromSeconds(1), TestContext.Current.CancellationToken).ConfigureAwait(false);
++        await Task.Delay(TimeSpan.FromSeconds(1), caller).ConfigureAwait(false);
+         using HttpClient client = App.CreateHttpClient("eventstore", "http");
+         client.Timeout = TimeSpan.FromSeconds(40);
+         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+         using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/commands")
+         {
+-            Content = JsonContent.Create(new SubmitCommandRequest(NewId(), tenant, domain, aggregate, command, JsonSerializer.SerializeToElement(payload),
+-                Extensions: new Dictionary<string, string> { ["taskId"] = NewId() },
++            Content = JsonContent.Create(new SubmitCommandRequest(messageId ?? NewId(), tenant, domain, aggregate, command, JsonSerializer.SerializeToElement(payload),
++                CorrelationId: correlationId, Extensions: new Dictionary<string, string> { ["taskId"] = NewId() },
+                 IdempotencyKey: domain == "folders" ? NewId() : null)),
+         };
+-        request.Headers.Add("X-Correlation-Id", NewId());
++        request.Headers.Add("X-Correlation-Id", correlationId ?? NewId());
+         FolderDurabilityGatewayScope.Apply(request, tenant);
+-        using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, false, TestContext.Current.CancellationToken).ConfigureAwait(false);
+-        await RequireStatusAsync(response, HttpStatusCode.Accepted, "Authenticated " + command).ConfigureAwait(false);
+-        JsonElement accepted = await response.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(false);
++        using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, false, caller).ConfigureAwait(false);
++        await RequireStatusAsync(response, HttpStatusCode.Accepted, "Authenticated " + command, caller).ConfigureAwait(false);
++        JsonElement accepted = await response.Content.ReadFromJsonAsync<JsonElement>(caller).ConfigureAwait(false);
+         string statusKey = accepted.GetProperty("messageId").GetString()!;
+-        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
++        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(caller);
+         deadline.CancelAfter(TimeSpan.FromSeconds(90));
+         while (true)
+         {
+@@ -1471,12 +1479,41 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+                 }
+             }
+             else if (status.StatusCode != HttpStatusCode.NotFound)
+-                await RequireStatusAsync(status, HttpStatusCode.OK, "Authenticated command status").ConfigureAwait(false);
++                await RequireStatusAsync(status, HttpStatusCode.OK, "Authenticated command status", deadline.Token).ConfigureAwait(false);
+ 
+             await Task.Delay(1000, deadline.Token).ConfigureAwait(false);
+         }
+     }
+ 
++    /// <summary>Runs the existing real-source maintenance barrier and reports whether it submitted a genuine update.</summary>
++    internal async Task<bool> MaintainTenantAsync(CancellationToken cancellationToken)
++    {
++        _tenantMaintenance ??= new FolderDurabilityTenantMaintenance(TenantId, PrincipalId, ReadTenantSourceAsync,
++            token => new EventStoreFolderTenantAccessProjectionStore(RawStore).GetAsync(TenantId, token),
++            (command, correlation, token) => SubmitAsync(command.Tenant, command.Domain, command.AggregateId,
++                command.CommandType, command.Payload, _adminToken, token, command.MessageId, correlation));
++        bool maintained = await _tenantMaintenance.EnsureFreshAsync(cancellationToken).ConfigureAwait(false);
++        if (maintained)
++            Console.WriteLine("PASS tenant maintenance: Completed; original TenantUpdated matched; Workers sequence/timestamp matched; authority unchanged.");
++        return maintained;
++    }
++
++    private async Task<StreamReadPage> ReadTenantSourceAsync(CancellationToken cancellationToken)
++    {
++        using HttpClient client = App.CreateHttpClient("eventstore", "http");
++        client.Timeout = TimeSpan.FromSeconds(40);
++        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
++        using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/streams/read")
++        {
++            Content = JsonContent.Create(new StreamReadRequest(TenantPlatformScopes.Tenants, "tenants", TenantId, PageSize: 1000)),
++        };
++        FolderDurabilityGatewayScope.Apply(request, TenantPlatformScopes.Tenants);
++        using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, true, cancellationToken).ConfigureAwait(false);
++        await RequireStatusAsync(response, HttpStatusCode.OK, "Authenticated tenant maintenance source", cancellationToken).ConfigureAwait(false);
++        return await response.Content.ReadFromJsonAsync<StreamReadPage>(Json, cancellationToken).ConfigureAwait(false)
++            ?? throw new InvalidOperationException("Tenant maintenance source is missing.");
++    }
++
+     private void BindCommittedCatalog(HttpRequestMessage request, string host = "folders")
+     {
+         string directory = _catalog?.Directory ?? throw new InvalidOperationException("The actual fixture catalog is unavailable.");
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs
+index cef72a4d..dd451490 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapConfiguration.cs
+@@ -32,7 +32,7 @@ internal static class FolderDurabilityBootstrapConfiguration
+         if (!administrator["attributes"]!["global_admin"]!.AsArray().Any(value => value!.GetValue<string>() == "true"))
+             throw new InvalidOperationException("The disposable bootstrap principal is not the designated administrator.");
+         JsonArray permissions = administrator["attributes"]!["permissions"]!.AsArray();
+-        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" })
++        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "tenants:update", "global-administrators:read", "tenants:read" })
+             if (!permissions.Any(value => value!.GetValue<string>() == permission)) permissions.Add(permission);
+         JsonArray tenantGrants = administrator["attributes"]!["tenants"]!.AsArray();
+         for (int index = tenantGrants.Count - 1; index >= 0; index--)
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs
+index 1c4e93cd..126e2318 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityBootstrapEvidenceTests.cs
+@@ -138,13 +138,14 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
+             TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == BootstrapGlobalAdmin.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
+             TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == CreateTenant.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
+             TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == AddUserToTenant.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
++            TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == UpdateTenant.CommandType).Route.PlatformAdmission!.RequiredHumanPermission,
+             TenantCatalogDeclarations.Queries.Single(query => query.MessageType == "get-global-administrators").PlatformAdmission!.RequiredHumanPermission,
+             TenantCatalogDeclarations.Queries.Single(query => query.MessageType == "list-tenants").PlatformAdmission!.RequiredHumanPermission,
+         ];
+-        required.ShouldBe(new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" });
++        required.ShouldBe(new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "tenants:update", "global-administrators:read", "tenants:read" });
+         TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == BootstrapGlobalAdmin.CommandType)
+             .Route.PlatformAdmission!.Namespace.ShouldBe("platform:global-administrators");
+-        foreach (string operation in new[] { CreateTenant.CommandType, AddUserToTenant.CommandType })
++        foreach (string operation in new[] { CreateTenant.CommandType, AddUserToTenant.CommandType, UpdateTenant.CommandType })
+             TenantCatalogDeclarations.Commands.Single(command => command.Route.MessageType == operation)
+                 .Route.PlatformAdmission!.Namespace.ShouldBe("platform:tenants");
+         JsonObject administrator = realm["users"]!.AsArray().Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
+@@ -206,7 +207,7 @@ public sealed class FolderDurabilityBootstrapEvidenceTests
+         JsonArray expected = original["users"]!.DeepClone().AsArray();
+         JsonObject administrator = expected.Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
+         JsonArray permissions = administrator["attributes"]!["permissions"]!.AsArray();
+-        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "global-administrators:read", "tenants:read" })
++        foreach (string permission in new[] { "global-administrators:bootstrap", "tenants:create", "tenants:add-user", "tenants:update", "global-administrators:read", "tenants:read" })
+             permissions.Add(permission);
+         JsonArray grants = administrator["attributes"]!["tenants"]!.AsArray();
+         grants.Remove(grants.Single(grant => grant!.GetValue<string>() == "system"));
+diff --git a/tests/Hexalith.Folders.Server.Tests/FoldersDevelopmentOwnerMetadataTests.cs b/tests/Hexalith.Folders.Server.Tests/FoldersDevelopmentOwnerMetadataTests.cs
+index 7cf3e47e..470a7897 100644
+--- a/tests/Hexalith.Folders.Server.Tests/FoldersDevelopmentOwnerMetadataTests.cs
++++ b/tests/Hexalith.Folders.Server.Tests/FoldersDevelopmentOwnerMetadataTests.cs
+@@ -1,6 +1,9 @@
+ using System.Security.Cryptography;
+ 
+ using Hexalith.EventStore.Client.Streams;
++using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Client.Registration;
++using Hexalith.Folders.Authorization;
+ using Hexalith.EventStore.DomainService;
+ using Hexalith.EventStore.ServiceDefaults.Authentication;
+ using Hexalith.EventStore.ServiceDefaults.Routing;
+@@ -9,6 +12,8 @@ using Microsoft.AspNetCore.Builder;
+ using Microsoft.Extensions.Configuration;
+ using Microsoft.Extensions.DependencyInjection;
+ using Microsoft.Extensions.Hosting;
++using Microsoft.Extensions.Logging;
++using Microsoft.Extensions.Options;
+ 
+ using Shouldly;
+ 
+@@ -21,9 +26,11 @@ public sealed class FoldersDevelopmentOwnerMetadataTests
+ {
+     /// <summary>The explicit private flag selects diagnostics without inventing raw SDK option configuration or issuing authority.</summary>
+     [Theory]
+-    [InlineData(false)]
+-    [InlineData(true)]
+-    public void RealBootstrapOptionsSelectOnlyTheOptedInOwnerDecorator(bool diagnostics)
++    [InlineData(false, false)]
++    [InlineData(true, false)]
++    [InlineData(false, true)]
++    [InlineData(true, true)]
++    public void RealBootstrapOptionsSelectOnlyTheOptedInOwnerDecorator(bool diagnostics, bool loggerFails)
+     {
+         string directory = Directory.CreateTempSubdirectory("folder-owner-diagnostic-").FullName;
+         try
+@@ -42,18 +49,39 @@ public sealed class FoldersDevelopmentOwnerMetadataTests
+             using RSA key = RSA.Create(2048);
+             builder.Configuration["Authentication:BoundStreamRead:PrivateKey"] = Convert.ToBase64String(key.ExportPkcs8PrivateKey());
+             builder.Services.AddSingleton<IWorkloadAssertionIssuer, DiagnosticCompositionAssertionIssuer>();
++            builder.Services.AddFoldersServer();
++            ServiceDescriptor original = builder.Services.Single(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader));
++            original.Lifetime.ShouldBe(ServiceLifetime.Transient);
++            var originalFactory = original.ImplementationFactory!;
++            int factoryCalls = 0;
++            builder.Services[builder.Services.IndexOf(original)] = ServiceDescriptor.Describe(typeof(INativeSourceMetadataReader), provider =>
++            {
++                factoryCalls++;
++                return originalFactory(provider);
++            }, original.Lifetime);
++            if (loggerFails) builder.Services.AddSingleton<ILogger<FoldersDevelopmentOwnerMetadataDiagnostics>>(_ => throw new InvalidOperationException("Controlled optional logger failure."));
+             builder.Services.AddEventStoreDevelopmentRouteCatalogBootstrap(builder.Configuration,
+                 (_, _) => throw new InvalidOperationException("Composition must not activate or observe a catalog."));
+ #if DEBUG && FOLDERS_OWNER_METADATA_SOURCE
++            int serviceCount = builder.Services.Count;
+             builder.AddFoldersDevelopmentOwnerMetadata();
++            builder.Services.Count.ShouldBe(serviceCount);
+             using var provider = builder.Services.BuildServiceProvider();
+ 
+             builder.Configuration["EventStore:RouteCatalog:DevelopmentFixture"].ShouldBeNull();
+             builder.Configuration["EventStore:RouteCatalog:Profile"].ShouldBeNull();
+             builder.Configuration["EventStore:RouteCatalog:RequireTechnicalHttpBinding"].ShouldBeNull();
+             INativeSourceMetadataReader reader = provider.GetRequiredService<INativeSourceMetadataReader>();
+-            if (diagnostics) reader.ShouldBeOfType<FoldersDevelopmentOwnerMetadataDiagnostics>();
+-            else reader.ShouldBeOfType<BoundOwnerNativeSourceMetadataReader>();
++            if (diagnostics && !loggerFails) reader.ShouldBeOfType<FoldersDevelopmentOwnerMetadataDiagnostics>();
++            else reader.ShouldBeOfType<GatewayNativeSourceMetadataReader>();
++            provider.GetRequiredService<INativeSourceMetadataReader>().ShouldNotBeSameAs(reader);
++            factoryCalls.ShouldBe(2);
++            builder.Services.Single(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader))
++                .Lifetime.ShouldBe(original.Lifetime);
++            provider.GetRequiredService<IOptions<EventStoreGatewayClientOptions>>().Value.UseWorkloadTransport.ShouldBeFalse();
++            provider.GetService<IEventStoreGatewayWorkloadAssertionSource>().ShouldBeNull();
++            provider.GetService<IEventStoreGatewayStreamReadProofSource>().ShouldBeNull();
++            provider.GetRequiredService<IOrganizationStreamSequenceReader>().ShouldBeOfType<GatewayOrganizationStreamSequenceReader>();
+ #else
+             Should.Throw<InvalidOperationException>(() => builder.AddFoldersDevelopmentOwnerMetadata()).Message
+                 .ShouldBe("Private owner metadata requires a local Debug source build.");
+@@ -61,4 +89,85 @@ public sealed class FoldersDevelopmentOwnerMetadataTests
+         }
+         finally { Directory.Delete(directory, recursive: true); }
+     }
++
++    /// <summary>Disabled composition leaves the exact public descriptor and all registrations unchanged.</summary>
++    [Fact]
++    public void DisabledSelectionPreservesThePublicFactory()
++    {
++        WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = Environments.Production });
++        builder.Configuration["Folders:EventStore:OwnerMetadataReads:Enabled"] = "false";
++        builder.Services.AddFoldersServer();
++        ServiceDescriptor original = builder.Services.Single(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader));
++        int count = builder.Services.Count;
++        builder.AddFoldersDevelopmentOwnerMetadata();
++        builder.Services.Count.ShouldBe(count);
++        builder.Services.Single(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader)).ShouldBeSameAs(original);
++    }
++
++    /// <summary>The explicit flag never admits production, staging or a missing Development catalog directory.</summary>
++    [Theory]
++    [InlineData("Production", "configured")]
++    [InlineData("Staging", "configured")]
++    [InlineData("Development", "")]
++    public void EnabledSelectionRetainsEnvironmentAndCatalogGuards(string environment, string directory)
++    {
++        WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = environment });
++        builder.Configuration["Folders:EventStore:OwnerMetadataReads:Enabled"] = "true";
++        builder.Configuration["EventStore:RouteCatalog:DevelopmentBootstrap:Directory"] = directory;
++        builder.Services.AddFoldersServer();
++        ServiceDescriptor original = builder.Services.Single(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader));
++        Should.Throw<InvalidOperationException>(() => builder.AddFoldersDevelopmentOwnerMetadata());
++        builder.Services.Single(descriptor => descriptor.ServiceType == typeof(INativeSourceMetadataReader)).ShouldBeSameAs(original);
++    }
++
++#if DEBUG && FOLDERS_OWNER_METADATA_SOURCE
++    /// <summary>Unexpected lifetimes, ambiguous registrations and missing factories refuse before any factory is invoked.</summary>
++    [Theory]
++    [InlineData("missing")]
++    [InlineData("duplicate")]
++    [InlineData("singleton")]
++    [InlineData("scoped")]
++    [InlineData("instance")]
++    [InlineData("keyed")]
++    public void EnabledSelectionRequiresTheSinglePublicTransientFactory(string scenario)
++    {
++        WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = Environments.Development });
++        builder.Configuration["Folders:EventStore:OwnerMetadataReads:Enabled"] = "true";
++        builder.Configuration["EventStore:RouteCatalog:DevelopmentBootstrap:Directory"] = "configured";
++        int calls = 0;
++        object Factory(IServiceProvider _) { calls++; throw new InvalidOperationException("Unexpected resolution."); }
++        switch (scenario)
++        {
++            case "duplicate":
++                builder.Services.Add(ServiceDescriptor.Transient(typeof(INativeSourceMetadataReader), Factory));
++                builder.Services.Add(ServiceDescriptor.Transient(typeof(INativeSourceMetadataReader), Factory));
++                break;
++            case "singleton": builder.Services.Add(ServiceDescriptor.Singleton(typeof(INativeSourceMetadataReader), Factory)); break;
++            case "scoped": builder.Services.Add(ServiceDescriptor.Scoped(typeof(INativeSourceMetadataReader), Factory)); break;
++            case "instance": builder.Services.AddSingleton(SourceHeadBoundaryProxy.Create<INativeSourceMetadataReader>((_, _) => throw new InvalidOperationException("No read permitted."))); break;
++            case "keyed": builder.Services.AddKeyedTransient<INativeSourceMetadataReader>("unexpected", (_, _) => { calls++; throw new InvalidOperationException("Unexpected resolution."); }); break;
++        }
++        Should.Throw<InvalidOperationException>(() => builder.AddFoldersDevelopmentOwnerMetadata()).Message
++            .ShouldBe("Private owner metadata requires the existing public SDK reader factory.");
++        calls.ShouldBe(0);
++    }
++
++    /// <summary>A factory returning another reader cannot substitute a private transport for the public SDK adapter.</summary>
++    [Fact]
++    public void UnexpectedFactoryResultRefusesWithoutReadingOrIssuingAuthority()
++    {
++        WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = Environments.Development });
++        builder.Configuration["Folders:EventStore:OwnerMetadataReads:Enabled"] = "true";
++        builder.Configuration["Folders:EventStore:OwnerMetadataReads:DiagnosticsEnabled"] = "false";
++        builder.Configuration["EventStore:RouteCatalog:DevelopmentBootstrap:Directory"] = "configured";
++        var unexpected = SourceHeadBoundaryProxy.Create<INativeSourceMetadataReader>((_, _) => throw new InvalidOperationException("No read permitted."));
++        builder.Services.AddTransient(_ => unexpected);
++        builder.AddFoldersDevelopmentOwnerMetadata();
++        using var provider = builder.Services.BuildServiceProvider();
++        Should.Throw<InvalidOperationException>(() => provider.GetRequiredService<INativeSourceMetadataReader>()).Message
++            .ShouldBe("Private owner metadata requires the actual public SDK reader.");
++        ((SourceHeadBoundaryProxy)(object)unexpected).Calls.ShouldBe(0);
++    }
++#endif
++
+ }
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs
+new file mode 100644
+index 00000000..17fafcf4
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs
+@@ -0,0 +1,168 @@
++using System.Text.Json;
++
++using Hexalith.EventStore.Contracts.Commands;
++using Hexalith.EventStore.Contracts.Streams;
++using Hexalith.Folders.Projections.TenantAccess;
++using Hexalith.Tenants.Contracts.Commands;
++using Hexalith.Tenants.Contracts.Events;
++using Hexalith.Tenants.Contracts.Identity;
++
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Maintains only the disposable tenant through real public commands and ordinary Workers evidence.</summary>
++internal sealed class FolderDurabilityTenantMaintenance(
++    string tenantId,
++    string principalId,
++    Func<CancellationToken, Task<StreamReadPage>> readSource,
++    Func<CancellationToken, Task<FolderTenantAccessProjection?>> readProjection,
++    Func<SubmitCommandRequest, string, CancellationToken, Task<JsonElement>> submit,
++    TimeProvider? timeProvider = null)
++{
++    /// <summary>The original metadata supplied by this fixture's CreateTenant command.</summary>
++    internal const string TenantName = "Durability acceptance";
++    /// <summary>The original description, with no authority or membership changes.</summary>
++    internal const string TenantDescription = "Disposable local acceptance tenant";
++    /// <summary>Starts foreground maintenance well before the unchanged five-minute production limit.</summary>
++    internal static readonly TimeSpan RenewalAge = TimeSpan.FromMinutes(2);
++    /// <summary>Bounds the entire source, command and projection barrier without extending existing I/O limits.</summary>
++    internal static readonly TimeSpan Budget = TimeSpan.FromSeconds(90);
++    private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
++    private readonly SemaphoreSlim _gate = new(1, 1);
++    private readonly TimeProvider _time = timeProvider ?? TimeProvider.System;
++
++    /// <summary>Verifies original evidence and renews only when its native timestamp reaches the trigger age.</summary>
++    internal async Task<bool> EnsureFreshAsync(CancellationToken cancellationToken)
++    {
++        using CancellationTokenSource timeout = new(Budget, _time);
++        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
++        CancellationToken token = deadline.Token;
++        await _gate.WaitAsync(token).ConfigureAwait(false);
++        try
++        {
++            StreamReadPage beforeSource = await readSource(token).ConfigureAwait(false);
++            ValidateSource(beforeSource);
++            StreamReadEvent prior = beforeSource.Events[^1];
++            FolderTenantAccessProjection before = await WaitForProjectionAsync(prior, null, token).ConfigureAwait(false);
++            token.ThrowIfCancellationRequested();
++            if (_time.GetUtcNow() - prior.Timestamp < RenewalAge) return false;
++
++            string messageId = FolderDurabilityAcceptanceFixture.NewId();
++            string correlationId = FolderDurabilityAcceptanceFixture.NewId();
++            DateTimeOffset started = _time.GetUtcNow();
++            JsonElement status = await submit(Command(tenantId, messageId), correlationId, token).ConfigureAwait(false);
++            if (status.GetProperty("status").GetString() != "Completed"
++                || status.GetProperty("messageId").GetString() != messageId
++                || status.GetProperty("correlationId").GetString() != correlationId)
++                throw new InvalidOperationException("Tenant maintenance has no matching Completed command.");
++
++            StreamReadEvent updated;
++            while (true)
++            {
++                token.ThrowIfCancellationRequested();
++                StreamReadPage source = await readSource(token).ConfigureAwait(false);
++                ValidateSource(source);
++                if (source.Events.Count < beforeSource.Events.Count
++                    || JsonSerializer.Serialize(source.Events.Take(beforeSource.Events.Count), Json)
++                        != JsonSerializer.Serialize(beforeSource.Events, Json))
++                    throw new InvalidOperationException("Tenant maintenance changed its original retained source prefix.");
++                if (source.Events.Count == beforeSource.Events.Count)
++                {
++                    await Task.Delay(100, token).ConfigureAwait(false);
++                    continue;
++                }
++
++                updated = source.Events[^1];
++                TenantUpdated? payload = JsonSerializer.Deserialize<TenantUpdated>(updated.Payload, Json);
++                if (source.Events.Count != beforeSource.Events.Count + 1
++                    || updated.EventTypeName.Split(',', 2)[0].Trim() != typeof(TenantUpdated).FullName
++                    || updated.CausationId != messageId || updated.CorrelationId != correlationId || updated.UserId != "admin-user"
++                    || updated.Timestamp < started || updated.Timestamp <= prior.Timestamp
++                    || updated.SerializationFormat != "json" || updated.MetadataVersion != 1 || updated.PayloadVersion is not (null or 1)
++                    || payload is null || payload.TenantId != tenantId || payload.Name != TenantName
++                    || payload.Description != TenantDescription || payload.UpdatedAt < started || payload.UpdatedAt > _time.GetUtcNow())
++                    throw new InvalidOperationException("Tenant maintenance has no matching original metadata-only source event.");
++                break;
++            }
++
++            await WaitForProjectionAsync(updated, before, token).ConfigureAwait(false);
++            token.ThrowIfCancellationRequested();
++            if (_time.GetUtcNow() - updated.Timestamp >= RenewalAge)
++                throw new InvalidOperationException("Tenant maintenance evidence expired before its foreground barrier completed.");
++            return true;
++        }
++        finally
++        {
++            _gate.Release();
++        }
++    }
++
++    /// <summary>Uses the exact approved own-tenant command under the existing explicit platform scope.</summary>
++    internal static SubmitCommandRequest Command(string tenantId, string messageId)
++        => new(messageId, TenantPlatformScopes.Tenants, TenantIdentity.Domain, tenantId, nameof(UpdateTenant),
++            JsonSerializer.SerializeToElement(new { tenantId, name = TenantName, description = TenantDescription }, Json));
++
++    private void ValidateSource(StreamReadPage source)
++    {
++        if (source.Tenant != TenantIdentity.DefaultTenantId || source.Domain != TenantIdentity.Domain || source.AggregateId != tenantId
++            || source.Metadata.FromSequence != 0 || source.Metadata.ToSequence is not null || source.Metadata.IsTruncated
++            || source.Metadata.NextContinuationToken is not null || source.Events.Count == 0
++            || source.Metadata.EventCount != source.Events.Count || source.Metadata.LatestSequence != source.Events.Count
++            || source.Metadata.LastSequenceReturned != source.Metadata.LatestSequence
++            || source.Events.Select(item => item.MessageId).Distinct(StringComparer.Ordinal).Count() != source.Events.Count)
++            throw new InvalidOperationException("Tenant maintenance requires its complete authenticated retained source.");
++        for (int index = 0; index < source.Events.Count; index++)
++        {
++            StreamReadEvent item = source.Events[index];
++            if (item.SequenceNumber != index + 1 || string.IsNullOrWhiteSpace(item.MessageId)
++                || item.Timestamp == default || item.Timestamp > _time.GetUtcNow())
++                throw new InvalidOperationException("Tenant maintenance source metadata is malformed.");
++        }
++    }
++
++    private async Task<FolderTenantAccessProjection> WaitForProjectionAsync(StreamReadEvent source,
++        FolderTenantAccessProjection? before, CancellationToken token)
++    {
++        while (true)
++        {
++            token.ThrowIfCancellationRequested();
++            FolderTenantAccessProjection? projection = await readProjection(token).ConfigureAwait(false);
++            if (projection is not null)
++            {
++                if (projection.TenantId != tenantId || !projection.Enabled || projection.ReplayConflict || projection.MalformedEvidence
++                    || projection.Version <= 0 || projection.Watermark <= 0 || projection.Watermark > source.SequenceNumber
++                    || projection.LastEventTimestamp is null || projection.LastEventTimestamp > _time.GetUtcNow()
++                    || projection.ProjectionWatermark != $"{tenantId}:{projection.Watermark}"
++                    || !projection.Principals.TryGetValue(principalId, out FolderTenantPrincipalEvidence? principal)
++                    || principal != new FolderTenantPrincipalEvidence(principalId, "TenantOwner")
++                    || before is not null && !SameAuthority(before, projection))
++                    throw new InvalidOperationException("Tenant maintenance observed invalid or changed tenant authority.");
++                if (projection.Watermark == source.SequenceNumber)
++                {
++                    string kind = source.EventTypeName.Split(',', 2)[0].Split('.').Last();
++                    if (projection.LastEventTimestamp != source.Timestamp
++                        || !projection.ProcessedMessages.TryGetValue(source.MessageId, out FolderTenantEventEvidence? evidence)
++                        || evidence.MessageId != source.MessageId || evidence.TenantId != tenantId
++                        || evidence.SequenceNumber != source.SequenceNumber || evidence.Timestamp != source.Timestamp || evidence.EventTypeName != kind)
++                        throw new InvalidOperationException("Tenant maintenance projection does not match original source evidence.");
++                    if (before is not null)
++                    {
++                        FolderTenantAccessEvent expected = new FoldersTenantAccessEventMapper().Map(FolderTenantAccessEventKind.TenantUpdated,
++                            tenantId, tenantId, source.MessageId, source.SequenceNumber, source.Timestamp, source.CorrelationId!, fingerprintParts: [TenantName]);
++                        if (evidence.PayloadFingerprint != expected.PayloadFingerprint || projection.Version <= before.Version
++                            || before.ProcessedMessages.Any(pair => !projection.ProcessedMessages.TryGetValue(pair.Key, out var value) || value != pair.Value))
++                            throw new InvalidOperationException("Tenant maintenance lost original Workers delivery evidence.");
++                    }
++                    return projection.Clone();
++                }
++            }
++            await Task.Delay(100, token).ConfigureAwait(false);
++        }
++    }
++
++    private static bool SameAuthority(FolderTenantAccessProjection before, FolderTenantAccessProjection after)
++        => before.TenantId == after.TenantId && before.Enabled == after.Enabled
++            && before.Principals.Count == after.Principals.Count
++            && before.Principals.All(pair => after.Principals.TryGetValue(pair.Key, out var value) && value == pair.Value)
++            && before.ConfigurationKeys.SetEquals(after.ConfigurationKeys)
++            && before.RemovedConfigurationKeys.SetEquals(after.RemovedConfigurationKeys);
++}
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs
+new file mode 100644
+index 00000000..b5b3e964
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs
+@@ -0,0 +1,94 @@
++using System.Text.Json;
++
++using Hexalith.Folders.Projections.TenantAccess;
++
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Qualifies genuine fixture maintenance separately from the unchanged full durability acceptance body.</summary>
++[Collection("Folder durability acceptance")]
++public sealed class FolderDurabilityTenantMaintenanceAcceptanceTests(FolderDurabilityAcceptanceFixture fixture, ITestOutputHelper output)
++    : IClassFixture<FolderDurabilityAcceptanceFixture>
++{
++    /// <summary>Waits for natural native-source age, verifies one real update and proves an immediate fresh no-op.</summary>
++    [Fact]
++    public async Task NaturallyAgedTenantShouldMaintainRealSourceAndWorkersAuthorityAndSkipFreshUpdate()
++    {
++        if (!fixture.Enabled)
++        {
++            Assert.Skip($"Set {AspireFoldersAppHostFixture.OptInEnvironmentVariable}=true to execute real tenant maintenance acceptance.");
++            return;
++        }
++
++        CancellationToken caller = TestContext.Current.CancellationToken;
++        // This uses the same real authenticated source/projection barrier as the strict fixture.
++        // Slow bootstrap may already have crossed the trigger; any initial renewal remains genuine.
++        await fixture.MaintainTenantAsync(caller).ConfigureAwait(true);
++        FolderTenantAccessProjection before = await SnapshotAsync(caller).ConfigureAwait(true);
++        DateTimeOffset originalTimestamp = before.LastEventTimestamp
++            ?? throw new InvalidOperationException("Verified tenant evidence has no original native timestamp.");
++
++        output.WriteLine("Tenant maintenance control: waiting for original native source age to reach the existing trigger.");
++        while (DateTimeOffset.UtcNow - originalTimestamp < FolderDurabilityTenantMaintenance.RenewalAge)
++        {
++            TimeSpan remaining = originalTimestamp + FolderDurabilityTenantMaintenance.RenewalAge - DateTimeOffset.UtcNow;
++            if (remaining > TimeSpan.Zero) await Task.Delay(remaining, caller).ConfigureAwait(true);
++        }
++        (DateTimeOffset.UtcNow - originalTimestamp >= FolderDurabilityTenantMaintenance.RenewalAge)
++            .ShouldBeTrue("Maintenance must follow natural source age, without a forced renewal or changed clock.");
++
++        // True is returned only after Completed, the matching original TenantUpdated and unchanged
++        // retained prefix, and exact normal Workers message/sequence/native-timestamp verification.
++        (await fixture.MaintainTenantAsync(caller).ConfigureAwait(true)).ShouldBeTrue();
++        FolderTenantAccessProjection after = await SnapshotAsync(caller).ConfigureAwait(true);
++        after.Watermark.ShouldBe(checked(before.Watermark + 1));
++        after.ProcessedMessages.Count.ShouldBe(before.ProcessedMessages.Count + 1);
++        (after.Version > before.Version).ShouldBeTrue();
++        (after.LastEventTimestamp > originalTimestamp).ShouldBeTrue();
++        SameAuthority(before, after).ShouldBeTrue("Metadata maintenance must preserve all persisted authority.");
++        before.ProcessedMessages.All(pair => after.ProcessedMessages.TryGetValue(pair.Key, out var evidence) && evidence == pair.Value)
++            .ShouldBeTrue("Maintenance must preserve every original persisted delivery record.");
++        FolderTenantEventEvidence[] newMessages = after.ProcessedMessages
++            .Where(pair => !before.ProcessedMessages.ContainsKey(pair.Key)).Select(pair => pair.Value).ToArray();
++        newMessages.Length.ShouldBe(1);
++        FolderTenantEventEvidence added = newMessages[0];
++        added.EventTypeName.ShouldBe(nameof(FolderTenantAccessEventKind.TenantUpdated));
++        added.SequenceNumber.ShouldBe(after.Watermark);
++        (added.Timestamp == after.LastEventTimestamp).ShouldBeTrue();
++        string.Equals(added.TenantId, fixture.TenantId, StringComparison.Ordinal).ShouldBeTrue();
++        string.IsNullOrWhiteSpace(added.MessageId).ShouldBeFalse();
++        FolderTenantAccessEvent expected = new FoldersTenantAccessEventMapper().Map(FolderTenantAccessEventKind.TenantUpdated,
++            fixture.TenantId, fixture.TenantId, added.MessageId, added.SequenceNumber, added.Timestamp, string.Empty,
++            fingerprintParts: [FolderDurabilityTenantMaintenance.TenantName]);
++        string.Equals(added.PayloadFingerprint, expected.PayloadFingerprint, StringComparison.Ordinal).ShouldBeTrue();
++
++        (await fixture.MaintainTenantAsync(caller).ConfigureAwait(true)).ShouldBeFalse();
++        FolderTenantAccessProjection fresh = await SnapshotAsync(caller).ConfigureAwait(true);
++        string.Equals(JsonSerializer.Serialize(fresh), JsonSerializer.Serialize(after), StringComparison.Ordinal)
++            .ShouldBeTrue("An immediate fresh no-op must leave the exact persisted evidence unchanged.");
++        output.WriteLine("PASS real tenant maintenance acceptance: natural age; original TenantUpdated and retained prefix verified; persisted Workers authority unchanged; immediate fresh no-op verified.");
++    }
++
++    private async Task<FolderTenantAccessProjection> SnapshotAsync(CancellationToken caller)
++    {
++        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(caller);
++        deadline.CancelAfter(FolderDurabilityTenantMaintenance.Budget);
++        FolderTenantAccessProjection? projection = await new EventStoreFolderTenantAccessProjectionStore(fixture.RawStore)
++            .GetAsync(fixture.TenantId, deadline.Token).ConfigureAwait(false);
++        deadline.Token.ThrowIfCancellationRequested();
++        if (projection is null || !string.Equals(projection.TenantId, fixture.TenantId, StringComparison.Ordinal)
++            || !projection.Enabled || projection.ReplayConflict || projection.MalformedEvidence
++            || !projection.Principals.TryGetValue(fixture.PrincipalId, out var principal)
++            || principal != new FolderTenantPrincipalEvidence(fixture.PrincipalId, "TenantOwner"))
++            throw new InvalidOperationException("Verified tenant maintenance authority is absent, malformed or changed.");
++        return projection.Clone();
++    }
++
++    private static bool SameAuthority(FolderTenantAccessProjection before, FolderTenantAccessProjection after)
++        => before.Enabled == after.Enabled && before.Principals.Count == after.Principals.Count
++            && before.Principals.All(pair => after.Principals.TryGetValue(pair.Key, out var value) && value == pair.Value)
++            && before.ConfigurationKeys.SetEquals(after.ConfigurationKeys)
++            && before.RemovedConfigurationKeys.SetEquals(after.RemovedConfigurationKeys);
++}
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs
+new file mode 100644
+index 00000000..fce6e037
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs
+@@ -0,0 +1,403 @@
++using System.Text.Json;
++using System.Text.Json.Nodes;
++
++using Hexalith.EventStore.Contracts.Commands;
++using Hexalith.EventStore.Contracts.Streams;
++using Hexalith.Folders.Authorization;
++using Hexalith.Folders.Projections.TenantAccess;
++using Hexalith.Tenants.Contracts.Events;
++using Hexalith.Tenants.Contracts.Identity;
++
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Qualifies fixture-only real-event maintenance without weakening production freshness or authority.</summary>
++public sealed class FolderDurabilityTenantMaintenanceTests
++{
++    private const string Tenant = "durability-test";
++    private const string Principal = "fixture-principal";
++    private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
++
++    [Fact]
++    public void CommandUsesOnlyTheApprovedOwnTenantMetadataAndCanonicalScope()
++    {
++        SubmitCommandRequest command = FolderDurabilityTenantMaintenance.Command(Tenant, "original-command");
++        command.MessageId.ShouldBe("original-command");
++        command.Tenant.ShouldBe(TenantPlatformScopes.Tenants);
++        command.Domain.ShouldBe("tenants");
++        command.AggregateId.ShouldBe(Tenant);
++        command.CommandType.ShouldBe("UpdateTenant");
++        command.Payload.EnumerateObject().Select(property => property.Name).ShouldBe(["tenantId", "name", "description"]);
++        command.Payload.GetProperty("tenantId").GetString().ShouldBe(Tenant);
++        command.Payload.GetProperty("name").GetString().ShouldBe("Durability acceptance");
++        command.Payload.GetProperty("description").GetString().ShouldBe("Disposable local acceptance tenant");
++        command.IdempotencyKey.ShouldBeNull();
++        using HttpRequestMessage request = new();
++        FolderDurabilityGatewayScope.Apply(request, command.Tenant);
++        request.Headers.GetValues("X-Hexalith-Scope").ShouldBe([TenantPlatformScopes.Tenants]);
++        request.Headers.Contains("X-Hexalith-Tenant").ShouldBeFalse();
++    }
++
++    [Theory]
++    [InlineData(0)]
++    [InlineData(119)]
++    public async Task FreshOriginalSourceAndWorkersEvidenceNeverSubmitMaintenance(int age)
++    {
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddSeconds(-age));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        int commands = 0;
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            _ => Task.FromResult(source), _ => Task.FromResult<FolderTenantAccessProjection?>(projection),
++            (_, _, _) => { commands++; throw new InvalidOperationException("Unexpected maintenance."); });
++        (await maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken)).ShouldBeFalse();
++        commands.ShouldBe(0);
++        projection.LastEventTimestamp.ShouldBe(source.Events[^1].Timestamp);
++    }
++
++    [Fact]
++    public async Task OldEvidenceRequiresMatchingNewSourceAndRealHandlerDeliveryWithIdenticalAuthority()
++    {
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        var store = new InMemoryFolderTenantAccessProjectionStore();
++        FolderTenantAccessProjection seed = Projection(source.Events[^1]);
++        seed.Version = 0;
++        await store.SaveAsync(seed, TestContext.Current.CancellationToken);
++        FolderTenantAccessProjection before = (await store.GetAsync(Tenant, TestContext.Current.CancellationToken))!;
++        string originalPrefix = JsonSerializer.Serialize(source.Events, Json);
++        int commands = 0;
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            _ => Task.FromResult(source), token => store.GetAsync(Tenant, token),
++            async (command, correlation, token) =>
++            {
++                commands++;
++                token.CanBeCanceled.ShouldBeTrue();
++                command.Tenant.ShouldBe(TenantPlatformScopes.Tenants);
++                command.AggregateId.ShouldBe(Tenant);
++                StreamReadEvent updated = Updated(command.MessageId, correlation);
++                source = Append(source, updated);
++                FolderTenantAccessEvent delivery = new FoldersTenantAccessEventMapper().Map(FolderTenantAccessEventKind.TenantUpdated,
++                    Tenant, Tenant, updated.MessageId, updated.SequenceNumber, updated.Timestamp, correlation,
++                    fingerprintParts: [FolderDurabilityTenantMaintenance.TenantName]);
++                await new FolderTenantAccessHandler(store, new SystemUtcClock(), new TenantAccessOptions()).HandleAsync(delivery, token).ConfigureAwait(false);
++                return Completed(command.MessageId, correlation);
++            });
++
++        (await maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken)).ShouldBeTrue();
++        commands.ShouldBe(1);
++        FolderTenantAccessProjection after = (await store.GetAsync(Tenant, TestContext.Current.CancellationToken))!;
++        after.Enabled.ShouldBe(before.Enabled);
++        after.Principals.OrderBy(pair => pair.Key).ShouldBe(before.Principals.OrderBy(pair => pair.Key));
++        after.ConfigurationKeys.ShouldBe(before.ConfigurationKeys);
++        after.RemovedConfigurationKeys.ShouldBe(before.RemovedConfigurationKeys);
++        after.Watermark.ShouldBe(3);
++        after.LastEventTimestamp.ShouldBe(source.Events[^1].Timestamp);
++        after.ProcessedMessages[source.Events[^1].MessageId].SequenceNumber.ShouldBe(3);
++        JsonSerializer.Serialize(source.Events.Take(2), Json).ShouldBe(originalPrefix);
++        (await maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken)).ShouldBeFalse();
++        commands.ShouldBe(1);
++    }
++
++    [Theory]
++    [InlineData("Rejected")]
++    [InlineData("Failed")]
++    [InlineData("PublishFailed")]
++    [InlineData("TimedOut")]
++    [InlineData("Accepted")]
++    [InlineData("wrong-message")]
++    [InlineData("wrong-correlation")]
++    public async Task AnUnsuccessfulOrUnboundTerminalResultCannotEstablishFreshness(string fault)
++    {
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        int reads = 0;
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            _ => { reads++; return Task.FromResult(source); }, _ => Task.FromResult<FolderTenantAccessProjection?>(projection),
++            (command, correlation, _) => Task.FromResult(JsonSerializer.SerializeToElement(new
++            {
++                status = fault.StartsWith("wrong-", StringComparison.Ordinal) ? "Completed" : fault,
++                messageId = fault == "wrong-message" ? "another-command" : command.MessageId,
++                correlationId = fault == "wrong-correlation" ? "another-correlation" : correlation,
++            })));
++        await Should.ThrowAsync<InvalidOperationException>(() => maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken));
++        reads.ShouldBe(1);
++        projection.Watermark.ShouldBe(2);
++    }
++
++    [Theory]
++    [InlineData("tenant")]
++    [InlineData("scope")]
++    [InlineData("domain")]
++    [InlineData("truncated")]
++    [InlineData("sequence")]
++    [InlineData("message")]
++    [InlineData("correlation")]
++    [InlineData("actor")]
++    [InlineData("event")]
++    [InlineData("timestamp")]
++    [InlineData("metadata")]
++    [InlineData("description")]
++    [InlineData("prefix")]
++    public async Task ChangedOrUnrelatedOriginalSourceCannotEstablishFreshness(string fault)
++    {
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            _ => Task.FromResult(source), _ => Task.FromResult<FolderTenantAccessProjection?>(projection),
++            (command, correlation, _) =>
++            {
++                StreamReadEvent updated = Updated(command.MessageId, correlation);
++                updated = fault switch
++                {
++                    "sequence" => updated with { SequenceNumber = 4 },
++                    "message" => updated with { CausationId = "another-command" },
++                    "correlation" => updated with { CorrelationId = "another-correlation" },
++                    "actor" => updated with { UserId = "another-user" },
++                    "event" => updated with { EventTypeName = typeof(TenantEnabled).FullName! },
++                    "timestamp" => updated with { Timestamp = source.Events[^1].Timestamp },
++                    "metadata" => updated with { MetadataVersion = 2 },
++                    "description" => updated with { Payload = JsonSerializer.SerializeToUtf8Bytes(new TenantUpdated(Tenant,
++                        FolderDurabilityTenantMaintenance.TenantName, "changed", DateTimeOffset.UtcNow), Json) },
++                    _ => updated,
++                };
++                source = Append(source, updated);
++                source = fault switch
++                {
++                    "tenant" => source with { AggregateId = "another-tenant" },
++                    "scope" => source with { Tenant = Tenant },
++                    "domain" => source with { Domain = "folders" },
++                    "truncated" => source with { Metadata = source.Metadata with { IsTruncated = true } },
++                    "prefix" => source with { Events = [source.Events[0] with { UserId = "changed" }, source.Events[1], updated] },
++                    _ => source,
++                };
++                return Task.FromResult(Completed(command.MessageId, correlation));
++            });
++        await Should.ThrowAsync<InvalidOperationException>(() => maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken));
++        projection.Watermark.ShouldBe(2);
++    }
++
++    [Theory]
++    [InlineData("enabled")]
++    [InlineData("principal")]
++    [InlineData("role")]
++    [InlineData("configuration")]
++    [InlineData("removed-configuration")]
++    [InlineData("conflict")]
++    [InlineData("malformed")]
++    [InlineData("timestamp")]
++    [InlineData("fingerprint")]
++    [InlineData("message")]
++    [InlineData("prior-evidence")]
++    public async Task ChangedAuthorityOrUnmatchedWorkersEvidenceCannotEstablishFreshness(string fault)
++    {
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            _ => Task.FromResult(source), _ => Task.FromResult<FolderTenantAccessProjection?>(projection),
++            (command, correlation, _) =>
++            {
++                StreamReadEvent updated = Updated(command.MessageId, correlation);
++                source = Append(source, updated);
++                FolderTenantAccessProjection next = Projection(updated);
++                foreach (var pair in projection.ProcessedMessages) next.ProcessedMessages.Add(pair.Key, pair.Value);
++                next.Version = projection.Version + 1;
++                switch (fault)
++                {
++                    case "enabled": next.Enabled = false; break;
++                    case "principal": next.Principals["extra"] = new("extra", "TenantOwner"); break;
++                    case "role": next.Principals[Principal] = new(Principal, "TenantContributor"); break;
++                    case "configuration": next.ConfigurationKeys.Add("folders.changed"); break;
++                    case "removed-configuration": next.RemovedConfigurationKeys.Add("folders.changed"); break;
++                    case "conflict": next.ReplayConflict = true; break;
++                    case "malformed": next.MalformedEvidence = true; break;
++                    case "timestamp": next.LastEventTimestamp = updated.Timestamp.AddSeconds(-1); break;
++                    case "fingerprint": next.ProcessedMessages[updated.MessageId] = next.ProcessedMessages[updated.MessageId] with { PayloadFingerprint = "wrong" }; break;
++                    case "message": next.ProcessedMessages.Remove(updated.MessageId); break;
++                    case "prior-evidence": next.ProcessedMessages.Remove(projection.ProcessedMessages.Keys.Single()); break;
++                }
++                projection = next;
++                return Task.FromResult(Completed(command.MessageId, correlation));
++            });
++        await Should.ThrowAsync<InvalidOperationException>(() => maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken));
++    }
++
++    [Theory]
++    [InlineData("source")]
++    [InlineData("command")]
++    [InlineData("new-source")]
++    [InlineData("projection")]
++    public async Task CallerCancellationReachesEveryIoAndNeverTreatsAbsenceOrLagAsFresh(string stage)
++    {
++        using CancellationTokenSource caller = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        bool submitted = false;
++        CancellationToken ioToken = default;
++        async Task CancelAsync(CancellationToken token)
++        {
++            ioToken = token;
++            caller.Cancel();
++            await Task.Delay(Timeout.Infinite, token).ConfigureAwait(false);
++        }
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            async token =>
++            {
++                if (stage == "source" || stage == "new-source" && submitted) await CancelAsync(token).ConfigureAwait(false);
++                return source;
++            }, async token =>
++            {
++                if (stage == "projection" && submitted) await CancelAsync(token).ConfigureAwait(false);
++                return projection;
++            }, async (command, correlation, token) =>
++            {
++                submitted = true;
++                if (stage == "command") await CancelAsync(token).ConfigureAwait(false);
++                if (stage == "projection") source = Append(source, Updated(command.MessageId, correlation));
++                return Completed(command.MessageId, correlation);
++            });
++        await Should.ThrowAsync<OperationCanceledException>(() => maintenance.EnsureFreshAsync(caller.Token));
++        ioToken.IsCancellationRequested.ShouldBeTrue();
++        ioToken.ShouldNotBe(caller.Token);
++        projection.Watermark.ShouldBe(2);
++    }
++
++    [Fact]
++    public async Task WholeMaintenanceDeadlineCancelsARealOutstandingIoWithoutWaitingForItsOwnLimit()
++    {
++        var timer = new FolderDurabilityTenantMaintenanceTimer();
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal, async token =>
++        {
++            timer.DueTime.ShouldBe(TimeSpan.FromSeconds(90));
++            timer.Expire();
++            await Task.Delay(Timeout.Infinite, token).ConfigureAwait(false);
++            throw new InvalidOperationException("Unreachable.");
++        }, _ => throw new InvalidOperationException("Unexpected projection."),
++            (_, _, _) => throw new InvalidOperationException("Unexpected command."), timer);
++        await Should.ThrowAsync<OperationCanceledException>(() => maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken));
++    }
++
++    [Theory]
++    [InlineData("new-source")]
++    [InlineData("projection")]
++    [InlineData("initial-projection")]
++    public async Task CompletedCommandCannotTurnActuallyAbsentOrLaggingEvidenceIntoFreshness(string missing)
++    {
++        var timer = new FolderDurabilityTenantMaintenanceTimer();
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        bool submitted = false;
++        int observedMissing = 0;
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal, _ =>
++        {
++            if (submitted && missing == "new-source")
++            {
++                observedMissing++;
++                timer.Expire();
++            }
++            return Task.FromResult(source);
++        }, _ =>
++        {
++            if (missing == "initial-projection" || submitted && missing == "projection")
++            {
++                observedMissing++;
++                timer.Expire();
++            }
++            return Task.FromResult(missing == "initial-projection" ? null : (FolderTenantAccessProjection?)projection);
++        }, (command, correlation, _) =>
++        {
++            submitted = true;
++            if (missing == "projection") source = Append(source, Updated(command.MessageId, correlation));
++            return Task.FromResult(Completed(command.MessageId, correlation));
++        }, timer);
++
++        await Should.ThrowAsync<OperationCanceledException>(() => maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken));
++        submitted.ShouldBe(missing != "initial-projection");
++        observedMissing.ShouldBe(1);
++        projection.Watermark.ShouldBe(2);
++        projection.LastEventTimestamp.ShouldBe(source.Events[1].Timestamp);
++    }
++
++    [Theory]
++    [InlineData("source")]
++    [InlineData("projection")]
++    [InlineData("command")]
++    public async Task IoFailureIsPropagatedWithoutAnInventedFreshObservation(string stage)
++    {
++        StreamReadPage source = Original(DateTimeOffset.UtcNow.AddMinutes(-3));
++        FolderTenantAccessProjection projection = Projection(source.Events[^1]);
++        var failure = new IOException("Controlled fixture transport failure.");
++        var maintenance = new FolderDurabilityTenantMaintenance(Tenant, Principal,
++            _ => stage == "source" ? Task.FromException<StreamReadPage>(failure) : Task.FromResult(source),
++            _ => stage == "projection" ? Task.FromException<FolderTenantAccessProjection?>(failure)
++                : Task.FromResult<FolderTenantAccessProjection?>(projection),
++            (_, _, _) => Task.FromException<JsonElement>(failure));
++        (await Should.ThrowAsync<IOException>(() => maintenance.EnsureFreshAsync(TestContext.Current.CancellationToken))).ShouldBeSameAs(failure);
++        projection.Watermark.ShouldBe(2);
++    }
++
++    [Fact]
++    public void RealmAddsTheSinglePermissionOnceAndPreservesEveryOtherIdentityAndGrant()
++    {
++        string path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json"));
++        JsonObject original = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
++        string before = original.ToJsonString();
++        JsonObject actual = FolderDurabilityBootstrapConfiguration.Realm(original);
++        JsonObject admin = actual["users"]!.AsArray().Single(user => user!["id"]!.GetValue<string>() == "admin-user")!.AsObject();
++        JsonArray permissions = admin["attributes"]!["permissions"]!.AsArray();
++        permissions.Count(value => value!.GetValue<string>() == "tenants:update").ShouldBe(1);
++        foreach (JsonNode? user in actual["users"]!.AsArray().Where(user => user!["id"]!.GetValue<string>() != "admin-user"))
++        {
++            user!["attributes"]!["permissions"]!.AsArray().ShouldNotContain(value => value!.GetValue<string>() == "tenants:update");
++            user.ToJsonString().ShouldBe(original["users"]!.AsArray().Single(item => item!["id"]!.GetValue<string>() == user["id"]!.GetValue<string>())!.ToJsonString());
++        }
++        JsonObject alreadyGranted = original.DeepClone().AsObject();
++        alreadyGranted["users"]!.AsArray().Single(user => user!["id"]!.GetValue<string>() == "admin-user")!["attributes"]!["permissions"]!.AsArray().Add("tenants:update");
++        JsonArray repeated = FolderDurabilityBootstrapConfiguration.Realm(alreadyGranted)["users"]!.AsArray()
++            .Single(user => user!["id"]!.GetValue<string>() == "admin-user")!["attributes"]!["permissions"]!.AsArray();
++        repeated.Count(value => value!.GetValue<string>() == "tenants:update").ShouldBe(1);
++        repeated.Select(value => value!.GetValue<string>()).Order(StringComparer.Ordinal)
++            .ShouldBe(permissions.Select(value => value!.GetValue<string>()).Order(StringComparer.Ordinal));
++        original.ToJsonString().ShouldBe(before);
++    }
++
++    private static StreamReadPage Original(DateTimeOffset timestamp)
++    {
++        StreamReadEvent first = new(1, typeof(TenantCreated).FullName!, [], "json", 1, "created", "create", "create", timestamp.AddSeconds(-1), "admin-user");
++        StreamReadEvent last = new(2, typeof(UserAddedToTenant).FullName!, [], "json", 1, "member", "membership", "membership", timestamp, "admin-user");
++        return new(TenantIdentity.DefaultTenantId, "tenants", Tenant, [first, last], new(0, null, 2, 2, 2, false, null));
++    }
++
++    private static StreamReadEvent Updated(string messageId, string correlation)
++    {
++        DateTimeOffset now = DateTimeOffset.UtcNow;
++        return new(3, typeof(TenantUpdated).FullName!, JsonSerializer.SerializeToUtf8Bytes(new TenantUpdated(Tenant,
++            FolderDurabilityTenantMaintenance.TenantName, FolderDurabilityTenantMaintenance.TenantDescription, now), Json),
++            "json", 1, "updated-" + messageId, correlation, messageId, now, "admin-user");
++    }
++
++    private static StreamReadPage Append(StreamReadPage before, StreamReadEvent updated)
++        => before with { Events = [.. before.Events, updated], Metadata = new(0, null, 3, 3, 3, false, null) };
++
++    private static FolderTenantAccessProjection Projection(StreamReadEvent source)
++    {
++        var projection = new FolderTenantAccessProjection
++        {
++            TenantId = Tenant, Enabled = true, Version = 1, Watermark = source.SequenceNumber,
++            LastEventTimestamp = source.Timestamp, ProjectionWatermark = $"{Tenant}:{source.SequenceNumber}",
++        };
++        projection.Principals[Principal] = new(Principal, "TenantOwner");
++        projection.ConfigurationKeys.Add("folders.existing");
++        projection.RemovedConfigurationKeys.Add("folders.removed");
++        string kind = source.SequenceNumber == 3 ? "TenantUpdated" : "UserAddedToTenant";
++        string fingerprint = source.SequenceNumber == 3
++            ? new FoldersTenantAccessEventMapper().Map(FolderTenantAccessEventKind.TenantUpdated, Tenant, Tenant, source.MessageId,
++                source.SequenceNumber, source.Timestamp, source.CorrelationId!, fingerprintParts: [FolderDurabilityTenantMaintenance.TenantName]).PayloadFingerprint
++            : "membership-fingerprint";
++        projection.ProcessedMessages[source.MessageId] = new(source.MessageId, Tenant, kind, source.SequenceNumber, source.Timestamp, fingerprint);
++        return projection;
++    }
++
++    private static JsonElement Completed(string messageId, string correlation)
++        => JsonSerializer.SerializeToElement(new { status = "Completed", messageId, correlationId = correlation });
++}
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs
+new file mode 100644
+index 00000000..4607a0c6
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs
+@@ -0,0 +1,18 @@
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Exercises the real whole-operation timeout callback without waiting ninety seconds in a unit control.</summary>
++internal sealed class FolderDurabilityTenantMaintenanceTimer : TimeProvider
++{
++    private Action? _expire;
++    /// <summary>Gets the timeout actually requested by the maintenance coordinator.</summary>
++    internal TimeSpan DueTime { get; private set; }
++    /// <summary>Captures the timer callback while preserving its normal disposal and scheduling implementation.</summary>
++    public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
++    {
++        DueTime = dueTime;
++        _expire = () => callback(state);
++        return base.CreateTimer(callback, state, dueTime, period);
++    }
++    /// <summary>Signals exactly the captured deadline callback.</summary>
++    internal void Expire() => (_expire ?? throw new InvalidOperationException("No maintenance deadline was scheduled."))();
++}

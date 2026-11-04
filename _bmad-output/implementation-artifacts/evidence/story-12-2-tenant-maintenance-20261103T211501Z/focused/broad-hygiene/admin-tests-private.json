@@ -1,0 +1,313 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Admin.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Admin.Server.Tests.dll",
+      "run-date": "2026-11-03",
+      "run-time": "21:11:37",
+      "errors": "0",
+      "failed": "0",
+      "passed": "37",
+      "skipped": "0",
+      "time": "0.355",
+      "total": "37"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.13",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetEventStepFrameAsync_ReturnsFallback_WhenResultIsNull",
+      "case_ordinal": 1,
+      "display_name_sha256": "f954ef4c776f4553cc4865ee3c7002222762908874e80f2bcdce105ecbbaa4aa"
+    },
+    {
+      "result": "Pass",
+      "time": "0.015",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetRecentlyActiveStreamsAsync_PropagatesCancellation",
+      "case_ordinal": 2,
+      "display_name_sha256": "b066429a22426fb5cdfb7ae6d7c9ac3667d20fc55278bb4ae4c305aba1000aca"
+    },
+    {
+      "result": "Pass",
+      "time": "0.011",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetEventDetailAsync_BuildsCanonicalEndpoint_AndForwardsBearerToken",
+      "case_ordinal": 3,
+      "display_name_sha256": "a058097981160114cbcad0d96a09db5752f1f68748b6f8a872c4f754e6777f9e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetRecentlyActiveStreamsAsync_ValidatedPlatformRead_PreservesCrossTenantResults",
+      "case_ordinal": 4,
+      "display_name_sha256": "74ce9b7944e67ce24e3aaec9e1fe04ee87a0be49c719738b940ce328661eb0ee"
+    },
+    {
+      "result": "Pass",
+      "time": "0.013",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetEventDetailAsync_ProtectedProblemDetails_PreservesSafeExtensionsAndDropsProviderPrivateValues",
+      "case_ordinal": 5,
+      "display_name_sha256": "570598db8c2054f98d70b2eec3a663821621af4182ae9155e0a65292ef04147c"
+    },
+    {
+      "result": "Pass",
+      "time": "0.008",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetRecentlyActiveStreamsAsync_WithTenantFilter_FiltersFromGlobalKey",
+      "case_ordinal": 6,
+      "display_name_sha256": "0de6ea0396bf4b85963c0df3b9b618184413213e4ceba10dd390f61e0d5d5245"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetEventStepFrameAsync_ThrowsArgumentException_WhenSequenceNumberLessThanOne",
+      "case_ordinal": 7,
+      "display_name_sha256": "e5acd91373cfa3db49db3bc4edcece3fd82474cd4420262abdf87020c27b91c5"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetCorrelationTraceMapAsync_ThrowsException_WhenEventStoreUnavailable",
+      "case_ordinal": 8,
+      "display_name_sha256": "9cea7accf2d4916a70f721b9da7c89105bc81dbf233ee34f01c12ff493307550"
+    },
+    {
+      "result": "Pass",
+      "time": "0.011",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetRecentCommandsAsync_ReturnsResults_WhenEventStoreReturnsData",
+      "case_ordinal": 9,
+      "display_name_sha256": "576daf5e65ac926e635bc06e82288dea05575d9ec19105c53b9e577c87ab027d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "ListReads_MissingOrConflictingScope_RejectBeforeHttpOrStateAccess",
+      "case_ordinal": 10,
+      "display_name_sha256": "fc351b65c92078a25b8286cffec5ca245300cdf2ff5a310fba7ce5566041e55b"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "ListReads_MissingOrConflictingScope_RejectBeforeHttpOrStateAccess",
+      "case_ordinal": 11,
+      "display_name_sha256": "527d2fe101a255fafa5c6ab2ce97ae40cba388bd798cf36e091aa746f17e2a2e"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "ListReads_MissingOrConflictingScope_RejectBeforeHttpOrStateAccess",
+      "case_ordinal": 12,
+      "display_name_sha256": "96626ec5353ed91021b2f327f74794ac2eae748c73994e90c64151d57ce01985"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetEventDetailAsync_NullJsonBody_ThrowsKeyNotFoundException",
+      "case_ordinal": 13,
+      "display_name_sha256": "f882882f56289fc3cb069826cbc084f9bcadcf132f13899f037bf81bf7ee988d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.008",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GlobalHealthMetrics_RequireAdmittedScopeBeforeNestedListReads",
+      "case_ordinal": 14,
+      "display_name_sha256": "757eee49754ea6d5fe2ded730cd96f55f4c98200c985f0ec2e85b25c99d15355"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GlobalHealthMetrics_RequireAdmittedScopeBeforeNestedListReads",
+      "case_ordinal": 15,
+      "display_name_sha256": "62f46df495d22ec4356944978a89ec082544ff6ac71e8dba0a2f990ccf026a17"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GlobalHealthMetrics_RequireAdmittedScopeBeforeNestedListReads",
+      "case_ordinal": 16,
+      "display_name_sha256": "98988ae850fa74fd393f17583178c2b895a46c4e5af2d07761ad8ab2e122c093"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetEventDetailAsync_ThrowsException_WhenEventStoreUnavailable",
+      "case_ordinal": 17,
+      "display_name_sha256": "379899b606842e702ddcd482bdad88272b883d04046fdfd2a89c9291d6725aa6"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetAggregateStateAtPositionAsync_ThrowsException_WhenEventStoreUnavailable",
+      "case_ordinal": 18,
+      "display_name_sha256": "d39a54996bbac153ff42fd432cc512934297bd110c8af1222a5f8f78d825a60c"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetRecentCommandsAsync_PlatformRead_ForwardsValidatedScopeAndHumanBearer",
+      "case_ordinal": 19,
+      "display_name_sha256": "0e7c9a8efa574f5de894199bfd2a94ea10a3838ad1734a31a7e4768d2eeccdc6"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetRecentlyActiveStreamsAsync_ReturnsEmpty_WhenIndexNotFound",
+      "case_ordinal": 20,
+      "display_name_sha256": "99b83396a89beba7a01d3df51423eea7ecc2919e2b069c5c3e8a47c741a4487a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetEventDetailAsync_DownstreamServiceUnavailable_ThrowsHttpRequestException",
+      "case_ordinal": 21,
+      "display_name_sha256": "90f72e06b610ee6ab123ee72cf98386f08901e3f9d5b43b588ccf51c27dcc09a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetEventStepFrameAsync_ThrowsException_WhenEventStoreUnavailable",
+      "case_ordinal": 22,
+      "display_name_sha256": "b5f01c50861f34196bed941ca75531c9514375e2dcd5ca61924650886c8e3d0c"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetRecentlyActiveStreamsAsync_FiltersByDomain",
+      "case_ordinal": 23,
+      "display_name_sha256": "031a38886e917c0fd3bd4cd89dba94b3e8952ec54c7c818fc5d88c93f71ccc90"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetEventDetailAsync_DownstreamNotFound_ThrowsKeyNotFoundException",
+      "case_ordinal": 24,
+      "display_name_sha256": "be47946ba593c66cd993edbac366cf3cfcff7e2250e4fcccac1a584148ed6a9b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "DiffAggregateStateAsync_ThrowsException_WhenEventStoreUnavailable",
+      "case_ordinal": 25,
+      "display_name_sha256": "de5bea00171c171c8f89f5cf5e8bb73101b09ebc27b25a3dc599650a443dcb50"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetEventDetailAsync_DownstreamBadRequest_ThrowsArgumentException",
+      "case_ordinal": 26,
+      "display_name_sha256": "df09094744a5f0817378c8d682878ecb0901c4ac761b873010c03aae2acf24eb"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetAggregateBlameAsync_ThrowsException_WhenEventStoreUnavailable",
+      "case_ordinal": 27,
+      "display_name_sha256": "dea94934f9cea30f49c17b079b52ef70868885193e18638329b71a42c031a04b"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetRecentCommandsAsync_TenantRead_ForwardsCanonicalTenantWithoutPlatformScope",
+      "case_ordinal": 28,
+      "display_name_sha256": "f5a15899a33d9653b1a91e8c18e4e4dadb492f2163f691eaf9174bf058f9e445"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetRecentCommandsAsync_ThrowsException_WhenEventStoreUnavailable",
+      "case_ordinal": 29,
+      "display_name_sha256": "5354843ba213604b8a8f1a221f22228878058859bae6031fb3bcb905ebdf1804"
+    },
+    {
+      "result": "Pass",
+      "time": "0.004",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetEventDetailAsync_ProtectedProblemDetails_DropsNestedValuesEvenWhenExtensionNameIsAllowed",
+      "case_ordinal": 30,
+      "display_name_sha256": "e57c57fdf84f38ef58f5cd8117161cd6ad5b329e0f031d239029d3647d414a42"
+    },
+    {
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetStreamTimelineAsync_ForwardsBearerToken_AndBuildsExpectedEndpoint",
+      "case_ordinal": 31,
+      "display_name_sha256": "32fc276f5732e0a2e43627e8e3586e06941fe31ffe9c347fa97b5873379f5d46"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "TraceCausationChainAsync_ThrowsException_WhenEventStoreUnavailable",
+      "case_ordinal": 32,
+      "display_name_sha256": "384b119c5778287334b012b8044467b6feffc25b802338888fa4223b154c1a3a"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetRecentlyActiveStreamsAsync_ThrowsException_WhenDaprThrows",
+      "case_ordinal": 33,
+      "display_name_sha256": "6aea4709f990391bfa9d1c5d5fa276c9d48cdfb3d78f4b226015a4597a243830"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetRecentlyActiveStreamsAsync_ReturnsStreams_WhenIndexExists",
+      "case_ordinal": 34,
+      "display_name_sha256": "caedd32d316a67e1bf5cbb635b18a45683fd6339a1b32a2c97287ef92f46276e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetStreamTimelineAsync_ThrowsException_WhenEventStoreUnavailable",
+      "case_ordinal": 35,
+      "display_name_sha256": "fa06c72b058995ab214b59fee88bf35d37798bf201cb55086a74b8b8b05018f1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetEventStepFrameAsync_PropagatesCancellation",
+      "case_ordinal": 36,
+      "display_name_sha256": "ff2eb810c12d63f9f976617878e5ce0ad02726f8d36e66442a0897469d159a42"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.EventStore.Admin.Server.Tests.Services.DaprStreamQueryServiceTests",
+      "method": "GetEventDetailAsync_DownstreamServerError_ThrowsHttpRequestException",
+      "case_ordinal": 37,
+      "display_name_sha256": "6284a3abeed6844322b5d0ed5c6c9636956aa1dd7f7c51f5d95264319c6b79a3"
+    }
+  ]
+}

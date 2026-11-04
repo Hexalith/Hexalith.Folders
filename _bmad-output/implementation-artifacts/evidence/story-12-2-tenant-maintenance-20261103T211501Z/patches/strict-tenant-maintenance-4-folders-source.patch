@@ -1,0 +1,125 @@
+diff --git a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+index dc35cdc4..0a2facaa 100644
+--- a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
++++ b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+@@ -1993,3 +1993,114 @@ pins/scanner assertions are unchanged. The original strict failures, producer/pa
+ capacity, PD10/governance, SM4 and whole-story review remain distinct open gates; standalone success
+ would qualify only active tenant maintenance. No live topology, Git mutation, dependency change,
+ frozen-artifact update or publication occurred in this implementation phase.
++
++
++### Native catalog admission contention qualification — 2026-11-03
++
++The approved real maintenance control passed once with zero failures/errors/skips in183.007s,
++including natural two-minute source age, a genuine matching TenantUpdated/unchanged retained prefix,
++normal persisted Workers authority/evidence and an immediate exact fresh no-op. Root HEAD advanced
++externally during that run but all captured compile-source maps were identical; runtime bytes and
++owned cleanup were clean. Original full strict acceptance remains separate and open.
++
++Strict attempt3 passed provider binding/rebuild and reached repository binding. Its failed native
++metadata acquisition performed25 fresh state/validation/capture attempts and24 failed CAS attempts
++inside2007ms, then canceled before the25th CAS and before any transport/receiver for that invocation.
++The actor subsequently returned a safe rejection; cached retries retained the result. Earlier fast
++receiver records belong to different invocations. This diagnoses acquisition contention for this
++request without mislabeling it as transport latency, missing durable task state or tenant staleness.
++All original assertions and configured deadlines remain unchanged. SDK source advanced externally
++across14 Admin-related files during the run; the actual pre-run producer is explicitly bound.
++
++The existing frozen2026-11-02 native-authority performance approval permits a bounded correction
++that preserves every required observation/proof/final check and all existing deadlines. No new
++permission, trust cache, protocol, lifecycle authority or dependency/publication scope is included.
++A concrete source/ETag rebase candidate is under read-only assessment: after each complete fresh
++acquisition validation, re-read strong authority state immediately before lease CAS, reuse that
++validation only for the exact unchanged committed activation binding/epoch with no pending
++transition, and apply all current lease identity, inventory, overflow and sequence checks to the
++fresh state. The activation binding digest excludes TrustProof, so exact opaque TrustProof and
++canonical catalog bytes must also agree; a proof-only change cannot inherit a prior validation. A changed authority must restart fresh validation. Generic lifecycle update paths,
++remote verifier ordering, durable fences/release and default human gateway composition remain intact.
++
++- [x] Assess that exact candidate against SDK authority/observation contracts and deterministic
++  lifecycle/lease races; record whether it stays within the approved observation and security scope.
++  Do not implement a stale snapshot/cache or omit a required read/check to accept the failed run.
++- [x] If that assessment succeeds, bind the smallest exact implementation and meaningful focused
++  regressions here before source edits, then rebuild and qualify the affected owner/consumer/native
++  acquisition path serially. Keep prior failures, real maintenance pass, fresh package failures and
++  independent whole-story/SM4 gates separate.
++
++
++### Exact bounded admission rebase implementation — 2026-11-03
++
++Implement only after the immediately preceding read-only assessment confirms the exact store and
++activation-ownership contracts. The existing native-authority performance approval covers this
++internal acquisition correction; it adds no package, trust, protocol, deadline or publication scope.
++The parent has released all source/output ownership; no parent build or topology remains active.
++
++- [x] In the owning root-declared EventStore repository, change only the dispatch acquisition path
++  in `src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs` (small adjacent
++  single-type internal helpers only if required). On every attempt retain the existing fresh
++  state read, local identity/profile/host observation, activation binding and independent trust
++  validation. Privately freeze the complete validated activation before asynchronous work so no
++  aliased mutable arrays/lists can establish later equality. Then perform a new strong state/ETag
++  read immediately before constructing the lease CAS. A rebase is permitted only with no pending
++  transition and identical epoch, canonical catalog bytes/root, full activation binding and exact
++  ordinal opaque TrustProof. Never equate proof by binding digest alone. Any changed activation,
++  proof or epoch restarts full fresh validation (or preserves the existing safe refusal for an
++  active pending transition); no changed candidate inherits earlier validation.
++- [x] Apply every existing admission invariant to the newly read state: exact local identity and
++  generation, own lease identity/idempotency, maximum4096leases, checked LastLease+1, exact fence
++  epoch/root/host. Preserve every concurrent foreign fence and all other fresh state fields. CAS
++  only the fresh ETag through the unchanged store primitive. Failed CAS restarts complete fresh
++  validation under the existing96attempt/caller bounds and conflict scheduling. Cancellation or
++  backend failure before CAS cannot create a fence. Do not move generic Prepare/Ready/Commit/
++  Rollback/Reconcile or release/verifier behavior; retain final native-read and remote proof checks,
++  durable lease cleanup, default human gateway composition and every2s/3s/5s/40s limit.
++- [x] Add meaningful deterministic owner controls in
++  `tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAdmissionRebaseTests.cs` and adjacent
++  single-type test helpers: lease-only contention during every host capture must preserve peers and
++  acquire using the refreshed ETag; pending/committed/epoch/full binding/TrustProof-only changes
++  cannot reuse validation; mutable activation aliases cannot pass; lease cap/overflow/current
++  sequence, cancellation, refresh failure and sustained CAS conflict remain fail-closed. Retain
++  existing lifecycle/coordinate/native-read controls. Update only existing read-count assertions
++  that necessarily include the additional strong read, with explicit expectations; never weaken
++  an original outcome, safety or finite-attempt assertion.
++- [x] Build and run focused owner controls serially with both source flags, plus relevant existing
++  catalog contention/lifecycle/installed-observation/native-source suites. Retain intermediate
++  failures. Hand back exact source patch/hashes/results and released outputs before parent
++  rebuild/audit/live qualification. No shared cache, package pin, Git, publication or deployment
++  mutation; original Folders strict/capacity bodies and frozen intent stay byte-identical.
++
++
++### Admission rebase focused handoff — 2026-11-03
++
++The strong-read and private activation ownership assessment passed. Acquisition alone now freezes
++its candidate before awaited validation, gives observers/validators a separate owned copy, and
++performs an additional strong state/ETag read before admission CAS. Rebase requires the exact epoch,
++canonical bytes/root, full activation binding and ordinal opaque TrustProof. Changed authority
++restarts fresh validation; pending still refuses new fences. An already recorded exact own fence
++can be recovered and released alongside pending, preserving response-loss draining semantics.
++Fresh lease inventory supplies the checked sequence,4096 limit and complete retained state; CAS
++uses only its new ETag. Local identity/profile/coordinates are rechecked after the added read, and
++the winning fence/snapshot retain the validated local binding. Generic lifecycle updates, release,
++final native/remote checks,96 attempts, conflict scheduling and every caller deadline remain intact.
++
++The owner test build passes with zero warnings/errors in13.02s using both source flags. The final
++18-class focused selection passes222/222 with zero failures/errors/skips in20.415s, including27 new
++deterministic admission races and retained lifecycle/quiescence, installed-observation, coordinates,
++backend, native-scope and native-source controls. Read-count assertions now explicitly require two
++reads per attempted new admission: conflict-then-refusal3 instead of2, cancellation after CAS2
++instead of1, permanent96 attempts192 instead of96, and two closed diagnostic read pairs. Existing
++outcome/safety/attempt assertions are retained. Earlier overlapping35-case and222-case runs each
++had one assertion failure; both raw logs/XML and the exact corrections are retained independently.
++No results are added across overlapping selections.
++
++The exact private assessment, phase-only patch, before/after source hashes, commands, build/test
++receipts and output hashes are retained under `/tmp/story12-2-admission-rebase-20261103`.
++Original strict/capacity bodies remain byte-identical. No live topology or real contention latency
++qualification occurred here; the extra read adds I/O and does not guarantee progress under sustained
++CAS contention. Parent owns current producer rebuild/audit and any isolated live qualification.
++The prior real maintenance pass, original strict failures, packaged4.0.4 source-capability mismatch
++and whole-story/SM4 gates remain separate; this focused pass does not close them.
+Submodule references/Hexalith.EventStore contains modified content
+Submodule references/Hexalith.EventStore 6c8aa5bb..2253b733:
+  > test(streams): generate native metadata test credentials
+  > fix(admin): enforce explicit platform read scope
+  > fix(build): restore published Platform tuple after sync
+  > fix: submodules

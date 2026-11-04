@@ -1,0 +1,72 @@
+--- a/tests/Hexalith.EventStore.DomainService.Tests/NativeSourceMetadataCompositionTests.cs
++++ b/tests/Hexalith.EventStore.DomainService.Tests/NativeSourceMetadataCompositionTests.cs
+@@ -33,22 +33,34 @@
+     public async Task SeparateMetadataClientPreservesDefaultGatewayAndRefusesUnprovableScope(string scenario)
+     {
+         using RSA key = RSA.Create(2048);
++        string sidecarToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
++        byte[] malformedKeyBytes = RandomNumberGenerator.GetBytes(32);
++        malformedKeyBytes[0] = 0; // A PKCS#8 DER sequence cannot start with this byte.
++        string malformedPrivateKey = Convert.ToBase64String(malformedKeyBytes);
++        string? selectedPrivateKey = null;
++        if (scenario == "bad-key")
++        {
++            selectedPrivateKey = malformedPrivateKey;
++        }
++        else if (scenario != "missing-key")
++        {
++            selectedPrivateKey = Convert.ToBase64String(key.ExportPkcs8PrivateKey());
++        }
+         var identity = new AggregateIdentity("tenant-a", scenario == "foreign-domain" ? "other-domain" : "folders", "organization-a");
+         var proof = NativeSourceProofCodec.CreateSeed(identity, "01ARZ3NDEKTSV4RRFFQ69G5FAV");
+         var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
+         {
+             ["DAPR_HTTP_ENDPOINT"] = "http://localhost:3500",
+-            ["DAPR_API_TOKEN"] = "component-sidecar-token",
++            ["DAPR_API_TOKEN"] = sidecarToken,
+             ["EventStore:Gateway:AppId"] = "eventstore-isolated",
+             ["Authentication:WorkloadIssuer:Workload"] = "folders-isolated",
+-            ["Authentication:BoundStreamRead:PrivateKey"] = scenario == "missing-key" ? null
+-                : scenario == "bad-key" ? "invalid" : Convert.ToBase64String(key.ExportPkcs8PrivateKey()),
++            ["Authentication:BoundStreamRead:PrivateKey"] = selectedPrivateKey,
+         }).Build();
+         using var metadataTransport = new MockHttpMessageHandler(request =>
+         {
+             request.RequestUri!.AbsoluteUri.ShouldBe("http://localhost:3500/api/v1/streams/read/workload");
+             request.Headers.GetValues("dapr-app-id").Single().ShouldBe("eventstore-isolated");
+-            request.Headers.GetValues("dapr-api-token").Single().ShouldBe("component-sidecar-token");
++            request.Headers.GetValues("dapr-api-token").Single().ShouldBe(sidecarToken);
+             request.Headers.Authorization.ShouldBeNull();
+             request.Headers.GetValues(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName).Single().ShouldBe("component-workload-assertion");
+             var sent = JsonSerializer.Deserialize<StreamReadRequest>(request.Content!.ReadAsStringAsync().GetAwaiter().GetResult(), JsonSerializerOptions.Web)!;
+--- a/tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceMetadataCatalogObservationTests.cs
++++ b/tests/Hexalith.EventStore.Server.Tests/Streams/NativeSourceMetadataCatalogObservationTests.cs
+@@ -1,3 +1,4 @@
++using System.Security.Cryptography;
+ using System.Text.Json;
+ 
+ using Hexalith.EventStore.ServiceDefaults.Routing;
+@@ -15,6 +16,7 @@
+     [Fact]
+     public async Task SourceOnlyReceiverEnrollmentIsPartOfTheIndependentCatalogObservation()
+     {
++        string privateSentinel = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+         string directory = Path.Combine(Path.GetTempPath(), "native-source-catalog-" + Guid.NewGuid().ToString("N"));
+         Directory.CreateDirectory(directory);
+         try
+@@ -28,13 +30,13 @@
+                 ["EventStore:RouteCatalog:DevelopmentBootstrap:ComponentPath"] = component,
+                 ["EventStore:RouteCatalog:DevelopmentBootstrap:AccessControlPath"] = acl,
+                 ["Authentication:BoundStreamRead:MetadataOnlyCallers:folders"] = "true",
+-                ["Authentication:BoundStreamRead:PrivateKey"] = "private-sentinel",
++                ["Authentication:BoundStreamRead:PrivateKey"] = privateSentinel,
+             }).Build();
+             var before = await DevelopmentRouteCatalogInputs.CaptureAsync(configuration, "eventstore", [], [], [], [], [], TestContext.Current.CancellationToken);
+             using JsonDocument observed = JsonDocument.Parse(before.AuthenticationProfile);
+             observed.RootElement.GetProperty("settings").GetProperty("Authentication:BoundStreamRead:MetadataOnlyCallers:folders")
+                 .GetString().ShouldBe("true");
+-            System.Text.Encoding.UTF8.GetString(before.AuthenticationProfile).ShouldNotContain("private-sentinel");
++            System.Text.Encoding.UTF8.GetString(before.AuthenticationProfile).ShouldNotContain(privateSentinel);
+             configuration["Authentication:BoundStreamRead:MetadataOnlyCallers:folders"] = null;
+             var after = await DevelopmentRouteCatalogInputs.CaptureAsync(configuration, "eventstore", [], [], [], [], [], TestContext.Current.CancellationToken);
+             before.AuthenticationProfile.SequenceEqual(after.AuthenticationProfile).ShouldBeFalse();

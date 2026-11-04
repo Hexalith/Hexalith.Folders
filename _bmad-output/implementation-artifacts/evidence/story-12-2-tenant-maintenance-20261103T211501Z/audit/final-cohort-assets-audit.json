@@ -1,0 +1,384 @@
+[
+  {
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/obj/project.assets.json",
+    "sha256": "bfac41a1216c11f2ca85461f40830608f253db7df2e34f416b7fca123bdbaccd",
+    "hexalith_edges": [
+      {
+        "name": "Hexalith.Commons.UniqueIds/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Client/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Contracts/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.DomainService/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.ServiceDefaults/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders.Contracts/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders.ServiceDefaults/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.McpCli.Abstractions/2.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Memories.Client.Rest/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Memories.Contracts/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Tenants.Client/7.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Tenants.Contracts/7.0.0",
+        "type": "project"
+      }
+    ]
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/obj/project.assets.json",
+    "sha256": "1329d6f9550011c9d40e2990d646a4ca21a3a6ece2eb717be8b62f4e1db633d8",
+    "hexalith_edges": [
+      {
+        "name": "Hexalith.Commons.UniqueIds/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Client/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Contracts/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.DomainService/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.ServiceDefaults/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders.Contracts/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders.ServiceDefaults/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.McpCli.Abstractions/2.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Memories.Contracts/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Tenants.Client/7.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Tenants.Contracts/7.0.0",
+        "type": "project"
+      }
+    ]
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/obj/project.assets.json",
+    "sha256": "47b8d129714f6ad51e5af993b3c80140ae31a6f4f18243508475ea9bf349cd33",
+    "hexalith_edges": [
+      {
+        "name": "Hexalith.Commons.UniqueIds/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Admin.Abstractions/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Client/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Contracts/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.DomainService/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Gateway/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Server/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.ServiceDefaults/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders.Contracts/1.0.0",
+        "type": "project"
+      }
+    ]
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/obj/project.assets.json",
+    "sha256": "ec00c7c7b632a0f97c5c4107c985850904176bc1b3cc26511dae47b208a45316",
+    "hexalith_edges": [
+      {
+        "name": "Hexalith.Builds.Tooling/1.0.0-20261103201419",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Commons.UniqueIds/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Aspire/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Client/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Contracts/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.ServiceDefaults/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders.Aspire/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Memories.Aspire/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Tenants.Aspire/7.0.0",
+        "type": "project"
+      }
+    ]
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/obj/project.assets.json",
+    "sha256": "a7ebbbeb6a395b7a591e8f728cc48ff2eb0e78f756c2ff32838e1ca50bdb5157",
+    "hexalith_edges": [
+      {
+        "name": "Hexalith.Builds.Tooling/1.0.0-20261103201419",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Commons.UniqueIds/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Aspire/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Client/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Contracts/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.DomainService/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.ServiceDefaults/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders.AppHost/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders.Aspire/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders.Client/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders.Contracts/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders.ServiceDefaults/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Folders.Workers/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.McpCli.Abstractions/2.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Memories.Aspire/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Memories.Contracts/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Tenants.Aspire/7.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Tenants.Client/7.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Tenants.Contracts/7.0.0",
+        "type": "project"
+      }
+    ]
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/obj/project.assets.json",
+    "sha256": "ba52537275a8d2b1f720a11f3585498f1e8c38ce239e6b26cbaa6f224f779b5f",
+    "hexalith_edges": [
+      {
+        "name": "Hexalith.Commons.UniqueIds/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Admin.Abstractions/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Client/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Contracts/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.DomainService/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Gateway/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Server/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.ServiceDefaults/4.0.4",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.McpCli.Abstractions/2.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Tenants.Contracts/7.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Tenants.Server/7.0.0",
+        "type": "project"
+      }
+    ]
+  },
+  {
+    "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Server/obj/project.assets.json",
+    "sha256": "a895875fd15a6c1a9b1c77021dd677ec13ff20a7973b5f4133378874574dd341",
+    "hexalith_edges": [
+      {
+        "name": "Hexalith.Commons.UniqueIds/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Client/4.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.Contracts/4.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.DomainService/4.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.EventStore.ServiceDefaults/4.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Memories.AccessTelemetry.Contracts/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Memories.Contracts/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Memories.EventStore/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Memories.ServiceDefaults/1.0.0",
+        "type": "project"
+      },
+      {
+        "name": "Hexalith.Memories.Telemetry/1.0.0",
+        "type": "project"
+      }
+    ]
+  }
+]

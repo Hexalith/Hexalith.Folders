@@ -1,0 +1,8 @@
+{
+  "approved_fixture_maintenance": true,
+  "approval_user_reply": "approve",
+  "recorded_utc": "2026-11-03T17:58:17.651087+00:00",
+  "prior_verified_packet": "_bmad-output/implementation-artifacts/evidence/story-12-2-source-head-and-mutation-budget-20261103T140301Z",
+  "prior_seal_sha256": "4616718aa7be37309d99f44f6626117294a2ab42c4aea936e097bfc56e9f894e",
+  "scope": "Fixture-only tenants:update plus real same-metadata TenantUpdated and normal source/projection barrier; production freshness5min and mutation evidence2s preserved."
+}

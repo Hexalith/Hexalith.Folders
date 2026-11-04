@@ -159,7 +159,7 @@ public sealed class ParallelPermissionObservationTests
         await Task.WhenAll(folderStarted.Task, organizationStarted.Task).WaitAsync(TimeSpan.FromSeconds(5), token);
         if (catchupDeadline)
         {
-            EffectivePermissionsReadModelResult result = await pending.WaitAsync(TimeSpan.FromSeconds(2), token);
+            EffectivePermissionsReadModelResult result = await pending.WaitAsync(TimeSpan.FromSeconds(5), token);
             result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
             result.Snapshot.ShouldBeNull();
             result.Freshness.ReasonCode.ShouldBe("permission_projection_catch_up_timeout");

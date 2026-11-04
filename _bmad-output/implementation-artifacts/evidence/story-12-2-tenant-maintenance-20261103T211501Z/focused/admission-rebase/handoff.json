@@ -1,0 +1,471 @@
+{
+  "created_utc": "2026-11-03T20:40:22.341990+00:00",
+  "ownership": "released; no active build/test/live process owned by implementation agent",
+  "heads": {
+    "root": "44f2df8b04d67d0385cde96323666eb4f58c27d9",
+    "sdk": "2253b733539a84f436443d3b4996ce2136437bef"
+  },
+  "changed_files": [
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs",
+      "before_sha256": "7da4de5a4b05830a567df979e722c163ab2914121b03c9b32f406594e4343025",
+      "after_sha256": "ab0837c71874564f2a069cc1070ad8ac1e95036386f1bfccb4b8d571463dbf9b",
+      "before_copy": "/tmp/story12-2-admission-rebase-20261103/before/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs"
+    },
+    {
+      "path": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAcquisitionDiagnosticsTests.cs",
+      "before_sha256": "9189c95c027117ad6e1424a224323c08122f25c98473bbb73bd9f26be109b821",
+      "after_sha256": "9d65765e8d16d54c3be88798acbb89574aed102eefb340f60fb990edbb02ac33",
+      "before_copy": "/tmp/story12-2-admission-rebase-20261103/before/CatalogAcquisitionDiagnosticsTests.cs"
+    },
+    {
+      "path": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogUpdateContentionTests.cs",
+      "before_sha256": "41674120775be9bbe31251bd435432fd7562bb635faf934e4447fe202bc13194",
+      "after_sha256": "e258f0e9afd15df1944a5fcab082f083665ffeeb11da08e2570e792034168cb4",
+      "before_copy": "/tmp/story12-2-admission-rebase-20261103/before/CatalogUpdateContentionTests.cs"
+    },
+    {
+      "path": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAdmissionRebaseStore.cs",
+      "before_sha256": null,
+      "after_sha256": "e4cdff4d46abd69908a2f3baeb823a97f239b79586f18f001843ac5d960f23b8",
+      "before_copy": null
+    },
+    {
+      "path": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Routing/CatalogAdmissionRebaseTests.cs",
+      "before_sha256": null,
+      "after_sha256": "e7d10b495820133ab2ba9d9514dd1ec68ae39018048b68e191d29a86e6cff227",
+      "before_copy": null
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+      "before_sha256": "c706aedd1d0f0b4d7b264bd902cfadb28700ab34029ff60d9ec8a5c111646027",
+      "after_sha256": "1b029b832c38583888c817d9b463baa512dc966a9a9151f39e5a358ca0094610",
+      "before_copy": "/tmp/story12-2-admission-rebase-20261103/before/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md"
+    }
+  ],
+  "phase_patch": {
+    "file": "/tmp/story12-2-admission-rebase-20261103/phase.patch",
+    "sha256": "03122bed692114d1e652fe3891c54229ecd1116e03ddddad8b46b447a8c73100"
+  },
+  "assessment": {
+    "file": "/tmp/story12-2-admission-rebase-20261103/assessment.json",
+    "sha256": "52a93be2aa6b924829f1d2b45b9fadb54dd5fd9f3d9d8b965f2d59f42d6b3391"
+  },
+  "build_command": "dotnet build tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+  "builds": [
+    {
+      "file": "/tmp/story12-2-admission-rebase-20261103/build-1-private.log",
+      "sha256": "cbbaa45cfba2144cf74b9317e0eb0c6489c09fd3dbf24f1fa536b30292fa4365",
+      "warnings": 0,
+      "errors": 0,
+      "elapsed": "00:00:15.81"
+    },
+    {
+      "file": "/tmp/story12-2-admission-rebase-20261103/build-2-private.log",
+      "sha256": "b6693bbf373c03952204f2685bb59d735bb2ebf614b44645fc748d8f68c9c6a7",
+      "warnings": 0,
+      "errors": 0,
+      "elapsed": "00:00:11.18"
+    },
+    {
+      "file": "/tmp/story12-2-admission-rebase-20261103/build-3-private.log",
+      "sha256": "813fbde0d96172d2c282145486be1ad83e7ff2c6b9524bf266c8a4fd3f6acc00",
+      "warnings": 0,
+      "errors": 0,
+      "elapsed": "00:00:09.16"
+    },
+    {
+      "file": "/tmp/story12-2-admission-rebase-20261103/build-4-private.log",
+      "sha256": "da9cde13f12e14f2de44f2420992b2fe983ab5b59d0feb11ec9b3306f0d24c5e",
+      "warnings": 0,
+      "errors": 0,
+      "elapsed": "00:00:09.14"
+    },
+    {
+      "file": "/tmp/story12-2-admission-rebase-20261103/build-5-private.log",
+      "sha256": "86a59757956f6443620414d16a0c978a2ecf9cfbe66bf2d667f2bf76c3884fda",
+      "warnings": 0,
+      "errors": 0,
+      "elapsed": "00:00:09.90"
+    },
+    {
+      "file": "/tmp/story12-2-admission-rebase-20261103/build-6-private.log",
+      "sha256": "d8ea0d340ea73950dc0d195317858664df40bf13dbf59fada5303872f272c947",
+      "warnings": 0,
+      "errors": 0,
+      "elapsed": "00:00:13.02"
+    }
+  ],
+  "focused_runs": [
+    {
+      "label": "focused-1",
+      "sha256": "6a9260fe76984f660006e768a6326d4c82e9c5e8768a7d40e886699b1be83734",
+      "total": "35",
+      "passed": "34",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "5.921",
+      "classes": [
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+          "total": "7",
+          "passed": "6",
+          "failed": "1"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+          "total": "20",
+          "passed": "20",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+          "total": "8",
+          "passed": "8",
+          "failed": "0"
+        }
+      ]
+    },
+    {
+      "label": "focused-2",
+      "sha256": "8fabc5a368a1561b7f70d8b5bf5cf79795ba7f9f96de9337b35488c3dea68bda",
+      "total": "222",
+      "passed": "221",
+      "failed": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "18.839",
+      "classes": [
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+          "total": "5",
+          "passed": "5",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogQuiescenceRaceTests",
+          "total": "8",
+          "passed": "8",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRetentionTests",
+          "total": "4",
+          "passed": "4",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+          "total": "27",
+          "passed": "26",
+          "failed": "1"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+          "total": "7",
+          "passed": "7",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+          "total": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogBackendHttpTests",
+          "total": "8",
+          "passed": "8",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+          "total": "16",
+          "passed": "16",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+          "total": "15",
+          "passed": "15",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+          "total": "8",
+          "passed": "8",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+          "total": "19",
+          "passed": "19",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+          "total": "9",
+          "passed": "9",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+          "total": "14",
+          "passed": "14",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+          "total": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+          "total": "12",
+          "passed": "12",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataCatalogObservationTests",
+          "total": "1",
+          "passed": "1",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+          "total": "29",
+          "passed": "29",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+          "total": "19",
+          "passed": "19",
+          "failed": "0"
+        }
+      ]
+    },
+    {
+      "label": "focused-3",
+      "sha256": "499a88fcdbdb5fe5d72b7ab23c1eee34ccfd44d5e94746fa445e14dd75d96cd3",
+      "total": "222",
+      "passed": "222",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "20.415",
+      "classes": [
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+          "total": "5",
+          "passed": "5",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogQuiescenceRaceTests",
+          "total": "8",
+          "passed": "8",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRetentionTests",
+          "total": "4",
+          "passed": "4",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+          "total": "27",
+          "passed": "27",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+          "total": "7",
+          "passed": "7",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+          "total": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogBackendHttpTests",
+          "total": "8",
+          "passed": "8",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+          "total": "16",
+          "passed": "16",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+          "total": "15",
+          "passed": "15",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+          "total": "8",
+          "passed": "8",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+          "total": "19",
+          "passed": "19",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+          "total": "9",
+          "passed": "9",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+          "total": "14",
+          "passed": "14",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+          "total": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+          "total": "12",
+          "passed": "12",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataCatalogObservationTests",
+          "total": "1",
+          "passed": "1",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+          "total": "29",
+          "passed": "29",
+          "failed": "0"
+        },
+        {
+          "name": "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+          "total": "19",
+          "passed": "19",
+          "failed": "0"
+        }
+      ]
+    }
+  ],
+  "final_command": {
+    "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+    "argv": [
+      "dotnet",
+      "tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRebaseTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.CatalogUpdateContentionTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.CatalogAcquisitionDiagnosticsTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.RouteCatalogActivationTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.CatalogLifecycleAmendmentTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.CatalogSuccessorQuiescenceTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.CatalogAuthorityCoordinateTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.CatalogInstalledObservationTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.NativeSourceReadScopeTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.CatalogBackendHttpTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.CatalogQuiescenceRaceTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.CatalogReceiverStateBoundaryTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.CatalogAdmissionRetentionTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Routing.BoundOwnerCatalogAdmissionTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataReaderTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Streams.NativeSourceMetadataCatalogObservationTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Streams.NativeSourceHeadEvidenceContractTests",
+      "-class",
+      "Hexalith.EventStore.Server.Tests.Streams.NativeSourcePrefixTests",
+      "-result-xml",
+      "/tmp/story12-2-admission-rebase-20261103/focused-3-private.xml"
+    ],
+    "classes": [
+      "Routing.CatalogAdmissionRebaseTests",
+      "Routing.CatalogUpdateContentionTests",
+      "Routing.CatalogAcquisitionDiagnosticsTests",
+      "Routing.RouteCatalogActivationTests",
+      "Routing.CatalogLifecycleAmendmentTests",
+      "Routing.CatalogSuccessorQuiescenceTests",
+      "Routing.CatalogAuthorityCoordinateTests",
+      "Routing.CatalogInstalledObservationTests",
+      "Routing.NativeSourceReadScopeTests",
+      "Routing.CatalogBackendHttpTests",
+      "Routing.CatalogQuiescenceRaceTests",
+      "Routing.CatalogReceiverStateBoundaryTests",
+      "Routing.CatalogAdmissionRetentionTests",
+      "Routing.BoundOwnerCatalogAdmissionTests",
+      "Streams.NativeSourceMetadataReaderTests",
+      "Streams.NativeSourceMetadataCatalogObservationTests",
+      "Streams.NativeSourceHeadEvidenceContractTests",
+      "Streams.NativeSourcePrefixTests"
+    ]
+  },
+  "source_invariants": {
+    "all_existing_methods_from_ValidateNativeReadLease_through_generic_Update_and_Freeze_byte_identical": true,
+    "strict_bodies": {
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": {
+        "sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+        "unchanged": true
+      },
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": {
+        "sha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+        "unchanged": true
+      }
+    }
+  },
+  "outputs": {
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll": "c3b28e469ef6249213e1c6a0cc0c46e763a1afed9e14502ca88f0babfbf279bf",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.pdb": "3b8d9911e8a10b84caceb0a961db1b6d36d5469ba8e05761357fc25ba8128540",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll": "6beff61aecf0e6f849b017019c43874e3fc14938d1adf68a6e409456adf354ac",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb": "04a913d5f8d9e4c0d33ea203aa1eccf941d508ba21004b1947f4dea3edd8411b"
+  },
+  "assertion_deltas": [
+    "CatalogUpdateContentionTests conflict-then-refusal:2->3 reads",
+    "Cancellation after conflict:1->2 reads",
+    "Permanent96attempts:96->192 reads,96CAS unchanged",
+    "CatalogAcquisitionDiagnosticsTests exact state-read statuses:one->two Started/Completed pairs"
+  ],
+  "limits": [
+    "Focused222pass is not a live performance/durability acceptance claim.",
+    "One additional strong read adds I/O; sustained CAS conflict still fails at96 or caller cancellation.",
+    "PublishedTenantQuerySelectorAbiTests was not selected; no fixture materialization/cache changes.",
+    "Original strict failures, current packagedSDK4.0.4 missing source capability and whole-story/SM4 gates remain open."
+  ],
+  "handoff": [
+    "Parent owns coherent runtime/Memories rebuild,source/PDB/assets audit and isolated live qualification.",
+    "No further source/output edits or tests by implementation agent after this handoff."
+  ]
+}

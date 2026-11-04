@@ -1,0 +1,12 @@
+{
+  "utc": "2026-11-03T20:32:11.992939+00:00",
+  "private_staging": "/tmp/story12-2-tenant-maintenance-20261103-updu69yz/export-dry-run-1",
+  "sealed_dry_run_only": true,
+  "seal_sha256": "af7b856e60d302c255eac56e7bfb544e4f42d9c026b5f68f2038f86ef2b55439",
+  "sealed_files": 319,
+  "standalone_verifier_exit_code": 0,
+  "initial_recognizable_secret_scan_findings": 0,
+  "raw_log_xml_exclusion_checked": true,
+  "published_to_repository": false,
+  "final_packet_must_be_fresh": "Include completed admission-rebase phase and actual following runtime/live results; rerun final privacy scan after all scripts/documents are copied, then seal and verify."
+}

@@ -1,0 +1,936 @@
+{
+  "created_utc": "2026-11-03T18:43:35.548953+00:00",
+  "run": "strict-tenant-maintenance-1",
+  "input_hashes": {
+    "strict-tenant-maintenance-1-private.log": "760c4fd6c3c386326243b7c7e15701dfa3bec79b4cbf1fe94438bf2442007cf1",
+    "strict-tenant-maintenance-1-private.xml": "4fef47caff5c2c8ba575937a87c9161e76901a5f7d6eecb90931327765a62eb6",
+    "strict-tenant-maintenance-1-lifecycle-private.jsonl": "1950a4c8a1d0d669e13fd36049298a4a164924de632f06068e2faa6eae60995a"
+  },
+  "parent_reported_cohort": {
+    "sdk_head": "bca57ab16802ba1b91f744c2c6b9c73259bdbdcc",
+    "coherent_runtime_memories_build": "pass_0warnings_0errors",
+    "selected_modules_pdb_source_audit": 92,
+    "sdk_dirty_patch_bytes": 0
+  },
+  "executed_result": {
+    "total": "1",
+    "passed": "0",
+    "failed": "1",
+    "errors": "0",
+    "skipped": "0",
+    "time": "137.433"
+  },
+  "failure": {
+    "exception_type": "Shouldly.ShouldAssertException",
+    "method": "OperationalStatusDurabilityAcceptanceTests.RequireProviderBindingRebuildAsync",
+    "line": 393,
+    "field": "first retained FolderCommandRejected code",
+    "expected": "ValidationFailed",
+    "observed": "UnavailableProjection",
+    "earlier_checks_proven_by_unchanged_control_flow": [
+      "unknown-profile public PUT returned required 403",
+      "valid provider configuration public PUT returned required 202",
+      "provider binding became publicly readable",
+      "retained provider stream and projection each contain exactly two messages",
+      "first retained event is FolderCommandRejected; public/private provider sentinel assertions before code check passed"
+    ],
+    "not_reached": [
+      "provider-binding projection erasure and complete-prefix rebuild",
+      "first positive-folder evidence/tenant maintenance hook",
+      "real provider task closure",
+      "six-concern rebuild/retention/interrupted/concurrent/restart acceptance markers"
+    ]
+  },
+  "positive_closed_telemetry": [
+    {
+      "utc": "2026-11-03T18:34:03.0160000",
+      "OperationKind": "ProcessCommand",
+      "Result": "Success",
+      "Category": "accepted",
+      "RedactionState": "MetadataOnly"
+    },
+    {
+      "utc": "2026-11-03T18:34:05.4930000",
+      "OperationKind": "RestMutation",
+      "Result": "Success",
+      "Category": "operation_completed",
+      "RedactionState": "MetadataOnly"
+    },
+    {
+      "utc": "2026-11-03T18:34:10.9150000",
+      "OperationKind": "ProcessCommand",
+      "Result": "Rejected",
+      "Category": "domain_rejection",
+      "RedactionState": "MetadataOnly"
+    },
+    {
+      "utc": "2026-11-03T18:34:13.2360000",
+      "OperationKind": "ProviderReadiness",
+      "Result": "Denied",
+      "Category": "authorization_denied",
+      "RedactionState": "MetadataOnly"
+    },
+    {
+      "utc": "2026-11-03T18:34:16.9400000",
+      "OperationKind": "RestMutation",
+      "Result": "Success",
+      "Category": "operation_completed",
+      "RedactionState": "MetadataOnly"
+    },
+    {
+      "utc": "2026-11-03T18:34:18.1090000",
+      "OperationKind": "ProcessCommand",
+      "Result": "Success",
+      "Category": "accepted",
+      "RedactionState": "MetadataOnly"
+    },
+    {
+      "utc": "2026-11-03T18:34:20.3420000",
+      "OperationKind": "ProviderReadiness",
+      "Result": "Success",
+      "Category": "operation_completed",
+      "RedactionState": "MetadataOnly"
+    },
+    {
+      "utc": "2026-11-03T18:34:22.3600000",
+      "OperationKind": "ProviderReadiness",
+      "Result": "Unavailable",
+      "Category": "projection_unavailable",
+      "RedactionState": "MetadataOnly"
+    },
+    {
+      "utc": "2026-11-03T18:34:24.2060000",
+      "OperationKind": "ProviderReadiness",
+      "Result": "Success",
+      "Category": "operation_completed",
+      "RedactionState": "MetadataOnly"
+    }
+  ],
+  "native_metadata_information_records": [
+    {
+      "utc": "2026-11-03T18:34:08.4260000",
+      "handler": "logical",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:08.4270000",
+      "handler": "client",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:08.8970000",
+      "handler": "client",
+      "event_id": 101,
+      "fields": {
+        "ElapsedMilliseconds": 469.8106,
+        "StatusCode": 200
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:08.8970000",
+      "handler": "logical",
+      "event_id": 101,
+      "fields": {
+        "ElapsedMilliseconds": 471.5204,
+        "StatusCode": 200
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:08.9080000",
+      "handler": "logical",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:08.9080000",
+      "handler": "client",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:13.3660000",
+      "handler": "logical",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:13.3660000",
+      "handler": "client",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:14.8400000",
+      "handler": "client",
+      "event_id": 101,
+      "fields": {
+        "ElapsedMilliseconds": 1474.161,
+        "StatusCode": 200
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:14.8410000",
+      "handler": "logical",
+      "event_id": 101,
+      "fields": {
+        "ElapsedMilliseconds": 1474.5712,
+        "StatusCode": 200
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:14.9410000",
+      "handler": "logical",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:14.9410000",
+      "handler": "client",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:16.5530000",
+      "handler": "logical",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:16.5530000",
+      "handler": "client",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:16.7840000",
+      "handler": "client",
+      "event_id": 101,
+      "fields": {
+        "ElapsedMilliseconds": 231.0338,
+        "StatusCode": 200
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:16.7850000",
+      "handler": "logical",
+      "event_id": 101,
+      "fields": {
+        "ElapsedMilliseconds": 231.4418,
+        "StatusCode": 200
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:16.7880000",
+      "handler": "logical",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:16.7880000",
+      "handler": "client",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:17.0340000",
+      "handler": "client",
+      "event_id": 101,
+      "fields": {
+        "ElapsedMilliseconds": 245.5839,
+        "StatusCode": 200
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:17.0340000",
+      "handler": "logical",
+      "event_id": 101,
+      "fields": {
+        "ElapsedMilliseconds": 245.9711,
+        "StatusCode": 200
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:17.0490000",
+      "handler": "logical",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:17.0490000",
+      "handler": "client",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:18.1060000",
+      "handler": "client",
+      "event_id": 101,
+      "fields": {
+        "ElapsedMilliseconds": 1059.3426,
+        "StatusCode": 200
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:18.1070000",
+      "handler": "logical",
+      "event_id": 101,
+      "fields": {
+        "ElapsedMilliseconds": 1059.7062,
+        "StatusCode": 200
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:20.3580000",
+      "handler": "logical",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:20.3580000",
+      "handler": "client",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:23.3680000",
+      "handler": "logical",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:23.3680000",
+      "handler": "client",
+      "event_id": 100,
+      "fields": {
+        "HttpMethod": "POST"
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:24.2020000",
+      "handler": "client",
+      "event_id": 101,
+      "fields": {
+        "ElapsedMilliseconds": 834.187,
+        "StatusCode": 200
+      }
+    },
+    {
+      "utc": "2026-11-03T18:34:24.2030000",
+      "handler": "logical",
+      "event_id": 101,
+      "fields": {
+        "ElapsedMilliseconds": 834.5844,
+        "StatusCode": 200
+      }
+    }
+  ],
+  "observed_cancellation_stacks": [
+    {
+      "utc": "2026-11-03T18:34:10.9370000",
+      "elapsed_ms": 2026.6186,
+      "attempt": 0,
+      "handled": false,
+      "exception_types": [
+        "System.OperationCanceledException"
+      ],
+      "frames": [
+        {
+          "method": "Hexalith.EventStore.ServiceDefaults.Routing.DevelopmentRouteCatalogTrustValidator.ValidateAsync",
+          "file": "DevelopmentRouteCatalogTrustValidator.cs",
+          "line": 16
+        },
+        {
+          "method": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.ValidateAsync",
+          "file": "RouteCatalogAuthority.cs",
+          "line": 268
+        },
+        {
+          "method": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.<>c__DisplayClass16_0.<<AcquireCoreAsync>b__0>d.MoveNext",
+          "file": "RouteCatalogAuthority.cs",
+          "line": 179
+        },
+        {
+          "method": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.UpdateAsync",
+          "file": "RouteCatalogAuthority.cs",
+          "line": 293
+        },
+        {
+          "method": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.AcquireCoreAsync",
+          "file": "RouteCatalogAuthority.cs",
+          "line": 168
+        },
+        {
+          "method": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority.AcquireAsync",
+          "file": "RouteCatalogAuthority.cs",
+          "line": 158
+        },
+        {
+          "method": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler.SendAsync",
+          "file": "RouteCatalogInvocationHandler.cs",
+          "line": 181
+        }
+      ]
+    },
+    {
+      "utc": "2026-11-03T18:34:16.9420000",
+      "elapsed_ms": 1999.5441,
+      "attempt": 0,
+      "handled": false,
+      "exception_types": [
+        "System.IO.IOException",
+        "System.Net.Sockets.SocketException",
+        "System.Threading.Tasks.TaskCanceledException"
+      ],
+      "frames": [
+        {
+          "method": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler.SendLeasedAsync",
+          "file": "RouteCatalogInvocationHandler.cs",
+          "line": 228
+        },
+        {
+          "method": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler.SendAsync",
+          "file": "RouteCatalogInvocationHandler.cs",
+          "line": 186
+        },
+        {
+          "method": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler.SendAsync",
+          "file": "RouteCatalogInvocationHandler.cs",
+          "line": 193
+        }
+      ]
+    },
+    {
+      "utc": "2026-11-03T18:34:22.3590000",
+      "elapsed_ms": 2000.8414,
+      "attempt": 0,
+      "handled": false,
+      "exception_types": [
+        "System.IO.IOException",
+        "System.Net.Sockets.SocketException",
+        "System.Threading.Tasks.TaskCanceledException"
+      ],
+      "frames": [
+        {
+          "method": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler.SendLeasedAsync",
+          "file": "RouteCatalogInvocationHandler.cs",
+          "line": 228
+        },
+        {
+          "method": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler.SendAsync",
+          "file": "RouteCatalogInvocationHandler.cs",
+          "line": 186
+        },
+        {
+          "method": "Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler.SendAsync",
+          "file": "RouteCatalogInvocationHandler.cs",
+          "line": 193
+        }
+      ]
+    }
+  ],
+  "subsequent_fixed_query_failure": [
+    {
+      "utc": "2026-11-03T18:34:22.3590000",
+      "category": "Hexalith.Folders.Queries.ProviderReadiness.GetProviderBindingQueryHandler",
+      "exception_type": "System.InvalidOperationException",
+      "fixed_failure": "independently_observed_source_head_unavailable"
+    }
+  ],
+  "lifecycle_cleanup_records": [
+    {
+      "phase": "application_stopping",
+      "processId": 3309991,
+      "utc": "2026-11-03T18:34:25.9760123+00:00",
+      "inFlightRequests": 0,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "host_stop",
+      "processId": 3309991,
+      "utc": "2026-11-03T18:34:25.9856133+00:00",
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 3309991,
+      "utc": "2026-11-03T18:34:26.9847786+00:00",
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "application_stopped",
+      "processId": 3309991,
+      "utc": "2026-11-03T18:34:27.5444096+00:00",
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": true,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    }
+  ],
+  "interpretation": [
+    "The current run fails the unchanged retained-rejection classification assertion, not tenant-maintenance/source-update verification. New maintenance is neither qualified nor refuted by this early failure.",
+    "ConfigureProviderBindingService performs layered authorization before capability-profile validation. Its UnavailableProjection mapping permits TenantProjectionUnavailable, FolderAclUnavailable or DaprPolicyDenied; these logs do not identify the exact rejecting layer for the first command.",
+    "At 18:34:10.937 an outgoing invocation observed cancellation after 2026.6186ms in Acquire -> Update -> Validate -> Development trust token check. Current source places this token check after fresh host observation, before the current update attempt CAS and before dispatch lease return/egress. Earlier failed CAS attempts cannot be excluded.",
+    "At 18:34:16.942 and 22.359, cancellation after roughly 2s is in invocation transport; these stacks do not locate receiver/actor delay.",
+    "Native source HTTP start times and sidecar origin align with these cancellations, but Information records contain no per-request correlation proving the first cancellation caused the retained rejection. Three logical starts lack completion records; missing completion alone is not proof of status or cause.",
+    "Six observed logical native-source completions are HTTP200. HTTP status alone does not establish payload/proof validity.",
+    "The later provider query at 18:34:22.359 positively records the fixed source-head-unavailable InvalidOperationException; it is distinct from the earlier retained rejection.",
+    "Cleanup stopping -> stopped elapsed approximately 1.5683973s. At the 1s stopping snapshot all observed BackgroundService tasks were completed without fault; no shutdown blocker reproduced. Parent-owned exact resource cleanup and source/runtime drift receipts remain separate.",
+    "No source/output/build/test/topology mutation was made by this read-only diagnosis. No deadline/guard/assertion correction follows from these observations."
+  ],
+  "limits_and_next_discriminating_evidence": [
+    "For a further diagnosis, a bounded payload-free provider authorization/read-model result+stage diagnostic would distinguish the actual first-command layer and whether acquisition or source transport exhausted its unchanged caller budget. This is an option, not an implemented correction.",
+    "Preserve the first retained rejection assertion and the approved 2s mutation-evidence, 3s source, 5min tenant freshness and all existing external limits.",
+    "Do not claim tenant maintenance, strict acceptance, SM4 or live capacity from this attempt."
+  ],
+  "source_hashes": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs": "973a068fb30dca17298a25aba7731605fd65ae2f042e50aa29a10867e81ad1b5",
+    "src/Hexalith.Folders.Server/FolderDomainProcessor.cs": "c8f11d624e0dce3445a7bd56372b0a6af5b3d1b75a8f7f922c03e7b72fc8e058",
+    "src/Hexalith.Folders/Aggregates/Organization/ConfigureProviderBindingService.cs": "61cdc0c8de9a889bd2ebceb182e93957492e72d4382200587940733ef205a7c2",
+    "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+    "src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs": "eda00660c00eda83b36349c01dd6c3a93dc72fcb8e1ec0c9454896de35d52093",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs": "7da4de5a4b05830a567df979e722c163ab2914121b03c9b32f406594e4343025",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogInvocationHandler.cs": "c4c319ddfb6fe5c4ed40488cd9ee2eb1a88333f2205e16cf3dc91b41126fcfc0",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/DevelopmentRouteCatalogTrustValidator.cs": "ea902573c0ad685b5f6e807500a1ab93094036349acb23e26013d77c4b31c66d"
+  }
+}
